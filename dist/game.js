@@ -134,15 +134,7 @@
       if (!el) return;
       if (id === SCREEN_IDS[name]) { el.classList.remove('hidden'); el.classList.add('active'); } else { el.classList.add('hidden'); el.classList.remove('active'); }
     });
-    // BGM — hraje na mapě a v hero obrazovce
-    if (name === 'map' || name === 'hero') {
-      initAudio(); // synchronně — vytvoří audioCtx pokud neexistuje
-      startBGM();
-    } else if (name === 'mapBattle') {
-      // V bitevní obrazovce necháme BGM dál hrát (subtle), nestopujeme
-    } else {
-      stopBGM();
-    }
+    // BGM hraje pořád po prvním spuštění — nestopujeme
     if (name === 'map') renderMap();
     else if (name === 'tower') renderTower();
     else if (name === 'hero') renderHero();
@@ -1062,6 +1054,8 @@
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
+    // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
+    h.inventory.splice(invIdx, 1);
     if (item.type === 'weapon') {
       if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
       h.equip.weapon = itemId;
@@ -1069,7 +1063,6 @@
       if (h.equip.armor !== 'rags') h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
     }
-    h.inventory.splice(invIdx, 1);
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
