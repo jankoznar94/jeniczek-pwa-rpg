@@ -45,7 +45,7 @@
   bgmAudio.volume = 0.25;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.04; // normalizováno oproti Girei
+  overworldAudio.volume = 0.07; // normalizováno oproti Girei (bylo 0.04)
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
   defeatAudio.volume = 0.06; // normalizováno oproti Girei
@@ -1289,6 +1289,29 @@
     document.addEventListener('click', function handler() {
       document.removeEventListener('click', handler);
       if (_firstInteraction) firstUserInteraction();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (!bgmAudio.paused) bgmAudio.pause();
+        if (!overworldAudio.paused) overworldAudio.pause();
+        if (!defeatAudio.paused) defeatAudio.pause();
+        currentBGM = null; // vynutit nové spuštění při návratu
+      } else {
+        const activeScreen = Object.keys(SCREEN_IDS).find(k => {
+          const el = $(SCREEN_IDS[k]);
+          return el && !el.classList.contains('hidden');
+        });
+        const resultTitle = $('resultTitle')?.textContent || '';
+        const isDefeat = activeScreen === 'result' && (resultTitle.includes('Padl') || resultTitle.includes('💀'));
+        if (isDefeat) {
+          switchBGM('defeat');
+        } else if (activeScreen === 'mapBattle' || activeScreen === 'battle') {
+          switchBGM('battle');
+        } else {
+          switchBGM('overworld');
+        }
+      }
     });
     showScreen('map');
   }
