@@ -615,30 +615,37 @@
   }
 
   function spawnProjectileEffect(dir, targetIsPlayer) {
-    // Střed arény = pozice šipky
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
 
-    // Cíl: nahoře (boss) nebo dole (hráč)
+    // Cíl: pozice bosse (nahoře) nebo hráče (dole)
     let endX = cx, endY;
+    let targetEl;
     if (targetIsPlayer) {
-      // Červený projektil dolů k hráči
-      endY = rect.height + 20;
+      targetEl = $('mbPlayerFigure');
     } else {
-      // Zelený projektil nahoru k bossovi
-      endY = -20;
+      targetEl = $('mbFigure');
+    }
+    if (targetEl) {
+      const tRect = targetEl.getBoundingClientRect();
+      const aRect = arena.getBoundingClientRect();
+      endX = tRect.left + tRect.width/2 - aRect.left;
+      endY = tRect.top + tRect.height/2 - aRect.top;
+    } else {
+      endX = cx;
+      endY = targetIsPlayer ? rect.height + 20 : -20;
     }
 
     const isGreen = !targetIsPlayer;
     const color1 = isGreen ? '#8fde7a' : '#e74c3c';
     const color2 = isGreen ? '#2ecc71' : '#c0392b';
+    const rgb = isGreen ? '46,204,113' : '231,76,60';
 
-    // Projektil
     const proj = document.createElement('div');
-    proj.style.cssText = `position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 10px rgba(${isGreen?'46,204,113':'231,76,60'},0.8);z-index:20;pointer-events:none;`;
+    proj.style.cssText = `position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 10px rgba(${rgb},0.8);z-index:20;pointer-events:none;`;
     proj.style.left = (cx - 8) + 'px';
     proj.style.top = (cy - 8) + 'px';
     arena.appendChild(proj);
@@ -649,10 +656,10 @@
       proj.style.top = (endY - 8) + 'px';
     });
 
-    // Po dopadu: rozpad na částice
+    // Po dopadu: mlha + částice
     setTimeout(() => {
       if (proj.parentNode) proj.remove();
-      const impactY = Math.min(Math.max(endY, 0), rect.height);
+      spawnImpactParticles(arena, endX, endY, isGreen);
       for (let i = 0; i < 5; i++) {
         const p = document.createElement('div');
         const size = 3 + Math.random() * 5;
@@ -660,12 +667,12 @@
         const dist = 15 + Math.random() * 30;
         p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${[color2,color1,'rgba(255,255,255,0.6)'][i%3]};z-index:21;pointer-events:none;opacity:1;`;
         p.style.left = (endX - size/2) + 'px';
-        p.style.top = (impactY - size/2) + 'px';
+        p.style.top = (endY - size/2) + 'px';
         arena.appendChild(p);
         requestAnimationFrame(() => {
           p.style.transition = `left 0.25s ease-out, top 0.25s ease-out, opacity 0.25s ease-out`;
           p.style.left = (endX + Math.cos(angle) * dist - size/2) + 'px';
-          p.style.top = (impactY + Math.sin(angle) * dist - size/2) + 'px';
+          p.style.top = (endY + Math.sin(angle) * dist - size/2) + 'px';
           p.style.opacity = '0';
         });
         setTimeout(() => { if (p.parentNode) p.remove(); }, 300);
@@ -673,38 +680,59 @@
     }, 200);
   }
 
+  function spawnImpactParticles(arena, x, y, isGreen) {
+    // Mlha při nárazu — rozmazané kroužky rozlétající se všemi směry
+    const color = isGreen ? 'rgba(46,204,113,0.35)' : 'rgba(231,76,60,0.35)';
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('div');
+      const size = 5 + Math.random() * 12;
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 15 + Math.random() * 30;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(1.5px);z-index:19;pointer-events:none;opacity:0.6;`;
+      p.style.left = (x - size/2) + 'px';
+      p.style.top = (y - size/2) + 'px';
+      arena.appendChild(p);
+      requestAnimationFrame(() => {
+        p.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
+        p.style.left = (x + Math.cos(angle) * dist - size/2) + 'px';
+        p.style.top = (y + Math.sin(angle) * dist - size/2) + 'px';
+        p.style.opacity = '0';
+      });
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
+    }
+  }
+
   function spawnDodgeEffect(arena, dir) {
-    // Oblak/částice fouknuté od středu arény směrem úhybu
+    // Oblak/částice fouknuté od středu arény směrem úhybu — větší
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
-    const color = 'rgba(46,204,113,0.3)';
+    const color = 'rgba(46,204,113,0.25)';
 
-    // 6-8 rozmazaných kroužků, které se rozletí daným směrem
-    const count = 7;
+    const count = 12;
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
-      const size = 6 + Math.random() * 10;
-      const spread = 20 + Math.random() * 35;
+      const size = 10 + Math.random() * 16;
+      const spread = 40 + Math.random() * 60;
       let dx = 0, dy = 0;
-      if (dir === '⬆️') { dx = (Math.random() - 0.5) * 20; dy = -spread; }
-      else if (dir === '⬇️') { dx = (Math.random() - 0.5) * 20; dy = spread; }
-      else if (dir === '⬅️') { dx = -spread; dy = (Math.random() - 0.5) * 20; }
-      else if (dir === '➡️') { dx = spread; dy = (Math.random() - 0.5) * 20; }
+      if (dir === '⬆️') { dx = (Math.random() - 0.5) * 30; dy = -spread; }
+      else if (dir === '⬇️') { dx = (Math.random() - 0.5) * 30; dy = spread; }
+      else if (dir === '⬅️') { dx = -spread; dy = (Math.random() - 0.5) * 30; }
+      else if (dir === '➡️') { dx = spread; dy = (Math.random() - 0.5) * 30; }
 
-      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(1px);z-index:19;pointer-events:none;opacity:0.5;`;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(2px);z-index:19;pointer-events:none;opacity:0.4;`;
       p.style.left = (cx - size/2) + 'px';
       p.style.top = (cy - size/2) + 'px';
       arena.appendChild(p);
 
       requestAnimationFrame(() => {
-        p.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
+        p.style.transition = `left 0.35s ease-out, top 0.35s ease-out, opacity 0.35s ease-out`;
         p.style.left = (cx + dx - size/2) + 'px';
         p.style.top = (cy + dy - size/2) + 'px';
         p.style.opacity = '0';
       });
 
-      setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 400);
     }
   }
 
