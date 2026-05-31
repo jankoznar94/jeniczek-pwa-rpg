@@ -45,7 +45,7 @@
   bgmAudio.volume = 0.25;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.07; // normalizováno oproti Girei (bylo 0.04)
+  overworldAudio.volume = 0.06; // normalizováno oproti Girei
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
   defeatAudio.volume = 0.06; // normalizováno oproti Girei
