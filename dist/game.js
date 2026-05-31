@@ -57,7 +57,9 @@
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | null
   function switchBGM(mode) {
-    if (mode === currentBGM) return; // už hraje ten správný
+    if (mode === currentBGM) return;
+    initAudio();
+    ensureRunning();
     currentBGM = null;
     // Zastavit všechny
     if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
@@ -395,6 +397,7 @@
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
     circle.style.transition = 'none';
+    circle.style.opacity = '0';
     circle.style.strokeDashoffset = '276';
     return circle;
   }
@@ -403,6 +406,7 @@
     if (!circle) return;
     // force reflow - oddělí reset od animace
     void circle.offsetHeight;
+    circle.style.opacity = '1';
     circle.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
     circle.style.strokeDashoffset = '0';
   }
