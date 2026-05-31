@@ -45,7 +45,7 @@
   bgmAudio.volume = 0.25;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.25;
+  overworldAudio.volume = 0.04; // overworld je o ~18 dB hlasitější, tohle to normalizuje
 
   function switchBGM(toBattle) {
     if (toBattle) {
