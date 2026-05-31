@@ -42,6 +42,7 @@
   const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 0.4; return a; })();
   const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 0.4; return a; })();
   const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 0.4; return a; })();
+  const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 0.5; return a; })();
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
   // ===== BACKGROUND MUSIC (MP3) =====
@@ -82,7 +83,7 @@
     { id:'fireball', name:'Fireball', icon:'🔥', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*2+3} dmg + ${t} DoT`, baseCd:6, cdR:0.3, minLevel:1 },
     { id:'shield', name:'Štít', icon:'🛡️', dungeon:'color', dungeonName:'🏜️ Pouštní nekropole', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*10+10}% blok`, baseCd:9, cdR:0.3, minLevel:3 },
     { id:'heal', name:'Léčení', icon:'💚', dungeon:'grid', dungeonName:'⏳ Zřícenina času', maxLv:10, desc:t=>t===0?'Zamčeno':`+${t+2} HP`, baseCd:12, cdR:0.5, minLevel:5 },
-    { id:'crit', name:'Kritik', icon:'🗡️', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*5+10}% crit`, baseCd:0, cdR:0, minLevel:2 },
+    { id:'crit', name:'Kritik', icon:'🗡️', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*5+5}% crit`, baseCd:0, cdR:0, minLevel:2 },
     { id:'clone', name:'Klon', icon:'🌀', dungeon:'color', dungeonName:'🏜️ Pouštní nekropole', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*8+10}% klon`, baseCd:14, cdR:0.5, minLevel:4 },
     { id:'freeze', name:'Mráz', icon:'❄️', dungeon:'grid', dungeonName:'⏳ Zřícenina času', maxLv:10, desc:t=>t===0?'Zamčeno':`${t+1}k zpomalení`, baseCd:10, cdR:0.4, minLevel:6 },
     { id:'shadow', name:'Stín', icon:'🌑', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*4+5} dmg`, baseCd:10, cdR:0.4, minLevel:8 },
@@ -127,11 +128,14 @@
     if (minigameState.timerInterval) { clearInterval(minigameState.timerInterval); minigameState.timerInterval = null; }
     if (minigameState.countdownInterval) { clearInterval(minigameState.countdownInterval); minigameState.countdownInterval = null; }
     ['simonTimeout'].forEach(k => { if (minigameState[k]) { clearTimeout(minigameState[k]); delete minigameState[k]; } });
-    if (mapBattleState && mapBattleState._attackTimer) { clearTimeout(mapBattleState._attackTimer); mapBattleState._attackTimer = null; }
-    if (mapBattleState && mapBattleState._sequenceTimer) { clearTimeout(mapBattleState._sequenceTimer); mapBattleState._sequenceTimer = null; }
-    if (mapBattleState && mapBattleState._ringTimer) { clearTimeout(mapBattleState._ringTimer); mapBattleState._ringTimer = null; }
-    if (mapBattleState && mapBattleState._attackWindowTimer) { clearTimeout(mapBattleState._attackWindowTimer); mapBattleState._attackWindowTimer = null; }
-    if (mapBattleState && mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
+    if (mapBattleState) {
+      mapBattleState.ended = true; // ukončit aktivní souboj
+      if (mapBattleState._attackTimer) { clearTimeout(mapBattleState._attackTimer); mapBattleState._attackTimer = null; }
+      if (mapBattleState._sequenceTimer) { clearTimeout(mapBattleState._sequenceTimer); mapBattleState._sequenceTimer = null; }
+      if (mapBattleState._ringTimer) { clearTimeout(mapBattleState._ringTimer); mapBattleState._ringTimer = null; }
+      if (mapBattleState._attackWindowTimer) { clearTimeout(mapBattleState._attackWindowTimer); mapBattleState._attackWindowTimer = null; }
+      if (mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
+    }
   }
 
   const SAVE_KEY = 'dungeonRecallV6';
@@ -620,7 +624,7 @@
     }, 300);
   }
 
-  function spawnProjectileEffect(dir, targetIsPlayer) {
+  function spawnProjectileEffect(dir, targetIsPlayer, isCrit) {
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
@@ -650,61 +654,69 @@
     const color2 = isGreen ? '#2ecc71' : '#c0392b';
     const rgb = isGreen ? '46,204,113' : '231,76,60';
 
+    const size = isCrit ? 32 : 22;
+    const half = size / 2;
     const proj = document.createElement('div');
-    proj.style.cssText = `position:absolute;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 10px rgba(${rgb},0.8);z-index:20;pointer-events:none;`;
-    proj.style.left = (cx - 8) + 'px';
-    proj.style.top = (cy - 8) + 'px';
+    proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 ${isCrit ? 20:10}px rgba(${rgb},${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
+    proj.style.left = (cx - half) + 'px';
+    proj.style.top = (cy - half) + 'px';
     arena.appendChild(proj);
 
     requestAnimationFrame(() => {
       proj.style.transition = `left 0.2s ease-out, top 0.2s ease-out`;
-      proj.style.left = (endX - 8) + 'px';
-      proj.style.top = (endY - 8) + 'px';
+      proj.style.left = (endX - half) + 'px';
+      proj.style.top = (endY - half) + 'px';
     });
 
     // Po dopadu: mlha + částice
     setTimeout(() => {
       if (proj.parentNode) proj.remove();
-      spawnImpactParticles(arena, endX, endY, isGreen);
-      for (let i = 0; i < 5; i++) {
+      spawnImpactParticles(arena, endX, endY, isGreen, isCrit);
+      const pCount = isCrit ? 12 : 5;
+      const pDist = isCrit ? 40 : 30;
+      const pMaxSize = isCrit ? 10 : 5;
+      for (let i = 0; i < pCount; i++) {
         const p = document.createElement('div');
-        const size = 3 + Math.random() * 5;
+        const size2 = 3 + Math.random() * pMaxSize;
         const angle = Math.random() * 2 * Math.PI;
-        const dist = 15 + Math.random() * 30;
-        p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${[color2,color1,'rgba(255,255,255,0.6)'][i%3]};z-index:21;pointer-events:none;opacity:1;`;
-        p.style.left = (endX - size/2) + 'px';
-        p.style.top = (endY - size/2) + 'px';
+        const dist = 15 + Math.random() * pDist;
+        p.style.cssText = `position:absolute;width:${size2}px;height:${size2}px;border-radius:50%;background:${[color2,color1,'rgba(255,255,255,0.6)'][i%3]};z-index:21;pointer-events:none;opacity:1;`;
+        p.style.left = (endX - size2/2) + 'px';
+        p.style.top = (endY - size2/2) + 'px';
         arena.appendChild(p);
         requestAnimationFrame(() => {
-          p.style.transition = `left 0.25s ease-out, top 0.25s ease-out, opacity 0.25s ease-out`;
-          p.style.left = (endX + Math.cos(angle) * dist - size/2) + 'px';
-          p.style.top = (endY + Math.sin(angle) * dist - size/2) + 'px';
+          p.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
+          p.style.left = (endX + Math.cos(angle) * dist - size2/2) + 'px';
+          p.style.top = (endY + Math.sin(angle) * dist - size2/2) + 'px';
           p.style.opacity = '0';
         });
-        setTimeout(() => { if (p.parentNode) p.remove(); }, 300);
+        setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
       }
     }, 200);
   }
 
-  function spawnImpactParticles(arena, x, y, isGreen) {
+  function spawnImpactParticles(arena, x, y, isGreen, isCrit) {
     // Mlha při nárazu — rozmazané kroužky rozlétající se všemi směry
     const color = isGreen ? 'rgba(46,204,113,0.35)' : 'rgba(231,76,60,0.35)';
-    for (let i = 0; i < 8; i++) {
+    const count = isCrit ? 14 : 8;
+    const maxSize = isCrit ? 18 : 12;
+    const maxDist = isCrit ? 50 : 30;
+    for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
-      const size = 5 + Math.random() * 12;
+      const size = 5 + Math.random() * maxSize;
       const angle = Math.random() * 2 * Math.PI;
-      const dist = 15 + Math.random() * 30;
-      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(1.5px);z-index:19;pointer-events:none;opacity:0.6;`;
+      const dist = 15 + Math.random() * maxDist;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(${isCrit ? 2.5 : 1.5}px);z-index:19;pointer-events:none;opacity:${isCrit ? 0.8 : 0.6};`;
       p.style.left = (x - size/2) + 'px';
       p.style.top = (y - size/2) + 'px';
       arena.appendChild(p);
       requestAnimationFrame(() => {
-        p.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
+        p.style.transition = `left ${isCrit ? 0.35 : 0.3}s ease-out, top ${isCrit ? 0.35 : 0.3}s ease-out, opacity ${isCrit ? 0.35 : 0.3}s ease-out`;
         p.style.left = (x + Math.cos(angle) * dist - size/2) + 'px';
         p.style.top = (y + Math.sin(angle) * dist - size/2) + 'px';
         p.style.opacity = '0';
       });
-      setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 400);
     }
   }
 
@@ -859,16 +871,16 @@
     updateActionButtons();
 
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg);
-    const critChance = (state.skills.crit||0) * 5 + 10;
+    const critChance = (state.skills.crit||0) * 5 + 5;
     const critMult = (state.skills.crit||0) * 0.2 + 1;
     let dmg = baseDmg;
-    if (Math.random() * 100 < critChance) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; }
-    else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; }
+    const isCrit = Math.random() * 100 < critChance;
+    if (isCrit) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; playSFX(critSfx); }
+    else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; playSFX(hitSfx); }
 
     mb.bossHp -= dmg;
-    playSFX(hitSfx);
     // Zelený projektil od středu k bossovi
-    spawnProjectileEffect(null, false);
+    spawnProjectileEffect(null, false, isCrit);
 
     // Damage text
     const damageText = $('mbDamageText');
@@ -941,13 +953,8 @@
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
-    // Po zásahu pokračovat sekvencí (pokud není konec)
-    if (mb.sequence && mb.sequenceIndex < mb.sequence.length) {
-      setTimeout(() => advanceSequence(), 400);
-    } else {
-      // Už není sekvence nebo jsme na konci - nové kolo
-      setTimeout(() => mapBattleTurn(), 500);
-    }
+    // Po zásahu restartovat sekvenci — hráč byl potrestán
+    setTimeout(() => mapBattleTurn(), 500);
   }
 
   function castMapSpell(spellId) {
@@ -1099,6 +1106,10 @@
     $('heroMaxHp').textContent = h.maxHp;
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
+    const critLv = state.skills.crit||0;
+    const critChance = critLv * 5 + 5;
+    const critMult = critLv * 0.2 + 1;
+    $('heroCrit').textContent = critLv > 0 ? `${critChance}% (×${(critMult).toFixed(1)})` : '—';
     $('totalSkillLevel').textContent = `${totalLv}/${SKILLS.length*10}`;
 
     // Atributy
