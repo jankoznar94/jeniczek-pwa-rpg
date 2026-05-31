@@ -150,7 +150,7 @@
       if (id === SCREEN_IDS[name]) { el.classList.remove('hidden'); el.classList.add('active'); } else { el.classList.add('hidden'); el.classList.remove('active'); }
     });
     // Přepnout na overworld BGM mimo boj
-    if (name !== 'mapBattle' && name !== 'battle') switchBGM('overworld');
+    if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
     if (name === 'map') renderMap();
     else if (name === 'tower') renderTower();
     else if (name === 'hero') renderHero();
@@ -842,8 +842,8 @@
 
     if (!won) {
       state.deaths = (state.deaths || 0) + 1;
-      state.locationProgress[locId] = 0; // reset dungeon při smrti
-      state.hero.hp = state.hero.maxHp;  // reset HP
+      state.locationProgress[locId] = 0;
+      state.hero.hp = state.hero.maxHp;
       saveGame();
       switchBGM('defeat');
       $('resultIcon').textContent = '💀';
@@ -852,39 +852,37 @@
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
     } else {
       state.wins = (state.wins || 0) + 1;
+      // Uložit aktuální HP hráče zpět do state (ztráty z boje zůstávají)
+      state.hero.hp = mb.playerHp;
 
       if (!mb.isBoss) {
         // Monster killed, advance progress
         const p = (state.locationProgress[locId] || 0) + 1;
         state.locationProgress[locId] = p;
-        // Gold za monstrum
         const monsterGold = 2 + rand(0, 3);
         state.hero.gold = (state.hero.gold || 0) + monsterGold;
         if (p >= mb.loc.monsters) {
-          // All monsters done — XP z xpReward
           state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward;
           $('resultIcon').textContent = '👹';
           $('resultTitle').textContent = `Všech ${mb.loc.monsters} nestvůr poraženo!`;
           $('resultMsg').textContent = `Teď na tebe čeká ${mb.loc.boss.name}!`;
           $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">👹 Jdi na bosse!</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
         } else {
-          // XP se přidává až po dokončení lokace, zatím jen zobrazení
           $('resultIcon').textContent = '✅';
           $('resultTitle').textContent = 'Nestvůra poražena!';
           $('resultMsg').textContent = `Postup: ${p}/${mb.loc.monsters} (+💰${monsterGold})`;
           $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🚀 Další</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
         }
       } else {
-        // Boss defeated — XP z bossXp
+        // Boss defeated
         state.bossesDefeated[locId] = true;
         state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp;
-        // Level up check (level*100 XP pro level N, zvyšuje se s každým levelem)
         const xpNeeded = state.hero.level * 100;
         if (state.hero.xp >= xpNeeded) {
           state.hero.xp = 0;
           state.hero.level++;
-          state.hero.maxHp = 100 + Math.floor(state.hero.level * 10);
-          state.hero.baseDmg = 10 + Math.floor(state.hero.level * 3);
+          state.hero.maxHp = getHeroMaxHp();
+          state.hero.baseDmg = getHeroDmg();
           sfxLevelUp();
           showScreen('hero');
         }
@@ -892,7 +890,6 @@
         if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
         if (r.weapon && state.hero.equip.weapon === 'fists') state.hero.equip.weapon = r.weapon;
         if (r.armor && state.hero.equip.armor === 'rags') state.hero.equip.armor = r.armor;
-
         sfxBossDefeat();
         $('resultIcon').textContent = '🏆';
         $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
@@ -901,13 +898,11 @@
         if (r.armor) msg += ` + ${r.armor}`;
         $('resultMsg').textContent = `Získal jsi ${msg}`;
         $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
-
         if (locId + 1 < LOCATIONS.length) {
           $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další lokace</button>`;
         }
       }
       saveGame();
-      // achievementy odstraněny - hráč nezískává achievementy po první příšerě
     }
     showScreen('result');
   }
