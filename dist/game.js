@@ -87,13 +87,9 @@
 
   // ===== SPELLS =====
   const SKILLS = [
-    { id:'fireball', name:'Fireball', icon:'🔥', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*2+3} dmg + ${t} DoT`, baseCd:6, cdR:0.3, minLevel:1 },
-    { id:'shield', name:'Štít', icon:'🛡️', dungeon:'color', dungeonName:'🏜️ Pouštní nekropole', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*10+10}% blok`, baseCd:9, cdR:0.3, minLevel:3 },
-    { id:'heal', name:'Léčení', icon:'💚', dungeon:'grid', dungeonName:'⏳ Zřícenina času', maxLv:10, desc:t=>t===0?'Zamčeno':`+${t+2} HP`, baseCd:12, cdR:0.5, minLevel:5 },
-    { id:'crit', name:'Kritik', icon:'🗡️', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*5+5}% crit`, baseCd:0, cdR:0, minLevel:2 },
-    { id:'clone', name:'Klon', icon:'🌀', dungeon:'color', dungeonName:'🏜️ Pouštní nekropole', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*8+10}% klon`, baseCd:14, cdR:0.5, minLevel:4 },
-    { id:'freeze', name:'Mráz', icon:'❄️', dungeon:'grid', dungeonName:'⏳ Zřícenina času', maxLv:10, desc:t=>t===0?'Zamčeno':`${t+1}k zpomalení`, baseCd:10, cdR:0.4, minLevel:6 },
-    { id:'shadow', name:'Stín', icon:'🌑', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:10, desc:t=>t===0?'Zamčeno':`${t*4+5} dmg`, baseCd:10, cdR:0.4, minLevel:8 },
+    { id:'fireball', name:'Fireball', icon:'🔥', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:5, desc:t=>t===0?'Zamčeno':`${25+t*25} dmg`, baseCd:1, cdR:0, minLevel:1 },
+    { id:'heal', name:'Léčení', icon:'💚', dungeon:'grid', dungeonName:'🏜️ Pouštní brána', maxLv:5, desc:t=>t===0?'Zamčeno':`+${10+t*15} HP`, baseCd:1, cdR:0, minLevel:1 },
+    { id:'freeze', name:'Mráz', icon:'❄️', dungeon:'color', dungeonName:'⏳ Časová zřícenina', maxLv:5, desc:t=>t===0?'Zamčeno':`${4+t} s zpomalení`, baseCd:1, cdR:0, minLevel:1 },
   ];
   const SKILL_MAP = {}; SKILLS.forEach(s => SKILL_MAP[s.id] = s);
   function skillXpToLevel(lv) { return 3 + lv * 2; }
@@ -113,13 +109,13 @@
   // ===== LOCATIONS (MAP) =====
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const LOCATIONS = [
-    { id:0, name:'🌲 Stínový les', icon:'🌲', monsters:5, xpReward:100, bossXp:200, boss:{name:'Stínový pán',face:'👹',hp:10}, skill:'fireball', minSkill:0, reward:{gold:5,weapon:'dagger'} },
-    { id:1, name:'🏜️ Pouštní brána', icon:'🏜️', monsters:7, xpReward:140, bossXp:240, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, skill:'shield', minSkill:0, reward:{gold:12} },
-    { id:2, name:'⏳ Časová zřícenina', icon:'⌛', monsters:8, xpReward:180, bossXp:300, boss:{name:'Architekt času',face:'⌛',hp:16}, skill:'heal', minSkill:3, reward:{gold:15,weapon:'sword'} },
-    { id:3, name:'🎯 Temná aréna', icon:'🎯', monsters:9, xpReward:250, bossXp:400, boss:{name:'Mistr terčů',face:'🎯',hp:18}, skill:'crit', minSkill:4, reward:{gold:20} },
-    { id:4, name:'🔊 Jeskyně ozvěn', icon:'🔊', monsters:10, xpReward:300, bossXp:500, boss:{name:'Šepotající hlas',face:'🔊',hp:20}, skill:'clone', minSkill:5, reward:{gold:25,armor:'chainmail'} },
-    { id:5, name:'🧩 Labyrint zákonů', icon:'🧩', monsters:11, xpReward:350, bossXp:600, boss:{name:'Architekt zákonů',face:'🧩',hp:22}, skill:'freeze', minSkill:6, reward:{gold:30} },
-    { id:6, name:'🔄 Zrcadlový sál', icon:'🔄', monsters:12, xpReward:400, bossXp:800, boss:{name:'Zrcadlový král',face:'🔄',hp:25}, skill:'shadow', minSkill:7, reward:{gold:40,weapon:'flameSword',armor:'plate'} },
+    { id:0, name:'🌲 Stínový les', icon:'🌲', monsters:5, xpReward:100, bossXp:200, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
+    { id:1, name:'🏜️ Pouštní brána', icon:'🏜️', monsters:7, xpReward:140, bossXp:240, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
+    { id:2, name:'⏳ Časová zřícenina', icon:'⌛', monsters:8, xpReward:180, bossXp:300, boss:{name:'Architekt času',face:'⌛',hp:16}, reward:{gold:15,weapon:'sword'} },
+    { id:3, name:'🎯 Temná aréna', icon:'🎯', monsters:9, xpReward:250, bossXp:400, boss:{name:'Mistr terčů',face:'🎯',hp:18}, reward:{gold:20} },
+    { id:4, name:'🔊 Jeskyně ozvěn', icon:'🔊', monsters:10, xpReward:300, bossXp:500, boss:{name:'Šepotající hlas',face:'🔊',hp:20}, reward:{gold:25,armor:'chainmail'} },
+    { id:5, name:'🧩 Labyrint zákonů', icon:'🧩', monsters:11, xpReward:350, bossXp:600, boss:{name:'Architekt zákonů',face:'🧩',hp:22}, reward:{gold:30} },
+    { id:6, name:'🔄 Zrcadlový sál', icon:'🔄', monsters:12, xpReward:400, bossXp:800, boss:{name:'Zrcadlový král',face:'🔄',hp:25}, reward:{gold:40,weapon:'flameSword',armor:'plate'} },
   ];
 
   // ===== STATE =====
@@ -141,13 +137,14 @@
       if (mapBattleState._ringTimer) { clearTimeout(mapBattleState._ringTimer); mapBattleState._ringTimer = null; }
       if (mapBattleState._attackWindowTimer) { clearTimeout(mapBattleState._attackWindowTimer); mapBattleState._attackWindowTimer = null; }
       if (mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
+      if (mapBattleState._freezeTimer) { clearInterval(mapBattleState._freezeTimer); mapBattleState._freezeTimer = null; }
     }
   }
 
   const SAVE_KEY = 'dungeonRecallV6';
   function defaultState() {
     // ITEMS: fists (baseDmg:2), rags (bonusHp:0), dagger (baseDmg:5), sword (baseDmg:8), flameSword (baseDmg:12), chainmail (bonusHp:20), plate (bonusHp:40)
-    const s = { skills:{}, skillXp:{}, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'}}, deaths:0, wins:0,
+    const s = { skills:{}, skillXp:{}, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false], achievements:{} };
     SKILLS.forEach(sk => { s.skills[sk.id]=0; s.skillXp[sk.id]=0; });
     return s;
@@ -194,16 +191,13 @@
       const unlocked = prevDone;
       const completed = state.bossesDefeated[i];
       const progress = state.locationProgress[i] || 0;
-      const sk = SKILL_MAP[loc.skill];
-      const lv = state.skills[loc.skill] || 0;
-      const skillOk = lv >= loc.minSkill;
-      return `<div class="map-location ${completed?'completed':!unlocked||!skillOk?'locked':''}" onclick="${(!unlocked||!skillOk)?'':`game.enterLocation(${i})`}">
+      return `<div class="map-location ${completed?'completed':!unlocked?'locked':''}" onclick="${!unlocked?'':`game.enterLocation(${i})`}">
         <div class="map-loc-icon">${loc.icon}</div>
         <div class="map-loc-info">
           <div class="map-loc-name">${loc.name}</div>
-          <div class="map-loc-sub">${completed?'✅ Dokončeno':progress>0?`🏚️ ${progress}/${loc.monsters} nestvůr`:unlocked?skillOk?`${loc.boss.face} ${loc.boss.name} · ❤️${loc.boss.hp}`:`🔒 ${sk.icon} Lv.${loc.minSkill}`:'🔒 Odemkni předchozí'}</div>
+          <div class="map-loc-sub">${completed?'✅ Dokončeno':progress>0?`🏚️ ${progress}/${loc.monsters} nestvůr`:unlocked?`${loc.boss.face} ${loc.boss.name} · ❤️${loc.boss.hp}`:'🔒 Odemkni předchozí'}</div>
         </div>
-        <div class="map-loc-status">${completed?'✅':!unlocked||!skillOk?'🔒':progress>=loc.monsters?'👹':`${'👾'.repeat(Math.max(0,loc.monsters-progress))}${'✅'.repeat(progress)}`}</div>
+        <div class="map-loc-status">${completed?'✅':!unlocked?'🔒':progress>=loc.monsters?'👹':`${'👾'.repeat(Math.max(0,loc.monsters-progress))}${'✅'.repeat(progress)}`}</div>
       </div>`;
     }).join('');
   }
@@ -213,14 +207,10 @@
     const loc = LOCATIONS[locId];
     if (!loc) return;
     if (state.bossesDefeated[locId]) {
-      // Již dokončeno — umožníme opakování farmení
       cleanupTimers();
       startLocation(locId);
       return;
     }
-    const sk = SKILL_MAP[loc.skill];
-    const lv = state.skills[loc.skill] || 0;
-    if (lv < loc.minSkill) { showMessage(`❌ Potřebuješ ${sk.icon} Lv.${loc.minSkill}`); return; }
     if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
 
     cleanupTimers();
@@ -246,8 +236,9 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      stunned: 0, frozen: 0, dot: 0, shieldActive: null,
+      stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsed: false,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
+      _freezeTimer: null,
       spellCooldowns: {},
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
@@ -295,10 +286,10 @@
     SKILLS.forEach(sk => {
       const lv = state.skills[sk.id]||0;
       if (lv === 0) return;
-      const cd = mb.spellCooldowns[sk.id]||0;
+      const used = mb.spellUsed;
       const btn = document.createElement('div');
-      btn.className = 'mb-spell-btn' + (cd>0?' on-cd':'');
-      btn.innerHTML = `${sk.icon}<span class="mb-spell-cd">${cd>0?cd:'✓'}</span>`;
+      btn.className = 'mb-spell-btn' + (used?' on-cd':'');
+      btn.innerHTML = `${sk.icon}<span class="mb-spell-cd">${used?'✗':'✓'}</span>`;
       btn.addEventListener('click', () => castMapSpell(sk.id));
       container.appendChild(btn);
     });
@@ -433,12 +424,7 @@
 
     // RPG baseDmg: zbran + level bonus (base 10 + level*3, zbraň dodává baseDmg)
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-    mb.baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg;
-
-    SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0 && mb.spellCooldowns[sk.id]>0) mb.spellCooldowns[sk.id]--; });
-
-    if (mb.stunned > 0) { mb.stunned--; setTimeout(() => mapBattleTurn(), 600); return; }
-    if (mb.frozen > 0) mb.frozen--;
+    mb.baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + (state.hero.attrStr||0)*2;
 
     // Generovat sekvenci 5-10 útoků
     const chances = getDungeonAttackChances(mb.locId);
@@ -489,7 +475,8 @@
     mb.isWaitAttack = attack.type === 'wait';
     mb._hitProcessed = false; // reset guard pro aktuální útok
 
-    const windowTime = mb.frozen > 0 ? attack.windowTime * 1.5 : attack.windowTime;
+    const windowTime = attack.windowTime;
+    mb._currentWindowTime = windowTime;
 
     // Reset kolečka
     const circle = resetTimerRing();
@@ -876,9 +863,9 @@
     if (actInfo) actInfo.classList.add('hidden');
     updateActionButtons();
 
-    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg);
-    const critChance = (state.skills.crit||0) * 5 + 5;
-    const critMult = (state.skills.crit||0) * 0.2 + 1;
+    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
+    const critChance = (state.hero.attrDex||0) * 5 + 5;
+    const critMult = 2.0;
     let dmg = baseDmg;
     const isCrit = Math.random() * 100 < critChance;
     if (isCrit) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; playSFX(critSfx); }
@@ -969,24 +956,54 @@
     const sk = SKILL_MAP[spellId];
     const lv = state.skills[spellId]||0;
     if (lv === 0) return;
-    if (mb.spellCooldowns[spellId] > 0) { $('mbHint').textContent = `⏳ ${mb.spellCooldowns[spellId]} kol`; return; }
-    if (spellId === 'crit') { $('mbHint').textContent = '🗡️ Kritik je pasivní!'; return; }
-
-    const cd = Math.max(1, Math.round(sk.baseCd - lv * sk.cdR));
-    mb.spellCooldowns[spellId] = cd;
-
-    if (spellId === 'fireball') { const dmg = lv*2+3; mb.bossHp -= dmg; mb.dot += lv; $('mbHint').textContent = `🔥 Fireball! ${dmg}+${lv}DoT`; }
-    else if (spellId === 'shield') { mb.shieldActive = lv*10+10; $('mbHint').textContent = `🛡️ Štít ${lv*10+10}%`; }
-    else if (spellId === 'heal') { mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + lv + 2); $('mbHint').textContent = `💚 +${lv+2} HP`; }
-    else if (spellId === 'freeze') { mb.frozen += lv+1; $('mbHint').textContent = `❄️ Mráz ${lv+1}k`; }
-    else if (spellId === 'clone') { if (Math.random()*100 < lv*8+10) { $('mbHint').textContent = '🌀 Klon! Útok na klona!'; return; } else { $('mbHint').textContent = '🌀 Klon selhal'; } }
-    else if (spellId === 'shadow') { const dmg = lv*4+5; mb.bossHp -= dmg; $('mbHint').textContent = `🌑 Stín! ${dmg} ignoruje obranu!`; }
-
+    // 1x per dungeon
+    if (mb.spellUsed) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto dungeonu!'; return; }
+    mb.spellUsed = true;
+    // Clean up spell buttons
+    $('mbSpells').innerHTML = '';
+    let effectMsg = '';
+    if (spellId === 'fireball') {
+      const dmg = 25 + lv * 25;
+      mb.bossHp -= dmg;
+      effectMsg = `🔥 Fireball! ${dmg} poškození!`;
+      spawnProjectileEffect(null, false, false);
+    } else if (spellId === 'heal') {
+      const hp = 10 + lv * 15;
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
+      effectMsg = `💚 +${hp} HP!`;
+    } else if (spellId === 'freeze') {
+      const slowDuration = (4 + lv) * 1000; // ms
+      // Zpomalit timer ring na polovinu — restart s 2x delším časem pro aktuální attack
+      effectMsg = `❄️ Mráz! ${4+lv}s zpomalení!`;
+      // Pokud právě běží útok, prodloužíme jeho timer
+      if (mb._sequenceTimer && !mb._hitProcessed) {
+        const circle = document.querySelector('.timer-circle');
+        if (circle) {
+          clearTimeout(mb._sequenceTimer);
+          const remaining = parseFloat(circle.style.strokeDashoffset || '0');
+          const totalDash = 276;
+          const pct = remaining / totalDash;
+          // Restart s dvojnásobným časem ze stejného procenta
+          const origTime = mb._currentWindowTime || 1500;
+          const newTime = origTime * 2;
+          resetTimerRing();
+          startTimerRing(circle, newTime);
+          mb._sequenceTimer = setTimeout(() => {
+            if (!mapBattleState.ended) onMapHit();
+          }, newTime);
+          mb._currentWindowTime = newTime;
+        }
+      }
+      // Po uplynutí freeze doby se timer vrátí — refresh stránky není potřeba, další sekvence normálně
+    }
     sfxSuccess();
-    if (mb.isBoss && mb.bossHp <= 0) { endMapBattle(true); return; }
+    $('mbHint').textContent = effectMsg;
     updateMapBattleUI();
+    // Odstranit spell tlačítka
+    const spellsEl = $('mbSpells');
+    if (spellsEl) spellsEl.innerHTML = '';
+    if (mb.isBoss && mb.bossHp <= 0) { endMapBattle(true); return; }
     if (!mb.isBoss) { endMapBattle(true); return; }
-    setTimeout(() => mapBattleTurn(), 350);
   }
 
   function endMapBattle(won) {
@@ -1016,13 +1033,14 @@
       state.hero.hp = mb.playerHp;
 
       if (!mb.isBoss) {
-        // Monster killed, advance progress
+        // Monster killed, advance progress — vždy dostane XP
         const p = (state.locationProgress[locId] || 0) + 1;
         state.locationProgress[locId] = p;
         const monsterGold = 2 + rand(0, 3);
         state.hero.gold = (state.hero.gold || 0) + monsterGold;
+        state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward;
+        applyLevelUp();
         if (p >= mb.loc.monsters) {
-          state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward;
           $('resultIcon').textContent = '👹';
           $('resultTitle').textContent = `Všech ${mb.loc.monsters} nestvůr poraženo!`;
           $('resultMsg').textContent = `Teď na tebe čeká ${mb.loc.boss.name}!`;
@@ -1037,15 +1055,7 @@
         // Boss defeated
         state.bossesDefeated[locId] = true;
         state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp;
-        const xpNeeded = state.hero.level * 100;
-        if (state.hero.xp >= xpNeeded) {
-          state.hero.xp = 0;
-          state.hero.level++;
-          state.hero.maxHp = getHeroMaxHp();
-          state.hero.baseDmg = getHeroDmg();
-          sfxLevelUp();
-          showScreen('hero');
-        }
+        applyLevelUp();
         const r = mb.loc.reward;
         if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
         if (r.weapon && state.hero.equip.weapon === 'fists') state.hero.equip.weapon = r.weapon;
@@ -1075,15 +1085,17 @@
       const lv = state.skills[sk.id]||0, xp = state.skillXp[sk.id]||0, needed = skillXpToLevel(lv);
       const pct = lv >= sk.maxLv ? 100 : Math.min(xp/needed*100,100);
       const maxed = lv >= sk.maxLv;
-      const locked = state.hero.level < sk.minLevel;
+      const heroLv = state.hero.level;
+      const requiredLv = (lv + 1) * 2; // Lv.0→Lv.1=2, Lv.1→Lv.2=4, Lv.2→Lv.3=6...
+      const locked = heroLv < requiredLv;
       return `<div class="dungeon-card ${maxed?'completed':''} ${locked?'locked':''}" onclick="${locked?'':`game.enterTraining('${sk.id}')`}">
         <div class="flex-between">
           <div class="dungeon-name">${sk.icon} ${sk.dungeonName} ${locked?'🔒':'✅'}</div>
           <span class="badge ${sk.dungeon}">${sk.name}</span>
         </div>
-        <div class="dungeon-progress-wrap"><div class="dungeon-progress-bar" style="width:${pct}%;background:${maxed?'#2ecc71':locked?'#555':'#4a7dff'}"></div></div>
+        <div class="dungeon-progress-wrap"><div class="dungeon-progress-bar" style="width:${pct}%;background:${maxed?'#2ecc71':locked?'#555':'#4a7dff'}"}></div></div>
         <div class="flex-between" style="margin-top:4px;font-size:12px;color:#8888aa">
-          <span>${maxed?'MAX':locked?`🔒 Lv.${sk.minLevel}+`:`Lv.${lv} ${xp}/${needed}XP`}</span>
+          <span>${maxed?'MAX':locked?`🔒 Lv.${requiredLv}+`:`Lv.${lv} ${xp}/${needed}XP`}</span>
           <span>${sk.desc(lv)}</span>
         </div>
       </div>`;
@@ -1091,6 +1103,25 @@
   }
 
   // ===== HERO =====
+  function applyLevelUp() {
+    const h = state.hero;
+    let leveled = false;
+    while (true) {
+      const xpNeeded = h.level * 80;
+      if (h.xp < xpNeeded) break;
+      h.xp -= xpNeeded;
+      h.level++;
+      h.maxHp = getHeroMaxHp();
+      h.baseDmg = getHeroDmg();
+      h.hp = h.maxHp; // full heal při levelu
+      h.attrPoints = (h.attrPoints || 0) + 1;
+      leveled = true;
+    }
+    if (leveled) {
+      sfxLevelUp();
+      saveGame();
+    }
+  }
   function getHeroDmg() {
     const h = state.hero;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
@@ -1113,25 +1144,29 @@
     $('heroMaxHp').textContent = h.maxHp;
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
-    const critLv = state.skills.crit||0;
-    const critChance = critLv * 5 + 5;
-    const critMult = critLv * 0.2 + 1;
-    $('heroCrit').textContent = critLv > 0 ? `${critChance}% (×${(critMult).toFixed(1)})` : '—';
-    $('totalSkillLevel').textContent = `${totalLv}/${SKILLS.length*10}`;
+    const critChance = (h.attrDex||0) * 5 + 5;
+    $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% (×2.0)` : `${critChance}% (×2.0)`;
+    $('heroDex').textContent = h.attrDex || 0;
+    $('totalSkillLevel').textContent = `${totalLv}/${SKILLS.length*5}`;
 
     // Atributy
     const strCost = ATTR_COST[Math.min(h.attrStr||0, ATTR_COST.length-1)] || 999;
     const vitCost = ATTR_COST[Math.min(h.attrVit||0, ATTR_COST.length-1)] || 999;
+    const dexCost = ATTR_COST[Math.min(h.attrDex||0, ATTR_COST.length-1)] || 999;
     const pts = h.attrPoints || 0;
     $('heroAttrStr').textContent = (h.attrStr||0) + (h.equip.weapon !== 'fists' ? ` (s ${ITEM_MAP[h.equip.weapon]?.icon||''})` : '');
     $('heroAttrVit').textContent = (h.attrVit||0) + (h.equip.armor !== 'rags' ? ` (s ${ITEM_MAP[h.equip.armor]?.icon||''})` : '');
+    $('heroAttrDex').textContent = (h.attrDex||0);
     $('heroAttrPts').textContent = pts;
     const strBtn = $('heroUpStr');
     const vitBtn = $('heroUpVit');
+    const dexBtn = $('heroUpDex');
     if (strBtn) strBtn.textContent = `⬆️ Síla` + (pts > 0 ? '' : ` 🔒`);
     if (strBtn) strBtn.style.opacity = pts > 0 ? '1' : '0.3';
     if (vitBtn) vitBtn.textContent = `⬆️ Vitalita` + (pts > 0 ? '' : ` 🔒`);
     if (vitBtn) vitBtn.style.opacity = pts > 0 ? '1' : '0.3';
+    if (dexBtn) dexBtn.textContent = `⬆️ Obratnost` + (pts > 0 ? '' : ` 🔒`);
+    if (dexBtn) dexBtn.style.opacity = pts > 0 ? '1' : '0.3';
 
     $('skillGrid').innerHTML = SKILLS.map(sk => {
       const lv = state.skills[sk.id]||0, xp = state.skillXp[sk.id]||0, needed = skillXpToLevel(lv);
@@ -1159,6 +1194,9 @@
       h.attrStr = (h.attrStr||0) + 1;
       h.baseDmg = getHeroDmg();
       showMessage('💪 Síla +1! Poškození zvýšeno!');
+    } else if (attr === 'dex') {
+      h.attrDex = (h.attrDex||0) + 1;
+      showMessage('🎯 Obratnost +1! Kritická šance zvýšena!');
     } else {
       h.attrVit = (h.attrVit||0) + 1;
       h.maxHp = getHeroMaxHp();
@@ -1290,10 +1328,11 @@
   function enterTraining(skillId) {
     const sk = SKILL_MAP[skillId];
     if (!sk) return;
-    if (state.hero.level < sk.minLevel) { showMessage(`🔒 Potřebuješ ${sk.icon} Lv.${sk.minLevel}`); return; }
     const lv = state.skills[skillId] || 0;
+    const requiredLv = (lv + 1) * 2;
+    if (state.hero.level < requiredLv) { showMessage(`🔒 Potřebuješ Lv.${requiredLv}`); return; }
     if (lv >= sk.maxLv) { showMessage('✅ MAX level!'); return; }
-    trainingState = { skillId, skill: sk, level: Math.min(10, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
+    trainingState = { skillId, skill: sk, level: Math.min(5, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
     showScreen('battle');
     switchBGM('battle');
     updateTrainingUI();
