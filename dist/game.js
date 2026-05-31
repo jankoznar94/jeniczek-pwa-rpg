@@ -198,15 +198,19 @@
     if (!loc) return;
     const progress = state.locationProgress[locId] || 0;
     const isBoss = progress >= loc.monsters;
-    // RPG HP system: hráč má pevné maxHp z atributů a itemů
+    // HP per dungeon: první monster resetuje HP, další monstra používají aktuální
+    if (progress === 0) {
+      state.hero.hp = state.hero.maxHp;
+    }
     const playerMaxHp = state.hero.maxHp || 100;
+    const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // Boss HP: monster ~50-100, boss rychleji stoupá (turn*20 + loc.boss.hp)
     const bossBaseHp = isBoss ? (progress >= loc.monsters ? 80 + Math.round(loc.boss.hp * 12) : 40 + progress * 12) : 30 + progress * 8;
 
     mapBattleState = {
       locId, loc, isBoss, progress,
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
-      playerHp: playerMaxHp, maxPlayerHp: playerMaxHp,
+      playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
       stunned: 0, frozen: 0, dot: 0, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
@@ -822,6 +826,8 @@
 
     if (!won) {
       state.deaths = (state.deaths || 0) + 1;
+      state.locationProgress[locId] = 0; // reset dungeon při smrti
+      state.hero.hp = state.hero.maxHp;  // reset HP
       saveGame();
       $('resultIcon').textContent = '💀';
       $('resultTitle').textContent = 'Padl jsi';
@@ -912,6 +918,16 @@
   }
 
   // ===== HERO =====
+  function getHeroDmg() {
+    const h = state.hero;
+    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
+    return Math.max(1, 10 + Math.floor(h.level * 3) + weapon.baseDmg + (h.attrStr || 0) * 2);
+  }
+  function getHeroMaxHp() {
+    const h = state.hero;
+    const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    return Math.max(1, 100 + Math.floor(h.level * 10) + armor.bonusHp + (h.attrVit || 0) * 10);
+  }
   function renderHero() {
     const h = state.hero;
     const totalLv = SKILLS.reduce((s,sk) => s + (state.skills[sk.id]||0), 0);
@@ -1233,6 +1249,7 @@
     document.querySelectorAll('.nav-bar a').forEach(a => {
       a.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation(); // zabránit propagaci na document
         if (a.dataset.screen === 'map') showScreen('map');
         else if (a.dataset.screen === 'tower') showScreen('tower');
         else if (a.dataset.screen === 'hero') showScreen('hero');
@@ -1250,10 +1267,14 @@
       if (!_firstInteraction) return;
       _firstInteraction = false;
       initAudio();
-      try { bgmAudio.play(); } catch(e) {}
+      bgmAudio.play().catch(() => {});
     }
-    document.addEventListener('click', firstUserInteraction, { once: true });
-    document.addEventListener('touchstart', firstUserInteraction, { once: true });
+    // První interakce: klik na tlačítko "🌍 Svět" v nav baru
+    // Pokud uživatel klikne jinde, zachytíme to taky
+    document.addEventListener('click', function handler() {
+      document.removeEventListener('click', handler);
+      if (_firstInteraction) firstUserInteraction();
+    });
     showScreen('map');
   }
 
