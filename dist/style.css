@@ -1,8 +1,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: system-ui, sans-serif;
-  background: #0a0a1a;
-  color: #e0e0e0;
+  background: #121018;
+  color: #ddd;
   min-height: 100vh;
   overflow-x: hidden;
   overscroll-behavior: none;
@@ -13,14 +13,14 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 /* Nav */
 .nav-bar {
   display: flex; gap: 6px; padding: 8px 10px;
-  background: #12122a; border-bottom: 1px solid #2a2a4a; overflow-x: auto;
+  background: #1a141e; border-bottom: 1px solid #2a2040; overflow-x: auto;
 }
 .nav-bar a {
   flex-shrink: 0; text-align: center; padding: 6px 10px; border-radius: 6px;
-  text-decoration: none; color: #8888aa; font-size: 12px;
-  background: #1a1a3a; transition: 0.2s;
+  text-decoration: none; color: #9999aa; font-size: 12px;
+  background: #221c28; transition: 0.2s;
 }
-.nav-bar a:hover, .nav-bar a.active { color: #fff; background: #2a2a5a; }
+.nav-bar a:hover, .nav-bar a.active { color: #e8e0e8; background: #362a40; }
 
 /* Buttons */
 .btn {
@@ -33,7 +33,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Cards */
 .card {
-  background: #12122a; border: 1px solid #2a2a4a;
+  background: #1a141e; border: 1px solid #2a2040;
   border-radius: 10px; padding: 14px; margin: 8px 0;
 }
 .card-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; }
@@ -64,13 +64,13 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Dungeon list */
 .dungeon-card {
-  background: #12122a; border: 1px solid #2a2a4a;
+  background: #1a141e; border: 1px solid #2a2040;
   border-radius: 10px; padding: 12px; margin: 8px 0;
   cursor: pointer; transition: 0.2s;
 }
 .dungeon-card:hover { border-color: #4a7dff; }
 .dungeon-card.locked { opacity: 0.45; cursor: not-allowed; }
-.dungeon-card.locked:hover { border-color: #2a2a4a; }
+.dungeon-card.locked:hover { border-color: #2a2040; }
 .dungeon-card .dungeon-name { font-size: 14px; font-weight: bold; }
 .dungeon-card .dungeon-progress-wrap { width:100%; height:6px; background:#1a1a3a; border-radius:3px; margin-top:6px; overflow:hidden; }
 .dungeon-card .dungeon-progress-bar { height:100%; border-radius:3px; transition:width 0.3s; }
@@ -161,8 +161,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 /* === Boss Fight Arena (shared for map & boss) === */
 .boss-fight-arena {
   position:relative;width:100%;height:calc(100vh - 260px);min-height:280px;max-height:500px;
-  background:#0a0a1a;
-  border:1px solid #2a2a4a;border-radius:10px;overflow:hidden;margin:8px 0;
+  background:#16101a;
+  border:1px solid #3a3a5a;border-radius:10px;overflow:hidden;margin:8px 0;
   touch-action:none;
   transition:box-shadow 0.25s ease-out;
 }
@@ -173,12 +173,13 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 #mbDamageText.damage-text { position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeDown { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
-.boss-attack-arrow { position:absolute;top:50%;left:50%;width:40px;height:40px;transform-origin:center;transform-box:fill-box;transform:translate(-50%,-50%);z-index:10;animation:arrowPulse 0.3s ease-out; fill:currentColor; }
+.boss-attack-arrow { position:absolute;top:50%;left:50%;width:60px;height:60px;transform-origin:center;transform-box:fill-box;transform:translate(-50%,-50%);z-index:10;animation:arrowPulse 0.3s ease-out; fill:currentColor; filter:drop-shadow(0 0 4px currentColor); }
 @keyframes arrowPulse { 0%{opacity:0}100%{opacity:1} }
-.boss-attack-yellow { color:#f1c40f; fill:#f1c40f; }
-.boss-attack-red { color:#e74c3c; fill:#e74c3c; }
-.boss-attack-blue { color:#3498db; fill:#3498db; } /* modrý Lhář */
-.boss-attack-purple { color:#9b59b6; fill:#9b59b6; }
+.boss-attack-yellow { color:#c4a84c; fill:#c4a84c; }
+.boss-attack-red { color:#c86a5a; fill:#c86a5a; }
+.boss-attack-green { color:#5fa87a; fill:#5fa87a; }
+.boss-attack-blue { color:#5a8aaa; fill:#5a8aaa; } /* modrý Lhář */
+.boss-attack-purple { color:#8a6d9b; fill:#8a6d9b; }
 .counter-attack-icon {
   position:absolute;top:50%;left:50%;font-size:64px;transform:translate(-50%,-50%);z-index:15;
   color:#4a7dff;animation:counterPulse 0.5s ease-out infinite;
@@ -194,11 +195,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .timer-circle {
   stroke:#4CAF50;
-  stroke-width:3;
+  stroke-width:6;
   stroke-dasharray:176;
   stroke-dashoffset:176;
   transition:stroke-dashoffset 0.6s linear;
-  filter:drop-shadow(0 0 3px rgba(76,175,80,0.5));
+  filter:drop-shadow(0 0 6px rgba(76,175,80,0.5));
 }
 .boss-action-bar {
   display:flex;gap:12px;justify-content:center;margin:4px 0;z-index:25;
