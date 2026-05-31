@@ -1241,17 +1241,16 @@
         else if (a.dataset.screen === 'medals') showMedals();
         else if (a.dataset.screen === 'reset') resetGame();
         // Inicializovat audio hned při prvním kliku (user gesture)
-        initAudio();
         firstUserInteraction();
       });
     });
-    // Spustit audio při první user interakci (klik kamkoli)
+    // Spustit BGM při první user interakci
     let _firstInteraction = true;
     function firstUserInteraction() {
       if (!_firstInteraction) return;
       _firstInteraction = false;
       initAudio();
-      startBGM();
+      try { bgmAudio.play(); } catch(e) {}
     }
     document.addEventListener('click', firstUserInteraction, { once: true });
     document.addEventListener('touchstart', firstUserInteraction, { once: true });
