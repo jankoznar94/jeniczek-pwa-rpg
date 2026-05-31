@@ -935,6 +935,7 @@
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
     return Math.max(1, 100 + Math.floor(h.level * 10) + armor.bonusHp + (h.attrVit || 0) * 10);
   }
+  const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
     const h = state.hero;
     const totalLv = SKILLS.reduce((s,sk) => s + (state.skills[sk.id]||0), 0);
@@ -1091,6 +1092,7 @@
     saveGame();
     showMessage(`🎽 Oblékl jsi ${item.icon} ${item.name}!`);
     renderInventory();
+    renderHero();
   }
 
   function unequipItem(itemId) {
