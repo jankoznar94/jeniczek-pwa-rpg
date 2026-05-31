@@ -39,22 +39,34 @@
   const sfxBossDefeat=()=>{playTone(523,0.15,'sine',0.14);setTimeout(()=>playTone(659,0.15,'sine',0.14),100);setTimeout(()=>playTone(784,0.15,'sine',0.16),200);setTimeout(()=>playTone(1047,0.3,'sine',0.18),300);};
   const sfxLevelUp=()=>{playTone(392,0.1,'sine',0.12);setTimeout(()=>playTone(523,0.1,'sine',0.12),100);setTimeout(()=>playTone(659,0.12,'sine',0.14),200);setTimeout(()=>playTone(784,0.15,'sine',0.16),300);};
 
-  // ===== BACKGROUND MUSIC (MP3) — dual system =====
+  // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
   bgmAudio.loop = true;
   bgmAudio.volume = 0.25;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.04; // overworld je o ~18 dB hlasitější, tohle to normalizuje
+  overworldAudio.volume = 0.04; // normalizováno oproti Girei
+  const defeatAudio = new Audio('defeat.mp3');
+  defeatAudio.loop = true;
+  defeatAudio.volume = 0.06; // normalizováno oproti Girei
 
-  function switchBGM(toBattle) {
-    // Vždy zastavit oba, spustit jen ten správný — předchází překryvům
+  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | null
+  function switchBGM(mode) {
+    if (mode === currentBGM) return; // už hraje ten správný
+    currentBGM = null;
+    // Zastavit všechny
     if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
     if (!overworldAudio.paused) { overworldAudio.pause(); overworldAudio.currentTime = 0; }
-    if (toBattle) {
+    if (!defeatAudio.paused) { defeatAudio.pause(); defeatAudio.currentTime = 0; }
+    if (mode === 'battle') {
       bgmAudio.play().catch(() => {});
+      currentBGM = 'battle';
+    } else if (mode === 'defeat') {
+      defeatAudio.play().catch(() => {});
+      currentBGM = 'defeat';
     } else {
       overworldAudio.play().catch(() => {});
+      currentBGM = 'overworld';
     }
   }
 
@@ -138,7 +150,7 @@
       if (id === SCREEN_IDS[name]) { el.classList.remove('hidden'); el.classList.add('active'); } else { el.classList.add('hidden'); el.classList.remove('active'); }
     });
     // Přepnout na overworld BGM mimo boj
-    if (name !== 'mapBattle' && name !== 'battle') switchBGM(false);
+    if (name !== 'mapBattle' && name !== 'battle') switchBGM('overworld');
     if (name === 'map') renderMap();
     else if (name === 'tower') renderTower();
     else if (name === 'hero') renderHero();
@@ -228,7 +240,7 @@
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
     showScreen('mapBattle');
-    switchBGM(true);
+    switchBGM('battle');
     document.body.classList.add('battle-active');
     updateMapBattleUI();
     setupMapBattleInput();
@@ -833,6 +845,7 @@
       state.locationProgress[locId] = 0; // reset dungeon při smrti
       state.hero.hp = state.hero.maxHp;  // reset HP
       saveGame();
+      switchBGM('defeat');
       $('resultIcon').textContent = '💀';
       $('resultTitle').textContent = 'Padl jsi';
       $('resultMsg').textContent = `Lokace ${mb.loc.name}`;
@@ -1122,7 +1135,7 @@
     if (lv >= sk.maxLv) { showMessage('✅ MAX level!'); return; }
     trainingState = { skillId, skill: sk, level: Math.min(10, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
     showScreen('battle');
-    switchBGM(true);
+    switchBGM('battle');
     updateTrainingUI();
     startTrainingRound();
   }
