@@ -190,14 +190,14 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   color:#ddd;text-shadow:0 0 8px rgba(255,255,255,0.3);pointer-events:none;
 }
 .attack-timer-ring {
-  position:absolute;top:50%;left:50%;width:84px;height:84px;
+  position:absolute;top:50%;left:50%;width:96px;height:96px;
   transform:translate(-50%,-50%);z-index:5;
 }
 .timer-circle {
   stroke:#888;
   stroke-width:6;
-  stroke-dasharray:239;
-  stroke-dashoffset:239;
+  stroke-dasharray:276;
+  stroke-dashoffset:276;
   transition:stroke-dashoffset 0.6s linear;
 }
 .boss-action-bar {
