@@ -44,13 +44,6 @@
   bgmAudio.loop = true;
   bgmAudio.volume = 0.25;
 
-  // Ošetření ticha na konci MP3 — přeskočíme poslední 0.3s aby loop navazoval plynule
-  bgmAudio.addEventListener('timeupdate', () => {
-    if (bgmAudio.duration && bgmAudio.currentTime >= bgmAudio.duration - 0.3) {
-      bgmAudio.currentTime = 0;
-    }
-  });
-
   function startBGM() {
     if (!bgmAudio.paused) return;
     try { bgmAudio.play(); } catch(e) {}
