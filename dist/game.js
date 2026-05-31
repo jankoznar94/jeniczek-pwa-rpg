@@ -38,6 +38,11 @@
   const sfxEnemyDefeat=()=>{playTone(440,0.08,'square',0.1);setTimeout(()=>playTone(330,0.08,'square',0.1),80);setTimeout(()=>playTone(220,0.15,'square',0.08),160);};
   const sfxBossDefeat=()=>{playTone(523,0.15,'sine',0.14);setTimeout(()=>playTone(659,0.15,'sine',0.14),100);setTimeout(()=>playTone(784,0.15,'sine',0.16),200);setTimeout(()=>playTone(1047,0.3,'sine',0.18),300);};
   const sfxLevelUp=()=>{playTone(392,0.1,'sine',0.12);setTimeout(()=>playTone(523,0.1,'sine',0.12),100);setTimeout(()=>playTone(659,0.12,'sine',0.14),200);setTimeout(()=>playTone(784,0.15,'sine',0.16),300);};
+  // MP3 SFX
+  const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 0.4; return a; })();
+  const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 0.4; return a; })();
+  const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 0.4; return a; })();
+  function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -766,7 +771,7 @@
     }
 
     if (correct) {
-      sfxHit();
+      playSFX(dodgeSfx);
       $('mbHint').textContent = `✅ ${getAttackHint(attack).split('—')[0]} — OK!`;
       advanceSequence();
     } else {
@@ -793,7 +798,7 @@
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
     mb._sequenceTimer = null;
-    sfxHit();
+    playSFX(blockSfx);
     $('mbHint').textContent = '🛡️ Štít zablokoval útok!';
     advanceSequence();
   }
@@ -827,7 +832,7 @@
     else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; }
 
     mb.bossHp -= dmg;
-    sfxHit();
+    playSFX(hitSfx);
     // Zelený projektil od středu k bossovi
     spawnProjectileEffect(null, false);
 
@@ -873,7 +878,7 @@
       mb.shieldActive = null;
     }
     mb.playerHp -= amount;
-    sfxPlayerHit();
+    playSFX(hitSfx);
     // Červený projektil od středu k hráči
     spawnProjectileEffect(null, true);
 
