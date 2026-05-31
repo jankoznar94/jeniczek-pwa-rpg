@@ -51,12 +51,15 @@
   bgmAudio.volume = 0.25;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.06; // normalizováno oproti Girei
+  overworldAudio.volume = 0.10;
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
-  defeatAudio.volume = 0.06; // normalizováno oproti Girei
+  defeatAudio.volume = 0.06;
+  const winAudio = new Audio('win.mp3');
+  winAudio.loop = true;
+  winAudio.volume = 0.06;
 
-  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | null
+  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | null
   function switchBGM(mode) {
     if (mode === currentBGM) return;
     initAudio();
@@ -66,12 +69,16 @@
     if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
     if (!overworldAudio.paused) { overworldAudio.pause(); overworldAudio.currentTime = 0; }
     if (!defeatAudio.paused) { defeatAudio.pause(); defeatAudio.currentTime = 0; }
+    if (!winAudio.paused) { winAudio.pause(); winAudio.currentTime = 0; }
     if (mode === 'battle') {
       bgmAudio.play().catch(() => {});
       currentBGM = 'battle';
     } else if (mode === 'defeat') {
       defeatAudio.play().catch(() => {});
       currentBGM = 'defeat';
+    } else if (mode === 'win') {
+      winAudio.play().catch(() => {});
+      currentBGM = 'win';
     } else {
       overworldAudio.play().catch(() => {});
       currentBGM = 'overworld';
@@ -1059,6 +1066,7 @@
       saveGame();
     }
     showScreen('result');
+    if (won) switchBGM('win');
   }
 
   // ===== TOWER (training) =====
@@ -1454,6 +1462,7 @@
         if (!bgmAudio.paused) bgmAudio.pause();
         if (!overworldAudio.paused) overworldAudio.pause();
         if (!defeatAudio.paused) defeatAudio.pause();
+        if (!winAudio.paused) winAudio.pause();
         currentBGM = null; // vynutit nové spuštění při návratu
       } else {
         const activeScreen = Object.keys(SCREEN_IDS).find(k => {
@@ -1462,8 +1471,11 @@
         });
         const resultTitle = $('resultTitle')?.textContent || '';
         const isDefeat = activeScreen === 'result' && (resultTitle.includes('Padl') || resultTitle.includes('💀'));
+        const isWin = activeScreen === 'result' && !isDefeat;
         if (isDefeat) {
           switchBGM('defeat');
+        } else if (isWin) {
+          switchBGM('win');
         } else if (activeScreen === 'mapBattle' || activeScreen === 'battle') {
           switchBGM('battle');
         } else {
