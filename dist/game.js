@@ -590,6 +590,12 @@
   function doArenaGlow(dir, correct) {
     const arena = $('mbArena');
     if (!arena) return;
+
+    // Projektil + částice před glow efektem
+    if (correct) {
+      spawnProjectileEffect(arena, dir);
+    }
+
     const color = correct ? 'rgba(46,204,113,' : 'rgba(233,69,96,';
     let shadow = '';
     if (dir === '⬆️') shadow = `inset 0 16px 16px -8px ${color}0.6)`;
@@ -600,7 +606,67 @@
     if (mapBattleState._glowTimer) clearTimeout(mapBattleState._glowTimer);
     mapBattleState._glowTimer = setTimeout(() => {
       arena.style.boxShadow = '';
-    }, 250);
+    }, 300);
+  }
+
+  function spawnProjectileEffect(arena, dir) {
+    // Pozice: od hráče (dole uprostřed) směrem k okraji
+    const arenaRect = arena.getBoundingClientRect();
+    const startX = arenaRect.width / 2;
+    const startY = arenaRect.height - 80; // nad panáčkem
+    let endX = startX, endY = startY;
+
+    const offset = arenaRect.width * 0.45;
+    if (dir === '⬆️') { endX = startX; endY = -20; }
+    else if (dir === '⬇️') { endX = startX; endY = arenaRect.height + 20; }
+    else if (dir === '⬅️') { endX = -20; endY = startY; }
+    else if (dir === '➡️') { endX = arenaRect.width + 20; endY = startY; }
+
+    // Projektil — zelená koule
+    const proj = document.createElement('div');
+    proj.style.cssText = `position:absolute;width:18px;height:18px;border-radius:50%;background:radial-gradient(circle,#8fde7a,#2ecc71);box-shadow:0 0 12px rgba(46,204,113,0.8),0 0 24px rgba(46,204,113,0.4);z-index:20;pointer-events:none;`;
+    proj.style.left = (startX - 9) + 'px';
+    proj.style.top = (startY - 9) + 'px';
+    arena.appendChild(proj);
+
+    // Animace projektilu — přes transition
+    requestAnimationFrame(() => {
+      proj.style.transition = `left 0.2s ease-out, top 0.2s ease-out`;
+      proj.style.left = (endX - 9) + 'px';
+      proj.style.top = (endY - 9) + 'px';
+    });
+
+    // Po dopadu: částice + smazat projektil
+    setTimeout(() => {
+      if (proj.parentNode) proj.remove();
+
+      // 6 částic
+      const centerX = Math.min(Math.max(endX, 0), arenaRect.width);
+      const centerY = Math.min(Math.max(endY, 0), arenaRect.height);
+      for (let i = 0; i < 6; i++) {
+        const particle = document.createElement('div');
+        const size = 4 + Math.random() * 6;
+        const angle = Math.random() * 2 * Math.PI;
+        const dist = 20 + Math.random() * 40;
+        particle.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${['#2ecc71','#8fde7a','#a8e6a0','#fff'][i%4]};z-index:21;pointer-events:none;opacity:1;`;
+        particle.style.left = (centerX - size/2) + 'px';
+        particle.style.top = (centerY - size/2) + 'px';
+        arena.appendChild(particle);
+
+        const pEndX = centerX + Math.cos(angle) * dist;
+        const pEndY = centerY + Math.sin(angle) * dist;
+        requestAnimationFrame(() => {
+          particle.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
+          particle.style.left = (pEndX - size/2) + 'px';
+          particle.style.top = (pEndY - size/2) + 'px';
+          particle.style.opacity = '0';
+        });
+
+        setTimeout(() => {
+          if (particle.parentNode) particle.remove();
+        }, 350);
+      }
+    }, 220);
   }
 
   function onMapDodge(dir) {
