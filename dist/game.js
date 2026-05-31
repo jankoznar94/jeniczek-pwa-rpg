@@ -462,7 +462,8 @@
     }
     if (mb.inAttackWindow) return;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
-    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    // Boss smrt s odstupem pro animaci (konec tahu v mapBattleTurn)
+    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 400); return; }
 
     const attack = mb.sequence[mb.sequenceIndex];
 
@@ -541,7 +542,8 @@
     mb.sequenceIndex++;
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
-    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
+    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 400); return; }
 
     setTimeout(() => playSequenceAttack(), 300);
   }
@@ -703,7 +705,7 @@
   }
 
   function spawnDodgeEffect(arena, dir) {
-    // Oblak/částice fouknuté od středu arény směrem úhybu — větší
+    // Oblak/částice fouknuté od středu arény směrem úhybu — rychlejší a dál
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
@@ -713,26 +715,26 @@
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
       const size = 10 + Math.random() * 16;
-      const spread = 40 + Math.random() * 60;
+      const spread = 60 + Math.random() * 80;
       let dx = 0, dy = 0;
       if (dir === '⬆️') { dx = (Math.random() - 0.5) * 30; dy = -spread; }
       else if (dir === '⬇️') { dx = (Math.random() - 0.5) * 30; dy = spread; }
       else if (dir === '⬅️') { dx = -spread; dy = (Math.random() - 0.5) * 30; }
       else if (dir === '➡️') { dx = spread; dy = (Math.random() - 0.5) * 30; }
 
-      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(2px);z-index:19;pointer-events:none;opacity:0.4;`;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};filter:blur(2px);z-index:19;pointer-events:none;opacity:0.5;`;
       p.style.left = (cx - size/2) + 'px';
       p.style.top = (cy - size/2) + 'px';
       arena.appendChild(p);
 
       requestAnimationFrame(() => {
-        p.style.transition = `left 0.35s ease-out, top 0.35s ease-out, opacity 0.35s ease-out`;
+        p.style.transition = `left 0.25s ease-out, top 0.25s ease-out, opacity 0.25s ease-out`;
         p.style.left = (cx + dx - size/2) + 'px';
         p.style.top = (cy + dy - size/2) + 'px';
         p.style.opacity = '0';
       });
 
-      setTimeout(() => { if (p.parentNode) p.remove(); }, 400);
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 300);
     }
   }
 
@@ -872,7 +874,11 @@
       setTimeout(() => damageText.classList.add('hidden'), 600);
     }
 
-    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    if (mb.bossHp <= 0) {
+      // Počkat na animaci projektilu a damage textu (500ms)
+      setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 500);
+      return;
+    }
     updateMapBattleUI();
     mb.inAttackWindow = false;
     $('mbActionInfo').classList.add('hidden');
