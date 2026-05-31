@@ -48,12 +48,13 @@
   overworldAudio.volume = 0.04; // overworld je o ~18 dB hlasitější, tohle to normalizuje
 
   function switchBGM(toBattle) {
+    // Vždy zastavit oba, spustit jen ten správný — předchází překryvům
+    if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
+    if (!overworldAudio.paused) { overworldAudio.pause(); overworldAudio.currentTime = 0; }
     if (toBattle) {
-      if (!overworldAudio.paused) { overworldAudio.pause(); overworldAudio.currentTime = 0; }
-      if (bgmAudio.paused) bgmAudio.play().catch(() => {});
+      bgmAudio.play().catch(() => {});
     } else {
-      if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
-      if (overworldAudio.paused) overworldAudio.play().catch(() => {});
+      overworldAudio.play().catch(() => {});
     }
   }
 
@@ -374,12 +375,10 @@
   }
 
   function resetTimerRing() {
-    const ring = $('mbTimerRing');
-    if (!ring) return null;
-    const circle = ring.querySelector('.timer-circle');
+    const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
     circle.style.transition = 'none';
-    circle.style.strokeDashoffset = '176';
+    circle.style.strokeDashoffset = '276';
     return circle;
   }
 
