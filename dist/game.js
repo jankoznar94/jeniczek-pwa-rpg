@@ -46,8 +46,7 @@
 
   function startBGM() {
     if (!bgmAudio.paused) return;
-    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
-    bgmAudio.play().catch(() => {});
+    try { bgmAudio.play(); } catch(e) {}
   }
 
   function stopBGM() {
