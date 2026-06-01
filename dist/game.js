@@ -1146,7 +1146,6 @@
     $('heroGold').textContent = h.gold;
     const critChance = (h.attrDex||0) * 5 + 5;
     $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% (×2.0)` : `${critChance}% (×2.0)`;
-    $('heroDex').textContent = h.attrDex || 0;
     $('totalSkillLevel').textContent = `${totalLv}/${SKILLS.length*5}`;
 
     // Atributy
@@ -1463,6 +1462,7 @@
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
     if (state.hero.attrStr === undefined) state.hero.attrStr = 0;
     if (state.hero.attrVit === undefined) state.hero.attrVit = 0;
+    if (state.hero.attrDex === undefined) state.hero.attrDex = 0;
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
 
     document.querySelectorAll('.nav-bar a').forEach(a => {
