@@ -39,25 +39,25 @@
   const sfxBossDefeat=()=>{playTone(523,0.15,'sine',0.14);setTimeout(()=>playTone(659,0.15,'sine',0.14),100);setTimeout(()=>playTone(784,0.15,'sine',0.16),200);setTimeout(()=>playTone(1047,0.3,'sine',0.18),300);};
   const sfxLevelUp=()=>{playTone(392,0.1,'sine',0.12);setTimeout(()=>playTone(523,0.1,'sine',0.12),100);setTimeout(()=>playTone(659,0.12,'sine',0.14),200);setTimeout(()=>playTone(784,0.15,'sine',0.16),300);};
   // MP3 SFX
-  const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 0.4; return a; })();
-  const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 0.4; return a; })();
-  const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 0.4; return a; })();
-  const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 0.5; return a; })();
+  const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 1.0; return a; })();
+  const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 1.0; return a; })();
+  const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 1.0; return a; })();
+  const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 1.0; return a; })();
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
   bgmAudio.loop = true;
-  bgmAudio.volume = 0.25;
+  bgmAudio.volume = 1.0;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.10;
+  overworldAudio.volume = 1.0;
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
-  defeatAudio.volume = 0.06;
+  defeatAudio.volume = 1.0;
   const winAudio = new Audio('win.mp3');
   winAudio.loop = true;
-  winAudio.volume = 0.06;
+  winAudio.volume = 1.0;
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | null
   function switchBGM(mode) {
@@ -145,7 +145,7 @@
   function defaultState() {
     // ITEMS: fists (baseDmg:2), rags (bonusHp:0), dagger (baseDmg:5), sword (baseDmg:8), flameSword (baseDmg:12), chainmail (bonusHp:20), plate (bonusHp:40)
     const s = { skills:{}, skillXp:{}, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false], achievements:{} };
+      locationProgress:[0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false] };
     SKILLS.forEach(sk => { s.skills[sk.id]=0; s.skillXp[sk.id]=0; });
     return s;
   }
@@ -154,10 +154,10 @@
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', tower:'towerScreen', hero:'heroScreen', battle:'battleScreen', result:'resultScreen', medals:'medalScreen', shop:'shopScreen', inventory:'inventoryScreen' };
+  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', tower:'towerScreen', hero:'heroScreen', battle:'battleScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen' };
   function showScreen(name) {
     cleanupTimers();
-    if (name !== 'medals') { const m = $('medalScreen'); if (m) m.remove(); }
+    
     Object.values(SCREEN_IDS).forEach(id => {
       const el = $(id);
       if (!el) return;
@@ -195,9 +195,9 @@
         <div class="map-loc-icon">${loc.icon}</div>
         <div class="map-loc-info">
           <div class="map-loc-name">${loc.name}</div>
-          <div class="map-loc-sub">${completed?'✅ Dokončeno':progress>0?`🏚️ ${progress}/${loc.monsters} nestvůr`:unlocked?`${loc.boss.face} ${loc.boss.name} · ❤️${loc.boss.hp}`:'🔒 Odemkni předchozí'}</div>
+          <div class="map-loc-sub">${completed?'✅ Dokončeno':progress>0?`👾 ${progress}/${loc.monsters}`:unlocked?loc.name:'🔒 Odemkni předchozí'}</div>
         </div>
-        <div class="map-loc-status">${completed?'✅':!unlocked?'🔒':progress>=loc.monsters?'👹':`${'👾'.repeat(Math.max(0,loc.monsters-progress))}${'✅'.repeat(progress)}`}</div>
+        <div class="map-loc-status">${completed?'✅':!unlocked?'🔒':progress>=loc.monsters?'👹':`${progress>=loc.monsters?'👹':'👾'} ${progress}/${loc.monsters}`}</div>
       </div>`;
     }).join('');
   }
@@ -1430,22 +1430,7 @@
   function colorInput(c){if(!minigameState.active)return;if(c===minigameState.currentColor){minigameState.active=false;minigameState.score++;if(minigameState.projectile){const e=minigameState.projectile;e.style.transition='transform 0.2s, opacity 0.2s';e.style.transform='scale(2.5)';e.style.opacity='0';setTimeout(()=>e.remove(),200);}sfxHit();if(minigameState.score>=15){trainingWin();}else{setTimeout(()=>minigameState.spawn(),200);}}}
   function startGridDefender(){const level=trainingState.level,maxNum=5+level*2,target=rand(3,maxNum),ops=['+','-','×'],options=[],used=new Set();const cop=ops[rand(0,2)];let a,b,ex,res;for(let t=0;t<50;t++){if(cop==='+'){a=rand(1,target-1);b=target-a;ex=`${a}+${b}`;res=a+b;}else if(cop==='-'){a=rand(target+1,target+maxNum);b=a-target;ex=`${a}-${b}`;res=a-b;}else{const f=[];for(let i=1;i<=Math.sqrt(target);i++){if(target%i===0)f.push(i);}if(f.length>1){a=f[rand(1,f.length-1)];b=target/a;ex=`${a}×${b}`;res=a*b;}else{a=rand(1,3);b=target;ex=`${a}×${b}`;res=a*b;}}if(!used.has(ex)&&res===target){used.add(ex);break;}}options.push({value:res,expr:ex,wins:true});const cv=[];for(let d=1;d<=3;d++){if(res-d>=1)cv.push(res-d);if(res+d!==target)cv.push(res+d);}shuffle(cv);for(let i=1;i<3;i++){const fr=cv.length>0?cv.shift():rand(1,maxNum+5);let fe;for(let t=0;t<30;t++){const op=ops[rand(0,2)];let ba,bb,bex,bres;if(op==='+'){ba=rand(1,maxNum);bb=rand(1,maxNum);bex=`${ba}+${bb}`;bres=ba+bb;}else if(op==='-'){ba=rand(1,maxNum*2);bb=rand(1,ba-1);bex=`${ba}-${bb}`;bres=ba-bb;}else{ba=rand(1,5);bb=rand(1,5);bex=`${ba}×${bb}`;bres=ba*bb;}if(!used.has(bex)&&bres===fr){used.add(bex);options.push({value:bres,expr:bex,wins:false});fe=true;break;}}if(!fe){for(let t=0;t<50;t++){const op=ops[rand(0,2)];let ba,bb,bex,bres;if(op==='+'){ba=rand(1,maxNum);bb=rand(1,maxNum);bex=`${ba}+${bb}`;bres=ba+bb;}else if(op==='-'){ba=rand(1,maxNum*2);bb=rand(1,ba-1);bex=`${ba}-${bb}`;bres=ba-bb;}else{ba=rand(1,5);bb=rand(1,5);bex=`${ba}×${bb}`;bres=ba*bb;}if(!used.has(bex)&&Math.abs(bres-fr)<=1){used.add(bex);options.push({value:bres,expr:bex,wins:false});break;}}}}shuffle(options);const td=Math.max(3,6-Math.floor(level/3));minigameState={options,target,active:true,timer:td};$('gridArea').innerHTML=`<div class="grid-info"><span class="grid-time" id="gridTimer">${td}s</span><span class="grid-target">👹 <strong>${target}</strong></span></div><div class="grid-cards">${options.map((o,i)=>`<div class="grid-card" onclick="game.gridPick(${i})"><span class="expr">${o.expr}</span></div>`).join('')}</div>`;const te=$('gridTimer');if(te){minigameState.timerInterval=setInterval(()=>{minigameState.timer--;te.textContent=minigameState.timer+'s';if(minigameState.timer<=0){clearInterval(minigameState.timerInterval);if(minigameState.active){minigameState.active=false;trainingLose();}}},1000);}}
   function gridPick(idx){if(!minigameState.active)return;minigameState.active=false;if(minigameState.timerInterval)clearInterval(minigameState.timerInterval);if(minigameState.options[idx].wins){sfxSuccess();minigameState.rounds=minigameState.rounds||0;minigameState.rounds++;if(minigameState.rounds>=15){trainingWin();}else{setTimeout(startGridDefender,500);}}else{sfxPlayerHit();trainingLose();}}
-  function showAchievementPopup(a){const p=document.createElement('div');p.style.cssText='position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:300;background:#12122a;border:2px solid #f1c40f;border-radius:12px;padding:16px 24px;text-align:center;animation:enemyEnter 0.5s ease-out;max-width:360px;width:90%';p.innerHTML=`<div style="font-size:24px;margin-bottom:4px">🏅</div><div style="font-size:14px;font-weight:bold;color:#f1c40f">${a.name}</div><div style="font-size:11px;color:#8888aa;margin-top:2px">${a.desc}</div>`;document.body.appendChild(p);setTimeout(()=>{p.style.transition='opacity 0.5s';p.style.opacity='0';setTimeout(()=>p.remove(),500);},2500);}
-  // Mock data for achievements (if needed later)
-  const ACHIEVEMENTS = [];
-  function showMedals(){
-    // Odstranit starou medalScreen, aby se nehromadily
-    const old = $('medalScreen');
-    if (old) old.remove();
-    let h='<div class="card"><div class="card-title">🏅 Úspěchy</div></div>';
-    if (ACHIEVEMENTS.length === 0) {
-      h += '<div class="card" style="opacity:0.5"><div class="flex-between"><div><div style="font-size:14px;font-weight:bold">🔒 Žádné úspěchy</div><div style="font-size:11px;color:#8888aa">Zde budou přidány později</div></div></div></div>';
-    } else {
-      ACHIEVEMENTS.forEach(a=>{const e=state.achievements&&state.achievements[a.id];h+=`<div class="card" style="${e?'border-color:#2ecc71':'opacity:0.5'}"><div class="flex-between"><div><div style="font-size:14px;font-weight:bold">${e?a.name:'🔒 '+a.name}</div><div style="font-size:11px;color:#8888aa">${a.desc}</div></div><div style="font-size:20px">${e?'✅':'⏳'}</div></div></div>`;});
-    }
-    h+='<button class="btn btn-secondary" onclick="game.showScreen(\'map\')">🌍 Zpět</button>';
-    const c=document.createElement('div');c.className='container';c.id='medalScreen';c.innerHTML=h;document.body.appendChild(c);showScreen('medals');
-  }
+  
 
   // ===== COUNTDOWN =====
   function showCountdown(s,cb){cleanupTimers();let r=s;const el=$('countdownOverlay'),ne=$('countdownNumber');el.classList.remove('hidden');ne.textContent=r;playTone(440+r*60,0.15,'sine',0.1);minigameState.countdownInterval=setInterval(()=>{r--;if(r<=0){clearInterval(minigameState.countdownInterval);minigameState.countdownInterval=null;el.classList.add('hidden');if(cb)cb();}else{ne.textContent=r;playTone(440+r*60,0.15,'sine',0.1);}},1000);}
@@ -1454,7 +1439,7 @@
   function init() {
     state = loadSave();
     SKILLS.forEach(sk => { if (state.skills[sk.id] === undefined) state.skills[sk.id] = 0; if (state.skillXp[sk.id] === undefined) state.skillXp[sk.id] = 0; });
-    if (!state.achievements) state.achievements = {};
+
     if (!state.bossesDefeated || state.bossesDefeated.length < 7) state.bossesDefeated = [false,false,false,false,false,false,false];
     if (!state.locationProgress || state.locationProgress.length < 7) state.locationProgress = [0,0,0,0,0,0,0];
     if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:'rags'}, attrStr:0, attrVit:0, attrPoints:0 };
@@ -1474,8 +1459,6 @@
         else if (a.dataset.screen === 'hero') showScreen('hero');
         else if (a.dataset.screen === 'shop') showScreen('shop');
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
-        else if (a.dataset.screen === 'medals') showMedals();
-        else if (a.dataset.screen === 'reset') resetGame();
         // Inicializovat audio hned při prvním kliku (user gesture)
         firstUserInteraction();
       });
