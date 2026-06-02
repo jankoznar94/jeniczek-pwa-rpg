@@ -440,6 +440,7 @@
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
     mb.turn++;
+    mb._attackProcessed = false; // reset guard pro nové kolo
     updateMapBattleUI();
 
     // RPG baseDmg: zbran + level bonus (base 10 + level*3, zbraň dodává baseDmg)
@@ -865,6 +866,7 @@
   function onMapAttack() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    if (mb._attackProcessed) return; // zabránění dvojitému útoku
     if (!mb.inAttackWindow) {
       if (mb.sequence && mb.sequenceIndex < mb.sequence.length) {
         $('mbHint').textContent = '⚠️ Nejdřív přežij sekvenci útoků!';
@@ -882,6 +884,7 @@
     const actInfo = $('mbActionInfo');
     if (actInfo) actInfo.classList.add('hidden');
     updateActionButtons();
+    mb._attackProcessed = true; // označit útok jako provedený
 
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
     const critChance = (state.hero.attrDex||0) * 5 + 5;

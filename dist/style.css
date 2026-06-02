@@ -202,7 +202,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   transition:stroke-dashoffset 0.6s linear;
 }
 .arena-attack-btn {
-  position:absolute;bottom:20px;left:20px;z-index:25;
+  position:absolute;bottom:20px;right:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   border:3px solid #2a2a4a;background:#1a1a3a;transition:0.15s;opacity:0.3;
@@ -210,7 +210,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .arena-attack-btn.active { opacity:1; border-color:#f1c40f; background:#1a1a2a; box-shadow:0 0 10px rgba(241,196,15,0.3); }
 .arena-attack-btn:not(.active) { pointer-events:none; }
 .arena-block-btn {
-  position:absolute;bottom:20px;right:20px;z-index:25;
+  position:absolute;bottom:20px;left:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   border:3px solid #2a2a4a;background:#1a1a3a;transition:0.15s;opacity:0.3;
