@@ -1099,7 +1099,7 @@
       const locked = heroLv < requiredLv;
       return `<div class="dungeon-card ${maxed?'completed':''} ${locked?'locked':''}" onclick="${locked?'':`game.enterTraining('${sk.id}')`}">
         <div class="flex-between">
-          <div class="dungeon-name">${sk.icon} ${locked?'🔒':maxed?'✅':''}</div>
+          <div class="dungeon-name">${locked?'🔒':maxed?'✅':''}</div>
           <span class="badge ${sk.dungeon}">${sk.name}</span>
         </div>
         <div class="dungeon-progress-wrap"><div class="dungeon-progress-bar" style="width:${pct}%;background:${maxed?'#2ecc71':locked?'#555':'#4a7dff'}"}></div></div>
