@@ -60,6 +60,16 @@
   winAudio.volume = 1.0;
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | null
+  let musicMuted = false;
+  function toggleMusic() {
+    musicMuted = !musicMuted;
+    const vol = musicMuted ? 0 : 1.0;
+    bgmAudio.volume = vol;
+    overworldAudio.volume = vol;
+    defeatAudio.volume = vol;
+    winAudio.volume = vol;
+    document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
+  }
   function switchBGM(mode) {
     if (mode === currentBGM) return;
     initAudio();
@@ -1462,6 +1472,10 @@
         // Inicializovat audio hned při prvním kliku (user gesture)
         firstUserInteraction();
       });
+    });
+    document.getElementById('musicToggle').addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleMusic();
     });
     // Spustit BGM při první user interakci
     let _firstInteraction = true;
