@@ -83,6 +83,11 @@
     _bgmPending = mode;
     ensureRunning().then(() => {
       if (_bgmPending !== mode) return; // mezitím se změnilo
+      // Pro jistotu znovu zastavit — zabrání překryvu
+      bgmAudio.pause(); bgmAudio.currentTime = 0;
+      overworldAudio.pause(); overworldAudio.currentTime = 0;
+      defeatAudio.pause(); defeatAudio.currentTime = 0;
+      winAudio.pause(); winAudio.currentTime = 0;
       if (mode === 'battle') {
         bgmAudio.play().catch(() => {});
         currentBGM = 'battle';
@@ -1544,7 +1549,7 @@
       if (!_firstInteraction) return;
       _firstInteraction = false;
       initAudio();
-      overworldAudio.play().catch(() => {});
+      ensureRunning(); // jen probudit AudioContext, nehrát
     }
     // První interakce: klik na tlačítko "🌍 Svět" v nav baru
     // Pokud uživatel klikne jinde, zachytíme to taky
