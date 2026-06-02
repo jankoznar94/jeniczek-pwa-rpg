@@ -245,7 +245,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 /* Map */
 .map-scroll { display:flex;flex-direction:column;gap:8px; }
 .map-location {
-  display:flex;align-items:center;gap:10px;padding:12px 14px;
+  display:flex;align-items:center;gap:8px;padding:12px 14px;
   background:#12122a;border:1px solid #2a2a4a;border-radius:10px;
   cursor:pointer;transition:0.2s;
 }
@@ -253,7 +253,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .map-location.completed { border-color:#2ecc71;opacity:0.8; }
 .map-location.locked { opacity:0.4;cursor:not-allowed; }
 .map-location.locked:hover { border-color:#2a2a4a; }
-.map-loc-icon { font-size:28px; }
 .map-loc-info { flex:1; }
 .map-loc-name { font-size:14px;font-weight:bold; }
 .map-loc-sub { font-size:11px;color:#8888aa; }
