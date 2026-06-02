@@ -60,6 +60,7 @@
   winAudio.volume = 0.60;
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | null
+  let _bgmPending = null;
   let musicMuted = false;
   function toggleMusic() {
     musicMuted = !musicMuted;
@@ -72,16 +73,19 @@
   function switchBGM(mode) {
     if (mode === currentBGM) return;
     initAudio();
-    ensureRunning();
-    currentBGM = null;
-    // Zastavit všechny
+    // Zastavit všechny okamžitě
     if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
     if (!overworldAudio.paused) { overworldAudio.pause(); overworldAudio.currentTime = 0; }
     if (!defeatAudio.paused) { defeatAudio.pause(); defeatAudio.currentTime = 0; }
     if (!winAudio.paused) { winAudio.pause(); winAudio.currentTime = 0; }
-    if (mode === 'battle') {
-      bgmAudio.play().catch(() => {});
-      currentBGM = 'battle';
+    currentBGM = null;
+    // Počkat na AudioContext resume až potom přehrát
+    _bgmPending = mode;
+    ensureRunning().then(() => {
+      if (_bgmPending !== mode) return; // mezitím se změnilo
+      if (mode === 'battle') {
+        bgmAudio.play().catch(() => {});
+        currentBGM = 'battle';
     } else if (mode === 'defeat') {
       defeatAudio.play().catch(() => {});
       currentBGM = 'defeat';
@@ -92,6 +96,7 @@
       overworldAudio.play().catch(() => {});
       currentBGM = 'overworld';
     }
+    });
   }
 
   // ===== SPELLS =====
@@ -481,15 +486,16 @@
     if (!total) { el.innerHTML = ''; return; }
     const idx = mb.sequenceIndex;
     const inAtk = mb.inAttackWindow;
+    const allDone = idx >= total; // všech 5 hotovo → rovnou zářit
     let html = '';
     for (let i = 0; i < total; i++) {
       let cls = 'seq-dot';
-      if (inAtk || i < idx) {
+      if (inAtk || allDone || i < idx) {
         cls += ' done';
       }
       html += `<div class="${cls}"></div>`;
     }
-    if (inAtk) {
+    if (inAtk || allDone) {
       el.classList.add('seq-ready');
     } else {
       el.classList.remove('seq-ready');
