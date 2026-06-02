@@ -107,12 +107,24 @@
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊' },
-    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'rag' },
+    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢' },
     { id:'dagger', name:'Dýka', type:'weapon', baseDmg:5, bonusHp:0, cost:15, icon:'🗡️' },
+    { id:'leather', name:'Kožená zbroj', type:'armor', baseDmg:0, bonusHp:10, cost:20, icon:'🧥' },
+    { id:'shortsword', name:'Krátký meč', type:'weapon', baseDmg:7, bonusHp:0, cost:25, icon:'⚔️' },
     { id:'sword', name:'Meč', type:'weapon', baseDmg:8, bonusHp:0, cost:30, icon:'⚔️' },
-    { id:'flameSword', name:'Plamenový meč', type:'weapon', baseDmg:12, bonusHp:0, cost:60, icon:'🔥' },
-    { id:'chainmail', name:'Kroužková pletva', type:'armor', baseDmg:0, bonusHp:20, cost:25, icon:'🛡️' },
-    { id:'plate', name:'Plná zbroj', type:'armor', baseDmg:0, bonusHp:40, cost:50, icon:'🛡️' },
+    { id:'chainmail', name:'Kroužková pletva', type:'armor', baseDmg:0, bonusHp:20, cost:35, icon:'🛡️' },
+    { id:'battleAxe', name:'Válečná sekera', type:'weapon', baseDmg:10, bonusHp:0, cost:45, icon:'🪓' },
+    { id:'spear', name:'Kopí', type:'weapon', baseDmg:12, bonusHp:0, cost:55, icon:'🔱' },
+    { id:'flameSword', name:'Plamenový meč', type:'weapon', baseDmg:14, bonusHp:0, cost:70, icon:'🔥' },
+    { id:'scale', name:'Šupinová zbroj', type:'armor', baseDmg:0, bonusHp:35, cost:60, icon:'🐉' },
+    { id:'plate', name:'Plná zbroj', type:'armor', baseDmg:0, bonusHp:45, cost:80, icon:'🛡️' },
+    { id:'longsword', name:'Dlouhý meč', type:'weapon', baseDmg:16, bonusHp:0, cost:95, icon:'⚔️' },
+    { id:'warHammer', name:'Válečné kladivo', type:'weapon', baseDmg:19, bonusHp:0, cost:120, icon:'🔨' },
+    { id:'fullPlate', name:'Plná plátová zbroj', type:'armor', baseDmg:0, bonusHp:60, cost:110, icon:'🛡️' },
+    { id:'greatAxe', name:'Obouruční sekera', type:'weapon', baseDmg:23, bonusHp:0, cost:150, icon:'🪓' },
+    { id:'dragonScale', name:'Dračí šupiny', type:'armor', baseDmg:0, bonusHp:80, cost:160, icon:'🐲' },
+    { id:'excalibur', name:'Excalibur', type:'weapon', baseDmg:28, bonusHp:20, cost:220, icon:'⚡' },
+    { id:'adamantPlate', name:'Adamantitová zbroj', type:'armor', baseDmg:0, bonusHp:110, cost:250, icon:'💎' },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
 
@@ -436,7 +448,7 @@
 
     // Generovat sekvenci 5-10 útoků
     const chances = getDungeonAttackChances(mb.locId);
-    const seqLen = 5 + rand(0, 5);
+    const seqLen = 5;
     mb.sequence = [];
     for (let i = 0; i < seqLen; i++) {
       mb.sequence.push(generateAttack(chances));

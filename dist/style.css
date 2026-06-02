@@ -201,18 +201,22 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   stroke-dashoffset:276;
   transition:stroke-dashoffset 0.6s linear;
 }
-.boss-action-bar {
-  display:flex;gap:12px;justify-content:center;margin:4px 0;z-index:25;
-}
-.action-btn {
+.arena-attack-btn {
+  position:absolute;bottom:20px;left:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   border:3px solid #2a2a4a;background:#1a1a3a;transition:0.15s;opacity:0.3;
 }
-.action-btn.active { opacity:1; border-color:#4a7dff; background:#1a1a2a; }
-.action-btn.active.attack-btn { border-color:#f1c40f; background:#1a1a2a; box-shadow:0 0 10px rgba(241,196,15,0.3); }
-.action-btn.active.block-btn { border-color:#3498db; background:#1a1a2a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
-.action-btn:not(.active) { pointer-events:none; }
+.arena-attack-btn.active { opacity:1; border-color:#f1c40f; background:#1a1a2a; box-shadow:0 0 10px rgba(241,196,15,0.3); }
+.arena-attack-btn:not(.active) { pointer-events:none; }
+.arena-block-btn {
+  position:absolute;bottom:20px;right:20px;z-index:25;
+  width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border:3px solid #2a2a4a;background:#1a1a3a;transition:0.15s;opacity:0.3;
+}
+.arena-block-btn.active { opacity:1; border-color:#3498db; background:#1a1a2a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
+.arena-block-btn:not(.active) { pointer-events:none; }
 .boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:0;display:none; }
 .boss-touch-hint { text-align:center;font-size:10px;color:#555;margin:2px 0; }
 
