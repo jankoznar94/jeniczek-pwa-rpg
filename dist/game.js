@@ -48,26 +48,25 @@
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
   bgmAudio.loop = true;
-  bgmAudio.volume = 1.0;
+  bgmAudio.volume = 0.50;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 1.0;
+  overworldAudio.volume = 0.75;
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
-  defeatAudio.volume = 1.0;
+  defeatAudio.volume = 0.55;
   const winAudio = new Audio('win.mp3');
   winAudio.loop = true;
-  winAudio.volume = 1.0;
+  winAudio.volume = 0.60;
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | null
   let musicMuted = false;
   function toggleMusic() {
     musicMuted = !musicMuted;
-    const vol = musicMuted ? 0 : 1.0;
-    bgmAudio.volume = vol;
-    overworldAudio.volume = vol;
-    defeatAudio.volume = vol;
-    winAudio.volume = vol;
+    bgmAudio.volume = musicMuted ? 0 : 0.50;
+    overworldAudio.volume = musicMuted ? 0 : 0.75;
+    defeatAudio.volume = musicMuted ? 0 : 0.55;
+    winAudio.volume = musicMuted ? 0 : 0.60;
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
   function switchBGM(mode) {
