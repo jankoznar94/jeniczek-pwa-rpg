@@ -484,20 +484,30 @@
     let html = '';
     for (let i = 0; i < total; i++) {
       let cls = 'seq-dot';
-      if (inAtk) {
-        cls += ' attack';
-      } else if (i < idx) {
+      if (inAtk || i < idx) {
         cls += ' done';
-      } else if (i === idx) {
-        cls += ' current';
       }
       html += `<div class="${cls}"></div>`;
     }
-    // Útočná tečka navíc
-    if (!inAtk && idx === total) {
-      html += `<div class="seq-dot attack"></div>`;
+    if (inAtk) {
+      el.classList.add('seq-ready');
+    } else {
+      el.classList.remove('seq-ready');
     }
     el.innerHTML = html;
+  }
+
+  function flashSeqFail() {
+    const el = $('mbSeqProgress');
+    if (!el) return;
+    const dots = el.querySelectorAll('.seq-dot');
+    dots.forEach(d => d.classList.add('fail'));
+    setTimeout(() => {
+      dots.forEach(d => {
+        d.classList.remove('done');
+        d.classList.remove('fail');
+      });
+    }, 400);
   }
 
   function playSequenceAttack() {
@@ -624,6 +634,7 @@
     mb._attackWindowTimer = setTimeout(() => {
       if (mapBattleState.ended) return;
       $('mbHint').textContent = '⏰ Zmeškal jsi! Další sekvence...';
+      flashSeqFail();
       missedAttackWindow();
     }, atkTime);
   }
@@ -806,6 +817,7 @@
       // Při útočném okně: swipe = promarněná šance
       clearTimeout(mb._attackWindowTimer);
       $('mbHint').textContent = '❌ Zmeškal jsi! Měl jsi udeřit ⚔️';
+      flashSeqFail();
       missedAttackWindow();
       return;
     }
@@ -875,6 +887,7 @@
       // Během útočného okna: blok = promarněná šance
       clearTimeout(mb._attackWindowTimer);
       $('mbHint').textContent = '❌ Zmačkl jsi štít! Měl jsi udeřit ⚔️';
+      flashSeqFail();
       missedAttackWindow();
       return;
     }
@@ -994,6 +1007,7 @@
     if (counterIcon) counterIcon.classList.add('hidden');
 
     $('mbHint').textContent = `💔 Zásah! -${amount}`;
+    flashSeqFail();
     updateMapBattleUI();
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
