@@ -505,6 +505,12 @@
     } else {
       el.classList.remove('seq-ready');
     }
+    // Rozsvítit tlačítko útoku hned s puntíky (ne až po 300ms)
+    const atk = $('mbAttackBtn');
+    if (atk) {
+      if (inAtk || allDone) atk.classList.add('active');
+      else atk.classList.remove('active');
+    }
     el.innerHTML = html;
   }
 
