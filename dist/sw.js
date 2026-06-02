@@ -1,4 +1,4 @@
-const CACHE = 'boss-slayer-v8';
+const CACHE = 'boss-slayer-v9';
 const FILES = ['/', '/index.html', '/style.css', '/game.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/bgm.mp3', '/overworld.mp3', '/defeat.mp3', '/dodge.mp3', '/block.mp3', '/hit.mp3'];
 
 self.addEventListener('install', e => {
