@@ -19,6 +19,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   flex-shrink: 0; text-align: center; padding: 6px 10px; border-radius: 6px;
   text-decoration: none; color: #9999aa; font-size: 12px;
   background: #221c28; transition: 0.2s;
+  display: flex; align-items: center; justify-content: center;
 }
 .nav-bar a:hover, .nav-bar a.active { color: #e8e0e8; background: #362a40; }
 

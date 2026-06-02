@@ -205,9 +205,8 @@
         <div class="map-loc-icon">${loc.icon}</div>
         <div class="map-loc-info">
           <div class="map-loc-name">${loc.name}</div>
-          <div class="map-loc-sub">${completed?'✅ Dokončeno':progress>0?`👾 ${progress}/${loc.monsters}`:unlocked?loc.name:'🔒 Odemkni předchozí'}</div>
+          <div class="map-loc-sub">${completed?'✅':!unlocked?'🔒':progress>=loc.monsters?'👹':`👾 ${progress}/${loc.monsters}`}</div>
         </div>
-        <div class="map-loc-status">${completed?'✅':!unlocked?'🔒':progress>=loc.monsters?'👹':`${progress>=loc.monsters?'👹':'👾'} ${progress}/${loc.monsters}`}</div>
       </div>`;
     }).join('');
   }
@@ -1100,13 +1099,12 @@
       const locked = heroLv < requiredLv;
       return `<div class="dungeon-card ${maxed?'completed':''} ${locked?'locked':''}" onclick="${locked?'':`game.enterTraining('${sk.id}')`}">
         <div class="flex-between">
-          <div class="dungeon-name">${sk.icon} ${sk.dungeonName} ${locked?'🔒':'✅'}</div>
+          <div class="dungeon-name">${sk.icon} ${locked?'🔒':maxed?'✅':''}</div>
           <span class="badge ${sk.dungeon}">${sk.name}</span>
         </div>
         <div class="dungeon-progress-wrap"><div class="dungeon-progress-bar" style="width:${pct}%;background:${maxed?'#2ecc71':locked?'#555':'#4a7dff'}"}></div></div>
-        <div class="flex-between" style="margin-top:4px;font-size:12px;color:#8888aa">
+        <div style="margin-top:4px;font-size:12px;color:#8888aa">
           <span>${maxed?'MAX':locked?`🔒 Lv.${requiredLv}+`:`Lv.${lv} ${xp}/${needed}XP`}</span>
-          <span>${sk.desc(lv)}</span>
         </div>
       </div>`;
     }).join('');

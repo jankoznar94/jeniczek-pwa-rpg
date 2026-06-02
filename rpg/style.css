@@ -17,6 +17,7 @@ body {
   flex: 1; text-align: center; padding: 8px; border-radius: 6px;
   text-decoration: none; color: #8888aa; font-size: 13px;
   background: #1a1a3a; transition: 0.2s;
+  display: flex; align-items: center; justify-content: center;
 }
 .nav-bar a:hover, .nav-bar a.active { color: #fff; background: #2a2a5a; }
 
