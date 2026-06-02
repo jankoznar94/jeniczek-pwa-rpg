@@ -219,7 +219,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .arena-block-btn:not(.active) { pointer-events:none; }
 .boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:0;display:none; }
 .seq-progress {
-  position:absolute;bottom:68px;left:50%;transform:translateX(-50%);
+  position:absolute;bottom:88px;left:50%;transform:translateX(-50%);
   display:flex;gap:6px;justify-content:center;z-index:20;
 }
 .seq-dot {
