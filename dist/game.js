@@ -456,6 +456,7 @@
     mb.sequenceIndex = 0;
     mb.inAttackWindow = false;
     mb.isAttacking = true;
+    renderSeqProgress(mb);
 
     // Reset UI
     const arrow = $('mbArrow');
@@ -471,6 +472,32 @@
 
     // Začít první útok sekvence
     playSequenceAttack();
+  }
+
+  function renderSeqProgress(mb) {
+    const el = $('mbSeqProgress');
+    if (!el) return;
+    const total = mb.sequence.length;
+    if (!total) { el.innerHTML = ''; return; }
+    const idx = mb.sequenceIndex;
+    const inAtk = mb.inAttackWindow;
+    let html = '';
+    for (let i = 0; i < total; i++) {
+      let cls = 'seq-dot';
+      if (inAtk) {
+        cls += ' attack';
+      } else if (i < idx) {
+        cls += ' done';
+      } else if (i === idx) {
+        cls += ' current';
+      }
+      html += `<div class="${cls}"></div>`;
+    }
+    // Útočná tečka navíc
+    if (!inAtk && idx === total) {
+      html += `<div class="seq-dot attack"></div>`;
+    }
+    el.innerHTML = html;
   }
 
   function playSequenceAttack() {
@@ -561,6 +588,7 @@
     resetTimerRing();
 
     mb.sequenceIndex++;
+    renderSeqProgress(mb);
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
     // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
@@ -582,6 +610,8 @@
       actionInfo.classList.remove('hidden');
     }
     updateActionButtons();
+    mb._attackProcessed = false;
+    renderSeqProgress(mb);
 
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
