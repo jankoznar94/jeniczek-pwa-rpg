@@ -1110,14 +1110,32 @@
 
   function endMapBattle(won) {
     if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    const locId = mb.locId;
+
+    // Monster killed - plynulý přechod, žádná výsledková obrazovka
+    if (won && !mb.isBoss) {
+      const p = (state.locationProgress[locId] || 0) + 1;
+      state.locationProgress[locId] = p;
+      const monsterGold = 2 + rand(0, 3);
+      state.hero.gold = (state.hero.gold || 0) + monsterGold;
+      state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward;
+      state.hero.hp = mb.playerHp;
+      state.wins = (state.wins || 0) + 1;
+      applyLevelUp();
+      saveGame();
+
+      $('mbHint').textContent = '✅ Nestvůra poražena!';
+      sfxSuccess();
+      setTimeout(() => continueDungeon(), 600);
+      return;
+    }
+
     mapBattleState.ended = true;
     cleanupTimers();
 
     const arena = $('mbArena');
     if (arena && arena._mbHandlers) { arena._mbHandlers.forEach(h => arena.removeEventListener(h[0], h[1])); arena._mbHandlers = null; }
-
-    const mb = mapBattleState;
-    const locId = mb.locId;
 
     if (!won) {
       state.deaths = (state.deaths || 0) + 1;
@@ -1131,53 +1149,37 @@
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
     } else {
       state.wins = (state.wins || 0) + 1;
-      // Uložit aktuální HP hráče zpět do state (ztráty z boje zůstávají)
       state.hero.hp = mb.playerHp;
-
-      if (!mb.isBoss) {
-        // Monster killed, advance progress — vždy dostane XP
-        const p = (state.locationProgress[locId] || 0) + 1;
-        state.locationProgress[locId] = p;
-        const monsterGold = 2 + rand(0, 3);
-        state.hero.gold = (state.hero.gold || 0) + monsterGold;
-        state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward;
-        applyLevelUp();
-        if (p >= mb.loc.monsters) {
-          $('resultIcon').textContent = '👹';
-          $('resultTitle').textContent = `Všech ${mb.loc.monsters} nestvůr poraženo!`;
-          $('resultMsg').textContent = `Teď na tebe čeká ${mb.loc.boss.name}!`;
-          $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">👹 Jdi na bosse!</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
-        } else {
-          $('resultIcon').textContent = '✅';
-          $('resultTitle').textContent = 'Nestvůra poražena!';
-          $('resultMsg').textContent = `Postup: ${p}/${mb.loc.monsters} (+💰${monsterGold})`;
-          $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🚀 Další</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
-        }
-      } else {
-        // Boss defeated
-        state.bossesDefeated[locId] = true;
-        state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp;
-        applyLevelUp();
-        const r = mb.loc.reward;
-        if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
-        if (r.weapon && state.hero.equip.weapon === 'fists') state.hero.equip.weapon = r.weapon;
-        if (r.armor && state.hero.equip.armor === 'rags') state.hero.equip.armor = r.armor;
-        sfxBossDefeat();
-        $('resultIcon').textContent = '🏆';
-        $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
-        let msg = `${r.gold||0}💰`;
-        if (r.weapon) msg += ` + ${r.weapon}`;
-        if (r.armor) msg += ` + ${r.armor}`;
-        $('resultMsg').textContent = `Získal jsi ${msg}`;
-        $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
-        if (locId + 1 < LOCATIONS.length) {
-          $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další lokace</button>`;
-        }
+      // Boss defeated
+      state.bossesDefeated[locId] = true;
+      state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp;
+      applyLevelUp();
+      const r = mb.loc.reward;
+      if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
+      if (r.weapon && state.hero.equip.weapon === 'fists') state.hero.equip.weapon = r.weapon;
+      if (r.armor && state.hero.equip.armor === 'rags') state.hero.equip.armor = r.armor;
+      sfxBossDefeat();
+      $('resultIcon').textContent = '🏆';
+      $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
+      let msg = `${r.gold||0}💰`;
+      if (r.weapon) msg += ` + ${r.weapon}`;
+      if (r.armor) msg += ` + ${r.armor}`;
+      $('resultMsg').textContent = `Získal jsi ${msg}`;
+      $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
+      if (locId + 1 < LOCATIONS.length) {
+        $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další lokace</button>`;
       }
       saveGame();
     }
     showScreen('result');
     if (won) switchBGM('win');
+  }
+
+  function continueDungeon() {
+    const mb = mapBattleState;
+    if (mb.ended) return;
+    const locId = mb.locId;
+    startLocation(locId);
   }
 
   // ===== TOWER (training) =====
@@ -1316,8 +1318,10 @@
       const canBuy = h.gold >= item.cost && !owned;
       const stats = item.type === 'weapon' ? `⚔️+${item.baseDmg} dmg` : `❤️+${item.bonusHp} HP`;
       return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
-        <div class="shop-item-name"><span style="font-size:28px;margin-right:8px">${item.icon}</span><strong>${item.name}</strong></div>
-        <div class="shop-item-stats">${stats}</div>
+        <div class="shop-item-header">
+          <div class="shop-item-name"><span class="item-icon">${item.icon}</span>${item.name}</div>
+          <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
+        </div>
         <div class="shop-item-actions">
           <span class="price">💰 ${item.cost}</span>
           ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Koupit</button>`}
@@ -1368,8 +1372,10 @@
         const canEquip = !isEquipped;
         const stats = item.type === 'weapon' ? `⚔️+${item.baseDmg} dmg` : `❤️+${item.bonusHp} HP`;
         return `<div class="inv-item" style="opacity:${isEquipped?'0.7':'1'}">
-          <div class="inv-item-name"><span style="font-size:28px;margin-right:8px">${item.icon}</span><strong>${item.name}${isEquipped?' ⭐':''}</strong></div>
-          <div class="inv-item-stats">${stats}${isEquipped?' — ✅ Oblečeno':''}</div>
+          <div class="inv-item-header">
+            <div class="inv-item-name"><span class="item-icon">${item.icon}</span>${item.name}${isEquipped?' ⭐':''}</div>
+            <div class="inv-item-stats"><span class="stat-line">${stats}</span>${isEquipped?'<span class="stat-line" style="color:#2ecc71">✅ Oblečeno</span>':''}</div>
+          </div>
           <div class="inv-item-actions">
             ${canEquip ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.equipItem(${idx})">🎽 Obléci</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.unequipItem('${itemId}')">📦 Sundat</button>`}
             <button class="btn btn-secondary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${itemId}')">💰 Prodat (${Math.round(item.cost*0.5)})</button>

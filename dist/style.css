@@ -258,13 +258,19 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Shop */
 .shop-item { background:#1a1a3a;border:1px solid #2a2a4a;border-radius:8px;padding:14px;margin:8px 0; }
-.shop-item .shop-item-name { font-size:16px; margin-bottom:10px; }
-.shop-item .shop-item-stats { font-size:13px; color:#8888aa; margin-bottom:8px; }
+.shop-item .shop-item-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.shop-item .shop-item-name { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:bold; }
+.shop-item .shop-item-name .item-icon { font-size:28px; flex-shrink:0; }
+.shop-item .shop-item-stats { font-size:13px; color:#8888aa; text-align:right; }
+.shop-item .shop-item-stats .stat-line { display:block; padding:2px 0; }
 .shop-item .shop-item-actions { display:flex; justify-content:space-between; align-items:center; padding-top:6px; border-top:1px solid #2a2a4a; }
 .shop-item .shop-item-actions .price { font-size:15px; font-weight:bold; }
 .inv-item { background:#1a1a3a;border:1px solid #2a2a4a;border-radius:8px;padding:14px;margin:8px 0; }
-.inv-item .inv-item-name { font-size:16px; margin-bottom:10px; }
-.inv-item .inv-item-stats { font-size:13px; color:#8888aa; margin-bottom:8px; }
+.inv-item .inv-item-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.inv-item .inv-item-name { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:bold; }
+.inv-item .inv-item-name .item-icon { font-size:28px; flex-shrink:0; }
+.inv-item .inv-item-stats { font-size:13px; color:#8888aa; text-align:right; }
+.inv-item .inv-item-stats .stat-line { display:block; padding:2px 0; }
 .inv-item .inv-item-actions { display:flex; gap:8px; padding-top:6px; border-top:1px solid #2a2a4a; flex-wrap:wrap; }
 
 /* XP bar pro swipe fight */
