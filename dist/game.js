@@ -752,11 +752,12 @@
     proj.style.top = (cy - half) + 'px';
     arena.appendChild(proj);
 
-    requestAnimationFrame(() => {
-      proj.style.transition = `left 0.2s ease-out, top 0.2s ease-out`;
-      proj.style.left = (endX - half) + 'px';
-      proj.style.top = (endY - half) + 'px';
-    });
+    // Force reflow — prohlížeč si zapamatuje počáteční pozici
+    void proj.offsetHeight;
+
+    proj.style.transition = `left 0.2s ease-out, top 0.2s ease-out`;
+    proj.style.left = (endX - half) + 'px';
+    proj.style.top = (endY - half) + 'px';
 
     // Po dopadu: mlha + částice
     setTimeout(() => {
