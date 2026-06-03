@@ -222,10 +222,19 @@
       const unlocked = prevDone;
       const completed = state.bossesDefeated[i];
       const progress = state.locationProgress[i] || 0;
+      let statusIcon, statusText;
+      if (completed) { statusIcon = '✅'; statusText = 'Hotovo'; }
+      else if (!unlocked) { statusIcon = '🔒'; statusText = 'Zamčeno'; }
+      else if (progress >= loc.monsters) { statusIcon = '👹'; statusText = 'BOSS'; }
+      else { statusIcon = '👾'; statusText = `${progress}/${loc.monsters}`; }
       return `<div class="map-location ${completed?'completed':!unlocked?'locked':''}" onclick="${!unlocked?'':`game.enterLocation(${i})`}">
+        <div class="map-loc-icon">${loc.icon}</div>
         <div class="map-loc-info">
           <div class="map-loc-name">${loc.name}</div>
-          <div class="map-loc-sub">${completed?'✅':!unlocked?'🔒':progress>=loc.monsters?'👹':`👾 ${progress}/${loc.monsters}`}</div>
+        </div>
+        <div class="map-loc-status ${completed?'done':!unlocked?'':'active'}">
+          <span class="map-loc-status-icon">${statusIcon}</span>
+          <span class="map-loc-status-text">${statusText}</span>
         </div>
       </div>`;
     }).join('');
@@ -298,6 +307,16 @@
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
     $('mbEnemyHp').textContent = mb.isBoss ? `❤️ ${mb.bossHp}/${mb.maxBossHp} (${eHpPct}%)` : `👾 ${mb.bossHp}/${mb.maxBossHp}`;
+    // XP Bar
+    const xpWrap = $('mbXpBarWrap');
+    if (xpWrap) {
+      const h = state.hero;
+      const xpNeeded = h.level * 80;
+      const xpPct = Math.min((h.xp / xpNeeded) * 100, 100);
+      $('mbLevelLabel').textContent = `Lv.${h.level}`;
+      $('mbXpBarFill').style.width = xpPct + '%';
+      xpWrap.style.display = 'flex';
+    }
     // Arena HP pod panáčkem
     const arenaHp = $('mbPlayerArenaHp');
     if (arenaHp) {
@@ -390,8 +409,8 @@
   }
 
   function getDungeonAttackChances(locId) {
-    if (locId === 0) return { normal: 70, heavy: 30, block: 0, inverted: 0, wait: 0, liar: 0 };
-    if (locId === 1) return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
+    if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, liar: 0 };
+    if (locId === 1) return { normal: 90, heavy: 0, block: 10, inverted: 0, wait: 0, liar: 0 };
     if (locId === 2) return { normal: 50, heavy: 20, block: 15, inverted: 15, wait: 0, liar: 0 };
     if (locId === 3) return { normal: 40, heavy: 15, block: 15, inverted: 15, wait: 15, liar: 0 };
     if (locId === 4) return { normal: 35, heavy: 10, block: 15, inverted: 15, wait: 25, liar: 0 };
@@ -1297,11 +1316,11 @@
       const canBuy = h.gold >= item.cost && !owned;
       const stats = item.type === 'weapon' ? `⚔️+${item.baseDmg} dmg` : `❤️+${item.bonusHp} HP`;
       return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
-        <div><span style="font-size:24px">${item.icon}</span> <strong>${item.name}</strong></div>
-        <div style="font-size:12px;color:#8888aa">${stats}</div>
-        <div class="flex-between" style="margin-top:4px">
-          <span>💰 ${item.cost}</span>
-          ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:6px 14px;font-size:12px" onclick="game.buyItem('${item.id}')">Koupit</button>` : '<span style="color:#e94560">🔒 Málo💰</span>'}
+        <div class="shop-item-name"><span style="font-size:28px;margin-right:8px">${item.icon}</span><strong>${item.name}</strong></div>
+        <div class="shop-item-stats">${stats}</div>
+        <div class="shop-item-actions">
+          <span class="price">💰 ${item.cost}</span>
+          ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : '<span style="color:#e94560">🔒 Málo💰</span>'}
         </div>
       </div>`;
     }).join('');
@@ -1349,11 +1368,11 @@
         const canEquip = !isEquipped;
         const stats = item.type === 'weapon' ? `⚔️+${item.baseDmg} dmg` : `❤️+${item.bonusHp} HP`;
         return `<div class="inv-item" style="opacity:${isEquipped?'0.7':'1'}">
-          <div><span style="font-size:24px">${item.icon}</span> <strong>${item.name}</strong></div>
-          <div style="font-size:12px;color:#8888aa">${stats}${isEquipped?' — ✅ Oblečeno':''}</div>
-          <div style="margin-top:4px;display:flex;gap:6px">
-            ${canEquip ? `<button class="btn btn-primary" style="width:auto;padding:6px 14px;font-size:12px" onclick="game.equipItem(${idx})">🎽 Obléci</button>` : `<button class="btn btn-primary" style="width:auto;padding:6px 14px;font-size:12px" onclick="game.unequipItem('${itemId}')">📦 Sundat</button>`}
-            <button class="btn btn-secondary" style="width:auto;padding:6px 14px;font-size:12px" onclick="game.sellItem('${itemId}')">💰 Prodat (${Math.round(item.cost*0.5)})</button>
+          <div class="inv-item-name"><span style="font-size:28px;margin-right:8px">${item.icon}</span><strong>${item.name}${isEquipped?' ⭐':''}</strong></div>
+          <div class="inv-item-stats">${stats}${isEquipped?' — ✅ Oblečeno':''}</div>
+          <div class="inv-item-actions">
+            ${canEquip ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.equipItem(${idx})">🎽 Obléci</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.unequipItem('${itemId}')">📦 Sundat</button>`}
+            <button class="btn btn-secondary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${itemId}')">💰 Prodat (${Math.round(item.cost*0.5)})</button>
           </div>
         </div>`;
       }).join('');
@@ -1566,12 +1585,30 @@
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
+        // Pauza BGM
         if (!bgmAudio.paused) bgmAudio.pause();
         if (!overworldAudio.paused) overworldAudio.pause();
         if (!defeatAudio.paused) defeatAudio.pause();
         if (!winAudio.paused) winAudio.pause();
-        currentBGM = null; // vynutit nové spuštění při návratu
+        currentBGM = null;
+        // Pauza herních timerů (swipe fight)
+        const mb = mapBattleState;
+        if (mb && !mb.ended && mb.sequence && mb.sequence.length > 0) {
+          mb._pausedAt = Date.now();
+          mb._pausedInAttackWindow = mb.inAttackWindow;
+          if (mb._sequenceTimer) { clearTimeout(mb._sequenceTimer); mb._sequenceTimer = null; }
+          if (mb._attackWindowTimer) { clearTimeout(mb._attackWindowTimer); mb._attackWindowTimer = null; }
+          if (mb._ringTimer) { clearTimeout(mb._ringTimer); mb._ringTimer = null; }
+        }
+        // Pauza timerů v tréninku
+        const ts = trainingState;
+        if (ts && !ts.ended && ts.round > 0) {
+          ts._pausedAt = Date.now();
+          cleanupTimers();
+        }
       } else {
+        const mb2 = mapBattleState;
+        // Resume BGM
         const activeScreen = Object.keys(SCREEN_IDS).find(k => {
           const el = $(SCREEN_IDS[k]);
           return el && !el.classList.contains('hidden');
@@ -1579,14 +1616,37 @@
         const resultTitle = $('resultTitle')?.textContent || '';
         const isDefeat = activeScreen === 'result' && (resultTitle.includes('Padl') || resultTitle.includes('💀'));
         const isWin = activeScreen === 'result' && !isDefeat;
-        if (isDefeat) {
-          switchBGM('defeat');
-        } else if (isWin) {
-          switchBGM('win');
-        } else if (activeScreen === 'mapBattle' || activeScreen === 'battle') {
-          switchBGM('battle');
-        } else {
-          switchBGM('overworld');
+        if (isDefeat) switchBGM('defeat');
+        else if (isWin) switchBGM('win');
+        else if (activeScreen === 'mapBattle' || activeScreen === 'battle') switchBGM('battle');
+        else switchBGM('overworld');
+        // Resume swipe fight
+        if (mb2 && !mb2.ended && mb2._pausedAt) {
+          const elapsed = Date.now() - mb2._pausedAt;
+          mb2._pausedAt = null;
+          if (mb2._pausedInAttackWindow) {
+            // Byl v útočném okně → zmeškal to
+            mb2._pausedInAttackWindow = false;
+            $('mbHint').textContent = '⏰ Byl jsi pryč!';
+            flashSeqFail();
+            missedAttackWindow();
+          } else if (mb2.sequenceIndex < mb2.sequence.length) {
+            // Byl v sekvenci útoků
+            const winTime = mb2._currentWindowTime || 800;
+            if (elapsed > winTime + 3000) {
+              // Utekl čas → boss zasáhl
+              onMapHit();
+            } else {
+              // Ještě nevypršelo → restartovat aktuální útok
+              playSequenceAttack();
+            }
+          }
+        }
+        // Resume training
+        const ts2 = trainingState;
+        if (ts2 && !ts2.ended && ts2._pausedAt) {
+          ts2._pausedAt = null;
+          startTrainingRound();
         }
       }
     });
