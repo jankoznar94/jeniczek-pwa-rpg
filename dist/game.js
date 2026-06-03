@@ -988,7 +988,7 @@
     spawnProjectileEffect(null, false, isCrit);
     // Probliknutí bosse
     const bossFig = $('mbFigure');
-    if (bossFig) { bossFig.classList.remove('figure-hit'); void bossFig.offsetWidth; bossFig.classList.add('figure-hit'); setTimeout(() => bossFig.classList.remove('figure-hit'), 350); }
+    if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
 
     // Damage text
     const damageText = $('mbDamageText');
@@ -1041,7 +1041,7 @@
     spawnProjectileEffect(null, true);
     // Probliknutí hráče
     const playerFig = $('mbPlayerFigure');
-    if (playerFig) { playerFig.classList.remove('figure-hit'); void playerFig.offsetWidth; playerFig.classList.add('figure-hit'); setTimeout(() => playerFig.classList.remove('figure-hit'), 350); }
+    if (playerFig) { playerFig.style.transition = 'filter 0.15s'; playerFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 100); }
 
     const playerDamageText = $('mbPlayerDamageText');
     if (playerDamageText) {
