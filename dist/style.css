@@ -275,8 +275,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; }
-.mb-xp-bar-bg { flex:1; height:6px; background:#1a1a3a; border-radius:3px; overflow:hidden; }
-.mb-xp-bar-fill { height:100%; border-radius:3px; background:#f1c40f; transition:width 0.3s; }
+.mb-xp-bar-bg { flex:1; height:10px; background:#1a1a3a; border-radius:4px; overflow:hidden; }
+.mb-xp-bar-fill { height:100%; border-radius:4px; background:#f1c40f; transition:width 0.3s; }
 
 /* Map battle spells */
 .mb-spells { position:absolute;bottom:4px;left:50%;transform:translateX(-50%);display:flex;gap:4px;z-index:10; }
