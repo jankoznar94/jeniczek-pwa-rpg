@@ -137,6 +137,9 @@
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
 
+  // ===== MONSTER FACES =====
+  const MONSTER_FACES = ['👾', '👹', '👺', '👻', '👿', '💀', '👽', '🤖', '👾', '🐉', '🦎', '🕷️', '🦂', '🐊', '🦅', '🐺'];
+
   // ===== LOCATIONS (MAP) =====
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const LOCATIONS = [
@@ -277,6 +280,7 @@
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
+      monsterFace: isBoss ? loc.boss.face : MONSTER_FACES[rand(0, MONSTER_FACES.length - 1)],
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
@@ -289,6 +293,13 @@
     document.body.classList.add('battle-active');
     updateMapBattleUI();
     setupMapBattleInput();
+    // Animace příchodu
+    const newFig = $('mbFigure');
+    if (newFig && !mapBattleState.isBoss && mapBattleState.progress > 0) {
+      newFig.classList.remove('enemy-enter', 'enemy-idle', 'boss-idle', 'monster-dying');
+      void newFig.offsetWidth;
+      newFig.classList.add('monster-appear');
+    }
     setTimeout(() => mapBattleTurn(), 400);
   }
 
@@ -322,7 +333,7 @@
       arenaHp.textContent = `❤️ ${mb.playerHp}/${mb.maxPlayerHp}`;
       arenaHp.classList.remove('hidden');
     }
-    const emoji = mb.isBoss ? mb.loc.boss.face : '👾';
+    const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
     fig.textContent = emoji;
     $('mbHint').textContent = mb.isBoss ? `Sekvence útoků — přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Nestvůra ${mb.loc.monsters-mb.progress}/${mb.loc.monsters}`;
@@ -1127,7 +1138,16 @@
 
       $('mbHint').textContent = '✅ Nestvůra poražena!';
       sfxSuccess();
-      setTimeout(() => continueDungeon(), 600);
+      // Animace smrti
+      const fig = $('mbFigure');
+      if (fig) {
+        fig.classList.remove('monster-appear');
+        fig.classList.add('monster-dying');
+      }
+      setTimeout(() => {
+        if (fig) fig.classList.remove('monster-dying');
+        continueDungeon();
+      }, 850);
       return;
     }
 
