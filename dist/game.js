@@ -986,6 +986,9 @@
     mb.bossHp -= dmg;
     // Zelený projektil od středu k bossovi
     spawnProjectileEffect(null, false, isCrit);
+    // Probliknutí bosse
+    const bossFig = $('mbFigure');
+    if (bossFig) { bossFig.classList.remove('figure-hit'); void bossFig.offsetWidth; bossFig.classList.add('figure-hit'); setTimeout(() => bossFig.classList.remove('figure-hit'), 350); }
 
     // Damage text
     const damageText = $('mbDamageText');
@@ -1036,6 +1039,9 @@
     playSFX(hitSfx);
     // Červený projektil od středu k hráči
     spawnProjectileEffect(null, true);
+    // Probliknutí hráče
+    const playerFig = $('mbPlayerFigure');
+    if (playerFig) { playerFig.classList.remove('figure-hit'); void playerFig.offsetWidth; playerFig.classList.add('figure-hit'); setTimeout(() => playerFig.classList.remove('figure-hit'), 350); }
 
     const playerDamageText = $('mbPlayerDamageText');
     if (playerDamageText) {
