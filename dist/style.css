@@ -258,12 +258,12 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Shop */
 .shop-item { background:#1a1a3a;border:1px solid #2a2a4a;border-radius:8px;padding:14px;margin:8px 0; }
-.shop-item .shop-item-name { font-size:16px; margin-bottom:6px; }
+.shop-item .shop-item-name { font-size:16px; margin-bottom:10px; }
 .shop-item .shop-item-stats { font-size:13px; color:#8888aa; margin-bottom:8px; }
 .shop-item .shop-item-actions { display:flex; justify-content:space-between; align-items:center; padding-top:6px; border-top:1px solid #2a2a4a; }
 .shop-item .shop-item-actions .price { font-size:15px; font-weight:bold; }
 .inv-item { background:#1a1a3a;border:1px solid #2a2a4a;border-radius:8px;padding:14px;margin:8px 0; }
-.inv-item .inv-item-name { font-size:16px; margin-bottom:6px; }
+.inv-item .inv-item-name { font-size:16px; margin-bottom:10px; }
 .inv-item .inv-item-stats { font-size:13px; color:#8888aa; margin-bottom:8px; }
 .inv-item .inv-item-actions { display:flex; gap:8px; padding-top:6px; border-top:1px solid #2a2a4a; flex-wrap:wrap; }
 
@@ -295,9 +295,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .map-location.completed { border-color:#2ecc71;opacity:0.8; }
 .map-location.locked { opacity:0.4;cursor:not-allowed; }
 .map-location.locked:hover { border-color:#2a2a4a; }
-.map-loc-icon { font-size:28px; width:40px; text-align:center; flex-shrink:0; }
 .map-loc-info { flex:1; min-width:0; }
-.map-loc-name { font-size:14px;font-weight:bold; }
+.map-loc-name { font-size:15px;font-weight:bold; }
 .map-loc-sub { font-size:11px;color:#8888aa; }
 .map-loc-status {
   display:flex; flex-direction:column; align-items:center; gap:2px;

@@ -228,9 +228,8 @@
       else if (progress >= loc.monsters) { statusIcon = '👹'; statusText = 'BOSS'; }
       else { statusIcon = '👾'; statusText = `${progress}/${loc.monsters}`; }
       return `<div class="map-location ${completed?'completed':!unlocked?'locked':''}" onclick="${!unlocked?'':`game.enterLocation(${i})`}">
-        <div class="map-loc-icon">${loc.icon}</div>
         <div class="map-loc-info">
-          <div class="map-loc-name">${loc.name}</div>
+          <div class="map-loc-name">${loc.icon} ${loc.name}</div>
         </div>
         <div class="map-loc-status ${completed?'done':!unlocked?'':'active'}">
           <span class="map-loc-status-icon">${statusIcon}</span>
