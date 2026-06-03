@@ -1320,7 +1320,7 @@
         <div class="shop-item-stats">${stats}</div>
         <div class="shop-item-actions">
           <span class="price">💰 ${item.cost}</span>
-          ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : '<span style="color:#e94560">🔒 Málo💰</span>'}
+          ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Koupit</button>`}
         </div>
       </div>`;
     }).join('');
