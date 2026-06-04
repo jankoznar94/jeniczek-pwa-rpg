@@ -6,7 +6,7 @@
   const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rand(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 
-  // ===== AUDIO =====
+  // ===== AUDIO (SFX) =====
   let audioCtx = null;
   function initAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -38,6 +38,19 @@
     playTone(440, 0.08, 'square', 0.1);
     setTimeout(() => playTone(330, 0.08, 'square', 0.1), 80);
     setTimeout(() => playTone(220, 0.15, 'square', 0.08), 160);
+  }
+
+  // ===== BGM (minihry) =====
+  const minigameBgm = new Audio('minigame-bgm.mp3');
+  minigameBgm.loop = true;
+  minigameBgm.volume = 0.50;
+  function playMinigameBgm() {
+    minigameBgm.currentTime = 0;
+    minigameBgm.play().catch(() => {});
+  }
+  function stopMinigameBgm() {
+    minigameBgm.pause();
+    minigameBgm.currentTime = 0;
   }
 
   // ===== BOSSES =====
@@ -104,6 +117,7 @@
 
   // ===== BOSS SELECT =====
   function showBossSelect() {
+    stopMinigameBgm();
     const list = $('bossList');
     list.innerHTML = BOSSES.map((b, i) => {
       const completed = state.completed.includes(i);
@@ -153,12 +167,14 @@
     minigameState = {};
     const type = bb.boss.type;
     hideAllMinigames();
+    stopMinigameBgm();
     $('simonArea').classList.add('minigame-hide');
     $('colorClashArea').classList.add('minigame-hide');
     $('gridDefenderArea').classList.add('minigame-hide');
 
     // Odpočet
     showCountdown(2, () => {
+      playMinigameBgm();
       if (type === 'simon') { $('simonArea').classList.remove('minigame-hide'); startSimon(); }
       else if (type === 'color') { $('colorClashArea').classList.remove('minigame-hide'); startColorClash(); }
       else { $('gridDefenderArea').classList.remove('minigame-hide'); startGridDefender(); }
@@ -242,6 +258,7 @@
   // ===== END BATTLE =====
   function endBattle(won) {
     bossBattle.ended = true;
+    stopMinigameBgm();
     if (won) {
       if (!state.completed.includes(bossBattle.bossId)) {
         state.completed.push(bossBattle.bossId);
