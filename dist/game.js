@@ -200,6 +200,20 @@
   function showScreen(name) {
     cleanupTimers();
     
+    // Když opouštíme map battle (bez výsledku), okamžitě ho ukončit
+    if (mapBattleState && !mapBattleState.ended && name !== 'mapBattle' && name !== 'result') {
+      mapBattleState.ended = true;
+      // Odstranit event handlery — touch/click na aréně + keydown na window
+      const arena = $('mbArena');
+      if (arena && arena._mbHandlers) {
+        arena._mbHandlers.forEach(h => {
+          if (h[0] === 'keydown') window.removeEventListener(h[0], h[1]);
+          else arena.removeEventListener(h[0], h[1]);
+        });
+        arena._mbHandlers = null;
+      }
+    }
+    
     Object.values(SCREEN_IDS).forEach(id => {
       const el = $(id);
       if (!el) return;
@@ -1169,7 +1183,13 @@
     cleanupTimers();
 
     const arena = $('mbArena');
-    if (arena && arena._mbHandlers) { arena._mbHandlers.forEach(h => arena.removeEventListener(h[0], h[1])); arena._mbHandlers = null; }
+    if (arena && arena._mbHandlers) {
+      arena._mbHandlers.forEach(h => {
+        if (h[0] === 'keydown') window.removeEventListener(h[0], h[1]);
+        else arena.removeEventListener(h[0], h[1]);
+      });
+      arena._mbHandlers = null;
+    }
 
     if (!won) {
       state.deaths = (state.deaths || 0) + 1;
