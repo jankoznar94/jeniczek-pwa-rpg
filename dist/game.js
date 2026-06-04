@@ -56,10 +56,14 @@
   defeatAudio.loop = true;
   defeatAudio.volume = 0.55;
   const winAudio = new Audio('win.mp3');
-  winAudio.loop = true;
+  winAudio.loop = false;
   winAudio.volume = 0.60;
 
-  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | null
+  const minigameBgm = new Audio('minigame-bgm.mp3');
+  minigameBgm.loop = true;
+  minigameBgm.volume = 0.50;
+
+  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | null
   let _bgmPending = null;
   let musicMuted = false;
   function toggleMusic() {
@@ -78,6 +82,7 @@
     if (!overworldAudio.paused) { overworldAudio.pause(); overworldAudio.currentTime = 0; }
     if (!defeatAudio.paused) { defeatAudio.pause(); defeatAudio.currentTime = 0; }
     if (!winAudio.paused) { winAudio.pause(); winAudio.currentTime = 0; }
+    if (!minigameBgm.paused) { minigameBgm.pause(); minigameBgm.currentTime = 0; }
     currentBGM = null;
     // Počkat na AudioContext resume až potom přehrát
     _bgmPending = mode;
@@ -97,6 +102,9 @@
     } else if (mode === 'win') {
       winAudio.play().catch(() => {});
       currentBGM = 'win';
+    } else if (mode === 'minigame') {
+      minigameBgm.play().catch(() => {});
+      currentBGM = 'minigame';
     } else {
       overworldAudio.play().catch(() => {});
       currentBGM = 'overworld';
@@ -1466,7 +1474,7 @@
     if (lv >= sk.maxLv) { showMessage('✅ MAX level!'); return; }
     trainingState = { skillId, skill: sk, level: Math.min(5, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
     showScreen('battle');
-    switchBGM('battle');
+    switchBGM('minigame');
     updateTrainingUI();
     startTrainingRound();
   }
