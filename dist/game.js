@@ -65,7 +65,7 @@
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
-  bossBgm.volume = 0.50;
+  bossBgm.volume = 0.75;
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
   let _bgmPending = null;
@@ -76,7 +76,7 @@
     overworldAudio.volume = musicMuted ? 0 : 0.75;
     defeatAudio.volume = musicMuted ? 0 : 0.55;
     winAudio.volume = musicMuted ? 0 : 0.60;
-    bossBgm.volume = musicMuted ? 0 : 0.50;
+    bossBgm.volume = musicMuted ? 0 : 0.75;
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
   function switchBGM(mode) {
