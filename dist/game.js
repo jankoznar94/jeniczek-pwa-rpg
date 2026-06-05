@@ -291,7 +291,7 @@
           else if (isBossFloor) { fIcon = '👹'; fText = 'BOSS'; }
           else if (f === curFloor) { fIcon = '👾'; fText = `${loc.monsters - curProgress} zbývá`; }
           else { fIcon = '✅'; fText = ''; }
-          floorHtml += `<div class="map-floor-card ${floorDone?'floor-done':lockedFloor?'floor-locked':'floor-active'}" onclick="${lockedFloor?'':'game.enterLocation('+i+','+f+')'}" event.stopPropagation()>
+          floorHtml += `<div class="map-floor-card ${floorDone?'floor-done':lockedFloor?'floor-locked':'floor-active'}" onclick="${lockedFloor?'':'game.enterLocation('+i+','+f+')'}">
             <span class="floor-card-icon">${fIcon}</span>
             <span class="floor-card-num">${isBossFloor?'BOSS':`P${f+1}`}</span>
             <span class="floor-card-text">${fText}</span>
@@ -299,7 +299,7 @@
         }
       }
       return `<div class="map-location-wrap">
-        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" onclick="${!unlocked?'':`toggleDungeon(${i})`}">
+        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
           </div>
@@ -1802,7 +1802,7 @@
   }
 
   window.game = {
-    showScreen, enterLocation, enterTraining,
+    showScreen, enterLocation, enterTraining, toggleDungeon,
     simonClick, colorInput, gridPick,
     upgradeAttr, buyItem, sellItem, equipItem, unequipItem
   };
