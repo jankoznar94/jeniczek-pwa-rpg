@@ -330,6 +330,27 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 #towerScreen .dungeon-progress-wrap { width:100%;height:6px;background:#1a1a3a;border-radius:3px;margin-top:6px;overflow:hidden; }
 #towerScreen .dungeon-progress-bar { height:100%;border-radius:3px;transition:width 0.3s; }
 
+/* Monster icons row */
+.monster-icons { display:flex; gap:6px; justify-content:center; padding:4px 0; flex-wrap:wrap; }
+.monster-icon { position:relative; display:inline-flex; font-size:22px; padding:2px; }
+.monster-icon-x { position:absolute; top:-4px; right:-4px; font-size:12px; line-height:1; }
+
+/* Dungeon floor sub-cards */
+.map-location-wrap { display:flex;flex-direction:column;gap:4px; }
+.map-location.expanded { border-color:#4a7dff;background:#1a1035; }
+.map-floor-card {
+  display:flex;align-items:center;gap:8px;padding:8px 12px;margin:0 4px;
+  background:#0e0e22;border:1px solid #2a2a4a;border-radius:8px;
+  cursor:pointer;transition:0.15s;
+}
+.map-floor-card:hover { border-color:#4a7dff; background:#12122a; }
+.map-floor-card.floor-done { opacity:0.7;border-color:#2ecc71; }
+.map-floor-card.floor-locked { opacity:0.4;cursor:not-allowed; }
+.map-floor-card.floor-active { border-color:#4a7dff;background:#1a1035; }
+.floor-card-icon { font-size:18px;width:24px;text-align:center; }
+.floor-card-num { font-size:13px;font-weight:bold;flex:1; }
+.floor-card-text { font-size:11px;color:#8888aa; }
+
 /* Countdown */
 .countdown-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:200; }
 .countdown-number { font-size:100px; font-weight:bold; color:#fff; text-shadow:0 0 40px rgba(74,127,255,0.8); animation:countPulse 0.6s ease-in-out infinite alternate; }
