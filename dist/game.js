@@ -67,6 +67,15 @@
   bossBgm.loop = true;
   bossBgm.volume = 0.75;
 
+  // Battle BGM kolekce — 3 stopy, náhodně se střídají po patrech
+  const battleBgmTracks = [
+    new Audio('bgm_1.mp3'),
+    new Audio('bgm_2.mp3'),
+    new Audio('bgm_3.mp3')
+  ];
+  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.50; });
+  let currentBattleIndex = 0; // vybraná stopa pro aktuální patro
+
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
   let _bgmPending = null;
   let musicMuted = false;
@@ -77,10 +86,19 @@
     defeatAudio.volume = musicMuted ? 0 : 0.55;
     winAudio.volume = musicMuted ? 0 : 0.60;
     bossBgm.volume = musicMuted ? 0 : 0.75;
+    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.50; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
+  let _currentBattleBgmIdx = 0;
+  let _forceNewBattleBgm = false;
   function switchBGM(mode) {
-    if (mode === currentBGM) return;
+    // Vynucený nový výběr battle stopy při novém patře
+    if (mode === 'battle' && _forceNewBattleBgm) {
+      _forceNewBattleBgm = false;
+      // Projdeme guardem — vybereme nový index
+    } else if (mode === currentBGM) {
+      return;
+    }
     initAudio();
     // Zastavit všechny okamžitě
     if (!bgmAudio.paused) { bgmAudio.pause(); bgmAudio.currentTime = 0; }
@@ -89,6 +107,7 @@
     if (!winAudio.paused) { winAudio.pause(); winAudio.currentTime = 0; }
     if (!minigameBgm.paused) { minigameBgm.pause(); minigameBgm.currentTime = 0; }
     if (!bossBgm.paused) { bossBgm.pause(); bossBgm.currentTime = 0; }
+    battleBgmTracks.forEach(t => { if (!t.paused) { t.pause(); t.currentTime = 0; } });
     currentBGM = null;
     // Počkat na AudioContext resume až potom přehrát
     _bgmPending = mode;
@@ -100,8 +119,11 @@
       defeatAudio.pause(); defeatAudio.currentTime = 0;
       winAudio.pause(); winAudio.currentTime = 0;
       bossBgm.pause(); bossBgm.currentTime = 0;
+      battleBgmTracks.forEach(t => { t.pause(); t.currentTime = 0; });
       if (mode === 'battle') {
-        bgmAudio.play().catch(() => {});
+        const idx = Math.floor(Math.random() * battleBgmTracks.length);
+        _currentBattleBgmIdx = idx;
+        battleBgmTracks[idx].play().catch(() => {});
         currentBGM = 'battle';
       } else if (mode === 'boss') {
         bossBgm.play().catch(() => {});
@@ -391,6 +413,7 @@
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
     showScreen('mapBattle');
+    if (progress === 0 && !isBoss) _forceNewBattleBgm = true;
     switchBGM(isBoss ? 'boss' : 'battle');
     document.body.classList.add('battle-active');
     updateMapBattleUI();
