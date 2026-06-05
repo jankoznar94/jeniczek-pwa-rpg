@@ -65,7 +65,7 @@
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
-  bossBgm.volume = 1.0;
+  bossBgm.volume = 0.85;
 
   // Battle BGM kolekce — 3 stopy, náhodně se střídají po patrech
   const battleBgmTracks = [
@@ -85,7 +85,7 @@
     overworldAudio.volume = musicMuted ? 0 : 0.75;
     defeatAudio.volume = musicMuted ? 0 : 0.55;
     winAudio.volume = musicMuted ? 0 : 0.60;
-    bossBgm.volume = musicMuted ? 0 : 1.0;
+    bossBgm.volume = musicMuted ? 0 : 0.85;
     battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.50; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
@@ -840,8 +840,8 @@
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
-    // Timer ring — stejně dlouhý jako na úhyby (800-1100ms)
-    const atkTime = 500 + rand(0, 300);
+    // Timer ring — stejně dlouhý jako na úhyby (700-900ms)
+    const atkTime = 700 + rand(0, 200);
     const atkCircle = resetTimerRing();
     startTimerRing(atkCircle, atkTime);
 
