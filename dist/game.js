@@ -63,7 +63,11 @@
   minigameBgm.loop = true;
   minigameBgm.volume = 0.50;
 
-  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | null
+  const bossBgm = new Audio('boss_bgm.mp3');
+  bossBgm.loop = true;
+  bossBgm.volume = 0.50;
+
+  let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
   let _bgmPending = null;
   let musicMuted = false;
   function toggleMusic() {
@@ -72,6 +76,7 @@
     overworldAudio.volume = musicMuted ? 0 : 0.75;
     defeatAudio.volume = musicMuted ? 0 : 0.55;
     winAudio.volume = musicMuted ? 0 : 0.60;
+    bossBgm.volume = musicMuted ? 0 : 0.50;
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
   function switchBGM(mode) {
@@ -83,6 +88,7 @@
     if (!defeatAudio.paused) { defeatAudio.pause(); defeatAudio.currentTime = 0; }
     if (!winAudio.paused) { winAudio.pause(); winAudio.currentTime = 0; }
     if (!minigameBgm.paused) { minigameBgm.pause(); minigameBgm.currentTime = 0; }
+    if (!bossBgm.paused) { bossBgm.pause(); bossBgm.currentTime = 0; }
     currentBGM = null;
     // Počkat na AudioContext resume až potom přehrát
     _bgmPending = mode;
@@ -93,9 +99,13 @@
       overworldAudio.pause(); overworldAudio.currentTime = 0;
       defeatAudio.pause(); defeatAudio.currentTime = 0;
       winAudio.pause(); winAudio.currentTime = 0;
+      bossBgm.pause(); bossBgm.currentTime = 0;
       if (mode === 'battle') {
         bgmAudio.play().catch(() => {});
         currentBGM = 'battle';
+      } else if (mode === 'boss') {
+        bossBgm.play().catch(() => {});
+        currentBGM = 'boss';
     } else if (mode === 'defeat') {
       defeatAudio.play().catch(() => {});
       currentBGM = 'defeat';
@@ -376,7 +386,7 @@
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
     showScreen('mapBattle');
-    switchBGM('battle');
+    switchBGM(isBoss ? 'boss' : 'battle');
     document.body.classList.add('battle-active');
     updateMapBattleUI();
     setupMapBattleInput();
