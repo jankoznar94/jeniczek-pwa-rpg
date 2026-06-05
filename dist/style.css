@@ -394,3 +394,59 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .medal-grid { display:flex; gap:6px; flex-wrap:wrap; }
 .medal-cell { width:48px; height:48px; border-radius:6px; display:flex; flex-direction:column; align-items:center; justify-content:center; font-size:18px; }
 .medal-cell.locked { font-size:14px; }
+
+/* Guide / tutorial */
+#guideScreen .guide-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+}
+.guide-card {
+  background: #1a141e;
+  border: 1px solid #2a2040;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: 0.2s;
+}
+.guide-card:hover {
+  border-color: #4a7dff;
+}
+.guide-card.guide-heavy { border-left: 3px solid #c4a84c; }
+.guide-card.guide-block { border-left: 3px solid #e74c3c; }
+.guide-card.guide-wait { border-left: 3px solid #8a6d9b; }
+.guide-card.guide-inverted { border-left: 3px solid #5fa87a; }
+.guide-card.guide-liar { border-left: 3px solid #c86a5a; }
+.guide-icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.guide-icon-text {
+  font-size: 36px;
+  line-height: 1;
+}
+.guide-name {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+.guide-desc {
+  font-size: 12px;
+  color: #aaaabb;
+  line-height: 1.4;
+}
+.guide-desc strong {
+  color: #e8e0e8;
+}
+.guide-tip {
+  font-size: 12px;
+  color: #8888aa;
+  line-height: 1.5;
+}

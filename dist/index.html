@@ -15,6 +15,7 @@
   <a href="#" data-screen="hero">👤 Hrdina</a>
   <a href="#" data-screen="shop">🏪 Obchod</a>
   <a href="#" data-screen="inventory">🎒 Inventář</a>
+  <a href="#" data-screen="guide">📖 Návod</a>
   <a href="#" id="musicToggle" style="font-size:18px">🔊</a>
 </nav>
 
@@ -170,6 +171,49 @@
     <div id="gridDefenderArea" class="minigame-hide"><div class="card-subtitle text-center mt-10">🧮 Příklad!</div><div class="grid-defender-area" id="gridArea"></div></div>
   </div>
   <div id="countdownOverlay" class="countdown-overlay hidden"><div class="countdown-number" id="countdownNumber">3</div></div>
+</div>
+
+<!-- ===== GUIDE ===== -->
+<div id="guideScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title">📖 Návod hrou</div>
+    <div class="card-subtitle">Každý útok monster se zobrazí šipkou. Podle barvy a vzhledu poznáš, jak na něj!</div>
+  </div>
+  <div class="guide-grid">
+    <div class="guide-card">
+      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#bbb" stroke="#bbb" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+      <div class="guide-name">⬆️ Úhyb</div>
+      <div class="guide-desc">Šedá šipka — <strong>swipni stejným směrem</strong>, kterým ukazuje. Základní pohyb v aréně.</div>
+    </div>
+    <div class="guide-card guide-heavy">
+      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g></svg></div>
+      <div class="guide-name">🟡 Dvojitý úder</div>
+      <div class="guide-desc">Dvě žluté šipky — <strong>swipni 2× stejným směrem</strong> během delšího timeru. První swipe připraví, druhý provede.</div>
+    </div>
+    <div class="guide-card guide-block">
+      <div class="guide-icon guide-icon-text">🛡️</div>
+      <div class="guide-name">🔴 Zákeřný</div>
+      <div class="guide-desc">Místo šipky štít — <strong>nesmíš swipnout</strong>! Místo pohybu stiskni tlačítko 🛡️ (Blok). Swipnutí = zásah.</div>
+    </div>
+    <div class="guide-card guide-wait">
+      <div class="guide-icon guide-icon-text">⏳</div>
+      <div class="guide-name">⏳ Čekání</div>
+      <div class="guide-desc">Místo šipky přesýpací hodiny — <strong>nedělej nic</strong>, počkej až timer vyprší. Pohyb = zásah.</div>
+    </div>
+    <div class="guide-card guide-inverted">
+      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5fa87a" stroke="#5fa87a" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+      <div class="guide-name">🟢 Inverzní</div>
+      <div class="guide-desc">Zelená šipka — <strong>swipni opačným směrem</strong>, než šipka ukazuje. Nahoru = dolů, doleva = doprava.</div>
+    </div>
+    <div class="guide-card guide-liar">
+      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c86a5a" stroke="#c86a5a" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
+      <div class="guide-name">🔴 Lhář</div>
+      <div class="guide-desc">Červená šipka — <strong>nesmíš swipnout do směru šipky</strong>! Uhni jakýmkoli jiným směrem.</div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:8px">
+    <div class="card-subtitle guide-tip">💡 Po odvrácení všech útoků se otevře <strong>útočné okno</strong>. Klikni na ⚔️ nebo stiskni mezerník, než vyprší čas. Útočná tlačítka i blok se odemykají až po dokončení sekvence úhybů.</div>
+  </div>
 </div>
 
 <script src="game.js"></script>

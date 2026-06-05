@@ -257,7 +257,7 @@
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', tower:'towerScreen', hero:'heroScreen', battle:'battleScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen' };
+  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', tower:'towerScreen', hero:'heroScreen', battle:'battleScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen' };
   function showScreen(name) {
     cleanupTimers();
     
@@ -561,8 +561,8 @@
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, liar: 0 };
     if (locId === 1) return { normal: 90, heavy: 0, block: 10, inverted: 0, wait: 0, liar: 0 };
-    // locId 2: heavy (žluté — 2× swipe) od 3. dungeonu
-    if (locId === 2) return { normal: 55, heavy: 25, block: 15, inverted: 0, wait: 5, liar: 0 };
+    // locId 2: heavy (žluté — 2× swipe) od 3. dungeonu, wait až od 4.
+    if (locId === 2) return { normal: 60, heavy: 25, block: 15, inverted: 0, wait: 0, liar: 0 };
     // locId 3: wait (čekání — ⏳) od 4. dungeonu, inverted zatím ne
     if (locId === 3) return { normal: 40, heavy: 15, block: 15, inverted: 0, wait: 30, liar: 0 };
     // locId 4: inverted (zelené) až od 5. dungeonu
@@ -1816,6 +1816,7 @@
         else if (a.dataset.screen === 'hero') showScreen('hero');
         else if (a.dataset.screen === 'shop') showScreen('shop');
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
+        else if (a.dataset.screen === 'guide') showScreen('guide');
         // Inicializovat audio hned při prvním kliku (user gesture)
         firstUserInteraction();
       });
