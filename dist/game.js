@@ -146,18 +146,31 @@
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
 
   // ===== MONSTER FACES =====
-  const MONSTER_FACES = ['👾', '👹', '👺', '👻', '👿', '💀', '👽', '🤖', '👾', '🐉', '🦎', '🕷️', '🦂', '🐊', '🦅', '🐺'];
+  const MONSTER_FACES = [
+    // 🌲 Začarovaný les (theme 0)
+    ['🧚','🌳','🍄','🐺','🦌','🦋','🐿️','🐗'],
+    // 🏜️ Pouštní říše (theme 1)
+    ['🐍','🦂','👺','🏜️','🐪','🪲','🦎','☀️'],
+    // 🌊 Hlubinné propasti (theme 2)
+    ['🐙','🦈','🐟','🦀','🐚','🐳','🪼','🐠'],
+    // 🔥 Pekelné výspy (theme 3)
+    ['👹','🐉','🔥','👺','💀','🗿','⚔️','🦅'],
+    // ❄️ Mrazivé štíty (theme 4)
+    ['👻','❄️','🧊','🐺','🦅','⛄','🧝','🌨️'],
+  ];
 
   // ===== LOCATIONS (MAP) =====
+  function getMonsterFace(theme, floor) {
+    const pool = MONSTER_FACES[theme] || MONSTER_FACES[0];
+    return pool[rand(0, pool.length - 1)];
+  }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const LOCATIONS = [
-    { id:0, name:'🌲 Stínový les', icon:'🌲', monsters:5, xpReward:100, bossXp:200, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
-    { id:1, name:'🏜️ Pouštní brána', icon:'🏜️', monsters:7, xpReward:140, bossXp:240, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
-    { id:2, name:'⏳ Časová zřícenina', icon:'⌛', monsters:8, xpReward:180, bossXp:300, boss:{name:'Architekt času',face:'⌛',hp:16}, reward:{gold:15,weapon:'sword'} },
-    { id:3, name:'🎯 Temná aréna', icon:'🎯', monsters:9, xpReward:250, bossXp:400, boss:{name:'Mistr terčů',face:'🎯',hp:18}, reward:{gold:20} },
-    { id:4, name:'🔊 Jeskyně ozvěn', icon:'🔊', monsters:10, xpReward:300, bossXp:500, boss:{name:'Šepotající hlas',face:'🔊',hp:20}, reward:{gold:25,armor:'chainmail'} },
-    { id:5, name:'🧩 Labyrint zákonů', icon:'🧩', monsters:11, xpReward:350, bossXp:600, boss:{name:'Architekt zákonů',face:'🧩',hp:22}, reward:{gold:30} },
-    { id:6, name:'🔄 Zrcadlový sál', icon:'🔄', monsters:12, xpReward:400, bossXp:800, boss:{name:'Zrcadlový král',face:'🔄',hp:25}, reward:{gold:40,weapon:'flameSword',armor:'plate'} },
+    { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:5, bossXp:15, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
+    { id:1, name:'🏜️ Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:8, bossXp:25, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
+    { id:2, name:'🌊 Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:10, xpReward:12, bossXp:35, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'} },
+    { id:3, name:'🔥 Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20} },
+    { id:4, name:'❄️ Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:20, bossXp:65, boss:{name:'Ledový král',face:'❄️',hp:20}, reward:{gold:25,armor:'chainmail'} },
   ];
 
   // ===== STATE =====
@@ -187,7 +200,7 @@
   function defaultState() {
     // ITEMS: fists (baseDmg:2), rags (bonusHp:0), dagger (baseDmg:5), sword (baseDmg:8), flameSword (baseDmg:12), chainmail (bonusHp:20), plate (bonusHp:40)
     const s = { skills:{}, skillXp:{}, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false] };
+      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0] };
     SKILLS.forEach(sk => { s.skills[sk.id]=0; s.skillXp[sk.id]=0; });
     return s;
   }
@@ -247,11 +260,12 @@
       const unlocked = prevDone;
       const completed = state.bossesDefeated[i];
       const progress = state.locationProgress[i] || 0;
+      const floor = state.floorProgress[i] || 0;
       let statusIcon, statusText;
       if (completed) { statusIcon = '✅'; statusText = 'Hotovo'; }
       else if (!unlocked) { statusIcon = '🔒'; statusText = 'Zamčeno'; }
-      else if (progress >= loc.monsters) { statusIcon = '👹'; statusText = 'BOSS'; }
-      else { statusIcon = '👾'; statusText = `${progress}/${loc.monsters}`; }
+      else if (floor >= 9) { statusIcon = '👹'; statusText = 'BOSS!'; }
+      else { statusIcon = '👾'; statusText = `P${floor+1}: ${progress}/${loc.monsters}`; }
       return `<div class="map-location ${completed?'completed':!unlocked?'locked':''}" onclick="${!unlocked?'':`game.enterLocation(${i})`}">
         <div class="map-loc-info">
           <div class="map-loc-name">${loc.name}</div>
@@ -282,27 +296,29 @@
   function startLocation(locId) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    const progress = state.locationProgress[locId] || 0;
-    const isBoss = progress >= loc.monsters;
-    // HP per dungeon: první monster resetuje HP, další monstra používají aktuální
-    if (progress === 0) {
+    const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
+    const progress = state.locationProgress[locId] || 0; // kills on current floor 0-4
+    const isBoss = floor >= 9; // boss v 10. patře
+    // První vstup do dungeonu resetuje HP
+    if (floor === 0 && progress === 0) {
       state.hero.hp = state.hero.maxHp;
     }
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
-    // Boss HP: monster ~50-100, boss rychleji stoupá (turn*20 + loc.boss.hp)
-    const bossBaseHp = isBoss ? (progress >= loc.monsters ? 80 + Math.round(loc.boss.hp * 12) : 40 + progress * 12) : 30 + progress * 8;
+    // HP škáluje s patrem a dungeonem
+    const hpScale = 1 + floor * 0.25 + locId * 0.15;
+    const bossBaseHp = isBoss ? Math.round((60 + Math.round(loc.boss.hp * 10)) * hpScale) : Math.round((30 + progress * 8) * hpScale);
 
     mapBattleState = {
-      locId, loc, isBoss, progress,
+      locId, loc, isBoss, progress, floor,
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsed: false,
+      stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsedThisFloor: false,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
-      monsterFace: isBoss ? loc.boss.face : MONSTER_FACES[rand(0, MONSTER_FACES.length - 1)],
+      monsterFace: isBoss ? loc.boss.face : getMonsterFace(loc.theme, floor),
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
@@ -330,11 +346,11 @@
     if (!mb.loc) return;
     if (mb.isBoss) {
       $('mbEnemyName').textContent = `${mb.loc.boss.face} ${mb.loc.boss.name}`;
-      $('mbLocation').textContent = `BOSS ${mb.loc.name}`;
+      $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P10`;
     } else {
-      const left = mb.loc.monsters - mb.progress;
-      $('mbEnemyName').textContent = `👾 Nestvůra (${left} zbývá)`;
-      $('mbLocation').textContent = mb.loc.name;
+      const floorStr = `P${mb.floor+1}`;
+      $('mbEnemyName').textContent = `👾 ${floorStr} - Nestvůra (${5 - mb.progress} zbývá)`;
+      $('mbLocation').textContent = `${mb.loc.icon} ${mb.loc.name} — P${mb.floor+1}`;
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
@@ -358,7 +374,7 @@
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
     fig.textContent = emoji;
-    $('mbHint').textContent = mb.isBoss ? `Sekvence útoků — přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Nestvůra ${mb.loc.monsters-mb.progress}/${mb.loc.monsters}`;
+    $('mbHint').textContent = mb.isBoss ? `👑 BOSS — Sekvence útoků, přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Patro ${mb.floor+1}, ulov nestvůru!`;
 
     // Spells
     const container = $('mbSpells');
@@ -366,7 +382,7 @@
     SKILLS.forEach(sk => {
       const lv = state.skills[sk.id]||0;
       if (lv === 0) return;
-      const used = mb.spellUsed;
+      const used = mb.spellUsedThisFloor;
       const btn = document.createElement('div');
       btn.className = 'mb-spell-btn' + (used?' on-cd':'');
       btn.innerHTML = `${sk.icon}<span class="mb-spell-cd">${used?'✗':'✓'}</span>`;
@@ -1098,8 +1114,8 @@
     const lv = state.skills[spellId]||0;
     if (lv === 0) return;
     // 1x per dungeon
-    if (mb.spellUsed) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto dungeonu!'; return; }
-    mb.spellUsed = true;
+    if (mb.spellUsedThisFloor) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
+    mb.spellUsedThisFloor = true;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
@@ -1143,8 +1159,7 @@
     // Odstranit spell tlačítka
     const spellsEl = $('mbSpells');
     if (spellsEl) spellsEl.innerHTML = '';
-    if (mb.isBoss && mb.bossHp <= 0) { endMapBattle(true); return; }
-    if (!mb.isBoss) { endMapBattle(true); return; }
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
 
   function endMapBattle(won) {
@@ -1156,15 +1171,23 @@
     if (won && !mb.isBoss) {
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
-      const monsterGold = 2 + rand(0, 3);
+      const monsterGold = 1 + rand(0, 2);
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
-      state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward;
+      state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward + mb.floor * 2;
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       applyLevelUp();
       saveGame();
 
-      $('mbHint').textContent = '✅ Nestvůra poražena!';
+      if (p >= 5) {
+        // Všech 5 monster na patře poraženo -> přechod na další patro
+        const nextFloor = state.floorProgress[locId] + 1;
+        state.floorProgress[locId] = nextFloor;
+        state.locationProgress[locId] = 0;
+        $('mbHint').textContent = `⬆️ Patro ${mb.floor+1} dobyto! Postup do patra ${nextFloor+1}!`;
+      } else {
+        $('mbHint').textContent = '✅ Nestvůra poražena!';
+      }
       sfxSuccess();
       // Animace smrti
       const fig = $('mbFigure');
@@ -1194,19 +1217,22 @@
     if (!won) {
       state.deaths = (state.deaths || 0) + 1;
       state.locationProgress[locId] = 0;
+      state.floorProgress[locId] = 0;
       state.hero.hp = state.hero.maxHp;
       saveGame();
       switchBGM('defeat');
       $('resultIcon').textContent = '💀';
       $('resultTitle').textContent = 'Padl jsi';
-      $('resultMsg').textContent = `Lokace ${mb.loc.name}`;
+      $('resultMsg').textContent = `${mb.loc.name} — P${mb.floor+1}`;
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
     } else {
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
       // Boss defeated
       state.bossesDefeated[locId] = true;
-      state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp;
+      state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp + mb.floor * 10;
+      state.floorProgress[locId] = 0;
+      state.locationProgress[locId] = 0;
       applyLevelUp();
       const r = mb.loc.reward;
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
@@ -1221,7 +1247,7 @@
       $('resultMsg').textContent = `Získal jsi ${msg}`;
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
       if (locId + 1 < LOCATIONS.length) {
-        $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další lokace</button>`;
+        $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další dungeon</button>`;
       }
       saveGame();
     }
@@ -1601,8 +1627,9 @@
     state = loadSave();
     SKILLS.forEach(sk => { if (state.skills[sk.id] === undefined) state.skills[sk.id] = 0; if (state.skillXp[sk.id] === undefined) state.skillXp[sk.id] = 0; });
 
-    if (!state.bossesDefeated || state.bossesDefeated.length < 7) state.bossesDefeated = [false,false,false,false,false,false,false];
-    if (!state.locationProgress || state.locationProgress.length < 7) state.locationProgress = [0,0,0,0,0,0,0];
+    if (!state.bossesDefeated || state.bossesDefeated.length < 5) state.bossesDefeated = [false,false,false,false,false];
+    if (!state.locationProgress || state.locationProgress.length < 5) state.locationProgress = [0,0,0,0,0];
+    if (!state.floorProgress || state.floorProgress.length < 5) state.floorProgress = [0,0,0,0,0];
     if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:'rags'}, attrStr:0, attrVit:0, attrPoints:0 };
     if (state.hero.maxHp === undefined) state.hero.maxHp = getHeroMaxHp();
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
