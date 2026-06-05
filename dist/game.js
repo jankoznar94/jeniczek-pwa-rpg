@@ -398,7 +398,7 @@
       void newFig.offsetWidth;
       newFig.classList.add('monster-appear');
     }
-    setTimeout(() => mapBattleTurn(), 400);
+    setTimeout(() => mapBattleTurn(), 250);
   }
 
   function updateMapBattleUI() {
@@ -551,7 +551,7 @@
     else if (randNum < chances.wait + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
-    return { dir: DIRECTIONS[rand(0,3)], type, windowTime: 800 + rand(0, 300) };
+    return { dir: DIRECTIONS[rand(0,3)], type, windowTime: 700 + rand(0, 200) };
   }
 
   function getAttackHint(attack) {
@@ -678,7 +678,7 @@
     if (mb.inAttackWindow) return;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
     // Boss smrt s odstupem pro animaci (konec tahu v mapBattleTurn)
-    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 400); return; }
+    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
     const attack = mb.sequence[mb.sequenceIndex];
 
@@ -759,7 +759,7 @@
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
     // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
-    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 400); return; }
+    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
     // Pokud je sekvence hotová, otevřít útočné okno HNED (ne až po 300ms)
     if (mb.sequenceIndex >= mb.sequence.length) {
@@ -767,7 +767,7 @@
       return;
     }
 
-    setTimeout(() => playSequenceAttack(), 300);
+    setTimeout(() => playSequenceAttack(), 150);
   }
 
   function openAttackWindow() {
@@ -790,7 +790,7 @@
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
     // Timer ring — stejně dlouhý jako na úhyby (800-1100ms)
-    const atkTime = 600 + rand(0, 400);
+    const atkTime = 500 + rand(0, 300);
     const atkCircle = resetTimerRing();
     if (atkCircle) void atkCircle.offsetHeight;
     startTimerRing(atkCircle, atkTime);
@@ -1118,7 +1118,7 @@
 
     if (mb.bossHp <= 0) {
       // Počkat na animaci projektilu a damage textu (500ms)
-      setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 500);
+      setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 300);
       return;
     }
     updateMapBattleUI();
@@ -1126,7 +1126,7 @@
     $('mbActionInfo').classList.add('hidden');
     updateActionButtons();
 
-    setTimeout(() => mapBattleTurn(), 500);
+    setTimeout(() => mapBattleTurn(), 300);
   }
 
   function onMapHit() {
@@ -1184,7 +1184,7 @@
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
     // Po zásahu restartovat sekvenci — hráč byl potrestán
-    setTimeout(() => mapBattleTurn(), 500);
+    setTimeout(() => mapBattleTurn(), 300);
   }
 
   function castMapSpell(spellId) {
@@ -1288,7 +1288,7 @@
       setTimeout(() => {
         if (fig) fig.classList.remove('monster-dying');
         continueDungeon();
-      }, 850);
+      }, 500);
       return;
     }
 
