@@ -751,10 +751,15 @@
         arrow.setAttribute('class', 'boss-attack-arrow');
         const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.dir] || 0;
         arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-        if (attack.type === 'heavy') arrow.classList.add('boss-attack-yellow');
-        else if (attack.type === 'inverted') arrow.classList.add('boss-attack-green');
-        else if (attack.type === 'liar') arrow.classList.add('boss-attack-red');
-        else if (attack.type === 'wait') arrow.classList.add('boss-attack-purple');
+        if (attack.type === 'heavy') {
+          arrow.classList.add('boss-attack-yellow');
+          arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g>';
+        } else {
+          arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
+          if (attack.type === 'inverted') arrow.classList.add('boss-attack-green');
+          else if (attack.type === 'liar') arrow.classList.add('boss-attack-red');
+          else if (attack.type === 'wait') arrow.classList.add('boss-attack-purple');
+        }
       }
     }
 
