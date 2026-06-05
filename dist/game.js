@@ -48,20 +48,20 @@
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
   bgmAudio.loop = true;
-  bgmAudio.volume = 0.50;
+  bgmAudio.volume = 0.70;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.75;
+  overworldAudio.volume = 0.90;
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
-  defeatAudio.volume = 0.55;
+  defeatAudio.volume = 0.75;
   const winAudio = new Audio('win.mp3');
   winAudio.loop = false;
-  winAudio.volume = 0.60;
+  winAudio.volume = 0.80;
 
   const minigameBgm = new Audio('minigame-bgm.mp3');
   minigameBgm.loop = true;
-  minigameBgm.volume = 0.50;
+  minigameBgm.volume = 0.70;
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
@@ -73,7 +73,7 @@
     new Audio('bgm_2.mp3'),
     new Audio('bgm_3.mp3')
   ];
-  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.50; });
+  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.70; });
   let currentBattleIndex = 0; // vybraná stopa pro aktuální patro
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
@@ -81,12 +81,12 @@
   let musicMuted = false;
   function toggleMusic() {
     musicMuted = !musicMuted;
-    bgmAudio.volume = musicMuted ? 0 : 0.50;
-    overworldAudio.volume = musicMuted ? 0 : 0.75;
-    defeatAudio.volume = musicMuted ? 0 : 0.55;
-    winAudio.volume = musicMuted ? 0 : 0.60;
+    bgmAudio.volume = musicMuted ? 0 : 0.70;
+    overworldAudio.volume = musicMuted ? 0 : 0.90;
+    defeatAudio.volume = musicMuted ? 0 : 0.75;
+    winAudio.volume = musicMuted ? 0 : 0.80;
     bossBgm.volume = musicMuted ? 0 : 0.85;
-    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.50; });
+    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.70; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
   let _currentBattleBgmIdx = 0;
