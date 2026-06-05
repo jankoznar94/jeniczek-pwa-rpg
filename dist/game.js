@@ -568,7 +568,6 @@
   function resetTimerRing() {
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
-    // Schovat, zrušit animaci, reset na plný kruh
     circle.style.opacity = '0';
     circle.style.animation = 'none';
     circle.style.strokeDashoffset = '276';
@@ -672,7 +671,7 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     if (mb.sequenceIndex >= mb.sequence.length) {
-      openAttackWindow();
+      setTimeout(() => openAttackWindow(), 0);
       return;
     }
     if (mb.inAttackWindow) return;
@@ -762,10 +761,10 @@
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
     // Pokud je sekvence hotová, otevřít útočné okno HNED
-    // POZOR: openAttackWindow si sama zavolá resetTimerRing + startTimerRing,
-    // takže tady už reset nedělat — jinak remove/add v jednom ticku zlomí animaci
+    // Použijeme setTimeout(0) aby reset (opacity:0) stihnul proběhnout
+    // před startem nové animace v openAttackWindow
     if (mb.sequenceIndex >= mb.sequence.length) {
-      openAttackWindow();
+      setTimeout(() => openAttackWindow(), 0);
       return;
     }
 
