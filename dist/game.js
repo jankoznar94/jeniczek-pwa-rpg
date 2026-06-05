@@ -287,8 +287,8 @@
     $('mapProgress').textContent = `👹 Porazeno: ${done}/${LOCATIONS.length} bossů`;
 
     $('mapScroll').innerHTML = LOCATIONS.map((loc, i) => {
-      const prevDone = i === 0 ? true : state.bossesDefeated[i-1];
-      const unlocked = prevDone;
+      const prevDone = true; // DEBUG: odemčeno
+      const unlocked = true; // DEBUG: odemčeno
       const completed = state.bossesDefeated[i];
       const curFloor = state.floorProgress[i] || 0;
       const curProgress = state.locationProgress[i] || 0;
@@ -304,7 +304,7 @@
         for (let f = 0; f < 10; f++) {
           const isBossFloor = f >= 9;
           const floorDone = completed || f < curFloor;
-          const lockedFloor = f > curFloor && !completed;
+          const lockedFloor = false; // DEBUG: odemčeno (původně f > curFloor && !completed)
           let fIcon, fText;
           if (floorDone) { fIcon = '✅'; fText = 'Hotovo'; }
           else if (lockedFloor) { fIcon = '🔒'; fText = 'Zamčeno'; }
@@ -337,7 +337,7 @@
   function enterLocation(locId, optFloor) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
+    //if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; } // DEBUG: odemčeno
 
     if (optFloor !== undefined && !state.bossesDefeated[locId]) {
       state.floorProgress[locId] = optFloor;
@@ -1361,7 +1361,7 @@
       const maxed = lv >= sk.maxLv;
       const heroLv = state.hero.level;
       const requiredLv = (lv + 1) * 2; // Lv.0→Lv.1=2, Lv.1→Lv.2=4, Lv.2→Lv.3=6...
-      const locked = heroLv < requiredLv;
+      const locked = false; // DEBUG: odemčeno (původně heroLv < requiredLv)
       return `<div class="dungeon-card ${maxed?'completed':''} ${locked?'locked':''}" onclick="${locked?'':`game.enterTraining('${sk.id}')`}">
         <div class="flex-between">
           <div class="dungeon-name">${sk.icon} ${locked?'🔒':maxed?'✅':''}</div>
@@ -1606,7 +1606,7 @@
     if (!sk) return;
     const lv = state.skills[skillId] || 0;
     const requiredLv = (lv + 1) * 2;
-    if (state.hero.level < requiredLv) { showMessage(`🔒 Potřebuješ Lv.${requiredLv}`); return; }
+    if (state.hero.level < requiredLv) { /* DEBUG: odemčeno */ }
     if (lv >= sk.maxLv) { showMessage('✅ MAX level!'); return; }
     trainingState = { skillId, skill: sk, level: Math.min(5, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
     showScreen('battle');
