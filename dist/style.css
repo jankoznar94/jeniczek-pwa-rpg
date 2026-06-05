@@ -206,7 +206,13 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   stroke-width:6;
   stroke-dasharray:276;
   stroke-dashoffset:276;
-  transition:stroke-dashoffset 0.6s linear;
+}
+.timer-circle.animating {
+  animation:timer-ring-shrink linear forwards;
+}
+@keyframes timer-ring-shrink {
+  0%   { stroke-dashoffset: 276; }
+  100% { stroke-dashoffset: 0; }
 }
 .arena-attack-btn {
   position:absolute;bottom:20px;right:20px;z-index:25;

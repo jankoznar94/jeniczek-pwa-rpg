@@ -568,17 +568,18 @@
   function resetTimerRing() {
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
-    circle.style.transition = 'none';
+    circle.classList.remove('animating');
+    circle.style.animationDuration = '';
     circle.style.strokeDashoffset = '276';
     return circle;
   }
 
   function startTimerRing(circle, durationMs) {
     if (!circle) return;
-    // force reflow – oddělí reset od animace
+    // force reflow — oddělí remove class od add (restart animace)
     void circle.offsetHeight;
-    circle.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
-    circle.style.strokeDashoffset = '0';
+    circle.style.animationDuration = `${durationMs}ms`;
+    circle.classList.add('animating');
   }
 
   function mapBattleTurn() {
