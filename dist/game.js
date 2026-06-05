@@ -568,7 +568,8 @@
   function resetTimerRing() {
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
-    // Úplně zrušit animaci — nastavit na 'none' a force reflow
+    // Schovat, zrušit animaci, reset na plný kruh
+    circle.style.opacity = '0';
     circle.style.animation = 'none';
     circle.style.strokeDashoffset = '276';
     void circle.offsetHeight;
@@ -577,6 +578,7 @@
 
   function startTimerRing(circle, durationMs) {
     if (!circle) return;
+    circle.style.opacity = '1';
     circle.style.animation = `timer-ring-shrink ${durationMs}ms linear forwards`;
   }
 
