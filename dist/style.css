@@ -212,6 +212,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   border:3px solid #2a2a4a;background:#1a1a3a;transition:0.15s;opacity:0.3;
+  outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
 }
 .arena-attack-btn.active { opacity:1; border-color:#f1c40f; background:#1a1a2a; box-shadow:0 0 10px rgba(241,196,15,0.3); }
 .arena-attack-btn:not(.active) { pointer-events:none; }
@@ -220,6 +221,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   border:3px solid #2a2a4a;background:#1a1a3a;transition:0.15s;opacity:0.3;
+  outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;
 }
 .arena-block-btn.active { opacity:1; border-color:#3498db; background:#1a1a2a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
 .arena-block-btn:not(.active) { pointer-events:none; }

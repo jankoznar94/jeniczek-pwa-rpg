@@ -739,7 +739,6 @@
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
     const actionInfo = $('mbActionInfo');
     if (actionInfo) actionInfo.classList.add('hidden');
-    updateActionButtons();
 
     resetTimerRing();
 
