@@ -481,13 +481,15 @@
     let startX, startY;
     const handlers = [];
 
-    // Click handler for attack button
+    // Click handler for attack button (pointerdown = immediate, no 300ms click delay)
     const atkBtn = $('mbAttackBtn');
     if (atkBtn) {
-      atkBtn.addEventListener('click', (e) => {
+      const atkHandler = (e) => {
         e.stopPropagation();
         onMapAttack();
-      });
+      };
+      atkBtn.addEventListener('pointerdown', atkHandler);
+      handlers.push(['pointerdown', atkHandler]);
     }
 
     // Click handler for block button
@@ -567,16 +569,14 @@
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
     circle.style.transition = 'none';
-    circle.style.opacity = '0';
     circle.style.strokeDashoffset = '276';
     return circle;
   }
 
   function startTimerRing(circle, durationMs) {
     if (!circle) return;
-    // force reflow - oddělí reset od animace
+    // force reflow – oddělí reset od animace
     void circle.offsetHeight;
-    circle.style.opacity = '1';
     circle.style.transition = `stroke-dashoffset ${durationMs}ms linear`;
     circle.style.strokeDashoffset = '0';
   }
