@@ -788,9 +788,10 @@
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
-    // Timer ring pro útočné okno (~2.7s)
-    const atkTime = 2700;
+    // Timer ring — stejně dlouhý jako na úhyby (800-1100ms)
+    const atkTime = 600 + rand(0, 400);
     const atkCircle = resetTimerRing();
+    if (atkCircle) void atkCircle.offsetHeight;
     startTimerRing(atkCircle, atkTime);
 
     mb._attackWindowTimer = setTimeout(() => {
