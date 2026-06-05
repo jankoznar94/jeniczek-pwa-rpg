@@ -170,6 +170,16 @@
     const pool = MONSTER_NAMES[theme] || MONSTER_NAMES[0];
     return pool[rand(0, pool.length - 1)];
   }
+  function getFloorMonsterSet(theme, floor) {
+    const faces = MONSTER_FACES[theme] || MONSTER_FACES[0];
+    const names = MONSTER_NAMES[theme] || MONSTER_NAMES[0];
+    const result = [];
+    for (let i = 0; i < 5; i++) {
+      const idx = (floor * 5 + i + theme * 3) % faces.length;
+      result.push({face: faces[idx], name: names[idx]});
+    }
+    return result;
+  }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const LOCATIONS = [
     { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:5, bossXp:15, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
@@ -355,8 +365,9 @@
       spellCooldowns: {},
       monsterFace: isBoss ? loc.boss.face : getMonsterFace(loc.theme, floor),
       currentMonsterName: isBoss ? loc.boss.name : getMonsterName(loc.theme),
-      monsterIcons: isBoss ? [] : Array.from({length:5}, () => getMonsterFace(loc.theme, floor)),
-      monsterNames: isBoss ? [] : Array.from({length:5}, () => getMonsterName(loc.theme)),
+      floorMonsters: isBoss ? [] : getFloorMonsterSet(loc.theme, floor),
+      monsterIcons: isBoss ? [] : getFloorMonsterSet(loc.theme, floor).map(function(m){return m.face;}),
+      monsterNames: isBoss ? [] : getFloorMonsterSet(loc.theme, floor).map(function(m){return m.name;}),
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
@@ -400,7 +411,7 @@
         iconRow.classList.remove('hidden');
         iconRow.innerHTML = mb.monsterIcons.map((face, i) => {
           const defeated = i < mb.progress;
-          return `<span class="monster-icon">${face}${defeated?'<span class="monster-icon-x">❌</span>':''}</span>`;
+          return `<span class="monster-icon${defeated?' defeated':''}">${face}${defeated?'<span class="monster-icon-x">❌</span>':''}</span>`;
         }).join('');
       } else {
         iconRow.classList.add('hidden');
