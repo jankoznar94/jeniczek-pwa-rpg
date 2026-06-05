@@ -410,7 +410,7 @@
     } else {
       const floorStr = `P${mb.floor+1}`;
       $('mbEnemyName').textContent = `${mb.monsterFace} ${mb.currentMonsterName}`;
-      $('mbLocation').textContent = `${mb.loc.icon} ${mb.loc.name} — P${mb.floor+1}`;
+      $('mbLocation').textContent = `${mb.loc.name} — P${mb.floor+1}`;
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);

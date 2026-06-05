@@ -83,6 +83,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .badge.color { background: #e67e22; }
 .badge.grid { background: #c0392b; }
 .badge.judge { background: #2c3e50; border: 1px solid #f1c40f; }
+.mb-location-text { font-size:14px; font-weight:bold; color:#ccccee; }
 .badge.aim { background: #1a8a3a; }
 .badge.echo { background: #0088bb; }
 .badge.order { background: #8b4513; }
