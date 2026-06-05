@@ -568,18 +568,16 @@
   function resetTimerRing() {
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
-    circle.classList.remove('animating');
-    circle.style.animationDuration = '';
+    // Úplně zrušit animaci — nastavit na 'none' a force reflow
+    circle.style.animation = 'none';
     circle.style.strokeDashoffset = '276';
+    void circle.offsetHeight;
     return circle;
   }
 
   function startTimerRing(circle, durationMs) {
     if (!circle) return;
-    // force reflow — oddělí remove class od add (restart animace)
-    void circle.offsetHeight;
-    circle.style.animationDuration = `${durationMs}ms`;
-    circle.classList.add('animating');
+    circle.style.animation = `timer-ring-shrink ${durationMs}ms linear forwards`;
   }
 
   function mapBattleTurn() {
@@ -761,7 +759,9 @@
     // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
-    // Pokud je sekvence hotová, otevřít útočné okno HNED (ne až po 300ms)
+    // Pokud je sekvence hotová, otevřít útočné okno HNED
+    // POZOR: openAttackWindow si sama zavolá resetTimerRing + startTimerRing,
+    // takže tady už reset nedělat — jinak remove/add v jednom ticku zlomí animaci
     if (mb.sequenceIndex >= mb.sequence.length) {
       openAttackWindow();
       return;
@@ -792,7 +792,6 @@
     // Timer ring — stejně dlouhý jako na úhyby (800-1100ms)
     const atkTime = 500 + rand(0, 300);
     const atkCircle = resetTimerRing();
-    if (atkCircle) void atkCircle.offsetHeight;
     startTimerRing(atkCircle, atkTime);
 
     mb._attackWindowTimer = setTimeout(() => {

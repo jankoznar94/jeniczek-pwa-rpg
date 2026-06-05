@@ -207,9 +207,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   stroke-dasharray:276;
   stroke-dashoffset:276;
 }
-.timer-circle.animating {
-  animation:timer-ring-shrink linear forwards;
-}
 @keyframes timer-ring-shrink {
   0%   { stroke-dashoffset: 276; }
   100% { stroke-dashoffset: 0; }
