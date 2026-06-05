@@ -360,9 +360,12 @@
     }
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
-    // HP škáluje s patrem a dungeonem
-    const hpScale = 1 + floor * 0.25 + locId * 0.15;
-    const bossBaseHp = isBoss ? Math.round((60 + Math.round(loc.boss.hp * 10)) * hpScale) : Math.round((30 + progress * 8) * hpScale);
+    // HP škáluje s dungeonem a patrem — progresivně
+    const monsterBase = 30 + progress * 8;
+    const monsterHp = Math.round(monsterBase * (1 + locId * 1.5) + floor * 4);
+    const bossBase = 60 + Math.round(loc.boss.hp * 10);
+    const bossHp = Math.round(bossBase * (1 + locId * 0.5) + floor * 8);
+    const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
     mapBattleState = {
@@ -382,7 +385,8 @@
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
-      isInvertedAttack: false, isWaitAttack: false, isLiarAttack: false
+      isInvertedAttack: false, isWaitAttack: false, isLiarAttack: false,
+      _heavySwipes: 0 // pro žluté šipky — kolikrát už hráč swipnul správně
     };
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
@@ -534,9 +538,12 @@
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, liar: 0 };
     if (locId === 1) return { normal: 90, heavy: 0, block: 10, inverted: 0, wait: 0, liar: 0 };
-    if (locId === 2) return { normal: 50, heavy: 20, block: 15, inverted: 15, wait: 0, liar: 0 };
-    if (locId === 3) return { normal: 40, heavy: 15, block: 15, inverted: 15, wait: 15, liar: 0 };
-    if (locId === 4) return { normal: 35, heavy: 10, block: 15, inverted: 15, wait: 25, liar: 0 };
+    // locId 2: heavy (žluté — 2× swipe) od 3. dungeonu
+    if (locId === 2) return { normal: 55, heavy: 25, block: 15, inverted: 0, wait: 5, liar: 0 };
+    // locId 3: wait (čekání — ⏳) od 4. dungeonu, inverted zatím ne
+    if (locId === 3) return { normal: 40, heavy: 15, block: 15, inverted: 0, wait: 30, liar: 0 };
+    // locId 4: inverted (zelené) až od 5. dungeonu
+    if (locId === 4) return { normal: 35, heavy: 10, block: 15, inverted: 20, wait: 20, liar: 0 };
     if (locId === 5) return { normal: 30, heavy: 10, block: 15, inverted: 15, wait: 15, liar: 15 };
     if (locId === 6) return { normal: 25, heavy: 5, block: 20, inverted: 20, wait: 15, liar: 15 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
@@ -551,17 +558,19 @@
     else if (randNum < chances.wait + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
-    return { dir: DIRECTIONS[rand(0,3)], type, windowTime: 700 + rand(0, 200) };
+    const baseTime = 700 + rand(0, 200);
+    const windowTime = type === 'heavy' ? Math.round(baseTime * 1.33) : baseTime;
+    return { dir: DIRECTIONS[rand(0,3)], type, windowTime };
   }
 
   function getAttackHint(attack) {
     const dir = attack.dir;
     if (attack.type === 'normal') return `${dir} ⚫ Normální — uhni!`;
-    if (attack.type === 'heavy') return `${dir} 🟡 Heavy — uhni (víc času)!`;
+    if (attack.type === 'heavy') return `${dir} 🟡 Heavy — 2× ${dir}!`;
     if (attack.type === 'block') return `🛡️ ${dir} 🔴 Zákeřný — použij ŠTÍT!`;
     if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
     if (attack.type === 'liar') return `${dir} 🔴 Lhář — NESMÍŠ do šipky!`;
-    if (attack.type === 'wait') return `⏳ Fialový — POČKEJ!`;
+    if (attack.type === 'wait') return `⏳ Počkej — nic nedělej!`;
     return `${dir} uhni!`;
   }
 
@@ -705,6 +714,13 @@
         actionInfo.textContent = '🛡️';
         actionInfo.classList.remove('hidden');
       }
+    } else if (attack.type === 'wait') {
+      // Čekání: místo šipky ⏳ v kolečku
+      if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+      if (actionInfo) {
+        actionInfo.textContent = '⏳';
+        actionInfo.classList.remove('hidden');
+      }
     } else {
       // Ostatní útoky: šipka
       if (actionInfo) actionInfo.classList.add('hidden');
@@ -728,10 +744,20 @@
     // Timer ring - animace (synchronně, bez setTimeout)
     startTimerRing(circle, windowTime);
 
-    mb._sequenceTimer = setTimeout(() => {
-      if (mapBattleState.ended) return;
-      onMapHit();
-    }, windowTime);
+    if (attack.type === 'wait') {
+      // Wait — timeout = úspěch (hráč nic neudělal)
+      mb._sequenceTimer = setTimeout(() => {
+        if (mapBattleState.ended) return;
+        $('mbHint').textContent = '⏳ Čekání OK!';
+        advanceSequence();
+      }, windowTime);
+      // Reset ring (už je hotovo výše) a timer ring — wait má stejný timer jako ostatní
+    } else {
+      mb._sequenceTimer = setTimeout(() => {
+        if (mapBattleState.ended) return;
+        onMapHit();
+      }, windowTime);
+    }
   }
 
   function advanceSequence() {
@@ -745,6 +771,7 @@
     mb.isInvertedAttack = false;
     mb.isWaitAttack = false;
     mb.isLiarAttack = false;
+    mb._heavySwipes = 0;
 
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
@@ -1024,8 +1051,30 @@
         correct = true;
         doArenaGlow(dir, true);
       }
+    } else if (attack.type === 'heavy') {
+      // Heavy: musíš uhnout 2× stejným směrem
+      if (dir !== attack.dir) {
+        // Špatný směr — zásah
+        clearTimeout(mb._sequenceTimer);
+        clearTimeout(mb._ringTimer);
+        mb._ringTimer = null;
+        mb._sequenceTimer = null;
+        onMapHit();
+        return;
+      }
+      mb._heavySwipes++;
+      doArenaGlow(dir, true);
+      playSFX(dodgeSfx);
+      $('mbHint').textContent = `🟡 ${attack.dir} Heavy — ${mb._heavySwipes}/2!`;
+      if (mb._heavySwipes >= 2) {
+        clearTimeout(mb._sequenceTimer);
+        clearTimeout(mb._ringTimer);
+        mb._ringTimer = null;
+        mb._sequenceTimer = null;
+        advanceSequence();
+      }
     } else {
-      // Normal / heavy: musíš uhnout do směru šipky
+      // Normal: musíš uhnout do směru šipky
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
       mb._ringTimer = null;
@@ -1140,7 +1189,7 @@
     mb._ringTimer = null;
     mb._sequenceTimer = null;
 
-    const baseBossDmg = Math.max(5, 2 + mb.turn * 2);
+    const baseBossDmg = Math.max(5, 2 + mb.turn * 2 + mb.locId * 2);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
     let amount = bossDmg;
     if (mb.shieldActive) {
