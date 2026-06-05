@@ -106,7 +106,7 @@
       } else if (mode === 'boss') {
         bossBgm.play().catch(() => {});
         currentBGM = 'boss';
-    } else if (mode === 'defeat') {
+      } else if (mode === 'defeat') {
       defeatAudio.play().catch(() => {});
       currentBGM = 'defeat';
     } else if (mode === 'win') {
