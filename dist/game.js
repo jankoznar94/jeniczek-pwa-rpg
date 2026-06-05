@@ -582,7 +582,7 @@
     else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
     const baseTime = 700 + rand(0, 200);
-    const windowTime = type === 'heavy' ? Math.round(baseTime * 1.33) : baseTime;
+    const windowTime = type === 'heavy' ? Math.round(baseTime * 1.5) : baseTime;
     return { dir: DIRECTIONS[rand(0,3)], type, windowTime };
   }
 
@@ -1075,7 +1075,7 @@
         doArenaGlow(dir, true);
       }
     } else if (attack.type === 'heavy') {
-      // Heavy: musíš uhnout 2× stejným směrem
+      // Heavy: musíš uhnout 2× stejným směrem ve stejném timeru
       if (dir !== attack.dir) {
         // Špatný směr — zásah
         clearTimeout(mb._sequenceTimer);
@@ -1096,6 +1096,8 @@
         mb._sequenceTimer = null;
         advanceSequence();
       }
+      // Po prvním správném swipu NEpropadnout do correct kontroly
+      return;
     } else {
       // Normal: musíš uhnout do směru šipky
       clearTimeout(mb._sequenceTimer);
