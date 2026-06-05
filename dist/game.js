@@ -364,6 +364,7 @@
     const hpScale = 1 + floor * 0.25 + locId * 0.15;
     const bossBaseHp = isBoss ? Math.round((60 + Math.round(loc.boss.hp * 10)) * hpScale) : Math.round((30 + progress * 8) * hpScale);
 
+    const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
     mapBattleState = {
       locId, loc, isBoss, progress, floor,
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
@@ -373,11 +374,11 @@
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
-      monsterFace: isBoss ? loc.boss.face : getFloorMonsterSet(loc.theme, floor)[progress].face,
-      currentMonsterName: isBoss ? loc.boss.name : getFloorMonsterSet(loc.theme, floor)[progress].name,
-      floorMonsters: isBoss ? [] : getFloorMonsterSet(loc.theme, floor),
-      monsterIcons: isBoss ? [] : getFloorMonsterSet(loc.theme, floor).map(function(m){return m.face;}),
-      monsterNames: isBoss ? [] : getFloorMonsterSet(loc.theme, floor).map(function(m){return m.name;}),
+      floorMonsters,
+      monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
+      currentMonsterName: isBoss ? loc.boss.name : floorMonsters[progress].name,
+      monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
+      monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
@@ -758,6 +759,12 @@
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
     // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 400); return; }
+
+    // Pokud je sekvence hotová, otevřít útočné okno HNED (ne až po 300ms)
+    if (mb.sequenceIndex >= mb.sequence.length) {
+      openAttackWindow();
+      return;
+    }
 
     setTimeout(() => playSequenceAttack(), 300);
   }
