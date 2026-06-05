@@ -354,8 +354,8 @@
     const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
     const progress = state.locationProgress[locId] || 0; // kills on current floor 0-4
     const isBoss = floor >= 9; // boss v 10. patře
-    // První vstup do dungeonu resetuje HP
-    if (floor === 0 && progress === 0) {
+    // Každé nové patro resetuje HP hrdiny
+    if (progress === 0) {
       state.hero.hp = state.hero.maxHp;
     }
     const playerMaxHp = state.hero.maxHp || 100;
