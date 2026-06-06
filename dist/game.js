@@ -811,8 +811,6 @@
     const actionInfo = $('mbActionInfo');
     if (actionInfo) actionInfo.classList.add('hidden');
 
-    resetTimerRing();
-
     mb.sequenceIndex++;
     renderSeqProgress(mb);
 
@@ -820,14 +818,14 @@
     // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
-    // Pokud je sekvence hotová, otevřít útočné okno HNED
-    // Použijeme setTimeout(0) aby reset (opacity:0) stihnul proběhnout
-    // před startem nové animace v openAttackWindow
+    // Pokud je sekvence hotová, otevřít útočné okno — reset ringu necháme na openAttackWindow
     if (mb.sequenceIndex >= mb.sequence.length) {
       setTimeout(() => openAttackWindow(), 0);
       return;
     }
 
+    // Reset ringu až teď, když sekvence pokračuje (ne koliduje s openAttackWindow)
+    resetTimerRing();
     setTimeout(() => playSequenceAttack(), 150);
   }
 
@@ -1141,6 +1139,14 @@
       $('mbHint').textContent = '❌ Zmačkl jsi štít! Měl jsi udeřit ⚔️';
       flashSeqFail();
       missedAttackWindow();
+      return;
+    }
+    if (!mb.currentAttack) { $('mbHint').textContent = '⚠️ Teď není co blokovat!'; return; }
+    if (mb.isWaitAttack) {
+      // Během čekání: blok = chyba
+      clearTimeout(mb._sequenceTimer);
+      $('mbHint').textContent = '❌ Měl jsi čekat ⏳, ne blokovat!';
+      onMapHit();
       return;
     }
     if (!mb.isBlockAttack) { $('mbHint').textContent = '⚠️ Štít tu teď nepotřebuješ!'; return; }
