@@ -383,10 +383,10 @@
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
-    const monsterBase = 30 + progress * 8;
-    const monsterHp = Math.round(monsterBase * (1 + locId * 1.5) + floor * 4);
+    const monsterBase = 30 + progress * 15;
+    const monsterHp = Math.round(monsterBase * (1 + locId * 2.2) + floor * 8);
     const bossBase = 60 + Math.round(loc.boss.hp * 10);
-    const bossHp = Math.round(bossBase * (1 + locId * 0.5) + floor * 8);
+    const bossHp = Math.round(bossBase * (1 + locId * 0.8) + floor * 12);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
@@ -581,7 +581,7 @@
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
   }
 
-  function generateAttack(chances, prevType) {
+  function generateAttack(chances, prevType, locId) {
     const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.liar;
     const randNum = Math.random() * randTotal;
     let type = 'normal';
@@ -593,7 +593,9 @@
     else if (randNum < waitChance + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
-    const baseTime = 700 + rand(0, 200);
+    // Timer se zkracuje s dungeonem — locId 0=700-900ms, locId 6=460-660ms
+    const reduction = (locId || 0) * 40;
+    const baseTime = Math.max(400, 700 + rand(0, 200) - reduction);
     const windowTime = type === 'heavy' ? Math.round(baseTime * 1.5) : baseTime;
     return { dir: DIRECTIONS[rand(0,3)], type, windowTime };
   }
@@ -646,7 +648,7 @@
     mb.sequence = [];
     let prevType = null;
     for (let i = 0; i < seqLen; i++) {
-      const atk = generateAttack(chances, prevType);
+      const atk = generateAttack(chances, prevType, mb.locId);
       prevType = atk.type;
       mb.sequence.push(atk);
     }
@@ -860,8 +862,10 @@
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
-    // Timer ring — 1.5× delší než úhyby (1050-1350ms)
-    const atkTime = Math.round((700 + rand(0, 200)) * 1.5);
+    // Timer ring — 1.5× delší než úhyby, zkracuje se s dungeonem
+    const mb2 = mapBattleState;
+    const atkReduction = (mb2.locId || 0) * 30;
+    const atkTime = Math.round(Math.max(600, (700 + rand(0, 200)) * 1.5 - atkReduction));
     const atkCircle = resetTimerRing();
     requestAnimationFrame(() => {
       startTimerRing(atkCircle, atkTime);
@@ -1247,7 +1251,7 @@
     mb._ringTimer = null;
     mb._sequenceTimer = null;
 
-    const baseBossDmg = Math.max(5, 2 + mb.turn * 2 + mb.locId * 2);
+    const baseBossDmg = Math.max(5, 5 + mb.turn * 4 + mb.locId * 5);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
     let amount = bossDmg;
     if (mb.shieldActive) {
