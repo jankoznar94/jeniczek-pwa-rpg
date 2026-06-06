@@ -302,6 +302,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .mb-spell-cd { font-size:9px;color:#e94560;font-weight:bold; }
 
 /* Map */
+.map-guide-link {
+  text-align:center;font-size:13px;color:#8888aa;padding:4px 0 6px;
+}
+.map-guide-link a { color:#4a7dff;text-decoration:none; }
+.map-guide-link a:hover { text-decoration:underline; }
 .map-scroll { display:flex;flex-direction:column;gap:8px; }
 .map-location {
   display:flex;align-items:center;gap:12px;padding:12px 14px;
@@ -314,6 +319,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .map-location.locked:hover { border-color:#2a2a4a; }
 .map-loc-info { flex:1; min-width:0; }
 .map-loc-name { font-size:15px;font-weight:bold; }
+.map-loc-mechs { font-size:13px;margin-top:2px;letter-spacing:2px; }
 .map-loc-sub { font-size:11px;color:#8888aa; }
 .map-loc-status {
   display:flex; flex-direction:column; align-items:center; gap:2px;
@@ -418,6 +424,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .guide-card.guide-block { border-left: 3px solid #e74c3c; }
 .guide-card.guide-wait { border-left: 3px solid #8a6d9b; }
 .guide-card.guide-inverted { border-left: 3px solid #5fa87a; }
+.guide-card.guide-attack { border-left: 3px solid #d4a038; }
 .guide-icon {
   flex-shrink: 0;
   width: 48px;

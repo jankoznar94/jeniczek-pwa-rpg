@@ -21,6 +21,9 @@
 
 <!-- ===== MAP ===== -->
 <div id="mapScreen" class="container">
+  <div class="map-guide-link">
+    Nový? <a href="#" onclick="game.showScreen('guide')">📖 Podívej se na návod!</a>
+  </div>
   <div class="map-header card">
     <div class="flex-between">
       <span class="card-title">🌍 Svět</span>
@@ -200,9 +203,10 @@
       <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5fa87a" stroke="#5fa87a" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
       <div class="guide-desc">Zelená šipka — <strong>swipni opačným směrem</strong>, než šipka ukazuje. Nahoru = dolů, doleva = doprava.</div>
     </div>
-  </div>
-  <div class="card" style="margin-top:8px">
-    <div class="card-subtitle guide-tip">💡 Po odvrácení všech útoků se otevře <strong>útočné okno</strong>. Klikni na ⚔️ nebo stiskni mezerník, než vyprší čas. Útočná tlačítka i blok se odemykají až po dokončení sekvence úhybů.</div>
+    <div class="guide-card guide-attack">
+      <div class="guide-icon guide-icon-text">⚔️</div>
+      <div class="guide-desc">Po odvrácení všech útoků se otevře <strong>útočné okno</strong>. Klikni na ⚔️ nebo stiskni mezerník, než vyprší čas. Útočná tlačítka i blok se odemykají až po dokončení sekvence úhybů.</div>
+    </div>
   </div>
 </div>
 

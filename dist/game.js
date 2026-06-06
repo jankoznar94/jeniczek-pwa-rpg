@@ -359,6 +359,7 @@
         <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
+            <div class="map-loc-mechs">${getDungeonMechanics(i).join(' ')}</div>
           </div>
           <div class="map-loc-status ${completed?'done':!unlocked?'':'active'}">
             <span class="map-loc-status-icon">${statusIcon}</span>
@@ -598,6 +599,16 @@
     if (locId === 6) return { normal: 55, heavy: 20, block: 15, inverted: 0, wait: 10 };
     if (locId === 7 || locId === 8 || locId === 9) return { normal: 42, heavy: 18, block: 15, inverted: 17, wait: 8 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0 };
+  }
+
+  function getDungeonMechanics(locId) {
+    const c = getDungeonAttackChances(locId);
+    const icons = [];
+    if (c.heavy > 0) icons.push('🟡');
+    if (c.block > 0) icons.push('🛡️');
+    if (c.wait > 0) icons.push('⏳');
+    if (c.inverted > 0) icons.push('🟢');
+    return icons;
   }
 
   function generateAttack(chances, prevType, locId, floor) {
