@@ -845,8 +845,8 @@
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
-    // Timer ring — stejně dlouhý jako na úhyby (700-900ms)
-    const atkTime = 700 + rand(0, 200);
+    // Timer ring — 1.5× delší než úhyby (1050-1350ms)
+    const atkTime = Math.round((700 + rand(0, 200)) * 1.5);
     const atkCircle = resetTimerRing();
     startTimerRing(atkCircle, atkTime);
 
@@ -872,7 +872,7 @@
     if (actInfo2) actInfo2.classList.add('hidden');
     updateActionButtons();
     resetTimerRing();
-    setTimeout(() => mapBattleTurn(), 800);
+    setTimeout(() => mapBattleTurn(), 0); // ihned, žádná prodleva
   }
 
   function doArenaGlow(dir, correct) {
