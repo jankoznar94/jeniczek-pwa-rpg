@@ -234,6 +234,8 @@
     { id:7, name:'🌸 Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:36, bossXp:120, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50} },
     { id:8, name:'☁️ Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:42, bossXp:140, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'} },
     { id:9, name:'🌑 Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:50, bossXp:170, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'} },
+    { id:10, name:'🌀 Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Chaos lord',face:'👾',hp:60}, reward:{gold:100,weapon:'voidBlade'} },
+    { id:11, name:'💀 Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:75, bossXp:250, boss:{name:'Smrták',face:'💀',hp:80}, reward:{gold:150,armor:'voidPlate'} },
   ];
 
   // ===== STATE =====
@@ -591,14 +593,14 @@
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 0 };
     if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 2) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 3) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 15 };
-    if (locId === 4) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 5) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 6) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, twin: 0 };
-    if (locId === 7) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10, twin: 0 };
-    if (locId === 8) return { normal: 55, heavy: 15, block: 15, inverted: 0, wait: 10, twin: 0 };
-    if (locId === 9) return { normal: 35, heavy: 12, block: 15, inverted: 15, wait: 8, twin: 10 };
+    if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, twin: 0 };
+    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 4) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 15 };
+    if (locId === 5) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, twin: 0 };
+    if (locId === 6) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10, twin: 0 };
+    if (locId === 7) return { normal: 55, heavy: 15, block: 15, inverted: 0, wait: 10, twin: 0 };
+    if (locId === 8) return { normal: 45, heavy: 15, block: 15, inverted: 0, wait: 10, twin: 10 };
+    if (locId === 9 || locId === 10 || locId === 11) return { normal: 30, heavy: 15, block: 15, inverted: 17, wait: 8, twin: 10 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, twin: 0 };
   }
 
@@ -701,10 +703,10 @@
 
     // Generovat sekvenci
     const chances = getDungeonAttackChances(mb.locId);
-    // seqLen: locId 8=7, locId 9=10, jinak 5
+    // seqLen: locId 10=7, locId 11=10, jinak 5
     let seqLen = 5;
-    if (mb.locId === 8) seqLen = 7;
-    else if (mb.locId >= 9) seqLen = 10;
+    if (mb.locId === 10) seqLen = 7;
+    else if (mb.locId >= 11) seqLen = 10;
     mb.sequence = [];
     let prevType = null;
     for (let i = 0; i < seqLen; i++) {
@@ -834,9 +836,13 @@
         } else if (attack.type === 'twin') {
           arrow.style.transform = 'translate(-50%, -50%) rotate(0deg)';
           arrow.classList.add('boss-attack-blue');
-          const rotA = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.dir] || 0;
-          const rotB = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.twinDir] || 0;
-          arrow.innerHTML = `<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,-10)" opacity="0.5" style="transform-origin:8px 8px;transform:translate(0,-10px) rotate(${rotA}deg)"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,10)" style="transform-origin:8px 8px;transform:translate(0,10px) rotate(${rotB}deg)"/></g>`;
+          // ⬆️+⬇️ pár
+          if (attack.dir === '⬆️') {
+            arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,-10)" opacity="0.5"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,10)"/></g>';
+          } else {
+            // ⬅️+➡️ pár
+            arrow.innerHTML = '<g><path d="M1 8L8 3L8 5.5L15 5.5L15 10.5L8 10.5L8 13L1 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-10,0)" opacity="0.5"/><path d="M15 8L8 13L8 10.5L1 10.5L1 5.5L8 5.5L8 3L15 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(10,0)"/></g>';
+          }
         } else {
           arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
           if (attack.type === 'inverted') arrow.classList.add('boss-attack-green');
@@ -1185,8 +1191,8 @@
       return;
     } else if (attack.type === 'twin') {
       // Twin: musíš swipnout oba směry (libovolné pořadí)
+      // Špatný nebo už swipnutý směr = zásah
       if (dir !== attack.dir && dir !== attack.twinDir) {
-        // Špatný směr — zásah
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
         mb._ringTimer = null;
@@ -1194,11 +1200,18 @@
         onMapHit();
         return;
       }
-      if (!mb._twinSwipes.includes(dir)) {
-        mb._twinSwipes.push(dir);
-        doArenaGlow(dir, true);
-        playSFX(dodgeSfx);
+      if (mb._twinSwipes.includes(dir)) {
+        // Už swipnuto → zásah
+        clearTimeout(mb._sequenceTimer);
+        clearTimeout(mb._ringTimer);
+        mb._ringTimer = null;
+        mb._sequenceTimer = null;
+        onMapHit();
+        return;
       }
+      mb._twinSwipes.push(dir);
+      doArenaGlow(dir, true);
+      playSFX(dodgeSfx);
       $('mbHint').textContent = `🔷 ${attack.dir}↔${attack.twinDir} — ${mb._twinSwipes.length}/2!`;
       if (mb._twinSwipes.length >= 2) {
         clearTimeout(mb._sequenceTimer);
@@ -1207,7 +1220,6 @@
         mb._sequenceTimer = null;
         advanceSequence();
       }
-      // Po prvním správném swipu NEpropadnout do correct kontroly
       return;
     } else {
       // Normal: musíš uhnout do směru šipky
