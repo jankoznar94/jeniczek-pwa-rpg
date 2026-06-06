@@ -585,18 +585,18 @@
   }
 
   function getFloorTimerMultiplier(floor) {
-    // P1=100%, P2=93%, P3=86%, P4=79%, P5/boss=72%
-    const mults = [1.0, 0.93, 0.86, 0.79, 0.72];
+    // P1=100%, P2=92%, P3=84%, P4=76%, P5/boss=68%
+    const mults = [1.0, 0.92, 0.84, 0.76, 0.68];
     return mults[Math.min(floor, 4)] || 1.0;
   }
 
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 1) return { normal: 50, heavy: 0, block: 50, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 1) return { normal: 65, heavy: 0, block: 35, inverted: 0, wait: 0, twin: 0 };
     if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 3) return { normal: 50, heavy: 50, block: 0, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 4) return { normal: 50, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 50 };
-    if (locId === 5) return { normal: 50, heavy: 0, block: 0, inverted: 50, wait: 0, twin: 0 };
+    if (locId === 3) return { normal: 65, heavy: 35, block: 0, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 4) return { normal: 65, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 35 };
+    if (locId === 5) return { normal: 65, heavy: 0, block: 0, inverted: 35, wait: 0, twin: 0 };
     if (locId === 6) return { normal: 35, heavy: 0, block: 50, inverted: 0, wait: 15, twin: 0 };
     if (locId === 7) return { normal: 25, heavy: 30, block: 30, inverted: 0, wait: 15, twin: 0 };
     if (locId === 8) return { normal: 20, heavy: 25, block: 25, inverted: 0, wait: 15, twin: 15 };
