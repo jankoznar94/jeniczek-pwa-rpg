@@ -553,10 +553,12 @@
 
     const kh = (e) => {
       if (mapBattleState.ended) return;
+      if (e.repeat) return; // ignorovat key repeat (auto-opakování při držení)
       const map = { ArrowUp:'⬆️',ArrowDown:'⬇️',ArrowLeft:'⬅️',ArrowRight:'➡️','w':'⬆️','s':'⬇️','a':'⬅️','d':'➡️' };
       const dir = map[e.key];
       if (dir) { e.preventDefault(); onMapDodge(dir); return; }
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onMapAttack(); }
+      if (e.key === 'Control' || e.key === 'ctrl') { e.preventDefault(); onMapBlock(); }
     };
     window.addEventListener('keydown', kh);
     handlers.push(['keydown', kh]);
