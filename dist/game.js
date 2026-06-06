@@ -65,7 +65,7 @@
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
-  bossBgm.volume = 0.85;
+  bossBgm.volume = 0.80;
 
   // Battle BGM kolekce — 3 stopy, náhodně se střídají po patrech
   const battleBgmTracks = [
@@ -73,7 +73,7 @@
     new Audio('bgm_2.mp3'),
     new Audio('bgm_3.mp3')
   ];
-  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.70; });
+  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.80; });
   let currentBattleIndex = 0; // vybraná stopa pro aktuální patro
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
@@ -85,8 +85,8 @@
     overworldAudio.volume = musicMuted ? 0 : 0.90;
     defeatAudio.volume = musicMuted ? 0 : 0.75;
     winAudio.volume = musicMuted ? 0 : 0.80;
-    bossBgm.volume = musicMuted ? 0 : 0.85;
-    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.70; });
+    bossBgm.volume = musicMuted ? 0 : 0.80;
+    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
   let _currentBattleBgmIdx = 0;
