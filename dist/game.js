@@ -400,11 +400,8 @@
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
-    const minMonster = 20 + locId * 25;
-    const maxMonster = 100 + locId * 100;
-    const monsterHp = Math.round(minMonster + (maxMonster - minMonster) * (progress / 4) + floor * 2);
-    const bossBase = 30 + Math.round(loc.boss.hp * 10);
-    const bossHp = Math.round(bossBase * (1 + locId * 0.25) + floor * 10);
+    const monsterHp = Math.round((35 + locId * 75) + 15 * floor + progress * 5);
+    const bossHp = Math.round(200 + locId * 200 + floor * 30);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
