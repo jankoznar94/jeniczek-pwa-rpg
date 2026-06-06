@@ -524,13 +524,15 @@
       handlers.push(['pointerdown', atkHandler]);
     }
 
-    // Click handler for block button
+    // Click handler for block button (pointerdown = immediate, no 300ms click delay)
     const blkBtn = $('mbBlockBtn');
     if (blkBtn) {
-      blkBtn.addEventListener('click', (e) => {
+      const blkHandler = (e) => {
         e.stopPropagation();
         onMapBlock();
-      });
+      };
+      blkBtn.addEventListener('pointerdown', blkHandler);
+      handlers.push(['pointerdown', blkHandler]);
     }
 
     const ts = (e) => { if (mapBattleState.ended) return; const t=e.touches[0]; startX=t.clientX; startY=t.clientY; };
