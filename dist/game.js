@@ -614,11 +614,22 @@
   function resetTimerRing() {
     const circle = document.querySelector('.timer-circle');
     if (!circle) return null;
-    circle.style.opacity = '0';
-    circle.style.animation = 'none';
-    circle.style.strokeDashoffset = '276';
-    void circle.offsetHeight;
-    return circle;
+    // Vytvořit zbrusu nový circle — DOM výměna je jediný spolehlivý reset CSS animace
+    const parent = circle.parentNode;
+    if (!parent) return null;
+    const fresh = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    for (let i = 0; i < circle.attributes.length; i++) {
+      const attr = circle.attributes[i];
+      fresh.setAttribute(attr.name, attr.value);
+    }
+    fresh.style.opacity = '0';
+    fresh.style.animation = 'none';
+    fresh.style.strokeDashoffset = '276';
+    fresh.classList.add('timer-circle');
+    parent.replaceChild(fresh, circle);
+    // Vynutit reflow na novém elementu
+    void fresh.offsetHeight;
+    return fresh;
   }
 
   function startTimerRing(circle, durationMs) {
@@ -786,7 +797,7 @@
     const seqStr = `[${mb.sequenceIndex+1}/${mb.sequence.length}]`;
     $('mbHint').textContent = `${seqStr} ${getAttackHint(attack)}`;
 
-    // Timer ring - počkat na vykreslení resetu, pak spustit animaci
+    // Timer ring - počkat na vykreslení resetu (fresh circle), pak spustit animaci
     requestAnimationFrame(() => {
       startTimerRing(circle, windowTime);
     });
