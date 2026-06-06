@@ -585,8 +585,8 @@
   }
 
   function getFloorTimerMultiplier(floor) {
-    // P1=100%, P2=90%, P3=80%, P4=70%, P5/boss=50%
-    const mults = [1.0, 0.9, 0.8, 0.7, 0.5];
+    // P1=100%, P2=93%, P3=86%, P4=79%, P5/boss=72%
+    const mults = [1.0, 0.93, 0.86, 0.79, 0.72];
     return mults[Math.min(floor, 4)] || 1.0;
   }
 
