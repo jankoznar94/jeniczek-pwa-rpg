@@ -577,15 +577,18 @@
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
   }
 
-  function generateAttack(chances) {
+  function generateAttack(chances, prevType) {
     const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.liar;
     const randNum = Math.random() * randTotal;
     let type = 'normal';
-    if (randNum < chances.wait) { type = 'wait'; }
-    else if (randNum < chances.wait + chances.inverted) { type = 'inverted'; }
-    else if (randNum < chances.wait + chances.inverted + chances.block) { type = 'block'; }
-    else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
-    else if (randNum < chances.wait + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
+    // Anti-repetice: pokud byl předchozí wait, sniž šanci na další wait na polovinu
+    let waitChance = chances.wait;
+    if (prevType === 'wait') waitChance = Math.round(waitChance / 2);
+    if (randNum < waitChance) { type = 'wait'; }
+    else if (randNum < waitChance + chances.inverted) { type = 'inverted'; }
+    else if (randNum < waitChance + chances.inverted + chances.block) { type = 'block'; }
+    else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
+    else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
     const baseTime = 700 + rand(0, 200);
     const windowTime = type === 'heavy' ? Math.round(baseTime * 1.5) : baseTime;
     return { dir: DIRECTIONS[rand(0,3)], type, windowTime };
@@ -637,8 +640,11 @@
     const chances = getDungeonAttackChances(mb.locId);
     const seqLen = 5;
     mb.sequence = [];
+    let prevType = null;
     for (let i = 0; i < seqLen; i++) {
-      mb.sequence.push(generateAttack(chances));
+      const atk = generateAttack(chances, prevType);
+      prevType = atk.type;
+      mb.sequence.push(atk);
     }
     mb.sequenceIndex = 0;
     mb.inAttackWindow = false;
