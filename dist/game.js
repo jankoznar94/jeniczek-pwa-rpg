@@ -600,13 +600,17 @@
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0 };
   }
 
+  const _arrowSvg = (fill, extra = '') =>
+    `<svg viewBox="0 0 16 16" width="22" height="22"><path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+
   function getDungeonMechanics(locId) {
     const c = getDungeonAttackChances(locId);
     const icons = [];
-    if (c.heavy > 0) icons.push('🟡');
+    icons.push(_arrowSvg('#bbb')); // normální úhyb — vždy
+    if (c.heavy > 0) icons.push(_arrowSvg('#c4a84c', ' transform="translate(-3,0)" opacity="0.5"') + _arrowSvg('#c4a84c', ' transform="translate(3,0)"'));
     if (c.block > 0) icons.push('🛡️');
     if (c.wait > 0) icons.push('⏳');
-    if (c.inverted > 0) icons.push('🟢');
+    if (c.inverted > 0) icons.push(_arrowSvg('#5fa87a'));
     return icons;
   }
 

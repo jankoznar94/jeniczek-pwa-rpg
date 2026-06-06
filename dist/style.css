@@ -319,7 +319,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .map-location.locked:hover { border-color:#2a2a4a; }
 .map-loc-info { flex:1; min-width:0; }
 .map-loc-name { font-size:15px;font-weight:bold; }
-.map-loc-mechs { font-size:13px;margin-top:2px;letter-spacing:2px; }
+.map-loc-mechs { font-size:13px;margin-top:6px;letter-spacing:2px; display:flex;gap:4px;flex-wrap:wrap; }
 .map-loc-sub { font-size:11px;color:#8888aa; }
 .map-loc-status {
   display:flex; flex-direction:column; align-items:center; gap:2px;
