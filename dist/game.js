@@ -605,17 +605,17 @@
   }
 
   const _arrowSvg = (fill, extra = '') =>
-    `<svg viewBox="0 0 16 16" width="22" height="22"><path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+    `<svg viewBox="0 0 16 16" width="26" height="26"><path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 
   function getDungeonMechanics(locId) {
     const c = getDungeonAttackChances(locId);
     const icons = [];
     icons.push(_arrowSvg('#bbb')); // normální úhyb — vždy
     if (c.heavy > 0) icons.push(_arrowSvg('#c4a84c'));
-    if (c.block > 0) icons.push('<span style="font-size:20px">🛡️</span>');
-    if (c.wait > 0) icons.push('<span style="font-size:20px">⏳</span>');
+    if (c.block > 0) icons.push('<span style="font-size:26px">🛡️</span>');
+    if (c.wait > 0) icons.push('<span style="font-size:26px">⏳</span>');
     if (c.inverted > 0) icons.push(_arrowSvg('#5fa87a'));
-    if (c.twin > 0) icons.push('<svg viewBox="0 -2 16 22" width="22" height="26"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,-3.5)"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,3.5)"/></svg>');
+    if (c.twin > 0) icons.push('<svg viewBox="0 -2 18 22" width="26" height="26"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-2.5,0)"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(2.5,0)"/></svg>');
     return icons;
   }
 
