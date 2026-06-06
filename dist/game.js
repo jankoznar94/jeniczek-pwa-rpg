@@ -597,10 +597,10 @@
     if (locId === 3) return { normal: 50, heavy: 50, block: 0, inverted: 0, wait: 0, twin: 0 };
     if (locId === 4) return { normal: 50, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 50 };
     if (locId === 5) return { normal: 50, heavy: 0, block: 0, inverted: 50, wait: 0, twin: 0 };
-    if (locId === 6) return { normal: 55, heavy: 0, block: 30, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 7) return { normal: 35, heavy: 25, block: 25, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 8) return { normal: 25, heavy: 20, block: 20, inverted: 0, wait: 15, twin: 20 };
-    if (locId === 9 || locId === 10 || locId === 11) return { normal: 25, heavy: 15, block: 15, inverted: 15, wait: 15, twin: 15 };
+    if (locId === 6) return { normal: 35, heavy: 0, block: 50, inverted: 0, wait: 15, twin: 0 };
+    if (locId === 7) return { normal: 25, heavy: 30, block: 30, inverted: 0, wait: 15, twin: 0 };
+    if (locId === 8) return { normal: 20, heavy: 25, block: 25, inverted: 0, wait: 15, twin: 15 };
+    if (locId === 9 || locId === 10 || locId === 11) return { normal: 20, heavy: 16, block: 16, inverted: 16, wait: 15, twin: 17 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, twin: 0 };
   }
 
