@@ -422,8 +422,8 @@
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
-      isInvertedAttack: false, isWaitAttack: false,
-      _heavySwipes: 0 // pro žluté šipky — kolikrát už hráč swipnul správně
+      isInvertedAttack: false, isWaitAttack: false, isTwinAttack: false,
+      _heavySwipes: 0, _twinSwipes: [] // twin: které směry už hráč swipnul
     };
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
@@ -589,15 +589,16 @@
   }
 
   function getDungeonAttackChances(locId) {
-    if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0 };
-    if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0 };
-    if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15 };
-    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0 };
-    if (locId === 4) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0 };
-    if (locId === 5) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10 };
-    if (locId === 6) return { normal: 55, heavy: 20, block: 15, inverted: 0, wait: 10 };
-    if (locId === 7 || locId === 8 || locId === 9) return { normal: 42, heavy: 18, block: 15, inverted: 17, wait: 8 };
-    return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0 };
+    if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, twin: 0 };
+    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 4) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, twin: 0 };
+    if (locId === 5) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10, twin: 0 };
+    if (locId === 6) return { normal: 55, heavy: 20, block: 15, inverted: 0, wait: 10, twin: 0 };
+    if (locId === 7) return { normal: 45, heavy: 10, block: 15, inverted: 0, wait: 10, twin: 10 };
+    if (locId === 8 || locId === 9) return { normal: 37, heavy: 10, block: 15, inverted: 17, wait: 8, twin: 10 };
+    return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, twin: 0 };
   }
 
   const _arrowSvg = (fill, extra = '') =>
@@ -611,11 +612,12 @@
     if (c.block > 0) icons.push('<span style="font-size:20px">🛡️</span>');
     if (c.wait > 0) icons.push('<span style="font-size:20px">⏳</span>');
     if (c.inverted > 0) icons.push(_arrowSvg('#5fa87a'));
+    if (c.twin > 0) icons.push(_arrowSvg('#5a8aaa'));
     return icons;
   }
 
   function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait;
+    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.twin;
     const randNum = Math.random() * randTotal;
     let type = 'normal';
     // Anti-repetice: pokud byl předchozí wait, sniž šanci na další wait na polovinu
@@ -625,19 +627,29 @@
     else if (randNum < waitChance + chances.inverted) { type = 'inverted'; }
     else if (randNum < waitChance + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
+    else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.twin) { type = 'twin'; }
     // Timer: base 1000ms, floor multiplikátor (P1=1000, P5/boss=500ms)
     const mult = getFloorTimerMultiplier(floor || 0);
     const baseTime = Math.round(1000 * mult);
     // Malá náhoda ±10% pro pestrost
     const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
-    const windowTime = type === 'heavy' ? Math.round(jitter * 1.5) : jitter;
-    return { dir: DIRECTIONS[rand(0,3)], type, windowTime };
+    const windowTime = (type === 'heavy' || type === 'twin') ? Math.round(jitter * 1.5) : jitter;
+    const dir = DIRECTIONS[rand(0,3)];
+    if (type === 'twin') {
+      // Dvojitá šipka: vyber protichůdný pár (nahoru-dolů nebo vlevo-vpravo)
+      const pairs = [['⬆️','⬇️'], ['⬅️','➡️']];
+      const pair = pairs[rand(0,1)];
+      const dirA = pair[0], dirB = pair[1];
+      return { type, dir: dirA, twinDir: dirB, windowTime };
+    }
+    return { dir, type, windowTime };
   }
 
   function getAttackHint(attack) {
     const dir = attack.dir;
     if (attack.type === 'normal') return `${dir} ⚫ Normální — uhni!`;
     if (attack.type === 'heavy') return `${dir} 🟡 Heavy — 2× ${dir}!`;
+    if (attack.type === 'twin') return `${dir}↔${attack.twinDir} 🔷 Twin — oba směry!`;
     if (attack.type === 'block') return `🛡️ ${dir} 🔴 Zákeřný — použij ŠTÍT!`;
     if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
     if (attack.type === 'wait') return `⏳ Počkej — nic nedělej!`;
@@ -782,6 +794,7 @@
     mb.isBlockAttack = attack.type === 'block';
     mb.isInvertedAttack = attack.type === 'inverted';
     mb.isWaitAttack = attack.type === 'wait';
+    mb.isTwinAttack = attack.type === 'twin';
     mb._hitProcessed = false; // reset guard pro aktuální útok
 
     const windowTime = attack.windowTime;
@@ -817,6 +830,12 @@
         if (attack.type === 'heavy') {
           arrow.classList.add('boss-attack-yellow');
           arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g>';
+        } else if (attack.type === 'twin') {
+          arrow.style.transform = 'translate(-50%, -50%) rotate(0deg)';
+          arrow.classList.add('boss-attack-blue');
+          const rotA = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.dir] || 0;
+          const rotB = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.twinDir] || 0;
+          arrow.innerHTML = `<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,-10)" opacity="0.5" style="transform-origin:8px 8px;transform:translate(0,-10px) rotate(${rotA}deg)"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,10)" style="transform-origin:8px 8px;transform:translate(0,10px) rotate(${rotB}deg)"/></g>`;
         } else {
           arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
           if (attack.type === 'inverted') arrow.classList.add('boss-attack-green');
@@ -862,7 +881,9 @@
     mb.isBlockAttack = false;
     mb.isInvertedAttack = false;
     mb.isWaitAttack = false;
+    mb.isTwinAttack = false;
     mb._heavySwipes = 0;
+    mb._twinSwipes = [];
 
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
@@ -1153,6 +1174,32 @@
       playSFX(dodgeSfx);
       $('mbHint').textContent = `🟡 ${attack.dir} Heavy — ${mb._heavySwipes}/2!`;
       if (mb._heavySwipes >= 2) {
+        clearTimeout(mb._sequenceTimer);
+        clearTimeout(mb._ringTimer);
+        mb._ringTimer = null;
+        mb._sequenceTimer = null;
+        advanceSequence();
+      }
+      // Po prvním správném swipu NEpropadnout do correct kontroly
+      return;
+    } else if (attack.type === 'twin') {
+      // Twin: musíš swipnout oba směry (libovolné pořadí)
+      if (dir !== attack.dir && dir !== attack.twinDir) {
+        // Špatný směr — zásah
+        clearTimeout(mb._sequenceTimer);
+        clearTimeout(mb._ringTimer);
+        mb._ringTimer = null;
+        mb._sequenceTimer = null;
+        onMapHit();
+        return;
+      }
+      if (!mb._twinSwipes.includes(dir)) {
+        mb._twinSwipes.push(dir);
+        doArenaGlow(dir, true);
+        playSFX(dodgeSfx);
+      }
+      $('mbHint').textContent = `🔷 ${attack.dir}↔${attack.twinDir} — ${mb._twinSwipes.length}/2!`;
+      if (mb._twinSwipes.length >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
         mb._ringTimer = null;
