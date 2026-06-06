@@ -608,8 +608,8 @@
     const icons = [];
     icons.push(_arrowSvg('#bbb')); // normální úhyb — vždy
     if (c.heavy > 0) icons.push(_arrowSvg('#c4a84c'));
-    if (c.block > 0) icons.push('<span style="font-size:22px">🛡️</span>');
-    if (c.wait > 0) icons.push('<span style="font-size:22px">⏳</span>');
+    if (c.block > 0) icons.push('<span style="font-size:20px">🛡️</span>');
+    if (c.wait > 0) icons.push('<span style="font-size:20px">⏳</span>');
     if (c.inverted > 0) icons.push(_arrowSvg('#5fa87a'));
     return icons;
   }
