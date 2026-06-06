@@ -1858,9 +1858,9 @@
     state = loadSave();
     SKILLS.forEach(sk => { if (state.skills[sk.id] === undefined) state.skills[sk.id] = 0; if (state.skillXp[sk.id] === undefined) state.skillXp[sk.id] = 0; });
 
-    if (!state.bossesDefeated || state.bossesDefeated.length < 5) state.bossesDefeated = [false,false,false,false,false];
-    if (!state.locationProgress || state.locationProgress.length < 5) state.locationProgress = [0,0,0,0,0];
-    if (!state.floorProgress || state.floorProgress.length < 5) state.floorProgress = [0,0,0,0,0];
+    if (!state.bossesDefeated || state.bossesDefeated.length < LOCATIONS.length) state.bossesDefeated = Array(LOCATIONS.length).fill(false);
+    if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
+    if (!state.floorProgress || state.floorProgress.length < LOCATIONS.length) state.floorProgress = Array(LOCATIONS.length).fill(0);
     if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:'rags'}, attrStr:0, attrVit:0, attrPoints:0 };
     if (state.hero.maxHp === undefined) state.hero.maxHp = getHeroMaxHp();
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
