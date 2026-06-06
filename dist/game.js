@@ -319,7 +319,6 @@
   }
   function renderMap() {
     const h = state.hero;
-    $('mapPlayerInfo').textContent = `❤️${h.maxHp} ⚔️${h.baseDmg} Lv.${h.level} 💰${h.gold}`;
     const done = state.bossesDefeated.filter(Boolean).length;
     $('mapProgress').textContent = `👹 Porazeno: ${done}/${LOCATIONS.length} bossů`;
 
