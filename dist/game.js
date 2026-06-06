@@ -157,23 +157,23 @@
   const ITEMS = [
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊' },
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢' },
-    { id:'dagger', name:'Dýka', type:'weapon', baseDmg:5, bonusHp:0, cost:15, icon:'🗡️' },
-    { id:'leather', name:'Kožená zbroj', type:'armor', baseDmg:0, bonusHp:10, cost:20, icon:'🧥' },
-    { id:'shortsword', name:'Krátký meč', type:'weapon', baseDmg:7, bonusHp:0, cost:25, icon:'⚔️' },
-    { id:'sword', name:'Meč', type:'weapon', baseDmg:8, bonusHp:0, cost:30, icon:'⚔️' },
-    { id:'chainmail', name:'Kroužková pletva', type:'armor', baseDmg:0, bonusHp:20, cost:35, icon:'🛡️' },
-    { id:'battleAxe', name:'Válečná sekera', type:'weapon', baseDmg:10, bonusHp:0, cost:45, icon:'🪓' },
-    { id:'spear', name:'Kopí', type:'weapon', baseDmg:12, bonusHp:0, cost:55, icon:'🔱' },
-    { id:'flameSword', name:'Plamenový meč', type:'weapon', baseDmg:14, bonusHp:0, cost:70, icon:'🔥' },
-    { id:'scale', name:'Šupinová zbroj', type:'armor', baseDmg:0, bonusHp:35, cost:60, icon:'🐉' },
-    { id:'plate', name:'Plná zbroj', type:'armor', baseDmg:0, bonusHp:45, cost:80, icon:'🛡️' },
-    { id:'longsword', name:'Dlouhý meč', type:'weapon', baseDmg:16, bonusHp:0, cost:95, icon:'⚔️' },
-    { id:'warHammer', name:'Válečné kladivo', type:'weapon', baseDmg:19, bonusHp:0, cost:120, icon:'🔨' },
-    { id:'fullPlate', name:'Plná plátová zbroj', type:'armor', baseDmg:0, bonusHp:60, cost:110, icon:'🛡️' },
-    { id:'greatAxe', name:'Obouruční sekera', type:'weapon', baseDmg:23, bonusHp:0, cost:150, icon:'🪓' },
-    { id:'dragonScale', name:'Dračí šupiny', type:'armor', baseDmg:0, bonusHp:80, cost:160, icon:'🐲' },
-    { id:'excalibur', name:'Excalibur', type:'weapon', baseDmg:28, bonusHp:20, cost:220, icon:'⚡' },
-    { id:'adamantPlate', name:'Adamantitová zbroj', type:'armor', baseDmg:0, bonusHp:110, cost:250, icon:'💎' },
+    { id:'dagger', name:'Dýka', type:'weapon', baseDmg:25, bonusHp:0, cost:15, icon:'🗡️' },
+    { id:'leather', name:'Kožená zbroj', type:'armor', baseDmg:0, bonusHp:30, cost:20, icon:'🧥' },
+    { id:'shortsword', name:'Krátký meč', type:'weapon', baseDmg:35, bonusHp:0, cost:25, icon:'⚔️' },
+    { id:'sword', name:'Meč', type:'weapon', baseDmg:40, bonusHp:0, cost:30, icon:'⚔️' },
+    { id:'chainmail', name:'Kroužková pletva', type:'armor', baseDmg:0, bonusHp:60, cost:35, icon:'🛡️' },
+    { id:'battleAxe', name:'Válečná sekera', type:'weapon', baseDmg:50, bonusHp:0, cost:45, icon:'🪓' },
+    { id:'spear', name:'Kopí', type:'weapon', baseDmg:60, bonusHp:0, cost:55, icon:'🔱' },
+    { id:'flameSword', name:'Plamenový meč', type:'weapon', baseDmg:70, bonusHp:0, cost:70, icon:'🔥' },
+    { id:'scale', name:'Šupinová zbroj', type:'armor', baseDmg:0, bonusHp:105, cost:60, icon:'🐉' },
+    { id:'plate', name:'Plná zbroj', type:'armor', baseDmg:0, bonusHp:135, cost:80, icon:'🛡️' },
+    { id:'longsword', name:'Dlouhý meč', type:'weapon', baseDmg:80, bonusHp:0, cost:95, icon:'⚔️' },
+    { id:'warHammer', name:'Válečné kladivo', type:'weapon', baseDmg:95, bonusHp:0, cost:120, icon:'🔨' },
+    { id:'fullPlate', name:'Plná plátová zbroj', type:'armor', baseDmg:0, bonusHp:180, cost:110, icon:'🛡️' },
+    { id:'greatAxe', name:'Obouruční sekera', type:'weapon', baseDmg:115, bonusHp:0, cost:150, icon:'🪓' },
+    { id:'dragonScale', name:'Dračí šupiny', type:'armor', baseDmg:0, bonusHp:240, cost:160, icon:'🐲' },
+    { id:'excalibur', name:'Excalibur', type:'weapon', baseDmg:140, bonusHp:60, cost:220, icon:'⚡' },
+    { id:'adamantPlate', name:'Adamantitová zbroj', type:'armor', baseDmg:0, bonusHp:330, cost:250, icon:'💎' },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
 
@@ -400,10 +400,10 @@
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
-    const monsterBase = 30 + progress * 15;
-    const monsterHp = Math.round(monsterBase * (1 + locId * 2.2) + floor * 8);
-    const bossBase = 60 + Math.round(loc.boss.hp * 10);
-    const bossHp = Math.round(bossBase * (1 + locId * 0.8) + floor * 12);
+    const monsterBase = 20 + progress * 10;
+    const monsterHp = Math.round(monsterBase * (1 + locId * 0.4) + floor * 5);
+    const bossBase = 40 + Math.round(loc.boss.hp * 8);
+    const bossHp = Math.round(bossBase * (1 + locId * 0.25) + floor * 8);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
