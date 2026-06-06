@@ -184,6 +184,11 @@
     ['🐙','🦈','🐟','🦀','🐚','🐳','🪼','🐠'],
     ['👹','🐉','🔥','👺','💀','🗿','⚔️','🦅'],
     ['👻','❄️','🧊','🐺','🦅','⛄','🧝','🌨️'],
+    ['⚡','🤖','🔮','👁️','🌀','🧙','🕳️','💫'],
+    ['🪨','⛏️','🐭','🕷️','🦇','💎','🧌','🐜'],
+    ['🌿','🌸','🦋','🐞','🌺','🍃','🌈','🕊️'],
+    ['☁️','🏰','🦄','✨','🌙','⭐','🪽','👼'],
+    ['💀','☠️','🖤','🔪','🩸','👁️‍🗨️','🌑','🐦‍⬛'],
   ];
   const MONSTER_NAMES = [
     ['Víla','Skřítek','Muchomůrka','Vlk','Jelen','Motýl','Veverka','Kanec'],
@@ -191,6 +196,11 @@
     ['Chobotnice','Žralok','Ryba','Krab','Mušle','Velryba','Medúza','Rybička'],
     ['Pekelník','Drak','Ohnivec','Démon','Kostlivec','Golem','Meč','Sup'],
     ['Duch','Sníh','Zamrzlec','Vlk','Sokol','Sněhulák','Elf','Vánice'],
+    ['Blesk','Golem','Mág','Vidoucí','Vortex','Čaroděj','Trhlina','Hvězda'],
+    ['Skaloun','Kopáč','Netopýr','Pavouk','Krysa','Drahokam','Troll','Mravenec'],
+    ['Kvítek','Jaro','Motýl','Beruška','Růže','Lístek','Duha','Holubice'],
+    ['Oblak','Strážce','Jednorožec','Třpyt','Luna','Hvězda','Anděl','Křídlo'],
+    ['Smrt','Mor','Tma','Čepel','Krev','Stín','Měsíc','Havran'],
   ];
 
   // ===== LOCATIONS (MAP) =====
@@ -214,11 +224,16 @@
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const LOCATIONS = [
-    { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:5, bossXp:15, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
-    { id:1, name:'🏜️ Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:8, bossXp:25, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
-    { id:2, name:'🌊 Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:10, xpReward:12, bossXp:35, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'} },
-    { id:3, name:'🔥 Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20} },
-    { id:4, name:'❄️ Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:20, bossXp:65, boss:{name:'Ledový král',face:'❄️',hp:20}, reward:{gold:25,armor:'chainmail'} },
+    { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:5, bossXp:15, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
+    { id:1, name:'🏜️ Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:8, bossXp:25, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
+    { id:2, name:'🌊 Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:12, bossXp:35, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'} },
+    { id:3, name:'🔥 Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20} },
+    { id:4, name:'❄️ Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:20, bossXp:65, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'} },
+    { id:5, name:'⚡ Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:25, bossXp:80, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30} },
+    { id:6, name:'💎 Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:30, bossXp:100, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'} },
+    { id:7, name:'🌸 Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:36, bossXp:120, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50} },
+    { id:8, name:'☁️ Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:42, bossXp:140, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'} },
+    { id:9, name:'🌑 Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:50, bossXp:170, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'} },
   ];
 
   // ===== STATE =====
@@ -248,7 +263,7 @@
   function defaultState() {
     // ITEMS: fists (baseDmg:2), rags (bonusHp:0), dagger (baseDmg:5), sword (baseDmg:8), flameSword (baseDmg:12), chainmail (bonusHp:20), plate (bonusHp:40)
     const s = { skills:{}, skillXp:{}, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0] };
+      locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0] };
     SKILLS.forEach(sk => { s.skills[sk.id]=0; s.skillXp[sk.id]=0; });
     return s;
   }
@@ -318,13 +333,13 @@
       let statusIcon, statusText;
       if (completed) { statusIcon = '✅'; statusText = 'Hotovo'; }
       else if (!unlocked) { statusIcon = '🔒'; statusText = 'Zamčeno'; }
-      else if (curFloor >= 9) { statusIcon = '👹'; statusText = 'BOSS!'; }
+      else if (curFloor >= 4) { statusIcon = '👹'; statusText = 'BOSS!'; }
       else { statusIcon = '👾'; statusText = `P${curFloor+1}: ${curProgress}/${loc.monsters}`; }
-      // Floor sub-cards P1-P10
+      // Floor sub-cards P1-P5
       let floorHtml = '';
       if (unlocked && expanded) {
-        for (let f = 0; f < 10; f++) {
-          const isBossFloor = f >= 9;
+        for (let f = 0; f < 5; f++) {
+          const isBossFloor = f >= 4;
           const floorDone = completed || f < curFloor;
           const lockedFloor = false; // DEBUG: odemčeno (původně f > curFloor && !completed)
           let fIcon, fText;
@@ -373,9 +388,9 @@
   function startLocation(locId) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
+    const floor = state.floorProgress[locId] || 0; // 0-4 (0=patro1, 4=boss)
     const progress = state.locationProgress[locId] || 0; // kills on current floor 0-4
-    const isBoss = floor >= 9; // boss v 10. patře
+    const isBoss = floor >= 4; // boss v 5. patře
     // Každé nové patro resetuje HP hrdiny
     if (progress === 0) {
       state.hero.hp = state.hero.maxHp;
@@ -438,7 +453,7 @@
     if (!mb.loc) return;
     if (mb.isBoss) {
       $('mbEnemyName').textContent = `${mb.loc.boss.face} ${mb.loc.boss.name}`;
-      $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P10`;
+      $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P5`;
     } else {
       const floorStr = `P${mb.floor+1}`;
       $('mbEnemyName').textContent = `${mb.monsterFace} ${mb.currentMonsterName}`;
@@ -567,21 +582,25 @@
     arena._mbHandlers = handlers;
   }
 
+  function getFloorTimerMultiplier(floor) {
+    // P1=100%, P2=90%, P3=80%, P4=70%, P5/boss=50%
+    const mults = [1.0, 0.9, 0.8, 0.7, 0.5];
+    return mults[Math.min(floor, 4)] || 1.0;
+  }
+
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, liar: 0 };
-    if (locId === 1) return { normal: 90, heavy: 0, block: 10, inverted: 0, wait: 0, liar: 0 };
-    // locId 2: heavy (žluté — 2× swipe) od 3. dungeonu, wait až od 4.
-    if (locId === 2) return { normal: 60, heavy: 25, block: 15, inverted: 0, wait: 0, liar: 0 };
-    // locId 3: wait (čekání — ⏳) od 4. dungeonu, inverted zatím ne
-    if (locId === 3) return { normal: 55, heavy: 15, block: 15, inverted: 0, wait: 15, liar: 0 };
-    // locId 4: inverted (zelené) až od 5. dungeonu
-    if (locId === 4) return { normal: 45, heavy: 10, block: 15, inverted: 20, wait: 10, liar: 0 };
-    if (locId === 5) return { normal: 35, heavy: 10, block: 15, inverted: 15, wait: 10, liar: 15 };
-    if (locId === 6) return { normal: 30, heavy: 5, block: 20, inverted: 20, wait: 10, liar: 15 };
+    if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0, liar: 0 };
+    if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, liar: 0 };
+    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, liar: 0 };
+    if (locId === 4) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, liar: 0 };
+    if (locId === 5) return { normal: 65, heavy: 0, block: 15, inverted: 0, wait: 20, liar: 0 };
+    if (locId === 6) return { normal: 45, heavy: 15, block: 15, inverted: 0, wait: 25, liar: 0 };
+    if (locId === 7 || locId === 8 || locId === 9) return { normal: 35, heavy: 15, block: 15, inverted: 15, wait: 20, liar: 0 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
   }
 
-  function generateAttack(chances, prevType, locId) {
+  function generateAttack(chances, prevType, locId, floor) {
     const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.liar;
     const randNum = Math.random() * randTotal;
     let type = 'normal';
@@ -593,10 +612,12 @@
     else if (randNum < waitChance + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
-    // Timer se zkracuje s dungeonem — locId 0=700-900ms, locId 6=460-660ms
-    const reduction = (locId || 0) * 40;
-    const baseTime = Math.max(400, 700 + rand(0, 200) - reduction);
-    const windowTime = type === 'heavy' ? Math.round(baseTime * 1.5) : baseTime;
+    // Timer: base 1000ms, floor multiplikátor (P1=1000, P5/boss=500ms)
+    const mult = getFloorTimerMultiplier(floor || 0);
+    const baseTime = Math.round(1000 * mult);
+    // Malá náhoda ±10% pro pestrost
+    const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
+    const windowTime = type === 'heavy' ? Math.round(jitter * 1.5) : jitter;
     return { dir: DIRECTIONS[rand(0,3)], type, windowTime };
   }
 
@@ -653,13 +674,16 @@
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     mb.baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + (state.hero.attrStr||0)*2;
 
-    // Generovat sekvenci 5-10 útoků
+    // Generovat sekvenci
     const chances = getDungeonAttackChances(mb.locId);
-    const seqLen = 5;
+    // seqLen: locId 8=7, locId 9=10, jinak 5
+    let seqLen = 5;
+    if (mb.locId === 8) seqLen = 7;
+    else if (mb.locId >= 9) seqLen = 10;
     mb.sequence = [];
     let prevType = null;
     for (let i = 0; i < seqLen; i++) {
-      const atk = generateAttack(chances, prevType, mb.locId);
+      const atk = generateAttack(chances, prevType, mb.locId, mb.floor);
       prevType = atk.type;
       mb.sequence.push(atk);
     }
@@ -873,10 +897,10 @@
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
-    // Timer ring — 1.5× delší než úhyby, zkracuje se s dungeonem
+    // Timer ring — 1.5× delší než úhyby (podle patra)
     const mb2 = mapBattleState;
-    const atkReduction = (mb2.locId || 0) * 30;
-    const atkTime = Math.round(Math.max(600, (700 + rand(0, 200)) * 1.5 - atkReduction));
+    const floorMult = getFloorTimerMultiplier(mb2.floor);
+    const atkTime = Math.round(Math.max(400, 1000 * floorMult * 1.5));
     const atkCircle = resetTimerRing();
     requestAnimationFrame(() => {
       startTimerRing(atkCircle, atkTime);
