@@ -422,7 +422,7 @@
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
-      isInvertedAttack: false, isWaitAttack: false, isLiarAttack: false,
+      isInvertedAttack: false, isWaitAttack: false,
       _heavySwipes: 0 // pro žluté šipky — kolikrát už hráč swipnul správně
     };
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
@@ -589,19 +589,19 @@
   }
 
   function getDungeonAttackChances(locId) {
-    if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, liar: 0 };
-    if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0, liar: 0 };
-    if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, liar: 0 };
-    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, liar: 0 };
-    if (locId === 4) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, liar: 0 };
-    if (locId === 5) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10, liar: 0 };
-    if (locId === 6) return { normal: 55, heavy: 20, block: 15, inverted: 0, wait: 10, liar: 0 };
-    if (locId === 7 || locId === 8 || locId === 9) return { normal: 42, heavy: 18, block: 15, inverted: 17, wait: 8, liar: 0 };
-    return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
+    if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0 };
+    if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0 };
+    if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15 };
+    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0 };
+    if (locId === 4) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0 };
+    if (locId === 5) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10 };
+    if (locId === 6) return { normal: 55, heavy: 20, block: 15, inverted: 0, wait: 10 };
+    if (locId === 7 || locId === 8 || locId === 9) return { normal: 42, heavy: 18, block: 15, inverted: 17, wait: 8 };
+    return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0 };
   }
 
   function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.liar;
+    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait;
     const randNum = Math.random() * randTotal;
     let type = 'normal';
     // Anti-repetice: pokud byl předchozí wait, sniž šanci na další wait na polovinu
@@ -611,7 +611,6 @@
     else if (randNum < waitChance + chances.inverted) { type = 'inverted'; }
     else if (randNum < waitChance + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
-    else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.liar) { type = 'liar'; }
     // Timer: base 1000ms, floor multiplikátor (P1=1000, P5/boss=500ms)
     const mult = getFloorTimerMultiplier(floor || 0);
     const baseTime = Math.round(1000 * mult);
@@ -627,7 +626,6 @@
     if (attack.type === 'heavy') return `${dir} 🟡 Heavy — 2× ${dir}!`;
     if (attack.type === 'block') return `🛡️ ${dir} 🔴 Zákeřný — použij ŠTÍT!`;
     if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
-    if (attack.type === 'liar') return `${dir} 🔴 Lhář — NESMÍŠ do šipky!`;
     if (attack.type === 'wait') return `⏳ Počkej — nic nedělej!`;
     return `${dir} uhni!`;
   }
@@ -769,7 +767,6 @@
     mb.isHeavyAttack = attack.type === 'heavy';
     mb.isBlockAttack = attack.type === 'block';
     mb.isInvertedAttack = attack.type === 'inverted';
-    mb.isLiarAttack = attack.type === 'liar';
     mb.isWaitAttack = attack.type === 'wait';
     mb._hitProcessed = false; // reset guard pro aktuální útok
 
@@ -809,7 +806,6 @@
         } else {
           arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
           if (attack.type === 'inverted') arrow.classList.add('boss-attack-green');
-          else if (attack.type === 'liar') arrow.classList.add('boss-attack-red');
           else if (attack.type === 'wait') arrow.classList.add('boss-attack-purple');
         }
       }
@@ -852,7 +848,6 @@
     mb.isBlockAttack = false;
     mb.isInvertedAttack = false;
     mb.isWaitAttack = false;
-    mb.isLiarAttack = false;
     mb._heavySwipes = 0;
 
     const arrow = $('mbArrow');
@@ -1117,16 +1112,6 @@
       // Čekání: jakýkoli pohyb = zásah
       onMapHit();
       return;
-    } else if (attack.type === 'liar') {
-      // Lhář: správně je NESMÍT swipnout do šipky
-      clearTimeout(mb._sequenceTimer);
-      clearTimeout(mb._ringTimer);
-      mb._ringTimer = null;
-      mb._sequenceTimer = null;
-      if (dir !== attack.dir) {
-        correct = true;
-        doArenaGlow(dir, true);
-      }
     } else if (attack.type === 'inverted') {
       // Inverzní: musíš swipnout opačný směr
       clearTimeout(mb._sequenceTimer);
