@@ -65,7 +65,7 @@
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
-  bossBgm.volume = 0.75;
+  bossBgm.volume = 0.80;
 
   // Battle BGM kolekce — 3 stopy, náhodně se střídají po patrech
   const battleBgmTracks = [
@@ -85,7 +85,7 @@
     overworldAudio.volume = musicMuted ? 0 : 0.90;
     defeatAudio.volume = musicMuted ? 0 : 0.75;
     winAudio.volume = musicMuted ? 0 : 0.80;
-    bossBgm.volume = musicMuted ? 0 : 0.75;
+    bossBgm.volume = musicMuted ? 0 : 0.80;
     battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
@@ -594,9 +594,9 @@
     if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, liar: 0 };
     if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, liar: 0 };
     if (locId === 4) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, liar: 0 };
-    if (locId === 5) return { normal: 65, heavy: 0, block: 15, inverted: 0, wait: 20, liar: 0 };
-    if (locId === 6) return { normal: 45, heavy: 15, block: 15, inverted: 0, wait: 25, liar: 0 };
-    if (locId === 7 || locId === 8 || locId === 9) return { normal: 35, heavy: 15, block: 15, inverted: 15, wait: 20, liar: 0 };
+    if (locId === 5) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10, liar: 0 };
+    if (locId === 6) return { normal: 55, heavy: 20, block: 15, inverted: 0, wait: 10, liar: 0 };
+    if (locId === 7 || locId === 8 || locId === 9) return { normal: 42, heavy: 18, block: 15, inverted: 17, wait: 8, liar: 0 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
   }
 
@@ -1417,8 +1417,8 @@
         saveGame();
         $('resultIcon').textContent = '🎉';
         $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
-        $('resultMsg').textContent = nextFloor >= 10 ? '👑 Postupuješ k bossovi!' : '⬆ Postup do patra ' + (nextFloor+1);
-        $('resultBtn').innerHTML = nextFloor >= 10
+        $('resultMsg').textContent = nextFloor >= 5 ? '👑 Postupuješ k bossovi!' : '⬆ Postup do patra ' + (nextFloor+1);
+        $('resultBtn').innerHTML = nextFloor >= 5
           ? '<button class="btn btn-primary" onclick="game.enterLocation(' + locId + ',' + nextFloor + ')">👑 Boss</button><button class="btn btn-secondary" onclick="game.showScreen(\'map\')">🌍 Mapa</button>'
           : '<button class="btn btn-primary" onclick="game.enterLocation(' + locId + ',' + nextFloor + ')">⬆ Patro ' + (nextFloor+1) + '</button><button class="btn btn-secondary" onclick="game.showScreen(\'map\')">🌍 Mapa</button>';
         showScreen('result');
@@ -1451,16 +1451,16 @@
     }
 
     if (!won) {
-      state.deaths = (state.deaths || 0) + 1;
-      state.locationProgress[locId] = 0;
-      state.floorProgress[locId] = 0;
-      state.hero.hp = state.hero.maxHp;
-      saveGame();
-      switchBGM('defeat');
-      $('resultIcon').textContent = '💀';
-      $('resultTitle').textContent = 'Padl jsi';
-      $('resultMsg').textContent = `${mb.loc.name} — P${mb.floor+1}`;
-      $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
+          state.deaths = (state.deaths || 0) + 1;
+          state.locationProgress[locId] = 0;
+          // floorProgress NEresetujeme — hráč zůstává na stejném patře
+          state.hero.hp = state.hero.maxHp;
+          saveGame();
+          switchBGM('defeat');
+          $('resultIcon').textContent = '💀';
+          $('resultTitle').textContent = 'Padl jsi';
+          $('resultMsg').textContent = `${mb.loc.name} — P${mb.floor+1}`;
+          $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId},${mb.floor})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
     } else {
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
