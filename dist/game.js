@@ -65,7 +65,7 @@
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
-  bossBgm.volume = 0.80;
+  bossBgm.volume = 0.75;
 
   // Battle BGM kolekce — 3 stopy, náhodně se střídají po patrech
   const battleBgmTracks = [
@@ -85,7 +85,7 @@
     overworldAudio.volume = musicMuted ? 0 : 0.90;
     defeatAudio.volume = musicMuted ? 0 : 0.75;
     winAudio.volume = musicMuted ? 0 : 0.80;
-    bossBgm.volume = musicMuted ? 0 : 0.80;
+    bossBgm.volume = musicMuted ? 0 : 0.75;
     battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
@@ -413,6 +413,11 @@
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
     showScreen('mapBattle');
+    // Skrýt starou šipku z předchozího boje ihned
+    const arrowReset = $('mbArrow');
+    if (arrowReset) arrowReset.setAttribute('class', 'boss-attack-arrow hidden');
+    const actionInfoReset = $('mbActionInfo');
+    if (actionInfoReset) { actionInfoReset.classList.add('hidden'); actionInfoReset.textContent = ''; }
     if (progress === 0 && !isBoss) _forceNewBattleBgm = true;
     switchBGM(isBoss ? 'boss' : 'battle');
     document.body.classList.add('battle-active');
