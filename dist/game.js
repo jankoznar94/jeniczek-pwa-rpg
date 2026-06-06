@@ -774,8 +774,10 @@
     const seqStr = `[${mb.sequenceIndex+1}/${mb.sequence.length}]`;
     $('mbHint').textContent = `${seqStr} ${getAttackHint(attack)}`;
 
-    // Timer ring - animace (synchronně, bez setTimeout)
-    startTimerRing(circle, windowTime);
+    // Timer ring - počkat na vykreslení resetu, pak spustit animaci
+    requestAnimationFrame(() => {
+      startTimerRing(circle, windowTime);
+    });
 
     if (attack.type === 'wait') {
       // Wait — timeout = úspěch (hráč nic neudělal)
@@ -851,7 +853,9 @@
     // Timer ring — 1.5× delší než úhyby (1050-1350ms)
     const atkTime = Math.round((700 + rand(0, 200)) * 1.5);
     const atkCircle = resetTimerRing();
-    startTimerRing(atkCircle, atkTime);
+    requestAnimationFrame(() => {
+      startTimerRing(atkCircle, atkTime);
+    });
 
     mb._attackWindowTimer = setTimeout(() => {
       if (mapBattleState.ended) return;
