@@ -592,15 +592,15 @@
 
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 1) return { normal: 85, heavy: 0, block: 15, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 1) return { normal: 50, heavy: 0, block: 50, inverted: 0, wait: 0, twin: 0 };
     if (locId === 2) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 3) return { normal: 75, heavy: 25, block: 0, inverted: 0, wait: 0, twin: 0 };
-    if (locId === 4) return { normal: 85, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 15 };
-    if (locId === 5) return { normal: 75, heavy: 0, block: 0, inverted: 25, wait: 0, twin: 0 };
-    if (locId === 6) return { normal: 75, heavy: 0, block: 15, inverted: 0, wait: 10, twin: 0 };
-    if (locId === 7) return { normal: 55, heavy: 15, block: 15, inverted: 0, wait: 10, twin: 0 };
-    if (locId === 8) return { normal: 45, heavy: 15, block: 15, inverted: 0, wait: 10, twin: 10 };
-    if (locId === 9 || locId === 10 || locId === 11) return { normal: 30, heavy: 15, block: 15, inverted: 17, wait: 8, twin: 10 };
+    if (locId === 3) return { normal: 50, heavy: 50, block: 0, inverted: 0, wait: 0, twin: 0 };
+    if (locId === 4) return { normal: 50, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 50 };
+    if (locId === 5) return { normal: 50, heavy: 0, block: 0, inverted: 50, wait: 0, twin: 0 };
+    if (locId === 6) return { normal: 55, heavy: 0, block: 30, inverted: 0, wait: 15, twin: 0 };
+    if (locId === 7) return { normal: 35, heavy: 25, block: 25, inverted: 0, wait: 15, twin: 0 };
+    if (locId === 8) return { normal: 25, heavy: 20, block: 20, inverted: 0, wait: 15, twin: 20 };
+    if (locId === 9 || locId === 10 || locId === 11) return { normal: 25, heavy: 15, block: 15, inverted: 15, wait: 15, twin: 15 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, twin: 0 };
   }
 
@@ -834,14 +834,13 @@
           arrow.classList.add('boss-attack-yellow');
           arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g>';
         } else if (attack.type === 'twin') {
-          arrow.style.transform = 'translate(-50%, -50%) rotate(0deg)';
+          arrow.style.transform = 'translate(-50%, -50%)';
           arrow.classList.add('boss-attack-blue');
-          // ⬆️+⬇️ pár
+          arrow.setAttribute('viewBox', '-6 -6 28 28');
           if (attack.dir === '⬆️') {
-            arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,-10)" opacity="0.5"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(0,10)"/></g>';
+            arrow.innerHTML = '<g transform="translate(0,-4)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(0,4)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
           } else {
-            // ⬅️+➡️ pár
-            arrow.innerHTML = '<g><path d="M1 8L8 3L8 5.5L15 5.5L15 10.5L8 10.5L8 13L1 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-10,0)" opacity="0.5"/><path d="M15 8L8 13L8 10.5L1 10.5L1 5.5L8 5.5L8 3L15 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(10,0)"/></g>';
+            arrow.innerHTML = '<g transform="translate(-4,0)"><path d="M1 8L8 3L8 5.5L15 5.5L15 10.5L8 10.5L8 13L1 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(4,0)"><path d="M15 8L8 13L8 10.5L1 10.5L1 5.5L8 5.5L8 3L15 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
           }
         } else {
           arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
