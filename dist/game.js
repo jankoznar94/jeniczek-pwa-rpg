@@ -877,7 +877,10 @@
     if (actInfo2) actInfo2.classList.add('hidden');
     updateActionButtons();
     resetTimerRing();
-    setTimeout(() => mapBattleTurn(), 0); // ihned, žádná prodleva
+    // Počkat na vykreslení resetu před novým kolem, aby hned nezačala animace z 0
+    requestAnimationFrame(() => {
+      setTimeout(() => mapBattleTurn(), 0);
+    });
   }
 
   function doArenaGlow(dir, correct) {
