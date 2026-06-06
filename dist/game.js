@@ -569,11 +569,11 @@
     // locId 2: heavy (žluté — 2× swipe) od 3. dungeonu, wait až od 4.
     if (locId === 2) return { normal: 60, heavy: 25, block: 15, inverted: 0, wait: 0, liar: 0 };
     // locId 3: wait (čekání — ⏳) od 4. dungeonu, inverted zatím ne
-    if (locId === 3) return { normal: 40, heavy: 15, block: 15, inverted: 0, wait: 30, liar: 0 };
+    if (locId === 3) return { normal: 55, heavy: 15, block: 15, inverted: 0, wait: 15, liar: 0 };
     // locId 4: inverted (zelené) až od 5. dungeonu
-    if (locId === 4) return { normal: 35, heavy: 10, block: 15, inverted: 20, wait: 20, liar: 0 };
-    if (locId === 5) return { normal: 30, heavy: 10, block: 15, inverted: 15, wait: 15, liar: 15 };
-    if (locId === 6) return { normal: 25, heavy: 5, block: 20, inverted: 20, wait: 15, liar: 15 };
+    if (locId === 4) return { normal: 45, heavy: 10, block: 15, inverted: 20, wait: 10, liar: 0 };
+    if (locId === 5) return { normal: 35, heavy: 10, block: 15, inverted: 15, wait: 10, liar: 15 };
+    if (locId === 6) return { normal: 30, heavy: 5, block: 20, inverted: 20, wait: 10, liar: 15 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, liar: 0 };
   }
 
