@@ -375,8 +375,6 @@
   }
   function renderMap() {
     const h = state.hero;
-    const done = state.bossesDefeated.filter(Boolean).length;
-    $('mapProgress').textContent = `👹 Porazeno: ${done}/${LOCATIONS.length} bossů`;
 
     $('mapScroll').innerHTML = LOCATIONS.map((loc, i) => {
       const prevDone = true; // DEBUG: odemčeno
