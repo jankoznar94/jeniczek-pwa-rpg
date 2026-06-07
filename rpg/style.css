@@ -43,18 +43,18 @@ body {
 /* === Boss Select === */
 .dungeon-card {
   background: #12122a; border: 1px solid #2a2a4a;
-  border-radius: 10px; padding: 14px; margin: 10px 0;
+  border-radius: 10px; padding: 16px; margin: 10px 0;
   cursor: pointer; transition: 0.2s;
 }
 .dungeon-card:hover { border-color: #4a7dff; }
 .dungeon-card.completed { border-color: #2ecc71; opacity: 0.8; }
-.dungeon-name { font-size: 14px; font-weight: bold; }
+.dungeon-name { font-size: 16px; font-weight: bold; }
 .boss-preview { display: flex; align-items: center; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
-.boss-preview .boss-name { font-size: 15px; font-weight: bold; }
-.boss-preview .boss-hp { font-size: 13px; color: #e94560; }
+.boss-preview .boss-name { font-size: 16px; font-weight: bold; }
+.boss-preview .boss-hp { font-size: 14px; color: #e94560; }
 .boss-preview .boss-type-badge {
   display: inline-block; padding: 2px 8px; border-radius: 4px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .boss-type-badge.simon { background: #8e44ad; }
 .boss-type-badge.color { background: #e67e22; }

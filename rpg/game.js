@@ -130,7 +130,7 @@
           <span style="font-size:13px;color:#8888aa">Lv.${b.level}</span>
         </div>
         <div class="boss-preview">
-          <span style="font-size:36px">${b.face}</span>
+          <span style="font-size:42px">${b.face}</span>
           <span class="boss-name">${b.name}</span>
           <span class="boss-hp">${hpHearts}</span>
           <span class="boss-type-badge ${b.type}">${b.type === 'simon' ? '🧠 Simon' : b.type === 'color' ? '🎨 Barvy' : '🧮 Matika'}</span>
