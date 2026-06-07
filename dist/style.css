@@ -374,6 +374,14 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .result-icon { font-size:56px; }
 .result-title { font-size:22px; font-weight:bold; margin:8px 0; }
 .result-sub { font-size:13px; color:#8888aa; }
+.result-stats { display:flex;flex-direction:column;gap:8px;align-items:center;margin:16px 0; }
+.result-stat { display:flex;align-items:center;gap:8px;font-size:15px;background:#1a1a3a;padding:6px 14px;border-radius:8px;min-width:160px;justify-content:center; }
+.result-stat-icon { font-size:20px; }
+.result-stat-val { font-weight:bold;color:#e8e0e8; }
+.result-stat-sub { font-size:11px;color:#8888aa; }
+.result-grade { font-size:28px;margin:8px 0;letter-spacing:4px; }
+.result-tap { font-size:11px;color:#555;margin-top:4px;animation:resultTapPulse 2s ease-in-out infinite; }
+@keyframes resultTapPulse { 0%,100%{opacity:0.4}50%{opacity:1} }
 
 /* Misc */
 .minigame-hide { visibility: hidden; }

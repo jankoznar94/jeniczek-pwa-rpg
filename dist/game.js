@@ -555,8 +555,9 @@
     const mb = mapBattleState;
     const atk = $('mbAttackBtn');
     const blk = $('mbBlockBtn');
-    if (atk) { if (mb.inAttackWindow) atk.classList.add('active'); else atk.classList.remove('active'); }
-    if (blk) { if (mb.isBlockAttack) blk.classList.add('active'); else blk.classList.remove('active'); }
+    // Tlačítka jsou vždy aktivní — unáhlený útok/blok se počítá jako chyba
+    if (atk) atk.classList.add('active');
+    if (blk) blk.classList.add('active');
   }
 
   function setupMapBattleInput() {
@@ -994,6 +995,7 @@
     const mb = mapBattleState;
     // GUARD: už bylo zpracováno
     if (!mb.inAttackWindow) return;
+    mb.mistakes = (mb.mistakes || 0) + 1;
     clearTimeout(mb._attackWindowTimer);
     mb._attackWindowTimer = null;
     clearTimeout(mb._ringTimer);
@@ -1359,15 +1361,16 @@
       missedAttackWindow();
       return;
     }
-    if (!mb.currentAttack) { $('mbHint').textContent = '⚠️ Teď není co blokovat!'; return; }
+    if (!mb.currentAttack) { mb.mistakes = (mb.mistakes || 0) + 1; $('mbHint').textContent = '⚠️ Teď není co blokovat!'; return; }
     if (mb.isWaitAttack) {
       // Během čekání: blok = chyba
       clearTimeout(mb._sequenceTimer);
+      mb.mistakes = (mb.mistakes || 0) + 1;
       $('mbHint').textContent = '❌ Měl jsi čekat ⏳, ne blokovat!';
       onMapHit();
       return;
     }
-    if (!mb.isBlockAttack) { $('mbHint').textContent = '⚠️ Štít tu teď nepotřebuješ!'; return; }
+    if (!mb.isBlockAttack) { mb.mistakes = (mb.mistakes || 0) + 1; $('mbHint').textContent = '⚠️ Štít tu teď nepotřebuješ!'; return; }
 
     // GUARD: útok už byl zpracován (timer propadl)
     if (mb._hitProcessed) return;
@@ -1386,6 +1389,7 @@
     const mb = mapBattleState;
     if (mb._attackProcessed) return; // zabránění dvojitému útoku
     if (!mb.inAttackWindow) {
+      mb.mistakes = (mb.mistakes || 0) + 1;
       if (mb.sequence && mb.sequenceIndex < mb.sequence.length) {
         $('mbHint').textContent = '⚠️ Nejdřív přežij sekvenci útoků!';
       } else {
@@ -1617,7 +1621,16 @@
         $('resultIcon').textContent = '🎉';
         $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
         const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
-        $('resultMsg').innerHTML = '⚔️ Získáno ' + floorXp + ' XP<br>❤️ Zbývalo ' + mb.playerHp + '/' + mb.maxPlayerHp + ' HP<br>❌ Chyb: ' + (mb.mistakes || 0);
+        const mistakes = mb.mistakes || 0;
+        const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
+        const grade = mistakes === 0 ? '⭐⭐⭐' : mistakes <= 2 ? '⭐⭐' : '⭐';
+        $('resultMsg').innerHTML = '<div class="result-stats">'
+                  + '<div class="result-stat"><span class="result-stat-icon">⚔️</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
+                  + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
+                  + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
+                  + '<div class="result-grade">' + grade + '</div>'
+                  + '<div class="result-tap">👆 klepni pro návrat</div>'
+                  + '</div>';
         $('resultBtn').innerHTML = '';
         $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); };
         showScreen('result');
