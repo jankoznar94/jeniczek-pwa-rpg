@@ -370,7 +370,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 @keyframes countPulse { from{transform:scale(0.8);opacity:0.6} to{transform:scale(1.1);opacity:1} }
 
 /* Result */
-.result-screen { text-align:center; padding:40px 20px; }
+.result-screen { text-align:center; padding:40px 20px; cursor:pointer; }
 .result-icon { font-size:56px; }
 .result-title { font-size:22px; font-weight:bold; margin:8px 0; }
 .result-sub { font-size:13px; color:#8888aa; }

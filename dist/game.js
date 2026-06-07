@@ -450,7 +450,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsedThisFloor: false,
+      mistakes: 0, stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsedThisFloor: false,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
@@ -1465,6 +1465,7 @@
       mb.shieldActive = null;
     }
     mb.playerHp -= amount;
+    mb.mistakes = (mb.mistakes || 0) + 1;
     playSFX(hitSfx);
     // Červený projektil od středu k hráči
     spawnProjectileEffect(null, true);
@@ -1615,10 +1616,10 @@
         saveGame();
         $('resultIcon').textContent = '🎉';
         $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
-        $('resultMsg').textContent = nextFloor >= 5 ? '👑 Postupuješ k bossovi!' : '⬆ Postup do patra ' + (nextFloor+1);
-        $('resultBtn').innerHTML = nextFloor >= 5
-          ? '<button class="btn btn-primary" onclick="game.enterLocation(' + locId + ',' + nextFloor + ')">👑 Boss</button><button class="btn btn-secondary" onclick="game.showScreen(\'map\')">🌍 Mapa</button>'
-          : '<button class="btn btn-primary" onclick="game.enterLocation(' + locId + ',' + nextFloor + ')">⬆ Patro ' + (nextFloor+1) + '</button><button class="btn btn-secondary" onclick="game.showScreen(\'map\')">🌍 Mapa</button>';
+        const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
+        $('resultMsg').innerHTML = '⚔️ Získáno ' + floorXp + ' XP<br>❤️ Zbývalo ' + mb.playerHp + '/' + mb.maxPlayerHp + ' HP<br>❌ Chyb: ' + (mb.mistakes || 0);
+        $('resultBtn').innerHTML = '';
+        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); };
         showScreen('result');
         switchBGM('win');
         return;
