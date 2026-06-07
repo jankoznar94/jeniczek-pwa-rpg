@@ -224,18 +224,18 @@
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const LOCATIONS = [
-    { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:8, bossXp:23, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
-    { id:1, name:'🏜️ Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:12, bossXp:38, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
-    { id:2, name:'🌊 Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:18, bossXp:53, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'} },
-    { id:3, name:'🔥 Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:24, bossXp:75, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20} },
-    { id:4, name:'❄️ Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:30, bossXp:98, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'} },
-    { id:5, name:'⚡ Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:38, bossXp:120, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30} },
-    { id:6, name:'💎 Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:45, bossXp:150, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'} },
-    { id:7, name:'🌸 Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:54, bossXp:180, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50} },
-    { id:8, name:'☁️ Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:63, bossXp:210, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'} },
-    { id:9, name:'🌑 Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:75, bossXp:255, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'} },
-    { id:10, name:'🌀 Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:90, bossXp:300, boss:{name:'Chaos lord',face:'👾',hp:60}, reward:{gold:100,weapon:'voidBlade'} },
-    { id:11, name:'💀 Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:113, bossXp:375, boss:{name:'Smrták',face:'💀',hp:80}, reward:{gold:150,armor:'voidPlate'} },
+    { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
+    { id:1, name:'🏜️ Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
+    { id:2, name:'🌊 Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'} },
+    { id:3, name:'🔥 Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20} },
+    { id:4, name:'❄️ Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'} },
+    { id:5, name:'⚡ Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30} },
+    { id:6, name:'💎 Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'} },
+    { id:7, name:'🌸 Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50} },
+    { id:8, name:'☁️ Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:84, bossXp:280, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'} },
+    { id:9, name:'🌑 Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:100, bossXp:340, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'} },
+    { id:10, name:'🌀 Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:120, bossXp:400, boss:{name:'Chaos lord',face:'👾',hp:60}, reward:{gold:100,weapon:'voidBlade'} },
+    { id:11, name:'💀 Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:150, bossXp:500, boss:{name:'Smrták',face:'💀',hp:80}, reward:{gold:150,armor:'voidPlate'} },
   ];
 
   // ===== STATE =====
