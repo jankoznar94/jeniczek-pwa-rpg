@@ -313,6 +313,46 @@
     setTimeout(() => { p.style.transition='opacity 0.3s'; p.style.opacity='0'; setTimeout(()=>p.remove(),300); }, 2000);
   }
 
+  // ===== LEVEL-UP OVERLAY =====
+  function showLevelUpOverlay(prevLevel) {
+    const h = state.hero;
+    const overlay = document.createElement('div');
+    overlay.className = 'levelup-overlay';
+    overlay.innerHTML = `<div class="levelup-content">
+      <div class="levelup-sparkle">⭐</div>
+      <div class="levelup-title">LEVEL UP!</div>
+      <div class="levelup-level">Lv.${prevLevel} → Lv.${h.level}</div>
+      <div class="levelup-details">💪 +1 atributový bod<br>❤️ Plné vyléčení</div>
+    </div>`;
+    document.body.appendChild(overlay);
+    sfxLevelUp();
+    // Po 2.5s fade-out a odstranit
+    setTimeout(() => {
+      overlay.classList.add('fade-out');
+      setTimeout(() => overlay.remove(), 500);
+    }, 2500);
+  }
+
+  // ===== KILL POPUP =====
+  function showKillPopup(monsterFace, monsterName, xpGain, goldGain, playerHp, maxHp) {
+    const el = document.createElement('div');
+    el.className = 'kill-popup-overlay';
+    el.innerHTML = `<div class="kill-popup-content">
+      <div class="kill-popup-icon">${monsterFace}</div>
+      <div class="kill-popup-name">${monsterName} poražen!</div>
+      <div class="kill-popup-stats">
+        <span>⚔️ +${xpGain} XP</span>
+        <span>💰 +${goldGain}</span>
+      </div>
+      <div class="kill-popup-hp">❤️ ${playerHp}/${maxHp}</div>
+    </div>`;
+    document.body.appendChild(el);
+    setTimeout(() => {
+      el.classList.add('fade-out');
+      setTimeout(() => el.remove(), 350);
+    }, 1200);
+  }
+
   // ===== MAP =====
   let _expandedDungeon = -1;
   function toggleDungeon(idx) {
@@ -1088,6 +1128,74 @@
     }
   }
 
+  // ===== SPELL VISUAL HELPERS =====
+  function displayDamageText(text) {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const el = document.createElement('div');
+    el.style.cssText = 'position:absolute;top:35%;left:50%;transform:translate(-50%,-50%);z-index:25;font-size:36px;font-weight:bold;color:#f1c40f;text-shadow:0 0 10px rgba(241,196,15,0.8);pointer-events:none;animation:fadeDown 0.6s ease-out';
+    el.textContent = text;
+    arena.appendChild(el);
+    setTimeout(() => el.remove(), 700);
+  }
+  function displayHealText(text) {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const el = document.createElement('div');
+    el.style.cssText = 'position:absolute;bottom:30%;left:50%;transform:translate(-50%,-50%);z-index:25;font-size:32px;font-weight:bold;color:#2ecc71;text-shadow:0 0 10px rgba(46,204,113,0.8);pointer-events:none;animation:fadeDown 0.7s ease-out;animation-direction:reverse';
+    el.textContent = text;
+    arena.appendChild(el);
+    setTimeout(() => el.remove(), 800);
+  }
+  function spawnHealParticles() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height - 80;
+    for (let i = 0; i < 10; i++) {
+      const p = document.createElement('div');
+      const size = 6 + Math.random() * 8;
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 30 + Math.random() * 50;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:rgba(46,204,113,0.5);filter:blur(1.5px);z-index:18;pointer-events:none;opacity:0.8;`;
+      p.style.left = (cx - size/2) + 'px';
+      p.style.top = (cy - size/2) + 'px';
+      arena.appendChild(p);
+      requestAnimationFrame(() => {
+        p.style.transition = `left 0.5s ease-out, top 0.5s ease-out, opacity 0.5s ease-out`;
+        p.style.left = (cx + Math.cos(angle) * dist - size/2) + 'px';
+        p.style.top = (cy + Math.sin(angle) * dist - size/2) + 'px';
+        p.style.opacity = '0';
+      });
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 600);
+    }
+  }
+  function spawnFreezeParticles() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 4;
+    for (let i = 0; i < 15; i++) {
+      const p = document.createElement('div');
+      const size = 3 + Math.random() * 6;
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 20 + Math.random() * 60;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:rgba(100,180,255,0.6);filter:blur(1px);z-index:18;pointer-events:none;opacity:0.9;`;
+      p.style.left = (cx - size/2) + 'px';
+      p.style.top = (cy - size/2) + 'px';
+      arena.appendChild(p);
+      requestAnimationFrame(() => {
+        p.style.transition = `left 0.6s ease-out, top 0.6s ease-out, opacity 0.6s ease-out`;
+        p.style.left = (cx + Math.cos(angle) * dist - size/2) + 'px';
+        p.style.top = (cy + Math.sin(angle) * dist - size/2) + 'px';
+        p.style.opacity = '0';
+      });
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 700);
+    }
+  }
+
   function spawnDodgeEffect(arena, dir) {
     // Oblak/částice fouknuté od středu arény směrem úhybu — rychlejší a dál
     const rect = arena.getBoundingClientRect();
@@ -1406,15 +1514,45 @@
       const dmg = 25 + lv * 25;
       mb.bossHp -= dmg;
       effectMsg = `🔥 Fireball! ${dmg} poškození!`;
-      spawnProjectileEffect(null, false, false);
+      // Oranžový projektil k bossovi
+      spawnProjectileEffect(0, false, false);
+      // Dodatečná exploze po 200ms
+      setTimeout(() => {
+        const bossFig = $('mbFigure');
+        if (bossFig) {
+          bossFig.style.transition = 'filter 0.2s';
+          bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)';
+          setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
+        }
+        displayDamageText('🔥');
+      }, 180);
     } else if (spellId === 'heal') {
       const hp = 10 + lv * 15;
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
       effectMsg = `💚 +${hp} HP!`;
+      // Zelený glow na hráči
+      const playerFig = $('mbPlayerFigure');
+      if (playerFig) {
+        playerFig.style.transition = 'filter 0.3s';
+        playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)';
+        setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400);
+      }
+      // Floating zelený text
+      displayHealText(`+${hp}`);
+      // Zelené částice
+      spawnHealParticles();
     } else if (spellId === 'freeze') {
       const slowDuration = (4 + lv) * 1000; // ms
       // Zpomalit timer ring na polovinu — restart s 2x delším časem pro aktuální attack
       effectMsg = `❄️ Mráz! ${4+lv}s zpomalení!`;
+      // Modrý efekt na bossovi
+      const bossFig = $('mbFigure');
+      if (bossFig) {
+        bossFig.style.transition = 'filter 0.3s';
+        bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)';
+        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, slowDuration);
+      }
+      spawnFreezeParticles();
       // Pokud právě běží útok, prodloužíme jeho timer
       if (mb._sequenceTimer && !mb._hitProcessed) {
         const circle = document.querySelector('.timer-circle');
@@ -1455,13 +1593,16 @@
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
       const monsterGold = 1 + rand(0, 2);
+      const xpGain = mb.loc.xpReward + mb.floor * 2;
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
-      state.hero.xp = (state.hero.xp || 0) + mb.loc.xpReward + mb.floor * 2;
+      state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       applyLevelUp();
       saveGame();
       sfxSuccess();
+      // Kill popup
+      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp);
       updateMapBattleUI();
 
       if (p >= 5) {
@@ -1581,6 +1722,7 @@
   // ===== HERO =====
   function applyLevelUp() {
     const h = state.hero;
+    const prevLevel = h.level;
     let leveled = false;
     while (true) {
       const xpNeeded = h.level * 80;
@@ -1596,6 +1738,7 @@
     if (leveled) {
       sfxLevelUp();
       saveGame();
+      setTimeout(() => showLevelUpOverlay(prevLevel), 100);
     }
   }
   function getHeroDmg() {
