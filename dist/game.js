@@ -1598,7 +1598,7 @@
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
-      applyLevelUp();
+      const leveled = applyLevelUp();
       saveGame();
       sfxSuccess();
       // Kill popup
@@ -1629,10 +1629,11 @@
         fig.classList.remove('monster-appear');
         fig.classList.add('monster-dying');
       }
+      const continueDelay = leveled ? 2700 : 1300;
       setTimeout(() => {
         if (fig) fig.classList.remove('monster-dying');
         continueDungeon();
-      }, 1300);
+      }, continueDelay);
       return;
     }
 
@@ -1740,6 +1741,7 @@
       saveGame();
       setTimeout(() => showLevelUpOverlay(prevLevel), 100);
     }
+    return leveled;
   }
   function getHeroDmg() {
     const h = state.hero;
