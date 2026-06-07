@@ -1632,7 +1632,7 @@
       setTimeout(() => {
         if (fig) fig.classList.remove('monster-dying');
         continueDungeon();
-      }, 500);
+      }, 1300);
       return;
     }
 
