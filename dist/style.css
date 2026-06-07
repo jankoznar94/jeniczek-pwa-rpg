@@ -318,7 +318,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .map-location.locked { opacity:0.4;cursor:not-allowed; }
 .map-location.locked:hover { border-color:#2a2a4a; }
 .map-loc-info { flex:1; min-width:0; }
-.map-loc-name { font-size:18px;font-weight:bold; }
+.map-loc-name { font-size:20px;font-weight:bold; }
 .map-loc-mechs { font-size:13px;margin-top:12px;letter-spacing:2px; display:flex;gap:4px;flex-wrap:wrap; }
 .map-loc-sub { font-size:11px;color:#8888aa; }
 .map-loc-status {
@@ -328,7 +328,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .map-loc-status.done { background:#0a2a1a; border:1px solid #2ecc71; }
 .map-loc-status.active { background:#1a1035; border:1px solid #4a7dff; }
-.map-loc-status-icon { font-size:22px; }
+.map-loc-status-icon { font-size:28px; }
 .map-loc-status-text { font-size:11px; color:#8888aa; font-weight:bold; }
 
 /* Tower */
