@@ -1739,7 +1739,7 @@
     if (leveled) {
       sfxLevelUp();
       saveGame();
-      setTimeout(() => showLevelUpOverlay(prevLevel), 100);
+      showLevelUpOverlay(prevLevel);
     }
     return leveled;
   }
@@ -1768,6 +1768,11 @@
     const critChance = (h.attrDex||0) * 5 + 5;
     $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% (×2.0)` : `${critChance}% (×2.0)`;
     $('totalSkillLevel').textContent = `${totalLv}/${SKILLS.length*5}`;
+    // XP bar
+    const xpNeeded = h.level * 80;
+    const xpPct = Math.min((h.xp / xpNeeded) * 100, 100);
+    $('heroXpLabel').textContent = `${h.xp}/${xpNeeded}`;
+    $('heroXpBar').style.width = xpPct + '%';
 
     // Atributy
     const strCost = ATTR_COST[Math.min(h.attrStr||0, ATTR_COST.length-1)] || 999;

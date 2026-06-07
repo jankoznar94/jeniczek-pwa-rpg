@@ -266,6 +266,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 /* Hero attributes */
 .hero-attr-row { display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1a1a3a;font-size:14px; }
 .hero-attr-row:last-child { border-bottom:none; }
+.hero-xp-wrap { margin:8px 0 0;padding:6px 0;border-top:1px solid #1a1a3a; }
 
 /* Shop */
 .shop-item { background:#1a1a3a;border:1px solid #2a2a4a;border-radius:8px;padding:14px;margin:8px 0; }
