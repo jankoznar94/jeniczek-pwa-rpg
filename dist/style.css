@@ -307,7 +307,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   padding:8px 0 6px;
 }
 .map-guide-link a {
-  display:inline-flex;align-items:center;justify-content:center;gap:14px;
+  display:flex;align-items:center;gap:14px;
   background:linear-gradient(135deg,#1a1a0a,#2a2a0a);
   border:2px solid #f1c40f;border-radius:12px;
   padding:14px 18px;margin:0;
