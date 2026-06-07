@@ -223,6 +223,20 @@
     return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
+  const DUNGEON_THEMES = [
+    { bg:'#0a1a0a', border:'#2ecc71', borderGlow:'rgba(46,204,113,0.3)' },   // 0 Les — zelená
+    { bg:'#1a1008', border:'#e67e22', borderGlow:'rgba(230,126,34,0.3)' },   // 1 Poušť — oranžová
+    { bg:'#0a0a1a', border:'#3498db', borderGlow:'rgba(52,152,219,0.3)' },   // 2 Propasti — modrá
+    { bg:'#1a0808', border:'#e74c3c', borderGlow:'rgba(231,76,60,0.3)' },    // 3 Výspy — červená
+    { bg:'#0a0a1a', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
+    { bg:'#1a0a1a', border:'#f1c40f', borderGlow:'rgba(241,196,15,0.3)' },   // 5 Věž — žlutá
+    { bg:'#0a0a14', border:'#9b59b6', borderGlow:'rgba(155,89,182,0.3)' },   // 6 Jeskyně — fialová
+    { bg:'#0a1408', border:'#e91e63', borderGlow:'rgba(233,30,99,0.3)' },    // 7 Zahrady — růžová
+    { bg:'#0a0a14', border:'#b0d0ff', borderGlow:'rgba(176,208,255,0.3)' },  // 8 Nebe — světle modrá
+    { bg:'#0a0a0a', border:'#8e44ad', borderGlow:'rgba(142,68,173,0.3)' },   // 9 Stíny — tmavě fialová
+    { bg:'#14000a', border:'#ff6b6b', borderGlow:'rgba(255,107,107,0.3)' },  // 10 Chaos — rudá
+    { bg:'#080808', border:'#c0392b', borderGlow:'rgba(192,57,43,0.3)' },    // 11 Smrt — tmavě červená
+  ];
   const LOCATIONS = [
     { id:0, name:'🌲 Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
     { id:1, name:'🏜️ Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
@@ -376,6 +390,7 @@
       else if (!unlocked) { statusIcon = '🔒'; statusText = 'Zamčeno'; }
       else if (curFloor >= 4) { statusIcon = '👹'; statusText = 'BOSS!'; }
       else { statusIcon = '👾'; statusText = `P${curFloor+1}: ${curProgress}/${loc.monsters}`; }
+      const theme = DUNGEON_THEMES[i] || DUNGEON_THEMES[0];
       // Floor sub-cards P1-P5
       let floorHtml = '';
       if (unlocked && expanded) {
@@ -389,7 +404,7 @@
           else if (isBossFloor) { fIcon = '👹'; fText = 'BOSS'; }
           else if (f === curFloor) { fIcon = '👾'; fText = `${loc.monsters - curProgress} zbývá`; }
           else { fIcon = '✅'; fText = ''; }
-          floorHtml += `<div class="map-floor-card ${floorDone?'floor-done':lockedFloor?'floor-locked':'floor-active'}" onclick="${lockedFloor?'':'game.enterLocation('+i+','+f+')'}">
+          floorHtml += `<div class="map-floor-card ${floorDone?'floor-done':lockedFloor?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:${theme.bg}88" onclick="${lockedFloor?'':'game.enterLocation('+i+','+f+')'}">
             <span class="floor-card-icon">${fIcon}</span>
             <span class="floor-card-num">${isBossFloor?'BOSS':`P${f+1}`}</span>
             <span class="floor-card-text">${fText}</span>
@@ -397,7 +412,7 @@
         }
       }
       return `<div class="map-location-wrap">
-        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
+        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" style="background:${theme.bg};border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
             <div class="map-loc-mechs">${getDungeonMechanics(i).join(' ')}</div>
