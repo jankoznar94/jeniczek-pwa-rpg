@@ -2160,18 +2160,6 @@
     if (dexBtn) dexBtn.textContent = `⬆️ Obratnost` + (pts > 0 ? '' : ` 🔒`);
     if (dexBtn) dexBtn.style.opacity = pts > 0 ? '1' : '0.3';
 
-    $('skillGrid').innerHTML = SKILLS.map(sk => {
-      const lv = state.skills[sk.id]||0, xp = state.skillXp[sk.id]||0, needed = skillXpToLevel(lv);
-      const pct = lv >= sk.maxLv ? 100 : Math.min(xp/needed*100,100);
-      return `<div class="skill-card ${lv===0?'locked':''} ${lv>=sk.maxLv?'maxed':''}" onclick="game.showScreen('tower')">
-        <div class="skill-icon">${sk.icon}</div>
-        <div class="skill-name">${sk.name}</div>
-        <div class="skill-level">${lv===0?'🔒':`Lv.${lv}`}</div>
-        <div class="skill-bar-wrap"><div class="skill-bar-fill" style="width:${pct}%;background:${lv>=sk.maxLv?'#2ecc71':lv===0?'#555':'#f1c40f'}"></div></div>
-        <div style="font-size:9px;color:#888">${lv>=sk.maxLv?'MAX':lv===0?sk.dungeonName:`${xp}/${needed}XP`}</div>
-      </div>`;
-    }).join('');
-
     const weaponNames = { fists:'✊ Pěsti', dagger:'🗡️ Dýka', sword:'⚔️ Meč', flameSword:'🔥 Ohnivý meč' };
     const armorNames = { rags:'🧥 Hadry', leather:'🦺 Kožené', chainmail:'⛓️ Kroužková', plate:'🛡️ Plátová' };
     $('equipWeapon').textContent = weaponNames[h.equip.weapon] || '✊ Pěsti';
@@ -2435,7 +2423,6 @@
   // ===== INIT =====
   function init() {
     state = loadSave();
-    SKILLS.forEach(sk => { if (state.skills[sk.id] === undefined) state.skills[sk.id] = 0; if (state.skillXp[sk.id] === undefined) state.skillXp[sk.id] = 0; });
 
     if (!state.bossesDefeated || state.bossesDefeated.length < LOCATIONS.length) state.bossesDefeated = Array(LOCATIONS.length).fill(false);
     if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
