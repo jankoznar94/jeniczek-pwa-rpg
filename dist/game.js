@@ -476,7 +476,8 @@
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
       isInvertedAttack: false, isWaitAttack: false, isTwinAttack: false,
-      _heavySwipes: 0, _twinSwipes: [] // twin: které směry už hráč swipnul
+      _heavySwipes: 0, _twinSwipes: [], // twin: které směry už hráč swipnul
+      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0
     };
     SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
 
@@ -550,18 +551,30 @@
     $('mbHint').textContent = mb.isBoss ? `👑 BOSS — Sekvence útoků, přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Patro ${mb.floor+1}, ulov nestvůru!`;
 
     // Spells
-    const container = $('mbSpells');
-    container.innerHTML = '';
-    SKILLS.forEach(sk => {
-      const lv = state.skills[sk.id]||0;
-      if (lv === 0) return;
-      const used = mb.spellUsedThisFloor;
-      const btn = document.createElement('div');
-      btn.className = 'mb-spell-btn' + (used?' on-cd':'');
-      btn.innerHTML = `${sk.icon}<span class="mb-spell-cd">${used?'✗':'✓'}</span>`;
-      btn.addEventListener('click', () => castMapSpell(sk.id));
-      container.appendChild(btn);
-    });
+        const container = $('mbSpells');
+        container.innerHTML = '';
+        SKILLS.forEach(sk => {
+          const lv = state.skills[sk.id]||0;
+          if (lv === 0) return;
+          const used = mb.spellUsedThisFloor;
+          // Freeze vzdy, Fireball/Heal jen v attack okne
+          if (sk.id === 'freeze') {
+            const btn = document.createElement('div');
+            btn.className = 'mb-spell-btn' + (used?' on-cd':'');
+            btn.innerHTML = sk.icon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
+            btn.addEventListener('click', () => castMapSpell(sk.id));
+            container.appendChild(btn);
+          } else if (mb.inAttackWindow) {
+            const btn = document.createElement('div');
+            btn.className = 'mb-spell-btn' + (used?' on-cd':'');
+            btn.innerHTML = sk.icon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
+            btn.addEventListener('click', () => {
+              if (used) return;
+              onMapAttackSpell(sk.id);
+            });
+            container.appendChild(btn);
+          }
+        });
   }
 
   function updateActionButtons() {
@@ -634,6 +647,38 @@
     window.addEventListener('keydown', kh);
     handlers.push(['keydown', kh]);
     arena._mbHandlers = handlers;
+    // Rapid tap handlery
+    const setupTap = (elId) => {
+      const el = $(elId);
+      if (!el) return;
+      const tapHandler = (e) => {
+        e.stopPropagation();
+        onMapRapidTap();
+      };
+      el.addEventListener('pointerdown', tapHandler);
+      handlers.push(['pointerdown', tapHandler]);
+    };
+    setupTap('mbTapLeft');
+    setupTap('mbTapRight');
+    // Arena spell tlacitka (Fireball/Heal)
+    const spellFireBtn = $('mbSpellFireBtn');
+    if (spellFireBtn) {
+      const fireHandler = (e) => {
+        e.stopPropagation();
+        onMapAttackSpell('fireball');
+      };
+      spellFireBtn.addEventListener('pointerdown', fireHandler);
+      handlers.push(['pointerdown', fireHandler]);
+    }
+    const spellHealBtn = $('mbSpellHealBtn');
+    if (spellHealBtn) {
+      const healHandler = (e) => {
+        e.stopPropagation();
+        onMapAttackSpell('heal');
+      };
+      spellHealBtn.addEventListener('pointerdown', healHandler);
+      handlers.push(['pointerdown', healHandler]);
+    }
   }
 
   function getFloorTimerMultiplier(floor) {
@@ -649,10 +694,10 @@
     if (locId === 3) return { normal: 65, heavy: 35, block: 0, inverted: 0, wait: 0, twin: 0 };
     if (locId === 4) return { normal: 65, heavy: 0, block: 0, inverted: 0, wait: 0, twin: 35 };
     if (locId === 5) return { normal: 65, heavy: 0, block: 0, inverted: 35, wait: 0, twin: 0 };
-    if (locId === 6) return { normal: 35, heavy: 0, block: 50, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 7) return { normal: 25, heavy: 30, block: 30, inverted: 0, wait: 15, twin: 0 };
-    if (locId === 8) return { normal: 20, heavy: 25, block: 25, inverted: 0, wait: 15, twin: 15 };
-    if (locId === 9 || locId === 10 || locId === 11) return { normal: 20, heavy: 16, block: 16, inverted: 16, wait: 15, twin: 17 };
+    if (locId === 6) return { normal: 35, heavy: 0, block: 50, inverted: 0, wait: 15, twin: 0, rapid: 0 };
+    if (locId === 7) return { normal: 25, heavy: 30, block: 30, inverted: 0, wait: 15, twin: 0, rapid: 0 };
+    if (locId === 8) return { normal: 20, heavy: 20, block: 20, inverted: 0, wait: 15, twin: 15, rapid: 10 };
+    if (locId === 9 || locId === 10 || locId === 11) return { normal: 18, heavy: 15, block: 15, inverted: 15, wait: 13, twin: 15, rapid: 12 };
     return { normal: 70, heavy: 20, block: 10, inverted: 0, wait: 0, twin: 0 };
   }
 
@@ -668,11 +713,12 @@
     if (c.wait > 0) icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">⏳</span>');
     if (c.inverted > 0) icons.push(_arrowSvg('#5fa87a'));
     if (c.twin > 0) icons.push('<svg viewBox="0 0 16 16" width="26" height="26"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-2.5,0)"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(2.5,0)"/></svg>');
+    if (c.rapid > 0) icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle;filter:hue-rotate(240deg)">🔮</span>');
     return icons;
   }
 
   function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.twin;
+    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.wait + chances.twin + (chances.rapid||0);
     const randNum = Math.random() * randTotal;
     let type = 'normal';
     // Anti-repetice: pokud byl předchozí wait, sniž šanci na další wait na polovinu
@@ -683,12 +729,13 @@
     else if (randNum < waitChance + chances.inverted + chances.block) { type = 'block'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.twin) { type = 'twin'; }
+    else if (randNum < waitChance + chances.inverted + chances.block + chances.heavy + chances.twin + (chances.rapid||0)) { type = 'rapid'; }
     // Timer: base 1000ms, floor multiplikátor (P1=1000, P5/boss=500ms)
     const mult = getFloorTimerMultiplier(floor || 0);
     const baseTime = Math.round(1000 * mult);
     // Malá náhoda ±10% pro pestrost
     const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
-    const windowTime = (type === 'heavy' || type === 'twin') ? Math.round(jitter * 1.5) : jitter;
+    const windowTime = (type === 'heavy' || type === 'twin') ? Math.round(jitter * 1.5) : (type === 'rapid' ? Math.round(jitter * 3.0) : jitter);
     const dir = DIRECTIONS[rand(0,3)];
     if (type === 'twin') {
       // Dvojitá šipka: vyber protichůdný pár (nahoru-dolů nebo vlevo-vpravo)
@@ -696,6 +743,11 @@
       const pair = pairs[rand(0,1)];
       const dirA = pair[0], dirB = pair[1];
       return { type, dir: dirA, twinDir: dirB, windowTime };
+    }
+    if (type === 'rapid') {
+      // Rapid: náhodný cíl 8-14 podle patra
+      const rapidTarget = Math.min(8 + Math.floor((floor||0) * 1.5), 14);
+      return { type, dir, windowTime, rapidTarget };
     }
     return { dir, type, windowTime };
   }
@@ -708,6 +760,7 @@
     if (attack.type === 'block') return `🛡️ ${dir} 🔴 Zákeřný — použij ŠTÍT!`;
     if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
     if (attack.type === 'wait') return `⏳ Počkej — nic nedělej!`;
+    if (attack.type === 'rapid') return `🔮 Ťukej! ${attack.rapidTarget}× na plošky!`;
     return `${dir} uhni!`;
   }
 
@@ -850,6 +903,14 @@
     mb.isInvertedAttack = attack.type === 'inverted';
     mb.isWaitAttack = attack.type === 'wait';
     mb.isTwinAttack = attack.type === 'twin';
+    mb.isRapidAttack = attack.type === 'rapid';
+    if (attack.type === 'rapid') {
+      mb.rapidTaps = 0;
+      mb.rapidTarget = attack.rapidTarget || 10;
+    } else {
+      mb.rapidTaps = 0;
+      mb.rapidTarget = 0;
+    }
     mb._hitProcessed = false; // reset guard pro aktuální útok
 
     const windowTime = attack.windowTime;
@@ -875,6 +936,19 @@
         actionInfo.textContent = '⏳';
         actionInfo.classList.remove('hidden');
       }
+    } else if (attack.type === 'rapid') {
+      // Rapid: číslo v kolečku, tap plošky po stranách
+      if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+      if (actionInfo) actionInfo.classList.add('hidden');
+      const target = $('mbRapidTarget');
+      if (target) {
+        target.textContent = `${attack.rapidTarget}`;
+        target.classList.remove('hidden');
+      }
+      const leftTap = $('mbTapLeft');
+      const rightTap = $('mbTapRight');
+      if (leftTap) leftTap.classList.remove('hidden');
+      if (rightTap) rightTap.classList.remove('hidden');
     } else {
       // Ostatní útoky: šipka
       if (actionInfo) actionInfo.classList.add('hidden');
@@ -915,14 +989,19 @@
     });
 
     if (attack.type === 'wait') {
-      // Wait — timeout = úspěch (hráč nic neudělal)
-      mb._sequenceTimer = setTimeout(() => {
-        if (mapBattleState.ended) return;
-        $('mbHint').textContent = '⏳ Čekání OK!';
-        advanceSequence();
-      }, windowTime);
-      // Reset ring (už je hotovo výše) a timer ring — wait má stejný timer jako ostatní
-    } else {
+          // Wait — timeout = úspěch (hráč nic neudělal)
+          mb._sequenceTimer = setTimeout(() => {
+            if (mapBattleState.ended) return;
+            $('mbHint').textContent = '⏳ Čekání OK!';
+            advanceSequence();
+          }, windowTime);
+        } else if (attack.type === 'rapid') {
+          // Rapid — timeout = zásah (nestihl natapat)
+          mb._sequenceTimer = setTimeout(() => {
+            if (mapBattleState.ended) return;
+            onMapHit();
+          }, windowTime);
+        } else {
       mb._sequenceTimer = setTimeout(() => {
         if (mapBattleState.ended) return;
         onMapHit();
@@ -941,6 +1020,9 @@
     mb.isInvertedAttack = false;
     mb.isWaitAttack = false;
     mb.isTwinAttack = false;
+    mb.isRapidAttack = false;
+    mb.rapidTaps = 0;
+    mb.rapidTarget = 0;
     mb._heavySwipes = 0;
     mb._twinSwipes = [];
 
@@ -948,6 +1030,12 @@
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
     const actionInfo = $('mbActionInfo');
     if (actionInfo) actionInfo.classList.add('hidden');
+    const rTarget = $('mbRapidTarget');
+    if (rTarget) rTarget.classList.add('hidden');
+    const lTap = $('mbTapLeft');
+    const rTap = $('mbTapRight');
+    if (lTap) lTap.classList.add('hidden');
+    if (rTap) rTap.classList.add('hidden');
 
     mb.sequenceIndex++;
     renderSeqProgress(mb);
@@ -982,6 +1070,13 @@
     updateActionButtons();
     mb._attackProcessed = false;
     renderSeqProgress(mb);
+    // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
+    updateMapBattleUI();
+    // Zobrazit arena spell tlacitka Fireball/Heal
+    const fireBtn = $('mbSpellFireBtn');
+    const healBtn = $('mbSpellHealBtn');
+    if (fireBtn) { fireBtn.classList.remove('hidden'); fireBtn.classList.add('active'); }
+    if (healBtn) { healBtn.classList.remove('hidden'); healBtn.classList.add('active'); }
 
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
@@ -1453,6 +1548,10 @@
     mb.inAttackWindow = false;
     $('mbActionInfo').classList.add('hidden');
     updateActionButtons();
+    const sFire = $('mbSpellFireBtn');
+    const sHeal = $('mbSpellHealBtn');
+    if (sFire) { sFire.classList.add('hidden'); sFire.classList.remove('active'); }
+    if (sHeal) { sHeal.classList.add('hidden'); sHeal.classList.remove('active'); }
 
     setTimeout(() => mapBattleTurn(), 300);
   }
@@ -1505,6 +1604,13 @@
     resetTimerRing();
     const counterIcon = $('mbCounterAttack');
     if (counterIcon) counterIcon.classList.add('hidden');
+    // Rapid cleanup
+    const rTarget = $('mbRapidTarget');
+    if (rTarget) rTarget.classList.add('hidden');
+    const lTap = $('mbTapLeft');
+    const rTap = $('mbTapRight');
+    if (lTap) lTap.classList.add('hidden');
+    if (rTap) rTap.classList.add('hidden');
 
     $('mbHint').textContent = `💔 Zásah! -${amount}`;
     flashSeqFail();
@@ -1514,6 +1620,82 @@
 
     // Po zásahu restartovat sekvenci — hráč byl potrestán
     setTimeout(() => mapBattleTurn(), 300);
+  }
+
+  function onMapAttackSpell(spellId) {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    if (mb._attackProcessed) return;
+    if (!mb.inAttackWindow) return;
+    const lv = state.skills[spellId]||0;
+    if (lv === 0) return;
+    if (mb.spellUsedThisFloor) return;
+    mb.spellUsedThisFloor = true;
+    clearTimeout(mb._attackWindowTimer);
+    resetTimerRing();
+    const actInfo = $('mbActionInfo');
+    if (actInfo) actInfo.classList.add('hidden');
+    updateActionButtons();
+    mb._attackProcessed = true;
+    const spellsEl = $('mbSpells');
+    if (spellsEl) spellsEl.innerHTML = '';
+
+    if (spellId === 'fireball') {
+      const dmg = 25 + lv * 25;
+      mb.bossHp -= dmg;
+      spawnProjectileEffect(null, false, false);
+      displayDamageText('🔥');
+      $('mbHint').textContent = `🔥 Fireball! ${dmg} poškození!`;
+      const bossFig = $('mbFigure');
+      if (bossFig) { bossFig.style.transition = 'filter 0.2s'; bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300); }
+    } else if (spellId === 'heal') {
+      const hp = 10 + lv * 15;
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
+      displayHealText(`+${hp}`);
+      spawnHealParticles();
+      $('mbHint').textContent = `💚 +${hp} HP!`;
+      const playerFig = $('mbPlayerFigure');
+      if (playerFig) { playerFig.style.transition = 'filter 0.3s'; playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400); }
+    }
+    sfxSuccess();
+    updateMapBattleUI();
+    mb.inAttackWindow = false;
+    $('mbActionInfo').classList.add('hidden');
+    updateActionButtons();
+    const sFire2 = $('mbSpellFireBtn');
+    const sHeal2 = $('mbSpellHealBtn');
+    if (sFire2) { sFire2.classList.add('hidden'); sFire2.classList.remove('active'); }
+    if (sHeal2) { sHeal2.classList.add('hidden'); sHeal2.classList.remove('active'); }
+    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 300); return; }
+    setTimeout(() => mapBattleTurn(), 300);
+  }
+
+  function onMapRapidTap() {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    if (!mb.isRapidAttack) return;
+    if (mb._hitProcessed) return;
+    mb.rapidTaps = (mb.rapidTaps || 0) + 1;
+    // Vizuální feedback na ploškách
+    const leftTap = $('mbTapLeft');
+    const rightTap = $('mbTapRight');
+    if (leftTap) { leftTap.classList.add('tapped'); setTimeout(() => leftTap.classList.remove('tapped'), 80); }
+    if (rightTap) { rightTap.classList.add('tapped'); setTimeout(() => rightTap.classList.remove('tapped'), 80); }
+    playSFX(dodgeSfx);
+    // Update cíle v kolečku
+    const remaining = mb.rapidTarget - mb.rapidTaps;
+    const target = $('mbRapidTarget');
+    if (target) target.textContent = `${remaining}`;
+    $('mbHint').textContent = `🔮 ${mb.rapidTaps}/${mb.rapidTarget} ťuknutí!`;
+    if (mb.rapidTaps >= mb.rapidTarget) {
+      // Hotovo!
+      clearTimeout(mb._sequenceTimer);
+      clearTimeout(mb._ringTimer);
+      mb._ringTimer = null;
+      mb._sequenceTimer = null;
+      $('mbHint').textContent = `🔮 ${mb.rapidTarget}/${mb.rapidTarget} — Hotovo!`;
+      advanceSequence();
+    }
   }
 
   function castMapSpell(spellId) {
@@ -2214,7 +2396,8 @@
   window.game = {
     showScreen, enterLocation, enterTraining, toggleDungeon,
     simonClick, colorInput, gridPick,
-    upgradeAttr, buyItem, sellItem, equipItem, unequipItem
+    upgradeAttr, buyItem, sellItem, equipItem, unequipItem,
+    onMapRapidTap
   };
   init();
 })();

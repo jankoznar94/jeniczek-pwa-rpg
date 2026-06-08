@@ -302,6 +302,47 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .mb-spell-btn.on-cd { opacity:0.3;pointer-events:none; }
 .mb-spell-cd { font-size:9px;color:#e94560;font-weight:bold; }
 
+/* Attack window spell buttons - vedle attack buttonu */
+.arena-spell-attack-btn {
+  position:absolute;bottom:20px;z-index:25;
+  width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid #2a2a4a;background:#1a1035;transition:0.15s;
+  opacity:0.3;pointer-events:none;
+  outline:none;-webkit-tap-highlight-color:transparent;user-select:none;
+}
+#mbSpellFireBtn { right:90px; }
+#mbSpellHealBtn { right:90px; bottom:76px; }
+.arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:#e94560; box-shadow:0 0 8px rgba(233,69,96,0.3); }
+#mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 8px rgba(46,204,113,0.3); }
+
+/* Rapid Tap — dvě ťukací plochy po stranách kolečka */
+.rapid-tap-area {
+  position:absolute;top:50%;z-index:15;
+  width:40px;height:90px;border-radius:10px;
+  background:rgba(180,100,255,0.15);border:2px solid rgba(180,100,255,0.4);
+  display:flex;align-items:center;justify-content:center;
+  transition:0.08s;touch-action:manipulation;
+  transform:translateY(-50%);
+}
+.rapid-tap-left { left:6px; }
+.rapid-tap-right { right:6px; }
+.rapid-tap-area:not(.hidden) { pointer-events:auto; }
+.rapid-tap-area.tapped {
+  background:rgba(180,100,255,0.5);border-color:rgba(180,100,255,0.9);
+  transform:translateY(-50%) scale(0.92);
+}
+.rapid-tap-label { font-size:22px;pointer-events:none; }
+
+/* Rapid Target — číslo uprostřed kruhu */
+.rapid-target {
+  position:absolute;top:50%;left:50%;z-index:20;
+  transform:translate(-50%,-50%);
+  font-size:32px;font-weight:bold;color:#b064ff;
+  text-shadow:0 0 12px rgba(176,100,255,0.8);
+  pointer-events:none;
+}
+
 /* Map */
 .map-guide-link {
   padding:8px 0 6px;
@@ -483,6 +524,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .guide-card.guide-inverted { border-left: 3px solid #5fa87a; }
 .guide-card.guide-twin { border-left: 3px solid #5a8aaa; }
 .guide-card.guide-attack { border-left: 3px solid #d4a038; }
+.guide-card.guide-rapid { border-left: 3px solid #b064ff; }
 .guide-icon {
   flex-shrink: 0;
   width: 48px;
