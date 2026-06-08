@@ -370,10 +370,10 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;
 }
 .talent-school-icon { font-size:28px; }
-.talent-school-name { font-size:16px; font-weight:bold; margin-left:8px; flex:1; }
-.talent-school-level { font-size:14px; color:#f1c40f; font-weight:bold; }
-.talent-school-desc { font-size:12px; color:#8888aa; margin-bottom:6px; }
-.talent-school-benefits { font-size:11px; color:#aaa; line-height:1.5; }
+.talent-school-name { font-size:18px; font-weight:bold; margin-left:8px; flex:1; }
+.talent-school-level { font-size:16px; color:#f1c40f; font-weight:bold; }
+.talent-school-desc { font-size:13px; color:#8888aa; margin-bottom:6px; }
+.talent-school-benefits { font-size:14px; color:#aaa; line-height:1.6; }
 .talent-school-benefits li { margin-left:14px; }
 .talent-school-benefits .lv-lock { color:#555; }
 .talent-school-benefits .lv-own { color:#f1c40f; }

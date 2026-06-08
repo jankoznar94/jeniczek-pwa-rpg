@@ -2120,7 +2120,8 @@
                 const owned = i < lv;
                 const isNext = i === lv;
                 const cls = owned ? 'lv-own' : (isNext ? 'lv-next' : 'lv-lock');
-                return `<li class="${cls}">${owned?'✅ ':isNext?'→ ':'🔒 '}${t.name}: ${t.desc(owned?lv:isNext?lv+1:lv)}</li>`;
+                const displayLv = owned ? lv : (isNext ? lv + 1 : Math.max(lv, 1));
+                return `<li class="${cls}">${owned?'✅ ':isNext?'→ ':'🔒 '}${t.name}: ${t.desc(displayLv)}</li>`;
               }).join('')}
             </ul>
             <button class="talent-invest-btn ${s.id}" onclick="event.stopPropagation();game.investTalent('${s.id}')" ${canInvest?'':'disabled'}>${canInvest?'+ Investovat 1 bod':'MAX'}</button>
