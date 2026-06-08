@@ -238,7 +238,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   border:1px solid #4a4a6a;transition:0.2s;flex-shrink:0;
 }
 .seq-dot.done {
-  background:var(--seq-dot-done, #2ecc71); border-color:var(--seq-dot-done, #2ecc71); box-shadow:0 0 4px var(--seq-dot-glow, rgba(46,204,113,0.4));
+  background:var(--seq-dot-done, #888); border-color:var(--seq-dot-done, #888); box-shadow:0 0 4px var(--seq-dot-glow, rgba(136,136,136,0.4));
 }
 .seq-dot.fail {
   background:#e94560; border-color:#e94560;
@@ -248,8 +248,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   gap:8px;
 }
 .seq-ready .seq-dot.done {
-  background:var(--seq-dot-done, #2ecc71); border-color:var(--seq-dot-done, #2ecc71);
-  box-shadow:0 0 14px var(--seq-dot-glow2, rgba(46,204,113,0.9)), 0 0 30px var(--seq-dot-glow3, rgba(46,204,113,0.4));
+  background:var(--seq-dot-done, #888); border-color:var(--seq-dot-done, #888);
+  box-shadow:0 0 14px var(--seq-dot-glow2, rgba(136,136,136,0.9)), 0 0 30px var(--seq-dot-glow3, rgba(136,136,136,0.4));
   transform:scale(1.2);
   animation:seqPulse 1.2s ease-in-out infinite;
 }
