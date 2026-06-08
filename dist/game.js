@@ -438,13 +438,11 @@
       }
       return `<div class="map-location-wrap">
         <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg},${theme.bg}88 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
+          <div class="map-loc-icon-big">${loc.icon}</div>
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
             <div class="map-loc-mechs">${getDungeonMechanics(i).join(' ')}</div>
-          </div>
-          <div class="map-loc-status ${completed?'done':!unlocked?'':'active'}">
-            <span class="map-loc-status-icon">${statusIcon}</span>
-            <span class="map-loc-status-text">${statusText}</span>
+            <div class="map-loc-progress">${statusIcon} ${statusText}</div>
           </div>
         </div>
         ${floorHtml}
