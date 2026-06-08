@@ -1126,7 +1126,7 @@
       const hasHeal = state.activeSchool === 'nature' && (state.schoolLevels['nature']||0) > 0;
       if (hasHeal && !mb.spellUsedThisFloor) {
         healBtn.classList.remove('hidden'); healBtn.classList.add('active');
-        healBtn.style.bottom = hasFire ? '84px' : '20px';
+        healBtn.style.bottom = hasFire ? '84px' : '84px';
       } else {
         healBtn.classList.add('hidden'); healBtn.classList.remove('active');
       }
@@ -1771,9 +1771,11 @@
     const mb = mapBattleState;
     if (mb._attackProcessed) return;
     if (!mb.inAttackWindow) return;
-    const lv = state.skills[spellId]||0;
+    let lv = 0;
+    if (spellId === 'fireball') lv = state.schoolLevels['fire'] || 0;
+    else if (spellId === 'heal') lv = state.schoolLevels['nature'] || 0;
     if (lv === 0) return;
-    if (mb.spellUsedThisFloor) return;
+    if (mb.spellUsedThisFloor) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
     mb.spellUsedThisFloor = true;
     clearTimeout(mb._attackWindowTimer);
     resetTimerRing();
@@ -1892,8 +1894,10 @@
   function castMapSpell(spellId) { if (!spellId) { const a = state.activeSchool; spellId = a === 'ice' ? 'freeze' : a === 'fire' ? 'fireball' : 'heal'; }
     const mb = mapBattleState;
     if (mb.ended) return;
-    const sk = SKILL_MAP[spellId];
-    const lv = state.skills[spellId]||0;
+    let lv = 0;
+    if (spellId === 'fireball') lv = state.schoolLevels['fire'] || 0;
+    else if (spellId === 'heal') lv = state.schoolLevels['nature'] || 0;
+    else if (spellId === 'freeze') lv = state.schoolLevels['ice'] || 0;
     if (lv === 0) return;
     // 1x per dungeon
     if (mb.spellUsedThisFloor) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
