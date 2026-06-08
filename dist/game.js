@@ -682,7 +682,17 @@
     window.addEventListener('keydown', kh);
     handlers.push(['keydown', kh]);
     arena._mbHandlers = handlers;
-    // Rapid tap handlery
+    // Rapid tap handlery — nejdřív smazat staré
+    const clearTap = (elId) => {
+      const el = $(elId);
+      if (!el) return;
+      if (el._rapidHandler) {
+        el.removeEventListener('pointerdown', el._rapidHandler);
+        el._rapidHandler = null;
+      }
+    };
+    clearTap('mbTapLeft');
+    clearTap('mbTapRight');
     const setupTap = (elId) => {
       const el = $(elId);
       if (!el) return;
@@ -690,8 +700,8 @@
         e.stopPropagation();
         onMapRapidTap();
       };
+      el._rapidHandler = tapHandler;
       el.addEventListener('pointerdown', tapHandler);
-      handlers.push(['pointerdown', tapHandler]);
     };
     setupTap('mbTapLeft');
     setupTap('mbTapRight');
