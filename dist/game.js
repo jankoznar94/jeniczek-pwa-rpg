@@ -410,12 +410,17 @@
       const curFloor = state.floorProgress[i] || 0;
       const curProgress = state.locationProgress[i] || 0;
       const expanded = _expandedDungeon === i;
-      let statusText;
-      if (completed) { statusText = '✅ Hotovo'; }
-      else if (!unlocked) { statusText = '🔒 Zamčeno'; }
-      else if (curFloor >= 4) { statusText = '👹 BOSS!'; }
-      else { statusText = `P${curFloor+1}: ${curProgress}/${loc.monsters}`; }
       const theme = DUNGEON_THEMES[i] || DUNGEON_THEMES[0];
+      let badgeHtml;
+      if (completed) {
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✅</div><div class="badge-count">Hotovo</div></div>`;
+      } else if (!unlocked) {
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
+      } else if (curFloor >= 4) {
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">BOSS</div></div>`;
+      } else {
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">P${curFloor+1}</div><div class="badge-count">${curProgress}/${loc.monsters}</div></div>`;
+      }
       // Floor sub-cards P1-P5
       let floorHtml = '';
       if (unlocked && expanded) {
@@ -442,8 +447,8 @@
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
             <div class="map-loc-mechs">${getDungeonMechanics(i).join(' ')}</div>
-            <div class="map-loc-progress" style="color:${theme.border}">${statusText}</div>
           </div>
+          ${badgeHtml}
         </div>
         ${floorHtml}
       </div>`;
