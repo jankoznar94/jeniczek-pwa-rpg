@@ -2101,7 +2101,7 @@
               }).join('')}
             </ul>
             <button class="talent-invest-btn ${s.id}" onclick="event.stopPropagation();game.investTalent('${s.id}')" ${canInvest?'':'disabled'}>${canInvest?'+ Investovat 1 bod':'MAX'}</button>
-            ${isActive?'<div style="margin-top:4px;font-size:11px;color:#f1c40f">✅ Aktivní</div>':''}
+            ${isActive?'':''}
           </div>`;
         }).join('');
       }
