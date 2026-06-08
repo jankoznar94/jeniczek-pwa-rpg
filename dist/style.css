@@ -302,19 +302,19 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .mb-spell-btn.on-cd { opacity:0.3;pointer-events:none; }
 .mb-spell-cd { font-size:9px;color:#e94560;font-weight:bold; }
 
-/* Attack window spell buttons - vedle attack buttonu */
+/* Attack window spell buttons - vertikalne nad tlacitkem Utok */
 .arena-spell-attack-btn {
   position:absolute;bottom:20px;z-index:25;
-  width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;
+  width:56px;height:56px;border-radius:50%;font-size:28px;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  border:2px solid #2a2a4a;background:#1a1035;transition:0.15s;
+  border:3px solid #2a2a4a;background:#1a1035;transition:0.15s;
   opacity:0.3;pointer-events:none;
   outline:none;-webkit-tap-highlight-color:transparent;user-select:none;
 }
-#mbSpellFireBtn { right:90px; }
-#mbSpellHealBtn { right:90px; bottom:76px; }
-.arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:#e94560; box-shadow:0 0 8px rgba(233,69,96,0.3); }
-#mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 8px rgba(46,204,113,0.3); }
+#mbSpellHealBtn { right:90px; bottom:20px; }
+#mbSpellFireBtn { right:90px; bottom:84px; }
+.arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:#e94560; box-shadow:0 0 10px rgba(233,69,96,0.4); }
+#mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 10px rgba(46,204,113,0.4); }
 
 /* Rapid Tap — dvě ťukací plochy po stranách kolečka */
 .rapid-tap-area {

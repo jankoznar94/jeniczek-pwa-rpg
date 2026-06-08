@@ -581,8 +581,15 @@
     const mb = mapBattleState;
     const atk = $('mbAttackBtn');
     const blk = $('mbBlockBtn');
-    // Tlačítka jsou vždy aktivní — unáhlený útok/blok se počítá jako chyba
-    if (atk) atk.classList.add('active');
+    // Tlacitko Utok jen v utocnem okne
+    if (atk) {
+      if (mb.inAttackWindow) {
+        atk.classList.add('active');
+      } else {
+        atk.classList.remove('active');
+      }
+    }
+    // Blok stale aktivni (unahleny blok = chyba)
     if (blk) blk.classList.add('active');
   }
 
