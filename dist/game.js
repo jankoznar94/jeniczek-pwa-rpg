@@ -487,7 +487,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsedThisFloor: false,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsedThisFloor: false,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
@@ -1954,7 +1954,7 @@
         $('resultIcon').textContent = '🎉';
         $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
         const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
-        const mistakes = mb.mistakes || 0;
+        const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
         const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
         const grade = mistakes === 0 ? '⭐⭐⭐' : mistakes <= 2 ? '⭐⭐' : '⭐';
         $('resultMsg').innerHTML = '<div class="result-stats">'
@@ -2026,7 +2026,7 @@
       let msg = `${r.gold||0}💰`;
       if (r.weapon) msg += ` + ${r.weapon}`;
       if (r.armor) msg += ` + ${r.armor}`;
-      $('resultMsg').textContent = `Získal jsi ${msg}`;
+      $('resultMsg').innerHTML = `Získal jsi ${msg}<br><span style="font-size:12px;color:#888">❌ ${(mb.floorMistakes||0)+(mb.mistakes||0)} chyb</span>`;
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
       if (locId + 1 < LOCATIONS.length) {
         $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další dungeon</button>`;
@@ -2040,8 +2040,10 @@
   function continueDungeon() {
     const mb = mapBattleState;
     if (mb.ended) return;
+    const oldMistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
     const locId = mb.locId;
     startLocation(locId);
+    mapBattleState.floorMistakes = oldMistakes;
   }
 
   // ===== TALENTS =====
