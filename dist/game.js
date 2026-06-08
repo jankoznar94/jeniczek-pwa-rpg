@@ -2449,7 +2449,7 @@
         e.preventDefault();
         e.stopPropagation(); // zabránit propagaci na document
         if (a.dataset.screen === 'map') showScreen('map');
-        else if (a.dataset.screen === 'tower') showScreen('tower');
+        else if (a.dataset.screen === 'talents') showScreen('talents');
         else if (a.dataset.screen === 'hero') showScreen('hero');
         else if (a.dataset.screen === 'shop') showScreen('shop');
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
