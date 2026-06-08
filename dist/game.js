@@ -752,8 +752,8 @@
       return { type, dir: dirA, twinDir: dirB, windowTime };
     }
     if (type === 'rapid') {
-      // Rapid: náhodný cíl 16-28 podle patra (dvojnásobek)
-      const rapidTarget = Math.min(16 + Math.floor((floor||0) * 3), 28);
+      // Rapid: náhodný cíl 20-35 podle patra (+25%)
+      const rapidTarget = Math.min(20 + Math.floor((floor||0) * 4), 35);
       return { type, dir, windowTime, rapidTarget };
     }
     return { dir, type, windowTime };
@@ -1170,20 +1170,24 @@
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
+    const aRect = arena.getBoundingClientRect();
+
+    // Start: od hráče (dole) nebo od bosse (nahoře)
+    let startEl = targetIsPlayer ? $('mbFigure') : $('mbPlayerFigure');
+    let startX = cx, startY = targetIsPlayer ? 0 : rect.height;
+    if (startEl) {
+      const sRect = startEl.getBoundingClientRect();
+      startX = sRect.left + sRect.width/2 - aRect.left;
+      startY = sRect.top + sRect.height/2 - aRect.top;
+    }
 
     // Cíl: pozice bosse (nahoře) nebo hráče (dole)
     let endX = cx, endY;
-    let targetEl;
-    if (targetIsPlayer) {
-      targetEl = $('mbPlayerFigure');
-    } else {
-      targetEl = $('mbFigure');
-    }
-    if (targetEl) {
-      const tRect = targetEl.getBoundingClientRect();
-      const aRect = arena.getBoundingClientRect();
-      endX = tRect.left + tRect.width/2 - aRect.left;
-      endY = tRect.top + tRect.height/2 - aRect.top;
+    let endEl = targetIsPlayer ? $('mbPlayerFigure') : $('mbFigure');
+    if (endEl) {
+      const eRect = endEl.getBoundingClientRect();
+      endX = eRect.left + eRect.width/2 - aRect.left;
+      endY = eRect.top + eRect.height/2 - aRect.top;
     } else {
       endX = cx;
       endY = targetIsPlayer ? rect.height + 20 : -20;
@@ -1198,8 +1202,8 @@
     const half = size / 2;
     const proj = document.createElement('div');
     proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 ${isCrit ? 20:10}px rgba(${rgb},${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
-    proj.style.left = (cx - half) + 'px';
-    proj.style.top = (cy - half) + 'px';
+    proj.style.left = (startX - half) + 'px';
+    proj.style.top = (startY - half) + 'px';
     arena.appendChild(proj);
 
     // Force reflow — prohlížeč si zapamatuje počáteční pozici
@@ -1334,20 +1338,29 @@
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
+    const aRect = arena.getBoundingClientRect();
+
+    // Start od hráče (dole)
+    const playerFig = $('mbPlayerFigure');
+    let startX = rect.width / 2, startY = rect.height - 40;
+    if (playerFig) {
+      const pRect = playerFig.getBoundingClientRect();
+      startX = pRect.left + pRect.width/2 - aRect.left;
+      startY = pRect.top + pRect.height/2 - aRect.top;
+    }
+
+    // Cíl: boss (nahoře)
     const bossFig = $('mbFigure');
-    let targetX = cx, targetY = 20;
+    let targetX = rect.width / 2, targetY = 20;
     if (bossFig) {
       const bRect = bossFig.getBoundingClientRect();
-      const aRect = arena.getBoundingClientRect();
       targetX = bRect.left + bRect.width/2 - aRect.left;
       targetY = bRect.top + bRect.height/2 - aRect.top;
     }
-    // Fireball — pulzující ohnivá koule
+    // Fireball — pulzující ohnivá koule letící od hráče k bossovi
     const ball = document.createElement('div');
     const size = 36;
-    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${cx - size/2}px;top:${cy - size/2}px;background:radial-gradient(circle,#fff 10%,#f39c12 40%,#e74c3c 80%);box-shadow:0 0 25px rgba(231,76,60,0.8),0 0 50px rgba(243,156,18,0.4);transition:left 0.35s ease-in,top 0.35s ease-in;`;
+    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#f39c12 40%,#e74c3c 80%);box-shadow:0 0 25px rgba(231,76,60,0.8),0 0 50px rgba(243,156,18,0.4);transition:left 0.35s ease-in,top 0.35s ease-in;`;
     arena.appendChild(ball);
     void ball.offsetHeight;
     ball.style.left = (targetX - size/2) + 'px';
