@@ -519,6 +519,7 @@
     document.body.classList.add('battle-active');
     updateMapBattleUI();
     setupMapBattleInput();
+    applySchoolColors();
     // Animace příchodu
     const newFig = $('mbFigure');
     if (newFig && !mapBattleState.isBoss && mapBattleState.progress > 0) {
@@ -972,7 +973,7 @@
       }
     } else if (attack.type === 'rapid') {
       // Rapid: číslo v kolečku, tap plošky po stranách
-      applyRapidSchoolColors();
+      applySchoolColors();
       if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
       if (actionInfo) actionInfo.classList.add('hidden');
       const target = $('mbRapidTarget');
@@ -1793,23 +1794,28 @@
     setTimeout(() => mapBattleTurn(), 300);
   }
 
-  function applyRapidSchoolColors() {
+  function applySchoolColors() {
     const a = state.activeSchool;
     const arena = $('mbArena');
     if (!arena) return;
     let bg, border, dot, dotTapped, dotGlow, dotGlow2, pulse, target, targetGlow;
+    let seqDone, seqGlow, seqGlow2, seqGlow3;
     if (a === 'fire') {
       bg='rgba(243,156,18,0.2)'; border='rgba(243,156,18,0.8)'; dot='rgba(243,156,18,0.45)'; dotTapped='rgba(243,156,18,1)';
       dotGlow='rgba(243,156,18,1)'; dotGlow2='rgba(243,156,18,0.6)'; pulse='rgba(243,156,18,0.6)'; target='#f39c12'; targetGlow='rgba(243,156,18,0.8)';
+      seqDone='#f39c12'; seqGlow='rgba(243,156,18,0.4)'; seqGlow2='rgba(243,156,18,0.9)'; seqGlow3='rgba(243,156,18,0.4)';
     } else if (a === 'ice') {
       bg='rgba(52,152,219,0.2)'; border='rgba(52,152,219,0.8)'; dot='rgba(52,152,219,0.45)'; dotTapped='rgba(52,152,219,1)';
       dotGlow='rgba(52,152,219,1)'; dotGlow2='rgba(52,152,219,0.6)'; pulse='rgba(52,152,219,0.6)'; target='#3498db'; targetGlow='rgba(52,152,219,0.8)';
+      seqDone='#3498db'; seqGlow='rgba(52,152,219,0.4)'; seqGlow2='rgba(52,152,219,0.9)'; seqGlow3='rgba(52,152,219,0.4)';
     } else if (a === 'nature') {
       bg='rgba(46,204,113,0.2)'; border='rgba(46,204,113,0.8)'; dot='rgba(46,204,113,0.45)'; dotTapped='rgba(46,204,113,1)';
       dotGlow='rgba(46,204,113,1)'; dotGlow2='rgba(46,204,113,0.6)'; pulse='rgba(46,204,113,0.6)'; target='#2ecc71'; targetGlow='rgba(46,204,113,0.8)';
+      seqDone='#2ecc71'; seqGlow='rgba(46,204,113,0.4)'; seqGlow2='rgba(46,204,113,0.9)'; seqGlow3='rgba(46,204,113,0.4)';
     } else {
       bg='rgba(180,100,255,0.2)'; border='rgba(180,100,255,0.8)'; dot='rgba(180,100,255,0.45)'; dotTapped='rgba(180,100,255,1)';
       dotGlow='rgba(180,100,255,1)'; dotGlow2='rgba(180,100,255,0.6)'; pulse='rgba(180,100,255,0.6)'; target='#b064ff'; targetGlow='rgba(176,100,255,0.8)';
+      seqDone='#2ecc71'; seqGlow='rgba(46,204,113,0.4)'; seqGlow2='rgba(46,204,113,0.9)'; seqGlow3='rgba(46,204,113,0.4)';
     }
     arena.style.setProperty('--rapid-color', border.replace('0.8','0.25'));
     arena.style.setProperty('--rapid-tap-bg', bg);
@@ -1821,6 +1827,10 @@
     arena.style.setProperty('--rapid-pulse', pulse);
     arena.style.setProperty('--rapid-target', target);
     arena.style.setProperty('--rapid-target-glow', targetGlow);
+    arena.style.setProperty('--seq-dot-done', seqDone);
+    arena.style.setProperty('--seq-dot-glow', seqGlow);
+    arena.style.setProperty('--seq-dot-glow2', seqGlow2);
+    arena.style.setProperty('--seq-dot-glow3', seqGlow3);
   }
 
   function onMapRapidTap() {
