@@ -578,35 +578,41 @@
     fig.textContent = emoji;
     $('mbHint').textContent = mb.isBoss ? `👑 BOSS — Sekvence útoků, přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Patro ${mb.floor+1}, ulov nestvůru!`;
 
-    // School spells
-        const container = $('mbSpells');
-        container.innerHTML = '';
-        const activeId = state.activeSchool;
-        if (!activeId) return;
-        const school = SCHOOL_MAP[activeId];
-        if (!school) return;
-        const lv = state.schoolLevels[activeId] || 0;
-        if (lv === 0) return;
-        const used = mb.spellUsedThisFloor;
-        // Freeze spell (ice) always visible, fireball/heal only in attack window
-        const spellId = activeId === 'ice' ? 'freeze' : (activeId === 'fire' ? 'fireball' : 'heal');
-        const spellIcon = activeId === 'fire' ? '🔥' : (activeId === 'ice' ? '❄️' : '💚');
-        if (spellId === 'freeze') {
-          const btn = document.createElement('div');
-          btn.className = 'mb-spell-btn' + (used?' on-cd':'');
-          btn.innerHTML = spellIcon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
-          btn.addEventListener('click', () => castMapSpell());
-          container.appendChild(btn);
-        } else if (mb.inAttackWindow) {
-          const btn = document.createElement('div');
-          btn.className = 'mb-spell-btn' + (used?' on-cd':'');
-          btn.innerHTML = spellIcon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
-          btn.addEventListener('click', () => {
-            if (used) return;
-            onMapAttackSpell(spellId);
-          });
-          container.appendChild(btn);
-        }
+    // School spells — pouzivame HTML tlacitka nad Utokem
+    const fireBtn = $('mbSpellFireBtn');
+    const healBtn = $('mbSpellHealBtn');
+    const freezeBtn = $('mbSpellFreezeBtn');
+    // Vsechna schovat
+    [fireBtn, healBtn, freezeBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active'); } });
+    const activeId = state.activeSchool;
+    if (!activeId) return;
+    const school = SCHOOL_MAP[activeId];
+    if (!school) return;
+    const lv = state.schoolLevels[activeId] || 0;
+    if (lv === 0) return;
+    const used = mb.spellUsedThisFloor;
+    if (activeId === 'fire') {
+      // Fireball — jen v utocnem okne
+      if (fireBtn) {
+        fireBtn.classList.remove('hidden');
+        if (mb.inAttackWindow && !used) fireBtn.classList.add('active');
+        else fireBtn.classList.remove('active');
+      }
+    } else if (activeId === 'ice') {
+      // Freeze — vzdy viditelny (mimo utocne okno)
+      if (freezeBtn) {
+        freezeBtn.classList.remove('hidden');
+        if (!used) freezeBtn.classList.add('active');
+        else freezeBtn.classList.remove('active');
+      }
+    } else if (activeId === 'nature') {
+      // Heal — jen v utocnem okne
+      if (healBtn) {
+        healBtn.classList.remove('hidden');
+        if (mb.inAttackWindow && !used) healBtn.classList.add('active');
+        else healBtn.classList.remove('active');
+      }
+    }
   }
 
   function updateActionButtons() {
@@ -727,6 +733,15 @@
       };
       spellHealBtn.addEventListener('pointerdown', healHandler);
       handlers.push(['pointerdown', healHandler]);
+    }
+    const spellFreezeBtn = $('mbSpellFreezeBtn');
+    if (spellFreezeBtn) {
+      const freezeHandler = (e) => {
+        e.stopPropagation();
+        castMapSpell('freeze');
+      };
+      spellFreezeBtn.addEventListener('pointerdown', freezeHandler);
+      handlers.push(['pointerdown', freezeHandler]);
     }
   }
 
@@ -1788,8 +1803,10 @@
     updateActionButtons();
     const sFire2 = $('mbSpellFireBtn');
     const sHeal2 = $('mbSpellHealBtn');
+    const sFreeze2 = $('mbSpellFreezeBtn');
     if (sFire2) { sFire2.classList.add('hidden'); sFire2.classList.remove('active'); }
     if (sHeal2) { sHeal2.classList.add('hidden'); sHeal2.classList.remove('active'); }
+    if (sFreeze2) { sFreeze2.classList.add('hidden'); sFreeze2.classList.remove('active'); }
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 300); return; }
     setTimeout(() => mapBattleTurn(), 300);
   }
@@ -1800,22 +1817,27 @@
     if (!arena) return;
     let bg, border, dot, dotTapped, dotGlow, dotGlow2, pulse, target, targetGlow;
     let seqDone, seqGlow, seqGlow2, seqGlow3;
+    let spellColor, spellBg, spellGlow;
     if (a === 'fire') {
       bg='rgba(243,156,18,0.2)'; border='rgba(243,156,18,0.8)'; dot='rgba(243,156,18,0.45)'; dotTapped='rgba(243,156,18,1)';
       dotGlow='rgba(243,156,18,1)'; dotGlow2='rgba(243,156,18,0.6)'; pulse='rgba(243,156,18,0.6)'; target='#f39c12'; targetGlow='rgba(243,156,18,0.8)';
       seqDone='#f39c12'; seqGlow='rgba(243,156,18,0.4)'; seqGlow2='rgba(243,156,18,0.9)'; seqGlow3='rgba(243,156,18,0.4)';
+      spellColor='#f39c12'; spellBg='#1a1a0a'; spellGlow='rgba(243,156,18,0.4)';
     } else if (a === 'ice') {
       bg='rgba(52,152,219,0.2)'; border='rgba(52,152,219,0.8)'; dot='rgba(52,152,219,0.45)'; dotTapped='rgba(52,152,219,1)';
       dotGlow='rgba(52,152,219,1)'; dotGlow2='rgba(52,152,219,0.6)'; pulse='rgba(52,152,219,0.6)'; target='#3498db'; targetGlow='rgba(52,152,219,0.8)';
       seqDone='#3498db'; seqGlow='rgba(52,152,219,0.4)'; seqGlow2='rgba(52,152,219,0.9)'; seqGlow3='rgba(52,152,219,0.4)';
+      spellColor='#3498db'; spellBg='#0a1a2a'; spellGlow='rgba(52,152,219,0.4)';
     } else if (a === 'nature') {
       bg='rgba(46,204,113,0.2)'; border='rgba(46,204,113,0.8)'; dot='rgba(46,204,113,0.45)'; dotTapped='rgba(46,204,113,1)';
       dotGlow='rgba(46,204,113,1)'; dotGlow2='rgba(46,204,113,0.6)'; pulse='rgba(46,204,113,0.6)'; target='#2ecc71'; targetGlow='rgba(46,204,113,0.8)';
       seqDone='#2ecc71'; seqGlow='rgba(46,204,113,0.4)'; seqGlow2='rgba(46,204,113,0.9)'; seqGlow3='rgba(46,204,113,0.4)';
+      spellColor='#2ecc71'; spellBg='#0a1a0a'; spellGlow='rgba(46,204,113,0.4)';
     } else {
       bg='rgba(180,100,255,0.2)'; border='rgba(180,100,255,0.8)'; dot='rgba(180,100,255,0.45)'; dotTapped='rgba(180,100,255,1)';
       dotGlow='rgba(180,100,255,1)'; dotGlow2='rgba(180,100,255,0.6)'; pulse='rgba(180,100,255,0.6)'; target='#b064ff'; targetGlow='rgba(176,100,255,0.8)';
       seqDone='#2ecc71'; seqGlow='rgba(46,204,113,0.4)'; seqGlow2='rgba(46,204,113,0.9)'; seqGlow3='rgba(46,204,113,0.4)';
+      spellColor='#e94560'; spellBg='#1a1035'; spellGlow='rgba(233,69,96,0.4)';
     }
     arena.style.setProperty('--rapid-color', border.replace('0.8','0.25'));
     arena.style.setProperty('--rapid-tap-bg', bg);
@@ -1831,6 +1853,9 @@
     arena.style.setProperty('--seq-dot-glow', seqGlow);
     arena.style.setProperty('--seq-dot-glow2', seqGlow2);
     arena.style.setProperty('--seq-dot-glow3', seqGlow3);
+    arena.style.setProperty('--spell-color', spellColor);
+    arena.style.setProperty('--spell-bg', spellBg);
+    arena.style.setProperty('--spell-glow', spellGlow);
   }
 
   function onMapRapidTap() {
