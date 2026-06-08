@@ -312,10 +312,12 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   outline:none;-webkit-tap-highlight-color:transparent;user-select:none;
 }
 #mbSpellHealBtn { bottom:84px; }
-#mbSpellFireBtn { bottom:148px; }
-#mbSpellFreezeBtn { bottom:212px; }
+#mbSpellFireBtn { bottom:84px; }
+#mbSpellFreezeBtn { bottom:84px; }
 .arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:var(--spell-color, #e94560); background:var(--spell-bg, #1a1035); box-shadow:0 0 10px var(--spell-glow, rgba(233,69,96,0.4)); }
 #mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 10px rgba(46,204,113,0.4); }
+.arena-spell-attack-btn.used { opacity:0.35; pointer-events:none; filter:grayscale(1); }
+.arena-spell-attack-btn .spell-x { position:absolute;font-size:16px;top:2px;right:2px;line-height:1; }
 
 /* Rapid Tap — dve plosky s puntikem a tenkym borderem */
 .rapid-tap-area {
@@ -392,6 +394,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .talent-school.active.fire { border-color:#e94560; }
 .talent-school.active.ice { border-color:#4a7dff; }
 .talent-school.active.nature { border-color:#2ecc71; }
+.talent-school.locked { opacity:0.4; pointer-events:none; filter:grayscale(0.6); position:relative; }
+.talent-lock-overlay {
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:48px;z-index:5;opacity:0.6;
+}
 
 /* Map */
 .map-guide-link {

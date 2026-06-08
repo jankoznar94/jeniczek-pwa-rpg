@@ -581,12 +581,12 @@
     fig.textContent = emoji;
     $('mbHint').textContent = mb.isBoss ? `👑 BOSS — Sekvence útoků, přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Patro ${mb.floor+1}, ulov nestvůru!`;
 
-    // School spells — pouzivame HTML tlacitka nad Utokem
+    // School spells — HTML tlacitka nad Utokem, vzdy na stejne pozici (84px)
     const fireBtn = $('mbSpellFireBtn');
     const healBtn = $('mbSpellHealBtn');
     const freezeBtn = $('mbSpellFreezeBtn');
-    // Vsechna schovat
-    [fireBtn, healBtn, freezeBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active'); } });
+    // Vsechna schovat (default)
+    [fireBtn, healBtn, freezeBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active', 'used'); } });
     const activeId = state.activeSchool;
     if (!activeId) return;
     const school = SCHOOL_MAP[activeId];
@@ -594,27 +594,22 @@
     const lv = state.schoolLevels[activeId] || 0;
     if (lv === 0) return;
     const used = mb.spellUsedThisFloor;
-    if (activeId === 'fire') {
-      // Fireball — jen v utocnem okne
-      if (fireBtn) {
-        fireBtn.classList.remove('hidden');
-        if (mb.inAttackWindow && !used) fireBtn.classList.add('active');
-        else fireBtn.classList.remove('active');
-      }
-    } else if (activeId === 'ice') {
-      // Freeze — vzdy viditelny (mimo utocne okno)
-      if (freezeBtn) {
-        freezeBtn.classList.remove('hidden');
-        if (!used) freezeBtn.classList.add('active');
-        else freezeBtn.classList.remove('active');
-      }
-    } else if (activeId === 'nature') {
-      // Heal — jen v utocnem okne
-      if (healBtn) {
-        healBtn.classList.remove('hidden');
-        if (mb.inAttackWindow && !used) healBtn.classList.add('active');
-        else healBtn.classList.remove('active');
-      }
+    // Ukazat spravne kouzlo — VZDY viditelne, aktivni jen kdyz je prilezitost
+    const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : healBtn;
+    if (!btn) return;
+    btn.classList.remove('hidden');
+    if (used) {
+      btn.classList.add('used');
+      btn.innerHTML = activeId === 'fire' ? '🔥<span class="spell-x">❌</span>' : activeId === 'ice' ? '❄️<span class="spell-x">❌</span>' : '💚<span class="spell-x">❌</span>';
+      return;
+    }
+    // Obnovit puvodni obsah
+    btn.innerHTML = activeId === 'fire' ? '🔥' : activeId === 'ice' ? '❄️' : '💚';
+    // Aktivni: freeze vzdy, ostatni jen v attack okne
+    if (activeId === 'ice') {
+      btn.classList.add('active');
+    } else if (mb.inAttackWindow) {
+      btn.classList.add('active');
     }
   }
 
@@ -1116,31 +1111,7 @@
     mb._attackProcessed = false;
     renderSeqProgress(mb);
     // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
-    updateMapBattleUI();
-    // Zobrazit arena spell tlacitka Fireball/Heal jen pokud je hrac ma — dynamicky
-    const fireBtn = $('mbSpellFireBtn');
-    const healBtn = $('mbSpellHealBtn');
-    const hasFire = ((state.activeSchool==='fire' ? (state.schoolLevels['fire']||0) : 0)) > 0;
-    const hasHeal = ((state.activeSchool==='nature' ? (state.schoolLevels['nature']||0) : 0)) > 0;
-    if (healBtn) {
-      const hasHeal = state.activeSchool === 'nature' && (state.schoolLevels['nature']||0) > 0;
-      if (hasHeal && !mb.spellUsedThisFloor) {
-        healBtn.classList.remove('hidden'); healBtn.classList.add('active');
-        healBtn.style.bottom = hasFire ? '84px' : '84px';
-      } else {
-        healBtn.classList.add('hidden'); healBtn.classList.remove('active');
-      }
-    }
-    if (fireBtn) {
-      const hasFire = state.activeSchool === 'fire' && (state.schoolLevels['fire']||0) > 0;
-      if (hasFire && !mb.spellUsedThisFloor) {
-        fireBtn.classList.remove('hidden'); fireBtn.classList.add('active');
-        fireBtn.style.bottom = hasHeal ? '148px' : '84px';
-      } else {
-        fireBtn.classList.add('hidden'); fireBtn.classList.remove('active');
-      }
-    }
-
+    updateMapBattleUI(); // zobrazi spell buttony
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
@@ -1802,16 +1773,10 @@
       if (playerFig) { playerFig.style.transition = 'filter 0.3s'; playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400); }
     }
     sfxSuccess();
-    updateMapBattleUI();
+    updateMapBattleUI(); // zobrazi spell button s .used tridou
     mb.inAttackWindow = false;
     $('mbActionInfo').classList.add('hidden');
     updateActionButtons();
-    const sFire2 = $('mbSpellFireBtn');
-    const sHeal2 = $('mbSpellHealBtn');
-    const sFreeze2 = $('mbSpellFreezeBtn');
-    if (sFire2) { sFire2.classList.add('hidden'); sFire2.classList.remove('active'); }
-    if (sHeal2) { sHeal2.classList.add('hidden'); sHeal2.classList.remove('active'); }
-    if (sFreeze2) { sFreeze2.classList.add('hidden'); sFreeze2.classList.remove('active'); }
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 300); return; }
     setTimeout(() => mapBattleTurn(), 300);
   }
@@ -2114,28 +2079,30 @@
           resetBtn.disabled = !hasSpent;
         }
         $('talentSchools').innerHTML = SCHOOLS.map(s => {
-          const lv = state.schoolLevels[s.id] || 0;
-          const isActive = state.activeSchool === s.id;
-          const canInvest = pts > 0 && lv < 5;
-          return `<div class="talent-school ${isActive?'active':''} ${s.id}" onclick="${isActive?'':`game.activateSchool('${s.id}')`}">
-            <div class="talent-school-header">
-              <span class="talent-school-icon">${s.icon}</span>
-              <span class="talent-school-name">${s.name}</span>
-              <span class="talent-school-level">Lv.${lv}/5</span>
-            </div>
-            <div class="talent-school-desc">${s.desc}</div>
-            <ul class="talent-school-benefits">
-              ${s.talents.map((t, i) => {
-                const owned = i < lv;
-                const isNext = i === lv;
-                const cls = owned ? 'lv-own' : (isNext ? 'lv-next' : 'lv-lock');
-                const displayLv = owned ? lv : (isNext ? lv + 1 : Math.max(lv, 1));
-                return `<li class="${cls}">${owned?'✅ ':isNext?'→ ':'🔒 '}${t.name}: ${t.desc(displayLv)}</li>`;
-              }).join('')}
-            </ul>
-            <button class="talent-invest-btn ${s.id}" onclick="event.stopPropagation();game.investTalent('${s.id}')" ${canInvest?'':'disabled'}>${canInvest?'+ Investovat 1 bod':'MAX'}</button>
-            ${isActive?'':''}
-          </div>`;
+                  const lv = state.schoolLevels[s.id] || 0;
+                  const isActive = state.activeSchool === s.id;
+                  const hasInvested = Object.values(state.schoolLevels).reduce((a,b)=>a+b, 0) > 0;
+                  const isLocked = hasInvested && lv === 0;
+                  const canInvest = pts > 0 && lv < 5 && !isLocked;
+                  return `<div class="talent-school ${isActive?'active':''} ${s.id} ${isLocked?'locked':''}" onclick="${isLocked?'':`game.activateSchool('${s.id}')`}">
+                    ${isLocked?'<div class="talent-lock-overlay">🔒</div>':''}
+                    <div class="talent-school-header">
+                      <span class="talent-school-icon">${s.icon}</span>
+                      <span class="talent-school-name">${s.name}</span>
+                      <span class="talent-school-level">Lv.${lv}/5</span>
+                    </div>
+                    <div class="talent-school-desc">${s.desc}</div>
+                    <ul class="talent-school-benefits">
+                      ${s.talents.map((t, i) => {
+                        const owned = i < lv;
+                        const isNext = i === lv;
+                        const cls = owned ? 'lv-own' : (isNext ? 'lv-next' : 'lv-lock');
+                        const displayLv = owned ? lv : (isNext ? lv + 1 : Math.max(lv, 1));
+                        return `<li class="${cls}">${owned?'✅ ':isNext?'→ ':'🔒 '}${t.name}: ${t.desc(displayLv)}</li>`;
+                      }).join('')}
+                    </ul>
+                    <button class="talent-invest-btn ${s.id}" onclick="event.stopPropagation();game.investTalent('${s.id}')" ${canInvest?'':'disabled'}>${isLocked?'🔒 Z VOLNO':canInvest?'+ Investovat 1 bod':'MAX'}</button>
+                  </div>`;
         }).join('');
       }
       function investTalent(schoolId) {
