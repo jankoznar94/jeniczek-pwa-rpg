@@ -570,7 +570,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .guide-card.guide-heavy { border-left: 3px solid #c4a84c; }
 .guide-card.guide-block { border-left: 3px solid #e74c3c; }
-.guide-card.guide-wait { border-left: 3px solid #8a6d9b; }
 .guide-card.guide-inverted { border-left: 3px solid #5fa87a; }
 .guide-card.guide-twin { border-left: 3px solid #5a8aaa; }
 .guide-card.guide-attack { border-left: 3px solid #d4a038; }
