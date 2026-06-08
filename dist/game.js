@@ -303,7 +303,7 @@
   function defaultState() {
     const schoolLevels = {};
     SCHOOLS.forEach(sk => { schoolLevels[sk.id] = 0; });
-    const s = { schoolLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { schoolLevels, activeSchool:null, talentPoints:20, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:50}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0] };
     return s;
   }
