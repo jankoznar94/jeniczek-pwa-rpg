@@ -311,8 +311,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   opacity:0.3;pointer-events:none;
   outline:none;-webkit-tap-highlight-color:transparent;user-select:none;
 }
-#mbSpellHealBtn { right:90px; bottom:20px; }
-#mbSpellFireBtn { right:90px; bottom:84px; }
+#mbSpellHealBtn { right:20px; bottom:84px; }
+#mbSpellFireBtn { right:20px; bottom:148px; }
 .arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:#e94560; box-shadow:0 0 10px rgba(233,69,96,0.4); }
 #mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 10px rgba(46,204,113,0.4); }
 

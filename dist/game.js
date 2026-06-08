@@ -1079,11 +1079,19 @@
     renderSeqProgress(mb);
     // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
     updateMapBattleUI();
-    // Zobrazit arena spell tlacitka Fireball/Heal
+    // Zobrazit arena spell tlacitka Fireball/Heal jen pokud je hrac ma
     const fireBtn = $('mbSpellFireBtn');
     const healBtn = $('mbSpellHealBtn');
-    if (fireBtn) { fireBtn.classList.remove('hidden'); fireBtn.classList.add('active'); }
-    if (healBtn) { healBtn.classList.remove('hidden'); healBtn.classList.add('active'); }
+    if (fireBtn) {
+      const hasFire = (state.skills['fireball']||0) > 0;
+      if (hasFire) { fireBtn.classList.remove('hidden'); fireBtn.classList.add('active'); }
+      else fireBtn.classList.add('hidden');
+    }
+    if (healBtn) {
+      const hasHeal = (state.skills['heal']||0) > 0;
+      if (hasHeal) { healBtn.classList.remove('hidden'); healBtn.classList.add('active'); }
+      else healBtn.classList.add('hidden');
+    }
 
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
