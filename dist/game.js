@@ -1079,18 +1079,26 @@
     renderSeqProgress(mb);
     // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
     updateMapBattleUI();
-    // Zobrazit arena spell tlacitka Fireball/Heal jen pokud je hrac ma
+    // Zobrazit arena spell tlacitka Fireball/Heal jen pokud je hrac ma — dynamicky
     const fireBtn = $('mbSpellFireBtn');
     const healBtn = $('mbSpellHealBtn');
-    if (fireBtn) {
-      const hasFire = (state.skills['fireball']||0) > 0;
-      if (hasFire) { fireBtn.classList.remove('hidden'); fireBtn.classList.add('active'); }
-      else fireBtn.classList.add('hidden');
-    }
+    const hasFire = (state.skills['fireball']||0) > 0;
+    const hasHeal = (state.skills['heal']||0) > 0;
     if (healBtn) {
-      const hasHeal = (state.skills['heal']||0) > 0;
-      if (hasHeal) { healBtn.classList.remove('hidden'); healBtn.classList.add('active'); }
-      else healBtn.classList.add('hidden');
+      if (hasHeal && !mb.spellUsedThisFloor) {
+        healBtn.classList.remove('hidden'); healBtn.classList.add('active');
+        healBtn.style.bottom = hasFire ? '84px' : '20px';
+      } else {
+        healBtn.classList.add('hidden'); healBtn.classList.remove('active');
+      }
+    }
+    if (fireBtn) {
+      if (hasFire && !mb.spellUsedThisFloor) {
+        fireBtn.classList.remove('hidden'); fireBtn.classList.add('active');
+        fireBtn.style.bottom = hasHeal ? '148px' : '84px';
+      } else {
+        fireBtn.classList.add('hidden'); fireBtn.classList.remove('active');
+      }
     }
 
     $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
@@ -1319,6 +1327,80 @@
       });
       setTimeout(() => { if (p.parentNode) p.remove(); }, 700);
     }
+  }
+
+  // ===== SPELL PROJECTILES =====
+  function spawnFireballProjectile() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const bossFig = $('mbFigure');
+    let targetX = cx, targetY = 20;
+    if (bossFig) {
+      const bRect = bossFig.getBoundingClientRect();
+      const aRect = arena.getBoundingClientRect();
+      targetX = bRect.left + bRect.width/2 - aRect.left;
+      targetY = bRect.top + bRect.height/2 - aRect.top;
+    }
+    // Fireball — pulzující ohnivá koule
+    const ball = document.createElement('div');
+    const size = 36;
+    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${cx - size/2}px;top:${cy - size/2}px;background:radial-gradient(circle,#fff 10%,#f39c12 40%,#e74c3c 80%);box-shadow:0 0 25px rgba(231,76,60,0.8),0 0 50px rgba(243,156,18,0.4);transition:left 0.35s ease-in,top 0.35s ease-in;`;
+    arena.appendChild(ball);
+    void ball.offsetHeight;
+    ball.style.left = (targetX - size/2) + 'px';
+    ball.style.top = (targetY - size/2) + 'px';
+    // Exploze po dopadu
+    setTimeout(() => {
+      if (ball.parentNode) ball.remove();
+      // Ohnivá exploze
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        const pSize = 4 + Math.random() * 12;
+        const angle = Math.random() * 2 * Math.PI;
+        const dist = 15 + Math.random() * 55;
+        const colors = ['#e74c3c','#f39c12','#fff','#e67e22'];
+        const color = colors[i % colors.length];
+        p.style.cssText = `position:absolute;width:${pSize}px;height:${pSize}px;border-radius:50%;z-index:31;pointer-events:none;left:${targetX - pSize/2}px;top:${targetY - pSize/2}px;background:${color};box-shadow:0 0 ${6+Math.random()*10}px ${color};opacity:1;`;
+        arena.appendChild(p);
+        requestAnimationFrame(() => {
+          p.style.transition = `left 0.4s ease-out, top 0.4s ease-out, opacity 0.4s ease-out`;
+          p.style.left = (targetX + Math.cos(angle) * dist - pSize/2) + 'px';
+          p.style.top = (targetY + Math.sin(angle) * dist - pSize/2) + 'px';
+          p.style.opacity = '0';
+        });
+        setTimeout(() => { if (p.parentNode) p.remove(); }, 450);
+      }
+      // Damage text
+      displayDamageText('🔥');
+    }, 350);
+  }
+
+  function spawnHealProjectile() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height - 80;
+    // Zelená koule stoupající od hráče
+    for (let i = 0; i < 8; i++) {
+      const p = document.createElement('div');
+      const size = 4 + Math.random() * 8;
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 20 + Math.random() * 40;
+      setTimeout(() => {
+        p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${cx - size/2}px;top:${cy - size/2}px;background:rgba(46,204,113,0.7);box-shadow:0 0 12px rgba(46,204,113,0.6);opacity:0.9;transition:left 0.5s ease-out,top 0.5s ease-out,opacity 0.5s ease-out;`;
+        arena.appendChild(p);
+        void p.offsetHeight;
+        p.style.left = (cx + Math.cos(angle) * dist - size/2) + 'px';
+        p.style.top = (cy + Math.sin(angle) * dist - size/2) + 'px';
+        p.style.opacity = '0';
+        setTimeout(() => { if (p.parentNode) p.remove(); }, 550);
+      }, i * 60);
+    }
+    displayHealText('💚');
   }
 
   function spawnDodgeEffect(arena, dir) {
@@ -1658,16 +1740,14 @@
     if (spellId === 'fireball') {
       const dmg = 25 + lv * 25;
       mb.bossHp -= dmg;
-      spawnProjectileEffect(null, false, false);
-      displayDamageText('🔥');
+      spawnFireballProjectile();
       $('mbHint').textContent = `🔥 Fireball! ${dmg} poškození!`;
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.2s'; bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300); }
     } else if (spellId === 'heal') {
       const hp = 10 + lv * 15;
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
-      displayHealText(`+${hp}`);
-      spawnHealParticles();
+      spawnHealProjectile();
       $('mbHint').textContent = `💚 +${hp} HP!`;
       const playerFig = $('mbPlayerFigure');
       if (playerFig) { playerFig.style.transition = 'filter 0.3s'; playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400); }
