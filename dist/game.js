@@ -1623,7 +1623,7 @@
     mb._attackProcessed = true; // označit útok jako provedený
 
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
-    const critChance = (state.hero.attrDex||0) * 5 + 5;
+    const critChance = (state.hero.attrDex||0) * 1 + 5;
     const critMult = 2.0;
     let dmg = baseDmg;
     const isCrit = Math.random() * 100 < critChance;
@@ -2094,7 +2094,7 @@
       h.maxHp = getHeroMaxHp();
       h.baseDmg = getHeroDmg();
       h.hp = h.maxHp; // full heal při levelu
-      h.attrPoints = (h.attrPoints || 0) + 1;
+      h.attrPoints = (h.attrPoints || 0) + 5;
       state.talentPoints = (state.talentPoints || 0) + 1;
       leveled = true;
     }
@@ -2118,7 +2118,8 @@
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
     const h = state.hero;
-    const totalLv = SKILLS.reduce((s,sk) => s + (state.skills[sk.id]||0), 0);
+    const active = state.activeSchool ? SCHOOL_MAP[state.activeSchool] : null;
+    const schoolLv = active ? (state.schoolLevels[state.activeSchool]||0) : 0;
     $('heroName').textContent = 'Dobrodruh';
     $('heroLevel').textContent = `Lv.${h.level}`;
     $('heroDeaths').textContent = state.deaths;
@@ -2127,9 +2128,13 @@
     $('heroMaxHp').textContent = h.maxHp;
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
-    const critChance = (h.attrDex||0) * 5 + 5;
+    const critChance = (h.attrDex||0) * 1 + 5;
     $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% (×2.0)` : `${critChance}% (×2.0)`;
-    $('totalSkillLevel').textContent = `${totalLv}/${SKILLS.length*5}`;
+    // Aktivni skola
+    const schoolInfo = $('activeSchoolInfo');
+    if (schoolInfo) {
+      schoolInfo.textContent = active ? `${active.icon} ${active.name} — Lv.${schoolLv}/5` : 'Žádná — přidej talentové body v 🎓 Talent Tree';
+    }
     // XP bar
     const xpNeeded = h.level * 80;
     const xpPct = Math.min((h.xp / xpNeeded) * 100, 100);
