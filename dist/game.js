@@ -144,14 +144,38 @@
     });
   }
 
-  // ===== SPELLS =====
-  const SKILLS = [
-    { id:'fireball', name:'Fireball', icon:'🔥', dungeon:'simon', dungeonName:'🌲 Les stínů', maxLv:5, desc:t=>t===0?'Zamčeno':`${25+t*25} dmg`, baseCd:1, cdR:0, minLevel:1 },
-    { id:'heal', name:'Léčení', icon:'💚', dungeon:'grid', dungeonName:'🏜️ Pouštní brána', maxLv:5, desc:t=>t===0?'Zamčeno':`+${10+t*15} HP`, baseCd:1, cdR:0, minLevel:1 },
-    { id:'freeze', name:'Mráz', icon:'❄️', dungeon:'color', dungeonName:'⏳ Časová zřícenina', maxLv:5, desc:t=>t===0?'Zamčeno':`${4+t} s zpomalení`, baseCd:1, cdR:0, minLevel:1 },
+  // ===== SCHOOLS (Talent Tree) =====
+  const SCHOOLS = [
+    { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Zaměřuje se na čisté poškození a ohnivé střely.',
+      talents: [
+        { k:'fireball', name:'🔥 Fireball', desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` },
+        { k:'dmgBoost', name:'⚔️ Zvýšení poškození', desc:lv=>`+${lv*10}% poškození zbraně` },
+        { k:'fireball2', name:'🔥 Silnější Fireball', desc:lv=>`Fireball ×${1+lv*0.5} poškození` },
+        { k:'dmgBoost2', name:'⚔️ Velké zvýšení poškození', desc:lv=>`+${10+lv*10}% poškození zbraně` },
+        { k:'inferno', name:'🌋 Inferno', desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
+      ]
+    },
+    { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
+      talents: [
+        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Zpomalení o ${40+lv*10}% na ${4+lv}s` },
+        { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${10+lv*5}% na ${1+lv/2}s` },
+        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Zpomalení o ${45+lv*15}% na ${4+lv}s` },
+        { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${15+lv*5}% na ${1+lv/2}s` },
+        { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Zpomalení o ${50+lv*20}% na ${6+lv}s` }
+      ]
+    },
+    { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení a jedovaté DoT poškození.',
+      talents: [
+        { k:'heal', name:'💚 Léčení', desc:lv=>`+${10+lv*15} HP` },
+        { k:'poison', name:'☠️ Jed', desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+lv/2}s` },
+        { k:'heal2', name:'💚 Silnější léčení', desc:lv=>`+${15+lv*20} HP` },
+        { k:'poison2', name:'☠️ Silný jed', desc:lv=>`Jed ${lv*5}/tick na ${3+lv/2}s` },
+        { k:'revitalize', name:'🌱 Revitalizace', desc:lv=>`Léčení ×${1+lv*0.5}` }
+      ]
+    }
   ];
-  const SKILL_MAP = {}; SKILLS.forEach(s => SKILL_MAP[s.id] = s);
-  function skillXpToLevel(lv) { return 3 + lv * 2; }
+  const SCHOOL_MAP = {};
+  SCHOOLS.forEach(s => SCHOOL_MAP[s.id] = s);
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
@@ -277,18 +301,18 @@
 
   const SAVE_KEY = 'dungeonRecallV6';
   function defaultState() {
-    // ITEMS: fists (baseDmg:2), rags (bonusHp:0), dagger (baseDmg:5), sword (baseDmg:8), flameSword (baseDmg:12), chainmail (bonusHp:20), plate (bonusHp:40)
-    const s = { skills:{}, skillXp:{}, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
+    const schoolLevels = {};
+    SCHOOLS.forEach(sk => { schoolLevels[sk.id] = 0; });
+    const s = { schoolLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0] };
-    SKILLS.forEach(sk => { s.skills[sk.id]=0; s.skillXp[sk.id]=0; });
     return s;
   }
-  function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.skills) return s; } catch {} return defaultState(); }
+  function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.schoolLevels) return s; } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', tower:'towerScreen', hero:'heroScreen', battle:'battleScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen' };
+  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen' };
   function showScreen(name) {
     cleanupTimers();
     
@@ -314,7 +338,7 @@
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
     if (name === 'map') renderMap();
-    else if (name === 'tower') renderTower();
+    else if (name === 'talents') renderTalents();
     else if (name === 'hero') renderHero();
     else if (name === 'shop') renderShop();
     else if (name === 'inventory') renderInventory();
@@ -479,7 +503,7 @@
       _heavySwipes: 0, _twinSwipes: [], // twin: které směry už hráč swipnul
       isRapidAttack: false, rapidTaps: 0, rapidTarget: 0
     };
-    SKILLS.forEach(sk => { const l = state.skills[sk.id]||0; if (l>0) mapBattleState.spellCooldowns[sk.id]=0; });
+    // Schools handled via activeSchool
 
     showScreen('mapBattle');
     // Skrýt starou šipku z předchozího boje ihned
@@ -550,31 +574,35 @@
     fig.textContent = emoji;
     $('mbHint').textContent = mb.isBoss ? `👑 BOSS — Sekvence útoků, přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Patro ${mb.floor+1}, ulov nestvůru!`;
 
-    // Spells
+    // School spells
         const container = $('mbSpells');
         container.innerHTML = '';
-        SKILLS.forEach(sk => {
-          const lv = state.skills[sk.id]||0;
-          if (lv === 0) return;
-          const used = mb.spellUsedThisFloor;
-          // Freeze vzdy, Fireball/Heal jen v attack okne
-          if (sk.id === 'freeze') {
-            const btn = document.createElement('div');
-            btn.className = 'mb-spell-btn' + (used?' on-cd':'');
-            btn.innerHTML = sk.icon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
-            btn.addEventListener('click', () => castMapSpell(sk.id));
-            container.appendChild(btn);
-          } else if (mb.inAttackWindow) {
-            const btn = document.createElement('div');
-            btn.className = 'mb-spell-btn' + (used?' on-cd':'');
-            btn.innerHTML = sk.icon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
-            btn.addEventListener('click', () => {
-              if (used) return;
-              onMapAttackSpell(sk.id);
-            });
-            container.appendChild(btn);
-          }
-        });
+        const activeId = state.activeSchool;
+        if (!activeId) return;
+        const school = SCHOOL_MAP[activeId];
+        if (!school) return;
+        const lv = state.schoolLevels[activeId] || 0;
+        if (lv === 0) return;
+        const used = mb.spellUsedThisFloor;
+        // Freeze spell (ice) always visible, fireball/heal only in attack window
+        const spellId = activeId === 'ice' ? 'freeze' : (activeId === 'fire' ? 'fireball' : 'heal');
+        const spellIcon = activeId === 'fire' ? '🔥' : (activeId === 'ice' ? '❄️' : '💚');
+        if (spellId === 'freeze') {
+          const btn = document.createElement('div');
+          btn.className = 'mb-spell-btn' + (used?' on-cd':'');
+          btn.innerHTML = spellIcon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
+          btn.addEventListener('click', () => castMapSpell());
+          container.appendChild(btn);
+        } else if (mb.inAttackWindow) {
+          const btn = document.createElement('div');
+          btn.className = 'mb-spell-btn' + (used?' on-cd':'');
+          btn.innerHTML = spellIcon + '<span class="mb-spell-cd">' + (used?'✗':'✓') + '</span>';
+          btn.addEventListener('click', () => {
+            if (used) return;
+            onMapAttackSpell(spellId);
+          });
+          container.appendChild(btn);
+        }
   }
 
   function updateActionButtons() {
@@ -1082,9 +1110,10 @@
     // Zobrazit arena spell tlacitka Fireball/Heal jen pokud je hrac ma — dynamicky
     const fireBtn = $('mbSpellFireBtn');
     const healBtn = $('mbSpellHealBtn');
-    const hasFire = (state.skills['fireball']||0) > 0;
-    const hasHeal = (state.skills['heal']||0) > 0;
+    const hasFire = ((state.activeSchool==='fire' ? (state.schoolLevels['fire']||0) : 0)) > 0;
+    const hasHeal = ((state.activeSchool==='nature' ? (state.schoolLevels['nature']||0) : 0)) > 0;
     if (healBtn) {
+      const hasHeal = state.activeSchool === 'nature' && (state.schoolLevels['nature']||0) > 0;
       if (hasHeal && !mb.spellUsedThisFloor) {
         healBtn.classList.remove('hidden'); healBtn.classList.add('active');
         healBtn.style.bottom = hasFire ? '84px' : '20px';
@@ -1093,6 +1122,7 @@
       }
     }
     if (fireBtn) {
+      const hasFire = state.activeSchool === 'fire' && (state.schoolLevels['fire']||0) > 0;
       if (hasFire && !mb.spellUsedThisFloor) {
         fireBtn.classList.remove('hidden'); fireBtn.classList.add('active');
         fireBtn.style.bottom = hasHeal ? '148px' : '84px';
@@ -1806,7 +1836,7 @@
     }
   }
 
-  function castMapSpell(spellId) {
+  function castMapSpell(spellId) { if (!spellId) { const a = state.activeSchool; spellId = a === 'ice' ? 'freeze' : a === 'fire' ? 'fireball' : 'heal'; }
     const mb = mapBattleState;
     if (mb.ended) return;
     const sk = SKILL_MAP[spellId];
@@ -2014,28 +2044,74 @@
     startLocation(locId);
   }
 
-  // ===== TOWER (training) =====
-  function renderTower() {
-    const totalLv = SKILLS.reduce((s,sk) => s + (state.skills[sk.id]||0), 0);
-    $('towerList').innerHTML = SKILLS.map(sk => {
-      const lv = state.skills[sk.id]||0, xp = state.skillXp[sk.id]||0, needed = skillXpToLevel(lv);
-      const pct = lv >= sk.maxLv ? 100 : Math.min(xp/needed*100,100);
-      const maxed = lv >= sk.maxLv;
-      const heroLv = state.hero.level;
-      const requiredLv = (lv + 1) * 2; // Lv.0→Lv.1=2, Lv.1→Lv.2=4, Lv.2→Lv.3=6...
-      const locked = false; // DEBUG: odemčeno (původně heroLv < requiredLv)
-      return `<div class="dungeon-card ${maxed?'completed':''} ${locked?'locked':''}" onclick="${locked?'':`game.enterTraining('${sk.id}')`}">
-        <div class="flex-between">
-          <div class="dungeon-name">${sk.icon} ${locked?'🔒':maxed?'✅':''}</div>
-          <span class="badge ${sk.dungeon}">${sk.name}</span>
-        </div>
-        <div class="dungeon-progress-wrap"><div class="dungeon-progress-bar" style="width:${pct}%;background:${maxed?'#2ecc71':locked?'#555':'#4a7dff'}"}></div></div>
-        <div style="margin-top:4px;font-size:12px;color:#8888aa">
-          <span>${maxed?'MAX':locked?`🔒 Lv.${requiredLv}+`:`Lv.${lv} ${xp}/${needed}XP`}</span>
-        </div>
-      </div>`;
-    }).join('');
-  }
+  // ===== TALENTS =====
+  function renderTalents() {
+        const pts = state.talentPoints || 0;
+        $('talentsPts').textContent = 'Body: ' + pts;
+        const resetBtn = $('resetTalentsBtn');
+        if (resetBtn) {
+          const cost = 50;
+          const hasSpent = Object.values(state.schoolLevels).reduce((a,b)=>a+b, 0) > 0;
+          resetBtn.textContent = hasSpent ? '🔄 Resetovat talenty (' + cost + '💰)' : '✅ Žádné body k resetu';
+          resetBtn.disabled = !hasSpent;
+        }
+        $('talentSchools').innerHTML = SCHOOLS.map(s => {
+          const lv = state.schoolLevels[s.id] || 0;
+          const isActive = state.activeSchool === s.id;
+          const canInvest = pts > 0 && lv < 5;
+          return `<div class="talent-school ${isActive?'active':''} ${s.id}" onclick="${isActive?'':`game.activateSchool('${s.id}')`}">
+            <div class="talent-school-header">
+              <span class="talent-school-icon">${s.icon}</span>
+              <span class="talent-school-name">${s.name}</span>
+              <span class="talent-school-level">Lv.${lv}/5</span>
+            </div>
+            <div class="talent-school-desc">${s.desc}</div>
+            <ul class="talent-school-benefits">
+              ${s.talents.map((t, i) => {
+                const owned = i < lv;
+                const isNext = i === lv;
+                const cls = owned ? 'lv-own' : (isNext ? 'lv-next' : 'lv-lock');
+                return `<li class="${cls}">${owned?'✅ ':isNext?'→ ':'🔒 '}${t.name}: ${t.desc(owned?lv:isNext?lv+1:lv)}</li>`;
+              }).join('')}
+            </ul>
+            <button class="talent-invest-btn ${s.id}" onclick="event.stopPropagation();game.investTalent('${s.id}')" ${canInvest?'':'disabled'}>${canInvest?'+ Investovat 1 bod':'MAX'}</button>
+            ${isActive?'<div style="margin-top:4px;font-size:11px;color:#f1c40f">✅ Aktivní</div>':''}
+          </div>`;
+        }).join('');
+      }
+      function investTalent(schoolId) {
+              const pts = state.talentPoints || 0;
+              if (pts <= 0) return;
+              const lv = state.schoolLevels[schoolId] || 0;
+              if (lv >= 5) return;
+              state.schoolLevels[schoolId] = lv + 1;
+              state.talentPoints = pts - 1;
+              if (!state.activeSchool) state.activeSchool = schoolId;
+              saveGame();
+              renderTalents();
+            }
+            function activateSchool(schoolId) {
+              const lv = state.schoolLevels[schoolId] || 0;
+              if (lv === 0) return;
+              state.activeSchool = schoolId;
+              saveGame();
+              renderTalents();
+              renderHero();
+            }
+            function resetTalents() {
+        const cost = 50;
+        if ((state.hero.gold || 0) < cost) { showMessage('💰 Nedostatek zlatých!'); return; }
+        let total = 0;
+        Object.keys(state.schoolLevels).forEach(k => { total += state.schoolLevels[k]; state.schoolLevels[k] = 0; });
+        if (total === 0) return;
+        state.hero.gold -= cost;
+        state.talentPoints = (state.talentPoints || 0) + total;
+        state.activeSchool = null;
+        saveGame();
+        renderTalents();
+        renderHero();
+        showMessage('🔄 Talenty resetovány! Získal jsi zpět ' + total + ' bodů.');
+      }
 
   // ===== HERO =====
   function applyLevelUp() {
@@ -2051,6 +2127,7 @@
       h.baseDmg = getHeroDmg();
       h.hp = h.maxHp; // full heal při levelu
       h.attrPoints = (h.attrPoints || 0) + 1;
+      state.talentPoints = (state.talentPoints || 0) + 1;
       leveled = true;
     }
     if (leveled) {
@@ -2502,10 +2579,10 @@
   }
 
   window.game = {
-    showScreen, enterLocation, enterTraining, toggleDungeon,
-    simonClick, colorInput, gridPick,
+    showScreen, enterLocation, toggleDungeon,
     upgradeAttr, buyItem, sellItem, equipItem, unequipItem,
-    onMapRapidTap
+    onMapRapidTap,
+    investTalent, activateSchool, resetTalents
   };
   init();
 })();

@@ -11,7 +11,7 @@
 
 <nav class="nav-bar">
   <a href="#" data-screen="map" class="active">🌍 Mapa</a>
-  <a href="#" data-screen="tower">🔮 Věž</a>
+  <a href="#" data-screen="talents">🎓 Talenty</a>
   <a href="#" data-screen="hero">👤 Hrdina</a>
   <a href="#" data-screen="shop">🏪 Obchod</a>
   <a href="#" data-screen="inventory">🎒 Inventář</a>
@@ -67,13 +67,19 @@
   </div>
 </div>
 
-<!-- ===== TOWER (training) ===== -->
-<div id="towerScreen" class="container hidden">
+<!-- ===== TALENTS ===== -->
+<div id="talentsScreen" class="container hidden">
   <div class="card">
-    <div class="card-title">🔮 Věž magie</div>
-    <div class="card-subtitle">Trénuj minihry pro vylepšení kouzel</div>
+    <div class="flex-between">
+      <span class="card-title">🎓 Talent Tree</span>
+      <span id="talentsPts" style="color:#f1c40f;font-weight:bold">Body: 0</span>
+    </div>
+    <div class="card-subtitle">Za každý level získáš 1 talent bod. <strong>Jedna škola</strong> může být aktivní najednou.</div>
   </div>
-  <div id="towerList"></div>
+  <div class="talent-schools" id="talentSchools"></div>
+  <div class="card" style="margin-top:8px">
+    <button class="btn btn-secondary" onclick="game.resetTalents()" id="resetTalentsBtn">🔄 Resetovat talenty (50💰)</button>
+  </div>
 </div>
 
 <!-- ===== HERO ===== -->
@@ -119,9 +125,8 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-title">🧙 Kouzla</div>
-    <div id="skillGrid" class="skill-grid"></div>
-    <div class="card-subtitle" style="margin-top:6px">📊 Celkový level: <span id="totalSkillLevel">0</span></div>
+    <div class="card-title">🎓 Aktivní škola</div>
+    <div id="activeSchoolInfo" class="card-subtitle">Žádná — přidej talentové body v 🎓 Talent Tree</div>
   </div>
   <div class="card">
     <div class="card-title">🎒 Vybavení</div>
@@ -164,24 +169,6 @@
     <div class="card-subtitle">Prohlížej, oblékej a prodávej předměty</div>
   </div>
   <div id="invList"></div>
-</div>
-
-<!-- ===== TRAINING BATTLE (minigames) ===== -->
-<div id="battleScreen" class="container hidden">
-  <div class="card">
-    <div class="flex-between">
-      <span class="text-green" id="enemyName">Trénink</span>
-      <span id="gameTypeBadge" class="badge simon">Kouzlo</span>
-    </div>
-    <div class="flex-between" style="margin-top:6px"><span id="floorNum">Patro 1</span></div>
-    <div style="margin-top:4px"><span id="playerHearts"></span></div>
-    <div class="enemy-face" id="enemyFace">👻</div>
-    <!-- ALL MINIGAMES -->
-    <div id="simonArea" class="minigame-hide"><div class="card-subtitle text-center mt-10" id="simonPrompt">👀 Sekvence</div><div class="simon-grid" id="simonGrid"></div><div class="text-center"><span id="simonProgress" style="font-size:13px;color:#8888aa">0/3</span></div></div>
-    <div id="colorClashArea" class="minigame-hide"><div class="card-subtitle text-center mt-10">🎨 Barva!</div><div class="color-clash-area" id="colorArena"></div></div>
-    <div id="gridDefenderArea" class="minigame-hide"><div class="card-subtitle text-center mt-10">🧮 Příklad!</div><div class="grid-defender-area" id="gridArea"></div></div>
-  </div>
-  <div id="countdownOverlay" class="countdown-overlay hidden"><div class="countdown-number" id="countdownNumber">3</div></div>
 </div>
 
 <!-- ===== GUIDE ===== -->
