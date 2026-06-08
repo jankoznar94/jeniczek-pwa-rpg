@@ -752,8 +752,8 @@
       return { type, dir: dirA, twinDir: dirB, windowTime };
     }
     if (type === 'rapid') {
-      // Rapid: náhodný cíl 8-14 podle patra
-      const rapidTarget = Math.min(8 + Math.floor((floor||0) * 1.5), 14);
+      // Rapid: náhodný cíl 16-28 podle patra (dvojnásobek)
+      const rapidTarget = Math.min(16 + Math.floor((floor||0) * 3), 28);
       return { type, dir, windowTime, rapidTarget };
     }
     return { dir, type, windowTime };

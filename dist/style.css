@@ -316,23 +316,31 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:#e94560; box-shadow:0 0 10px rgba(233,69,96,0.4); }
 #mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 10px rgba(46,204,113,0.4); }
 
-/* Rapid Tap — dvě ťukací plochy po stranách kolečka */
+/* Rapid Tap — dve plosky s puntikem a tenkym borderem */
 .rapid-tap-area {
   position:absolute;top:50%;z-index:15;
-  width:40px;height:90px;border-radius:10px;
-  background:rgba(180,100,255,0.15);border:2px solid rgba(180,100,255,0.4);
+  width:60px;height:60px;border-radius:50%;
+  background:transparent;border:2px solid rgba(180,100,255,0.3);
   display:flex;align-items:center;justify-content:center;
-  transition:0.08s;touch-action:manipulation;
+  transition:0.1s;touch-action:manipulation;
   transform:translateY(-50%);
 }
-.rapid-tap-left { left:6px; }
-.rapid-tap-right { right:6px; }
+.rapid-tap-left { left:10px; }
+.rapid-tap-right { right:10px; }
 .rapid-tap-area:not(.hidden) { pointer-events:auto; }
 .rapid-tap-area.tapped {
-  background:rgba(180,100,255,0.5);border-color:rgba(180,100,255,0.9);
-  transform:translateY(-50%) scale(0.92);
+  background:rgba(180,100,255,0.25);border-color:rgba(180,100,255,0.9);
+  transform:translateY(-50%) scale(0.9);
 }
-.rapid-tap-label { font-size:22px;pointer-events:none; }
+.rapid-tap-dot {
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(180,100,255,0.5);
+  pointer-events:none;transition:0.1s;
+}
+.rapid-tap-area.tapped .rapid-tap-dot {
+  background:rgba(180,100,255,1);
+  box-shadow:0 0 15px rgba(180,100,255,0.8);
+}
 
 /* Rapid Target — číslo uprostřed kruhu */
 .rapid-target {
