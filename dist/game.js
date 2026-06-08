@@ -372,7 +372,7 @@
   }
 
   // ===== KILL POPUP =====
-  function showKillPopup(monsterFace, monsterName, xpGain, goldGain, playerHp, maxHp) {
+  function showKillPopup(monsterFace, monsterName, xpGain, goldGain, playerHp, maxHp, onContinue) {
     const el = document.createElement('div');
     el.className = 'kill-popup-overlay';
     el.innerHTML = `<div class="kill-popup-content">
@@ -383,12 +383,15 @@
         <span>💰 +${goldGain}</span>
       </div>
       <div class="kill-popup-hp">❤️ ${playerHp}/${maxHp}</div>
+      <div class="kill-popup-tap">👆 Klikni pro pokračování</div>
     </div>`;
+    el.style.cursor = 'pointer';
     document.body.appendChild(el);
-    setTimeout(() => {
+    el.addEventListener('click', function handler() {
+      el.removeEventListener('click', handler);
       el.classList.add('fade-out');
-      setTimeout(() => el.remove(), 350);
-    }, 1200);
+      setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
+    });
   }
 
   // ===== MAP =====
@@ -969,6 +972,7 @@
       }
     } else if (attack.type === 'rapid') {
       // Rapid: číslo v kolečku, tap plošky po stranách
+      applyRapidSchoolColors();
       if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
       if (actionInfo) actionInfo.classList.add('hidden');
       const target = $('mbRapidTarget');
@@ -1210,10 +1214,16 @@
       endY = targetIsPlayer ? rect.height + 20 : -20;
     }
 
-    const isGreen = !targetIsPlayer;
-    const color1 = isGreen ? '#8fde7a' : '#e74c3c';
-    const color2 = isGreen ? '#2ecc71' : '#c0392b';
-    const rgb = isGreen ? '46,204,113' : '231,76,60';
+    const schoolColor = (function() {
+      const a = state.activeSchool;
+      if (a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
+      if (a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
+      if (a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
+      return { c1:'#bbb', c2:'#999', rgb:'150,150,150' };
+    })();
+    const color1 = schoolColor.c1;
+    const color2 = schoolColor.c2;
+    const rgb = schoolColor.rgb;
 
     const size = isCrit ? 32 : 22;
     const half = size / 2;
@@ -1233,7 +1243,7 @@
     // Po dopadu: mlha + částice
     setTimeout(() => {
       if (proj.parentNode) proj.remove();
-      spawnImpactParticles(arena, endX, endY, isGreen, isCrit);
+      spawnImpactParticles(arena, endX, endY, rgb, isCrit);
       const pCount = isCrit ? 12 : 5;
       const pDist = isCrit ? 40 : 30;
       const pMaxSize = isCrit ? 10 : 5;
@@ -1257,9 +1267,9 @@
     }, 200);
   }
 
-  function spawnImpactParticles(arena, x, y, isGreen, isCrit) {
+  function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
     // Mlha při nárazu — rozmazané kroužky rozlétající se všemi směry
-    const color = isGreen ? 'rgba(46,204,113,0.35)' : 'rgba(231,76,60,0.35)';
+    const color = `rgba(${rgbStr},0.35)`;
     const count = isCrit ? 14 : 8;
     const maxSize = isCrit ? 18 : 12;
     const maxDist = isCrit ? 50 : 30;
@@ -1783,6 +1793,36 @@
     setTimeout(() => mapBattleTurn(), 300);
   }
 
+  function applyRapidSchoolColors() {
+    const a = state.activeSchool;
+    const arena = $('mbArena');
+    if (!arena) return;
+    let bg, border, dot, dotTapped, dotGlow, dotGlow2, pulse, target, targetGlow;
+    if (a === 'fire') {
+      bg='rgba(243,156,18,0.2)'; border='rgba(243,156,18,0.8)'; dot='rgba(243,156,18,0.45)'; dotTapped='rgba(243,156,18,1)';
+      dotGlow='rgba(243,156,18,1)'; dotGlow2='rgba(243,156,18,0.6)'; pulse='rgba(243,156,18,0.6)'; target='#f39c12'; targetGlow='rgba(243,156,18,0.8)';
+    } else if (a === 'ice') {
+      bg='rgba(52,152,219,0.2)'; border='rgba(52,152,219,0.8)'; dot='rgba(52,152,219,0.45)'; dotTapped='rgba(52,152,219,1)';
+      dotGlow='rgba(52,152,219,1)'; dotGlow2='rgba(52,152,219,0.6)'; pulse='rgba(52,152,219,0.6)'; target='#3498db'; targetGlow='rgba(52,152,219,0.8)';
+    } else if (a === 'nature') {
+      bg='rgba(46,204,113,0.2)'; border='rgba(46,204,113,0.8)'; dot='rgba(46,204,113,0.45)'; dotTapped='rgba(46,204,113,1)';
+      dotGlow='rgba(46,204,113,1)'; dotGlow2='rgba(46,204,113,0.6)'; pulse='rgba(46,204,113,0.6)'; target='#2ecc71'; targetGlow='rgba(46,204,113,0.8)';
+    } else {
+      bg='rgba(180,100,255,0.2)'; border='rgba(180,100,255,0.8)'; dot='rgba(180,100,255,0.45)'; dotTapped='rgba(180,100,255,1)';
+      dotGlow='rgba(180,100,255,1)'; dotGlow2='rgba(180,100,255,0.6)'; pulse='rgba(180,100,255,0.6)'; target='#b064ff'; targetGlow='rgba(176,100,255,0.8)';
+    }
+    arena.style.setProperty('--rapid-color', border.replace('0.8','0.25'));
+    arena.style.setProperty('--rapid-tap-bg', bg);
+    arena.style.setProperty('--rapid-tap-border', border);
+    arena.style.setProperty('--rapid-dot', dot);
+    arena.style.setProperty('--rapid-dot-tapped', dotTapped);
+    arena.style.setProperty('--rapid-dot-glow', dotGlow);
+    arena.style.setProperty('--rapid-dot-glow2', dotGlow2);
+    arena.style.setProperty('--rapid-pulse', pulse);
+    arena.style.setProperty('--rapid-target', target);
+    arena.style.setProperty('--rapid-target-glow', targetGlow);
+  }
+
   function onMapRapidTap() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
@@ -1914,8 +1954,12 @@
       const leveled = applyLevelUp();
       saveGame();
       sfxSuccess();
-      // Kill popup
-      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp);
+      // Kill popup — čeká na kliknutí
+      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp, () => {
+        const fig2 = $('mbFigure');
+        if (fig2) fig2.classList.remove('monster-dying');
+        continueDungeon();
+      }); // konec showKillPopup
       updateMapBattleUI();
 
       if (p >= 5) {
@@ -1951,11 +1995,6 @@
         fig.classList.remove('monster-appear');
         fig.classList.add('monster-dying');
       }
-      const continueDelay = leveled ? 2700 : 1300;
-      setTimeout(() => {
-        if (fig) fig.classList.remove('monster-dying');
-        continueDungeon();
-      }, continueDelay);
       return;
     }
 
