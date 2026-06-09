@@ -167,9 +167,9 @@
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení a jedovaté DoT poškození.',
       talents: [
         { k:'heal', name:'💚 Léčení', desc:lv=>`+${10+lv*15} HP` },
-        { k:'poison', name:'☠️ Jed', desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+lv/2}s` },
+        { k:'poison', name:'☠️ Jed', desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
         { k:'heal2', name:'💚 Silnější léčení', desc:lv=>`+${15+lv*20} HP` },
-        { k:'poison2', name:'☠️ Silný jed', desc:lv=>`Jed ${lv*5}/tick na ${3+lv/2}s` },
+        { k:'poison2', name:'☠️ Silný jed', desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
         { k:'revitalize', name:'🌱 Revitalizace', desc:lv=>`Léčení ×${1+lv*0.5}` }
       ]
     }
@@ -878,12 +878,6 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
-    if (mb.dot > 0 && mb.dotTicksLeft > 0) {
-      mb.bossHp -= mb.dot;
-      mb.dotTicksLeft--;
-      if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
-      if (mb.bossHp <= 0 && mb.isBoss) { endMapBattle(true); return; }
-    }
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
     mb.turn++;
@@ -1091,6 +1085,15 @@
   function advanceSequence() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+
+    // DoT tick — každý timer (úspěch/neúspěch) = jeden tick
+    if (mb.dot > 0 && mb.dotTicksLeft > 0) {
+      mb.bossHp -= mb.dot;
+      mb.dotTicksLeft--;
+      if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
+      if (mb.bossHp <= 0 && mb.isBoss) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
+    }
+
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
     mb.currentAttack = null;
@@ -1690,7 +1693,7 @@
     const poisonTick = getNaturePoisonTick();
     if (poisonTick > 0 && state.activeSchool === 'nature') {
       const natureLv = state.schoolLevels['nature'] || 0;
-      const tickDuration = 2 + Math.floor(natureLv / 2); // 2-4 turn ticks
+      const tickDuration = 2 + Math.floor(natureLv / 2); // 2-4 ticky
       mb.dot = poisonTick;
       mb.dotTicksLeft = tickDuration;
       $('mbHint').textContent += ` ☠️ Jed! ${poisonTick}/tick na ${tickDuration} ticků`;
