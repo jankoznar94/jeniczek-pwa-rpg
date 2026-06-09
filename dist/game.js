@@ -1508,6 +1508,8 @@
   function onMapDodge(dir) {
     if (mapBattleState.ended || !mapBattleState.sequence) return;
     const mb = mapBattleState;
+    // Rapid — swipe nemá co dělat, zpracovává onMapRapidTap
+    if (mb.isRapidAttack) return;
     const attack = mb.sequence[mb.sequenceIndex];
     if (!attack) return;
     if (mb.inAttackWindow) {
@@ -1622,6 +1624,8 @@
   function onMapBlock() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    // Rapid — blok nemá smysl, zpracovává onMapRapidTap
+    if (mb.isRapidAttack) return;
     if (mb.inAttackWindow) {
       // Během útočného okna: blok = promarněná šance
       clearTimeout(mb._attackWindowTimer);
@@ -1648,6 +1652,8 @@
   function onMapAttack() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    // Rapid — nelze útočit, zpracovává onMapRapidTap
+    if (mb.isRapidAttack) return;
     if (mb._attackProcessed) return; // zabránění dvojitému útoku
     if (!mb.inAttackWindow) {
       mb.mistakes = (mb.mistakes || 0) + 1;
