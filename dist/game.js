@@ -1091,6 +1091,20 @@
       mb.bossHp -= mb.dot;
       mb.dotTicksLeft--;
       if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
+      // Vizuální feedback DoT ticku — probliknutí bosse a damage text
+      const dotDmgText = $('mbDamageText');
+      if (dotDmgText) {
+        dotDmgText.textContent = `☠️ -${mb.dot}`;
+        dotDmgText.classList.remove('hidden');
+        setTimeout(() => dotDmgText.classList.add('hidden'), 600);
+      }
+      const bossFig = $('mbFigure');
+      if (bossFig) {
+        bossFig.style.transition = 'filter 0.2s';
+        bossFig.style.filter = 'brightness(2.5) hue-rotate(90deg) saturate(2)';
+        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
+      }
+      updateMapBattleUI();
       if (mb.bossHp <= 0 && mb.isBoss) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
     }
 
