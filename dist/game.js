@@ -1082,31 +1082,35 @@
     }
   }
 
+  // DoT tick helper — volá se po každém timeru (ať už hráč uspěl, nebo dostal ránu)
+  function doDotTick(mb) {
+    if (mb.dot <= 0 || mb.dotTicksLeft <= 0) return false;
+    mb.bossHp -= mb.dot;
+    mb.dotTicksLeft--;
+    if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
+    const dotDmgText = $('mbDamageText');
+    if (dotDmgText) {
+      dotDmgText.textContent = `☠️ -${mb.dot}`;
+      dotDmgText.classList.remove('hidden');
+      setTimeout(() => dotDmgText.classList.add('hidden'), 600);
+    }
+    const bossFig = $('mbFigure');
+    if (bossFig) {
+      bossFig.style.transition = 'filter 0.2s';
+      bossFig.style.filter = 'brightness(2.5) hue-rotate(90deg) saturate(2)';
+      setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
+    }
+    updateMapBattleUI();
+    if (mb.bossHp <= 0 && mb.isBoss) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return true; }
+    return false;
+  }
+
   function advanceSequence() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
     // DoT tick — každý timer (úspěch/neúspěch) = jeden tick
-    if (mb.dot > 0 && mb.dotTicksLeft > 0) {
-      mb.bossHp -= mb.dot;
-      mb.dotTicksLeft--;
-      if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
-      // Vizuální feedback DoT ticku — probliknutí bosse a damage text
-      const dotDmgText = $('mbDamageText');
-      if (dotDmgText) {
-        dotDmgText.textContent = `☠️ -${mb.dot}`;
-        dotDmgText.classList.remove('hidden');
-        setTimeout(() => dotDmgText.classList.add('hidden'), 600);
-      }
-      const bossFig = $('mbFigure');
-      if (bossFig) {
-        bossFig.style.transition = 'filter 0.2s';
-        bossFig.style.filter = 'brightness(2.5) hue-rotate(90deg) saturate(2)';
-        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
-      }
-      updateMapBattleUI();
-      if (mb.bossHp <= 0 && mb.isBoss) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
-    }
+    if (doDotTick(mb)) return;
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
@@ -1758,6 +1762,9 @@
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
     mb._sequenceTimer = null;
+
+    // DoT tick i při neúspěchu — timer proběhl, i když hráč neuhnul
+    if (doDotTick(mb)) return;
 
     const baseBossDmg = Math.max(5, 5 + mb.turn * 4 + mb.locId * 5);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
