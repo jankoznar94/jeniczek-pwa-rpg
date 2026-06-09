@@ -778,11 +778,11 @@
 
   function getDungeonAttackChances(locId) {
     if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, twin: 0 };
-    if (locId === 1) return { normal: 65, heavy: 0, block: 35, inverted: 0, twin: 0 };
-    if (locId === 2) return { normal: 65, heavy: 35, block: 0, inverted: 0, twin: 0 };
-    if (locId === 3) return { normal: 65, heavy: 0, block: 0, inverted: 0, twin: 35 };
-    if (locId === 4) return { normal: 65, heavy: 0, block: 0, inverted: 35, twin: 0 };
-    if (locId === 5) return { normal: 35, heavy: 0, block: 65, inverted: 0, twin: 0, rapid: 0 };
+    if (locId === 1) return { normal: 70, heavy: 0, block: 30, inverted: 0, twin: 0 };
+    if (locId === 2) return { normal: 70, heavy: 30, block: 0, inverted: 0, twin: 0 };
+    if (locId === 3) return { normal: 70, heavy: 0, block: 0, inverted: 0, twin: 30 };
+    if (locId === 4) return { normal: 70, heavy: 0, block: 0, inverted: 30, twin: 0 };
+    if (locId === 5) return { normal: 70, heavy: 0, block: 0, inverted: 0, twin: 0, rapid: 30 };
     if (locId === 6) return { normal: 25, heavy: 40, block: 35, inverted: 0, twin: 0, rapid: 0 };
     if (locId === 7) return { normal: 20, heavy: 25, block: 25, inverted: 0, twin: 20, rapid: 10 };
     if (locId === 8 || locId === 9 || locId === 10 || locId === 11) return { normal: 22, heavy: 18, block: 18, inverted: 18, twin: 15, rapid: 12 };
