@@ -733,7 +733,7 @@
       if (!el) return;
       const tapHandler = (e) => {
         e.stopPropagation();
-        onMapRapidTap();
+        onMapRapidTap(elId);
       };
       el._rapidHandler = tapHandler;
       el.addEventListener('pointerdown', tapHandler);
@@ -1888,17 +1888,17 @@
     arena.style.setProperty('--spell-glow', spellGlow);
   }
 
-  function onMapRapidTap() {
+  function onMapRapidTap(tapId) {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     if (!mb.isRapidAttack) return;
     if (mb._hitProcessed) return;
     mb.rapidTaps = (mb.rapidTaps || 0) + 1;
-    // Vizuální feedback na ploškách
-    const leftTap = $('mbTapLeft');
-    const rightTap = $('mbTapRight');
-    if (leftTap) { leftTap.classList.add('tapped'); setTimeout(() => leftTap.classList.remove('tapped'), 80); }
-    if (rightTap) { rightTap.classList.add('tapped'); setTimeout(() => rightTap.classList.remove('tapped'), 80); }
+    // Vizuální feedback — jen ta ploška, na kterou se kliklo
+    if (tapId) {
+      const el = $(tapId);
+      if (el) { el.classList.add('tapped'); setTimeout(() => el.classList.remove('tapped'), 80); }
+    }
     playSFX(dodgeSfx);
     // Update cíle v kolečku
     const remaining = mb.rapidTarget - mb.rapidTaps;
