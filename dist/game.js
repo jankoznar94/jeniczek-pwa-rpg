@@ -177,6 +177,33 @@
   const SCHOOL_MAP = {};
   SCHOOLS.forEach(s => SCHOOL_MAP[s.id] = s);
 
+  // ===== SCHOOL PASSIVES =====
+  function getFireDmgPct() {
+    if (state.activeSchool !== 'fire') return 0;
+    const lv = state.schoolLevels['fire'] || 0;
+    if (lv < 2) return 0;
+    let pct = lv * 10;           // dmgBoost (index 1): +lv*10%
+    if (lv >= 4) pct += 10 + lv * 10; // dmgBoost2 (index 3): +10+lv*10%
+    return pct;
+  }
+  function getNaturePoisonTick() {
+    if (state.activeSchool !== 'nature') return 0;
+    const lv = state.schoolLevels['nature'] || 0;
+    if (lv < 2) return 0;
+    // poison (index 1) + poison2 (index 3)
+    let tick = lv * 3;           // poison: lv*3
+    if (lv >= 4) tick += lv * 5; // poison2: lv*5
+    return tick;
+  }
+  function getIceChillPct() {
+    if (state.activeSchool !== 'ice') return 0;
+    const lv = state.schoolLevels['ice'] || 0;
+    if (lv < 2) return 0;
+    // chill (index 1): 10+lv*5, then chill2 (index 3) at lv≥4: 15+lv*5
+    if (lv >= 4) return 15 + lv * 5;
+    return 10 + lv * 5;
+  }
+
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊' },
@@ -493,7 +520,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, shieldActive: null, spellUsedThisFloor: false,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTurnsLeft: 0, shieldActive: null, spellUsedThisFloor: false,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
@@ -851,7 +878,12 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
-    if (mb.dot > 0) { mb.bossHp -= mb.dot; if (mb.bossHp <= 0 && mb.isBoss) { endMapBattle(true); return; } }
+    if (mb.dot > 0 && mb.dotTicksLeft > 0) {
+      mb.bossHp -= mb.dot;
+      mb.dotTicksLeft--;
+      if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
+      if (mb.bossHp <= 0 && mb.isBoss) { endMapBattle(true); return; }
+    }
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
     mb.turn++;
@@ -969,7 +1001,13 @@
     mb._hitProcessed = false; // reset guard pro aktuální útok
 
     const windowTime = attack.windowTime;
-    mb._currentWindowTime = windowTime;
+    // Ice school passive — chill: zpomalit timer
+    if (mb.chillTurnsLeft > 0) {
+      mb.chillTurnsLeft--;
+      mb._currentWindowTime = Math.round(windowTime * (1 + mb.chillPercent / 100));
+    } else {
+      mb._currentWindowTime = windowTime;
+    }
 
     // Reset kolečka
     const circle = resetTimerRing();
@@ -1033,7 +1071,7 @@
 
     // Timer ring - počkat na vykreslení resetu (fresh circle), pak spustit animaci
     requestAnimationFrame(() => {
-      startTimerRing(circle, windowTime);
+      startTimerRing(circle, mb._currentWindowTime);
     });
 
     if (attack.type === 'rapid') {
@@ -1041,12 +1079,12 @@
           mb._sequenceTimer = setTimeout(() => {
             if (mapBattleState.ended) return;
             onMapHit();
-          }, windowTime);
+          }, mb._currentWindowTime);
         } else {
       mb._sequenceTimer = setTimeout(() => {
         if (mapBattleState.ended) return;
         onMapHit();
-      }, windowTime);
+      }, mb._currentWindowTime);
     }
   }
 
@@ -1635,9 +1673,30 @@
     const critChance = (state.hero.attrDex||0) * 1 + 5;
     const critMult = 2.0;
     let dmg = baseDmg;
+    // Fire school passive — damage boost
+    const firePct = getFireDmgPct();
+    if (firePct > 0) { dmg = Math.round(dmg * (1 + firePct / 100)); }
     const isCrit = Math.random() * 100 < critChance;
     if (isCrit) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; playSFX(critSfx); }
     else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; playSFX(hitSfx); }
+
+    // Nature school passive — poison on hit
+    const poisonTick = getNaturePoisonTick();
+    if (poisonTick > 0 && state.activeSchool === 'nature') {
+      const natureLv = state.schoolLevels['nature'] || 0;
+      const tickDuration = 2 + Math.floor(natureLv / 2); // 2-4 turn ticks
+      mb.dot = poisonTick;
+      mb.dotTicksLeft = tickDuration;
+      $('mbHint').textContent += ` ☠️ Jed! ${poisonTick}/tick na ${tickDuration} ticků`;
+    }
+    // Ice school passive — chill on hit (zpomalí timer dalších útoků)
+    const chillPct = getIceChillPct();
+    if (chillPct > 0) {
+      const iceLv = state.schoolLevels['ice'] || 0;
+      mb.chillPercent = chillPct;
+      mb.chillTurnsLeft = 2 + (iceLv >= 4 ? 1 : 0); // 2-3 útoky
+      $('mbHint').textContent += ` ❄️ Chlad! Timery zpomaleny o ${chillPct}% na ${mb.chillTurnsLeft} útoku`;
+    }
 
     mb.bossHp -= dmg;
     // Zelený projektil od středu k bossovi
@@ -1663,11 +1722,6 @@
     mb.inAttackWindow = false;
     $('mbActionInfo').classList.add('hidden');
     updateActionButtons();
-    const sFire = $('mbSpellFireBtn');
-    const sHeal = $('mbSpellHealBtn');
-    if (sFire) { sFire.classList.add('hidden'); sFire.classList.remove('active'); }
-    if (sHeal) { sHeal.classList.add('hidden'); sHeal.classList.remove('active'); }
-
     setTimeout(() => mapBattleTurn(), 300);
   }
 
