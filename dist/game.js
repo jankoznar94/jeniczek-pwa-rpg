@@ -331,7 +331,7 @@
     const schoolLevels = {};
     SCHOOLS.forEach(sk => { schoolLevels[sk.id] = 0; });
     const s = { schoolLevels, activeSchool:null, talentPoints:20, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:50}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0] };
+      locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0], spellUsedThisFloor:{} };
     return s;
   }
   function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.schoolLevels) return s; } catch {} return defaultState(); }
@@ -520,7 +520,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null, spellUsedThisFloor: false,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
@@ -620,7 +620,8 @@
     if (!school) return;
     const lv = state.schoolLevels[activeId] || 0;
     if (lv === 0) return;
-    const used = mb.spellUsedThisFloor;
+    const spellKey = `${mb.locId}_${mb.floor}`;
+    const used = state.spellUsedThisFloor[spellKey];
     // Ukazat spravne kouzlo — VZDY viditelne, aktivni jen kdyz je prilezitost
     const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : healBtn;
     if (!btn) return;
@@ -1839,8 +1840,9 @@
     if (spellId === 'fireball') lv = state.schoolLevels['fire'] || 0;
     else if (spellId === 'heal') lv = state.schoolLevels['nature'] || 0;
     if (lv === 0) return;
-    if (mb.spellUsedThisFloor) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
-    mb.spellUsedThisFloor = true;
+    const spellKey = `${mb.locId}_${mb.floor}`;
+    if (state.spellUsedThisFloor[spellKey]) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
+    state.spellUsedThisFloor[spellKey] = true;
     clearTimeout(mb._attackWindowTimer);
     resetTimerRing();
     const actInfo = $('mbActionInfo');
@@ -1958,8 +1960,9 @@
     else if (spellId === 'freeze') lv = state.schoolLevels['ice'] || 0;
     if (lv === 0) return;
     // 1x per dungeon
-    if (mb.spellUsedThisFloor) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
-    mb.spellUsedThisFloor = true;
+    const spellKey = `${mb.locId}_${mb.floor}`;
+    if (state.spellUsedThisFloor[spellKey]) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
+    state.spellUsedThisFloor[spellKey] = true;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
