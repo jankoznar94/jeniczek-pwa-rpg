@@ -228,7 +228,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation;
 }
 .arena-block-btn.active { border-color:#3498db; background:#1a1a2a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
-.boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:0;display:none; }
+.boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:12px; }
 .seq-progress {
   position:absolute;bottom:88px;left:50%;transform:translateX(-50%);
   display:flex;gap:6px;justify-content:center;z-index:20;
