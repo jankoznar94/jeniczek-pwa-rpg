@@ -157,11 +157,11 @@
     },
     { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
       talents: [
-        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Každý útok zpomalí o ${40+lv*10}% na 3 ticky` },
-        { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${10+lv*5}% na 2 ticky` },
-        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Každý útok zpomalí o ${45+lv*15}% na 4 ticky` },
-        { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${15+lv*5}% na 3 ticky` },
-        { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Každý útok zpomalí o ${50+lv*20}% na 5 ticků` }
+        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` },
+        { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
+        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` },
+        { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
+        { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
       ]
     },
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení a jedovaté DoT poškození.',
@@ -199,9 +199,8 @@
     if (state.activeSchool !== 'ice') return 0;
     const lv = state.schoolLevels['ice'] || 0;
     if (lv < 2) return 0;
-    // chill (index 1): 10+lv*5, then chill2 (index 3) at lv≥4: 15+lv*5
-    if (lv >= 4) return 15 + lv * 5;
-    return 10 + lv * 5;
+    // chill lv2=30%, lv3=35%, lv4(chill2)=40%, lv5=45%
+    return lv * 5 + 20;
   }
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
@@ -1998,21 +1997,21 @@
       // Zelené částice
       spawnHealParticles();
     } else if (spellId === 'freeze') {
-      // freeze: 3 ticky, freeze2: 4 ticky, blizzard: 5 ticků
+      // freeze: 3 ticky, freeze2: 4 ticky, blizzard: 5 ticků — vždy 75% zpomalení
       let ticks;
-      let pct;
       if (lv >= 5) { // blizzard
-        ticks = 5; pct = 50 + lv * 20;
+        ticks = 5;
       } else if (lv >= 3) { // freeze2
-        ticks = 4; pct = 45 + lv * 15;
+        ticks = 4;
       } else { // freeze
-        ticks = 3; pct = 40 + lv * 10;
+        ticks = 3;
       }
+      const pct = 75;
       // Použije chill ticks — stejný mechanismus jako pasivní chill
       // Pokud už chill běží, přepíše se novými hodnotami (silnější kouzlo)
       mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `❄️ Mráz! Zpomalení ${pct}% na ${ticks} ticků!`;
+      effectMsg = `❄️ Mráz! Zpomalení 75% na ${ticks} ticků!`;
       // Modrý efekt na bossovi + modré kolečko
       const bossFig = $('mbFigure');
       if (bossFig) {
