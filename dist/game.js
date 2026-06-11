@@ -1744,14 +1744,14 @@
     if (isCrit) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; playSFX(critSfx); }
     else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; playSFX(hitSfx); }
     
-    // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
+    // ⭐ Bonusové okno — trefa do červeného pruhu = +50% poškození
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       const elapsed = Date.now() - (mb._attackWindowStart || 0);
-      const hitBonus = (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs);
-      if (hitBonus) {
+      $('mbHint').textContent = `⚔️ Útok! elapsed=${elapsed}ms zone=${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs}ms dmg=${dmg}`;
+      if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
         const bonusDmg = Math.round(dmg * 0.5);
         dmg += bonusDmg;
-        $('mbHint').textContent += ` ⭐ Bonus! +${bonusDmg}!`;
+        $('mbHint').textContent = `⭐ Bonus! ${dmg} (+${bonusDmg})! elapsed=${elapsed}ms ok=${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs}ms`;
         const bonusCircle = document.querySelector('.bonus-zone-circle');
         if (bonusCircle) {
           bonusCircle.style.stroke = '#ff6b6b';
