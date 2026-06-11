@@ -158,9 +158,9 @@
     { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
       talents: [
         { k:'freeze', name:'❄️ Mráz', desc:lv=>`Zpomalení o ${40+lv*10}% na ${4+lv}s` },
-        { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${10+lv*5}% na ${1+lv/2}s` },
+        { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${10+lv*5}% na 2 ticky` },
         { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Zpomalení o ${45+lv*15}% na ${4+lv}s` },
-        { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${15+lv*5}% na ${1+lv/2}s` },
+        { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${15+lv*5}% na 3 ticky` },
         { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Zpomalení o ${50+lv*20}% na ${6+lv}s` }
       ]
     },
