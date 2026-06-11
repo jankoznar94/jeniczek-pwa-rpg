@@ -157,11 +157,11 @@
     },
     { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
       talents: [
-        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Zpomalení o ${40+lv*10}% na ${4+lv}s` },
+        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Každý útok zpomalí o ${40+lv*10}% na 3 ticky` },
         { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${10+lv*5}% na 2 ticky` },
-        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Zpomalení o ${45+lv*15}% na ${4+lv}s` },
+        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Každý útok zpomalí o ${45+lv*15}% na 4 ticky` },
         { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${15+lv*5}% na 3 ticky` },
-        { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Zpomalení o ${50+lv*20}% na ${6+lv}s` }
+        { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Každý útok zpomalí o ${50+lv*20}% na 5 ticků` }
       ]
     },
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení a jedovaté DoT poškození.',
@@ -1061,6 +1061,10 @@
     $('mbHint').textContent = `${seqStr} ${getAttackHint(attack)}`;
 
     // Timer ring - počkat na vykreslení resetu (fresh circle), pak spustit animaci
+    // Barva ringu podle aktivního pasivního bonusu
+    if (mb.dotTicksLeft > 0) circle.style.stroke = '#4caf50'; // zelená = jed
+    else if (mb.chillTicksLeft > 0) circle.style.stroke = '#4fc3f7'; // modrá = chlad
+    else circle.style.stroke = '#888';
     requestAnimationFrame(() => {
       startTimerRing(circle, mb._currentWindowTime);
     });
@@ -1720,8 +1724,9 @@
     const chillPct = getIceChillPct();
     if (chillPct > 0) {
       const iceLv = state.schoolLevels['ice'] || 0;
-      mb.chillPercent = chillPct;
-      mb.chillTicksLeft = 2 + (iceLv >= 4 ? 1 : 0); // 2-3 ticky
+      const pasTicks = 2 + (iceLv >= 4 ? 1 : 0); // 2-3 ticky
+      mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, pasTicks);
       $('mbHint').textContent += ` ❄️ Chlad! Timery zpomaleny o ${chillPct}% na ${mb.chillTicksLeft} ticků`;
     }
 
@@ -1989,37 +1994,31 @@
       // Zelené částice
       spawnHealParticles();
     } else if (spellId === 'freeze') {
-      const slowDuration = (4 + lv) * 1000; // ms
-      // Zpomalit timer ring na polovinu — restart s 2x delším časem pro aktuální attack
-      effectMsg = `❄️ Mráz! ${4+lv}s zpomalení!`;
-      // Modrý efekt na bossovi
+      // freeze: 3 ticky, freeze2: 4 ticky, blizzard: 5 ticků
+      let ticks;
+      let pct;
+      if (lv >= 5) { // blizzard
+        ticks = 5; pct = 50 + lv * 20;
+      } else if (lv >= 3) { // freeze2
+        ticks = 4; pct = 45 + lv * 15;
+      } else { // freeze
+        ticks = 3; pct = 40 + lv * 10;
+      }
+      // Použije chill ticks — stejný mechanismus jako pasivní chill
+      // Pokud už chill běží, přepíše se novými hodnotami (silnější kouzlo)
+      mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
+      effectMsg = `❄️ Mráz! Zpomalení ${pct}% na ${ticks} ticků!`;
+      // Modrý efekt na bossovi + modré kolečko
       const bossFig = $('mbFigure');
       if (bossFig) {
         bossFig.style.transition = 'filter 0.3s';
         bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)';
-        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, slowDuration);
+        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800);
       }
+      const circle = document.querySelector('.timer-circle');
+      if (circle) circle.style.stroke = '#4fc3f7';
       spawnFreezeParticles();
-      // Pokud právě běží útok, prodloužíme jeho timer
-      if (mb._sequenceTimer && !mb._hitProcessed) {
-        const circle = document.querySelector('.timer-circle');
-        if (circle) {
-          clearTimeout(mb._sequenceTimer);
-          const remaining = parseFloat(circle.style.strokeDashoffset || '0');
-          const totalDash = 276;
-          const pct = remaining / totalDash;
-          // Restart s dvojnásobným časem ze stejného procenta
-          const origTime = mb._currentWindowTime || 1500;
-          const newTime = origTime * 2;
-          resetTimerRing();
-          startTimerRing(circle, newTime);
-          mb._sequenceTimer = setTimeout(() => {
-            if (!mapBattleState.ended) onMapHit();
-          }, newTime);
-          mb._currentWindowTime = newTime;
-        }
-      }
-      // Po uplynutí freeze doby se timer vrátí — refresh stránky není potřeba, další sekvence normálně
     }
     sfxSuccess();
     $('mbHint').textContent = effectMsg;
