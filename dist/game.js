@@ -520,7 +520,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTurnsLeft: 0, shieldActive: null, spellUsedThisFloor: false,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null, spellUsedThisFloor: false,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null,
       spellCooldowns: {},
@@ -995,12 +995,10 @@
     mb._hitProcessed = false; // reset guard pro aktuální útok
 
     const windowTime = attack.windowTime;
-    // Ice school passive — chill: zpomalit timer
-    if (mb.chillTurnsLeft > 0) {
-      mb.chillTurnsLeft--;
+    // Ice school passive — chill: zpomalit timer na zbývající ticky
+    mb._currentWindowTime = windowTime;
+    if (mb.chillTicksLeft > 0) {
       mb._currentWindowTime = Math.round(windowTime * (1 + mb.chillPercent / 100));
-    } else {
-      mb._currentWindowTime = windowTime;
     }
 
     // Reset kolečka
@@ -1111,6 +1109,9 @@
 
     // DoT tick — každý timer (úspěch/neúspěch) = jeden tick
     if (doDotTick(mb)) return;
+
+    // Chill tick — odečti jeden tick zpomalení
+    if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
@@ -1721,8 +1722,8 @@
     if (chillPct > 0) {
       const iceLv = state.schoolLevels['ice'] || 0;
       mb.chillPercent = chillPct;
-      mb.chillTurnsLeft = 2 + (iceLv >= 4 ? 1 : 0); // 2-3 útoky
-      $('mbHint').textContent += ` ❄️ Chlad! Timery zpomaleny o ${chillPct}% na ${mb.chillTurnsLeft} útoku`;
+      mb.chillTicksLeft = 2 + (iceLv >= 4 ? 1 : 0); // 2-3 ticky
+      $('mbHint').textContent += ` ❄️ Chlad! Timery zpomaleny o ${chillPct}% na ${mb.chillTicksLeft} ticků`;
     }
 
     mb.bossHp -= dmg;
@@ -1765,6 +1766,9 @@
 
     // DoT tick i při neúspěchu — timer proběhl, i když hráč neuhnul
     if (doDotTick(mb)) return;
+
+    // Chill tick i při neúspěchu — jeden tick zpomalení uběhl
+    if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
     const baseBossDmg = Math.max(5, 5 + mb.turn * 4 + mb.locId * 5);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
