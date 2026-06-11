@@ -1119,6 +1119,9 @@
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
+    // Skrýt bonusový kruh (pokud zbyl z útočného okna)
+    const bc2 = document.querySelector('.bonus-zone-circle');
+    if (bc2) bc2.style.strokeDasharray = '0 276';
     mb.currentAttack = null;
     mb.isHeavyAttack = false;
     mb.isBlockAttack = false;
@@ -1184,6 +1187,29 @@
     const floorMult = getFloorTimerMultiplier(mb2.floor);
     const atkTime = Math.round(Math.max(400, 1000 * floorMult * 1.5));
     const atkCircle = resetTimerRing();
+    
+    // ⭐ Bonusové okno — náhodná pozice na timeru (200ms šířka, ne v prvních 200ms)
+    const bonusMs = 200;
+    const bonusStartMin = 200;
+    const bonusStartMax = atkTime - bonusMs - 200;
+    let bonusStartMs = bonusStartMin + Math.random() * Math.max(0, bonusStartMax - bonusStartMin);
+    if (bonusStartMs < 0) bonusStartMs = 200;
+    mb._attackWindowStart = Date.now();
+    mb._bonusStartMs = Math.round(bonusStartMs);
+    mb._bonusMs = bonusMs;
+    
+    // Zobrazit bonusový kruh
+    
+    // Vizuální znázornění bonusového okna na kolečku
+    const totalPx = 276; // obvod kruhu
+    const zoneWidthPx = Math.max(1, Math.round((bonusMs / atkTime) * totalPx));
+    const zoneStartPx = Math.round((bonusStartMs / atkTime) * totalPx);
+    const bonusCircle = document.querySelector('.bonus-zone-circle');
+    if (bonusCircle) {
+      bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${totalPx}`;
+      bonusCircle.style.strokeDashoffset = totalPx - zoneStartPx;
+    }
+    
     requestAnimationFrame(() => {
       startTimerRing(atkCircle, atkTime);
     });
@@ -1199,6 +1225,9 @@
   function missedAttackWindow() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    // Skrýt bonusový kruh
+    const bCircle = document.querySelector('.bonus-zone-circle');
+    if (bCircle) bCircle.style.strokeDasharray = '0 276';
     // GUARD: už bylo zpracováno
     if (!mb.inAttackWindow) return;
     mb.mistakes = (mb.mistakes || 0) + 1;
@@ -1696,6 +1725,9 @@
 
     // Reset kolečka
     resetTimerRing();
+    // Skrýt bonusový kruh
+    const bc = document.querySelector('.bonus-zone-circle');
+    if (bc) bc.style.strokeDasharray = '0 276';
     const actInfo = $('mbActionInfo');
     if (actInfo) actInfo.classList.add('hidden');
     updateActionButtons();
@@ -1711,6 +1743,27 @@
     const isCrit = Math.random() * 100 < critChance;
     if (isCrit) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; playSFX(critSfx); }
     else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; playSFX(hitSfx); }
+    
+    // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
+    if (mb._bonusStartMs != null && mb._bonusMs > 0) {
+      const elapsed = Date.now() - (mb._attackWindowStart || 0);
+      if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
+        const bonusDmg = Math.round(dmg * 0.5);
+        dmg += bonusDmg;
+        $('mbHint').textContent += ` ⭐ Bonus! +${bonusDmg}!`;
+        const bonusCircle = document.querySelector('.bonus-zone-circle');
+        if (bonusCircle) {
+          bonusCircle.style.stroke = '#ffd700';
+          bonusCircle.style.opacity = '1';
+          bonusCircle.style.strokeWidth = '7';
+          setTimeout(() => {
+            bonusCircle.style.stroke = '#f1c40f';
+            bonusCircle.style.opacity = '0.8';
+            bonusCircle.style.strokeWidth = '5';
+          }, 400);
+        }
+      }
+    }
 
     // Nature school passive — poison on hit
     const poisonTick = getNaturePoisonTick();
