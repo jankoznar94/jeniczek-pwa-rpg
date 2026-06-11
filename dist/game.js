@@ -199,8 +199,9 @@
     if (state.activeSchool !== 'ice') return 0;
     const lv = state.schoolLevels['ice'] || 0;
     if (lv < 2) return 0;
-    // TEST: 75% pro testovací účely
-    return 75;
+    // chill (index 1): 10+lv*5, then chill2 (index 3) at lv≥4: 15+lv*5
+    if (lv >= 4) return 15 + lv * 5;
+    return 10 + lv * 5;
   }
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
