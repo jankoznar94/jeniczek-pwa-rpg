@@ -1198,7 +1198,7 @@
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
     
-    $('mbHint').textContent = `⚔️ ÚTOČ! Bonus v ${bonusStartMs}–${bonusStartMs+bonusMs}ms`;
+    $('mbHint').textContent = '⚔️ ÚTOČ! ⭐ bonus za rychlost!';
     
     // Vizuální znázornění bonusového okna na kolečku
     const bonusCircum = 308; // obvod bonus kruhu (r=49)
@@ -1747,11 +1747,10 @@
     // ⭐ Bonusové okno — trefa do červeného pruhu = +50% poškození
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       const elapsed = Date.now() - (mb._attackWindowStart || 0);
-      $('mbHint').textContent = `⚔️ Útok! elapsed=${elapsed}ms zone=${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs}ms dmg=${dmg}`;
       if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
         const bonusDmg = Math.round(dmg * 0.5);
         dmg += bonusDmg;
-        $('mbHint').textContent = `⭐ Bonus! ${dmg} (+${bonusDmg})! elapsed=${elapsed}ms ok=${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs}ms`;
+        $('mbHint').textContent += ' ⭐ Bonus!';
         const bonusCircle = document.querySelector('.bonus-zone-circle');
         if (bonusCircle) {
           bonusCircle.style.stroke = '#ff6b6b';
