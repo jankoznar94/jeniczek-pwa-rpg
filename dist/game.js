@@ -1121,7 +1121,7 @@
     mb._ringTimer = null;
     // Skrýt bonusový kruh (pokud zbyl z útočného okna)
     const bc2 = document.querySelector('.bonus-zone-circle');
-    if (bc2) bc2.style.strokeDasharray = '0 276';
+    if (bc2) bc2.style.strokeDasharray = '0 308';
     mb.currentAttack = null;
     mb.isHeavyAttack = false;
     mb.isBlockAttack = false;
@@ -1201,13 +1201,13 @@
     // Zobrazit bonusový kruh
     
     // Vizuální znázornění bonusového okna na kolečku
-    const totalPx = 276; // obvod kruhu
-    const zoneWidthPx = Math.max(1, Math.round((bonusMs / atkTime) * totalPx));
-    const zoneStartPx = Math.round((bonusStartMs / atkTime) * totalPx);
+    const bonusCircum = 308; // obvod bonus kruhu (r=49)
+    const zoneWidthPx = Math.max(1, Math.round((bonusMs / atkTime) * bonusCircum));
+    const zoneStartPx = Math.round((bonusStartMs / atkTime) * bonusCircum);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
-      bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${totalPx}`;
-      bonusCircle.style.strokeDashoffset = totalPx - zoneStartPx;
+      bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum}`;
+      bonusCircle.style.strokeDashoffset = bonusCircum - zoneStartPx;
     }
     
     requestAnimationFrame(() => {
@@ -1227,7 +1227,7 @@
     const mb = mapBattleState;
     // Skrýt bonusový kruh
     const bCircle = document.querySelector('.bonus-zone-circle');
-    if (bCircle) bCircle.style.strokeDasharray = '0 276';
+    if (bCircle) bCircle.style.strokeDasharray = '0 308';
     // GUARD: už bylo zpracováno
     if (!mb.inAttackWindow) return;
     mb.mistakes = (mb.mistakes || 0) + 1;
@@ -1727,7 +1727,7 @@
     resetTimerRing();
     // Skrýt bonusový kruh
     const bc = document.querySelector('.bonus-zone-circle');
-    if (bc) bc.style.strokeDasharray = '0 276';
+    if (bc) bc.style.strokeDasharray = '0 308';
     const actInfo = $('mbActionInfo');
     if (actInfo) actInfo.classList.add('hidden');
     updateActionButtons();
@@ -1753,13 +1753,13 @@
         $('mbHint').textContent += ` ⭐ Bonus! +${bonusDmg}!`;
         const bonusCircle = document.querySelector('.bonus-zone-circle');
         if (bonusCircle) {
-          bonusCircle.style.stroke = '#ffd700';
+          bonusCircle.style.stroke = '#ff6b6b';
           bonusCircle.style.opacity = '1';
-          bonusCircle.style.strokeWidth = '7';
+          bonusCircle.style.strokeWidth = '9';
           setTimeout(() => {
-            bonusCircle.style.stroke = '#f1c40f';
-            bonusCircle.style.opacity = '0.8';
-            bonusCircle.style.strokeWidth = '5';
+            bonusCircle.style.stroke = '#e74c3c';
+            bonusCircle.style.opacity = '0.85';
+            bonusCircle.style.strokeWidth = '7';
           }, 400);
         }
       }
