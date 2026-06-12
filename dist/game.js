@@ -1787,13 +1787,15 @@
           }, 400);
         }
       } else {
-        hintText = `⚔️ ${dmg}`;
-        playSFX(hitSfx);
-      }
-    } else {
-      hintText = `⚔️ ${dmg}`;
-      playSFX(hitSfx);
-    }
+            hintText = `⚔️ ${dmg}`;
+            playSFX(hitSfx);
+          }
+        } else {
+          // bonusStartMs je null! Tohle je problém!
+          hintText = `❌ bonusStart=null _bonusMs=${mb._bonusMs} inAtkWin=${mb.inAttackWindow} atkProc=${mb._attackProcessed}`;
+          // ⚔️ ${dmg} nahrazeno debugem
+          playSFX(hitSfx);
+        }
     
     $('mbHint').textContent = hintText;
 
