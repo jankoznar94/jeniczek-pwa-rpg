@@ -322,6 +322,7 @@
       if (mapBattleState._attackWindowTimer) { clearTimeout(mapBattleState._attackWindowTimer); mapBattleState._attackWindowTimer = null; }
       if (mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
       if (mapBattleState._freezeTimer) { clearInterval(mapBattleState._freezeTimer); mapBattleState._freezeTimer = null; }
+      if (mapBattleState._bonusTimers) { mapBattleState._bonusTimers.forEach(t => clearTimeout(t)); mapBattleState._bonusTimers = null; }
     }
   }
 
@@ -521,7 +522,7 @@
       ended: false, turn: 0, isAttacking: false,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
-      _freezeTimer: null,
+      _freezeTimer: null, _bonusTimers: null,
       spellCooldowns: {},
       floorMonsters,
       monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
@@ -1210,8 +1211,20 @@
     }
     
     requestAnimationFrame(() => {
-      mb._attackWindowStart = Date.now(); // ⭐ až teď, kdy reálně začíná animace
+      mb._attackWindowStart = Date.now();
       startTimerRing(atkCircle, atkTime);
+      // ⭐ Nastavit časované flagy pro bonusové okno (synchronizované s animací)
+      mb._bonusActive = false;
+      if (mb._bonusTimers) { mb._bonusTimers.forEach(t => clearTimeout(t)); }
+      mb._bonusTimers = [];
+      mb._bonusTimers.push(setTimeout(() => {
+        if (mapBattleState.ended) return;
+        mb._bonusActive = true;
+      }, bonusStartMs));
+      mb._bonusTimers.push(setTimeout(() => {
+        if (mapBattleState.ended) return;
+        mb._bonusActive = false;
+      }, bonusStartMs + bonusMs));
     });
 
     mb._attackWindowTimer = setTimeout(() => {
@@ -1747,8 +1760,7 @@
     
     // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      const elapsed = Date.now() - (mb._attackWindowStart || 0);
-      if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
+      if (mb._bonusActive) {
         const bonusDmg = Math.round(dmg * 0.5);
         dmg += bonusDmg;
         hintText = `✅ Bonus! ⭐ +${bonusDmg}`;
