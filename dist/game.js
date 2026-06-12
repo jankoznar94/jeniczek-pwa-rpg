@@ -1180,9 +1180,8 @@
     renderSeqProgress(mb);
     // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
     updateMapBattleUI(); // zobrazi spell buttony
-    // Vyčistit hint z minulého kola
-    $('mbHint').textContent = '';
-    $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
+    // Clear hint from previous round
+        $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
     // Timer ring — 1.5× delší než úhyby (podle patra)
     const mb2 = mapBattleState;
@@ -1741,12 +1740,11 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     // Rapid — nelze útočit, zpracovává onMapRapidTap
-    if (mb.isRapidAttack) { $('mbHint').textContent = `(rapid, ignoruji)`; return; }
+    if (mb.isRapidAttack) { return; }
     if (mb._attackProcessed) return; // zabránění dvojitému útoku
     mb._attackProcessed = true; // OKAMŽITÝ guard
     if (!mb.inAttackWindow) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      $('mbHint').textContent = `⚠️ Mimo okno!`;
       return;
     }
 
@@ -1772,13 +1770,11 @@
     if (firePct > 0) { dmg = Math.round(dmg * (1 + firePct / 100)); }
     
     // 🎯 Crit window — trefa = crit (×2.0), mino = normální útok
-    let hintText = '';
     let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       if (mb._bonusActive) {
         isCrit = true;
         dmg = Math.round(dmg * critMult);
-        hintText = `💥 Kritik! ⭐ ${dmg}!`;
         playSFX(critSfx);
         // ⭐ Vizuální feedback — kruh zvýraznit
         const critCircle = document.querySelector('.bonus-zone-circle');
@@ -1793,16 +1789,12 @@
           }, 400);
         }
       } else {
-        hintText = `⚔️ ${dmg}`;
         playSFX(hitSfx);
       }
     } else {
-      hintText = `⚔️ ${dmg}`;
       playSFX(hitSfx);
     }
     
-    $('mbHint').textContent = hintText;
-
     // Nature school passive — poison on hit
     const poisonTick = getNaturePoisonTick();
     if (poisonTick > 0 && state.activeSchool === 'nature') {
