@@ -1122,7 +1122,7 @@
     mb._ringTimer = null;
     // Skrýt bonusový kruh (pokud zbyl z útočného okna)
     const bc2 = document.querySelector('.bonus-zone-circle');
-    if (bc2) bc2.style.strokeDasharray = '0 308';
+    if (bc2) bc2.style.strokeDasharray = '0 276';
     mb.currentAttack = null;
     mb.isHeavyAttack = false;
     mb.isBlockAttack = false;
@@ -1206,7 +1206,7 @@
     // Zobrazit crit kruh (žlutozlatý)
     
     // Vizuální znázornění bonusového okna na kolečku
-    const bonusCircum = 308; // obvod bonus kruhu (r=49)
+    const bonusCircum = 276; // obvod bonus kruhu (r=44, shodný s timer ringem)
     const zoneWidthPx = Math.max(1, Math.round((bonusMs / atkTime) * bonusCircum));
     const zoneStartPx = Math.round((bonusStartMs / atkTime) * bonusCircum);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
@@ -1252,7 +1252,7 @@
     const mb = mapBattleState;
     // Skrýt bonusový kruh
     const bCircle = document.querySelector('.bonus-zone-circle');
-    if (bCircle) bCircle.style.strokeDasharray = '0 308';
+    if (bCircle) bCircle.style.strokeDasharray = '0 276';
     // GUARD: už bylo zpracováno
     if (!mb.inAttackWindow) return;
     mb.mistakes = (mb.mistakes || 0) + 1;
@@ -1753,7 +1753,7 @@
     resetTimerRing();
     // Skrýt bonusový kruh
     const bc = document.querySelector('.bonus-zone-circle');
-    if (bc) bc.style.strokeDasharray = '0 308';
+    if (bc) bc.style.strokeDasharray = '0 276';
     const actInfo = $('mbActionInfo');
     if (actInfo) actInfo.classList.add('hidden');
     updateActionButtons();
