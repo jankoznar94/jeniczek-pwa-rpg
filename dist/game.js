@@ -486,7 +486,7 @@
   function enterLocation(locId, optFloor) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
+    if (locId > 1 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
 
     if (optFloor !== undefined && !state.bossesDefeated[locId]) {
       state.floorProgress[locId] = optFloor;
