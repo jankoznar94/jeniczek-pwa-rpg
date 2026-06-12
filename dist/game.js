@@ -1766,6 +1766,9 @@
     let hintText = '';
     let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
+      let _debugElapsed = 0;
+      if (mb._attackWindowStart) _debugElapsed = Math.round(performance.now() - mb._attackWindowStart);
+      hintText = `🔍 elapsed=${_debugElapsed}ms bonusStart=${mb._bonusStartMs} bonusEnd=${mb._bonusStartMs+mb._bonusMs} active=${mb._bonusActive}`;
       if (mb._bonusActive) {
         isCrit = true;
         dmg = Math.round(dmg * critMult);
