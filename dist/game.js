@@ -330,7 +330,7 @@
   function defaultState() {
     const schoolLevels = {};
     SCHOOLS.forEach(sk => { schoolLevels[sk.id] = 0; });
-    const s = { schoolLevels, activeSchool:null, talentPoints:20, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:50}, deaths:0, wins:0,
+    const s = { schoolLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0], spellUsedThisFloor:{} };
     return s;
   }
@@ -431,8 +431,8 @@
     const h = state.hero;
 
     $('mapScroll').innerHTML = LOCATIONS.map((loc, i) => {
-      const prevDone = true; // DEBUG: odemčeno
-      const unlocked = true; // DEBUG: odemčeno
+      const prevDone = i === 0 || state.bossesDefeated[i-1]; // předchozí dungeon hotov = první odemčen
+      const unlocked = prevDone;
       const completed = state.bossesDefeated[i];
       const curFloor = state.floorProgress[i] || 0;
       const curProgress = state.locationProgress[i] || 0;
@@ -454,7 +454,7 @@
         for (let f = 0; f < 5; f++) {
           const isBossFloor = f >= 4;
           const floorDone = completed || f < curFloor;
-          const lockedFloor = false; // DEBUG: odemčeno (původně f > curFloor && !completed)
+          const lockedFloor = f > state.floorProgress[i] && !completed;
           let fIcon, fText;
           if (floorDone) { fIcon = '✅'; fText = 'Hotovo'; }
           else if (lockedFloor) { fIcon = '🔒'; fText = 'Zamčeno'; }
@@ -486,7 +486,7 @@
   function enterLocation(locId, optFloor) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    //if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; } // DEBUG: odemčeno
+    if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
 
     if (optFloor !== undefined && !state.bossesDefeated[locId]) {
       state.floorProgress[locId] = optFloor;
@@ -2542,7 +2542,7 @@
     if (!sk) return;
     const lv = state.skills[skillId] || 0;
     const requiredLv = (lv + 1) * 2;
-    if (state.hero.level < requiredLv) { /* DEBUG: odemčeno */ }
+    if (state.hero.level < requiredLv) { showMessage(`🔒 Potřebuješ level ${requiredLv}!`); return; }
     if (lv >= sk.maxLv) { showMessage('✅ MAX level!'); return; }
     trainingState = { skillId, skill: sk, level: Math.min(5, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
     showScreen('battle');
