@@ -1222,14 +1222,22 @@
     requestAnimationFrame(() => {
       mb._attackWindowStart = performance.now();
       mb._bonusActive = false; // reset flagu
-      startTimerRing(atkCircle, atkTime);
-      // ⭐ Sledovat elapsed v rAF loop — synchronizované s CSS animací
+      // 🔄 Celý timer ring animujeme v rAF — synchronně s crit zónou. CSS animaci rušíme.
       if (mb._bonusRaf) cancelAnimationFrame(mb._bonusRaf);
       (function frame() {
         if (mapBattleState.ended) return;
         const now = performance.now();
         const elapsed = now - mb._attackWindowStart;
+        const pct = Math.min(elapsed / atkTime, 1);
         mb._bonusActive = (elapsed >= mb._bonusStartMs && elapsed < mb._bonusStartMs + mb._bonusMs);
+        // 🎯 Timer ring: 276 → 0 (odhalování)
+        if (atkCircle) {
+          atkCircle.style.opacity = '1';
+          atkCircle.style.strokeDashoffset = Math.round(276 * (1 - pct));
+        }
+        // 🎯 Crit zóna: statická — (C - startPx) offset
+        const bc = document.querySelector('.bonus-zone-circle');
+        if (bc) bc.style.strokeDashoffset = Math.round(mb._bonusCircum - mb._zoneStartPx);
         if (elapsed < atkTime) {
           mb._bonusRaf = requestAnimationFrame(frame);
         } else {
