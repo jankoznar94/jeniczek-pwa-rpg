@@ -2541,8 +2541,6 @@
     const sk = SKILL_MAP[skillId];
     if (!sk) return;
     const lv = state.skills[skillId] || 0;
-    const requiredLv = (lv + 1) * 2;
-    if (state.hero.level < requiredLv) { showMessage(`🔒 Potřebuješ level ${requiredLv}!`); return; }
     if (lv >= sk.maxLv) { showMessage('✅ MAX level!'); return; }
     trainingState = { skillId, skill: sk, level: Math.min(5, lv + 1), round: 0, ended: false, firstRound: true, playerHp: 1 };
     showScreen('battle');
