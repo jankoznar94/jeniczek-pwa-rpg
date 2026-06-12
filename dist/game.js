@@ -1207,24 +1207,12 @@
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
       bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum}`;
-      bonusCircle.style.strokeDashoffset = bonusCircum - zoneStartPx;
+      bonusCircle.style.strokeDashoffset = zoneStartPx;
     }
     
     requestAnimationFrame(() => {
-      mb._attackWindowStart = Date.now();
+      mb._attackWindowStart = performance.now();
       startTimerRing(atkCircle, atkTime);
-      // ⭐ Nastavit časované flagy pro bonusové okno (synchronizované s animací)
-      mb._bonusActive = false;
-      if (mb._bonusTimers) { mb._bonusTimers.forEach(t => clearTimeout(t)); }
-      mb._bonusTimers = [];
-      mb._bonusTimers.push(setTimeout(() => {
-        if (mapBattleState.ended) return;
-        mb._bonusActive = true;
-      }, bonusStartMs));
-      mb._bonusTimers.push(setTimeout(() => {
-        if (mapBattleState.ended) return;
-        mb._bonusActive = false;
-      }, bonusStartMs + bonusMs));
     });
 
     mb._attackWindowTimer = setTimeout(() => {
@@ -1760,7 +1748,9 @@
     
     // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      if (mb._bonusActive) {
+      const elapsed = performance.now() - (mb._attackWindowStart || 0);
+      hintText = `⏱️ ${Math.round(elapsed)}ms (bonus ${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs})`;
+      if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
         const bonusDmg = Math.round(dmg * 0.5);
         dmg += bonusDmg;
         hintText = `✅ Bonus! ⭐ +${bonusDmg}`;
