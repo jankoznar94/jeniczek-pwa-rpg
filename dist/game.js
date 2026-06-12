@@ -1318,6 +1318,7 @@
     }
 
     const schoolColor = (function() {
+      if (targetIsPlayer) return { c1:'#e94560', c2:'#c0392b', rgb:'233,69,96' }; // boss vždy červený
       const a = state.activeSchool;
       if (a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
       if (a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
