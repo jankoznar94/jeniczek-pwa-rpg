@@ -1705,13 +1705,10 @@
     if (mb.inAttackWindow) {
       // Během útočného okna: blok = promarněná šance
       clearTimeout(mb._attackWindowTimer);
-      // (hint: zachovat bonus info)
       flashSeqFail();
       missedAttackWindow();
       return;
     }
-    // (hint: zachovat bonus info)
-    // (hint: zachovat bonus info)
 
     // GUARD: útok už byl zpracován (timer propadl)
     if (mb._hitProcessed) return;
@@ -1720,9 +1717,14 @@
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
     mb._sequenceTimer = null;
-    playSFX(blockSfx);
-    // (hint: zachovat bonus info)
-    advanceSequence();
+
+    // Blok funguje jen proti block útokům — jinak je to chyba
+    if (mb.isBlockAttack) {
+      playSFX(blockSfx);
+      advanceSequence();
+    } else {
+      onMapHit();
+    }
   }
 
   function onMapAttack() {
