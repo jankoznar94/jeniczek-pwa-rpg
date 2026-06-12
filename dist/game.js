@@ -1195,7 +1195,10 @@
     // Okno až od druhé třetiny timeru (33%), ať hráč stihne zareagovat
     const bonusStartMin = Math.round(atkTime * 0.33);
     // Okno nesmí přesahovat konec timeru — začátek se dopočítá automaticky
-    const bonusStartMs = bonusStartMin + Math.random() * Math.max(0, atkTime - bonusMs - bonusStartMin);
+    const bonusStartMs = Math.min(
+      bonusStartMin + Math.random() * Math.max(0, atkTime - bonusMs - bonusStartMin),
+      atkTime - bonusMs
+    );
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
     
