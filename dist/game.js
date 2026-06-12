@@ -1212,7 +1212,7 @@
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
       bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum - zoneWidthPx}`;
-      bonusCircle.style.strokeDashoffset = zoneStartPx;
+      bonusCircle.style.strokeDashoffset = bonusCircum - zoneStartPx;
     }
     mb._zoneWidthPx = zoneWidthPx;
     mb._zoneStartPx = zoneStartPx;
