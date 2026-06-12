@@ -230,8 +230,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .arena-block-btn.active { border-color:#3498db; background:#1a1a2a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
 .boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:0; }
 .seq-progress {
-  position:absolute;bottom:88px;left:50%;transform:translateX(-50%);
-  display:flex;gap:6px;justify-content:center;z-index:20;
+  position:absolute;left:8px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:4px;align-items:center;z-index:20;
 }
 .seq-dot {
   width:16px;height:16px;border-radius:50%;background:#2a2a4a;
@@ -243,9 +243,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .seq-dot.fail {
   background:#e94560; border-color:#e94560;
   animation:seqFail 0.3s ease-out;
-}
-.seq-ready.seq-progress {
-  gap:8px;
 }
 .seq-ready .seq-dot.done {
   background:var(--seq-dot-done, #888); border-color:var(--seq-dot-done, #888);
