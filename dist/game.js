@@ -1201,6 +1201,7 @@
     );
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
+    mb._attackWindowStart = Date.now(); // nastavit teď, ne v rAF
     
     // Zobrazit crit kruh (žlutozlatý)
     
@@ -1750,7 +1751,8 @@
     let hintText = '';
     let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      const elapsed = performance.now() - (mb._attackWindowStart || 0);
+      const elapsed = Date.now() - (mb._attackWindowStart || 0);
+      hintText = `⏱️ ${Math.round(elapsed)}ms (okno ${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs}ms)`;
       if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
         isCrit = true;
         dmg = Math.round(dmg * critMult);
