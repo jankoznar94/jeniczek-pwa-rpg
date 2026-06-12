@@ -1737,19 +1737,15 @@
   }
 
   function onMapAttack() {
-    const _debugNow = performance.now();
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
-    // DEBUG: zjistit stav v okamžiku kliku
-    let _debugElapsed2 = 0;
-    if (mb._attackWindowStart) _debugElapsed2 = Math.round(_debugNow - mb._attackWindowStart);
     // Rapid — nelze útočit, zpracovává onMapRapidTap
     if (mb.isRapidAttack) { $('mbHint').textContent = `(rapid, ignoruji)`; return; }
     if (mb._attackProcessed) return; // zabránění dvojitému útoku
-    mb._attackProcessed = true; // OKAMŽITÝ guard — i před výpočtem dmg
+    mb._attackProcessed = true; // OKAMŽITÝ guard
     if (!mb.inAttackWindow) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      $('mbHint').textContent = `⚠️ Mimo okno! elapsed=${_debugElapsed2}ms`;
+      $('mbHint').textContent = `⚠️ Mimo okno!`;
       return;
     }
 
@@ -1778,9 +1774,6 @@
     let hintText = '';
     let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      let _debugElapsed = 0;
-      if (mb._attackWindowStart) _debugElapsed = Math.round(performance.now() - mb._attackWindowStart);
-      hintText = `🔍 elapsed=${_debugElapsed}ms bonusStart=${mb._bonusStartMs} bonusEnd=${mb._bonusStartMs+mb._bonusMs} active=${mb._bonusActive}`;
       if (mb._bonusActive) {
         isCrit = true;
         dmg = Math.round(dmg * critMult);
@@ -1799,15 +1792,13 @@
           }, 400);
         }
       } else {
-            hintText = `⚔️ ${dmg}`;
-            playSFX(hitSfx);
-          }
-        } else {
-          // bonusStartMs je null! Tohle je problém!
-          hintText = `❌ bonusStart=null _bonusMs=${mb._bonusMs} inAtkWin=${mb.inAttackWindow} atkProc=${mb._attackProcessed}`;
-          // ⚔️ ${dmg} nahrazeno debugem
-          playSFX(hitSfx);
-        }
+        hintText = `⚔️ ${dmg}`;
+        playSFX(hitSfx);
+      }
+    } else {
+      hintText = `⚔️ ${dmg}`;
+      playSFX(hitSfx);
+    }
     
     $('mbHint').textContent = hintText;
 
