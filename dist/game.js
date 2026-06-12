@@ -605,7 +605,7 @@
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
     fig.textContent = emoji;
-    $('mbHint').textContent = mb.isBoss ? `👑 BOSS — Sekvence útoků, přežij a pak udeř!` : `⬆️⬇️⬅️➡️ uhni! Patro ${mb.floor+1}, ulov nestvůru!`;
+    // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
     // School spells — HTML tlacitka nad Utokem, vzdy na stejne pozici (84px)
     const fireBtn = $('mbSpellFireBtn');
@@ -916,7 +916,7 @@
     mb._sequenceTimer = null;
     updateActionButtons();
 
-    $('mbHint').textContent = `⚔️ Sekvence ${mb.sequence.length} útoků — přežij!`;
+    // (hint necháme pro bonus info)
 
     // Začít první útok sekvence
     playSequenceAttack();
@@ -1059,7 +1059,7 @@
     updateActionButtons();
 
     const seqStr = `[${mb.sequenceIndex+1}/${mb.sequence.length}]`;
-    $('mbHint').textContent = `${seqStr} ${getAttackHint(attack)}`;
+    // (hint necháme pro bonus info)
 
     // Timer ring - počkat na vykreslení resetu (fresh circle), pak spustit animaci
     // Barva ringu podle aktivního pasivního bonusu
@@ -1089,7 +1089,7 @@
     if (mb.dot <= 0 || mb.dotTicksLeft <= 0) return false;
     mb.bossHp -= mb.dot;
     mb.dotTicksLeft--;
-    if (state.activeSchool === 'nature') $('mbHint').textContent = `☠️ Jed! ${mb.dot} poškození! (${mb.dotTicksLeft} ticků zbývá)`;
+    // (hint necháme pro bonus info)
     const dotDmgText = $('mbDamageText');
     if (dotDmgText) {
       dotDmgText.textContent = `☠️ -${mb.dot}`;
@@ -1179,7 +1179,7 @@
     renderSeqProgress(mb);
     // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
     updateMapBattleUI(); // zobrazi spell buttony
-    $('mbHint').textContent = '⚔️ ÚTOČ! Klikni na ⚔️ nebo stiskni Mezerník!';
+    // (hint necháme pro bonus z minulého kola — vyčistí se až v onMapAttack)
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
     // Timer ring — 1.5× delší než úhyby (podle patra)
@@ -1198,7 +1198,6 @@
     mb._bonusMs = bonusMs;
     
     // Zobrazit bonusový kruh
-    $('mbHint').textContent = `⚔️ BONUS [dbg: start=${mb._bonusStartMs}ms w=${bonusMs}ms atkTime=${atkTime}ms]`;
     
     // Vizuální znázornění bonusového okna na kolečku
     const bonusCircum = 308; // obvod bonus kruhu (r=49)
@@ -1217,7 +1216,7 @@
 
     mb._attackWindowTimer = setTimeout(() => {
       if (mapBattleState.ended) return;
-      $('mbHint').textContent = '⏰ Zmeškal jsi! Další sekvence...';
+      // (hint necháme pro bonus info — zůstane z minula)
       flashSeqFail();
       missedAttackWindow();
     }, atkTime);
@@ -1571,7 +1570,7 @@
     if (mb.inAttackWindow) {
       // Při útočném okně: swipe = promarněná šance
       clearTimeout(mb._attackWindowTimer);
-      $('mbHint').textContent = '❌ Zmeškal jsi! Měl jsi udeřit ⚔️';
+      // (hint: zachovat bonus info)
       flashSeqFail();
       missedAttackWindow();
       return;
@@ -1614,7 +1613,7 @@
       mb._heavySwipes++;
       doArenaGlow(dir, true);
       playSFX(dodgeSfx);
-      $('mbHint').textContent = `🟡 ${attack.dir} Heavy — ${mb._heavySwipes}/2!`;
+      // (hint: zachovat bonus info)
       if (mb._heavySwipes >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
@@ -1647,7 +1646,7 @@
       mb._twinSwipes.push(dir);
       doArenaGlow(dir, true);
       playSFX(dodgeSfx);
-      $('mbHint').textContent = `🔷 ${attack.dir}↔${attack.twinDir} — ${mb._twinSwipes.length}/2!`;
+      // (hint: zachovat bonus info)
       if (mb._twinSwipes.length >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
@@ -1670,7 +1669,7 @@
 
     if (correct) {
       playSFX(dodgeSfx);
-      $('mbHint').textContent = `✅ ${getAttackHint(attack).split('—')[0]} — OK!`;
+      // (hint: zachovat bonus info)
       advanceSequence();
     } else {
       onMapHit();
@@ -1685,13 +1684,13 @@
     if (mb.inAttackWindow) {
       // Během útočného okna: blok = promarněná šance
       clearTimeout(mb._attackWindowTimer);
-      $('mbHint').textContent = '❌ Zmačkl jsi štít! Měl jsi udeřit ⚔️';
+      // (hint: zachovat bonus info)
       flashSeqFail();
       missedAttackWindow();
       return;
     }
-    if (!mb.currentAttack) { mb.mistakes = (mb.mistakes || 0) + 1; $('mbHint').textContent = '⚠️ Teď není co blokovat!'; return; }
-    if (!mb.isBlockAttack) { mb.mistakes = (mb.mistakes || 0) + 1; $('mbHint').textContent = '⚠️ Štít tu teď nepotřebuješ!'; return; }
+    // (hint: zachovat bonus info)
+    // (hint: zachovat bonus info)
 
     // GUARD: útok už byl zpracován (timer propadl)
     if (mb._hitProcessed) return;
@@ -1701,7 +1700,7 @@
     mb._ringTimer = null;
     mb._sequenceTimer = null;
     playSFX(blockSfx);
-    $('mbHint').textContent = '🛡️ Štít zablokoval útok!';
+    // (hint: zachovat bonus info)
     advanceSequence();
   }
 
@@ -1714,9 +1713,9 @@
     if (!mb.inAttackWindow) {
       mb.mistakes = (mb.mistakes || 0) + 1;
       if (mb.sequence && mb.sequenceIndex < mb.sequence.length) {
-        $('mbHint').textContent = '⚠️ Nejdřív přežij sekvenci útoků!';
+        // (hint: zachovat bonus info)
       } else {
-        $('mbHint').textContent = '⚠️ Počkej na útočné okno!';
+        // (hint: zachovat bonus info)
       }
       return;
     }
@@ -1742,17 +1741,17 @@
     const firePct = getFireDmgPct();
     if (firePct > 0) { dmg = Math.round(dmg * (1 + firePct / 100)); }
     const isCrit = Math.random() * 100 < critChance;
-    if (isCrit) { dmg = Math.round(dmg * critMult); $('mbHint').textContent = `💥 Kritik! ${dmg} poškození!`; playSFX(critSfx); }
-    else { $('mbHint').textContent = `⚔️ Útok! ${dmg} poškození!`; playSFX(hitSfx); }
+    let hintText = '';
+    if (isCrit) { dmg = Math.round(dmg * critMult); hintText = `💥 Kritik! ${dmg}`; playSFX(critSfx); }
+    else { hintText = `⚔️ ${dmg}`; playSFX(hitSfx); }
     
     // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       const elapsed = Date.now() - (mb._attackWindowStart || 0);
-      $('mbHint').textContent += ` [dbg: elapsed=${elapsed}ms bonusStart=${mb._bonusStartMs} bonusEnd=${mb._bonusStartMs + mb._bonusMs}]`;
       if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
         const bonusDmg = Math.round(dmg * 0.5);
         dmg += bonusDmg;
-        $('mbHint').textContent += ` ⭐ Bonus! +${bonusDmg}!`;
+        hintText = `✅ Bonus! ⭐ +${bonusDmg}`;
         const bonusCircle = document.querySelector('.bonus-zone-circle');
         if (bonusCircle) {
           bonusCircle.style.stroke = '#ff6b6b';
@@ -1764,26 +1763,29 @@
             bonusCircle.style.strokeWidth = '7';
           }, 400);
         }
+      } else {
+        hintText = `⏳ Mimo bonus`;
       }
     }
+
+    $('mbHint').textContent = hintText;
+    mb._bonusHint = hintText; // uložit pro zachování do příštího okna
 
     // Nature school passive — poison on hit
     const poisonTick = getNaturePoisonTick();
     if (poisonTick > 0 && state.activeSchool === 'nature') {
       const natureLv = state.schoolLevels['nature'] || 0;
-      const tickDuration = 2 + Math.floor(natureLv / 2); // 2-4 ticky
+      const tickDuration = 2 + Math.floor(natureLv / 2);
       mb.dot = poisonTick;
       mb.dotTicksLeft = tickDuration;
-      $('mbHint').textContent += ` ☠️ Jed! ${poisonTick}/tick na ${tickDuration} ticků`;
     }
-    // Ice school passive — chill on hit (zpomalí timer dalších útoků)
+    // Ice school passive — chill on hit
     const chillPct = getIceChillPct();
     if (chillPct > 0) {
       const iceLv = state.schoolLevels['ice'] || 0;
-      const pasTicks = 2 + (iceLv >= 4 ? 1 : 0); // 2-3 ticky
+      const pasTicks = 2 + (iceLv >= 4 ? 1 : 0);
       mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, pasTicks);
-      $('mbHint').textContent += ` ❄️ Chlad! Timery zpomaleny o ${chillPct}% na ${mb.chillTicksLeft} ticků`;
     }
 
     mb.bossHp -= dmg;
@@ -1836,7 +1838,7 @@
     if (mb.shieldActive) {
       const block = mb.shieldActive;
       if (block >= 100) {
-        $('mbHint').textContent = '🛡️ Štít odrazil!'; mb.shieldActive = null;
+        // (hint: zachovat bonus info)
         advanceSequence();
         return;
       }
@@ -1875,7 +1877,7 @@
     if (lTap) lTap.classList.add('hidden');
     if (rTap) rTap.classList.add('hidden');
 
-    $('mbHint').textContent = `💔 Zásah! -${amount}`;
+    // (hint: zachovat bonus info)
     flashSeqFail();
     updateMapBattleUI();
 
@@ -1895,7 +1897,7 @@
     else if (spellId === 'heal') lv = state.schoolLevels['nature'] || 0;
     if (lv === 0) return;
     const spellKey = `${mb.locId}_${mb.floor}`;
-    if (state.spellUsedThisFloor[spellKey]) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
+    // (hint: zachovat bonus info)
     state.spellUsedThisFloor[spellKey] = true;
     clearTimeout(mb._attackWindowTimer);
     resetTimerRing();
@@ -1910,14 +1912,14 @@
       const dmg = 25 + lv * 25;
       mb.bossHp -= dmg;
       spawnFireballProjectile();
-      $('mbHint').textContent = `🔥 Fireball! ${dmg} poškození!`;
+      // (hint: zachovat bonus info)
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.2s'; bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300); }
     } else if (spellId === 'heal') {
       const hp = 10 + lv * 15;
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
       spawnHealProjectile();
-      $('mbHint').textContent = `💚 +${hp} HP!`;
+      // (hint: zachovat bonus info)
       const playerFig = $('mbPlayerFigure');
       if (playerFig) { playerFig.style.transition = 'filter 0.3s'; playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400); }
     }
@@ -1993,14 +1995,14 @@
     const remaining = mb.rapidTarget - mb.rapidTaps;
     const target = $('mbRapidTarget');
     if (target) target.textContent = `${remaining}`;
-    $('mbHint').textContent = `🔮 ${mb.rapidTaps}/${mb.rapidTarget} ťuknutí!`;
+    // (hint: zachovat bonus info)
     if (mb.rapidTaps >= mb.rapidTarget) {
       // Hotovo!
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
       mb._ringTimer = null;
       mb._sequenceTimer = null;
-      $('mbHint').textContent = `🔮 ${mb.rapidTarget}/${mb.rapidTarget} — Hotovo!`;
+      // (hint: zachovat bonus info)
       advanceSequence();
     }
   }
@@ -2015,7 +2017,7 @@
     if (lv === 0) return;
     // 1x per dungeon
     const spellKey = `${mb.locId}_${mb.floor}`;
-    if (state.spellUsedThisFloor[spellKey]) { $('mbHint').textContent = '⏳ Kouzlo už bylo použito v tomto patře!'; return; }
+    // (hint: zachovat bonus info)
     state.spellUsedThisFloor[spellKey] = true;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
@@ -2079,7 +2081,7 @@
       spawnFreezeParticles();
     }
     sfxSuccess();
-    $('mbHint').textContent = effectMsg;
+    // (hint: zachovat bonus info)
     updateMapBattleUI();
     // Odstranit spell tlačítka
     const spellsEl = $('mbSpells');
@@ -2714,7 +2716,7 @@
           if (mb2._pausedInAttackWindow) {
             // Byl v útočném okně → zmeškal to
             mb2._pausedInAttackWindow = false;
-            $('mbHint').textContent = '⏰ Byl jsi pryč!';
+            // (hint: zachovat bonus info)
             flashSeqFail();
             missedAttackWindow();
           } else if (mb2.sequenceIndex < mb2.sequence.length) {
