@@ -712,7 +712,7 @@
       const map = { ArrowUp:'⬆️',ArrowDown:'⬇️',ArrowLeft:'⬅️',ArrowRight:'➡️','w':'⬆️','s':'⬇️','a':'⬅️','d':'➡️' };
       const dir = map[e.key];
       if (dir) { e.preventDefault(); onMapDodge(dir); return; }
-      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onMapAttack(); }
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (mapBattleState._attackProcessed) return; onMapAttack(); }
       if (e.key === 'Control' || e.key === 'ctrl') { e.preventDefault(); onMapBlock(); }
     };
     window.addEventListener('keydown', kh);
@@ -1214,6 +1214,10 @@
       bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum}`;
       bonusCircle.style.strokeDashoffset = zoneStartPx;
     }
+    mb._zoneWidthPx = zoneWidthPx;
+    mb._zoneStartPx = zoneStartPx;
+    mb._bonusCircum = bonusCircum;
+    mb._atkTime = atkTime;
     
     requestAnimationFrame(() => {
       mb._attackWindowStart = performance.now();
@@ -1226,6 +1230,13 @@
         const now = performance.now();
         const elapsed = now - mb._attackWindowStart;
         mb._bonusActive = (elapsed >= mb._bonusStartMs && elapsed < mb._bonusStartMs + mb._bonusMs);
+        // 🎯 Posouvat zlatou výseč synchronně s timer ringem
+        const bc = document.querySelector('.bonus-zone-circle');
+        if (bc) {
+          const pct = Math.min(elapsed / mb._atkTime, 1);
+          const newOffset = Math.round(mb._zoneStartPx * (1 - pct));
+          bc.style.strokeDashoffset = Math.max(0, newOffset);
+        }
         if (elapsed < atkTime) {
           mb._bonusRaf = requestAnimationFrame(frame);
         } else {
@@ -1734,10 +1745,11 @@
     if (mb._attackWindowStart) _debugElapsed2 = Math.round(_debugNow - mb._attackWindowStart);
     // Rapid — nelze útočit, zpracovává onMapRapidTap
     if (mb.isRapidAttack) { $('mbHint').textContent = `(rapid, ignoruji)`; return; }
-    if (mb._attackProcessed) { $('mbHint').textContent = `(už zpracováno, čekám na další kolo)`; return; }
+    if (mb._attackProcessed) return; // zabránění dvojitému útoku
+    mb._attackProcessed = true; // OKAMŽITÝ guard — i před výpočtem dmg
     if (!mb.inAttackWindow) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      $('mbHint').textContent = `⚠️ Mimo okno! elapsed=${_debugElapsed2}ms bonusStart=${mb._bonusStartMs}ms inAttackWindow=${mb.inAttackWindow} attackProcessed=${mb._attackProcessed}`;
+      $('mbHint').textContent = `⚠️ Mimo okno! elapsed=${_debugElapsed2}ms`;
       return;
     }
 
