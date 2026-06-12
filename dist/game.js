@@ -1188,14 +1188,14 @@
     const atkTime = Math.round(Math.max(400, 1000 * floorMult * 1.5));
     const atkCircle = resetTimerRing();
     
-    // 🎯 Crit window — šířka = critChance% z atkTime, náhodná pozice
+    // 🎯 Crit window — šířka = critChance% z atkTime
     const critChance = (state.hero.attrDex||0) * 1 + 5;
-    const bonusPct = Math.min(critChance, 80) / 100; // max 80%
-    const bonusMs = Math.max(50, Math.round(atkTime * bonusPct));
-    const bonusStartMin = 200;
-    const bonusStartMax = atkTime - bonusMs - 100;
-    let bonusStartMs = bonusStartMin + Math.random() * Math.max(0, bonusStartMax - bonusStartMin);
-    if (bonusStartMs < 0) bonusStartMs = 200;
+    const bonusPct = Math.min(critChance, 80) / 100; // max 80% timeru
+    const bonusMs = Math.max(1, Math.round(atkTime * bonusPct)); // čistě proporční
+    // Okno až od druhé třetiny timeru (33%), ať hráč stihne zareagovat
+    const bonusStartMin = Math.round(atkTime * 0.33);
+    // Okno nesmí přesahovat konec timeru — začátek se dopočítá automaticky
+    const bonusStartMs = bonusStartMin + Math.random() * Math.max(0, atkTime - bonusMs - bonusStartMin);
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
     
