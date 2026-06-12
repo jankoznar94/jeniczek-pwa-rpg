@@ -1769,7 +1769,7 @@
     const firePct = getFireDmgPct();
     if (firePct > 0) { dmg = Math.round(dmg * (1 + firePct / 100)); }
     
-    // 🎯 Crit window — trefa = crit (×2.0), mino = normální útok
+    // 🎯 Crit window — trefa = crit (×1.5), mino = normální útok
     let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       if (mb._bonusActive) {
@@ -2357,7 +2357,7 @@
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
     const critChance = (h.attrDex||0) * 1 + 5;
-    $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% okno (×2.0)` : `${critChance}% okno (×2.0)`;
+    $('heroCrit').textContent = `${critChance}% okno (×1.5)`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
     if (schoolInfo) {
@@ -2404,7 +2404,7 @@
       showMessage('💪 Síla +1! Poškození zvýšeno!');
     } else if (attr === 'dex') {
       h.attrDex = (h.attrDex||0) + 1;
-      showMessage('🎯 Obratnost +1! Kritická šance zvýšena!');
+      showMessage('🎯 Obratnost +1! Crit okno zvětšeno!');
     } else {
       h.attrVit = (h.attrVit||0) + 1;
       h.maxHp = getHeroMaxHp();
