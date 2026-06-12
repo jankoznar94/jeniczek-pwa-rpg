@@ -432,7 +432,7 @@
 
     $('mapScroll').innerHTML = LOCATIONS.map((loc, i) => {
       const prevDone = i === 0 || state.bossesDefeated[i-1]; // předchozí dungeon hotov = první odemčen
-      const unlocked = prevDone;
+      const unlocked = prevDone || i === 1;
       const completed = state.bossesDefeated[i];
       const curFloor = state.floorProgress[i] || 0;
       const curProgress = state.locationProgress[i] || 0;
