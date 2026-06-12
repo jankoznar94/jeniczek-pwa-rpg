@@ -1286,18 +1286,6 @@
     if (correct) {
       spawnDodgeEffect(arena, dir);
     }
-
-    const color = correct ? 'rgba(46,204,113,' : 'rgba(233,69,96,';
-    let shadow = '';
-    if (dir === '⬆️') shadow = `inset 0 16px 16px -8px ${color}0.6)`;
-    else if (dir === '⬇️') shadow = `inset 0 -16px 16px -8px ${color}0.6)`;
-    else if (dir === '⬅️') shadow = `inset 16px 0 16px -8px ${color}0.6)`;
-    else if (dir === '➡️') shadow = `inset -16px 0 16px -8px ${color}0.6)`;
-    arena.style.boxShadow = shadow;
-    if (mapBattleState._glowTimer) clearTimeout(mapBattleState._glowTimer);
-    mapBattleState._glowTimer = setTimeout(() => {
-      arena.style.boxShadow = '';
-    }, 300);
   }
 
   function spawnProjectileEffect(dir, targetIsPlayer, isCrit) {
@@ -1563,7 +1551,7 @@
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
-    const color = 'rgba(46,204,113,0.25)';
+    const color = 'rgba(187,187,187,0.2)';
 
     const count = 12;
     for (let i = 0; i < count; i++) {
