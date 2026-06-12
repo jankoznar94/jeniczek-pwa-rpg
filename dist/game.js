@@ -1198,6 +1198,7 @@
     mb._bonusMs = bonusMs;
     
     // Zobrazit bonusový kruh
+    $('mbHint').textContent = `⚔️ BONUS [dbg: start=${mb._bonusStartMs}ms w=${bonusMs}ms atkTime=${atkTime}ms]`;
     
     // Vizuální znázornění bonusového okna na kolečku
     const bonusCircum = 308; // obvod bonus kruhu (r=49)
@@ -1747,6 +1748,7 @@
     // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       const elapsed = Date.now() - (mb._attackWindowStart || 0);
+      $('mbHint').textContent += ` [dbg: elapsed=${elapsed}ms bonusStart=${mb._bonusStartMs} bonusEnd=${mb._bonusStartMs + mb._bonusMs}]`;
       if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
         const bonusDmg = Math.round(dmg * 0.5);
         dmg += bonusDmg;
