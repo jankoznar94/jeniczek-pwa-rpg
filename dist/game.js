@@ -322,7 +322,6 @@
       if (mapBattleState._attackWindowTimer) { clearTimeout(mapBattleState._attackWindowTimer); mapBattleState._attackWindowTimer = null; }
       if (mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
       if (mapBattleState._freezeTimer) { clearInterval(mapBattleState._freezeTimer); mapBattleState._freezeTimer = null; }
-      if (mapBattleState._bonusTimers) { mapBattleState._bonusTimers.forEach(t => clearTimeout(t)); mapBattleState._bonusTimers = null; }
     }
   }
 
@@ -522,7 +521,7 @@
       ended: false, turn: 0, isAttacking: false,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
-      _freezeTimer: null, _bonusTimers: null,
+      _freezeTimer: null,
       spellCooldowns: {},
       floorMonsters,
       monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
@@ -1189,16 +1188,18 @@
     const atkTime = Math.round(Math.max(400, 1000 * floorMult * 1.5));
     const atkCircle = resetTimerRing();
     
-    // ⭐ Bonusové okno — náhodná pozice na timeru (200ms šířka, ne v prvních 200ms)
-    const bonusMs = 200;
+    // 🎯 Crit window — šířka = critChance% z atkTime, náhodná pozice
+    const critChance = (state.hero.attrDex||0) * 1 + 5;
+    const bonusPct = Math.min(critChance, 80) / 100; // max 80%
+    const bonusMs = Math.max(50, Math.round(atkTime * bonusPct));
     const bonusStartMin = 200;
-    const bonusStartMax = atkTime - bonusMs - 200;
+    const bonusStartMax = atkTime - bonusMs - 100;
     let bonusStartMs = bonusStartMin + Math.random() * Math.max(0, bonusStartMax - bonusStartMin);
     if (bonusStartMs < 0) bonusStartMs = 200;
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
     
-    // Zobrazit bonusový kruh
+    // Zobrazit crit kruh (žlutozlatý)
     
     // Vizuální znázornění bonusového okna na kolečku
     const bonusCircum = 308; // obvod bonus kruhu (r=49)
@@ -1741,37 +1742,39 @@
     // Fire school passive — damage boost
     const firePct = getFireDmgPct();
     if (firePct > 0) { dmg = Math.round(dmg * (1 + firePct / 100)); }
-    const isCrit = Math.random() * 100 < critChance;
-    let hintText = '';
-    if (isCrit) { dmg = Math.round(dmg * critMult); hintText = `💥 Kritik! ${dmg}`; playSFX(critSfx); }
-    else { hintText = `⚔️ ${dmg}`; playSFX(hitSfx); }
     
-    // ⭐ Bonusové okno — trefa do zlatého pruhu = +50% poškození
+    // 🎯 Crit window — trefa = crit (×2.0), mino = normální útok
+    let hintText = '';
+    let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
       const elapsed = performance.now() - (mb._attackWindowStart || 0);
-      hintText = `⏱️ ${Math.round(elapsed)}ms (bonus ${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs})`;
       if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
-        const bonusDmg = Math.round(dmg * 0.5);
-        dmg += bonusDmg;
-        hintText = `✅ Bonus! ⭐ +${bonusDmg}`;
-        const bonusCircle = document.querySelector('.bonus-zone-circle');
-        if (bonusCircle) {
-          bonusCircle.style.stroke = '#ff6b6b';
-          bonusCircle.style.opacity = '1';
-          bonusCircle.style.strokeWidth = '9';
+        isCrit = true;
+        dmg = Math.round(dmg * critMult);
+        hintText = `💥 Kritik! ⭐ ${dmg}!`;
+        playSFX(critSfx);
+        // ⭐ Vizuální feedback — kruh zvýraznit
+        const critCircle = document.querySelector('.bonus-zone-circle');
+        if (critCircle) {
+          critCircle.style.stroke = '#ffd700';
+          critCircle.style.opacity = '1';
+          critCircle.style.strokeWidth = '9';
           setTimeout(() => {
-            bonusCircle.style.stroke = '#e74c3c';
-            bonusCircle.style.opacity = '0.85';
-            bonusCircle.style.strokeWidth = '7';
+            critCircle.style.stroke = '#f1c40f';
+            critCircle.style.opacity = '0.85';
+            critCircle.style.strokeWidth = '7';
           }, 400);
         }
       } else {
-        hintText = `⏳ Mimo bonus`;
+        hintText = `⚔️ ${dmg}`;
+        playSFX(hitSfx);
       }
+    } else {
+      hintText = `⚔️ ${dmg}`;
+      playSFX(hitSfx);
     }
-
+    
     $('mbHint').textContent = hintText;
-    mb._bonusHint = hintText; // uložit pro zachování do příštího okna
 
     // Nature school passive — poison on hit
     const poisonTick = getNaturePoisonTick();
@@ -2335,7 +2338,7 @@
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
     const critChance = (h.attrDex||0) * 1 + 5;
-    $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% (×2.0)` : `${critChance}% (×2.0)`;
+    $('heroCrit').textContent = h.attrDex > 0 ? `${critChance}% okno (×2.0)` : `${critChance}% okno (×2.0)`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
     if (schoolInfo) {
