@@ -1211,8 +1211,8 @@
     const zoneStartPx = Math.round((bonusStartMs / atkTime) * bonusCircum);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
-      bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum}`;
-      bonusCircle.style.strokeDashoffset = zoneStartPx;
+      bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum - zoneWidthPx}`;
+      bonusCircle.style.strokeDashoffset = bonusCircum - zoneStartPx;
     }
     mb._zoneWidthPx = zoneWidthPx;
     mb._zoneStartPx = zoneStartPx;
