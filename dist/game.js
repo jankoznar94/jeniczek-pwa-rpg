@@ -510,8 +510,8 @@
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
-    const monsterHp = Math.round((35 + locId * 75) + 15 * floor + progress * 5);
-    const bossHp = Math.round(200 + locId * 200 + floor * 30);
+    const monsterHp = Math.round((42 + locId * 90) + 18 * floor + 6 * progress);
+    const bossHp = Math.round(240 + locId * 240 + floor * 36 + 100);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
@@ -1186,7 +1186,7 @@
     // Timer ring — 1.5× delší než úhyby (podle patra)
     const mb2 = mapBattleState;
     const floorMult = getFloorTimerMultiplier(mb2.floor);
-    const atkTime = Math.round(Math.max(400, 1000 * floorMult * 1.5));
+    const atkTime = Math.round(Math.max(400, 1000 * floorMult * 1.25));
     const atkCircle = resetTimerRing();
     
     // 🎯 Crit window — šířka = critChance% z atkTime
@@ -1763,7 +1763,7 @@
 
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
     const critChance = (state.hero.attrDex||0) * 1 + 5;
-    const critMult = 2.0;
+    const critMult = 1.5;
     let dmg = baseDmg;
     // Fire school passive — damage boost
     const firePct = getFireDmgPct();
