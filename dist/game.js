@@ -1230,13 +1230,6 @@
         const now = performance.now();
         const elapsed = now - mb._attackWindowStart;
         mb._bonusActive = (elapsed >= mb._bonusStartMs && elapsed < mb._bonusStartMs + mb._bonusMs);
-        // 🎯 Posouvat zlatou výseč synchronně s timer ringem
-        const bc = document.querySelector('.bonus-zone-circle');
-        if (bc) {
-          const pct = Math.min(elapsed / mb._atkTime, 1);
-          const newOffset = Math.round(mb._zoneStartPx * (1 - pct));
-          bc.style.strokeDashoffset = Math.max(0, newOffset);
-        }
         if (elapsed < atkTime) {
           mb._bonusRaf = requestAnimationFrame(frame);
         } else {
