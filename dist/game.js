@@ -322,6 +322,7 @@
       if (mapBattleState._attackWindowTimer) { clearTimeout(mapBattleState._attackWindowTimer); mapBattleState._attackWindowTimer = null; }
       if (mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
       if (mapBattleState._freezeTimer) { clearInterval(mapBattleState._freezeTimer); mapBattleState._freezeTimer = null; }
+      if (mapBattleState._bonusRaf) { cancelAnimationFrame(mapBattleState._bonusRaf); mapBattleState._bonusRaf = null; }
     }
   }
 
@@ -521,7 +522,7 @@
       ended: false, turn: 0, isAttacking: false,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
-      _freezeTimer: null,
+      _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
       floorMonsters,
       monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
@@ -1201,7 +1202,6 @@
     );
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
-    mb._attackWindowStart = Date.now(); // nastavit teď, ne v rAF
     
     // Zobrazit crit kruh (žlutozlatý)
     
@@ -1217,7 +1217,22 @@
     
     requestAnimationFrame(() => {
       mb._attackWindowStart = performance.now();
+      mb._bonusActive = false; // reset flagu
       startTimerRing(atkCircle, atkTime);
+      // ⭐ Sledovat elapsed v rAF loop — synchronizované s CSS animací
+      if (mb._bonusRaf) cancelAnimationFrame(mb._bonusRaf);
+      (function frame() {
+        if (mapBattleState.ended) return;
+        const now = performance.now();
+        const elapsed = now - mb._attackWindowStart;
+        mb._bonusActive = (elapsed >= mb._bonusStartMs && elapsed < mb._bonusStartMs + mb._bonusMs);
+        if (elapsed < atkTime) {
+          mb._bonusRaf = requestAnimationFrame(frame);
+        } else {
+          mb._bonusActive = false;
+          mb._bonusRaf = null;
+        }
+      })();
     });
 
     mb._attackWindowTimer = setTimeout(() => {
@@ -1751,9 +1766,7 @@
     let hintText = '';
     let isCrit = false;
     if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      const elapsed = Date.now() - (mb._attackWindowStart || 0);
-      hintText = `⏱️ ${Math.round(elapsed)}ms (okno ${mb._bonusStartMs}-${mb._bonusStartMs+mb._bonusMs}ms)`;
-      if (elapsed >= mb._bonusStartMs && elapsed <= mb._bonusStartMs + mb._bonusMs) {
+      if (mb._bonusActive) {
         isCrit = true;
         dmg = Math.round(dmg * critMult);
         hintText = `💥 Kritik! ⭐ ${dmg}!`;
