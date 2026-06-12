@@ -1207,22 +1207,24 @@
     
     // Vizuální znázornění bonusového okna na kolečku
     const bonusCircum = 276; // obvod bonus kruhu (r=44, shodný s timer ringem)
-    const zoneWidthPx = Math.max(1, Math.round((bonusMs / atkTime) * bonusCircum));
-    const zoneStartPx = Math.round((bonusStartMs / atkTime) * bonusCircum);
+    const zoneWidthPx = Math.max(1, Math.round((bonusMs / atkTime) * 276));
+    const zoneStartPx = Math.round((bonusStartMs / atkTime) * 276);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
-      bonusCircle.style.strokeDasharray = `${zoneWidthPx} ${bonusCircum - zoneWidthPx}`;
-      bonusCircle.style.strokeDashoffset = bonusCircum - zoneStartPx;
+      // 4-hodnotový dasharray: draw=0, skip=zoneStartPx, draw=goldWidth, skip=remaining — gold zóna přesně na svém místě
+      const remaining = Math.max(0, 276 - zoneStartPx - zoneWidthPx);
+      bonusCircle.style.strokeDasharray = `0 ${zoneStartPx} ${zoneWidthPx} ${remaining}`;
+      bonusCircle.style.strokeDashoffset = '0';
     }
     mb._zoneWidthPx = zoneWidthPx;
     mb._zoneStartPx = zoneStartPx;
-    mb._bonusCircum = bonusCircum;
+    mb._bonusCircum = 276;
     mb._atkTime = atkTime;
     
     requestAnimationFrame(() => {
       mb._attackWindowStart = performance.now();
       mb._bonusActive = false; // reset flagu
-      // 🔄 Celý timer ring animujeme v rAF — synchronně s crit zónou. CSS animaci rušíme.
+      // 🔄 Celý timer ring animujeme v rAF — synchronně s crit zónou
       if (mb._bonusRaf) cancelAnimationFrame(mb._bonusRaf);
       (function frame() {
         if (mapBattleState.ended) return;
@@ -1235,9 +1237,6 @@
           atkCircle.style.opacity = '1';
           atkCircle.style.strokeDashoffset = Math.round(276 * (1 - pct));
         }
-        // 🎯 Crit zóna: statická — (C - startPx) offset
-        const bc = document.querySelector('.bonus-zone-circle');
-        if (bc) bc.style.strokeDashoffset = Math.round(mb._bonusCircum - mb._zoneStartPx);
         if (elapsed < atkTime) {
           mb._bonusRaf = requestAnimationFrame(frame);
         } else {
