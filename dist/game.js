@@ -1180,7 +1180,8 @@
     renderSeqProgress(mb);
     // Prekreslit spell UI (zobrazi Fireball/Heal v attack okne)
     updateMapBattleUI(); // zobrazi spell buttony
-    // (hint necháme pro bonus z minulého kola — vyčistí se až v onMapAttack)
+    // Vyčistit hint z minulého kola
+    $('mbHint').textContent = '';
     $('mbArrow').setAttribute('class', 'boss-attack-arrow hidden');
 
     // Timer ring — 1.5× delší než úhyby (podle patra)
