@@ -1606,8 +1606,7 @@
     let correct = false;
 
     if (attack.type === 'block') {
-      // Block = musí štít, swipováním se nedá uhnout — clearujeme až po volání onMapHit
-      onMapHit();
+      // Block = musí štít, swipování ignorujeme (necháme timer doběhnout)
       return;
     } else if (attack.type === 'inverted') {
       // Inverzní: musíš swipnout opačný směr
