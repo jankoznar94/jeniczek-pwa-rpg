@@ -1700,6 +1700,8 @@
   function onMapBlock() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    // DEBUG
+    console.log('onMapBlock: isBlockAttack=' + mb.isBlockAttack + ' isRapid=' + mb.isRapidAttack + ' inAtkWin=' + mb.inAttackWindow + ' hitProc=' + mb._hitProcessed + ' seqIdx=' + mb.sequenceIndex + '/' + mb.sequence.length + ' turn=' + mb.turn + ' ended=' + mb.ended);
     // Rapid — blok nemá smysl, zpracovává onMapRapidTap
     if (mb.isRapidAttack) return;
     if (mb.inAttackWindow) {
