@@ -1194,7 +1194,6 @@
     const bonusStartMax = atkTime - bonusMs - 200;
     let bonusStartMs = bonusStartMin + Math.random() * Math.max(0, bonusStartMax - bonusStartMin);
     if (bonusStartMs < 0) bonusStartMs = 200;
-    mb._attackWindowStart = Date.now();
     mb._bonusStartMs = Math.round(bonusStartMs);
     mb._bonusMs = bonusMs;
     
@@ -1211,6 +1210,7 @@
     }
     
     requestAnimationFrame(() => {
+      mb._attackWindowStart = Date.now(); // ⭐ až teď, kdy reálně začíná animace
       startTimerRing(atkCircle, atkTime);
     });
 
