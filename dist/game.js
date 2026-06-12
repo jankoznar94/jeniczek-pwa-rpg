@@ -1726,18 +1726,18 @@
   }
 
   function onMapAttack() {
+    const _debugNow = performance.now();
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    // DEBUG: zjistit stav v okamžiku kliku
+    let _debugElapsed2 = 0;
+    if (mb._attackWindowStart) _debugElapsed2 = Math.round(_debugNow - mb._attackWindowStart);
     // Rapid — nelze útočit, zpracovává onMapRapidTap
-    if (mb.isRapidAttack) return;
-    if (mb._attackProcessed) return; // zabránění dvojitému útoku
+    if (mb.isRapidAttack) { $('mbHint').textContent = `(rapid, ignoruji)`; return; }
+    if (mb._attackProcessed) { $('mbHint').textContent = `(už zpracováno, čekám na další kolo)`; return; }
     if (!mb.inAttackWindow) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      if (mb.sequence && mb.sequenceIndex < mb.sequence.length) {
-        // (hint: zachovat bonus info)
-      } else {
-        // (hint: zachovat bonus info)
-      }
+      $('mbHint').textContent = `⚠️ Mimo okno! elapsed=${_debugElapsed2}ms bonusStart=${mb._bonusStartMs}ms inAttackWindow=${mb.inAttackWindow} attackProcessed=${mb._attackProcessed}`;
       return;
     }
 
