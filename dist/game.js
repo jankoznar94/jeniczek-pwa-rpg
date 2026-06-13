@@ -1430,9 +1430,10 @@
     const schoolColor = (function() {
       if (targetIsPlayer) return { c1:'#e94560', c2:'#c0392b', rgb:'233,69,96' }; // boss vždy červený
       const a = state.activeSchool;
-      if (a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
-      if (a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
-      if (a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
+      const hasPassive = a && getTierPoints(a, 0) > 0;
+      if (hasPassive && a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
+      if (hasPassive && a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
+      if (hasPassive && a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
       return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
     })();
     const color1 = schoolColor.c1;
