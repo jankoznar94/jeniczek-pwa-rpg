@@ -148,28 +148,28 @@
   const SCHOOLS = [
     { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Zaměřuje se na čisté poškození a ohnivé střely.',
       talents: [
-        { k:'fireball', name:'🔥 Fireball', desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` },
         { k:'dmgBoost', name:'⚔️ Zvýšení poškození', desc:lv=>`+${lv*10}% poškození zbraně` },
-        { k:'fireball2', name:'🔥 Silnější Fireball', desc:lv=>`Fireball ×${1+lv*0.5} poškození` },
+        { k:'fireball', name:'🔥 Fireball', desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` },
         { k:'dmgBoost2', name:'⚔️ Velké zvýšení poškození', desc:lv=>`+${10+lv*10}% poškození zbraně` },
+        { k:'fireball2', name:'🔥 Silnější Fireball', desc:lv=>`Fireball ×${1+lv*0.5} poškození` },
         { k:'inferno', name:'🌋 Inferno', desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
       ]
     },
     { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
       talents: [
-        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` },
         { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
-        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` },
+        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` },
         { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
+        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` },
         { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
       ]
     },
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení a jedovaté DoT poškození.',
       talents: [
-        { k:'heal', name:'💚 Léčení', desc:lv=>`+${10+lv*15} HP` },
         { k:'poison', name:'☠️ Jed', desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
-        { k:'heal2', name:'💚 Silnější léčení', desc:lv=>`+${15+lv*20} HP` },
+        { k:'heal', name:'💚 Léčení', desc:lv=>`+${10+lv*15} HP` },
         { k:'poison2', name:'☠️ Silný jed', desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
+        { k:'heal2', name:'💚 Silnější léčení', desc:lv=>`+${15+lv*20} HP` },
         { k:'revitalize', name:'🌱 Revitalizace', desc:lv=>`Léčení ×${1+lv*0.5}` }
       ]
     }
@@ -181,25 +181,25 @@
   function getFireDmgPct() {
     if (state.activeSchool !== 'fire') return 0;
     const lv = state.schoolLevels['fire'] || 0;
-    if (lv < 2) return 0;
-    let pct = lv * 10;           // dmgBoost (index 1): +lv*10%
-    if (lv >= 4) pct += 10 + lv * 10; // dmgBoost2 (index 3): +10+lv*10%
+    if (lv < 1) return 0;
+    let pct = lv * 10;           // dmgBoost (index 0): +lv*10%
+    if (lv >= 3) pct += 10 + lv * 10; // dmgBoost2 (index 2): +10+lv*10%
     return pct;
   }
   function getNaturePoisonTick() {
     if (state.activeSchool !== 'nature') return 0;
     const lv = state.schoolLevels['nature'] || 0;
-    if (lv < 2) return 0;
-    // poison (index 1) + poison2 (index 3)
+    if (lv < 1) return 0;
+    // poison (index 0) + poison2 (index 2)
     let tick = lv * 3;           // poison: lv*3
-    if (lv >= 4) tick += lv * 5; // poison2: lv*5
+    if (lv >= 3) tick += lv * 5; // poison2: lv*5
     return tick;
   }
   function getIceChillPct() {
     if (state.activeSchool !== 'ice') return 0;
     const lv = state.schoolLevels['ice'] || 0;
-    if (lv < 2) return 0;
-    // chill lv2=30%, lv3=35%, lv4(chill2)=40%, lv5=45%
+    if (lv < 1) return 0;
+    // chill lv1=25%, lv2=30%, lv3(chill2)=35%, lv4=40%, lv5=45%
     return lv * 5 + 20;
   }
 
@@ -1800,7 +1800,7 @@
     const chillPct = getIceChillPct();
     if (chillPct > 0) {
       const iceLv = state.schoolLevels['ice'] || 0;
-      const pasTicks = 2 + (iceLv >= 4 ? 1 : 0);
+      const pasTicks = 2 + (iceLv >= 3 ? 1 : 0);
       mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, pasTicks);
     }
