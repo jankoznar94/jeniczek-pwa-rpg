@@ -2453,7 +2453,6 @@
               renderTalents();
             }
             function activateSchool(schoolId) {
-              if (getTierPoints(schoolId, 0) === 0) return;
               // Kliknutí na už aktivní školu = deaktivace (zabalení)
               if (state.activeSchool === schoolId) {
                 state.activeSchool = null;
