@@ -149,65 +149,65 @@
     { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Zaměřuje se na čisté poškození a ohnivé střely.',
       tiers: [
         { choices: [
-          { k:'dmgBoost', name:'⚔️ Zvýšení poškození', maxLv:5, desc:lv=>`+${lv*10}% poškození zbraně` },
-          { k:'fireArmor', name:'🛡️ Ohnivé brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*8} dmg` }
+          { k:'dmgBoost', name:'Zvýšení poškození', icon:'⚔️', maxLv:5, desc:lv=>`+${lv*10}% poškození zbraně` },
+          { k:'fireArmor', name:'Ohnivé brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*8} dmg` }
         ]},
         { choices: [
-          { k:'fireball', name:'🔥 Fireball', maxLv:3, desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` }
+          { k:'fireball', name:'Fireball', icon:'🔥', maxLv:3, desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` }
         ]},
         { choices: [
-          { k:'dmgBoost2', name:'⚔️ Velké zvýšení poškození', maxLv:5, desc:lv=>`+${10+lv*10}% poškození zbraně` },
-          { k:'fireArmor2', name:'🛡️ Silné ohnivé brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*15} dmg` }
+          { k:'dmgBoost2', name:'Velké zvýšení poškození', icon:'⚔️', maxLv:5, desc:lv=>`+${10+lv*10}% poškození zbraně` },
+          { k:'fireArmor2', name:'Silné ohnivé brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*15} dmg` }
         ]},
         { choices: [
-          { k:'fireball2', name:'🔥 Silnější Fireball', maxLv:3, desc:lv=>`Fireball ×${1+lv*0.5} poškození` }
+          { k:'fireball2', name:'Silnější Fireball', icon:'🔥', maxLv:3, desc:lv=>`Fireball ×${1+lv*0.5} poškození` }
         ]},
         { choices: [
-          { k:'inferno', name:'🌋 Inferno', maxLv:3, desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
+          { k:'inferno', name:'Inferno', icon:'🌋', maxLv:3, desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
         ]}
       ]
     },
     { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
       tiers: [
         { choices: [
-          { k:'chill', name:'🥶 Chlad', maxLv:5, desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
-          { k:'frostArmor', name:'🛡️ Ledové brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${15+lv*5}%` }
+          { k:'chill', name:'Chlad', icon:'🥶', maxLv:5, desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
+          { k:'frostArmor', name:'Ledové brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${15+lv*5}%` }
         ]},
         { choices: [
-          { k:'freeze', name:'❄️ Mráz', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` }
+          { k:'freeze', name:'Mráz', icon:'❄️', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` }
         ]},
         { choices: [
-          { k:'chill2', name:'🥶 Hluboký chlad', maxLv:5, desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
-          { k:'frostArmor2', name:'🛡️ Silné ledové brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${25+lv*5}%` }
+          { k:'chill2', name:'Hluboký chlad', icon:'🥶', maxLv:5, desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
+          { k:'frostArmor2', name:'Silné ledové brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${25+lv*5}%` }
         ]},
         { choices: [
-          { k:'freeze2', name:'❄️ Silnější mráz', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` }
+          { k:'freeze2', name:'Silnější mráz', icon:'❄️', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` }
         ]},
         { choices: [
-          { k:'blizzard', name:'🌨️ Blizard', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
+          { k:'blizzard', name:'Blizard', icon:'🌨️', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
         ]}
       ]
     },
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení, jedovaté DoT a přírodní brnění.',
       tiers: [
         { choices: [
-          { k:'poison', name:'☠️ Jed', maxLv:5, desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
-          { k:'heal', name:'💚 Léčení', maxLv:3, desc:lv=>`+${10+lv*15} HP` },
-          { k:'natureArmor', name:'🛡️ Přírodní brnění', maxLv:5, desc:lv=>`Při zásahu vrací ${5+lv*5} HP` }
+          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
+          { k:'heal', name:'Léčení', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*15} HP` },
+          { k:'natureArmor', name:'Přírodní brnění', icon:'🛡️', maxLv:5, desc:lv=>`Při zásahu vrací ${5+lv*5} HP` }
         ]},
         { choices: [
-          { k:'heal', name:'💚 Léčení', maxLv:3, desc:lv=>`+${10+lv*15} HP` }
+          { k:'heal', name:'Léčení', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*15} HP` }
         ]},
         { choices: [
-          { k:'poison2', name:'☠️ Silný jed', maxLv:5, desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
-          { k:'heal2', name:'💚 Silnější léčení', maxLv:3, desc:lv=>`+${15+lv*20} HP` },
-          { k:'natureArmor2', name:'🛡️ Silné přírodní brnění', maxLv:5, desc:lv=>`Při zásahu vrací ${10+lv*8} HP` }
+          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:5, desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
+          { k:'heal2', name:'Silnější léčení', icon:'💚', maxLv:3, desc:lv=>`+${15+lv*20} HP` },
+          { k:'natureArmor2', name:'Silné přírodní brnění', icon:'🛡️', maxLv:5, desc:lv=>`Při zásahu vrací ${10+lv*8} HP` }
         ]},
         { choices: [
-          { k:'heal2', name:'💚 Silnější léčení', maxLv:3, desc:lv=>`+${15+lv*20} HP` }
+          { k:'heal2', name:'Silnější léčení', icon:'💚', maxLv:3, desc:lv=>`+${15+lv*20} HP` }
         ]},
         { choices: [
-          { k:'revitalize', name:'🌱 Revitalizace', maxLv:3, desc:lv=>`Léčení ×${1+lv*0.5}` }
+          { k:'revitalize', name:'Revitalizace', icon:'🌱', maxLv:3, desc:lv=>`Léčení ×${1+lv*0.5}` }
         ]}
       ]
     }
@@ -2414,7 +2414,6 @@
                     <div class="talent-tree">
                       ${s.tiers.map((tier, ti) => {
                         const unlocked = isTierUnlocked(s.id, ti);
-                        const tierPts = getTierPoints(s.id, ti);
                         return `<div class="talent-tier ${unlocked?'':'tier-locked'}">
                           <div class="tier-label">Řada ${ti+1}${!unlocked?' 🔒':''}</div>
                           <div class="tier-choices">
@@ -2424,13 +2423,14 @@
                               const maxed = lv >= t.maxLv;
                               const canInvest = pts > 0 && !maxed && unlocked && !isLocked;
                               const pct = lv / t.maxLv * 100;
-                              return `<div class="talent-choice ${lv>0?'owned':''} ${canInvest?'clickable':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
-                                <div class="talent-choice-name">${t.name}</div>
-                                <div class="talent-choice-desc">${t.desc(Math.max(lv,1))}</div>
-                                <div class="talent-choice-bar">
-                                  <div class="talent-choice-fill" style="width:${pct}%"></div>
-                                  <span class="talent-choice-lv">${lv}/${t.maxLv}</span>
+                              return `<div class="talent-btn ${lv>0?'owned':''} ${canInvest?'clickable':''} ${maxed?'maxed':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
+                                <div class="talent-btn-icon">${t.icon}</div>
+                                <div class="talent-btn-name">${t.name}</div>
+                                <div class="talent-btn-bar">
+                                  <div class="talent-btn-fill" style="width:${pct}%"></div>
+                                  <span class="talent-btn-lv">${lv}/${t.maxLv}</span>
                                 </div>
+                                <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
                               </div>`;
                             }).join('')}
                           </div>
