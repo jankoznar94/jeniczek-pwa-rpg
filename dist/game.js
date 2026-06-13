@@ -2426,10 +2426,7 @@
                               return `<div class="talent-btn ${lv>0?'owned':''} ${canInvest?'clickable':''} ${maxed?'maxed':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
                                 <div class="talent-btn-icon">${t.icon}</div>
                                 <div class="talent-btn-name">${t.name}</div>
-                                <div class="talent-btn-bar">
-                                  <div class="talent-btn-fill" style="width:${pct}%"></div>
-                                  <span class="talent-btn-lv">${lv}/${t.maxLv}</span>
-                                </div>
+                                <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
                                 <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
                               </div>`;
                             }).join('')}
