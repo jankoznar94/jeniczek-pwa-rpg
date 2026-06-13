@@ -2095,20 +2095,22 @@
     const a = state.activeSchool;
     const arena = $('mbArena');
     if (!arena) return;
+    // Barvy se mění jen když má hráč pasivní bonus (Tier 1) v aktivní škole
+    const hasPassive = a && getTierPoints(a, 0) > 0;
     let bg, border, dot, dotTapped, dotGlow, dotGlow2, pulse, target, targetGlow;
     let seqDone, seqGlow, seqGlow2, seqGlow3;
     let spellColor, spellBg, spellGlow;
-    if (a === 'fire') {
+    if (hasPassive && a === 'fire') {
       bg='rgba(243,156,18,0.2)'; border='rgba(243,156,18,0.8)'; dot='rgba(243,156,18,0.45)'; dotTapped='rgba(243,156,18,1)';
       dotGlow='rgba(243,156,18,1)'; dotGlow2='rgba(243,156,18,0.6)'; pulse='rgba(243,156,18,0.6)'; target='#f39c12'; targetGlow='rgba(243,156,18,0.8)';
       seqDone='#f39c12'; seqGlow='rgba(243,156,18,0.4)'; seqGlow2='rgba(243,156,18,0.9)'; seqGlow3='rgba(243,156,18,0.4)';
       spellColor='#f39c12'; spellBg='#1a1a0a'; spellGlow='rgba(243,156,18,0.4)';
-    } else if (a === 'ice') {
+    } else if (hasPassive && a === 'ice') {
       bg='rgba(52,152,219,0.2)'; border='rgba(52,152,219,0.8)'; dot='rgba(52,152,219,0.45)'; dotTapped='rgba(52,152,219,1)';
       dotGlow='rgba(52,152,219,1)'; dotGlow2='rgba(52,152,219,0.6)'; pulse='rgba(52,152,219,0.6)'; target='#3498db'; targetGlow='rgba(52,152,219,0.8)';
       seqDone='#3498db'; seqGlow='rgba(52,152,219,0.4)'; seqGlow2='rgba(52,152,219,0.9)'; seqGlow3='rgba(52,152,219,0.4)';
       spellColor='#3498db'; spellBg='#0a1a2a'; spellGlow='rgba(52,152,219,0.4)';
-    } else if (a === 'nature') {
+    } else if (hasPassive && a === 'nature') {
       bg='rgba(46,204,113,0.2)'; border='rgba(46,204,113,0.8)'; dot='rgba(46,204,113,0.45)'; dotTapped='rgba(46,204,113,1)';
       dotGlow='rgba(46,204,113,1)'; dotGlow2='rgba(46,204,113,0.6)'; pulse='rgba(46,204,113,0.6)'; target='#2ecc71'; targetGlow='rgba(46,204,113,0.8)';
       seqDone='#2ecc71'; seqGlow='rgba(46,204,113,0.4)'; seqGlow2='rgba(46,204,113,0.9)'; seqGlow3='rgba(46,204,113,0.4)';
@@ -2405,9 +2407,9 @@
                   const hasInvested = Object.values(state.talentLevels).reduce((a,b)=>a+b, 0) > 0;
                   const isLocked = hasInvested && getTierPoints(s.id, 0) === 0;
                   const collapsed = !isActive;
-                  return `<div class="talent-school ${isActive?'active':''} ${collapsed?'collapsed':''} ${s.id} ${isLocked?'locked':''}" onclick="${isLocked?'':`game.activateSchool('${s.id}')`}">
+                  return `<div class="talent-school ${isActive?'active':''} ${collapsed?'collapsed':''} ${s.id} ${isLocked?'locked':''}">
                     ${isLocked?'<div class="talent-lock-overlay">🔒</div>':''}
-                    <div class="talent-school-header">
+                    <div class="talent-school-header" onclick="${isLocked?'':`game.activateSchool('${s.id}')`}">
                       <span class="talent-school-icon">${s.icon}</span>
                       <span class="talent-school-name">${s.name}</span>
                       <span class="talent-school-arrow">${collapsed?'▼':'▲'}</span>
@@ -2417,7 +2419,7 @@
                       ${s.tiers.map((tier, ti) => {
                         const unlocked = isTierUnlocked(s.id, ti);
                         return `<div class="talent-tier ${unlocked?'':'tier-locked'}">
-                          <div class="tier-label">Řada ${ti+1}${!unlocked?' 🔒':''}</div>
+                          <div class="tier-label">Tier ${ti+1}${!unlocked?' 🔒':''}</div>
                           <div class="tier-choices">
                             ${tier.choices.map(t => {
                               const key = s.id + '_' + t.k;
