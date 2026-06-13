@@ -147,61 +147,164 @@
   // ===== SCHOOLS (Talent Tree) =====
   const SCHOOLS = [
     { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Zaměřuje se na čisté poškození a ohnivé střely.',
-      talents: [
-        { k:'dmgBoost', name:'⚔️ Zvýšení poškození', desc:lv=>`+${lv*10}% poškození zbraně` },
-        { k:'fireball', name:'🔥 Fireball', desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` },
-        { k:'dmgBoost2', name:'⚔️ Velké zvýšení poškození', desc:lv=>`+${10+lv*10}% poškození zbraně` },
-        { k:'fireball2', name:'🔥 Silnější Fireball', desc:lv=>`Fireball ×${1+lv*0.5} poškození` },
-        { k:'inferno', name:'🌋 Inferno', desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
+      tiers: [
+        { choices: [
+          { k:'dmgBoost', name:'⚔️ Zvýšení poškození', maxLv:5, desc:lv=>`+${lv*10}% poškození zbraně` },
+          { k:'fireArmor', name:'🛡️ Ohnivé brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*8} dmg` }
+        ]},
+        { choices: [
+          { k:'fireball', name:'🔥 Fireball', maxLv:3, desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` }
+        ]},
+        { choices: [
+          { k:'dmgBoost2', name:'⚔️ Velké zvýšení poškození', maxLv:5, desc:lv=>`+${10+lv*10}% poškození zbraně` },
+          { k:'fireArmor2', name:'🛡️ Silné ohnivé brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*15} dmg` }
+        ]},
+        { choices: [
+          { k:'fireball2', name:'🔥 Silnější Fireball', maxLv:3, desc:lv=>`Fireball ×${1+lv*0.5} poškození` }
+        ]},
+        { choices: [
+          { k:'inferno', name:'🌋 Inferno', maxLv:3, desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
+        ]}
       ]
     },
     { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
-      talents: [
-        { k:'chill', name:'🥶 Chlad', desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
-        { k:'freeze', name:'❄️ Mráz', desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` },
-        { k:'chill2', name:'🥶 Hluboký chlad', desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
-        { k:'freeze2', name:'❄️ Silnější mráz', desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` },
-        { k:'blizzard', name:'🌨️ Blizard', desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
+      tiers: [
+        { choices: [
+          { k:'chill', name:'🥶 Chlad', maxLv:5, desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
+          { k:'frostArmor', name:'🛡️ Ledové brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${15+lv*5}%` }
+        ]},
+        { choices: [
+          { k:'freeze', name:'❄️ Mráz', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` }
+        ]},
+        { choices: [
+          { k:'chill2', name:'🥶 Hluboký chlad', maxLv:5, desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
+          { k:'frostArmor2', name:'🛡️ Silné ledové brnění', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${25+lv*5}%` }
+        ]},
+        { choices: [
+          { k:'freeze2', name:'❄️ Silnější mráz', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` }
+        ]},
+        { choices: [
+          { k:'blizzard', name:'🌨️ Blizard', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
+        ]}
       ]
     },
-    { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení a jedovaté DoT poškození.',
-      talents: [
-        { k:'poison', name:'☠️ Jed', desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
-        { k:'heal', name:'💚 Léčení', desc:lv=>`+${10+lv*15} HP` },
-        { k:'poison2', name:'☠️ Silný jed', desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
-        { k:'heal2', name:'💚 Silnější léčení', desc:lv=>`+${15+lv*20} HP` },
-        { k:'revitalize', name:'🌱 Revitalizace', desc:lv=>`Léčení ×${1+lv*0.5}` }
+    { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení, jedovaté DoT a přírodní brnění.',
+      tiers: [
+        { choices: [
+          { k:'poison', name:'☠️ Jed', maxLv:5, desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
+          { k:'heal', name:'💚 Léčení', maxLv:3, desc:lv=>`+${10+lv*15} HP` },
+          { k:'natureArmor', name:'🛡️ Přírodní brnění', maxLv:5, desc:lv=>`Při zásahu vrací ${5+lv*5} HP` }
+        ]},
+        { choices: [
+          { k:'heal', name:'💚 Léčení', maxLv:3, desc:lv=>`+${10+lv*15} HP` }
+        ]},
+        { choices: [
+          { k:'poison2', name:'☠️ Silný jed', maxLv:5, desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
+          { k:'heal2', name:'💚 Silnější léčení', maxLv:3, desc:lv=>`+${15+lv*20} HP` },
+          { k:'natureArmor2', name:'🛡️ Silné přírodní brnění', maxLv:5, desc:lv=>`Při zásahu vrací ${10+lv*8} HP` }
+        ]},
+        { choices: [
+          { k:'heal2', name:'💚 Silnější léčení', maxLv:3, desc:lv=>`+${15+lv*20} HP` }
+        ]},
+        { choices: [
+          { k:'revitalize', name:'🌱 Revitalizace', maxLv:3, desc:lv=>`Léčení ×${1+lv*0.5}` }
+        ]}
       ]
     }
   ];
   const SCHOOL_MAP = {};
   SCHOOLS.forEach(s => SCHOOL_MAP[s.id] = s);
+  // Plochý seznam všech talentů pro rychlý lookup
+  const TALENT_MAP = {};
+  SCHOOLS.forEach(s => {
+    s.tiers.forEach(tier => {
+      tier.choices.forEach(t => {
+        const key = s.id + '_' + t.k;
+        TALENT_MAP[key] = t;
+        t._schoolId = s.id;
+        t._tierIdx = s.tiers.indexOf(tier);
+      });
+    });
+  });
 
   // ===== SCHOOL PASSIVES =====
+  function getTalentLv(key) { return state.talentLevels[key] || 0; }
   function getFireDmgPct() {
     if (state.activeSchool !== 'fire') return 0;
-    const lv = state.schoolLevels['fire'] || 0;
-    if (lv < 1) return 0;
-    let pct = lv * 10;           // dmgBoost (index 0): +lv*10%
-    if (lv >= 3) pct += 10 + lv * 10; // dmgBoost2 (index 2): +10+lv*10%
+    const lv1 = getTalentLv('fire_dmgBoost');
+    const lv2 = getTalentLv('fire_dmgBoost2');
+    let pct = lv1 * 10;
+    if (lv2 > 0) pct += 10 + lv2 * 10;
     return pct;
   }
   function getNaturePoisonTick() {
     if (state.activeSchool !== 'nature') return 0;
-    const lv = state.schoolLevels['nature'] || 0;
-    if (lv < 1) return 0;
-    // poison (index 0) + poison2 (index 2)
-    let tick = lv * 3;           // poison: lv*3
-    if (lv >= 3) tick += lv * 5; // poison2: lv*5
+    const lv1 = getTalentLv('nature_poison');
+    const lv2 = getTalentLv('nature_poison2');
+    let tick = lv1 * 3;
+    if (lv2 > 0) tick += lv2 * 5;
     return tick;
   }
   function getIceChillPct() {
     if (state.activeSchool !== 'ice') return 0;
-    const lv = state.schoolLevels['ice'] || 0;
-    if (lv < 1) return 0;
-    // chill lv1=25%, lv2=30%, lv3(chill2)=35%, lv4=40%, lv5=45%
-    return lv * 5 + 20;
+    const lv1 = getTalentLv('ice_chill');
+    const lv2 = getTalentLv('ice_chill2');
+    let pct = lv1 * 5 + 20;
+    if (lv2 > 0) pct = Math.max(pct, lv2 * 5 + 20);
+    return pct;
   }
+  function getFireArmorDmg() {
+    if (state.activeSchool !== 'fire') return 0;
+    const lv1 = getTalentLv('fire_fireArmor');
+    const lv2 = getTalentLv('fire_fireArmor2');
+    let dmg = lv1 * 8;
+    if (lv2 > 0) dmg = lv2 * 15;
+    return dmg;
+  }
+  function getFireArmorReduction() {
+    if (state.activeSchool !== 'fire') return 0;
+    const lv1 = getTalentLv('fire_fireArmor');
+    const lv2 = getTalentLv('fire_fireArmor2');
+    let pct = lv1 * 5;
+    if (lv2 > 0) pct = lv2 * 5;
+    return pct;
+  }
+  function getFrostArmorChill() {
+    if (state.activeSchool !== 'ice') return 0;
+    const lv1 = getTalentLv('ice_frostArmor');
+    const lv2 = getTalentLv('ice_frostArmor2');
+    let pct = lv1 * 5 + 15;
+    if (lv2 > 0) pct = lv2 * 5 + 25;
+    return pct;
+  }
+  function getFrostArmorReduction() {
+    if (state.activeSchool !== 'ice') return 0;
+    const lv1 = getTalentLv('ice_frostArmor');
+    const lv2 = getTalentLv('ice_frostArmor2');
+    let pct = lv1 * 5;
+    if (lv2 > 0) pct = lv2 * 5;
+    return pct;
+  }
+  function getNatureArmorHeal() {
+    if (state.activeSchool !== 'nature') return 0;
+    const lv1 = getTalentLv('nature_natureArmor');
+    const lv2 = getTalentLv('nature_natureArmor2');
+    let hp = 5 + lv1 * 5;
+    if (lv2 > 0) hp = 10 + lv2 * 8;
+    return hp;
+  }
+  function getSpellLv(spellId) {
+    if (spellId === 'fireball') return getTalentLv('fire_fireball');
+    if (spellId === 'heal') return getTalentLv('nature_heal');
+    if (spellId === 'freeze') return getTalentLv('ice_freeze');
+    return 0;
+  }
+  function getHeal2Lv() { return getTalentLv('nature_heal2'); }
+  function getFireball2Lv() { return getTalentLv('fire_fireball2'); }
+  function getFreeze2Lv() { return getTalentLv('ice_freeze2'); }
+  function getInfernoLv() { return getTalentLv('fire_inferno'); }
+  function getBlizzardLv() { return getTalentLv('ice_blizzard'); }
+  function getRevitalizeLv() { return getTalentLv('nature_revitalize'); }
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
@@ -326,15 +429,21 @@
     }
   }
 
-  const SAVE_KEY = 'dungeonRecallV6';
+  const SAVE_KEY = 'dungeonRecallV7';
   function defaultState() {
-    const schoolLevels = {};
-    SCHOOLS.forEach(sk => { schoolLevels[sk.id] = 0; });
-    const s = { schoolLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
+    const talentLevels = {};
+    SCHOOLS.forEach(sk => {
+      sk.tiers.forEach(tier => {
+        tier.choices.forEach(t => {
+          talentLevels[sk.id + '_' + t.k] = 0;
+        });
+      });
+    });
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0], spellUsedThisFloor:{} };
     return s;
   }
-  function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.schoolLevels) return s; } catch {} return defaultState(); }
+  function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) return s; } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
@@ -618,7 +727,7 @@
     if (!activeId) return;
     const school = SCHOOL_MAP[activeId];
     if (!school) return;
-    const lv = state.schoolLevels[activeId] || 0;
+    const lv = getSpellLv(activeId === 'fire' ? 'fireball' : activeId === 'ice' ? 'freeze' : 'heal');
     if (lv === 0) return;
     const spellKey = `${mb.locId}_${mb.floor}`;
     const used = state.spellUsedThisFloor[spellKey];
@@ -1791,16 +1900,16 @@
     // Nature school passive — poison on hit
     const poisonTick = getNaturePoisonTick();
     if (poisonTick > 0 && state.activeSchool === 'nature') {
-      const natureLv = state.schoolLevels['nature'] || 0;
-      const tickDuration = 2 + Math.floor(natureLv / 2);
+      const naturePoisonLv = getTalentLv('nature_poison');
+      const tickDuration = 2 + Math.floor(naturePoisonLv / 2);
       mb.dot = poisonTick;
       mb.dotTicksLeft = tickDuration;
     }
     // Ice school passive — chill on hit
     const chillPct = getIceChillPct();
     if (chillPct > 0) {
-      const iceLv = state.schoolLevels['ice'] || 0;
-      const pasTicks = 2 + (iceLv >= 3 ? 1 : 0);
+      const iceChillLv = getTalentLv('ice_chill');
+      const pasTicks = 2 + (getTalentLv('ice_chill2') > 0 ? 1 : 0);
       mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, pasTicks);
     }
@@ -1865,6 +1974,26 @@
     mb.playerHp -= amount;
     mb.mistakes = (mb.mistakes || 0) + 1;
     playSFX(hitSfx);
+
+    // Armor passives — react to taking damage
+    // Fire Armor — return damage to boss
+    const fireArmorDmg = getFireArmorDmg();
+    if (fireArmorDmg > 0) {
+      mb.bossHp -= fireArmorDmg;
+      spawnProjectileEffect(null, false, false);
+    }
+    // Frost Armor — chill boss on hit
+    const frostArmorChill = getFrostArmorChill();
+    if (frostArmorChill > 0) {
+      mb.chillPercent = Math.max(mb.chillPercent || 0, frostArmorChill);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, 2);
+    }
+    // Nature Armor — heal on hit
+    const natureArmorHeal = getNatureArmorHeal();
+    if (natureArmorHeal > 0) {
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + natureArmorHeal);
+    }
+
     // Červený projektil od středu k hráči
     spawnProjectileEffect(null, true);
     // Probliknutí hráče
@@ -1909,9 +2038,7 @@
     const mb = mapBattleState;
     if (mb._attackProcessed) return;
     if (!mb.inAttackWindow) return;
-    let lv = 0;
-    if (spellId === 'fireball') lv = state.schoolLevels['fire'] || 0;
-    else if (spellId === 'heal') lv = state.schoolLevels['nature'] || 0;
+    let lv = getSpellLv(spellId);
     if (lv === 0) return;
     const spellKey = `${mb.locId}_${mb.floor}`;
     // (hint: zachovat bonus info)
@@ -1926,14 +2053,29 @@
     if (spellsEl) spellsEl.innerHTML = '';
 
     if (spellId === 'fireball') {
-      const dmg = 25 + lv * 25;
+      let dmg = 25 + lv * 25;
+      // fireball2 upgrade
+      const fb2Lv = getFireball2Lv();
+      if (fb2Lv > 0) dmg = Math.round(dmg * (1 + fb2Lv * 0.5));
+      // inferno upgrade
+      const infLv = getInfernoLv();
+      let dotTick = lv * 3;
+      let dotDur = 2 + lv;
+      if (infLv > 0) { dotTick = 5 + infLv * 5; dotDur = 4 + infLv; }
       mb.bossHp -= dmg;
+      if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = dotDur; }
       spawnFireballProjectile();
       // (hint: zachovat bonus info)
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.2s'; bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300); }
     } else if (spellId === 'heal') {
-      const hp = 10 + lv * 15;
+      let hp = 10 + lv * 15;
+      // heal2 upgrade
+      const h2Lv = getHeal2Lv();
+      if (h2Lv > 0) hp = 15 + h2Lv * 20;
+      // revitalize upgrade
+      const revLv = getRevitalizeLv();
+      if (revLv > 0) hp = Math.round(hp * (1 + revLv * 0.5));
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
       spawnHealProjectile();
       // (hint: zachovat bonus info)
@@ -2027,10 +2169,7 @@
   function castMapSpell(spellId) { if (!spellId) { const a = state.activeSchool; spellId = a === 'ice' ? 'freeze' : a === 'fire' ? 'fireball' : 'heal'; }
     const mb = mapBattleState;
     if (mb.ended) return;
-    let lv = 0;
-    if (spellId === 'fireball') lv = state.schoolLevels['fire'] || 0;
-    else if (spellId === 'heal') lv = state.schoolLevels['nature'] || 0;
-    else if (spellId === 'freeze') lv = state.schoolLevels['ice'] || 0;
+    let lv = getSpellLv(spellId);
     if (lv === 0) return;
     // 1x per dungeon
     const spellKey = `${mb.locId}_${mb.floor}`;
@@ -2040,9 +2179,16 @@
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
     if (spellId === 'fireball') {
-      const dmg = 25 + lv * 25;
+      let dmg = 25 + lv * 25;
+      const fb2Lv = getFireball2Lv();
+      if (fb2Lv > 0) dmg = Math.round(dmg * (1 + fb2Lv * 0.5));
+      const infLv = getInfernoLv();
+      let dotTick = lv * 3;
+      let dotDur = 2 + lv;
+      if (infLv > 0) { dotTick = 5 + infLv * 5; dotDur = 4 + infLv; }
       mb.bossHp -= dmg;
-      effectMsg = `🔥 Fireball! ${dmg} poškození!`;
+      if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = dotDur; }
+      effectMsg = `🔥 Fireball! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
       // Oranžový projektil k bossovi
       spawnProjectileEffect(0, false, false);
       // Dodatečná exploze po 200ms
@@ -2056,7 +2202,11 @@
         displayDamageText('🔥');
       }, 180);
     } else if (spellId === 'heal') {
-      const hp = 10 + lv * 15;
+      let hp = 10 + lv * 15;
+      const h2Lv = getHeal2Lv();
+      if (h2Lv > 0) hp = 15 + h2Lv * 20;
+      const revLv = getRevitalizeLv();
+      if (revLv > 0) hp = Math.round(hp * (1 + revLv * 0.5));
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
       effectMsg = `💚 +${hp} HP!`;
       // Zelený glow na hráči
@@ -2073,16 +2223,12 @@
     } else if (spellId === 'freeze') {
       // freeze: 3 ticky, freeze2: 4 ticky, blizzard: 5 ticků — vždy 75% zpomalení
       let ticks;
-      if (lv >= 5) { // blizzard
-        ticks = 5;
-      } else if (lv >= 3) { // freeze2
-        ticks = 4;
-      } else { // freeze
-        ticks = 3;
-      }
+      const blzLv = getBlizzardLv();
+      const fz2Lv = getFreeze2Lv();
+      if (blzLv > 0) { ticks = 5; }
+      else if (fz2Lv > 0) { ticks = 4; }
+      else { ticks = 3; }
       const pct = 75;
-      // Použije chill ticks — stejný mechanismus jako pasivní chill
-      // Pokud už chill běží, přepíše se novými hodnotami (silnější kouzlo)
       mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
       effectMsg = `❄️ Mráz! Zpomalení 75% na ${ticks} ticků!`;
@@ -2231,57 +2377,84 @@
   }
 
   // ===== TALENTS =====
+  function getTierPoints(schoolId, tierIdx) {
+    const s = SCHOOL_MAP[schoolId];
+    if (!s || !s.tiers[tierIdx]) return 0;
+    let total = 0;
+    s.tiers[tierIdx].choices.forEach(t => {
+      total += getTalentLv(schoolId + '_' + t.k);
+    });
+    return total;
+  }
+  function isTierUnlocked(schoolId, tierIdx) {
+    if (tierIdx === 0) return true;
+    return getTierPoints(schoolId, tierIdx - 1) > 0;
+  }
   function renderTalents() {
         const pts = state.talentPoints || 0;
         $('talentsPts').textContent = 'Body: ' + pts;
         const resetBtn = $('resetTalentsBtn');
         if (resetBtn) {
           const cost = 50;
-          const hasSpent = Object.values(state.schoolLevels).reduce((a,b)=>a+b, 0) > 0;
+          const hasSpent = Object.values(state.talentLevels).reduce((a,b)=>a+b, 0) > 0;
           resetBtn.textContent = hasSpent ? '🔄 Resetovat talenty (' + cost + '💰)' : '✅ Žádné body k resetu';
           resetBtn.disabled = !hasSpent;
         }
         $('talentSchools').innerHTML = SCHOOLS.map(s => {
-                  const lv = state.schoolLevels[s.id] || 0;
                   const isActive = state.activeSchool === s.id;
-                  const hasInvested = Object.values(state.schoolLevels).reduce((a,b)=>a+b, 0) > 0;
-                  const isLocked = hasInvested && lv === 0;
-                  const canInvest = pts > 0 && lv < 5 && !isLocked;
+                  const hasInvested = Object.values(state.talentLevels).reduce((a,b)=>a+b, 0) > 0;
+                  const isLocked = hasInvested && getTierPoints(s.id, 0) === 0;
                   return `<div class="talent-school ${isActive?'active':''} ${s.id} ${isLocked?'locked':''}" onclick="${isLocked?'':`game.activateSchool('${s.id}')`}">
                     ${isLocked?'<div class="talent-lock-overlay">🔒</div>':''}
                     <div class="talent-school-header">
                       <span class="talent-school-icon">${s.icon}</span>
                       <span class="talent-school-name">${s.name}</span>
-                      <span class="talent-school-level">Lv.${lv}/5</span>
                     </div>
                     <div class="talent-school-desc">${s.desc}</div>
-                    <ul class="talent-school-benefits">
-                      ${s.talents.map((t, i) => {
-                        const owned = i < lv;
-                        const isNext = i === lv;
-                        const cls = owned ? 'lv-own' : (isNext ? 'lv-next' : 'lv-lock');
-                        const displayLv = owned ? lv : (isNext ? lv + 1 : Math.max(lv, 1));
-                        return `<li class="${cls}">${owned?'✅ ':isNext?'→ ':'🔒 '}${t.name}: ${t.desc(displayLv)}</li>`;
+                    <div class="talent-tree">
+                      ${s.tiers.map((tier, ti) => {
+                        const unlocked = isTierUnlocked(s.id, ti);
+                        const tierPts = getTierPoints(s.id, ti);
+                        return `<div class="talent-tier ${unlocked?'':'tier-locked'}">
+                          <div class="tier-label">Řada ${ti+1}${!unlocked?' 🔒':''}</div>
+                          <div class="tier-choices">
+                            ${tier.choices.map(t => {
+                              const key = s.id + '_' + t.k;
+                              const lv = getTalentLv(key);
+                              const maxed = lv >= t.maxLv;
+                              const canInvest = pts > 0 && !maxed && unlocked && !isLocked;
+                              const pct = lv / t.maxLv * 100;
+                              return `<div class="talent-choice ${lv>0?'owned':''} ${canInvest?'clickable':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
+                                <div class="talent-choice-name">${t.name}</div>
+                                <div class="talent-choice-desc">${t.desc(Math.max(lv,1))}</div>
+                                <div class="talent-choice-bar">
+                                  <div class="talent-choice-fill" style="width:${pct}%"></div>
+                                  <span class="talent-choice-lv">${lv}/${t.maxLv}</span>
+                                </div>
+                              </div>`;
+                            }).join('')}
+                          </div>
+                        </div>`;
                       }).join('')}
-                    </ul>
-                    <button class="talent-invest-btn ${s.id}" onclick="event.stopPropagation();game.investTalent('${s.id}')" ${canInvest?'':'disabled'}>${isLocked?'🔒 Z VOLNO':canInvest?'+ Investovat 1 bod':'MAX'}</button>
+                    </div>
                   </div>`;
         }).join('');
       }
-      function investTalent(schoolId) {
+      function investTalent(key) {
               const pts = state.talentPoints || 0;
               if (pts <= 0) return;
-              const lv = state.schoolLevels[schoolId] || 0;
-              if (lv >= 5) return;
-              state.schoolLevels[schoolId] = lv + 1;
+              const t = TALENT_MAP[key];
+              if (!t) return;
+              const lv = getTalentLv(key);
+              if (lv >= t.maxLv) return;
+              state.talentLevels[key] = lv + 1;
               state.talentPoints = pts - 1;
-              if (!state.activeSchool) state.activeSchool = schoolId;
+              if (!state.activeSchool) state.activeSchool = t._schoolId;
               saveGame();
               renderTalents();
             }
             function activateSchool(schoolId) {
-              const lv = state.schoolLevels[schoolId] || 0;
-              if (lv === 0) return;
+              if (getTierPoints(schoolId, 0) === 0) return;
               state.activeSchool = schoolId;
               saveGame();
               renderTalents();
@@ -2291,7 +2464,7 @@
         const cost = 50;
         if ((state.hero.gold || 0) < cost) { showMessage('💰 Nedostatek zlatých!'); return; }
         let total = 0;
-        Object.keys(state.schoolLevels).forEach(k => { total += state.schoolLevels[k]; state.schoolLevels[k] = 0; });
+        Object.keys(state.talentLevels).forEach(k => { total += state.talentLevels[k]; state.talentLevels[k] = 0; });
         if (total === 0) return;
         state.hero.gold -= cost;
         state.talentPoints = (state.talentPoints || 0) + total;
@@ -2340,7 +2513,7 @@
   function renderHero() {
     const h = state.hero;
     const active = state.activeSchool ? SCHOOL_MAP[state.activeSchool] : null;
-    const schoolLv = active ? (state.schoolLevels[state.activeSchool]||0) : 0;
+    const schoolLv = active ? getTierPoints(state.activeSchool, 0) : 0;
     $('heroName').textContent = 'Dobrodruh';
     $('heroLevel').textContent = `Lv.${h.level}`;
     $('heroDeaths').textContent = state.deaths;
