@@ -1120,6 +1120,7 @@
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
+    mb._hitProcessed = true; // pojistka proti duplicitnímu timer callbacku
     // Skrýt bonusový kruh (pokud zbyl z útočného okna)
     const bc2 = document.querySelector('.bonus-zone-circle');
     if (bc2) bc2.style.strokeDasharray = '0 276';
@@ -1699,8 +1700,8 @@
   function onMapBlock() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
-    // DEBUG
-    console.log('onMapBlock: isBlockAttack=' + mb.isBlockAttack + ' isRapid=' + mb.isRapidAttack + ' inAtkWin=' + mb.inAttackWindow + ' hitProc=' + mb._hitProcessed + ' seqIdx=' + mb.sequenceIndex + '/' + mb.sequence.length + ' turn=' + mb.turn + ' ended=' + mb.ended);
+    // GUARD: aktuální útok už byl zpracován (např. blokem nebo timeoutem)
+    if (mb._sequenceTimer === null) return;
     // Rapid — blok nemá smysl, zpracovává onMapRapidTap
     if (mb.isRapidAttack) return;
     if (mb.inAttackWindow) {
