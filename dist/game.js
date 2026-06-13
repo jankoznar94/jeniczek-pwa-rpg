@@ -2404,14 +2404,16 @@
                   const isActive = state.activeSchool === s.id;
                   const hasInvested = Object.values(state.talentLevels).reduce((a,b)=>a+b, 0) > 0;
                   const isLocked = hasInvested && getTierPoints(s.id, 0) === 0;
-                  return `<div class="talent-school ${isActive?'active':''} ${s.id} ${isLocked?'locked':''}" onclick="${isLocked?'':`game.activateSchool('${s.id}')`}">
+                  const collapsed = !isActive;
+                  return `<div class="talent-school ${isActive?'active':''} ${collapsed?'collapsed':''} ${s.id} ${isLocked?'locked':''}" onclick="${isLocked?'':`game.activateSchool('${s.id}')`}">
                     ${isLocked?'<div class="talent-lock-overlay">🔒</div>':''}
                     <div class="talent-school-header">
                       <span class="talent-school-icon">${s.icon}</span>
                       <span class="talent-school-name">${s.name}</span>
+                      <span class="talent-school-arrow">${collapsed?'▼':'▲'}</span>
                     </div>
                     <div class="talent-school-desc">${s.desc}</div>
-                    <div class="talent-tree">
+                    <div class="talent-tree ${collapsed?'hidden':''}">
                       ${s.tiers.map((tier, ti) => {
                         const unlocked = isTierUnlocked(s.id, ti);
                         return `<div class="talent-tier ${unlocked?'':'tier-locked'}">
@@ -2452,7 +2454,12 @@
             }
             function activateSchool(schoolId) {
               if (getTierPoints(schoolId, 0) === 0) return;
-              state.activeSchool = schoolId;
+              // Kliknutí na už aktivní školu = deaktivace (zabalení)
+              if (state.activeSchool === schoolId) {
+                state.activeSchool = null;
+              } else {
+                state.activeSchool = schoolId;
+              }
               saveGame();
               renderTalents();
               renderHero();

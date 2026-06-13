@@ -378,7 +378,10 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .talent-school-icon { font-size:28px; }
 .talent-school-name { font-size:18px; font-weight:bold; margin-left:8px; flex:1; }
+.talent-school-arrow { font-size:14px; color:#666; transition:transform 0.2s; }
 .talent-school-desc { font-size:13px; color:#8888aa; margin-bottom:6px; }
+.talent-school.collapsed .talent-school-desc { margin-bottom:0; }
+.talent-school.collapsed { padding-bottom:8px; }
 .talent-tree { display:flex; flex-direction:column; gap:10px; margin-top:8px; }
 .talent-tier { border:1px solid #2a2a4a; border-radius:8px; padding:8px; background:#12122a; }
 .talent-tier.tier-locked { opacity:0.4; filter:grayscale(0.5); }
