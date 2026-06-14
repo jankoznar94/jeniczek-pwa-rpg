@@ -189,7 +189,7 @@
           { k:'naturesboon', name:'Nature\'s Boon', icon:'🌿', maxLv:3, requires:'nature_regrowth', requiresLv:3, desc:lv=>`+${15+lv*12} HP po každém úhybu` }
         ]},
         { choices: [
-          { k:'revitalize', name:'Oživení', icon:'🌱', maxLv:1, requires:'nature_poison2', requiresLv:5, desc:_=>`Při opětovném otrávení už otráveného: +50 HP` },
+          { k:'revitalize', name:'Otrava', icon:'☠️', maxLv:1, requires:'nature_poison2', requiresLv:3, desc:_=>`Otrávené monstrum se nemůže léčit (blokuje life steal)` },
           { k:'heal', name:'Léčení', icon:'💚', maxLv:3, requires:'nature_naturesboon', requiresLv:3, desc:lv=>`+${15+lv*20} HP` }
         ]}
       ]
@@ -603,7 +603,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, shieldActive: null,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
@@ -1916,6 +1916,8 @@
       const poisonDur = getNaturePoisonDuration();
       mb.dot = poisonTick2;
       mb.dotTicksLeft = poisonDur;
+      // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
+      if (hasNatureRevitalize()) mb._poisonBlockHeal = true;
     }
 
     mb.bossHp -= dmg;
