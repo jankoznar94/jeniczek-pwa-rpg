@@ -313,19 +313,19 @@
     { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🪄' },
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, cost:20, icon:'👘' },
     { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, cost:25, icon:'🪄' },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🏏' },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🪄' },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, cost:35, icon:'👘' },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🏏' },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🏏' },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🏏' },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🪄' },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🪄' },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🪄' },
     { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, cost:60, icon:'👘' },
     { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, cost:80, icon:'👘' },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🏏' },
-    { id:'warHammer', name:'Temná hůl', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'🏏' },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🪄' },
+    { id:'warHammer', name:'Temná hůl', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'🪄' },
     { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, cost:110, icon:'👘' },
-    { id:'greatAxe', name:'Dračí hůl', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🏏' },
+    { id:'greatAxe', name:'Dračí hůl', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪄' },
     { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, cost:160, icon:'👘' },
-    { id:'excalibur', name:'Arcimágova hůl', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'🏏' },
+    { id:'excalibur', name:'Arcimágova hůl', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'🪄' },
     { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, cost:250, icon:'👘' },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
@@ -2560,7 +2560,7 @@
     if (dexBtn) dexBtn.textContent = `⬆️ Obratnost` + (pts > 0 ? '' : ` 🔒`);
     if (dexBtn) dexBtn.style.opacity = pts > 0 ? '1' : '0.3';
 
-    const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🏏 Ledová hůl', battleAxe:'🏏 Blesková hůl', spear:'🏏 Hvězdná hůl', flameSword:'🏏 Plamená hůl', longsword:'🏏 Měsíční hůl', warHammer:'🏏 Temná hůl', greatAxe:'🏏 Dračí hůl', excalibur:'🏏 Arcimágova hůl' };
+    const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🪄 Ledová hůl', battleAxe:'🪄 Blesková hůl', spear:'🪄 Hvězdná hůl', flameSword:'🪄 Plamená hůl', longsword:'🪄 Měsíční hůl', warHammer:'🪄 Temná hůl', greatAxe:'🪄 Dračí hůl', excalibur:'🪄 Arcimágova hůl' };
     const armorNames = { rags:'👘 Hadry', leather:'👘 Lněný hábit', chainmail:'👘 Kožený hábit', scale:'👘 Šupinový hábit', plate:'👘 Vyšívaný hábit', fullPlate:'👘 Kroužkový hábit', dragonScale:'👘 Dračí hábit', adamantPlate:'👘 Arcimágův hábit' };
     $('equipWeapon').textContent = weaponNames[h.equip.weapon] || '✊ Pěsti';
     $('equipArmor').textContent = armorNames[h.equip.armor] || '🧥 Hadry';
