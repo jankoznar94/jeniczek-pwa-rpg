@@ -549,7 +549,7 @@
       const theme = DUNGEON_THEMES[i] || DUNGEON_THEMES[0];
       let badgeHtml;
       if (completed) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✅</div><div class="badge-count">Hotovo</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
       } else if (!unlocked) {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
       } else if (curFloor >= 4) {
