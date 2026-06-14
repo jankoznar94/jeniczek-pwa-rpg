@@ -2419,29 +2419,37 @@
                       <span class="talent-school-arrow">${collapsed?'▼':'▲'}</span>
                     </div>
                     <div class="talent-school-desc">${s.desc}</div>
-                    <div class="talent-tree ${collapsed?'hidden':''}">
-                      ${s.tiers.map((tier, ti) => {
-                        const tierUnlocked = ti === 0 || tier.choices.some(t => isTalentUnlocked(t));
-                        return `<div class="talent-tier ${tierUnlocked?'':'tier-locked'}">
-                          <div class="tier-label">Tier ${ti+1}${!tierUnlocked?' 🔒':''}</div>
-                          <div class="tier-choices">
-                            ${tier.choices.map(t => {
-                              const key = s.id + '_' + t.k;
-                              const lv = getTalentLv(key);
-                              const maxed = lv >= t.maxLv;
-                              const canInvest = pts > 0 && !maxed && isTalentUnlocked(t) && !isLocked;
-                              const pct = lv / t.maxLv * 100;
-                              return `<div class="talent-btn ${lv>0?'owned':''} ${canInvest?'clickable':''} ${maxed?'maxed':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
-                                <div class="talent-btn-icon">${t.icon}</div>
-                                <div class="talent-btn-name">${t.name}</div>
-                                <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
-                                <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
-                              </div>`;
-                            }).join('')}
-                          </div>
-                        </div>`;
-                      }).join('')}
-                    </div>
+                                        <div class="talent-tree ${collapsed?'hidden':''}">
+                                          ${(function() {
+                                            // Build two columns: [passive, active] x 3 tiers
+                                            const leftTier = s.tiers.map(t => t.choices[0]); // passive
+                                            const rightTier = s.tiers.map(t => t.choices[1]); // active
+                                            function renderBranch(choices, side) {
+                                              return '<div class="talent-branch talent-branch-' + side + '">' +
+                                                choices.map((t, ti) => {
+                                                  const key = s.id + '_' + t.k;
+                                                  const lv = getTalentLv(key);
+                                                  const maxed = lv >= t.maxLv;
+                                                  const canInvest = pts > 0 && !maxed && isTalentUnlocked(t) && !isLocked;
+                                                  const unlocked = isTalentUnlocked(t);
+                                                  return (ti > 0 ? '<div class="talent-connector ' + (getTalentLv(s.id+'_'+choices[ti-1].k) >= choices[ti-1].maxLv ? 'connector-active' : '') + '"></div>' : '') +
+                                                    `<div class="talent-btn ${lv>0?'owned':''} ${canInvest?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
+                                                      <div class="talent-btn-icon">${t.icon}</div>
+                                                      <div class="talent-btn-name">${t.name}</div>
+                                                      <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
+                                                      <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
+                                                    </div>`;
+                                                }).join('') +
+                                                '<div class="talent-branch-label">' + (side === 'left' ? '⛰️ Pasivní' : '⚡ Aktivní') + '</div>' +
+                                                '</div>';
+                                            }
+                                            return '<div class="talent-tree-content">' +
+                                              renderBranch(leftTier, 'left') +
+                                              '<div class="talent-divider"></div>' +
+                                              renderBranch(rightTier, 'right') +
+                                              '</div>';
+                                          })()}
+                                        </div>
                   </div>`;
         }).join('');
       }
