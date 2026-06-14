@@ -146,68 +146,45 @@
 
   // ===== SCHOOLS (Talent Tree) =====
   const SCHOOLS = [
-    { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Zaměřuje se na čisté poškození a ohnivé střely.',
+    { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Hořící DoT a ničivé výbuchy.',
       tiers: [
         { choices: [
-          { k:'dmgBoost', name:'Zvýšení poškození', icon:'⚔️', maxLv:5, desc:lv=>`+${lv*10}% poškození zbraně` },
-          { k:'fireArmor', name:'Ohnivé brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*8} dmg` }
+          { k:'burn', name:'Žhnutí', icon:'🔥', maxLv:5, desc:lv=>`Při zásahu: ohnivý DoT ${lv*3}/tick na ${1+Math.floor((lv+1)/2)} ticky` }
         ]},
         { choices: [
-          { k:'fireball', name:'Fireball', icon:'🔥', maxLv:3, desc:lv=>`${25+lv*25} poškození + DoT ${lv*3}/tick na ${2+lv}s` }
+          { k:'ignite', name:'Vznícení', icon:'💥', maxLv:5, desc:lv=>`+${lv*12}% poškození ohněm` }
         ]},
         { choices: [
-          { k:'dmgBoost2', name:'Velké zvýšení poškození', icon:'⚔️', maxLv:5, desc:lv=>`+${10+lv*10}% poškození zbraně` },
-          { k:'fireArmor2', name:'Silné ohnivé brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu vrací ${lv*15} dmg` }
-        ]},
-        { choices: [
-          { k:'fireball2', name:'Silnější Fireball', icon:'🔥', maxLv:3, desc:lv=>`Fireball ×${1+lv*0.5} poškození` }
-        ]},
-        { choices: [
-          { k:'inferno', name:'Inferno', icon:'🌋', maxLv:3, desc:lv=>`Fireball + DoT ${5+lv*5}/tick na ${4+lv}s` }
+          { k:'inferno', name:'Výbuch', icon:'🌋', maxLv:1, desc:_=>`Při opětovném aplikování ohně na hořící cíl: exploze za 5.0× dmg` },
+          { k:'fireball', name:'Fireball', icon:'🔥', maxLv:3, desc:lv=>`${25+lv*30} poškození + DoT ${lv*4}/tick na ${2+lv}s` }
         ]}
       ]
     },
-    { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa boje.',
+    { id:'ice', name:'Ledová škola', icon:'❄️', desc:'Zpomalování nepřítele a ovládání tempa.',
       tiers: [
         { choices: [
-          { k:'chill', name:'Chlad', icon:'🥶', maxLv:5, desc:lv=>`Každý útok zpomalí o ${20+lv*5}% na 2 ticky` },
-          { k:'frostArmor', name:'Ledové brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${15+lv*5}%` }
+          { k:'chill', name:'Mráz', icon:'🥶', maxLv:5, desc:lv=>`Při zásahu: zpomalí 25% na ${lv} ticků` }
         ]},
         { choices: [
-          { k:'freeze', name:'Mráz', icon:'❄️', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 3 ticky` }
+          { k:'chill2', name:'Hluboký mráz', icon:'❄️', maxLv:5, desc:lv=>`+${lv*5}% zpomalení (nad rámec Mrázu)` }
         ]},
         { choices: [
-          { k:'chill2', name:'Hluboký chlad', icon:'🥶', maxLv:5, desc:lv=>`Zpomalení o ${20+lv*5}% na 3 ticky` },
-          { k:'frostArmor2', name:'Silné ledové brnění', icon:'🛡️', maxLv:5, desc:lv=>`-${lv*5}% přijaté poškození, při zásahu zpomalí bosse o ${25+lv*5}%` }
-        ]},
-        { choices: [
-          { k:'freeze2', name:'Silnější mráz', icon:'❄️', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 4 ticky` }
-        ]},
-        { choices: [
-          { k:'blizzard', name:'Blizard', icon:'🌨️', maxLv:3, desc:lv=>`Každý útok zpomalí o 75% na 5 ticků` }
+          { k:'deathFreeze', name:'Smrtící mráz', icon:'💀', maxLv:1, desc:_=>`Při opětovném zpomalení už zpomaleného: krit 5.0× dmg` },
+          { k:'blizzard', name:'Blizard', icon:'🌨️', maxLv:3, desc:lv=>`Aktivní: zpomalí 75% na ${3+lv} ticků` }
         ]}
       ]
     },
-    { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení, jedovaté DoT a přírodní brnění.',
+    { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení, jed a přírodní magie.',
       tiers: [
         { choices: [
-          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Každý útok: jed ${lv*3}/tick na ${2+Math.floor(lv/2)} ticků` },
-          { k:'heal', name:'Léčení', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*15} HP` },
-          { k:'natureArmor', name:'Přírodní brnění', icon:'🛡️', maxLv:5, desc:lv=>`Při zásahu vrací ${5+lv*5} HP` }
+          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Při zásahu: jed ${lv*2}/tick na ${1+Math.floor(lv/2)} ticky` }
         ]},
         { choices: [
-          { k:'heal', name:'Léčení', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*15} HP` }
+          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:5, desc:lv=>`+${lv*3} dmg jedu za tick (nad rámec Jedu)` }
         ]},
         { choices: [
-          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:5, desc:lv=>`Jed ${lv*5}/tick na ${3+Math.floor(lv/2)} ticků` },
-          { k:'heal2', name:'Silnější léčení', icon:'💚', maxLv:3, desc:lv=>`+${15+lv*20} HP` },
-          { k:'natureArmor2', name:'Silné přírodní brnění', icon:'🛡️', maxLv:5, desc:lv=>`Při zásahu vrací ${10+lv*8} HP` }
-        ]},
-        { choices: [
-          { k:'heal2', name:'Silnější léčení', icon:'💚', maxLv:3, desc:lv=>`+${15+lv*20} HP` }
-        ]},
-        { choices: [
-          { k:'revitalize', name:'Revitalizace', icon:'🌱', maxLv:3, desc:lv=>`Léčení ×${1+lv*0.5}` }
+          { k:'revitalize', name:'Oživení', icon:'🌱', maxLv:1, desc:_=>`Při léčení na plné HP: bonus +50 HP` },
+          { k:'heal', name:'Léčení', icon:'💚', maxLv:3, desc:lv=>`+${15+lv*20} HP` }
         ]}
       ]
     }
@@ -229,82 +206,54 @@
 
   // ===== SCHOOL PASSIVES =====
   function getTalentLv(key) { return state.talentLevels[key] || 0; }
-  function getFireDmgPct() {
+  function getFireBurnTick() {
     if (state.activeSchool !== 'fire') return 0;
-    const lv1 = getTalentLv('fire_dmgBoost');
-    const lv2 = getTalentLv('fire_dmgBoost2');
-    let pct = lv1 * 10;
-    if (lv2 > 0) pct += 10 + lv2 * 10;
-    return pct;
+    const lv = getTalentLv('fire_burn');
+    return lv * 3;
+  }
+  function getFireBurnDuration() {
+    if (state.activeSchool !== 'fire') return 0;
+    const lv = getTalentLv('fire_burn');
+    return 1 + Math.floor((lv + 1) / 2);
+  }
+  function getFireIgnitePct() {
+    if (state.activeSchool !== 'fire') return 0;
+    return getTalentLv('fire_ignite') * 12;
+  }
+  function hasFireInferno() {
+    return getTalentLv('fire_inferno') > 0;
+  }
+  function getIceChillTicks() {
+    if (state.activeSchool !== 'ice') return 0;
+    return getTalentLv('ice_chill');
+  }
+  function getIceChillAddedPct() {
+    if (state.activeSchool !== 'ice') return 0;
+    return getTalentLv('ice_chill2') * 5;
+  }
+  function hasIceDeathFreeze() {
+    return getTalentLv('ice_deathFreeze') > 0;
   }
   function getNaturePoisonTick() {
     if (state.activeSchool !== 'nature') return 0;
     const lv1 = getTalentLv('nature_poison');
     const lv2 = getTalentLv('nature_poison2');
-    let tick = lv1 * 3;
-    if (lv2 > 0) tick += lv2 * 5;
-    return tick;
+    return lv1 * 2 + lv2 * 3;
   }
-  function getIceChillPct() {
-    if (state.activeSchool !== 'ice') return 0;
-    const lv1 = getTalentLv('ice_chill');
-    const lv2 = getTalentLv('ice_chill2');
-    let pct = lv1 * 5 + 20;
-    if (lv2 > 0) pct = Math.max(pct, lv2 * 5 + 20);
-    return pct;
-  }
-  function getFireArmorDmg() {
-    if (state.activeSchool !== 'fire') return 0;
-    const lv1 = getTalentLv('fire_fireArmor');
-    const lv2 = getTalentLv('fire_fireArmor2');
-    let dmg = lv1 * 8;
-    if (lv2 > 0) dmg = lv2 * 15;
-    return dmg;
-  }
-  function getFireArmorReduction() {
-    if (state.activeSchool !== 'fire') return 0;
-    const lv1 = getTalentLv('fire_fireArmor');
-    const lv2 = getTalentLv('fire_fireArmor2');
-    let pct = lv1 * 5;
-    if (lv2 > 0) pct = lv2 * 5;
-    return pct;
-  }
-  function getFrostArmorChill() {
-    if (state.activeSchool !== 'ice') return 0;
-    const lv1 = getTalentLv('ice_frostArmor');
-    const lv2 = getTalentLv('ice_frostArmor2');
-    let pct = lv1 * 5 + 15;
-    if (lv2 > 0) pct = lv2 * 5 + 25;
-    return pct;
-  }
-  function getFrostArmorReduction() {
-    if (state.activeSchool !== 'ice') return 0;
-    const lv1 = getTalentLv('ice_frostArmor');
-    const lv2 = getTalentLv('ice_frostArmor2');
-    let pct = lv1 * 5;
-    if (lv2 > 0) pct = lv2 * 5;
-    return pct;
-  }
-  function getNatureArmorHeal() {
+  function getNaturePoisonDuration() {
     if (state.activeSchool !== 'nature') return 0;
-    const lv1 = getTalentLv('nature_natureArmor');
-    const lv2 = getTalentLv('nature_natureArmor2');
-    let hp = 5 + lv1 * 5;
-    if (lv2 > 0) hp = 10 + lv2 * 8;
-    return hp;
+    const lv = getTalentLv('nature_poison');
+    return 1 + Math.floor(lv / 2);
+  }
+  function hasNatureRevitalize() {
+    return getTalentLv('nature_revitalize') > 0;
   }
   function getSpellLv(spellId) {
     if (spellId === 'fireball') return getTalentLv('fire_fireball');
     if (spellId === 'heal') return getTalentLv('nature_heal');
-    if (spellId === 'freeze') return getTalentLv('ice_freeze');
+    if (spellId === 'blizzard') return getTalentLv('ice_blizzard');
     return 0;
   }
-  function getHeal2Lv() { return getTalentLv('nature_heal2'); }
-  function getFireball2Lv() { return getTalentLv('fire_fireball2'); }
-  function getFreeze2Lv() { return getTalentLv('ice_freeze2'); }
-  function getInfernoLv() { return getTalentLv('fire_inferno'); }
-  function getBlizzardLv() { return getTalentLv('ice_blizzard'); }
-  function getRevitalizeLv() { return getTalentLv('nature_revitalize'); }
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
@@ -629,7 +578,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, shieldActive: null,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
@@ -727,7 +676,7 @@
     if (!activeId) return;
     const school = SCHOOL_MAP[activeId];
     if (!school) return;
-    const lv = getSpellLv(activeId === 'fire' ? 'fireball' : activeId === 'ice' ? 'freeze' : 'heal');
+    const lv = getSpellLv(activeId === 'fire' ? 'fireball' : activeId === 'ice' ? 'blizzard' : 'heal');
     if (lv === 0) return;
     const spellKey = `${mb.locId}_${mb.floor}`;
     const used = state.spellUsedThisFloor[spellKey];
@@ -873,7 +822,7 @@
     if (spellFreezeBtn) {
       const freezeHandler = (e) => {
         e.stopPropagation();
-        castMapSpell('freeze');
+        castMapSpell('blizzard');
       };
       spellFreezeBtn.addEventListener('pointerdown', freezeHandler);
       handlers.push(['pointerdown', freezeHandler]);
@@ -1226,6 +1175,8 @@
 
     // Chill tick — odečti jeden tick zpomalení
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
+    // Pokud aktivní kouzlo došlo, reset flag — pasivy můžou zase běžet
+    if (mb.chillTicksLeft <= 0 && mb._activeSpellChillActive) mb._activeSpellChillActive = false;
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
@@ -1868,9 +1819,9 @@
     const critChance = (state.hero.attrDex||0) * 1 + 5;
     const critMult = 1.5;
     let dmg = baseDmg;
-    // Fire school passive — damage boost
-    const firePct = getFireDmgPct();
-    if (firePct > 0) { dmg = Math.round(dmg * (1 + firePct / 100)); }
+    // Fire school passive — ignite (% bonus fire damage)
+    const ignitePct = getFireIgnitePct();
+    if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
     
     // 🎯 Crit window — trefa = crit (×1.5), mino = normální útok
     let isCrit = false;
@@ -1898,21 +1849,47 @@
       playSFX(hitSfx);
     }
     
-    // Nature school passive — poison on hit
-    const poisonTick = getNaturePoisonTick();
-    if (poisonTick > 0 && state.activeSchool === 'nature') {
-      const naturePoisonLv = getTalentLv('nature_poison');
-      const tickDuration = 2 + Math.floor(naturePoisonLv / 2);
-      mb.dot = poisonTick;
-      mb.dotTicksLeft = tickDuration;
+    // === PASIVNÍ EFEKTY ŠKOL (PŘI ÚTOKU) ===
+    // Aktivní kouzlo má vždy prioritu — pasivy se neaplikují, dokud běží aktivní spell
+    let applyPassives = true;
+    if (mb._activeSpellChillActive) applyPassives = false; // blizzard běží — pasivní chill ne
+        
+    // Fire — burn (žhnutí)
+    const burnTick = getFireBurnTick();
+    if (burnTick > 0 && applyPassives && state.activeSchool === 'fire') {
+      const wasBurning = mb.dot > 0;
+      const burnDur = getFireBurnDuration();
+      mb.dot = burnTick;
+      mb.dotTicksLeft = burnDur;
+      // Inferno — pokud cíl už hořel, exploze 5.0×
+      if (wasBurning && hasFireInferno()) {
+        const infernoDmg = Math.round(dmg * 5.0);
+        mb.bossHp -= infernoDmg;
+        displayDamageText(`💥 ${infernoDmg}`);
+        playSFX(critSfx);
+      }
     }
-    // Ice school passive — chill on hit
-    const chillPct = getIceChillPct();
-    if (chillPct > 0) {
-      const iceChillLv = getTalentLv('ice_chill');
-      const pasTicks = 2 + (getTalentLv('ice_chill2') > 0 ? 1 : 0);
+    // Ice — chill (mráz)
+    const chillTicks = getIceChillTicks();
+    if (chillTicks > 0 && applyPassives && state.activeSchool === 'ice') {
+      const wasChilled = mb.chillTicksLeft > 0;
+      const chillPct = 25 + getIceChillAddedPct();
       mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, pasTicks);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, chillTicks);
+      // Death Freeze — pokud cíl už zpomalen, krit 5.0×
+      if (wasChilled && hasIceDeathFreeze()) {
+        const deathDmg = Math.round(dmg * 5.0);
+        mb.bossHp -= deathDmg;
+        displayDamageText(`💀 ${deathDmg}`);
+        playSFX(critSfx);
+      }
+    }
+    // Nature — poison (jed)
+    const poisonTick2 = getNaturePoisonTick();
+    if (poisonTick2 > 0 && applyPassives && state.activeSchool === 'nature') {
+      const poisonDur = getNaturePoisonDuration();
+      mb.dot = poisonTick2;
+      mb.dotTicksLeft = poisonDur;
     }
 
     mb.bossHp -= dmg;
@@ -1976,25 +1953,6 @@
     mb.mistakes = (mb.mistakes || 0) + 1;
     playSFX(hitSfx);
 
-    // Armor passives — react to taking damage
-    // Fire Armor — return damage to boss
-    const fireArmorDmg = getFireArmorDmg();
-    if (fireArmorDmg > 0) {
-      mb.bossHp -= fireArmorDmg;
-      spawnProjectileEffect(null, false, false);
-    }
-    // Frost Armor — chill boss on hit
-    const frostArmorChill = getFrostArmorChill();
-    if (frostArmorChill > 0) {
-      mb.chillPercent = Math.max(mb.chillPercent || 0, frostArmorChill);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, 2);
-    }
-    // Nature Armor — heal on hit
-    const natureArmorHeal = getNatureArmorHeal();
-    if (natureArmorHeal > 0) {
-      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + natureArmorHeal);
-    }
-
     // Červený projektil od středu k hráči
     spawnProjectileEffect(null, true);
     // Probliknutí hráče
@@ -2054,15 +2012,9 @@
     if (spellsEl) spellsEl.innerHTML = '';
 
     if (spellId === 'fireball') {
-      let dmg = 25 + lv * 25;
-      // fireball2 upgrade
-      const fb2Lv = getFireball2Lv();
-      if (fb2Lv > 0) dmg = Math.round(dmg * (1 + fb2Lv * 0.5));
-      // inferno upgrade
-      const infLv = getInfernoLv();
-      let dotTick = lv * 3;
+      let dmg = 25 + lv * 30;
+      let dotTick = lv * 4;
       let dotDur = 2 + lv;
-      if (infLv > 0) { dotTick = 5 + infLv * 5; dotDur = 4 + infLv; }
       mb.bossHp -= dmg;
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = dotDur; }
       spawnFireballProjectile();
@@ -2070,13 +2022,9 @@
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.2s'; bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300); }
     } else if (spellId === 'heal') {
-      let hp = 10 + lv * 15;
-      // heal2 upgrade
-      const h2Lv = getHeal2Lv();
-      if (h2Lv > 0) hp = 15 + h2Lv * 20;
-      // revitalize upgrade
-      const revLv = getRevitalizeLv();
-      if (revLv > 0) hp = Math.round(hp * (1 + revLv * 0.5));
+      let hp = 15 + lv * 20;
+      // Revitalize — pokud léčení na plné HP, bonus +50
+      if (hasNatureRevitalize() && mb.playerHp >= mb.maxPlayerHp) { hp += 50; }
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
       spawnHealProjectile();
       // (hint: zachovat bonus info)
@@ -2169,7 +2117,7 @@
     }
   }
 
-  function castMapSpell(spellId) { if (!spellId) { const a = state.activeSchool; spellId = a === 'ice' ? 'freeze' : a === 'fire' ? 'fireball' : 'heal'; }
+  function castMapSpell(spellId) { if (!spellId) { const a = state.activeSchool; spellId = a === 'ice' ? 'blizzard' : a === 'fire' ? 'fireball' : 'heal'; }
     const mb = mapBattleState;
     if (mb.ended) return;
     let lv = getSpellLv(spellId);
@@ -2182,13 +2130,9 @@
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
     if (spellId === 'fireball') {
-      let dmg = 25 + lv * 25;
-      const fb2Lv = getFireball2Lv();
-      if (fb2Lv > 0) dmg = Math.round(dmg * (1 + fb2Lv * 0.5));
-      const infLv = getInfernoLv();
-      let dotTick = lv * 3;
+      let dmg = 25 + lv * 30;
+      let dotTick = lv * 4;
       let dotDur = 2 + lv;
-      if (infLv > 0) { dotTick = 5 + infLv * 5; dotDur = 4 + infLv; }
       mb.bossHp -= dmg;
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = dotDur; }
       effectMsg = `🔥 Fireball! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
@@ -2205,11 +2149,12 @@
         displayDamageText('🔥');
       }, 180);
     } else if (spellId === 'heal') {
-      let hp = 10 + lv * 15;
-      const h2Lv = getHeal2Lv();
-      if (h2Lv > 0) hp = 15 + h2Lv * 20;
-      const revLv = getRevitalizeLv();
-      if (revLv > 0) hp = Math.round(hp * (1 + revLv * 0.5));
+      let hp = 15 + lv * 20;
+      // Revitalize — pokud léčení na plné HP, bonus +50
+      if (hasNatureRevitalize() && mb.playerHp >= mb.maxPlayerHp) {
+        hp += 50;
+        effectMsg = `🌱 Oživení! +${hp} HP!`;
+      }
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
       effectMsg = `💚 +${hp} HP!`;
       // Zelený glow na hráči
@@ -2223,18 +2168,14 @@
       displayHealText(`+${hp}`);
       // Zelené částice
       spawnHealParticles();
-    } else if (spellId === 'freeze') {
-      // freeze: 3 ticky, freeze2: 4 ticky, blizzard: 5 ticků — vždy 75% zpomalení
-      let ticks;
-      const blzLv = getBlizzardLv();
-      const fz2Lv = getFreeze2Lv();
-      if (blzLv > 0) { ticks = 5; }
-      else if (fz2Lv > 0) { ticks = 4; }
-      else { ticks = 3; }
+    } else if (spellId === 'blizzard') {
+      const ticks = 3 + lv;
       const pct = 75;
+      // Aktivní kouzlo — nastaví flag, že aktivní chill běží (pasivy se neaplikují)
+      mb._activeSpellChillActive = true;
       mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `❄️ Mráz! Zpomalení 75% na ${ticks} ticků!`;
+      effectMsg = `❄️ Blizard! Zpomalení 75% na ${ticks} ticků!`;
       // Modrý efekt na bossovi + modré kolečko
       const bossFig = $('mbFigure');
       if (bossFig) {
