@@ -185,7 +185,7 @@
           { k:'regrowth', name:'Regrowth', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*8} HP po každém úhybu` }
         ]},
         { choices: [
-          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:5, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv} tick trvání jedu (nad rámec Jedu)` },
+          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:3, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv} tick trvání jedu (nad rámec Jedu)` },
           { k:'naturesboon', name:'Nature\'s Boon', icon:'🌿', maxLv:3, requires:'nature_regrowth', requiresLv:3, desc:lv=>`+${15+lv*12} HP po každém úhybu` }
         ]},
         { choices: [
