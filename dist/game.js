@@ -181,11 +181,11 @@
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení, jed a přírodní magie.',
       tiers: [
         { choices: [
-          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Při zásahu: jed ${lv*2}/tick na ${1+Math.floor(lv/2)} ticky` },
+          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Při zásahu: jed ${lv*4}/tick na 2 ticky` },
           { k:'regrowth', name:'Regrowth', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*8} HP po každém úhybu` }
         ]},
         { choices: [
-          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:5, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv*3} dmg jedu za tick (nad rámec Jedu)` },
+          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:5, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv} tick trvání jedu (nad rámec Jedu)` },
           { k:'naturesboon', name:'Nature\'s Boon', icon:'🌿', maxLv:3, requires:'nature_regrowth', requiresLv:3, desc:lv=>`+${15+lv*12} HP po každém úhybu` }
         ]},
         { choices: [
@@ -242,14 +242,15 @@
   }
   function getNaturePoisonTick() {
     if (state.activeSchool !== 'nature') return 0;
-    const lv1 = getTalentLv('nature_poison');
-    const lv2 = getTalentLv('nature_poison2');
-    return lv1 * 2 + lv2 * 3;
+    const lv = getTalentLv('nature_poison');
+    return lv * 4;
   }
   function getNaturePoisonDuration() {
     if (state.activeSchool !== 'nature') return 0;
-    const lv = getTalentLv('nature_poison');
-    return 1 + Math.floor(lv / 2);
+    const lv1 = getTalentLv('nature_poison');
+    const lv2 = getTalentLv('nature_poison2');
+    if (lv1 === 0) return 0;
+    return 2 + lv2;
   }
   function hasNatureRevitalize() {
     return getTalentLv('nature_revitalize') > 0;
