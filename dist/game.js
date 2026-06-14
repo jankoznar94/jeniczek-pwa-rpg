@@ -182,15 +182,15 @@
       tiers: [
         { choices: [
           { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Při zásahu: jed ${lv*4}/tick na 2 ticky` },
-          { k:'regrowth', name:'Regrowth', icon:'💚', maxLv:3, desc:lv=>`+${10+lv*8} HP po každém úhybu` }
+          { k:'heal', name:'Léčení', icon:'💚', maxLv:5, desc:lv=>`Při zásahu: léčení ${lv*4}/tick na 2 ticky` }
         ]},
         { choices: [
-          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:3, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv} tick trvání jedu (nad rámec Jedu)` },
-          { k:'naturesboon', name:'Nature\'s Boon', icon:'🌿', maxLv:3, requires:'nature_regrowth', requiresLv:3, desc:lv=>`+${15+lv*12} HP po každém úhybu` }
+          { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:3, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv} tick trvání jedu` },
+          { k:'heal2', name:'Silnější léčení', icon:'💚', maxLv:3, requires:'nature_heal', requiresLv:5, desc:lv=>`+${lv} tick trvání léčení` }
         ]},
         { choices: [
           { k:'revitalize', name:'Otrava', icon:'☠️', maxLv:1, requires:'nature_poison2', requiresLv:3, desc:_=>`Otrávené monstrum se nemůže léčit (blokuje life steal)` },
-          { k:'heal', name:'Léčení', icon:'💚', maxLv:3, requires:'nature_naturesboon', requiresLv:3, desc:lv=>`+${15+lv*20} HP` }
+          { k:'regen', name:'Regenerace', icon:'🌱', maxLv:1, requires:'nature_heal2', requiresLv:3, desc:_=>`+2 HP každý tick (pasivní, sčítá se s Léčením)` }
         ]}
       ]
     }
@@ -252,6 +252,23 @@
     if (lv1 === 0) return 0;
     return 2 + lv2;
   }
+  function getNatureHealTick() {
+    if (state.activeSchool !== 'nature') return 0;
+    const lv = getTalentLv('nature_heal');
+    return lv * 4;
+  }
+  function getNatureHealDuration() {
+    if (state.activeSchool !== 'nature') return 0;
+    const lv1 = getTalentLv('nature_heal');
+    const lv2 = getTalentLv('nature_heal2');
+    if (lv1 === 0) return 0;
+    return 2 + lv2;
+  }
+  function getNatureRegen() {
+    if (state.activeSchool !== 'nature') return 0;
+    const lv = getTalentLv('nature_regen');
+    return lv > 0 ? 2 : 0; // 2 HP per tick
+  }
   function hasNatureRevitalize() {
     return getTalentLv('nature_revitalize') > 0;
   }
@@ -259,9 +276,6 @@
     if (spellId === 'fireball') return getTalentLv('fire_fireball');
     if (spellId === 'fireblast') return getTalentLv('fire_fireblast');
     if (spellId === 'firebolt') return getTalentLv('fire_firebolt');
-    if (spellId === 'heal') return getTalentLv('nature_heal');
-    if (spellId === 'naturesboon') return getTalentLv('nature_naturesboon');
-    if (spellId === 'regrowth') return getTalentLv('nature_regrowth');
     if (spellId === 'blizzard') return getTalentLv('ice_blizzard');
     if (spellId === 'icebolt') return getTalentLv('ice_icebolt');
     if (spellId === 'frostbolt') return getTalentLv('ice_frostbolt');
@@ -603,7 +617,7 @@
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
-      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
+      mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, hot: 0, hotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
@@ -1198,6 +1212,17 @@
 
     // DoT tick — každý timer (úspěch/neúspěch) = jeden tick
     if (doDotTick(mb)) return;
+
+    // HoT tick — léčení každý tick (pouze při úspěchu)
+    if (mb.hotTicksLeft > 0) {
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + mb.hot);
+      mb.hotTicksLeft--;
+    }
+    // Pasivní regenerace — malý heal každý tick
+    const regen = getNatureRegen();
+    if (regen > 0) {
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + regen);
+    }
 
     // Chill tick — odečti jeden tick zpomalení
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
@@ -1919,6 +1944,13 @@
       // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
       if (hasNatureRevitalize()) mb._poisonBlockHeal = true;
     }
+    // Nature — heal (léčení HoT)
+    const healTick = getNatureHealTick();
+    if (healTick > 0 && applyPassives && state.activeSchool === 'nature') {
+      const healDur = getNatureHealDuration();
+      mb.hot = Math.max(mb.hot || 0, healTick);
+      mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
+    }
 
     mb.bossHp -= dmg;
     // Zelený projektil od středu k bossovi
@@ -2144,50 +2176,6 @@
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
       spawnProjectileEffect(0, false, false);
-    } else if (spellId === 'heal') {
-      let hp = 15 + lv * 20;
-      // Revitalize — pokud léčení na plné HP, bonus +50
-      if (hasNatureRevitalize() && mb.playerHp >= mb.maxPlayerHp) {
-        hp += 50;
-        effectMsg = `🌱 Oživení! +${hp} HP!`;
-      }
-      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
-      effectMsg = `💚 +${hp} HP!`;
-      // Zelený glow na hráči
-      const playerFig = $('mbPlayerFigure');
-      if (playerFig) {
-        playerFig.style.transition = 'filter 0.3s';
-        playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)';
-        setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400);
-      }
-      // Floating zelený text
-      displayHealText(`+${hp}`);
-      // Zelené částice
-      spawnHealParticles();
-    } else if (spellId === 'naturesboon') {
-      let hp = 15 + lv * 12;
-      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
-      effectMsg = `🌿 Nature's Boon! +${hp} HP!`;
-      const playerFig = $('mbPlayerFigure');
-      if (playerFig) {
-        playerFig.style.transition = 'filter 0.3s';
-        playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)';
-        setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400);
-      }
-      displayHealText(`+${hp}`);
-      spawnHealParticles();
-    } else if (spellId === 'regrowth') {
-      let hp = 10 + lv * 8;
-      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + hp);
-      effectMsg = `💚 Regrowth! +${hp} HP!`;
-      const playerFig = $('mbPlayerFigure');
-      if (playerFig) {
-        playerFig.style.transition = 'filter 0.3s';
-        playerFig.style.filter = 'brightness(2) hue-rotate(90deg) saturate(1.5)';
-        setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 400);
-      }
-      displayHealText(`+${hp}`);
-      spawnHealParticles();
     } else if (spellId === 'frostbolt') {
       let pct = 40;
       let ticks = 1 + lv;
@@ -2391,12 +2379,7 @@
       if (getTalentLv('ice_frostbolt') > 0) return 'frostbolt';
       return null;
     }
-    if (schoolId === 'nature') {
-      if (getTalentLv('nature_heal') > 0) return 'heal';
-      if (getTalentLv('nature_naturesboon') > 0) return 'naturesboon';
-      if (getTalentLv('nature_regrowth') > 0) return 'regrowth';
-      return null;
-    }
+    // Nature: pravá větev je pasivní HoT, levá jed — žádné aktivní kouzlo
     return null;
   }
   function renderTalents() {
