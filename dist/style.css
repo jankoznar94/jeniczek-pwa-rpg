@@ -238,15 +238,15 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   border:2px solid #bbb;transition:0.2s;flex-shrink:0;
 }
 .seq-dot.done {
-  background:#bbb; border-color:#bbb; box-shadow:0 0 4px rgba(187,187,187,0.4);
+  background:var(--seq-dot-done,#bbb); border-color:var(--seq-dot-done,#bbb); box-shadow:0 0 4px var(--seq-dot-glow,rgba(187,187,187,0.4));
 }
 .seq-dot.fail {
   background:#e94560; border-color:#e94560;
   animation:seqFail 0.3s ease-out;
 }
 .seq-ready .seq-dot.done {
-  background:#bbb; border-color:#bbb;
-  box-shadow:0 0 10px rgba(187,187,187,0.6), 0 0 20px rgba(187,187,187,0.3);
+  background:var(--seq-dot-done,#bbb); border-color:var(--seq-dot-done,#bbb);
+  box-shadow:0 0 10px var(--seq-dot-glow,rgba(187,187,187,0.6)), 0 0 20px var(--seq-dot-glow2,rgba(187,187,187,0.3));
   transform:scale(1.15);
   animation:seqPulse 1.2s ease-in-out infinite;
 }
