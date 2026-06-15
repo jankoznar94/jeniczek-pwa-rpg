@@ -149,8 +149,8 @@
     { id:'fire', name:'Ohnivá škola', icon:'🔥', desc:'Hořící DoT a ničivé výbuchy.',
       tiers: [
         { choices: [
-          { k:'burn', name:'Žhnutí', icon:'🔥', maxLv:5, desc:lv=>`Při zásahu: DoT ${15+lv*5}% z dmg na ${1+Math.floor((lv+1)/2)} ticky` },
-          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:3, desc:lv=>`${75+lv*25}% dmg` },
+          { k:'burn', name:'Žhnutí', icon:'🔥', maxLv:5, desc:_=>`Při zásahu: +40% dmg ohněm (jednorázově)` },
+          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:3, desc:lv=>`${75+lv*25}% dmg ohněm` },
         ]},
         { choices: [
           { k:'ignite', name:'Vznícení', icon:'💥', maxLv:5, requires:'fire_burn', requiresLv:5, desc:lv=>`+${lv*12}% poškození ohněm` },
@@ -166,7 +166,7 @@
       tiers: [
         { choices: [
           { k:'chill', name:'Mráz', icon:'🥶', maxLv:5, desc:lv=>`Při zásahu: zpomalí 25% na ${lv} ticků` },
-          { k:'frostbolt', name:'Frostbolt', icon:'❄️', maxLv:5, desc:lv=>`${125+lv*25}% dmg, zpomalí 40% na 3 ticky` }
+          { k:'frostbolt', name:'Frostbolt', icon:'❄️', maxLv:5, desc:lv=>`${125+lv*25}% dmg ledem, zpomalí 40% na 3 ticky` }
         ]},
         { choices: [
           { k:'chill2', name:'Hluboký mráz', icon:'❄️', maxLv:5, requires:'ice_chill', requiresLv:5, desc:lv=>`+${lv*5}% zpomalení (nad rámec Mrázu)` },
@@ -214,13 +214,10 @@
   function getTalentLv(key) { return state.talentLevels[key] || 0; }
   function getFireBurnPct() {
     if (state.activeSchool !== 'fire') return 0;
-    const lv = getTalentLv('fire_burn');
-    return 15 + lv * 5; // 20% @ lv1, 25% @ lv2, ... 40% @ lv5
+    return 40; // 40% bonus dmg při útoku (jednorázově, ne DoT)
   }
   function getFireBurnDuration() {
-    if (state.activeSchool !== 'fire') return 0;
-    const lv = getTalentLv('fire_burn');
-    return 1 + Math.floor((lv + 1) / 2);
+    return 0; // burn už není DoT
   }
   function getFireIgnitePct() {
     if (state.activeSchool !== 'fire') return 0;
@@ -271,6 +268,15 @@
   }
   function hasNatureRevitalize() {
     return getTalentLv('nature_revitalize') > 0;
+  }
+  function getSchoolResistMult(schoolId) {
+    const mb = mapBattleState;
+    if (!mb || !mb.loc || !mb.loc.resists) return 1.0;
+    const r = mb.loc.resists;
+    if (schoolId === 'fire') return r.fire || 1.0;
+    if (schoolId === 'ice') return r.ice || 1.0;
+    if (schoolId === 'nature') return r.nature || 1.0;
+    return 1.0;
   }
   function getSpellLv(spellId) {
     if (spellId === 'fireball') return getTalentLv('fire_fireball');
@@ -379,18 +385,18 @@
     { bg:'#1a0505', border:'#c0392b', borderGlow:'rgba(192,57,43,0.3)' },    // 11 Smrt — tmavě červená
   ];
   const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'} },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12} },
-    { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'} },
-    { id:5, name:'Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30} },
-    { id:6, name:'Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'} },
-    { id:7, name:'Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50} },
-    { id:8, name:'Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:84, bossXp:280, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'} },
-    { id:9, name:'Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:100, bossXp:340, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'} },
-    { id:10, name:'Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:120, bossXp:400, boss:{name:'Chaos lord',face:'👾',hp:60}, reward:{gold:100,weapon:'voidBlade'} },
-    { id:11, name:'Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:150, bossXp:500, boss:{name:'Smrták',face:'💀',hp:80}, reward:{gold:150,armor:'voidPlate'} },
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
+    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20}, resists:{fire:0.25, ice:1.5, nature:0.75} },
+    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.25, nature:1.0} },
+    { id:5, name:'Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:6, name:'Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'}, resists:{fire:0.75, ice:0.75, nature:1.5} },
+    { id:7, name:'Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50}, resists:{fire:0.5, ice:1.0, nature:0.5} },
+    { id:8, name:'Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:84, bossXp:280, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:9, name:'Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:100, bossXp:340, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:10, name:'Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:120, bossXp:400, boss:{name:'Chaos lord',face:'👾',hp:60}, reward:{gold:100,weapon:'voidBlade'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:11, name:'Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:150, bossXp:500, boss:{name:'Smrták',face:'💀',hp:80}, reward:{gold:150,armor:'voidPlate'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
   ];
 
   // ===== STATE =====
@@ -1285,10 +1291,15 @@
     mb.inAttackWindow = true;
     mb.isAttacking = false;
 
-    // Zobrazit ⚔️ info ikonu v kolečku
+    // Zobrazit ⚔️ info ikonu v kolečku (podle školy)
     const actionInfo = $('mbActionInfo');
     if (actionInfo) {
-      actionInfo.textContent = '⚔️';
+      const a = state.activeSchool;
+      const hasPassive = a && getTierPoints(a, 0) > 0;
+      if (hasPassive && a === 'fire') actionInfo.textContent = '🔥';
+      else if (hasPassive && a === 'ice') actionInfo.textContent = '❄️';
+      else if (hasPassive && a === 'nature') actionInfo.textContent = '🌿';
+      else actionInfo.textContent = '⚔️';
       actionInfo.classList.remove('hidden');
     }
     updateActionButtons();
@@ -1909,14 +1920,13 @@
     let applyPassives = true;
     if (mb._activeSpellChillActive) applyPassives = false; // blizzard běží — pasivní chill ne
         
-    // Fire — burn (žhnutí)
+    // Fire — burn (žhnutí) — jednorázový bonus dmg při útoku
     const burnPct = getFireBurnPct();
     if (burnPct > 0 && applyPassives && state.activeSchool === 'fire') {
       const wasBurning = mb.dot > 0;
-      const burnDur = getFireBurnDuration();
-      const burnDmg = Math.max(1, Math.round(dmg * burnPct / 100));
-      mb.dot = burnDmg;
-      mb.dotTicksLeft = burnDur;
+      const resistMult = getSchoolResistMult('fire');
+      const burnBonus = Math.round(dmg * burnPct / 100 * resistMult);
+      dmg += burnBonus;
       // Inferno — pokud cíl už hořel, exploze 5.0×
       if (wasBurning && hasFireInferno()) {
         const infernoDmg = Math.round(dmg * 5.0);
@@ -1944,7 +1954,8 @@
     const poisonPct = getNaturePoisonPct();
     if (poisonPct > 0 && applyPassives && state.activeSchool === 'nature') {
       const poisonDur = getNaturePoisonDuration();
-      const poisonDmg = Math.max(1, Math.round(dmg * poisonPct / 100));
+      const resistMult = getSchoolResistMult('nature');
+      const poisonDmg = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
       mb.dot = poisonDmg;
       mb.dotTicksLeft = poisonDur;
       // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
@@ -1954,7 +1965,8 @@
     const healPct = getNatureHealPct();
     if (healPct > 0 && applyPassives && state.activeSchool === 'nature') {
       const healDur = getNatureHealDuration();
-      const healAmt = Math.max(1, Math.round(dmg * healPct / 100));
+      const resistMult = getSchoolResistMult('nature');
+      const healAmt = Math.max(1, Math.round(dmg * healPct / 100 * resistMult));
       mb.hot = Math.max(mb.hot || 0, healAmt);
       mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
     }
@@ -2163,7 +2175,8 @@
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
     if (spellId === 'fireball') {
       const pct = 100 + lv * 100; // 200% @ lv1, 300% @ lv2, 400% @ lv3
-      let dmg = Math.round(baseDmg * pct / 100);
+      const resistMult = getSchoolResistMult('fire');
+      let dmg = Math.round(baseDmg * pct / 100 * resistMult);
       const dotPct = 30; // 30% z dmg/tick
       const dotTick = Math.max(1, Math.round(dmg * dotPct / 100));
       let dotDur = 2 + lv;
@@ -2184,7 +2197,8 @@
       }, 180);
     } else if (spellId === 'fireblast') {
       const pct = 100 + lv * 50; // 150% @ lv1, 200% @ lv2, 250% @ lv3
-      let dmg = Math.round(baseDmg * pct / 100);
+      const resistMult = getSchoolResistMult('fire');
+      let dmg = Math.round(baseDmg * pct / 100 * resistMult);
       const dotPct = 20; // 20% z dmg/tick
       const dotTick = Math.max(1, Math.round(dmg * dotPct / 100));
       mb.bossHp -= dmg;
@@ -2193,13 +2207,15 @@
       spawnProjectileEffect(0, false, false);
     } else if (spellId === 'firebolt') {
       const pct = 75 + lv * 25; // 100% @ lv1, 125% @ lv2, 150% @ lv3
-      let dmg = Math.round(baseDmg * pct / 100);
+      const resistMult = getSchoolResistMult('fire');
+      let dmg = Math.round(baseDmg * pct / 100 * resistMult);
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
       spawnProjectileEffect(0, false, false);
     } else if (spellId === 'frostbolt') {
       const dmgPct = 125 + lv * 25; // 150% @ lv1, 175% @ lv2, ... 250% @ lv5
-      let dmg = Math.round(baseDmg * dmgPct / 100);
+      const resistMult = getSchoolResistMult('ice');
+      let dmg = Math.round(baseDmg * dmgPct / 100 * resistMult);
       let slowPct = 40;
       let ticks = 3;
       // Vylepšený frostbolt (icebolt) přidá ticky
