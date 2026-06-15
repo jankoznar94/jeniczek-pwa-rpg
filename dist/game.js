@@ -181,8 +181,8 @@
     { id:'nature', name:'Přírodní škola', icon:'🌿', desc:'Léčení, jed a přírodní magie.',
       tiers: [
         { choices: [
-          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Při zásahu: jed ${lv*3}/tick na 2 ticky` },
-          { k:'heal', name:'Léčení', icon:'💚', maxLv:5, desc:lv=>`Při zásahu: léčení ${lv*3}/tick na 2 ticky` }
+          { k:'poison', name:'Jed', icon:'☠️', maxLv:5, desc:lv=>`Při zásahu: jed ${10+lv*5}% z dmg/tick na 2 ticky` },
+          { k:'heal', name:'Léčení', icon:'💚', maxLv:5, desc:lv=>`Při zásahu: ${lv*3}/tick + ${5+lv*5}% z VIT na 2 ticky` }
         ]},
         { choices: [
           { k:'poison2', name:'Silný jed', icon:'☠️', maxLv:3, requires:'nature_poison', requiresLv:5, desc:lv=>`+${lv} tick trvání jedu` },
@@ -241,7 +241,7 @@
   function getNaturePoisonPct() {
     if (state.activeSchool !== 'nature') return 0;
     const lv = getTalentLv('nature_poison');
-    return lv * 3; // 3/6/9/12/15 fixního dmg/tick
+    return 10 + lv * 5; // 15/20/25/30/35% per tick (celkem 30-70% za 2 ticky = stejně jako burn)
   }
   function getNaturePoisonDuration() {
     if (state.activeSchool !== 'nature') return 0;
@@ -254,6 +254,12 @@
     if (state.activeSchool !== 'nature') return 0;
     const lv = getTalentLv('nature_heal');
     return lv * 3; // 3/6/9/12/15 fixního HP/tick
+  }
+  function getNatureHealVitalityBonus() {
+    if (state.activeSchool !== 'nature') return 0;
+    const lv = getTalentLv('nature_heal');
+    if (lv === 0) return 0;
+    return Math.round((state.hero.attrVit || 0) * (5 + lv * 5) / 100); // 10-30% z vitality
   }
   function getNatureHealDuration() {
     if (state.activeSchool !== 'nature') return 0;
@@ -1951,22 +1957,24 @@
         playSFX(critSfx);
       }
     }
-    // Nature — poison (jed) — fixní dmg/tick
-    const poisonDmg = getNaturePoisonPct();
-    if (poisonDmg > 0 && applyPassives && state.activeSchool === 'nature') {
+    // Nature — poison (jed) — % z dmg/tick
+    const poisonPct = getNaturePoisonPct();
+    if (poisonPct > 0 && applyPassives && state.activeSchool === 'nature') {
       const poisonDur = getNaturePoisonDuration();
       const resistMult = getSchoolResistMult('nature');
-      mb.dot = Math.max(1, Math.round(poisonDmg * resistMult));
+      const poisonDmg = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
+      mb.dot = poisonDmg;
       mb.dotTicksLeft = poisonDur;
       // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
       if (hasNatureRevitalize()) mb._poisonBlockHeal = true;
     }
-    // Nature — heal (léčení HoT) — fixní HP/tick
+    // Nature — heal (léčení HoT) — fixní HP/tick + % z vitality
     const healAmt = getNatureHealPct();
     if (healAmt > 0 && applyPassives && state.activeSchool === 'nature') {
       const healDur = getNatureHealDuration();
       const resistMult = getSchoolResistMult('nature');
-      mb.hot = Math.max(mb.hot || 0, Math.round(healAmt * resistMult));
+      const vitBonus = getNatureHealVitalityBonus();
+      mb.hot = Math.max(mb.hot || 0, Math.round(healAmt * resistMult) + vitBonus);
       mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
     }
 
