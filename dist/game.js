@@ -395,8 +395,8 @@
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20}, resists:{fire:0.25, ice:1.5, nature:0.75} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.25, nature:1.0} },
+    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
+    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:5, name:'Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30}, resists:{fire:1.0, ice:1.0, nature:1.0} },
     { id:6, name:'Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'}, resists:{fire:0.75, ice:0.75, nature:1.5} },
     { id:7, name:'Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50}, resists:{fire:0.5, ice:1.0, nature:0.5} },
@@ -584,6 +584,7 @@
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
             <div class="map-loc-mechs">${getDungeonMechanics(i).join(' ')}</div>
+            <div class="map-loc-resists">${getDungeonResistIcons(i)}</div>
           </div>
           ${badgeHtml}
         </div>
@@ -916,6 +917,19 @@
     if (c.twin > 0) icons.push('<svg viewBox="0 0 16 16" width="26" height="26"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-2.5,0)"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(2.5,0)"/></svg>');
     if (c.rapid > 0) icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">⏰</span>');
     return icons;
+  }
+  function getDungeonResistIcons(locId) {
+    const loc = LOCATIONS[locId];
+    if (!loc || !loc.resists) return '';
+    const r = loc.resists;
+    let parts = [];
+    if (r.fire < 1.0) parts.push('🔥-');
+    else if (r.fire > 1.0) parts.push('🔥+');
+    if (r.ice < 1.0) parts.push('❄️-');
+    else if (r.ice > 1.0) parts.push('❄️+');
+    if (r.nature < 1.0) parts.push('🌿-');
+    else if (r.nature > 1.0) parts.push('🌿+');
+    return parts.length ? parts.join(' ') : '';
   }
 
   function generateAttack(chances, prevType, locId, floor) {
