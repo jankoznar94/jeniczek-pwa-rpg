@@ -166,15 +166,15 @@
       tiers: [
         { choices: [
           { k:'chill', name:'Mráz', icon:'🥶', maxLv:5, desc:lv=>`Při zásahu: zpomalí 25% na ${lv} ticků` },
-          { k:'frostbolt', name:'Frostbolt', icon:'❄️', maxLv:3, desc:lv=>`Zpomalí 40% na ${1+lv} ticky` }
+          { k:'frostbolt', name:'Frostbolt', icon:'❄️', maxLv:5, desc:lv=>`Poškození ${10+lv*8}, zpomalí 40% na 3 ticky` }
         ]},
         { choices: [
           { k:'chill2', name:'Hluboký mráz', icon:'❄️', maxLv:5, requires:'ice_chill', requiresLv:5, desc:lv=>`+${lv*5}% zpomalení (nad rámec Mrázu)` },
-          { k:'icebolt', name:'ICE Bolt', icon:'🧊', maxLv:3, requires:'ice_frostbolt', requiresLv:3, desc:lv=>`Zpomalí 60% na ${2+lv} ticky` }
+          { k:'icebolt', name:'Vylepšený frostbolt', icon:'🧊', maxLv:3, requires:'ice_frostbolt', requiresLv:5, desc:lv=>`+${lv} tick trvání zpomalení` }
         ]},
         { choices: [
           { k:'deathFreeze', name:'Smrtící mráz', icon:'💀', maxLv:1, requires:'ice_chill2', requiresLv:5, desc:_=>`Při opětovném zpomalení už zpomaleného: krit 5.0× dmg` },
-          { k:'blizzard', name:'Blizard', icon:'🌨️', maxLv:3, requires:'ice_icebolt', requiresLv:3, desc:lv=>`Aktivní: zpomalí 75% na ${3+lv} ticků` }
+          { k:'blizzard', name:'Blizard', icon:'🌨️', maxLv:1, requires:'ice_icebolt', requiresLv:3, desc:_=>`Aktivní: zmrazení, 3 útoky po sobě` }
         ]}
       ]
     },
@@ -621,6 +621,8 @@
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
+      _spellCooldownTicks: 0,
+      _blizzardFreeAttacks: 0,
       floorMonsters,
       monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
       currentMonsterName: isBoss ? loc.boss.name : floorMonsters[progress].name,
@@ -718,13 +720,12 @@
     const spellId = getBestSpellId(activeId);
     if (!spellId) return;
     const lv = getSpellLv(spellId);
-    const spellKey = `${mb.locId}_${mb.floor}`;
-    const used = state.spellUsedThisFloor[spellKey];
+    const onCooldown = mb._spellCooldownTicks > 0;
     // Ukazat spravne kouzlo — VZDY viditelne, aktivni jen kdyz je prilezitost
     const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : healBtn;
     if (!btn) return;
     btn.classList.remove('hidden');
-    if (used) {
+    if (onCooldown) {
       btn.classList.add('used');
       btn.innerHTML = activeId === 'fire' ? '🔥<span class="spell-x">❌</span>' : activeId === 'ice' ? '❄️<span class="spell-x">❌</span>' : '💚<span class="spell-x">❌</span>';
       return;
@@ -1228,6 +1229,9 @@
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
     // Pokud aktivní kouzlo došlo, reset flag — pasivy můžou zase běžet
     if (mb.chillTicksLeft <= 0 && mb._activeSpellChillActive) mb._activeSpellChillActive = false;
+
+    // Cooldown tick
+    if (mb._spellCooldownTicks > 0) mb._spellCooldownTicks--;
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
@@ -1976,7 +1980,13 @@
     mb.inAttackWindow = false;
     $('mbActionInfo').classList.add('hidden');
     updateActionButtons();
-    setTimeout(() => mapBattleTurn(), 300);
+    // Blizzard — 3 útoky po sobě
+    if (mb._blizzardFreeAttacks > 0) {
+      mb._blizzardFreeAttacks--;
+      setTimeout(() => openAttackWindow(), 100);
+    } else {
+      setTimeout(() => mapBattleTurn(), 300);
+    }
   }
 
   function onMapHit() {
@@ -1995,6 +2005,9 @@
 
     // Chill tick i při neúspěchu — jeden tick zpomalení uběhl
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
+
+    // Cooldown tick i při neúspěchu
+    if (mb._spellCooldownTicks > 0) mb._spellCooldownTicks--;
 
     const baseBossDmg = Math.max(5, 5 + mb.turn * 4 + mb.locId * 5);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
@@ -2138,10 +2151,9 @@
     if (mb.ended) return;
     let lv = getSpellLv(spellId);
     if (lv === 0) return;
-    // 1x per dungeon
-    const spellKey = `${mb.locId}_${mb.floor}`;
-    // (hint: zachovat bonus info)
-    state.spellUsedThisFloor[spellKey] = true;
+    // Cooldown 30 ticků
+    if (mb._spellCooldownTicks > 0) return;
+    mb._spellCooldownTicks = 30;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
@@ -2177,43 +2189,48 @@
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
       spawnProjectileEffect(0, false, false);
     } else if (spellId === 'frostbolt') {
+      let dmg = 10 + lv * 8;
       let pct = 40;
-      let ticks = 1 + lv;
+      let ticks = 3;
+      // Vylepšený frostbolt (icebolt) přidá ticky
+      const iceboltLv = getTalentLv('ice_icebolt');
+      if (iceboltLv > 0) ticks += iceboltLv;
+      mb.bossHp -= dmg;
       mb._activeSpellChillActive = true;
       mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `❄️ Frostbolt! Zpomalení 40% na ${ticks} ticků!`;
+      effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení 40% na ${ticks} ticků!`;
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
       const circle = document.querySelector('.timer-circle');
       if (circle) circle.style.stroke = '#4fc3f7';
       spawnFreezeParticles();
     } else if (spellId === 'icebolt') {
-      let pct = 60;
-      let ticks = 2 + lv;
+      // icebolt už není samostatné kouzlo — je to pasivní upgrade frostboltu
+      // Pokud se sem dostaneme (starý save), chová se jako frostbolt
+      let dmg = 10 + lv * 8;
+      let pct = 40;
+      let ticks = 3 + lv;
+      mb.bossHp -= dmg;
       mb._activeSpellChillActive = true;
       mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `🧊 ICE Bolt! Zpomalení 60% na ${ticks} ticků!`;
+      effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení 40% na ${ticks} ticků!`;
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
       const circle = document.querySelector('.timer-circle');
       if (circle) circle.style.stroke = '#4fc3f7';
       spawnFreezeParticles();
     } else if (spellId === 'blizzard') {
-      const ticks = 3 + lv;
-      const pct = 75;
-      // Aktivní kouzlo — nastaví flag, že aktivní chill běží (pasivy se neaplikují)
-      mb._activeSpellChillActive = true;
-      mb.chillPercent = Math.max(mb.chillPercent || 0, pct);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `❄️ Blizard! Zpomalení 75% na ${ticks} ticků!`;
-      // Modrý efekt na bossovi + modré kolečko
+      // Blizzard — zmrazení: 3 útoky po sobě
+      mb._blizzardFreeAttacks = 3;
+      effectMsg = `❄️ Blizard! Boss zmrazen! 3 útoky po sobě!`;
+      // Modrý efekt na bossovi
       const bossFig = $('mbFigure');
       if (bossFig) {
         bossFig.style.transition = 'filter 0.3s';
         bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)';
-        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800);
+        setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 1500);
       }
       const circle = document.querySelector('.timer-circle');
       if (circle) circle.style.stroke = '#4fc3f7';
@@ -2375,7 +2392,6 @@
     }
     if (schoolId === 'ice') {
       if (getTalentLv('ice_blizzard') > 0) return 'blizzard';
-      if (getTalentLv('ice_icebolt') > 0) return 'icebolt';
       if (getTalentLv('ice_frostbolt') > 0) return 'frostbolt';
       return null;
     }
