@@ -922,13 +922,16 @@
     const loc = LOCATIONS[locId];
     if (!loc || !loc.resists) return '';
     const r = loc.resists;
+    let weak = [], strong = [];
+    if (r.fire > 1.0) weak.push('🔥');
+    else if (r.fire < 1.0) strong.push('🔥');
+    if (r.ice > 1.0) weak.push('❄️');
+    else if (r.ice < 1.0) strong.push('❄️');
+    if (r.nature > 1.0) weak.push('🌿');
+    else if (r.nature < 1.0) strong.push('🌿');
     let parts = [];
-    if (r.fire < 1.0) parts.push('🔥-');
-    else if (r.fire > 1.0) parts.push('🔥+');
-    if (r.ice < 1.0) parts.push('❄️-');
-    else if (r.ice > 1.0) parts.push('❄️+');
-    if (r.nature < 1.0) parts.push('🌿-');
-    else if (r.nature > 1.0) parts.push('🌿+');
+    if (weak.length) parts.push('⚔️' + weak.join(''));
+    if (strong.length) parts.push('🛡️' + strong.join(''));
     return parts.length ? parts.join(' ') : '';
   }
 
