@@ -385,6 +385,12 @@
     { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:15, bonusHp:30, cost:180, icon:'💍', tier:5 },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
+  // Mapa pro generované loot itemy (doplňuje ITEM_MAP)
+  let _lootItemMap = {};
+
+  function getItemInfo(id) {
+    return ITEM_MAP[id] || _lootItemMap[id] || null;
+  }
 
   // ===== MONSTER FACES =====
   const MONSTER_FACES = [
@@ -496,10 +502,11 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
-      locationProgress:[5,5,5,5,5,5,5,5,5,5,5,5], bossesDefeated:[true,true,true,true,true,true,true,true,true,true,true,true], floorProgress:[5,5,5,5,5,5,5,5,5,5,5,5], spellUsedThisFloor:{} };
+      locationProgress:[5,5,5,5,5,5,5,5,5,5,5,5], bossesDefeated:[true,true,true,true,true,true,true,true,true,true,true,true], floorProgress:[5,5,5,5,5,5,5,5,5,5,5,5], spellUsedThisFloor:{}, lootItems:{} };
     return s;
   }
-  function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) return s; } catch {} return defaultState(); }
+  function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) { // Obnovit loot itemy do ITEM_MAP
+    if (s.lootItems) Object.keys(s.lootItems).forEach(k => { ITEM_MAP[k] = s.lootItems[k]; }); return s; } } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
@@ -2517,24 +2524,91 @@
   }
 
   // ===== LOOT SYSTEM =====
+  // Šablony pro názvy itemů podle typu a tieru
+  const LOOT_NAMES = {
+    weapon: {
+      staff: ['Dřevěná hůlka','Ohnivá hůlka','Ledová hůl','Blesková hůl','Hvězdná hůl','Plamená hůl','Měsíční hůl','Arcimágova hůl'],
+      blade: ['Železný meč','Široký meč','Bojová sekera','Obouruční meč','Temný meč','Dračí sekera','Arcimágův meč']
+    },
+    armor: ['Lněný hábit','Kožený hábit','Šupinový hábit','Vyšívaný hábit','Kroužkový hábit','Dračí hábit','Arcimágův hábit'],
+    helmet: ['Lněná kápě','Kožená čapka','Železná helma','Ocelová helma','Stříbrná přilba','Arcimágova koruna'],
+    ring: ['Měděný prsten','Cínový prsten','Stříbrný prsten','Zlatý prsten','Platinový prsten','Drahokamový prsten']
+  };
+  const LOOT_ICONS = { weapon_staff:'🪄', weapon_blade:'⚔️', armor:'👘', helmet:'⛑️', ring:'💍' };
+  const ATTR_KEYS = ['str','vit','dex','int'];
+  const ATTR_NAMES = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
+
+  function generateLootItem(floor) {
+    const tier = Math.min(6, Math.ceil(floor / 2));
+    // 1. RNG: typ předmětu
+    const typeRoll = Math.random();
+    let type, subtype;
+    if (typeRoll < 0.25) { type = 'weapon'; subtype = Math.random() < 0.5 ? 'staff' : 'blade'; }
+    else if (typeRoll < 0.50) { type = 'armor'; subtype = null; }
+    else if (typeRoll < 0.75) { type = 'helmet'; subtype = null; }
+    else { type = 'ring'; subtype = null; }
+
+    // 2. RNG: konkrétní jméno podle typu a tieru
+    const namePool = type === 'weapon' ? LOOT_NAMES.weapon[subtype] : LOOT_NAMES[type];
+    const maxIdx = Math.min(namePool.length - 1, tier);
+    const nameIdx = rand(0, maxIdx);
+    const baseName = namePool[nameIdx];
+
+    // 3. RNG: atributy — počet a hodnoty
+    const attrCount = tier <= 2 ? 1 : tier <= 4 ? rand(1,2) : rand(1,3);
+    const attrs = {};
+    const usedKeys = [];
+    for (let a = 0; a < attrCount; a++) {
+      let k;
+      do { k = ATTR_KEYS[rand(0, 3)]; } while (usedKeys.includes(k));
+      usedKeys.push(k);
+      // Hodnota atributu: 1-3 pro nízký tier, 2-6 pro vysoký
+      const val = rand(1, Math.min(6, 1 + Math.floor(tier * 0.8)));
+      attrs[k] = val;
+    }
+
+    // 4. Sestavení názvu
+    let suffix = '';
+    if (usedKeys.length > 0) {
+      suffix = ' ' + usedKeys.map(k => `${ATTR_NAMES[k]}+${attrs[k]}`).join(' ');
+    }
+    const name = baseName + suffix;
+
+    // 5. Základní staty podle typu a tieru
+    let baseDmg = 0, bonusHp = 0;
+    if (type === 'weapon') {
+      baseDmg = 5 + tier * 7 + rand(0, 3);
+    } else if (type === 'armor') {
+      bonusHp = 10 + tier * 25 + rand(0, 10);
+    } else if (type === 'helmet') {
+      bonusHp = 5 + tier * 15 + rand(0, 5);
+    } else if (type === 'ring') {
+      baseDmg = 1 + tier * 2 + rand(0, 2);
+      bonusHp = 2 + tier * 5 + rand(0, 3);
+    }
+
+    const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
+    const icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
+    const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
+    const item = { id, name, type, subtype, baseDmg, bonusHp, icon, attrs, tier, cost, weaponType: type === 'weapon' ? subtype : null };
+    ITEM_MAP[id] = item;
+    state.lootItems = state.lootItems || {};
+    state.lootItems[id] = item;
+    return item;
+  }
+
   function rollLoot(locId, floor) {
     const h = state.hero;
-    const loc = LOCATIONS[locId];
-    if (!loc) return null;
-    // Šance na loot: 40% base + 5% za patro
-    const chance = 0.40 + floor * 0.05;
-    if (Math.random() > chance) return null;
-    // Tier podle patra: patro 1-2 = tier 1, 3-4 = tier 2, 5-6 = tier 3, 7-8 = tier 4, 9-10 = tier 5, 11-12 = tier 6
-    const maxTier = Math.min(6, Math.ceil(floor / 2));
-    const minTier = Math.max(1, maxTier - 1);
-    const pool = ITEMS.filter(i => i.cost > 0 && i.tier && i.tier >= minTier && i.tier <= maxTier);
-    if (pool.length === 0) return null;
-    const item = pool[rand(0, pool.length - 1)];
-    // Ne掉落 item, který už hráč má equipnutý nebo v inventáři
-    if (h.inventory.includes(item.id) ||
-        h.equip.weapon === item.id || h.equip.armor === item.id ||
-        h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id) return null;
-    return item;
+    // 70% gold, 30% item
+    if (Math.random() < 0.7) {
+      // Gold reward
+      const gold = 2 + floor * 2 + rand(0, 3);
+      return { type:'gold', gold };
+    } else {
+      // Item reward
+      const item = generateLootItem(floor);
+      return { type:'item', item };
+    }
   }
 
   function endMapBattle(won) {
@@ -2553,11 +2627,6 @@
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
-      // Loot z monster
-      const loot = rollLoot(locId, mb.floor);
-      if (loot) {
-        state.hero.inventory.push(loot.id);
-      }
       saveGame();
       sfxSuccess();
       // Kill popup — čeká na kliknutí
@@ -2570,6 +2639,19 @@
 
       if (p >= 5) {
         // ALL 5 monsters killed -> floor clear: result screen!
+        // Loot za každé monstrum (5 hodů)
+        let totalLootGold = 0;
+        const lootItems = [];
+        for (let m = 0; m < 5; m++) {
+          const loot = rollLoot(locId, mb.floor);
+          if (loot.type === 'gold') {
+            totalLootGold += loot.gold;
+          } else if (loot.type === 'item') {
+            lootItems.push(loot.item);
+            state.hero.inventory.push(loot.item.id);
+          }
+        }
+        state.hero.gold = (state.hero.gold || 0) + totalLootGold;
         mapBattleState.ended = true;
         cleanupTimers();
         const nextFloor = mb.floor + 1;
@@ -2582,11 +2664,17 @@
         const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
         const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
         const grade = mistakes === 0 ? '⭐⭐⭐' : mistakes <= 2 ? '⭐⭐' : '⭐';
+        let lootHtml = '';
+        if (totalLootGold > 0) lootHtml += `<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${totalLootGold}</span></div>`;
+        lootItems.forEach(item => {
+          lootHtml += `<div class="result-stat"><span class="result-stat-icon">${item.icon}</span><span class="result-stat-val">${item.name}</span></div>`;
+        });
         $('resultMsg').innerHTML = '<div class="result-stats">'
                   + '<div class="result-stat"><span class="result-stat-icon">⚔️</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
                   + '<div class="result-grade">' + grade + '</div>'
+                  + (lootHtml ? '<div class="result-loot">' + lootHtml + '</div>' : '')
                   + '<div class="result-tap">👆 klepni pro návrat</div>'
                   + '</div>';
         $('resultBtn').innerHTML = '';
@@ -2821,13 +2909,31 @@
     }
     return leveled;
   }
+  function getEquipAttrs() {
+    const h = state.hero;
+    const slots = ['weapon','armor','helmet','ring1','ring2'];
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+    const total = { str:0, vit:0, dex:0, int:0 };
+    slots.forEach(slot => {
+      const itemId = h.equip[slot];
+      if (!itemId || itemId === defaults[slot]) return;
+      const item = ITEM_MAP[itemId];
+      if (item && item.attrs) {
+        Object.keys(item.attrs).forEach(k => {
+          total[k] = (total[k] || 0) + item.attrs[k];
+        });
+      }
+    });
+    return total;
+  }
   function getHeroDmg() {
     const h = state.hero;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     const ringDmg = (ring1 && ring1.type === 'ring' ? (ring1.baseDmg||0) : 0) + (ring2 && ring2.type === 'ring' ? (ring2.baseDmg||0) : 0);
-    return Math.max(1, 10 + Math.floor(h.level * 3) + weapon.baseDmg + ringDmg + (h.attrStr || 0) * 2);
+    const eqAttrs = getEquipAttrs();
+    return Math.max(1, 10 + Math.floor(h.level * 3) + weapon.baseDmg + ringDmg + ((h.attrStr||0) + eqAttrs.str) * 2);
   }
   function getHeroMaxHp() {
     const h = state.hero;
@@ -2836,7 +2942,8 @@
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0);
-    return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + (h.attrVit || 0) * 10);
+    const eqAttrs = getEquipAttrs();
+    return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + ((h.attrVit||0) + eqAttrs.vit) * 10);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
@@ -3064,8 +3171,15 @@
       else if (item.type === 'ring') stats = `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
       else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
+      if (item.attrs) {
+        const attrStr = Object.keys(item.attrs).map(k => {
+          const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
+          return `${names[k]||k}+${item.attrs[k]}`;
+        }).join(' · ');
+        stats += '<br>' + attrStr;
+      }
       if (item.cost) stats += ` · 💰 ${item.cost}`;
-      $('invInfoStats').textContent = stats;
+      $('invInfoStats').innerHTML = stats;
       panel.classList.remove('hidden');
     }
     // Klik na buňku = přepnutí viditelnosti akcí + info panel

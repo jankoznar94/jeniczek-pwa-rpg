@@ -603,6 +603,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .result-stat-icon { font-size:20px; }
 .result-stat-val { font-weight:bold;color:#e8e0e8; }
 .result-stat-sub { font-size:11px;color:#8888aa; }
+.result-loot { margin-top:8px; border-top:1px solid #2a2a4a; padding-top:8px; }
 .result-grade { font-size:28px;margin:8px 0;letter-spacing:4px; }
 .result-tap { font-size:11px;color:#555;margin-top:4px;animation:resultTapPulse 2s ease-in-out infinite; }
 @keyframes resultTapPulse { 0%,100%{opacity:0.4}50%{opacity:1} }
