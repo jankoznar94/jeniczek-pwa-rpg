@@ -3034,10 +3034,31 @@
       }
     }
     grid.innerHTML = html;
-    // Klik na buňku = přepnutí viditelnosti akcí (pro dotyková zařízení)
+    // Info panel — zobrazit při kliknutí na item
+    function showItemInfo(item) {
+      const panel = $('invInfoPanel');
+      if (!panel || !item) { if (panel) panel.classList.add('hidden'); return; }
+      $('invInfoIcon').textContent = item.icon;
+      $('invInfoName').textContent = item.name;
+      let stats = '';
+      if (item.type === 'weapon') stats = `⚔️ +${item.baseDmg} poškození`;
+      else if (item.type === 'armor') stats = `❤️ +${item.bonusHp} HP`;
+      else if (item.type === 'helmet') stats = `❤️ +${item.bonusHp} HP`;
+      else if (item.type === 'ring') stats = `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
+      if (item.weaponType === 'staff') stats += ' 🪄 magická';
+      else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
+      if (item.cost) stats += ` · 💰 ${item.cost}`;
+      $('invInfoStats').textContent = stats;
+      panel.classList.remove('hidden');
+    }
+    // Klik na buňku = přepnutí viditelnosti akcí + info panel
     grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
       cell.addEventListener('click', function(e) {
         if (e.target.closest('.cell-actions')) return;
+        const idx = this.dataset.idx;
+        const itemId = inv[idx];
+        const item = itemId ? ITEM_MAP[itemId] : null;
+        if (item) showItemInfo(item);
         const actions = this.querySelector('.cell-actions');
         if (!actions) return;
         // Skrýt všechny ostatní
@@ -3047,11 +3068,25 @@
         }
       });
     });
-    // Klik mimo buňky = schovat všechny akce
+    // Klik na equipment slot = info o equipnutém předmětu
+    const equipSlots = ['invSlotWeapon','invSlotArmor','invSlotHelmet','invSlotRing1','invSlotRing2'];
+    equipSlots.forEach(slotId => {
+      const el = $(slotId);
+      if (!el) return;
+      el.addEventListener('click', function(e) {
+        const slot = slotId.replace('invSlot','').toLowerCase();
+        const itemId = h.equip[slot];
+        const item = itemId ? ITEM_MAP[itemId] : null;
+        if (item) showItemInfo(item);
+      });
+    });
+    // Klik mimo buňky = schovat všechny akce + info panel
     const hideActions = (e) => {
       const cell = e.target.closest('.inv-grid-cell');
       if (cell && !cell.classList.contains('empty')) return;
       grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
+      const panel = $('invInfoPanel');
+      if (panel) panel.classList.add('hidden');
     };
     document.removeEventListener('click', grid._hideActions);
     grid._hideActions = hideActions;

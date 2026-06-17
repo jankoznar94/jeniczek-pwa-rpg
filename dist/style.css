@@ -332,6 +332,26 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .inv-grid-cell.empty { opacity:0.25; cursor:default; }
 .inv-grid-cell.empty:hover { border-color:#3a3a3a; background:#222; }
 
+/* Scrollovatelný batoh */
+.inv-grid-wrap {
+  max-height:220px; overflow-y:auto; margin:8px 0;
+  scrollbar-width:thin; scrollbar-color:#444 #1a1a1a;
+}
+.inv-grid-wrap::-webkit-scrollbar { width:6px; }
+.inv-grid-wrap::-webkit-scrollbar-track { background:#1a1a1a; }
+.inv-grid-wrap::-webkit-scrollbar-thumb { background:#444; border-radius:3px; }
+
+/* Info panel předmětu */
+.inv-info-panel {
+  display:flex; align-items:center; gap:12px;
+  background:#1e1e1e; border:1px solid #3a3a3a; border-radius:8px;
+  padding:10px 14px; margin-top:6px; min-height:60px;
+}
+.inv-info-panel .inv-info-icon { font-size:36px; flex-shrink:0; }
+.inv-info-panel .inv-info-details { flex:1; min-width:0; }
+.inv-info-panel .inv-info-name { font-size:14px; font-weight:bold; color:#ddd; }
+.inv-info-panel .inv-info-stats { font-size:12px; color:#aaa; margin-top:2px; line-height:1.4; }
+
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; }
 .mb-xp-bar-bg { flex:1; height:10px; background:#1a1a3a; border-radius:4px; overflow:hidden; }
