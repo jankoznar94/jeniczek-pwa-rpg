@@ -193,6 +193,22 @@
           { k:'regen', name:'Regenerace', icon:'🌱', maxLv:1, requires:'nature_heal2', requiresLv:3, desc:_=>`+2 HP každý tick (pasivní, sčítá se s Léčením)` }
         ]}
       ]
+    },
+    { id:'physical', name:'Bojová škola', icon:'⚔️', desc:'Fyzické útoky a brutální síla.',
+      tiers: [
+        { choices: [
+          { k:'edge', name:'Ostří', icon:'⚔️', maxLv:5, desc:lv=>`+${10+lv*6}% dmg zbraně` },
+          { k:'strongStrike', name:'Silný úder', icon:'💢', maxLv:3, desc:lv=>`${100+lv*50}% dmg zbraně` }
+        ]},
+        { choices: [
+          { k:'rend', name:'Roztržení', icon:'🩸', maxLv:5, requires:'physical_edge', requiresLv:5, desc:lv=>`+${lv*15}% crit dmg` },
+          { k:'slash', name:'Seknutí', icon:'⚡', maxLv:3, requires:'physical_strongStrike', requiresLv:3, desc:lv=>`${150+lv*50}% dmg zbraně` }
+        ]},
+        { choices: [
+          { k:'executioner', name:'Kat', icon:'💀', maxLv:1, requires:'physical_rend', requiresLv:5, desc:_=>`Při útoku na cíl pod 20% HP: 5.0× dmg` },
+          { k:'whirlwind', name:'Vichřice', icon:'🌀', maxLv:1, requires:'physical_slash', requiresLv:3, desc:_=>`Aktivní: 3 útoky po sobě` }
+        ]}
+      ]
     }
   ];
   const SCHOOL_MAP = {};
@@ -276,6 +292,19 @@
   function hasNatureRevitalize() {
     return getTalentLv('nature_revitalize') > 0;
   }
+  // ===== PHYSICAL HELPERY =====
+  function getPhysicalEdgePct() {
+    if (state.activeSchool !== 'physical') return 0;
+    return 10 + getTalentLv('physical_edge') * 6;
+  }
+  function getPhysicalRendCritDmg() {
+    if (state.activeSchool !== 'physical') return 0;
+    return getTalentLv('physical_rend') * 15;
+  }
+  function hasPhysicalExecutioner() {
+    return getTalentLv('physical_executioner') > 0;
+  }
+  // ===== RESIST MULT =====
   function getSchoolResistMult(schoolId) {
     const mb = mapBattleState;
     if (!mb || !mb.loc || !mb.loc.resists) return 1.0;
@@ -292,6 +321,9 @@
     if (spellId === 'blizzard') return getTalentLv('ice_blizzard');
     if (spellId === 'icebolt') return getTalentLv('ice_icebolt');
     if (spellId === 'frostbolt') return getTalentLv('ice_frostbolt');
+    if (spellId === 'strongStrike') return getTalentLv('physical_strongStrike');
+    if (spellId === 'slash') return getTalentLv('physical_slash');
+    if (spellId === 'whirlwind') return getTalentLv('physical_whirlwind');
     return 0;
   }
   function getRegrowthHeal() {
@@ -732,8 +764,9 @@
     const fireBtn = $('mbSpellFireBtn');
     const healBtn = $('mbSpellHealBtn');
     const freezeBtn = $('mbSpellFreezeBtn');
+    const physBtn = $('mbSpellPhysBtn');
     // Vsechna schovat (default)
-    [fireBtn, healBtn, freezeBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active', 'used'); } });
+    [fireBtn, healBtn, freezeBtn, physBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active', 'used'); } });
     const activeId = state.activeSchool;
     if (!activeId) return;
     const school = SCHOOL_MAP[activeId];
@@ -743,16 +776,18 @@
     const lv = getSpellLv(spellId);
     const onCooldown = mb._spellCooldownTicks > 0;
     // Ukazat spravne kouzlo — VZDY viditelne, aktivni jen kdyz je prilezitost
-    const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : healBtn;
+    const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : activeId === 'physical' ? physBtn : healBtn;
     if (!btn) return;
     btn.classList.remove('hidden');
     if (onCooldown) {
       btn.classList.add('used');
-      btn.innerHTML = activeId === 'fire' ? `🔥<span class="spell-cd">${mb._spellCooldownTicks}</span>` : activeId === 'ice' ? `❄️<span class="spell-cd">${mb._spellCooldownTicks}</span>` : `💚<span class="spell-cd">${mb._spellCooldownTicks}</span>`;
+      const icons = { fire:'🔥', ice:'❄️', physical:'⚔️' };
+      btn.innerHTML = `${icons[activeId] || '💚'}<span class="spell-cd">${mb._spellCooldownTicks}</span>`;
       return;
     }
     // Obnovit puvodni obsah
-    btn.innerHTML = activeId === 'fire' ? '🔥' : activeId === 'ice' ? '❄️' : '💚';
+    const icons = { fire:'🔥', ice:'❄️', physical:'⚔️' };
+    btn.innerHTML = icons[activeId] || '💚';
     // Aktivni: freeze vzdy, ostatni jen v attack okne
     if (activeId === 'ice') {
       btn.classList.add('active');
@@ -889,6 +924,16 @@
       };
       spellFreezeBtn.addEventListener('pointerdown', freezeHandler);
       handlers.push(['pointerdown', freezeHandler]);
+    }
+    const spellPhysBtn = $('mbSpellPhysBtn');
+    if (spellPhysBtn) {
+      const physHandler = (e) => {
+        e.stopPropagation();
+        const best = getBestSpellId(state.activeSchool);
+        if (best) onMapAttackSpell(best);
+      };
+      spellPhysBtn.addEventListener('pointerdown', physHandler);
+      handlers.push(['pointerdown', physHandler]);
     }
   }
 
@@ -1485,6 +1530,7 @@
       if (hasPassive && a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
       if (hasPassive && a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
       if (hasPassive && a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
+      if (hasPassive && a === 'physical') return { c1:'#b0b0c8', c2:'#8888aa', rgb:'180,180,200' };
       return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
     })();
     const color1 = schoolColor.c1;
@@ -1624,6 +1670,30 @@
       });
       setTimeout(() => { if (p.parentNode) p.remove(); }, 700);
     }
+  }
+
+  function spawnSlashEffect() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 4;
+    // Diagonální seknutí — SVG čára
+    const slash = document.createElement('div');
+    slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;`;
+    slash.innerHTML = `<svg viewBox="0 0 80 80" width="80" height="80" style="display:block">
+      <line x1="10" y1="70" x2="70" y2="10" stroke="#b0b0c8" stroke-width="4" stroke-linecap="round" opacity="0.9">
+        <animate attributeName="stroke-dashoffset" from="85" to="0" dur="0.12s" fill="freeze"/>
+        <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
+      </line>
+      <line x1="10" y1="70" x2="70" y2="10" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6">
+        <animate attributeName="stroke-dashoffset" from="85" to="0" dur="0.1s" fill="freeze"/>
+        <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
+      </line>
+    </svg>`;
+    arena.appendChild(slash);
+    requestAnimationFrame(() => { slash.style.opacity = '1'; });
+    setTimeout(() => { if (slash.parentNode) slash.remove(); }, 400);
   }
 
   // ===== SPELL PROJECTILES =====
@@ -2004,6 +2074,21 @@
       mb.hot = Math.max(mb.hot || 0, Math.round(healAmt * resistMult) + vitBonus);
       mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
     }
+    // Physical — edge (ostří) — % bonus dmg
+    const edgePct = getPhysicalEdgePct();
+    if (edgePct > 0 && applyPassives && state.activeSchool === 'physical') {
+      const edgeBonus = Math.round(dmg * edgePct / 100);
+      dmg += edgeBonus;
+    }
+    // Physical — executioner (kat) — 5× dmg pod 20% HP
+    if (hasPhysicalExecutioner() && applyPassives && state.activeSchool === 'physical') {
+      const hpPct = (mb.bossHp / mb.maxBossHp) * 100;
+      if (hpPct <= 20) {
+        dmg = Math.round(dmg * 5.0);
+        displayDamageText(`💀 ${dmg}`);
+        playSFX(critSfx);
+      }
+    }
 
     mb.bossHp -= dmg;
     // Zelený projektil od středu k bossovi
@@ -2142,6 +2227,11 @@
       dotGlow='rgba(46,204,113,1)'; dotGlow2='rgba(46,204,113,0.6)'; pulse='rgba(46,204,113,0.6)'; target='#2ecc71'; targetGlow='rgba(46,204,113,0.8)';
       seqDone='#2ecc71'; seqGlow='rgba(46,204,113,0.4)'; seqGlow2='rgba(46,204,113,0.9)'; seqGlow3='rgba(46,204,113,0.4)';
       spellColor='#2ecc71'; spellBg='#0a1a0a'; spellGlow='rgba(46,204,113,0.4)';
+    } else if (hasPassive && a === 'physical') {
+      bg='rgba(180,180,200,0.2)'; border='rgba(180,180,200,0.8)'; dot='rgba(180,180,200,0.45)'; dotTapped='rgba(180,180,200,1)';
+      dotGlow='rgba(180,180,200,1)'; dotGlow2='rgba(180,180,200,0.6)'; pulse='rgba(180,180,200,0.6)'; target='#b0b0c8'; targetGlow='rgba(180,180,200,0.8)';
+      seqDone='#b0b0c8'; seqGlow='rgba(180,180,200,0.4)'; seqGlow2='rgba(180,180,200,0.9)'; seqGlow3='rgba(180,180,200,0.4)';
+      spellColor='#b0b0c8'; spellBg='#1a1a20'; spellGlow='rgba(180,180,200,0.4)';
     } else {
       bg='rgba(180,100,255,0.2)'; border='rgba(180,100,255,0.8)'; dot='rgba(180,100,255,0.45)'; dotTapped='rgba(180,100,255,1)';
       dotGlow='rgba(180,100,255,1)'; dotGlow2='rgba(180,100,255,0.6)'; pulse='rgba(180,100,255,0.6)'; target='#b064ff'; targetGlow='rgba(176,100,255,0.8)';
@@ -2204,7 +2294,7 @@
     // Kouzlo lze použít jen v attack window (kromě ice — vždy aktivní)
     if (state.activeSchool !== 'ice' && !mb.inAttackWindow) return;
     // Mana cost podle kouzla a levelu
-    const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15 };
+    const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15, strongStrike: 8, slash: 15, whirlwind: 25 };
     const cost = (manaCosts[spellId] || 15) + lv * 2;
     if ((h.mana || 0) < cost) { showMessage('💧 Nedostatek many!'); return; }
     h.mana -= cost;
@@ -2327,6 +2417,41 @@
       const circle = document.querySelector('.timer-circle');
       if (circle) circle.style.stroke = '#4fc3f7';
       spawnFreezeParticles();
+    } else if (spellId === 'strongStrike') {
+      const pct = 100 + lv * 50;
+      let dmg = Math.round(baseDmg * pct / 100);
+      const rendCrit = getPhysicalRendCritDmg();
+      if (rendCrit > 0) dmg = Math.round(dmg * (1 + rendCrit / 100));
+      mb.bossHp -= dmg;
+      effectMsg = `💢 Silný úder! ${dmg} poškození!`;
+      spawnSlashEffect();
+      setTimeout(() => {
+        const bossFig = $('mbFigure');
+        if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
+        displayDamageText('💢');
+      }, 120);
+    } else if (spellId === 'slash') {
+      const pct = 150 + lv * 50;
+      let dmg = Math.round(baseDmg * pct / 100);
+      const rendCrit = getPhysicalRendCritDmg();
+      if (rendCrit > 0) dmg = Math.round(dmg * (1 + rendCrit / 100));
+      mb.bossHp -= dmg;
+      effectMsg = `⚡ Seknutí! ${dmg} poškození!`;
+      spawnSlashEffect();
+      setTimeout(() => {
+        const bossFig = $('mbFigure');
+        if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
+        displayDamageText('⚡');
+      }, 120);
+    } else if (spellId === 'whirlwind') {
+      mb._blizzardFreeAttacks = 3;
+      effectMsg = `🌀 Vichřice! 3 útoky po sobě!`;
+      spawnSlashEffect();
+      setTimeout(() => {
+        const bossFig = $('mbFigure');
+        if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
+        displayDamageText('🌀');
+      }, 120);
     }
     sfxSuccess();
     // (hint: zachovat bonus info)
@@ -2500,6 +2625,12 @@
     if (schoolId === 'ice') {
       if (getTalentLv('ice_blizzard') > 0) return 'blizzard';
       if (getTalentLv('ice_frostbolt') > 0) return 'frostbolt';
+      return null;
+    }
+    if (schoolId === 'physical') {
+      if (getTalentLv('physical_whirlwind') > 0) return 'whirlwind';
+      if (getTalentLv('physical_slash') > 0) return 'slash';
+      if (getTalentLv('physical_strongStrike') > 0) return 'strongStrike';
       return null;
     }
     // Nature: pravá větev je pasivní HoT, levá jed — žádné aktivní kouzlo
