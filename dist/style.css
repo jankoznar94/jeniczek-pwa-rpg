@@ -288,20 +288,21 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   display:flex; gap:8px; margin:12px 0; justify-content:center; flex-wrap:wrap;
 }
 .inv-equip-slot {
-  width:100px; height:100px; background:#1e1e1e; border:2px solid #3a3a3a;
+  width:100px; height:100px; background:#2a2a2a; border:2px solid #4a4a4a;
   border-radius:10px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; gap:3px; cursor:pointer; transition:0.2s;
   position:relative;
 }
-.inv-equip-slot:hover { border-color:#888; background:#282828; }
+.inv-equip-slot:hover { border-color:#aaa; background:#333; }
 .inv-equip-slot .inv-slot-label {
   position:absolute; top:-10px; left:50%; transform:translateX(-50%);
-  font-size:9px; color:#999; background:#121212; padding:0 5px; white-space:nowrap;
+  font-size:9px; color:#aaa; background:#1a1a1a; padding:0 5px; white-space:nowrap;
 }
 .inv-equip-slot .inv-slot-icon { font-size:28px; line-height:1; }
 .inv-equip-slot .inv-slot-name { font-size:10px; color:#ccc; text-align:center; line-height:1.2; }
-.inv-equip-slot.empty { border-color:#2a2a2a; opacity:0.4; }
-.inv-equip-slot.empty .inv-slot-icon { opacity:0.25; }
+.inv-equip-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#1e1e1e; }
+.inv-equip-slot.empty .inv-slot-icon { opacity:0.2; font-size:22px; }
+.inv-equip-slot.empty .inv-slot-name { color:#555; font-size:9px; }
 
 .inv-grid {
   display:grid; grid-template-columns:repeat(4, 1fr); gap:5px;
