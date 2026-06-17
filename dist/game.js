@@ -3047,6 +3047,14 @@
         }
       });
     });
+    // Klik mimo buňky = schovat všechny akce
+    const hideActions = (e) => {
+      if (e.target.closest('.inv-grid-cell')) return;
+      grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
+    };
+    document.removeEventListener('click', grid._hideActions);
+    grid._hideActions = hideActions;
+    document.addEventListener('click', hideActions);
   }
 
   function unequipSlot(slot) {
