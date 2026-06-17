@@ -1681,22 +1681,27 @@
   function spawnSlashEffect() {
     const arena = $('mbArena');
     if (!arena) return;
-    const rect = arena.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 4;
+    const aRect = arena.getBoundingClientRect();
+    const boss = $('mbFigure');
+    let cx = aRect.width / 2, cy = 30;
+    if (boss) {
+      const bRect = boss.getBoundingClientRect();
+      cx = bRect.left + bRect.width / 2 - aRect.left;
+      cy = bRect.top + bRect.height / 2 - aRect.top;
+    }
     const sc = getSchoolColors(false);
-    // Diagonální seknutí — SVG čára s barvou školy
+    // Oblouček místo rovné čáry — path s quadratic bezier
     const slash = document.createElement('div');
     slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;`;
     slash.innerHTML = `<svg viewBox="0 0 80 80" width="80" height="80" style="display:block">
-      <line x1="10" y1="70" x2="70" y2="10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" opacity="0.9">
-        <animate attributeName="stroke-dashoffset" from="85" to="0" dur="0.12s" fill="freeze"/>
+      <path d="M 10 70 Q 40 10 70 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
+        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
         <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
-      </line>
-      <line x1="10" y1="70" x2="70" y2="10" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.6">
-        <animate attributeName="stroke-dashoffset" from="85" to="0" dur="0.1s" fill="freeze"/>
+      </path>
+      <path d="M 10 70 Q 40 10 70 10" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
+        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.1s" fill="freeze"/>
         <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
-      </line>
+      </path>
     </svg>`;
     arena.appendChild(slash);
     requestAnimationFrame(() => { slash.style.opacity = '1'; });
