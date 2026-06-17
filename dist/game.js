@@ -440,7 +440,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrPoints:50}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
       locationProgress:[5,5,5,5,5,5,5,5,5,5,5,5], bossesDefeated:[true,true,true,true,true,true,true,true,true,true,true,true], floorProgress:[5,5,5,5,5,5,5,5,5,5,5,5], spellUsedThisFloor:{} };
     return s;
   }
@@ -716,6 +716,13 @@
       arenaHp.textContent = `❤️ ${mb.playerHp}/${mb.maxPlayerHp}`;
       arenaHp.classList.remove('hidden');
     }
+    // Mana pod HP
+    const arenaMana = $('mbPlayerArenaMana');
+    if (arenaMana) {
+      const h = state.hero;
+      arenaMana.textContent = `💧 ${h.mana}/${h.maxMana}`;
+      arenaMana.classList.remove('hidden');
+    }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
     fig.textContent = emoji;
@@ -741,7 +748,7 @@
     btn.classList.remove('hidden');
     if (onCooldown) {
       btn.classList.add('used');
-      btn.innerHTML = activeId === 'fire' ? '🔥<span class="spell-x">❌</span>' : activeId === 'ice' ? '❄️<span class="spell-x">❌</span>' : '💚<span class="spell-x">❌</span>';
+      btn.innerHTML = activeId === 'fire' ? `🔥<span class="spell-cd">${mb._spellCooldownTicks}</span>` : activeId === 'ice' ? `❄️<span class="spell-cd">${mb._spellCooldownTicks}</span>` : `💚<span class="spell-cd">${mb._spellCooldownTicks}</span>`;
       return;
     }
     // Obnovit puvodni obsah
@@ -1255,6 +1262,13 @@
     if (regen > 0) {
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + regen);
     }
+    // Mana regen — 1 mana každý tick, +1 za každých 5 intelektu
+    const h = state.hero;
+    const manaRegen = 1 + Math.floor((h.attrInt || 0) / 5);
+    h.mana = Math.min(h.maxMana, (h.mana || 0) + manaRegen);
+    // Aktualizovat manu v UI
+    const arenaMana = $('mbPlayerArenaMana');
+    if (arenaMana) arenaMana.textContent = `💧 ${h.mana}/${h.maxMana}`;
 
     // Chill tick — odečti jeden tick zpomalení
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
@@ -1316,15 +1330,10 @@
     mb.inAttackWindow = true;
     mb.isAttacking = false;
 
-    // Zobrazit ⚔️ info ikonu v kolečku (podle školy)
+    // Zobrazit ⚔️ info ikonu v kolečku (vždy meč, ne ikona školy)
     const actionInfo = $('mbActionInfo');
     if (actionInfo) {
-      const a = state.activeSchool;
-      const hasPassive = a && getTierPoints(a, 0) > 0;
-      if (hasPassive && a === 'fire') actionInfo.textContent = '🔥';
-      else if (hasPassive && a === 'ice') actionInfo.textContent = '❄️';
-      else if (hasPassive && a === 'nature') actionInfo.textContent = '🌿';
-      else actionInfo.textContent = '⚔️';
+      actionInfo.textContent = '⚔️';
       actionInfo.classList.remove('hidden');
     }
     updateActionButtons();
@@ -2188,14 +2197,25 @@
 
   function castMapSpell(spellId) { if (!spellId) { spellId = getBestSpellId(state.activeSchool); if (!spellId) return; }
     const mb = mapBattleState;
+    const h = state.hero;
     if (mb.ended) return;
     let lv = getSpellLv(spellId);
     if (lv === 0) return;
-    // Cooldown 30 ticků
-    if (mb._spellCooldownTicks > 0) return;
     // Kouzlo lze použít jen v attack window (kromě ice — vždy aktivní)
     if (state.activeSchool !== 'ice' && !mb.inAttackWindow) return;
-    mb._spellCooldownTicks = 30;
+    // Mana cost podle kouzla a levelu
+    const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15 };
+    const cost = (manaCosts[spellId] || 15) + lv * 2;
+    if ((h.mana || 0) < cost) { showMessage('💧 Nedostatek many!'); return; }
+    h.mana -= cost;
+    // Aktualizovat manu v UI
+    const manaEl = $('mbPlayerArenaMana');
+    if (manaEl) manaEl.textContent = `💧 ${h.mana}/${h.maxMana}`;
+    // Cooldown — základ 30 ticků, intelekt snižuje (min 10)
+    const intLv = h.attrInt || 0;
+    const cdTicks = Math.max(10, 30 - intLv * 2);
+    if (mb._spellCooldownTicks > 0) return;
+    mb._spellCooldownTicks = cdTicks;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
@@ -2645,20 +2665,25 @@
     const strCost = ATTR_COST[Math.min(h.attrStr||0, ATTR_COST.length-1)] || 999;
     const vitCost = ATTR_COST[Math.min(h.attrVit||0, ATTR_COST.length-1)] || 999;
     const dexCost = ATTR_COST[Math.min(h.attrDex||0, ATTR_COST.length-1)] || 999;
+    const intCost = ATTR_COST[Math.min(h.attrInt||0, ATTR_COST.length-1)] || 999;
     const pts = h.attrPoints || 0;
     $('heroAttrStr').textContent = (h.attrStr||0) + (h.equip.weapon !== 'fists' ? ` (s ${ITEM_MAP[h.equip.weapon]?.icon||''})` : '');
     $('heroAttrVit').textContent = (h.attrVit||0) + (h.equip.armor !== 'rags' ? ` (s ${ITEM_MAP[h.equip.armor]?.icon||''})` : '');
     $('heroAttrDex').textContent = (h.attrDex||0);
+    $('heroAttrInt').textContent = (h.attrInt||0);
     $('heroAttrPts').textContent = pts;
     const strBtn = $('heroUpStr');
     const vitBtn = $('heroUpVit');
     const dexBtn = $('heroUpDex');
+    const intBtn = $('heroUpInt');
     if (strBtn) strBtn.textContent = `⬆️ Síla` + (pts > 0 ? '' : ` 🔒`);
     if (strBtn) strBtn.style.opacity = pts > 0 ? '1' : '0.3';
     if (vitBtn) vitBtn.textContent = `⬆️ Vitalita` + (pts > 0 ? '' : ` 🔒`);
     if (vitBtn) vitBtn.style.opacity = pts > 0 ? '1' : '0.3';
     if (dexBtn) dexBtn.textContent = `⬆️ Obratnost` + (pts > 0 ? '' : ` 🔒`);
     if (dexBtn) dexBtn.style.opacity = pts > 0 ? '1' : '0.3';
+    if (intBtn) intBtn.textContent = `⬆️ Intelekt` + (pts > 0 ? '' : ` 🔒`);
+    if (intBtn) intBtn.style.opacity = pts > 0 ? '1' : '0.3';
 
     const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🪄 Ledová hůl', battleAxe:'🪄 Blesková hůl', spear:'🪄 Hvězdná hůl', flameSword:'🪄 Plamená hůl', longsword:'🪄 Měsíční hůl', warHammer:'🪄 Temná hůl', greatAxe:'🪄 Dračí hůl', excalibur:'🪄 Arcimágova hůl' };
     const armorNames = { rags:'👘 Hadry', leather:'👘 Lněný hábit', chainmail:'👘 Kožený hábit', scale:'👘 Šupinový hábit', plate:'👘 Vyšívaný hábit', fullPlate:'👘 Kroužkový hábit', dragonScale:'👘 Dračí hábit', adamantPlate:'👘 Arcimágův hábit' };
@@ -2677,6 +2702,11 @@
     } else if (attr === 'dex') {
       h.attrDex = (h.attrDex||0) + 1;
       showMessage('🎯 Obratnost +1! Crit okno zvětšeno!');
+    } else if (attr === 'int') {
+      h.attrInt = (h.attrInt||0) + 1;
+      h.maxMana = 50 + (h.attrInt||0) * 10;
+      h.mana = h.maxMana;
+      showMessage('🧠 Intelekt +1! Max many +10!');
     } else {
       h.attrVit = (h.attrVit||0) + 1;
       h.maxHp = getHeroMaxHp();
@@ -2925,12 +2955,15 @@
     if (!state.bossesDefeated || state.bossesDefeated.length < LOCATIONS.length) state.bossesDefeated = Array(LOCATIONS.length).fill(false);
     if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
     if (!state.floorProgress || state.floorProgress.length < LOCATIONS.length) state.floorProgress = Array(LOCATIONS.length).fill(0);
-    if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:'rags'}, attrStr:0, attrVit:0, attrPoints:0 };
+    if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, mana:50, maxMana:50, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:'rags'}, attrStr:0, attrVit:0, attrPoints:0 };
     if (state.hero.maxHp === undefined) state.hero.maxHp = getHeroMaxHp();
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
     if (state.hero.attrStr === undefined) state.hero.attrStr = 0;
     if (state.hero.attrVit === undefined) state.hero.attrVit = 0;
     if (state.hero.attrDex === undefined) state.hero.attrDex = 0;
+    if (state.hero.attrInt === undefined) state.hero.attrInt = 0;
+    if (state.hero.mana === undefined) state.hero.mana = 50;
+    if (state.hero.maxMana === undefined) state.hero.maxMana = 50;
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
 
     document.querySelectorAll('.nav-bar a').forEach(a => {

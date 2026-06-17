@@ -43,7 +43,7 @@
     <div class="boss-fight-arena" id="mbArena">
       <div class="boss-fight-boss" id="mbFigure">👹</div>
       <span class="damage-text hidden" id="mbDamageText"></span>
-      <div class="boss-fight-player" id="mbPlayerFigure">🧝<span class="damage-text hidden" id="mbPlayerDamageText"></span><span class="player-arena-hp hidden" id="mbPlayerArenaHp">❤️ 100/100</span></div>
+      <div class="boss-fight-player" id="mbPlayerFigure">🧝<span class="damage-text hidden" id="mbPlayerDamageText"></span><span class="player-arena-hp hidden" id="mbPlayerArenaHp">❤️ 100/100</span><span class="player-arena-mana hidden" id="mbPlayerArenaMana">💧 50/50</span></div>
       <svg id="mbArrow" class="boss-attack-arrow hidden" viewBox="0 0 16 16" width="60" height="60"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
       <div class="attack-timer-ring" id="mbTimerRing">
         <svg viewBox="0 0 110 110" width="110" height="110" style="transform:rotate(-90deg)">
@@ -125,6 +125,10 @@
     <div class="hero-attr-row">
       <span>🎯 Obratnost: <span id="heroAttrDex">0</span></span>
       <button class="btn btn-primary" style="width:auto;padding:4px 10px;font-size:11px" id="heroUpDex" onclick="game.upgradeAttr('dex')">⬆️ Obratnost</button>
+    </div>
+    <div class="hero-attr-row">
+      <span>🧠 Intelekt: <span id="heroAttrInt">0</span></span>
+      <button class="btn btn-primary" style="width:auto;padding:4px 10px;font-size:11px" id="heroUpInt" onclick="game.upgradeAttr('int')">⬆️ Intelekt</button>
     </div>
   </div>
   <div class="card">
