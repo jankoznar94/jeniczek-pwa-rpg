@@ -3079,12 +3079,12 @@
       if (h.equip.armor !== 'rags') h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
     } else if (item.type === 'helmet') {
-      if (h.equip.helmet !== 'none') h.inventory.push(h.equip.helmet);
+      if (h.equip.helmet && h.equip.helmet !== 'none') h.inventory.push(h.equip.helmet);
       h.equip.helmet = itemId;
     } else if (item.type === 'ring') {
-      if (h.equip.ring1 === 'none') {
+      if (!h.equip.ring1 || h.equip.ring1 === 'none') {
         h.equip.ring1 = itemId;
-      } else if (h.equip.ring2 === 'none') {
+      } else if (!h.equip.ring2 || h.equip.ring2 === 'none') {
         h.equip.ring2 = itemId;
       } else {
         // Oba prsteny obsazeny — nahradit první
