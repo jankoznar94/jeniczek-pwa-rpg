@@ -3034,16 +3034,17 @@
       }
     }
     grid.innerHTML = html;
-    // Klik na buňku = zobrazení/skrytí akcí (pro dotyková zařízení)
+    // Klik na buňku = přepnutí viditelnosti akcí (pro dotyková zařízení)
     grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
       cell.addEventListener('click', function(e) {
         if (e.target.closest('.cell-actions')) return;
         const actions = this.querySelector('.cell-actions');
         if (!actions) return;
-        const wasVisible = actions.style.display === 'flex';
         // Skrýt všechny ostatní
-        grid.querySelectorAll('.cell-actions').forEach(a => a.style.display = '');
-        actions.style.display = wasVisible ? '' : 'flex';
+        grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
+        if (!actions.classList.contains('visible')) {
+          actions.classList.add('visible');
+        }
       });
     });
   }
