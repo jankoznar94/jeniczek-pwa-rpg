@@ -1498,6 +1498,17 @@
     }
   }
 
+  function getSchoolColors(targetIsPlayer) {
+    if (targetIsPlayer) return { c1:'#e94560', c2:'#c0392b', rgb:'233,69,96' };
+    const a = state.activeSchool;
+    const hasPassive = a && getTierPoints(a, 0) > 0;
+    if (hasPassive && a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
+    if (hasPassive && a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
+    if (hasPassive && a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
+    if (hasPassive && a === 'physical') return { c1:'#b0b0c8', c2:'#8888aa', rgb:'180,180,200' };
+    return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
+  }
+
   function spawnProjectileEffect(dir, targetIsPlayer, isCrit) {
     const arena = $('mbArena');
     if (!arena) return;
@@ -1527,16 +1538,7 @@
       endY = targetIsPlayer ? rect.height + 20 : -20;
     }
 
-    const schoolColor = (function() {
-      if (targetIsPlayer) return { c1:'#e94560', c2:'#c0392b', rgb:'233,69,96' }; // boss vždy červený
-      const a = state.activeSchool;
-      const hasPassive = a && getTierPoints(a, 0) > 0;
-      if (hasPassive && a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
-      if (hasPassive && a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
-      if (hasPassive && a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
-      if (hasPassive && a === 'physical') return { c1:'#b0b0c8', c2:'#8888aa', rgb:'180,180,200' };
-      return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
-    })();
+    const schoolColor = getSchoolColors(targetIsPlayer);
     const color1 = schoolColor.c1;
     const color2 = schoolColor.c2;
     const rgb = schoolColor.rgb;
@@ -1682,11 +1684,12 @@
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 4;
-    // Diagonální seknutí — SVG čára
+    const sc = getSchoolColors(false);
+    // Diagonální seknutí — SVG čára s barvou školy
     const slash = document.createElement('div');
     slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;`;
     slash.innerHTML = `<svg viewBox="0 0 80 80" width="80" height="80" style="display:block">
-      <line x1="10" y1="70" x2="70" y2="10" stroke="#b0b0c8" stroke-width="4" stroke-linecap="round" opacity="0.9">
+      <line x1="10" y1="70" x2="70" y2="10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" opacity="0.9">
         <animate attributeName="stroke-dashoffset" from="85" to="0" dur="0.12s" fill="freeze"/>
         <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
       </line>
