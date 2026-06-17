@@ -345,31 +345,44 @@
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
+    // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', weaponType:'fists' },
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢' },
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🪄', weaponType:'staff' },
-    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, cost:20, icon:'👘' },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, cost:25, icon:'🪄', weaponType:'staff' },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🪄', weaponType:'staff' },
-    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, cost:35, icon:'👘' },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🪄', weaponType:'staff' },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🪄', weaponType:'staff' },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🪄', weaponType:'staff' },
-    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, cost:60, icon:'👘' },
-    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, cost:80, icon:'👘' },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🪄', weaponType:'staff' },
-    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', weaponType:'blade' },
-    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, cost:110, icon:'👘' },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', weaponType:'blade' },
-    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, cost:160, icon:'👘' },
-    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', weaponType:'blade' },
-    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, cost:250, icon:'👘' },
-    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️' },
-    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️' },
-    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑' },
-    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:25, icon:'💍' },
-    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍' },
-    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:10, bonusHp:20, cost:100, icon:'💍' },
+    // === ZBRANĚ — magické (staff) ===
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🪄', weaponType:'staff', tier:1 },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, cost:25, icon:'🪄', weaponType:'staff', tier:2 },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🪄', weaponType:'staff', tier:2 },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🪄', weaponType:'staff', tier:3 },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🪄', weaponType:'staff', tier:3 },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🪄', weaponType:'staff', tier:4 },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🪄', weaponType:'staff', tier:4 },
+    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, cost:200, icon:'🪄', weaponType:'staff', tier:5 },
+    // === ZBRANĚ — fyzické (blade) ===
+    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:10, bonusHp:0, cost:20, icon:'⚔️', weaponType:'blade', tier:1 },
+    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, cost:35, icon:'⚔️', weaponType:'blade', tier:2 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:22, bonusHp:0, cost:50, icon:'🪓', weaponType:'blade', tier:3 },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:30, bonusHp:0, cost:80, icon:'⚔️', weaponType:'blade', tier:4 },
+    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', weaponType:'blade', tier:5 },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', weaponType:'blade', tier:5 },
+    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', weaponType:'blade', tier:6 },
+    // === BRNĚNÍ ===
+    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, cost:20, icon:'👘', tier:1 },
+    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, cost:35, icon:'👘', tier:2 },
+    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, cost:60, icon:'👘', tier:3 },
+    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, cost:80, icon:'👘', tier:4 },
+    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, cost:110, icon:'👘', tier:4 },
+    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, cost:160, icon:'👘', tier:5 },
+    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, cost:250, icon:'👘', tier:6 },
+    // === HELMY ===
+    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, cost:15, icon:'🎭', tier:1 },
+    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️', tier:2 },
+    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️', tier:3 },
+    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑', tier:5 },
+    // === PRSTENY ===
+    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:15, icon:'💍', tier:1 },
+    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍', tier:3 },
+    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:10, bonusHp:20, cost:100, icon:'💍', tier:4 },
+    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:15, bonusHp:30, cost:180, icon:'💍', tier:5 },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
 
@@ -2503,6 +2516,27 @@
     }
   }
 
+  // ===== LOOT SYSTEM =====
+  function rollLoot(locId, floor) {
+    const h = state.hero;
+    const loc = LOCATIONS[locId];
+    if (!loc) return null;
+    // Šance na loot: 40% base + 5% za patro
+    const chance = 0.40 + floor * 0.05;
+    if (Math.random() > chance) return null;
+    // Tier podle patra: patro 1-2 = tier 1, 3-4 = tier 2, 5-6 = tier 3, 7-8 = tier 4, 9-10 = tier 5, 11-12 = tier 6
+    const maxTier = Math.min(6, Math.ceil(floor / 2));
+    const minTier = Math.max(1, maxTier - 1);
+    const pool = ITEMS.filter(i => i.cost > 0 && i.tier && i.tier >= minTier && i.tier <= maxTier);
+    if (pool.length === 0) return null;
+    const item = pool[rand(0, pool.length - 1)];
+    // Ne掉落 item, který už hráč má equipnutý nebo v inventáři
+    if (h.inventory.includes(item.id) ||
+        h.equip.weapon === item.id || h.equip.armor === item.id ||
+        h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id) return null;
+    return item;
+  }
+
   function endMapBattle(won) {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
@@ -2519,6 +2553,11 @@
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
+      // Loot z monster
+      const loot = rollLoot(locId, mb.floor);
+      if (loot) {
+        state.hero.inventory.push(loot.id);
+      }
       saveGame();
       sfxSuccess();
       // Kill popup — čeká na kliknutí
