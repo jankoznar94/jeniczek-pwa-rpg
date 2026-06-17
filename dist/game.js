@@ -2193,6 +2193,8 @@
     if (lv === 0) return;
     // Cooldown 30 ticků
     if (mb._spellCooldownTicks > 0) return;
+    // Kouzlo lze použít jen v attack window (kromě ice — vždy aktivní)
+    if (state.activeSchool !== 'ice' && !mb.inAttackWindow) return;
     mb._spellCooldownTicks = 30;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
@@ -2313,6 +2315,21 @@
     const spellsEl = $('mbSpells');
     if (spellsEl) spellsEl.innerHTML = '';
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    // === Ukončení attack window (kouzlo = místo útoku) ===
+    clearTimeout(mb._attackWindowTimer);
+    resetTimerRing();
+    const bc = document.querySelector('.bonus-zone-circle');
+    if (bc) bc.style.strokeDasharray = '0 276';
+    const actInfo = $('mbActionInfo');
+    if (actInfo) actInfo.classList.add('hidden');
+    mb.inAttackWindow = false;
+    updateActionButtons();
+    if (mb._blizzardFreeAttacks > 0) {
+      mb._blizzardFreeAttacks--;
+      setTimeout(() => openAttackWindow(), 100);
+    } else {
+      setTimeout(() => mapBattleTurn(), 300);
+    }
   }
 
   function endMapBattle(won) {
