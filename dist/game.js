@@ -3049,7 +3049,8 @@
     });
     // Klik mimo buňky = schovat všechny akce
     const hideActions = (e) => {
-      if (e.target.closest('.inv-grid-cell')) return;
+      const cell = e.target.closest('.inv-grid-cell');
+      if (cell && !cell.classList.contains('empty')) return;
       grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
     };
     document.removeEventListener('click', grid._hideActions);
