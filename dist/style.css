@@ -283,6 +283,54 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .inv-item .inv-item-stats .stat-line { display:block; padding:2px 0; }
 .inv-item .inv-item-actions { display:flex; gap:8px; padding-top:6px; border-top:1px solid #2a2a4a; flex-wrap:wrap; }
 
+/* Inventory — Diablo 2 styl */
+.inv-equip-panel {
+  display:flex; gap:12px; margin:12px 0; justify-content:center;
+}
+.inv-equip-slot {
+  width:120px; height:120px; background:#1a1a3a; border:2px solid #2a2a4a;
+  border-radius:10px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:4px; cursor:pointer; transition:0.2s;
+  position:relative;
+}
+.inv-equip-slot:hover { border-color:#4a7dff; background:#1e1e42; }
+.inv-equip-slot .inv-slot-label {
+  position:absolute; top:-10px; left:50%; transform:translateX(-50%);
+  font-size:10px; color:#8888aa; background:#121018; padding:0 6px; white-space:nowrap;
+}
+.inv-equip-slot .inv-slot-icon { font-size:36px; line-height:1; }
+.inv-equip-slot .inv-slot-name { font-size:11px; color:#ddd; text-align:center; line-height:1.2; }
+.inv-equip-slot.empty { border-color:#2a2a4a; opacity:0.5; }
+.inv-equip-slot.empty .inv-slot-icon { opacity:0.3; }
+
+.inv-grid {
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:6px;
+  background:#1a1a3a; border:1px solid #2a2a4a; border-radius:8px; padding:8px;
+}
+.inv-grid-cell {
+  aspect-ratio:1; background:#14142e; border:1px solid #2a2a4a;
+  border-radius:6px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; cursor:pointer; transition:0.15s; position:relative;
+  min-height:70px;
+}
+.inv-grid-cell:hover { border-color:#4a7dff; background:#1a1a3e; }
+.inv-grid-cell .cell-icon { font-size:24px; line-height:1; }
+.inv-grid-cell .cell-name { font-size:9px; color:#aaa; text-align:center; line-height:1.1; margin-top:2px; }
+.inv-grid-cell .cell-actions {
+  display:none; position:absolute; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.7); border-radius:5px; flex-direction:column;
+  align-items:center; justify-content:center; gap:4px; z-index:5;
+}
+.inv-grid-cell:hover .cell-actions { display:flex; }
+.inv-grid-cell .cell-actions button {
+  font-size:10px; padding:3px 8px; border:none; border-radius:4px;
+  cursor:pointer; font-weight:bold; width:80%;
+}
+.inv-grid-cell .cell-actions .btn-equip { background:#4a7dff; color:#fff; }
+.inv-grid-cell .cell-actions .btn-sell { background:#e94560; color:#fff; }
+.inv-grid-cell.empty { opacity:0.3; cursor:default; }
+.inv-grid-cell.empty:hover { border-color:#2a2a4a; background:#14142e; }
+
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; }
 .mb-xp-bar-bg { flex:1; height:10px; background:#1a1a3a; border-radius:4px; overflow:hidden; }

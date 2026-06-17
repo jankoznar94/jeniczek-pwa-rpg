@@ -138,9 +138,17 @@
   </div>
   <div class="card">
     <div class="card-title">🎒 Vybavení</div>
-    <div id="equipSlots">
-      <div class="equip-row"><span>🔫 Zbraň:</span><span id="equipWeapon">Pěsti</span></div>
-      <div class="equip-row"><span>🦺 Brnění:</span><span id="equipArmor">Hadry</span></div>
+    <div class="inv-equip-panel" style="margin:8px 0 0">
+      <div class="inv-equip-slot" id="heroSlotWeapon" style="width:100px;height:100px;cursor:default">
+        <div class="inv-slot-label">🔫 Zbraň</div>
+        <div class="inv-slot-icon" id="heroSlotWeaponIcon" style="font-size:28px">✊</div>
+        <div class="inv-slot-name" id="heroSlotWeaponName" style="font-size:10px">Pěsti</div>
+      </div>
+      <div class="inv-equip-slot" id="heroSlotArmor" style="width:100px;height:100px;cursor:default">
+        <div class="inv-slot-label">🦺 Brnění</div>
+        <div class="inv-slot-icon" id="heroSlotArmorIcon" style="font-size:28px">🪢</div>
+        <div class="inv-slot-name" id="heroSlotArmorName" style="font-size:10px">Hadry</div>
+      </div>
     </div>
   </div>
 </div>
@@ -172,11 +180,24 @@
   <div class="card">
     <div class="flex-between">
       <span class="card-title">🎒 Inventář</span>
-      <span id="invGold">💰 0 zlatých</span>
+      <span id="invGold">💰 0</span>
     </div>
-    <div class="card-subtitle">Prohlížej, oblékej a prodávej předměty</div>
   </div>
-  <div id="invList"></div>
+  <!-- Equipment sloty -->
+  <div class="inv-equip-panel">
+    <div class="inv-equip-slot" id="invSlotWeapon" onclick="game.unequipSlot('weapon')">
+      <div class="inv-slot-label">🔫 Zbraň</div>
+      <div class="inv-slot-icon" id="invSlotWeaponIcon">✊</div>
+      <div class="inv-slot-name" id="invSlotWeaponName">Pěsti</div>
+    </div>
+    <div class="inv-equip-slot" id="invSlotArmor" onclick="game.unequipSlot('armor')">
+      <div class="inv-slot-label">🦺 Brnění</div>
+      <div class="inv-slot-icon" id="invSlotArmorIcon">🪢</div>
+      <div class="inv-slot-name" id="invSlotArmorName">Hadry</div>
+    </div>
+  </div>
+  <!-- Grid batohu -->
+  <div class="inv-grid" id="invGrid"></div>
 </div>
 
 <!-- ===== GUIDE ===== -->

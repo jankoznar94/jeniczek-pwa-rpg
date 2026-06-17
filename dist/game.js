@@ -2836,8 +2836,13 @@
 
     const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🪄 Ledová hůl', battleAxe:'🪄 Blesková hůl', spear:'🪄 Hvězdná hůl', flameSword:'🪄 Plamená hůl', longsword:'🪄 Měsíční hůl', warHammer:'⚔️ Temný meč', greatAxe:'🪓 Dračí sekera', excalibur:'⚔️ Arcimágův meč' };
     const armorNames = { rags:'👘 Hadry', leather:'👘 Lněný hábit', chainmail:'👘 Kožený hábit', scale:'👘 Šupinový hábit', plate:'👘 Vyšívaný hábit', fullPlate:'👘 Kroužkový hábit', dragonScale:'👘 Dračí hábit', adamantPlate:'👘 Arcimágův hábit' };
-    $('equipWeapon').textContent = weaponNames[h.equip.weapon] || '✊ Pěsti';
-    $('equipArmor').textContent = armorNames[h.equip.armor] || '🧥 Hadry';
+    // Hero screen equipment sloty
+    const w = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
+    const a = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const hw = $('heroSlotWeaponIcon'); if (hw) hw.textContent = w.icon;
+    const hwn = $('heroSlotWeaponName'); if (hwn) hwn.textContent = w.name;
+    const ha = $('heroSlotArmorIcon'); if (ha) ha.textContent = a.icon;
+    const han = $('heroSlotArmorName'); if (han) han.textContent = a.name;
   }
 
   function upgradeAttr(attr) {
@@ -2917,29 +2922,61 @@
   // ===== INVENTORY =====
   function renderInventory() {
     const h = state.hero;
-    $('invGold').textContent = `💰 ${h.gold} zlatých`;
-    const container = $('invList');
-    if (h.inventory.length === 0) {
-      container.innerHTML = '<div style="text-align:center;color:#8888aa;padding:20px">📦 Inventář je prázdný</div>';
-    } else {
-      container.innerHTML = h.inventory.map((itemId, idx) => {
+    $('invGold').textContent = `💰 ${h.gold}`;
+    // Equipment sloty
+    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
+    const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    $('invSlotWeaponIcon').textContent = weapon.icon;
+    $('invSlotWeaponName').textContent = weapon.name;
+    $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
+    $('invSlotArmorIcon').textContent = armor.icon;
+    $('invSlotArmorName').textContent = armor.name;
+    $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
+    // Grid batohu — 4 sloupce, max 20 buněk
+    const grid = $('invGrid');
+    const inv = h.inventory || [];
+    const maxCells = 20;
+    let html = '';
+    for (let i = 0; i < maxCells; i++) {
+      const itemId = inv[i];
+      if (itemId) {
         const item = ITEM_MAP[itemId];
-        if (!item) return '';
-        const isEquipped = h.equip.weapon === itemId || h.equip.armor === itemId;
-        const canEquip = !isEquipped;
-        const stats = item.type === 'weapon' ? `⚔️+${item.baseDmg} dmg` : `❤️+${item.bonusHp} HP`;
-        return `<div class="inv-item" style="opacity:${isEquipped?'0.7':'1'}">
-          <div class="inv-item-header">
-            <div class="inv-item-name"><span class="item-icon">${item.icon}</span>${item.name}${isEquipped?' ⭐':''}</div>
-            <div class="inv-item-stats"><span class="stat-line">${stats}</span>${isEquipped?'<span class="stat-line" style="color:#2ecc71">✅ Oblečeno</span>':''}</div>
-          </div>
-          <div class="inv-item-actions">
-            ${canEquip ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.equipItem(${idx})">🎽 Obléci</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.unequipItem('${itemId}')">📦 Sundat</button>`}
-            <button class="btn btn-secondary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${itemId}')">💰 Prodat (${Math.round(item.cost*0.5)})</button>
+        if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
+        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : `❤️${item.bonusHp}`;
+        html += `<div class="inv-grid-cell" data-idx="${i}">
+          <div class="cell-icon">${item.icon}</div>
+          <div class="cell-name">${item.name}</div>
+          <div class="cell-actions">
+            <button class="btn-equip" onclick="event.stopPropagation();game.equipItem(${i})">🎽 Obléci</button>
+            <button class="btn-sell" onclick="event.stopPropagation();game.sellItem('${itemId}')">💰 ${Math.round(item.cost*0.5)}</button>
           </div>
         </div>`;
-      }).join('');
+      } else {
+        html += '<div class="inv-grid-cell empty"></div>';
+      }
     }
+    grid.innerHTML = html;
+  }
+
+  function unequipSlot(slot) {
+    const h = state.hero;
+    if (slot === 'weapon') {
+      if (h.equip.weapon === 'fists') return;
+      if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+      h.inventory.push(h.equip.weapon);
+      h.equip.weapon = 'fists';
+    } else {
+      if (h.equip.armor === 'rags') return;
+      if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+      h.inventory.push(h.equip.armor);
+      h.equip.armor = 'rags';
+    }
+    h.baseDmg = getHeroDmg();
+    h.maxHp = getHeroMaxHp();
+    h.hp = h.maxHp;
+    saveGame();
+    renderInventory();
+    renderHero();
   }
 
   function equipItem(invIdx) {
@@ -3220,7 +3257,7 @@
 
   window.game = {
     showScreen, enterLocation, toggleDungeon,
-    upgradeAttr, buyItem, sellItem, equipItem, unequipItem,
+    upgradeAttr, buyItem, sellItem, equipItem, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, activateSchool, resetTalents
   };
