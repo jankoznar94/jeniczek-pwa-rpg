@@ -524,10 +524,7 @@
   }
 
   function showMessage(msg) {
-    const p = document.createElement('div');
-    p.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:300;background:#12122a;border:2px solid #e94560;border-radius:12px;padding:20px 30px;text-align:center;font-size:16px;font-weight:bold';
-    p.textContent = msg; document.body.appendChild(p);
-    setTimeout(() => { p.style.transition='opacity 0.3s'; p.style.opacity='0'; setTimeout(()=>p.remove(),300); }, 2000);
+    // Zrušeno — modální okna jsou zbytečná
   }
 
   // ===== LEVEL-UP OVERLAY =====
@@ -2998,6 +2995,18 @@
       }
     }
     grid.innerHTML = html;
+    // Klik na buňku = zobrazení/skrytí akcí (pro dotyková zařízení)
+    grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
+      cell.addEventListener('click', function(e) {
+        if (e.target.closest('.cell-actions')) return;
+        const actions = this.querySelector('.cell-actions');
+        if (!actions) return;
+        const wasVisible = actions.style.display === 'flex';
+        // Skrýt všechny ostatní
+        grid.querySelectorAll('.cell-actions').forEach(a => a.style.display = '');
+        actions.style.display = wasVisible ? '' : 'flex';
+      });
+    });
   }
 
   function unequipSlot(slot) {
