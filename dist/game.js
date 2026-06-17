@@ -364,6 +364,12 @@
     { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, cost:160, icon:'👘' },
     { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', weaponType:'blade' },
     { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, cost:250, icon:'👘' },
+    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️' },
+    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️' },
+    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑' },
+    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:25, icon:'💍' },
+    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍' },
+    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:10, bonusHp:20, cost:100, icon:'💍' },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
 
@@ -476,7 +482,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags'},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:'none',ring1:'none',ring2:'none'},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
       locationProgress:[5,5,5,5,5,5,5,5,5,5,5,5], bossesDefeated:[true,true,true,true,true,true,true,true,true,true,true,true], floorProgress:[5,5,5,5,5,5,5,5,5,5,5,5], spellUsedThisFloor:{} };
     return s;
   }
@@ -2782,12 +2788,19 @@
   function getHeroDmg() {
     const h = state.hero;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    return Math.max(1, 10 + Math.floor(h.level * 3) + weapon.baseDmg + (h.attrStr || 0) * 2);
+    const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
+    const ringDmg = (ring1 && ring1.type === 'ring' ? (ring1.baseDmg||0) : 0) + (ring2 && ring2.type === 'ring' ? (ring2.baseDmg||0) : 0);
+    return Math.max(1, 10 + Math.floor(h.level * 3) + weapon.baseDmg + ringDmg + (h.attrStr || 0) * 2);
   }
   function getHeroMaxHp() {
     const h = state.hero;
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
-    return Math.max(1, 100 + Math.floor(h.level * 10) + armor.bonusHp + (h.attrVit || 0) * 10);
+    const helmet = ITEM_MAP[h.equip.helmet];
+    const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
+    const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0);
+    return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + (h.attrVit || 0) * 10);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
@@ -2844,10 +2857,19 @@
     // Hero screen equipment sloty
     const w = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const a = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const helm = ITEM_MAP[h.equip.helmet];
+    const r1 = ITEM_MAP[h.equip.ring1];
+    const r2 = ITEM_MAP[h.equip.ring2];
     const hw = $('heroSlotWeaponIcon'); if (hw) hw.textContent = w.icon;
     const hwn = $('heroSlotWeaponName'); if (hwn) hwn.textContent = w.name;
     const ha = $('heroSlotArmorIcon'); if (ha) ha.textContent = a.icon;
     const han = $('heroSlotArmorName'); if (han) han.textContent = a.name;
+    const hh = $('heroSlotHelmetIcon'); if (hh) hh.textContent = helm ? helm.icon : '—';
+    const hhn = $('heroSlotHelmetName'); if (hhn) hhn.textContent = helm ? helm.name : '—';
+    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.textContent = r1 ? r1.icon : '—';
+    const hr1n = $('heroSlotRing1Name'); if (hr1n) hr1n.textContent = r1 ? r1.name : '—';
+    const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.textContent = r2 ? r2.icon : '—';
+    const hr2n = $('heroSlotRing2Name'); if (hr2n) hr2n.textContent = r2 ? r2.name : '—';
   }
 
   function upgradeAttr(attr) {
@@ -2881,9 +2903,12 @@
     const h = state.hero;
     $('shopGold').textContent = `💰 ${h.gold} zlatých`;
     $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0).map(item => {
-      const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id;
+      const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id;
       const canBuy = h.gold >= item.cost && !owned;
-      const stats = item.type === 'weapon' ? `⚔️+${item.baseDmg} dmg` : `❤️+${item.bonusHp} HP`;
+      let stats = '';
+      if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
+      else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+      else stats = `❤️+${item.bonusHp} HP`;
       return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
         <div class="shop-item-header">
           <div class="shop-item-name"><span class="item-icon">${item.icon}</span>${item.name}</div>
@@ -2928,15 +2953,27 @@
   function renderInventory() {
     const h = state.hero;
     $('invGold').textContent = `💰 ${h.gold}`;
-    // Equipment sloty
+    // Equipment sloty — 5 slotů
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const helmet = ITEM_MAP[h.equip.helmet];
+    const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
     $('invSlotWeaponIcon').textContent = weapon.icon;
     $('invSlotWeaponName').textContent = weapon.name;
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     $('invSlotArmorIcon').textContent = armor.icon;
     $('invSlotArmorName').textContent = armor.name;
     $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
+    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.textContent = helmet ? helmet.icon : '—';
+    const hN = $('invSlotHelmetName'); if (hN) hN.textContent = helmet ? helmet.name : '—';
+    const hS = $('invSlotHelmet'); if (hS) hS.classList.toggle('empty', !helmet);
+    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.textContent = ring1 ? ring1.icon : '—';
+    const r1N = $('invSlotRing1Name'); if (r1N) r1N.textContent = ring1 ? ring1.name : '—';
+    const r1S = $('invSlotRing1'); if (r1S) r1S.classList.toggle('empty', !ring1);
+    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.textContent = ring2 ? ring2.icon : '—';
+    const r2N = $('invSlotRing2Name'); if (r2N) r2N.textContent = ring2 ? ring2.name : '—';
+    const r2S = $('invSlotRing2'); if (r2S) r2S.classList.toggle('empty', !ring2);
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
     const inv = h.inventory || [];
@@ -2947,7 +2984,7 @@
       if (itemId) {
         const item = ITEM_MAP[itemId];
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
-        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : `❤️${item.bonusHp}`;
+        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : `❤️${item.bonusHp}`;
         html += `<div class="inv-grid-cell" data-idx="${i}">
           <div class="cell-icon">${item.icon}</div>
           <div class="cell-name">${item.name}</div>
@@ -2965,17 +3002,12 @@
 
   function unequipSlot(slot) {
     const h = state.hero;
-    if (slot === 'weapon') {
-      if (h.equip.weapon === 'fists') return;
-      if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
-      h.inventory.push(h.equip.weapon);
-      h.equip.weapon = 'fists';
-    } else {
-      if (h.equip.armor === 'rags') return;
-      if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
-      h.inventory.push(h.equip.armor);
-      h.equip.armor = 'rags';
-    }
+    const defaults = { weapon:'fists', armor:'rags', helmet:'none', ring1:'none', ring2:'none' };
+    const current = h.equip[slot];
+    if (!current || current === defaults[slot]) return;
+    if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+    h.inventory.push(current);
+    h.equip[slot] = defaults[slot];
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
@@ -2992,12 +3024,26 @@
     if (!item) return;
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     h.inventory.splice(invIdx, 1);
+    const defaults = { weapon:'fists', armor:'rags', helmet:'none', ring1:'none', ring2:'none' };
     if (item.type === 'weapon') {
       if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
       h.equip.weapon = itemId;
-    } else {
+    } else if (item.type === 'armor') {
       if (h.equip.armor !== 'rags') h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
+    } else if (item.type === 'helmet') {
+      if (h.equip.helmet && h.equip.helmet !== 'none') h.inventory.push(h.equip.helmet);
+      h.equip.helmet = itemId;
+    } else if (item.type === 'ring') {
+      if (!h.equip.ring1 || h.equip.ring1 === 'none') {
+        h.equip.ring1 = itemId;
+      } else if (!h.equip.ring2 || h.equip.ring2 === 'none') {
+        h.equip.ring2 = itemId;
+      } else {
+        // Oba prsteny obsazeny — nahradit první
+        h.inventory.push(h.equip.ring1);
+        h.equip.ring1 = itemId;
+      }
     }
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
@@ -3013,13 +3059,21 @@
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     const item = ITEM_MAP[itemId];
     if (!item) return;
+    const defaults = { weapon:'fists', armor:'rags', helmet:'none', ring1:'none', ring2:'none' };
     if (item.type === 'weapon') {
       if (h.equip.weapon !== itemId) return;
-      h.equip.weapon = 'fists';
-    } else {
+      h.equip.weapon = defaults.weapon;
+    } else if (item.type === 'armor') {
       if (h.equip.armor !== itemId) return;
-      h.equip.armor = 'rags';
-    }
+      h.equip.armor = defaults.armor;
+    } else if (item.type === 'helmet') {
+      if (h.equip.helmet !== itemId) return;
+      h.equip.helmet = defaults.helmet;
+    } else if (item.type === 'ring') {
+      if (h.equip.ring1 === itemId) h.equip.ring1 = defaults.ring1;
+      else if (h.equip.ring2 === itemId) h.equip.ring2 = defaults.ring2;
+      else return;
+    } else return;
     h.inventory.push(itemId);
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
