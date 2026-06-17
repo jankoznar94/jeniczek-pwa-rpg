@@ -495,7 +495,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:'none',ring1:'none',ring2:'none'},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
       locationProgress:[5,5,5,5,5,5,5,5,5,5,5,5], bossesDefeated:[true,true,true,true,true,true,true,true,true,true,true,true], floorProgress:[5,5,5,5,5,5,5,5,5,5,5,5], spellUsedThisFloor:{} };
     return s;
   }
@@ -3050,7 +3050,7 @@
 
   function unequipSlot(slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:'rags', helmet:'none', ring1:'none', ring2:'none' };
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
     const current = h.equip[slot];
     if (!current || current === defaults[slot]) return;
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
@@ -3079,12 +3079,12 @@
       if (h.equip.armor !== 'rags') h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
     } else if (item.type === 'helmet') {
-      if (h.equip.helmet && h.equip.helmet !== 'none') h.inventory.push(h.equip.helmet);
+      if (h.equip.helmet) h.inventory.push(h.equip.helmet);
       h.equip.helmet = itemId;
     } else if (item.type === 'ring') {
-      if (!h.equip.ring1 || h.equip.ring1 === 'none') {
+      if (!h.equip.ring1) {
         h.equip.ring1 = itemId;
-      } else if (!h.equip.ring2 || h.equip.ring2 === 'none') {
+      } else if (!h.equip.ring2) {
         h.equip.ring2 = itemId;
       } else {
         // Oba prsteny obsazeny — nahradit první
@@ -3106,7 +3106,7 @@
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    const defaults = { weapon:'fists', armor:'rags', helmet:'none', ring1:'none', ring2:'none' };
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
     if (item.type === 'weapon') {
       if (h.equip.weapon !== itemId) return;
       h.equip.weapon = defaults.weapon;
