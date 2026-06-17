@@ -285,7 +285,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Inventory — neutrální tmavý styl */
 .inv-equip-panel {
-  display:flex; gap:8px; margin:15px 0 12px; justify-content:center; flex-wrap:wrap;
+  display:flex; gap:8px; margin:25px 0 12px; justify-content:center; flex-wrap:wrap;
 }
 .inv-equip-slot {
   width:100px; height:100px; background:#2a2a2a; border:2px solid #4a4a4a;
