@@ -859,7 +859,8 @@
     if (spellFireBtn) {
       const fireHandler = (e) => {
         e.stopPropagation();
-        onMapAttackSpell('fireball');
+        const best = getBestSpellId(state.activeSchool);
+        if (best) onMapAttackSpell(best);
       };
       spellFireBtn.addEventListener('pointerdown', fireHandler);
       handlers.push(['pointerdown', fireHandler]);
@@ -2229,6 +2230,15 @@
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 2; }
       effectMsg = `💥 Fire Blast! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
       spawnProjectileEffect(0, false, false);
+      setTimeout(() => {
+        const bossFig = $('mbFigure');
+        if (bossFig) {
+          bossFig.style.transition = 'filter 0.2s';
+          bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)';
+          setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
+        }
+        displayDamageText('💥');
+      }, 180);
     } else if (spellId === 'firebolt') {
       const pct = 75 + lv * 25; // 100% @ lv1, 125% @ lv2, 150% @ lv3
       const resistMult = getSchoolResistMult('fire');
@@ -2236,6 +2246,15 @@
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
       spawnProjectileEffect(0, false, false);
+      setTimeout(() => {
+        const bossFig = $('mbFigure');
+        if (bossFig) {
+          bossFig.style.transition = 'filter 0.2s';
+          bossFig.style.filter = 'brightness(2) hue-rotate(-20deg) saturate(1.5)';
+          setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
+        }
+        displayDamageText('🔥');
+      }, 180);
     } else if (spellId === 'frostbolt') {
       const dmgPct = 125 + lv * 25; // 150% @ lv1, 175% @ lv2, ... 250% @ lv5
       const resistMult = getSchoolResistMult('ice');
