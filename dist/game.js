@@ -2985,6 +2985,23 @@
     renderInventory();
   }
 
+  function sellSlotItem(itemId, slot) {
+    const h = state.hero;
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+    if (h.equip[slot] !== itemId) return;
+    const item = ITEM_MAP[itemId];
+    if (!item) return;
+    const sellPrice = Math.round(item.cost * 0.5);
+    h.equip[slot] = defaults[slot];
+    h.gold += sellPrice;
+    h.baseDmg = getHeroDmg();
+    h.maxHp = getHeroMaxHp();
+    h.hp = h.maxHp;
+    saveGame();
+    renderInventory();
+    renderHero();
+  }
+
   // ===== INVENTORY =====
   function renderInventory() {
     const h = state.hero;
@@ -3068,23 +3085,39 @@
         }
       });
     });
-    // Klik na equipment slot = info o equipnutém předmětu
-    const equipSlots = ['invSlotWeapon','invSlotArmor','invSlotHelmet','invSlotRing1','invSlotRing2'];
-    equipSlots.forEach(slotId => {
+    // Klik na equipment slot = akce (sundat/prodat) + info
+    const slotNames = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotRing1:'ring1', invSlotRing2:'ring2' };
+    Object.keys(slotNames).forEach(slotId => {
       const el = $(slotId);
       if (!el) return;
       el.addEventListener('click', function(e) {
-        const slot = slotId.replace('invSlot','').toLowerCase();
+        if (e.target.closest('.cell-actions')) return;
+        const slot = slotNames[slotId];
         const itemId = h.equip[slot];
-        const item = itemId ? ITEM_MAP[itemId] : null;
+        const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+        if (!itemId || itemId === defaults[slot]) return;
+        const item = ITEM_MAP[itemId];
         if (item) showItemInfo(item);
+        // Skrýt ostatní akce (batoh + sloty)
+        grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
+        document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
+        // Zobrazit akce pro tento slot
+        const actionsEl = $(slotId + 'Actions');
+        if (actionsEl && item) {
+          actionsEl.innerHTML = `<button class="btn-equip" onclick="event.stopPropagation();game.unequipSlot('${slot}')">📦 Sundat</button>
+            <button class="btn-sell" onclick="event.stopPropagation();game.sellSlotItem('${itemId}','${slot}')">💰 ${Math.round(item.cost*0.5)}</button>`;
+          actionsEl.classList.add('visible');
+        }
       });
     });
     // Klik mimo buňky = schovat všechny akce + info panel
     const hideActions = (e) => {
       const cell = e.target.closest('.inv-grid-cell');
       if (cell && !cell.classList.contains('empty')) return;
+      const slotEl = e.target.closest('.inv-equip-slot');
+      if (slotEl) return;
       grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
+      document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
       const panel = $('invInfoPanel');
       if (panel) panel.classList.add('hidden');
     };
@@ -3408,7 +3441,7 @@
 
   window.game = {
     showScreen, enterLocation, toggleDungeon,
-    upgradeAttr, buyItem, sellItem, equipItem, unequipItem, unequipSlot,
+    upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, activateSchool, resetTalents
   };
