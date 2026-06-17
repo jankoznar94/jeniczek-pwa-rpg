@@ -304,6 +304,10 @@
   function hasPhysicalExecutioner() {
     return getTalentLv('physical_executioner') > 0;
   }
+  function getWeaponType() {
+    const w = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    return w.weaponType || 'fists';
+  }
   // ===== RESIST MULT =====
   function getSchoolResistMult(schoolId) {
     const mb = mapBattleState;
@@ -341,24 +345,24 @@
 
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
-    { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊' },
+    { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', weaponType:'fists' },
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢' },
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🪄' },
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🪄', weaponType:'staff' },
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, cost:20, icon:'👘' },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, cost:25, icon:'🪄' },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🪄' },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, cost:25, icon:'🪄', weaponType:'staff' },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🪄', weaponType:'staff' },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, cost:35, icon:'👘' },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🪄' },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🪄' },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🪄' },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🪄', weaponType:'staff' },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🪄', weaponType:'staff' },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🪄', weaponType:'staff' },
     { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, cost:60, icon:'👘' },
     { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, cost:80, icon:'👘' },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🪄' },
-    { id:'warHammer', name:'Temná hůl', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'🪄' },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🪄', weaponType:'staff' },
+    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', weaponType:'blade' },
     { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, cost:110, icon:'👘' },
-    { id:'greatAxe', name:'Dračí hůl', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪄' },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', weaponType:'blade' },
     { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, cost:160, icon:'👘' },
-    { id:'excalibur', name:'Arcimágova hůl', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'🪄' },
+    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', weaponType:'blade' },
     { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, cost:250, icon:'👘' },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
@@ -1696,6 +1700,12 @@
     setTimeout(() => { if (slash.parentNode) slash.remove(); }, 400);
   }
 
+  function spawnWeaponProjectile() {
+    const wType = getWeaponType();
+    if (wType === 'blade') { spawnSlashEffect(); }
+    else { spawnProjectileEffect(0, false, false); }
+  }
+
   // ===== SPELL PROJECTILES =====
   function spawnFireballProjectile() {
     const arena = $('mbArena');
@@ -2091,8 +2101,13 @@
     }
 
     mb.bossHp -= dmg;
-    // Zelený projektil od středu k bossovi
-    spawnProjectileEffect(null, false, isCrit);
+    // Projektil podle zbraně: blade = seknutí, staff/fists = koule
+    const wType = getWeaponType();
+    if (wType === 'blade') {
+      spawnSlashEffect();
+    } else {
+      spawnProjectileEffect(null, false, isCrit);
+    }
     // Probliknutí bosse
     const bossFig = $('mbFigure');
     if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
@@ -2320,8 +2335,8 @@
       mb.bossHp -= dmg;
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = dotDur; }
       effectMsg = `🔥 Fireball! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
-      // Oranžový projektil k bossovi
-      spawnProjectileEffect(0, false, false);
+      // Projektil podle zbraně
+      spawnWeaponProjectile();
       // Dodatečná exploze po 200ms
       setTimeout(() => {
         const bossFig = $('mbFigure');
@@ -2341,7 +2356,7 @@
       mb.bossHp -= dmg;
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 2; }
       effectMsg = `💥 Fire Blast! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
-      spawnProjectileEffect(0, false, false);
+      spawnWeaponProjectile();
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) {
@@ -2357,7 +2372,7 @@
       let dmg = Math.round(baseDmg * pct / 100 * resistMult);
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
-      spawnProjectileEffect(0, false, false);
+      spawnWeaponProjectile();
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) {
@@ -2816,7 +2831,7 @@
     if (intBtn) intBtn.textContent = `⬆️ Intelekt` + (pts > 0 ? '' : ` 🔒`);
     if (intBtn) intBtn.style.opacity = pts > 0 ? '1' : '0.3';
 
-    const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🪄 Ledová hůl', battleAxe:'🪄 Blesková hůl', spear:'🪄 Hvězdná hůl', flameSword:'🪄 Plamená hůl', longsword:'🪄 Měsíční hůl', warHammer:'🪄 Temná hůl', greatAxe:'🪄 Dračí hůl', excalibur:'🪄 Arcimágova hůl' };
+    const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🪄 Ledová hůl', battleAxe:'🪄 Blesková hůl', spear:'🪄 Hvězdná hůl', flameSword:'🪄 Plamená hůl', longsword:'🪄 Měsíční hůl', warHammer:'⚔️ Temný meč', greatAxe:'🪓 Dračí sekera', excalibur:'⚔️ Arcimágův meč' };
     const armorNames = { rags:'👘 Hadry', leather:'👘 Lněný hábit', chainmail:'👘 Kožený hábit', scale:'👘 Šupinový hábit', plate:'👘 Vyšívaný hábit', fullPlate:'👘 Kroužkový hábit', dragonScale:'👘 Dračí hábit', adamantPlate:'👘 Arcimágův hábit' };
     $('equipWeapon').textContent = weaponNames[h.equip.weapon] || '✊ Pěsti';
     $('equipArmor').textContent = armorNames[h.equip.armor] || '🧥 Hadry';
