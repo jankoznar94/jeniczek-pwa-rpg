@@ -294,15 +294,9 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   position:relative;
 }
 .inv-equip-slot:hover { border-color:#aaa; background:#333; }
-.inv-equip-slot .inv-slot-label {
-  position:absolute; top:-10px; left:50%; transform:translateX(-50%);
-  font-size:9px; color:#aaa; background:#1a1a1a; padding:0 5px; white-space:nowrap;
-}
 .inv-equip-slot .inv-slot-icon { font-size:28px; line-height:1; }
-.inv-equip-slot .inv-slot-name { font-size:10px; color:#ccc; text-align:center; line-height:1.2; }
 .inv-equip-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#1e1e1e; }
-.inv-equip-slot.empty .inv-slot-icon { opacity:0.2; font-size:22px; }
-.inv-equip-slot.empty .inv-slot-name { color:#555; font-size:9px; }
+.inv-equip-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); font-size:24px; }
 
 /* Prsteny — větší vertikální odstup */
 .inv-equip-ring { margin-top:12px; }

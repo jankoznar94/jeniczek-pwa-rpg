@@ -3004,15 +3004,15 @@
     const r1 = ITEM_MAP[h.equip.ring1];
     const r2 = ITEM_MAP[h.equip.ring2];
     const hw = $('heroSlotWeaponIcon'); if (hw) hw.textContent = w.icon;
-    const hwn = $('heroSlotWeaponName'); if (hwn) hwn.textContent = w.name;
+    const hws = $('heroSlotWeapon'); if (hws) hws.classList.toggle('empty', h.equip.weapon === 'fists');
     const ha = $('heroSlotArmorIcon'); if (ha) ha.textContent = a.icon;
-    const han = $('heroSlotArmorName'); if (han) han.textContent = a.name;
-    const hh = $('heroSlotHelmetIcon'); if (hh) hh.textContent = helm ? helm.icon : '—';
-    const hhn = $('heroSlotHelmetName'); if (hhn) hhn.textContent = helm ? helm.name : '—';
-    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.textContent = r1 ? r1.icon : '—';
-    const hr1n = $('heroSlotRing1Name'); if (hr1n) hr1n.textContent = r1 ? r1.name : '—';
-    const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.textContent = r2 ? r2.icon : '—';
-    const hr2n = $('heroSlotRing2Name'); if (hr2n) hr2n.textContent = r2 ? r2.name : '—';
+    const has = $('heroSlotArmor'); if (has) has.classList.toggle('empty', h.equip.armor === 'rags');
+    const hh = $('heroSlotHelmetIcon'); if (hh) hh.textContent = helm ? helm.icon : '⛑️';
+    const hhs = $('heroSlotHelmet'); if (hhs) hhs.classList.toggle('empty', !helm);
+    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.textContent = r1 ? r1.icon : '💍';
+    const hr1s = $('heroSlotRing1'); if (hr1s) hr1s.classList.toggle('empty', !r1);
+    const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.textContent = r2 ? r2.icon : '💍';
+    const hr2s = $('heroSlotRing2'); if (hr2s) hr2s.classList.toggle('empty', !r2);
   }
 
   function upgradeAttr(attr) {
@@ -3120,19 +3120,14 @@
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     $('invSlotWeaponIcon').textContent = weapon.icon;
-    $('invSlotWeaponName').textContent = weapon.name;
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     $('invSlotArmorIcon').textContent = armor.icon;
-    $('invSlotArmorName').textContent = armor.name;
     $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
-    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.textContent = helmet ? helmet.icon : '—';
-    const hN = $('invSlotHelmetName'); if (hN) hN.textContent = helmet ? helmet.name : '—';
+    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.textContent = helmet ? helmet.icon : '⛑️';
     const hS = $('invSlotHelmet'); if (hS) hS.classList.toggle('empty', !helmet);
-    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.textContent = ring1 ? ring1.icon : '—';
-    const r1N = $('invSlotRing1Name'); if (r1N) r1N.textContent = ring1 ? ring1.name : '—';
+    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.textContent = ring1 ? ring1.icon : '💍';
     const r1S = $('invSlotRing1'); if (r1S) r1S.classList.toggle('empty', !ring1);
-    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.textContent = ring2 ? ring2.icon : '—';
-    const r2N = $('invSlotRing2Name'); if (r2N) r2N.textContent = ring2 ? ring2.name : '—';
+    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.textContent = ring2 ? ring2.icon : '💍';
     const r2S = $('invSlotRing2'); if (r2S) r2S.classList.toggle('empty', !ring2);
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
