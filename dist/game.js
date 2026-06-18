@@ -2601,9 +2601,10 @@
   function rollLoot(locId, floor, bossDrop) {
     const h = state.hero;
     if (bossDrop) {
-      // Boss: zaručený item s vyšším tierem
+      // Boss: zaručený item s vyšším tierem + goldy
       const item = generateLootItem(floor, true);
-      return { type:'item', item };
+      const gold = 5 + floor * 3 + rand(0, 5);
+      return { type:'boss', item, gold };
     }
     // 70% gold, 30% item
     if (Math.random() < 0.7) {
@@ -2735,11 +2736,12 @@
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
       if (r.weapon && state.hero.equip.weapon === 'fists') state.hero.equip.weapon = r.weapon;
       if (r.armor && state.hero.equip.armor === 'rags') state.hero.equip.armor = r.armor;
-      // Boss loot: zaručený item s vyšším tierem
+      // Boss loot: zaručený item s vyšším tierem + goldy
       const bossLoot = rollLoot(locId, mb.floor, true);
       let bossLootHtml = '';
-      if (bossLoot.type === 'item') {
+      if (bossLoot.type === 'boss') {
         state.hero.inventory.push(bossLoot.item.id);
+        state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
         bossLootHtml = `<div class="result-stat"><span class="result-stat-icon">${bossLoot.item.icon}</span><span class="result-stat-val">${bossLoot.item.name}</span></div>`;
       }
       sfxBossDefeat();
@@ -2748,7 +2750,8 @@
       let msg = `${r.gold||0}💰`;
       if (r.weapon) msg += ` + ${r.weapon}`;
       if (r.armor) msg += ` + ${r.armor}`;
-      $('resultMsg').innerHTML = `<div class="result-stats">${bossLootHtml ? '<div class="result-loot">' + bossLootHtml + '</div>' : ''}<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">${msg}</span></div><div style="font-size:12px;color:#888;margin-top:8px">❌ ${(mb.floorMistakes||0)+(mb.mistakes||0)} chyb</div></div>`;
+      const bossGoldTotal = (r.gold || 0) + bossLoot.gold;
+      $('resultMsg').innerHTML = `<div class="result-stats">${bossLootHtml ? '<div class="result-loot">' + bossLootHtml + '</div>' : ''}<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${bossGoldTotal}</span></div><div style="font-size:12px;color:#888;margin-top:8px">❌ ${(mb.floorMistakes||0)+(mb.mistakes||0)} chyb</div></div>`;
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
       if (locId + 1 < LOCATIONS.length) {
         $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další dungeon</button>`;
