@@ -258,18 +258,18 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Enemy HP bar — nad příšerou v aréně */
 .enemy-hp-row {
-  position:absolute;top:2px;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:6px;
+  position:absolute;top:6px;left:50%;transform:translateX(-50%);
 }
 .enemy-hp-text {
+  position:absolute;left:-56px;top:50%;transform:translateY(-50%);
   font-size:11px;color:#e74c3c;font-weight:bold;white-space:nowrap;
 }
 .enemy-hp-bar-wrap {
   width:120px;height:10px;background:#2a0a0a;border:1px solid #e74c3c;
-  border-radius:5px;overflow:hidden;
+  overflow:hidden;
 }
 .enemy-hp-bar-fill {
-  height:100%;background:#e74c3c;border-radius:4px;
+  height:100%;background:#e74c3c;
   transition:width 0.2s ease-out;
 }
 
