@@ -1457,7 +1457,7 @@
     
     // 🎯 Crit window — šířka = critChance% z atkTime
     const eqAttrs = getEquipAttrs();
-    const critChance = ((state.hero.attrDex||0) + eqAttrs.dex) * 1 + 5;
+    const critChance = ((state.hero.attrDex||0) + eqAttrs.dex) * 0.5 + 5;
     const bonusPct = Math.min(critChance, 80) / 100; // max 80% timeru
     const bonusMs = Math.max(1, Math.round(atkTime * bonusPct)); // čistě proporční
     // Okno až od druhé třetiny timeru (33%), ať hráč stihne zareagovat
@@ -2061,7 +2061,7 @@
     mb._attackProcessed = true; // označit útok jako provedený
 
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
-    const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 1 + 5;
+    const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
     const critMult = 1.5;
     let dmg = baseDmg;
     // Fire school passive — ignite (% bonus fire damage)
@@ -3043,7 +3043,7 @@
     $('heroMaxHp').textContent = h.maxHp;
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
-    const critChance = ((h.attrDex||0) + getEquipAttrs().dex) * 1 + 5;
+    const critChance = ((h.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
     $('heroCrit').textContent = `${critChance}% okno (×1.5)`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
