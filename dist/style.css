@@ -261,7 +261,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   position:absolute;top:10px;left:50%;transform:translateX(-50%);
 }
 .enemy-hp-text {
-  position:absolute;left:-50px;top:50%;transform:translateY(-50%);
+  position:absolute;left:-44px;top:50%;transform:translateY(-50%);
   font-size:11px;color:#e74c3c;font-weight:bold;white-space:nowrap;
 }
 .enemy-hp-bar-wrap {
@@ -290,12 +290,12 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   position:relative;z-index:1;
 }
 .mb-mana-bar {
-  position:relative;background:#0a0a2a;border:1px solid #9b59b6;border-radius:6px;
+  position:relative;background:#0a0a2a;border:1px solid #3498db;border-radius:6px;
   height:22px;display:flex;align-items:center;justify-content:center;
   font-size:12px;color:#fff;font-weight:bold;overflow:hidden;
 }
 .mb-mana-bar-fill {
-  position:absolute;left:0;top:0;height:100%;background:#9b59b6;
+  position:absolute;left:0;top:0;height:100%;background:#3498db;
   transition:width 0.2s ease-out;
 }
 .mb-mana-bar span {

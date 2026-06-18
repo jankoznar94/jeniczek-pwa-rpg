@@ -806,7 +806,7 @@
     const arenaHp = $('mbPlayerArenaHp');
     if (arenaHp) {
       const span = arenaHp.querySelector('span');
-      if (span) span.textContent = `❤️ ${mb.playerHp}/${mb.maxPlayerHp}`;
+      if (span) span.textContent = `${mb.playerHp}/${mb.maxPlayerHp}`;
       const fill = $('mbPlayerArenaHpFill');
       if (fill) fill.style.width = Math.max(0, pHpPct) + '%';
     }
@@ -815,7 +815,7 @@
     if (arenaMana) {
       const h = state.hero;
       const span = arenaMana.querySelector('span');
-      if (span) span.textContent = `💧 ${h.mana}/${h.maxMana}`;
+      if (span) span.textContent = `${h.mana}/${h.maxMana}`;
       const fill = $('mbPlayerArenaManaFill');
       if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
     }
@@ -1381,7 +1381,7 @@
     const arenaMana = $('mbPlayerArenaMana');
     if (arenaMana) {
       const span = arenaMana.querySelector('span');
-      if (span) span.textContent = `💧 ${h.mana}/${h.maxMana}`;
+      if (span) span.textContent = `${h.mana}/${h.maxMana}`;
       const fill = $('mbPlayerArenaManaFill');
       if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
     }
@@ -2391,7 +2391,12 @@
     h.mana -= cost;
     // Aktualizovat manu v UI
     const manaEl = $('mbPlayerArenaMana');
-    if (manaEl) manaEl.textContent = `💧 ${h.mana}/${h.maxMana}`;
+    if (manaEl) {
+      const span = manaEl.querySelector('span');
+      if (span) span.textContent = `${h.mana}/${h.maxMana}`;
+      const fill = $('mbPlayerArenaManaFill');
+      if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
+    }
     // Cooldown — základ 30 ticků, intelekt snižuje (min 10)
     const intLv = (h.attrInt || 0) + getEquipAttrs().int;
     const cdTicks = Math.max(10, 30 - intLv * 2);
