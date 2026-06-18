@@ -256,6 +256,17 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 /* Player HP bar - below arena */
 .player-hp-bar { text-align:center;font-size:13px;color:#e74c3c;padding:4px 0;margin:2px 0;font-weight:bold; }
 
+/* Enemy HP bar — pod příšerou v aréně */
+.enemy-hp-bar-wrap {
+  position:absolute;top:70px;left:50%;transform:translateX(-50%);
+  width:120px;height:10px;background:#2a0a0a;border:1px solid #e74c3c;
+  border-radius:5px;overflow:hidden;
+}
+.enemy-hp-bar-fill {
+  height:100%;background:#e74c3c;border-radius:4px;
+  transition:width 0.2s ease-out;
+}
+
 /* Arena HP/Mana — pruhy na spodku */
 .mb-hp-mana-bars {
   display:flex;flex-direction:column;gap:3px;margin:6px 8px;

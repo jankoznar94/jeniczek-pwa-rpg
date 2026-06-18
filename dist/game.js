@@ -777,6 +777,8 @@
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
     $('mbEnemyHp').textContent = `❤️ ${mb.bossHp}/${mb.maxBossHp}`;
+    const enemyBar = $('mbEnemyHpBar');
+    if (enemyBar) enemyBar.style.width = Math.max(0, eHpPct) + '%';
     // Monster icons row
     const iconRow = $('mbMonsterIcons');
     if (iconRow) {
