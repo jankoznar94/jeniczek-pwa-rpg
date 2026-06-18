@@ -2614,7 +2614,7 @@
     const tier = bossDrop ? Math.min(7, baseTier + rand(1, 2)) : baseTier;
     // 0. Rarita se určuje první — ovlivňuje všechny staty
     const rarity = getRarity(bossDrop);
-    const rarityMult = rarity === 'epic' ? 3.0 : rarity === 'rare' ? 2.0 : rarity === 'uncommon' ? 1.5 : 1.0;
+    const rarityMult = rarity === 'epic' ? 2.5 : rarity === 'rare' ? 1.8 : rarity === 'uncommon' ? 1.4 : 1.0;
     // Nárůst s obtížností dungeonu: +8 % za patro
     const floorMult = 1 + (floor - 1) * 0.08;
     // 1. RNG: typ předmětu
@@ -2631,24 +2631,24 @@
     const nameIdx = rand(0, maxIdx);
     const baseName = namePool[nameIdx];
 
-    // 3. Atributy — počet a hodnoty podle rarity a floor
+    // 3. Atributy — počet podle rarity, hodnoty se překrývají
     let attrCount;
     if (rarity === 'common') attrCount = 1;
-    else if (rarity === 'uncommon') attrCount = rand(1, 2);
-    else if (rarity === 'rare') attrCount = rand(2, 3);
-    else attrCount = rand(3, 4); // epic
+    else if (rarity === 'uncommon') attrCount = 2;
+    else if (rarity === 'rare') attrCount = 3;
+    else attrCount = 4; // epic
     const attrs = {};
     const usedKeys = [];
     for (let a = 0; a < attrCount; a++) {
       let k;
       do { k = ATTR_KEYS[rand(0, 3)]; } while (usedKeys.includes(k));
       usedKeys.push(k);
-      // Hodnota atributu podle rarity a floor — nepřekrývající se rozsahy
+      // Hodnota atributu — podobné rozsahy, vyšší rarity mají víc atributů
       let minVal, maxVal;
-      if (rarity === 'common') { minVal = 1; maxVal = 2; }
-      else if (rarity === 'uncommon') { minVal = 3; maxVal = 4; }
-      else if (rarity === 'rare') { minVal = 5; maxVal = 7; }
-      else { minVal = 8; maxVal = 12; }
+      if (rarity === 'common') { minVal = 1; maxVal = 3; }
+      else if (rarity === 'uncommon') { minVal = 2; maxVal = 4; }
+      else if (rarity === 'rare') { minVal = 2; maxVal = 5; }
+      else { minVal = 3; maxVal = 6; }
       minVal = Math.round(minVal * floorMult);
       maxVal = Math.round(maxVal * floorMult);
       attrs[k] = rand(minVal, maxVal);
