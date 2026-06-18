@@ -256,9 +256,15 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 /* Player HP bar - below arena */
 .player-hp-bar { text-align:center;font-size:13px;color:#e74c3c;padding:4px 0;margin:2px 0;font-weight:bold; }
 
-/* Enemy HP bar — pod příšerou v aréně */
+/* Enemy HP bar — nad příšerou v aréně */
+.enemy-hp-row {
+  position:absolute;top:2px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;
+}
+.enemy-hp-text {
+  font-size:11px;color:#e74c3c;font-weight:bold;white-space:nowrap;
+}
 .enemy-hp-bar-wrap {
-  position:absolute;top:70px;left:50%;transform:translateX(-50%);
   width:120px;height:10px;background:#2a0a0a;border:1px solid #e74c3c;
   border-radius:5px;overflow:hidden;
 }
