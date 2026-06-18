@@ -2612,6 +2612,9 @@
   function generateLootItem(floor, bossDrop) {
     const baseTier = Math.min(6, Math.ceil(floor / 2));
     const tier = bossDrop ? Math.min(7, baseTier + rand(1, 2)) : baseTier;
+    // 0. Rarita se určuje první — ovlivňuje všechny staty
+    const rarity = getRarity(bossDrop);
+    const rarityMult = rarity === 'epic' ? 2.0 : rarity === 'rare' ? 1.6 : rarity === 'uncommon' ? 1.3 : 1.0;
     // 1. RNG: typ předmětu
     const typeRoll = Math.random();
     let type, subtype;
@@ -2626,39 +2629,46 @@
     const nameIdx = rand(0, maxIdx);
     const baseName = namePool[nameIdx];
 
-    // 3. RNG: atributy — počet a hodnoty
-    const attrCount = tier <= 2 ? 1 : tier <= 4 ? rand(1,2) : rand(1,3);
+    // 3. Atributy — počet a hodnoty podle rarity
+    let attrCount;
+    if (rarity === 'common') attrCount = 1;
+    else if (rarity === 'uncommon') attrCount = rand(1, 2);
+    else if (rarity === 'rare') attrCount = rand(2, 3);
+    else attrCount = rand(3, 4); // epic
     const attrs = {};
     const usedKeys = [];
     for (let a = 0; a < attrCount; a++) {
       let k;
       do { k = ATTR_KEYS[rand(0, 3)]; } while (usedKeys.includes(k));
       usedKeys.push(k);
-      // Hodnota atributu: 1-3 pro nízký tier, 2-6 pro vysoký
-      const val = rand(1, Math.min(6, 1 + Math.floor(tier * 0.8)));
-      attrs[k] = val;
+      // Hodnota atributu podle rarity
+      let minVal, maxVal;
+      if (rarity === 'common') { minVal = 1; maxVal = 3; }
+      else if (rarity === 'uncommon') { minVal = 2; maxVal = 5; }
+      else if (rarity === 'rare') { minVal = 3; maxVal = 7; }
+      else { minVal = 5; maxVal = 10; }
+      attrs[k] = rand(minVal, maxVal);
     }
 
     // 4. Název — jen baseName bez statů v názvu
     const name = baseName;
 
-    // 5. Základní staty podle typu a tieru
+    // 5. Základní staty podle typu, tieru a rarity
     let baseDmg = 0, bonusHp = 0;
     if (type === 'weapon') {
-      baseDmg = 5 + tier * 7 + rand(0, 3);
+      baseDmg = Math.round((5 + tier * 7 + rand(0, 3)) * rarityMult);
     } else if (type === 'armor') {
-      bonusHp = 10 + tier * 25 + rand(0, 10);
+      bonusHp = Math.round((10 + tier * 25 + rand(0, 10)) * rarityMult);
     } else if (type === 'helmet') {
-      bonusHp = 5 + tier * 15 + rand(0, 5);
+      bonusHp = Math.round((5 + tier * 15 + rand(0, 5)) * rarityMult);
     } else if (type === 'ring') {
-      baseDmg = 1 + tier * 2 + rand(0, 2);
-      bonusHp = 2 + tier * 5 + rand(0, 3);
+      baseDmg = Math.round((1 + tier * 2 + rand(0, 2)) * rarityMult);
+      bonusHp = Math.round((2 + tier * 5 + rand(0, 3)) * rarityMult);
     }
 
     const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
     const icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
     const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
-    const rarity = getRarity(bossDrop);
     const item = { id, name, type, subtype, baseDmg, bonusHp, icon, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
     ITEM_MAP[id] = item;
     state.lootItems = state.lootItems || {};
