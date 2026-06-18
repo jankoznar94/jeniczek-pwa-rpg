@@ -2594,12 +2594,8 @@
       attrs[k] = val;
     }
 
-    // 4. Sestavení názvu
-    let suffix = '';
-    if (usedKeys.length > 0) {
-      suffix = ' ' + usedKeys.map(k => `${ATTR_NAMES[k]}+${attrs[k]}`).join(' ');
-    }
-    const name = baseName + suffix;
+    // 4. Název — jen baseName bez statů v názvu
+    const name = baseName;
 
     // 5. Základní staty podle typu a tieru
     let baseDmg = 0, bonusHp = 0;
