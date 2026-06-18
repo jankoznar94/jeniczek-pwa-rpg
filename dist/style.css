@@ -177,8 +177,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .boss-fight-boss { position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:48px;cursor:pointer;transition:0.1s; }
 .boss-fight-player { position:absolute;bottom:40px;left:50%;transform:translateX(-50%);font-size:28px;transition:0.08s;z-index:5; }
 .boss-fight-player .damage-text { position:absolute;top:-60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
-.player-arena-hp { position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:12px;color:#4a7dff;font-weight:bold;white-space:nowrap;pointer-events:none; }
-.player-arena-mana { position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:11px;color:#9b59b6;font-weight:bold;white-space:nowrap;pointer-events:none; }
 #mbDamageText.damage-text { position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeDown { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
@@ -259,7 +257,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .player-hp-bar { text-align:center;font-size:13px;color:#4a7dff;padding:4px 0;margin:2px 0;font-weight:bold; }
 
 /* Arena HP pod panáčkem */
-.player-arena-hp { position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);font-size:12px;color:#4a7dff;font-weight:bold;white-space:nowrap;pointer-events:none; }
+.player-arena-hp { position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:12px;color:#4a7dff;font-weight:bold;white-space:nowrap;pointer-events:none;z-index:6;background:#1e1e1e;padding:2px 6px;border-radius:4px; }
+.player-arena-mana { position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);font-size:11px;color:#9b59b6;font-weight:bold;white-space:nowrap;pointer-events:none;z-index:6;background:#1e1e1e;padding:2px 6px;border-radius:4px; }
 
 /* Hero attributes */
 .hero-attr-row { display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1a1a3a;font-size:14px; }
@@ -601,6 +600,14 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .result-loot .result-stat { border:1px solid #888; }
 .result-grade { font-size:28px;margin:8px 0;letter-spacing:4px; }
 .result-tap { font-size:11px;color:#555;margin-top:4px;animation:resultTapPulse 2s ease-in-out infinite; }
+.result-loot-scroll { max-height:140px;overflow-y:auto;margin:6px auto;padding:4px 0;width:90%;border-top:1px solid #2a2a4a;border-bottom:1px solid #2a2a4a; }
+.result-loot-scroll::-webkit-scrollbar { width:4px; }
+.result-loot-scroll::-webkit-scrollbar-track { background:#1a1a1a; }
+.result-loot-scroll::-webkit-scrollbar-thumb { background:#4a4a4a;border-radius:2px; }
+.loot-scroll-item { display:flex;align-items:center;gap:8px;padding:3px 8px;font-size:13px;border-bottom:1px solid #1a1a2a; }
+.loot-scroll-item:last-child { border-bottom:none; }
+.loot-scroll-icon { font-size:16px; }
+.loot-scroll-name { font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 @keyframes resultTapPulse { 0%,100%{opacity:0.4}50%{opacity:1} }
 
 /* Misc */

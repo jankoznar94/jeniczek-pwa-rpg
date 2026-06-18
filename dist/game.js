@@ -2696,20 +2696,25 @@
         const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
         const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
         const grade = mistakes === 0 ? '⭐⭐⭐' : mistakes <= 2 ? '⭐⭐' : '⭐';
-        let lootHtml = '';
-        if (totalLootGold > 0) lootHtml += `<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${totalLootGold}</span></div>`;
-        lootItems.forEach(item => {
-          const r = RARITY[item.rarity] || RARITY.common;
-          lootHtml += `<div class="result-stat loot-item" style="border-color:${r.border};background:${r.border}22"><span class="result-stat-icon">${item.icon}</span><span class="result-stat-val" style="color:${r.color}">${item.name}</span></div>`;
-        });
         $('resultMsg').innerHTML = '<div class="result-stats">'
                   + '<div class="result-stat"><span class="result-stat-icon">⚔️</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
+                  + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + totalLootGold + '</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
                   + '<div class="result-grade">' + grade + '</div>'
-                  + (lootHtml ? '<div class="result-loot">' + lootHtml + '</div>' : '')
                   + '<div class="result-tap">👆 klepni pro návrat</div>'
                   + '</div>';
+        // Loot list — scroll okno s itemy
+        let lootListHtml = '';
+        if (lootItems.length > 0) {
+          lootItems.forEach(item => {
+            const r = RARITY[item.rarity] || RARITY.common;
+            lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${item.icon}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
+          });
+        } else {
+          lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
+        }
+        $('resultLootList').innerHTML = lootListHtml;
         $('resultBtn').innerHTML = '';
         $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); };
         showScreen('result');
@@ -2771,21 +2776,27 @@
       if (r.armor && state.hero.equip.armor === 'rags') state.hero.equip.armor = r.armor;
       // Boss loot: zaručený item s vyšším tierem + goldy
       const bossLoot = rollLoot(locId, mb.floor, true);
-      let bossLootHtml = '';
       if (bossLoot.type === 'boss') {
         state.hero.inventory.push(bossLoot.item.id);
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
-        const r = RARITY[bossLoot.item.rarity] || RARITY.common;
-        bossLootHtml = `<div class="result-stat loot-item" style="border-color:${r.border};background:${r.border}22"><span class="result-stat-icon">${bossLoot.item.icon}</span><span class="result-stat-val" style="color:${r.color}">${bossLoot.item.name}</span></div>`;
       }
       sfxBossDefeat();
       $('resultIcon').textContent = '🏆';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
-      let msg = `${r.gold||0}💰`;
-      if (r.weapon) msg += ` + ${r.weapon}`;
-      if (r.armor) msg += ` + ${r.armor}`;
       const bossGoldTotal = (r.gold || 0) + bossLoot.gold;
-      $('resultMsg').innerHTML = `<div class="result-stats">${bossLootHtml ? '<div class="result-loot">' + bossLootHtml + '</div>' : ''}<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${bossGoldTotal}</span></div><div style="font-size:12px;color:#888;margin-top:8px">❌ ${(mb.floorMistakes||0)+(mb.mistakes||0)} chyb</div></div>`;
+      $('resultMsg').innerHTML = '<div class="result-stats">'
+                + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+'+bossGoldTotal+'</span></div>'
+                + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">'+((mb.floorMistakes||0)+(mb.mistakes||0))+'</span><span class="result-stat-sub">chyb</span></div>'
+                + '</div>';
+      // Loot list — scroll okno s itemem
+      let lootListHtml = '';
+      if (bossLoot.type === 'boss') {
+        const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
+        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${bossLoot.item.icon}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
+      } else {
+        lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
+      }
+      $('resultLootList').innerHTML = lootListHtml;
       $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
       if (locId + 1 < LOCATIONS.length) {
         $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další dungeon</button>`;
