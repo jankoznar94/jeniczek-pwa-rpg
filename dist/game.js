@@ -3272,8 +3272,9 @@
         if (item) showItemInfo(item);
         const actions = this.querySelector('.cell-actions');
         if (!actions) return;
-        // Skrýt všechny ostatní
+        // Skrýt všechny ostatní (batoh + sloty)
         grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
+        document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
         if (!actions.classList.contains('visible')) {
           actions.classList.add('visible');
         }
