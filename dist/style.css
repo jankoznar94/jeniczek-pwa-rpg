@@ -254,10 +254,10 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .boss-touch-hint { text-align:center;font-size:10px;color:#555;margin:2px 0; }
 
 /* Player HP bar - below arena */
-.player-hp-bar { text-align:center;font-size:13px;color:#4a7dff;padding:4px 0;margin:2px 0;font-weight:bold; }
+.player-hp-bar { text-align:center;font-size:13px;color:#e74c3c;padding:4px 0;margin:2px 0;font-weight:bold; }
 
 /* Arena HP pod panáčkem */
-.player-arena-hp { position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:12px;color:#4a7dff;font-weight:bold;white-space:nowrap;pointer-events:none;z-index:6;background:#1e1e1e;padding:2px 6px;border-radius:4px; }
+.player-arena-hp { position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:12px;color:#e74c3c;font-weight:bold;white-space:nowrap;pointer-events:none;z-index:6;background:#1e1e1e;padding:2px 6px;border-radius:4px; }
 .player-arena-mana { position:absolute;bottom:-34px;left:50%;transform:translateX(-50%);font-size:11px;color:#9b59b6;font-weight:bold;white-space:nowrap;pointer-events:none;z-index:6;background:#1e1e1e;padding:2px 6px;border-radius:4px; }
 
 /* Hero attributes */
