@@ -573,7 +573,6 @@
     el.className = 'treasure-overlay';
     el.innerHTML = `<div class="treasure-content">
       <div class="treasure-chest">📦</div>
-      <div class="treasure-title">Poklad!</div>
       <div class="treasure-tap-open">👆 Otevřít</div>
     </div>`;
     document.body.appendChild(el);
@@ -605,7 +604,6 @@
 
       el.innerHTML = `<div class="treasure-content treasure-opened">
         <div class="treasure-chest-open">📦</div>
-        <div class="treasure-stats">⚔️ +${xpGain} XP</div>
         <div class="treasure-loot-row">${lootSquares}</div>
         <div class="treasure-tap-close">👆 Pokračovat</div>
       </div>`;
@@ -2718,13 +2716,11 @@
         const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
         const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
         const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
-        const grade = mistakes === 0 ? '⭐⭐⭐' : mistakes <= 2 ? '⭐⭐' : '⭐';
         $('resultMsg').innerHTML = '<div class="result-stats">'
-                  + '<div class="result-stat"><span class="result-stat-icon">⚔️</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
+                  + '<div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + totalLootGold + '</span></div>'
                   + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
-                  + '<div class="result-grade">' + grade + '</div>'
                   + '<div class="result-tap">👆 klepni pro návrat</div>'
                   + '</div>';
         // Loot list — scroll okno s itemy
