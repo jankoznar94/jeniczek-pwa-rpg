@@ -174,8 +174,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   touch-action:none;
   transition:box-shadow 0.25s ease-out;
 }
-.boss-fight-boss { position:absolute;top:5px;left:50%;transform:translateX(-50%);font-size:48px;cursor:pointer;transition:0.1s; }
-.boss-fight-player { position:absolute;bottom:50px;left:50%;transform:translateX(-50%);font-size:40px;transition:0.08s;z-index:5; }
+.boss-fight-boss { position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:44px;cursor:pointer;transition:0.1s; }
+.boss-fight-player { position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:44px;transition:0.08s;z-index:5; }
 .boss-fight-player .damage-text { position:absolute;top:-60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
 #mbDamageText.damage-text { position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
