@@ -568,12 +568,18 @@
   }
 
   // ===== KILL POPUP =====
-  function showKillPopup(monsterFace, monsterName, xpGain, goldGain, playerHp, maxHp, onContinue) {
+  function showKillPopup(monsterFace, monsterName, xpGain, goldGain, playerHp, maxHp, dropRarity, onContinue) {
     const el = document.createElement('div');
     el.className = 'kill-popup-overlay';
+    let dropHtml = '';
+    if (dropRarity) {
+      const r = RARITY[dropRarity] || RARITY.common;
+      dropHtml = `<div class="kill-popup-drop" style="border-color:${r.border};color:${r.color}">⬇️ ${r.name}</div>`;
+    }
     el.innerHTML = `<div class="kill-popup-content">
       <div class="kill-popup-icon">${monsterFace}</div>
       <div class="kill-popup-name">${monsterName} poražen!</div>
+      ${dropHtml}
       <div class="kill-popup-stats">
         <span>⚔️ +${xpGain} XP</span>
         <span>💰 +${goldGain}</span>
@@ -701,6 +707,8 @@
       currentMonsterName: isBoss ? loc.boss.name : floorMonsters[progress].name,
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
+      // Loot drops per monster (pro vizuální indikaci)
+      _lootDrops: [],
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
@@ -2537,6 +2545,24 @@
   const LOOT_ICONS = { weapon_staff:'🪄', weapon_blade:'⚔️', armor:'👘', helmet:'⛑️', ring:'💍' };
   const ATTR_KEYS = ['str','vit','dex','int'];
   const ATTR_NAMES = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
+  const RARITY = {
+    common: { name:'Common', color:'#e8e0e8', border:'#888' },
+    uncommon: { name:'Uncommon', color:'#c8f7c8', border:'#4caf50' },
+    rare: { name:'Rare', color:'#c8d8ff', border:'#4a8af4' },
+    epic: { name:'Epic', color:'#e8c8ff', border:'#9c27b0' }
+  };
+
+  function getRarity(tier) {
+    const r = Math.random();
+    if (tier >= 7) return r < 0.7 ? 'epic' : 'rare';
+    if (tier >= 5) {
+      if (r < 0.10) return 'epic';
+      if (r < 0.60) return 'rare';
+      return 'uncommon';
+    }
+    if (tier >= 3) return r < 0.30 ? 'uncommon' : 'common';
+    return 'common';
+  }
 
   function generateLootItem(floor, bossDrop) {
     const baseTier = Math.min(6, Math.ceil(floor / 2));
@@ -2591,7 +2617,8 @@
     const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
     const icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
     const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
-    const item = { id, name, type, subtype, baseDmg, bonusHp, icon, attrs, tier, cost, weaponType: type === 'weapon' ? subtype : null };
+    const rarity = getRarity(tier);
+    const item = { id, name, type, subtype, baseDmg, bonusHp, icon, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
     ITEM_MAP[id] = item;
     state.lootItems = state.lootItems || {};
     state.lootItems[id] = item;
@@ -2634,31 +2661,35 @@
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
+      // Loot roll za toto monstrum
+      const loot = rollLoot(locId, mb.floor);
+      mb._lootDrops = mb._lootDrops || [];
+      mb._lootDrops.push(loot);
+      if (loot.type === 'item' || loot.type === 'boss') {
+        state.hero.inventory.push(loot.item.id);
+      }
+      if (loot.type === 'gold' || loot.type === 'boss') {
+        state.hero.gold = (state.hero.gold || 0) + (loot.gold || 0);
+      }
       saveGame();
       sfxSuccess();
 
       if (p >= 5) {
-        // ALL 5 monsters killed -> rovnou result screen, žádný kill popup
-        // (kill popup by překrýval result screen)
-        // Loot za každé monstrum (5 hodů)
-        let totalLootGold = 0;
-        const lootItems = [];
-        for (let m = 0; m < 5; m++) {
-          const loot = rollLoot(locId, mb.floor);
-          if (loot.type === 'gold') {
-            totalLootGold += loot.gold;
-          } else if (loot.type === 'item') {
-            lootItems.push(loot.item);
-            state.hero.inventory.push(loot.item.id);
-          }
-        }
-        state.hero.gold = (state.hero.gold || 0) + totalLootGold;
+        // ALL 5 monsters killed -> result screen se sumarizací
         mapBattleState.ended = true;
         cleanupTimers();
         const nextFloor = mb.floor + 1;
         state.floorProgress[locId] = nextFloor;
         state.locationProgress[locId] = 0;
         saveGame();
+        // Sumarizace lootu
+        let totalLootGold = 0;
+        const lootItems = [];
+        mb._lootDrops.forEach(d => {
+          if (d.type === 'gold') totalLootGold += d.gold;
+          else if (d.type === 'item') { lootItems.push(d.item); }
+          else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
+        });
         $('resultIcon').textContent = '🎉';
         $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
         const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
@@ -2668,7 +2699,8 @@
         let lootHtml = '';
         if (totalLootGold > 0) lootHtml += `<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${totalLootGold}</span></div>`;
         lootItems.forEach(item => {
-          lootHtml += `<div class="result-stat"><span class="result-stat-icon">${item.icon}</span><span class="result-stat-val">${item.name}</span></div>`;
+          const r = RARITY[item.rarity] || RARITY.common;
+          lootHtml += `<div class="result-stat loot-item" style="border-color:${r.border};background:${r.border}22"><span class="result-stat-icon">${item.icon}</span><span class="result-stat-val" style="color:${r.color}">${item.name}</span></div>`;
         });
         $('resultMsg').innerHTML = '<div class="result-stats">'
                   + '<div class="result-stat"><span class="result-stat-icon">⚔️</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
@@ -2684,8 +2716,9 @@
         switchBGM('win');
         return;
       }
-      // Kill popup pro normální monstrum (1-4)
-      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp, () => {
+      // Kill popup pro normální monstrum (1-4) — zobrazit barvičku pokud item
+      const dropRarity = loot.type === 'item' ? loot.item.rarity : null;
+      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp, dropRarity, () => {
         const fig2 = $('mbFigure');
         if (fig2) fig2.classList.remove('monster-dying');
         continueDungeon();
@@ -2742,7 +2775,8 @@
       if (bossLoot.type === 'boss') {
         state.hero.inventory.push(bossLoot.item.id);
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
-        bossLootHtml = `<div class="result-stat"><span class="result-stat-icon">${bossLoot.item.icon}</span><span class="result-stat-val">${bossLoot.item.name}</span></div>`;
+        const r = RARITY[bossLoot.item.rarity] || RARITY.common;
+        bossLootHtml = `<div class="result-stat loot-item" style="border-color:${r.border};background:${r.border}22"><span class="result-stat-icon">${bossLoot.item.icon}</span><span class="result-stat-val" style="color:${r.color}">${bossLoot.item.name}</span></div>`;
       }
       sfxBossDefeat();
       $('resultIcon').textContent = '🏆';
@@ -3021,15 +3055,15 @@
     const r1 = ITEM_MAP[h.equip.ring1];
     const r2 = ITEM_MAP[h.equip.ring2];
     const hw = $('heroSlotWeaponIcon'); if (hw) hw.textContent = w.icon;
-    const hws = $('heroSlotWeapon'); if (hws) hws.classList.toggle('empty', h.equip.weapon === 'fists');
+    const hws = $('heroSlotWeapon'); if (hws) { hws.classList.toggle('empty', h.equip.weapon === 'fists'); if (w.rarity) hws.style.borderColor = RARITY[w.rarity].border; }
     const ha = $('heroSlotArmorIcon'); if (ha) ha.textContent = a.icon;
-    const has = $('heroSlotArmor'); if (has) has.classList.toggle('empty', h.equip.armor === 'rags');
+    const has = $('heroSlotArmor'); if (has) { has.classList.toggle('empty', h.equip.armor === 'rags'); if (a.rarity) has.style.borderColor = RARITY[a.rarity].border; }
     const hh = $('heroSlotHelmetIcon'); if (hh) hh.textContent = helm ? helm.icon : '⛑️';
-    const hhs = $('heroSlotHelmet'); if (hhs) hhs.classList.toggle('empty', !helm);
+    const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); if (helm && helm.rarity) hhs.style.borderColor = RARITY[helm.rarity].border; }
     const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.textContent = r1 ? r1.icon : '💍';
-    const hr1s = $('heroSlotRing1'); if (hr1s) hr1s.classList.toggle('empty', !r1);
+    const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); if (r1 && r1.rarity) hr1s.style.borderColor = RARITY[r1.rarity].border; }
     const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.textContent = r2 ? r2.icon : '💍';
-    const hr2s = $('heroSlotRing2'); if (hr2s) hr2s.classList.toggle('empty', !r2);
+    const hr2s = $('heroSlotRing2'); if (hr2s) { hr2s.classList.toggle('empty', !r2); if (r2 && r2.rarity) hr2s.style.borderColor = RARITY[r2.rarity].border; }
   }
 
   function upgradeAttr(attr) {
@@ -3157,9 +3191,10 @@
         const item = ITEM_MAP[itemId];
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : `❤️${item.bonusHp}`;
-        html += `<div class="inv-grid-cell" data-idx="${i}">
+        const r = RARITY[item.rarity] || RARITY.common;
+        html += `<div class="inv-grid-cell" data-idx="${i}" style="border-color:${r.border}">
           <div class="cell-icon">${item.icon}</div>
-          <div class="cell-name">${item.name}</div>
+          <div class="cell-name" style="color:${r.color}">${item.name}</div>
           <div class="cell-actions">
             <button class="btn-equip" onclick="event.stopPropagation();game.equipItem(${i})">🎽 Obléci</button>
             <button class="btn-sell" onclick="event.stopPropagation();game.sellItem('${itemId}')">💰 ${Math.round(item.cost*0.5)}</button>
@@ -3176,11 +3211,13 @@
       if (!panel || !item) { if (panel) panel.classList.add('hidden'); return; }
       $('invInfoIcon').textContent = item.icon;
       $('invInfoName').textContent = item.name;
-      let stats = '';
-      if (item.type === 'weapon') stats = `⚔️ +${item.baseDmg} poškození`;
-      else if (item.type === 'armor') stats = `❤️ +${item.bonusHp} HP`;
-      else if (item.type === 'helmet') stats = `❤️ +${item.bonusHp} HP`;
-      else if (item.type === 'ring') stats = `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
+      const r = RARITY[item.rarity] || RARITY.common;
+      $('invInfoName').style.color = r.color;
+      let stats = `<span style="color:${r.color};font-size:11px">${r.name}</span><br>`;
+      if (item.type === 'weapon') stats += `⚔️ +${item.baseDmg} poškození`;
+      else if (item.type === 'armor') stats += `❤️ +${item.bonusHp} HP`;
+      else if (item.type === 'helmet') stats += `❤️ +${item.bonusHp} HP`;
+      else if (item.type === 'ring') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
       else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
       if (item.attrs) {
