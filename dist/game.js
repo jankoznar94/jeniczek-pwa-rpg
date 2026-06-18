@@ -3206,14 +3206,16 @@
     const ring2 = ITEM_MAP[h.equip.ring2];
     $('invSlotWeaponIcon').textContent = weapon.icon;
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
+    if (weapon.rarity) $('invSlotWeapon').style.borderColor = RARITY[weapon.rarity].border;
     $('invSlotArmorIcon').textContent = armor.icon;
     $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
+    if (armor.rarity) $('invSlotArmor').style.borderColor = RARITY[armor.rarity].border;
     const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.textContent = helmet ? helmet.icon : '⛑️';
-    const hS = $('invSlotHelmet'); if (hS) hS.classList.toggle('empty', !helmet);
+    const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); if (helmet && helmet.rarity) hS.style.borderColor = RARITY[helmet.rarity].border; }
     const r1El = $('invSlotRing1Icon'); if (r1El) r1El.textContent = ring1 ? ring1.icon : '💍';
-    const r1S = $('invSlotRing1'); if (r1S) r1S.classList.toggle('empty', !ring1);
+    const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); if (ring1 && ring1.rarity) r1S.style.borderColor = RARITY[ring1.rarity].border; }
     const r2El = $('invSlotRing2Icon'); if (r2El) r2El.textContent = ring2 ? ring2.icon : '💍';
-    const r2S = $('invSlotRing2'); if (r2S) r2S.classList.toggle('empty', !ring2);
+    const r2S = $('invSlotRing2'); if (r2S) { r2S.classList.toggle('empty', !ring2); if (ring2 && ring2.rarity) r2S.style.borderColor = RARITY[ring2.rarity].border; }
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
     const inv = h.inventory || [];
