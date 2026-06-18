@@ -2629,16 +2629,10 @@
       const leveled = applyLevelUp();
       saveGame();
       sfxSuccess();
-      // Kill popup — čeká na kliknutí
-      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp, () => {
-        const fig2 = $('mbFigure');
-        if (fig2) fig2.classList.remove('monster-dying');
-        continueDungeon();
-      }); // konec showKillPopup
-      updateMapBattleUI();
 
       if (p >= 5) {
-        // ALL 5 monsters killed -> floor clear: result screen!
+        // ALL 5 monsters killed -> rovnou result screen, žádný kill popup
+        // (kill popup by překrýval result screen)
         // Loot za každé monstrum (5 hodů)
         let totalLootGold = 0;
         const lootItems = [];
@@ -2683,6 +2677,13 @@
         switchBGM('win');
         return;
       }
+      // Kill popup pro normální monstrum (1-4)
+      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp, () => {
+        const fig2 = $('mbFigure');
+        if (fig2) fig2.classList.remove('monster-dying');
+        continueDungeon();
+      });
+      updateMapBattleUI();
       // Animace smrti
       const fig = $('mbFigure');
       if (fig) {
