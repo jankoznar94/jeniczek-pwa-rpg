@@ -643,7 +643,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .levelup-sparkle { font-size:64px;margin-bottom:8px;animation:levelupSpin 2s linear infinite; }
 .levelup-title { font-size:36px;font-weight:bold;color:#f1c40f;text-shadow:0 0 20px rgba(241,196,15,0.6); }
 .levelup-level { font-size:28px;color:#fff;margin:6px 0; }
-.levelup-details { font-size:16px;color:#2ecc71;margin-top:8px; }
+.levelup-details { font-size:16px;color:#2ecc71;margin-top:8px;display:flex;flex-direction:column;gap:6px; }
 .levelup-overlay.fade-out { opacity:0;transition:opacity 0.4s; }
 @keyframes levelupFadeIn { 0%{opacity:0}100%{opacity:1} }
 @keyframes levelupBounce { 0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1} }
@@ -676,7 +676,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .treasure-slot {
   width:72px;height:72px;background:#2a2a2a;border:2px solid #4a4a4a;
   border-radius:10px;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:2px;
+  justify-content:center;gap:6px;
 }
 .treasure-slot-icon { font-size:28px;line-height:1; }
 .treasure-slot-label { font-size:10px;font-weight:bold; }
