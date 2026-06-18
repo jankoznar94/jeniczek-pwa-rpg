@@ -682,6 +682,7 @@
     // Každé nové patro resetuje HP hrdiny
     if (progress === 0) {
       state.hero.hp = state.hero.maxHp;
+      state._floorLootDrops = []; // reset loot pro nové patro
     }
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
@@ -708,7 +709,7 @@
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       // Loot drops per monster (pro vizuální indikaci)
-      _lootDrops: [],
+      _lootDrops: state._floorLootDrops || [],
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
       currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
@@ -2659,8 +2660,8 @@
       const leveled = applyLevelUp();
       // Loot roll za toto monstrum
       const loot = rollLoot(locId, mb.floor);
-      mb._lootDrops = mb._lootDrops || [];
-      mb._lootDrops.push(loot);
+      state._floorLootDrops = state._floorLootDrops || [];
+      state._floorLootDrops.push(loot);
       if (loot.type === 'item' || loot.type === 'boss') {
         state.hero.inventory.push(loot.item.id);
       }
@@ -2681,11 +2682,12 @@
         // Sumarizace lootu
         let totalLootGold = 0;
         const lootItems = [];
-        mb._lootDrops.forEach(d => {
+        (state._floorLootDrops || []).forEach(d => {
           if (d.type === 'gold') totalLootGold += d.gold;
           else if (d.type === 'item') { lootItems.push(d.item); }
           else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
         });
+        state._floorLootDrops = []; // vyčistit po sumarizaci
         $('resultIcon').textContent = '🎉';
         $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
         const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
