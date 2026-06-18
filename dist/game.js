@@ -2614,9 +2614,9 @@
     const tier = bossDrop ? Math.min(7, baseTier + rand(1, 2)) : baseTier;
     // 0. Rarita se určuje první — ovlivňuje všechny staty
     const rarity = getRarity(bossDrop);
-    const rarityMult = rarity === 'epic' ? 2.0 : rarity === 'rare' ? 1.6 : rarity === 'uncommon' ? 1.3 : 1.0;
-    // Mírný nárůst s obtížností dungeonu: +5 % za patro
-    const floorMult = 1 + (floor - 1) * 0.05;
+    const rarityMult = rarity === 'epic' ? 3.0 : rarity === 'rare' ? 2.0 : rarity === 'uncommon' ? 1.5 : 1.0;
+    // Nárůst s obtížností dungeonu: +8 % za patro
+    const floorMult = 1 + (floor - 1) * 0.08;
     // 1. RNG: typ předmětu
     const typeRoll = Math.random();
     let type, subtype;
@@ -2643,12 +2643,12 @@
       let k;
       do { k = ATTR_KEYS[rand(0, 3)]; } while (usedKeys.includes(k));
       usedKeys.push(k);
-      // Hodnota atributu podle rarity a floor
+      // Hodnota atributu podle rarity a floor — nepřekrývající se rozsahy
       let minVal, maxVal;
-      if (rarity === 'common') { minVal = 1; maxVal = 3; }
-      else if (rarity === 'uncommon') { minVal = 2; maxVal = 5; }
-      else if (rarity === 'rare') { minVal = 3; maxVal = 7; }
-      else { minVal = 5; maxVal = 10; }
+      if (rarity === 'common') { minVal = 1; maxVal = 2; }
+      else if (rarity === 'uncommon') { minVal = 3; maxVal = 4; }
+      else if (rarity === 'rare') { minVal = 5; maxVal = 7; }
+      else { minVal = 8; maxVal = 12; }
       minVal = Math.round(minVal * floorMult);
       maxVal = Math.round(maxVal * floorMult);
       attrs[k] = rand(minVal, maxVal);
