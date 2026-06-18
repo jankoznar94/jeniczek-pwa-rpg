@@ -568,7 +568,10 @@
   }
 
   // ===== TREASURE POPUP =====
+  let _treasurePopupOpen = false;
   function showTreasurePopup(loot, xpGain, onContinue) {
+    if (_treasurePopupOpen) return;
+    _treasurePopupOpen = true;
     const el = document.createElement('div');
     el.className = 'treasure-overlay';
     el.innerHTML = `<div class="treasure-content">
@@ -602,14 +605,13 @@
         }
       }
 
-      el.innerHTML = `<div class="treasure-content treasure-opened">
-        <div class="treasure-chest-open">📦</div>
-        <div class="treasure-loot-row">${lootSquares}</div>
-        <div class="treasure-tap-close">👆 Pokračovat</div>
-      </div>`;
+      el.className = 'treasure-overlay-open';
+      el.innerHTML = `<div class="treasure-loot-row">${lootSquares}</div>
+        <div class="treasure-tap-close">👆 Pokračovat</div>`;
 
       el.addEventListener('click', function closeHandler() {
         el.removeEventListener('click', closeHandler);
+        _treasurePopupOpen = false;
         el.classList.add('fade-out');
         setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
       });
