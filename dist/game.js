@@ -2615,6 +2615,8 @@
     // 0. Rarita se určuje první — ovlivňuje všechny staty
     const rarity = getRarity(bossDrop);
     const rarityMult = rarity === 'epic' ? 2.0 : rarity === 'rare' ? 1.6 : rarity === 'uncommon' ? 1.3 : 1.0;
+    // Mírný nárůst s obtížností dungeonu: +5 % za patro
+    const floorMult = 1 + (floor - 1) * 0.05;
     // 1. RNG: typ předmětu
     const typeRoll = Math.random();
     let type, subtype;
@@ -2629,7 +2631,7 @@
     const nameIdx = rand(0, maxIdx);
     const baseName = namePool[nameIdx];
 
-    // 3. Atributy — počet a hodnoty podle rarity
+    // 3. Atributy — počet a hodnoty podle rarity a floor
     let attrCount;
     if (rarity === 'common') attrCount = 1;
     else if (rarity === 'uncommon') attrCount = rand(1, 2);
@@ -2641,29 +2643,31 @@
       let k;
       do { k = ATTR_KEYS[rand(0, 3)]; } while (usedKeys.includes(k));
       usedKeys.push(k);
-      // Hodnota atributu podle rarity
+      // Hodnota atributu podle rarity a floor
       let minVal, maxVal;
       if (rarity === 'common') { minVal = 1; maxVal = 3; }
       else if (rarity === 'uncommon') { minVal = 2; maxVal = 5; }
       else if (rarity === 'rare') { minVal = 3; maxVal = 7; }
       else { minVal = 5; maxVal = 10; }
+      minVal = Math.round(minVal * floorMult);
+      maxVal = Math.round(maxVal * floorMult);
       attrs[k] = rand(minVal, maxVal);
     }
 
     // 4. Název — jen baseName bez statů v názvu
     const name = baseName;
 
-    // 5. Základní staty podle typu, tieru a rarity
+    // 5. Základní staty podle typu, tieru, rarity a floor
     let baseDmg = 0, bonusHp = 0;
     if (type === 'weapon') {
-      baseDmg = Math.round((5 + tier * 7 + rand(0, 3)) * rarityMult);
+      baseDmg = Math.round((5 + tier * 7 + rand(0, 3)) * rarityMult * floorMult);
     } else if (type === 'armor') {
-      bonusHp = Math.round((10 + tier * 25 + rand(0, 10)) * rarityMult);
+      bonusHp = Math.round((10 + tier * 25 + rand(0, 10)) * rarityMult * floorMult);
     } else if (type === 'helmet') {
-      bonusHp = Math.round((5 + tier * 15 + rand(0, 5)) * rarityMult);
+      bonusHp = Math.round((5 + tier * 15 + rand(0, 5)) * rarityMult * floorMult);
     } else if (type === 'ring') {
-      baseDmg = Math.round((1 + tier * 2 + rand(0, 2)) * rarityMult);
-      bonusHp = Math.round((2 + tier * 5 + rand(0, 3)) * rarityMult);
+      baseDmg = Math.round((1 + tier * 2 + rand(0, 2)) * rarityMult * floorMult);
+      bonusHp = Math.round((2 + tier * 5 + rand(0, 3)) * rarityMult * floorMult);
     }
 
     const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
