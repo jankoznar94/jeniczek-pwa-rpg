@@ -2575,16 +2575,19 @@
     epic: { name:'Epic', color:'#e8c8ff', border:'#9c27b0' }
   };
 
-  function getRarity(tier) {
+  function getRarity(bossDrop) {
     const r = Math.random();
-    if (tier >= 7) return r < 0.7 ? 'epic' : 'rare';
-    if (tier >= 5) {
+    if (bossDrop) {
       if (r < 0.10) return 'epic';
-      if (r < 0.60) return 'rare';
-      return 'uncommon';
+      if (r < 0.25) return 'rare';
+      if (r < 0.55) return 'uncommon';
+      return 'common';
+    } else {
+      if (r < 0.01) return 'epic';
+      if (r < 0.06) return 'rare';
+      if (r < 0.35) return 'uncommon';
+      return 'common';
     }
-    if (tier >= 3) return r < 0.30 ? 'uncommon' : 'common';
-    return 'common';
   }
 
   function generateLootItem(floor, bossDrop) {
@@ -2636,7 +2639,7 @@
     const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
     const icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
     const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
-    const rarity = getRarity(tier);
+    const rarity = getRarity(bossDrop);
     const item = { id, name, type, subtype, baseDmg, bonusHp, icon, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
     ITEM_MAP[id] = item;
     state.lootItems = state.lootItems || {};
