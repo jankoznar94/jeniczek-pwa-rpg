@@ -1379,7 +1379,12 @@
     h.mana = Math.min(h.maxMana, (h.mana || 0) + manaRegen);
     // Aktualizovat manu v UI
     const arenaMana = $('mbPlayerArenaMana');
-    if (arenaMana) arenaMana.textContent = `💧 ${h.mana}/${h.maxMana}`;
+    if (arenaMana) {
+      const span = arenaMana.querySelector('span');
+      if (span) span.textContent = `💧 ${h.mana}/${h.maxMana}`;
+      const fill = $('mbPlayerArenaManaFill');
+      if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
+    }
 
     // Chill tick — odečti jeden tick zpomalení
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
