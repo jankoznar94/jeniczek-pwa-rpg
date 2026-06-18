@@ -807,6 +807,8 @@
     if (arenaHp) {
       const span = arenaHp.querySelector('span');
       if (span) span.textContent = `❤️ ${mb.playerHp}/${mb.maxPlayerHp}`;
+      const fill = $('mbPlayerArenaHpFill');
+      if (fill) fill.style.width = Math.max(0, pHpPct) + '%';
     }
     // Mana bar pod HP
     const arenaMana = $('mbPlayerArenaMana');
@@ -814,6 +816,8 @@
       const h = state.hero;
       const span = arenaMana.querySelector('span');
       if (span) span.textContent = `💧 ${h.mana}/${h.maxMana}`;
+      const fill = $('mbPlayerArenaManaFill');
+      if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
