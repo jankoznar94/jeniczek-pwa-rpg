@@ -287,15 +287,15 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   display:flex; gap:8px; margin:25px 0 12px; justify-content:center; flex-wrap:wrap;
 }
 .inv-equip-slot {
-  width:100px; height:100px; background:#2a2a2a; border:2px solid #4a4a4a;
-  border-radius:10px; display:flex; flex-direction:column; align-items:center;
-  justify-content:center; gap:3px; cursor:pointer; transition:0.2s;
+  width:75px; height:75px; background:#2a2a2a; border:2px solid #4a4a4a;
+  border-radius:8px; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; gap:2px; cursor:pointer; transition:0.2s;
   position:relative;
 }
 .inv-equip-slot:hover { border-color:#aaa; background:#333; }
-.inv-equip-slot .inv-slot-icon { font-size:28px; line-height:1; }
+.inv-equip-slot .inv-slot-icon { font-size:22px; line-height:1; }
 .inv-equip-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#1e1e1e; }
-.inv-equip-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); font-size:24px; }
+.inv-equip-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); font-size:18px; }
 
 /* Prsteny — větší vertikální odstup */
 .inv-equip-ring { margin-top:12px; }
@@ -319,13 +319,13 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .inv-grid-cell {
   aspect-ratio:1; background:#222; border:1px solid #3a3a3a;
-  border-radius:6px; display:flex; flex-direction:column; align-items:center;
+  border-radius:5px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; cursor:pointer; transition:0.15s; position:relative;
-  min-height:64px;
+  min-height:48px;
 }
 .inv-grid-cell:hover { border-color:#888; background:#2a2a2a; }
-.inv-grid-cell .cell-icon { font-size:22px; line-height:1; }
-.inv-grid-cell .cell-name { font-size:9px; color:#aaa; text-align:center; line-height:1.1; margin-top:2px; }
+.inv-grid-cell .cell-icon { font-size:18px; line-height:1; }
+.inv-grid-cell .cell-name { font-size:8px; color:#aaa; text-align:center; line-height:1.1; margin-top:1px; }
 .inv-grid-cell .cell-actions {
   display:none; position:absolute; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,0.75); border-radius:5px; flex-direction:column;
@@ -343,7 +343,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Scrollovatelný batoh */
 .inv-grid-wrap {
-  max-height:220px; overflow-y:auto; margin:8px 0;
+  max-height:170px; overflow-y:auto; margin:8px 0;
   scrollbar-width:thin; scrollbar-color:#444 #1a1a1a;
   background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:6px;
 }

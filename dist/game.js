@@ -275,7 +275,7 @@
     if (state.activeSchool !== 'nature') return 0;
     const lv = getTalentLv('nature_heal');
     if (lv === 0) return 0;
-    return Math.round((state.hero.attrVit || 0) * (5 + lv * 5) / 100); // 10-30% z vitality
+    return Math.round(((state.hero.attrVit || 0) + getEquipAttrs().vit) * (5 + lv * 5) / 100); // 10-30% z vitality
   }
   function getNatureHealDuration() {
     if (state.activeSchool !== 'nature') return 0;
@@ -1127,7 +1127,8 @@
 
     // RPG baseDmg: zbran + level bonus (base 10 + level*3, zbraň dodává baseDmg)
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-    mb.baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + (state.hero.attrStr||0)*2;
+    const eqAttrs = getEquipAttrs();
+    mb.baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
 
     // Generovat sekvenci
     const chances = getDungeonAttackChances(mb.locId);
@@ -1367,7 +1368,8 @@
     }
     // Mana regen — 1 mana každý tick, +1 za každých 5 intelektu
     const h = state.hero;
-    const manaRegen = 1 + Math.floor((h.attrInt || 0) / 5);
+    const eqAttrs = getEquipAttrs();
+    const manaRegen = 1 + Math.floor(((h.attrInt || 0) + eqAttrs.int) / 5);
     h.mana = Math.min(h.maxMana, (h.mana || 0) + manaRegen);
     // Aktualizovat manu v UI
     const arenaMana = $('mbPlayerArenaMana');
@@ -1454,7 +1456,8 @@
     const atkCircle = resetTimerRing();
     
     // 🎯 Crit window — šířka = critChance% z atkTime
-    const critChance = (state.hero.attrDex||0) * 1 + 5;
+    const eqAttrs = getEquipAttrs();
+    const critChance = ((state.hero.attrDex||0) + eqAttrs.dex) * 1 + 5;
     const bonusPct = Math.min(critChance, 80) / 100; // max 80% timeru
     const bonusMs = Math.max(1, Math.round(atkTime * bonusPct)); // čistě proporční
     // Okno až od druhé třetiny timeru (33%), ať hráč stihne zareagovat
@@ -2057,8 +2060,8 @@
     updateActionButtons();
     mb._attackProcessed = true; // označit útok jako provedený
 
-    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
-    const critChance = (state.hero.attrDex||0) * 1 + 5;
+    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
+    const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 1 + 5;
     const critMult = 1.5;
     let dmg = baseDmg;
     // Fire school passive — ignite (% bonus fire damage)
@@ -2379,7 +2382,7 @@
     const manaEl = $('mbPlayerArenaMana');
     if (manaEl) manaEl.textContent = `💧 ${h.mana}/${h.maxMana}`;
     // Cooldown — základ 30 ticků, intelekt snižuje (min 10)
-    const intLv = h.attrInt || 0;
+    const intLv = (h.attrInt || 0) + getEquipAttrs().int;
     const cdTicks = Math.max(10, 30 - intLv * 2);
     if (mb._spellCooldownTicks > 0) return;
     mb._spellCooldownTicks = cdTicks;
@@ -3040,7 +3043,7 @@
     $('heroMaxHp').textContent = h.maxHp;
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
-    const critChance = (h.attrDex||0) * 1 + 5;
+    const critChance = ((h.attrDex||0) + getEquipAttrs().dex) * 1 + 5;
     $('heroCrit').textContent = `${critChance}% okno (×1.5)`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
@@ -3059,10 +3062,10 @@
     const dexCost = ATTR_COST[Math.min(h.attrDex||0, ATTR_COST.length-1)] || 999;
     const intCost = ATTR_COST[Math.min(h.attrInt||0, ATTR_COST.length-1)] || 999;
     const pts = h.attrPoints || 0;
-    $('heroAttrStr').textContent = (h.attrStr||0) + (h.equip.weapon !== 'fists' ? ` (s ${ITEM_MAP[h.equip.weapon]?.icon||''})` : '');
-    $('heroAttrVit').textContent = (h.attrVit||0) + (h.equip.armor !== 'rags' ? ` (s ${ITEM_MAP[h.equip.armor]?.icon||''})` : '');
-    $('heroAttrDex').textContent = (h.attrDex||0);
-    $('heroAttrInt').textContent = (h.attrInt||0);
+    $('heroAttrStr').textContent = (h.attrStr||0) + (getEquipAttrs().str > 0 ? ` (+${getEquipAttrs().str} z itemů)` : '');
+    $('heroAttrVit').textContent = (h.attrVit||0) + (getEquipAttrs().vit > 0 ? ` (+${getEquipAttrs().vit} z itemů)` : '');
+    $('heroAttrDex').textContent = (h.attrDex||0) + (getEquipAttrs().dex > 0 ? ` (+${getEquipAttrs().dex} z itemů)` : '');
+    $('heroAttrInt').textContent = (h.attrInt||0) + (getEquipAttrs().int > 0 ? ` (+${getEquipAttrs().int} z itemů)` : '');
     $('heroAttrPts').textContent = pts;
     const strBtn = $('heroUpStr');
     const vitBtn = $('heroUpVit');
