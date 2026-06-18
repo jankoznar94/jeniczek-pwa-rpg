@@ -652,14 +652,14 @@
           const isBossFloor = f >= 4;
           const floorDone = completed || f < curFloor;
           const lockedFloor = f > state.floorProgress[i] && !completed;
-          let fIcon, fText;
-          if (floorDone) { fIcon = '✅'; fText = 'Hotovo'; }
-          else if (lockedFloor) { fIcon = '🔒'; fText = 'Zamčeno'; }
-          else if (isBossFloor) { fIcon = '👹'; fText = 'BOSS'; }
-          else if (f === curFloor) { fIcon = '👾'; fText = `${loc.monsters - curProgress} zbývá`; }
-          else { fIcon = '✅'; fText = ''; }
+          let fIcon, fIconStyle, fText;
+          if (floorDone) { fIcon = '✓'; fIconStyle = `color:${theme.border}`; fText = 'Hotovo'; }
+          else if (lockedFloor) { fIcon = '🔒\uFE0E'; fIconStyle = `color:${theme.border}`; fText = 'Zamčeno'; }
+          else if (isBossFloor) { fIcon = '👹'; fIconStyle = ''; fText = 'BOSS'; }
+          else if (f === curFloor) { fIcon = '●'; fIconStyle = ''; fText = `${loc.monsters - curProgress} zbývá`; }
+          else { fIcon = '✓'; fIconStyle = `color:${theme.border}`; fText = ''; }
           floorHtml += `<div class="map-floor-card ${floorDone?'floor-done':lockedFloor?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)" onclick="${lockedFloor?'':'game.enterLocation('+i+','+f+')'}">
-            <span class="floor-card-icon">${fIcon}</span>
+            <span class="floor-card-icon"${fIconStyle ? ` style="${fIconStyle}"` : ''}>${fIcon}</span>
             <span class="floor-card-num">${isBossFloor?'BOSS':`P${f+1}`}</span>
             <span class="floor-card-text">${fText}</span>
           </div>`;
