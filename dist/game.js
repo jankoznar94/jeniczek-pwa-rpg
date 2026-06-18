@@ -800,18 +800,18 @@
       $('mbXpBarFill').style.width = xpPct + '%';
       xpWrap.style.display = 'flex';
     }
-    // Arena HP pod panáčkem
+    // Arena HP bar na spodku
     const arenaHp = $('mbPlayerArenaHp');
     if (arenaHp) {
-      arenaHp.textContent = `❤️ ${mb.playerHp}/${mb.maxPlayerHp}`;
-      arenaHp.classList.remove('hidden');
+      const span = arenaHp.querySelector('span');
+      if (span) span.textContent = `❤️ ${mb.playerHp}/${mb.maxPlayerHp}`;
     }
-    // Mana pod HP
+    // Mana bar pod HP
     const arenaMana = $('mbPlayerArenaMana');
     if (arenaMana) {
       const h = state.hero;
-      arenaMana.textContent = `💧 ${h.mana}/${h.maxMana}`;
-      arenaMana.classList.remove('hidden');
+      const span = arenaMana.querySelector('span');
+      if (span) span.textContent = `💧 ${h.mana}/${h.maxMana}`;
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
