@@ -649,26 +649,39 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 @keyframes levelupBounce { 0%{transform:scale(0.3);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1} }
 @keyframes levelupSpin { 0%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.2)}100%{transform:rotate(360deg) scale(1)} }
 
-/* Kill popup */
-.kill-popup-overlay {
+/* Treasure popup */
+.treasure-overlay {
   position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
   z-index:250;
-  animation:killPopupIn 0.2s ease-out;
+  animation:treasureIn 0.3s ease-out;
 }
-.kill-popup-content {
-  background:#1a1a3a;border:2px solid #f1c40f;border-radius:12px;
-  padding:16px 24px;text-align:center;
-  min-width:180px;
+.treasure-content {
+  background:#1e1e1e;border:2px solid #f1c40f;border-radius:14px;
+  padding:20px 28px;text-align:center;
+  min-width:200px;
 }
-.kill-popup-icon { font-size:36px; }
-.kill-popup-name { font-size:16px;font-weight:bold;margin:4px 0; }
-.kill-popup-drop { font-size:13px;font-weight:bold;border:1px solid;border-radius:6px;padding:3px 12px;display:inline-block;margin:4px 0; }
-.kill-popup-stats { display:flex;gap:10px;justify-content:center;font-size:13px;color:#8888aa;margin:6px 0; }
-.kill-popup-hp { font-size:12px;color:#4a7dff;margin-top:4px; }
-.kill-popup-tap { font-size:11px;color:#8888aa;margin-top:8px;animation:killPulseText 1.5s ease-in-out infinite; }
-@keyframes killPulseText { 0%,100%{opacity:0.5}50%{opacity:1} }
-.kill-popup-overlay.fade-out { opacity:0;transform:translate(-50%,-50%) scale(0.9);transition:all 0.3s; }
-@keyframes killPopupIn { 0%{transform:translate(-50%,-50%) scale(0.5);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+.treasure-chest { font-size:48px; animation:chestBob 1s ease-in-out infinite; }
+.treasure-chest-open { font-size:48px; }
+.treasure-title { font-size:18px;font-weight:bold;margin:8px 0;color:#f1c40f; }
+.treasure-tap-open { font-size:12px;color:#888;margin-top:10px;animation:treasurePulse 1.5s ease-in-out infinite; }
+.treasure-tap-close { font-size:12px;color:#888;margin-top:12px;animation:treasurePulse 1.5s ease-in-out infinite; }
+.treasure-stats { font-size:14px;color:#8888aa;margin:6px 0; }
+.treasure-loot-row {
+  display:flex;gap:10px;justify-content:center;margin:10px 0;
+}
+.treasure-slot {
+  width:72px;height:72px;background:#2a2a2a;border:2px solid #4a4a4a;
+  border-radius:10px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:2px;
+}
+.treasure-slot-icon { font-size:28px;line-height:1; }
+.treasure-slot-label { font-size:10px;font-weight:bold; }
+.treasure-opened { animation:treasureOpen 0.3s ease-out; }
+.treasure-overlay.fade-out { opacity:0;transform:translate(-50%,-50%) scale(0.9);transition:all 0.3s; }
+@keyframes treasureIn { 0%{transform:translate(-50%,-50%) scale(0.3);opacity:0}100%{transform:translate(-50%,-50%) scale(1);opacity:1} }
+@keyframes treasureOpen { 0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1} }
+@keyframes treasurePulse { 0%,100%{opacity:0.5}50%{opacity:1} }
+@keyframes chestBob { 0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)} }
 
 /* Medal screen */
 .medal-grid { display:flex; gap:6px; flex-wrap:wrap; }

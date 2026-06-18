@@ -567,32 +567,54 @@
     }, 2500);
   }
 
-  // ===== KILL POPUP =====
-  function showKillPopup(monsterFace, monsterName, xpGain, goldGain, playerHp, maxHp, dropRarity, onContinue) {
+  // ===== TREASURE POPUP =====
+  function showTreasurePopup(loot, xpGain, onContinue) {
     const el = document.createElement('div');
-    el.className = 'kill-popup-overlay';
-    let dropHtml = '';
-    if (dropRarity) {
-      const r = RARITY[dropRarity] || RARITY.common;
-      dropHtml = `<div class="kill-popup-drop" style="border-color:${r.border};color:${r.color}">⬇️ ${r.name}</div>`;
-    }
-    el.innerHTML = `<div class="kill-popup-content">
-      <div class="kill-popup-icon">${monsterFace}</div>
-      <div class="kill-popup-name">${monsterName} poražen!</div>
-      ${dropHtml}
-      <div class="kill-popup-stats">
-        <span>⚔️ +${xpGain} XP</span>
-        <span>💰 +${goldGain}</span>
-      </div>
-      <div class="kill-popup-hp">❤️ ${playerHp}/${maxHp}</div>
-      <div class="kill-popup-tap">👆 Klikni pro pokračování</div>
+    el.className = 'treasure-overlay';
+    el.innerHTML = `<div class="treasure-content">
+      <div class="treasure-chest">📦</div>
+      <div class="treasure-title">Poklad!</div>
+      <div class="treasure-tap-open">👆 Otevřít</div>
     </div>`;
-    el.style.cursor = 'pointer';
     document.body.appendChild(el);
-    el.addEventListener('click', function handler() {
-      el.removeEventListener('click', handler);
-      el.classList.add('fade-out');
-      setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
+
+    // Fáze 2: otevření truhly po kliknutí
+    el.addEventListener('click', function openHandler() {
+      el.removeEventListener('click', openHandler);
+
+      // Sestavit loot čtverečky
+      let lootSquares = '';
+      if (loot.type === 'gold') {
+        lootSquares = `<div class="treasure-slot" style="border-color:#f1c40f">
+          <div class="treasure-slot-icon">💰</div>
+          <div class="treasure-slot-label">+${loot.gold}</div>
+        </div>`;
+      } else if (loot.type === 'item' || loot.type === 'boss') {
+        const r = RARITY[loot.item.rarity] || RARITY.common;
+        lootSquares = `<div class="treasure-slot" style="border-color:${r.border}">
+          <div class="treasure-slot-icon">❓</div>
+          <div class="treasure-slot-label" style="color:${r.color}">${r.name}</div>
+        </div>`;
+        if (loot.type === 'boss' && loot.gold) {
+          lootSquares += `<div class="treasure-slot" style="border-color:#f1c40f">
+            <div class="treasure-slot-icon">💰</div>
+            <div class="treasure-slot-label">+${loot.gold}</div>
+          </div>`;
+        }
+      }
+
+      el.innerHTML = `<div class="treasure-content treasure-opened">
+        <div class="treasure-chest-open">📦</div>
+        <div class="treasure-stats">⚔️ +${xpGain} XP</div>
+        <div class="treasure-loot-row">${lootSquares}</div>
+        <div class="treasure-tap-close">👆 Pokračovat</div>
+      </div>`;
+
+      el.addEventListener('click', function closeHandler() {
+        el.removeEventListener('click', closeHandler);
+        el.classList.add('fade-out');
+        setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
+      });
     });
   }
 
@@ -2719,9 +2741,8 @@
         switchBGM('win');
         return;
       }
-      // Kill popup pro normální monstrum (1-4) — zobrazit barvičku pokud item
-      const dropRarity = loot.type === 'item' ? loot.item.rarity : null;
-      showKillPopup(mb.monsterFace, mb.currentMonsterName || 'Nestvůra', xpGain, monsterGold, mb.playerHp, mb.maxPlayerHp, dropRarity, () => {
+      // Treasure popup pro normální monstrum (1-4)
+      showTreasurePopup(loot, xpGain, () => {
         const fig2 = $('mbFigure');
         if (fig2) fig2.classList.remove('monster-dying');
         continueDungeon();
