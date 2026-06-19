@@ -169,7 +169,7 @@
       tiers: [
         { choices: [
           { k:'burn', name:'Žhnutí', icon:'🔥', maxLv:5, desc:lv=>`Při zásahu: +${20+lv*10}% dmg ohněm` },
-          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:5, desc:lv=>`${75+lv*25}% dmg ohněm` },
+          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:5, desc:lv=>`${75+lv*35}% dmg ohněm` },
         ]},
         { choices: [
           { k:'ignite', name:'Vznícení', icon:'💥', maxLv:5, requires:'fire_burn', requiresLv:5, desc:lv=>`+${lv*12}% poškození ohněm` },
@@ -185,7 +185,7 @@
       tiers: [
         { choices: [
           { k:'chill', name:'Mráz', icon:'🥶', maxLv:5, desc:lv=>`Při zásahu: zpomalí 25% na ${lv} ticků` },
-          { k:'frostbolt', name:'Frostbolt', icon:'❄️', maxLv:5, desc:lv=>`${125+lv*25}% dmg ledem, zpomalí 40% na 3 ticky` }
+          { k:'frostbolt', name:'Frostbolt', icon:'❄️', maxLv:5, desc:lv=>`${125+lv*15}% dmg ledem, zpomalí 40% na 3 ticky` },
         ]},
         { choices: [
           { k:'chill2', name:'Hluboký mráz', icon:'❄️', maxLv:5, requires:'ice_chill', requiresLv:5, desc:lv=>`+${lv*5}% zpomalení (nad rámec Mrázu)` },
@@ -998,7 +998,8 @@
     if (spellFreezeBtn) {
       const freezeHandler = (e) => {
         e.stopPropagation();
-        castMapSpell('blizzard');
+        const best = getBestSpellId(state.activeSchool);
+        if (best) onMapAttackSpell(best);
       };
       spellFreezeBtn.addEventListener('pointerdown', freezeHandler);
       handlers.push(['pointerdown', freezeHandler]);
@@ -2612,14 +2613,14 @@
       effectMsg = `💥 Fire Blast! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
       spawnFireballProjectile();
     } else if (spellId === 'firebolt') {
-      const pct = 75 + lv * 25; // 100% @ lv1, 125% @ lv2, 150% @ lv3
+      const pct = 75 + lv * 35; // 110% @ lv1, 145% @ lv2, ... 250% @ lv5
       const resistMult = getSchoolResistMult('fire');
       let dmg = Math.round(baseDmg * pct / 100 * resistMult);
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
       spawnFireballProjectile();
     } else if (spellId === 'frostbolt') {
-      const dmgPct = 125 + lv * 25; // 150% @ lv1, 175% @ lv2, ... 250% @ lv5
+      const dmgPct = 125 + lv * 15; // 140% @ lv1, 155% @ lv2, ... 200% @ lv5
       const resistMult = getSchoolResistMult('ice');
       let dmg = Math.round(baseDmg * dmgPct / 100 * resistMult);
       let slowPct = 40;
