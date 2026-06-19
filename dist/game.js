@@ -2988,6 +2988,7 @@
       return null;
     }
     if (schoolId === 'physical') {
+      if (getWeaponType() !== 'blade') return null;
       if (getTalentLv('physical_whirlwind') > 0) return 'whirlwind';
       if (getTalentLv('physical_slash') > 0) return 'slash';
       if (getTalentLv('physical_strongStrike') > 0) return 'strongStrike';
