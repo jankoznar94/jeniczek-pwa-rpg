@@ -356,14 +356,14 @@
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', weaponType:'fists' },
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢' },
     // === ZBRANĚ — magické (staff) ===
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🪄', weaponType:'staff', tier:1 },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, cost:25, icon:'🪄', weaponType:'staff', tier:2 },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, cost:30, icon:'🪄', weaponType:'staff', tier:2 },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, cost:45, icon:'🪄', weaponType:'staff', tier:3 },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, cost:55, icon:'🪄', weaponType:'staff', tier:3 },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, cost:70, icon:'🪄', weaponType:'staff', tier:4 },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, cost:95, icon:'🪄', weaponType:'staff', tier:4 },
-    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, cost:200, icon:'🪄', weaponType:'staff', tier:5 },
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', weaponType:'staff', tier:1 },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', weaponType:'staff', tier:2 },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', weaponType:'staff', tier:2 },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', weaponType:'staff', tier:3 },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', weaponType:'staff', tier:3 },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', weaponType:'staff', tier:4 },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', weaponType:'staff', tier:4 },
+    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', weaponType:'staff', tier:5 },
     // === ZBRANĚ — fyzické (blade) ===
     { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:10, bonusHp:0, cost:20, icon:'⚔️', weaponType:'blade', tier:1 },
     { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, cost:35, icon:'⚔️', weaponType:'blade', tier:2 },
@@ -373,13 +373,13 @@
     { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', weaponType:'blade', tier:5 },
     { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', weaponType:'blade', tier:6 },
     // === BRNĚNÍ ===
-    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, cost:20, icon:'👘', tier:1 },
-    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, cost:35, icon:'👘', tier:2 },
-    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, cost:60, icon:'👘', tier:3 },
-    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, cost:80, icon:'👘', tier:4 },
-    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, cost:110, icon:'👘', tier:4 },
-    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, cost:160, icon:'👘', tier:5 },
-    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, cost:250, icon:'👘', tier:6 },
+    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, cost:20, icon:'👘', tier:1 },
+    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, cost:35, icon:'👘', tier:2 },
+    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, cost:60, icon:'👘', tier:3 },
+    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, bonusMana:20, cost:80, icon:'👘', tier:4 },
+    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, cost:110, icon:'👘', tier:4 },
+    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, cost:160, icon:'👘', tier:5 },
+    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, bonusMana:50, cost:250, icon:'👘', tier:6 },
     // === HELMY ===
     { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, cost:15, icon:'🎭', tier:1 },
     { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️', tier:2 },
@@ -846,20 +846,14 @@
     const spellId = getBestSpellId(activeId);
     if (!spellId) return;
     const lv = getSpellLv(spellId);
-    const onCooldown = mb._spellCooldownTicks > 0;
     // Ukazat spravne kouzlo — VZDY viditelne, aktivni jen kdyz je prilezitost
     const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : activeId === 'physical' ? physBtn : healBtn;
     if (!btn) return;
     btn.classList.remove('hidden');
     const spellIcons = { firebolt:'🔥', fireblast:'💥', fireball:'🔥', frostbolt:'❄️', blizzard:'❄️', heal:'💚', strongStrike:'💢', slash:'⚡', whirlwind:'🌀' };
     const spellIcon = spellIcons[spellId] || '⚔️';
-    if (onCooldown) {
-      btn.classList.add('used');
-      btn.innerHTML = `${spellIcon}<span class="spell-cd">${mb._spellCooldownTicks}</span>`;
-      return;
-    }
-    // Obnovit puvodni obsah
     btn.innerHTML = spellIcon;
+    // Aktivni: freeze vzdy, ostatni jen v attack okne
     // Aktivni: freeze vzdy, ostatni jen v attack okne
     if (activeId === 'ice') {
       btn.classList.add('active');
@@ -1385,8 +1379,6 @@
     const eqAttrs = getEquipAttrs();
     const manaRegen = 1 + Math.floor(((h.attrInt || 0) + eqAttrs.int) / 5);
     h.mana = Math.min(h.maxMana, (h.mana || 0) + manaRegen);
-    // Aktualizovat manu v UI
-    const arenaMana = $('mbPlayerArenaMana');
     if (arenaMana) {
       const span = arenaMana.querySelector('span');
       if (span) span.textContent = `${h.mana}/${h.maxMana}`;
@@ -1398,9 +1390,6 @@
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
     // Pokud aktivní kouzlo došlo, reset flag — pasivy můžou zase běžet
     if (mb.chillTicksLeft <= 0 && mb._activeSpellChillActive) mb._activeSpellChillActive = false;
-
-    // Cooldown tick
-    if (mb._spellCooldownTicks > 0) mb._spellCooldownTicks--;
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
@@ -2315,9 +2304,6 @@
     // Chill tick i při neúspěchu — jeden tick zpomalení uběhl
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
-    // Cooldown tick i při neúspěchu
-    if (mb._spellCooldownTicks > 0) mb._spellCooldownTicks--;
-
     const baseBossDmg = Math.max(5, 5 + mb.turn * 4 + mb.locId * 5);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
     let amount = bossDmg;
@@ -2473,19 +2459,6 @@
     const cost = (manaCosts[spellId] || 15) + lv * 2;
     if ((h.mana || 0) < cost) { showMessage('💧 Nedostatek many!'); return; }
     h.mana -= cost;
-    // Aktualizovat manu v UI
-    const manaEl = $('mbPlayerArenaMana');
-    if (manaEl) {
-      const span = manaEl.querySelector('span');
-      if (span) span.textContent = `${h.mana}/${h.maxMana}`;
-      const fill = $('mbPlayerArenaManaFill');
-      if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
-    }
-    // Cooldown — základ 30 ticků, intelekt snižuje (min 10)
-    const intLv = (h.attrInt || 0) + getEquipAttrs().int;
-    const cdTicks = Math.max(10, 30 - intLv * 2);
-    if (mb._spellCooldownTicks > 0) return;
-    mb._spellCooldownTicks = cdTicks;
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
@@ -3153,6 +3126,16 @@
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + ((h.attrVit||0) + eqAttrs.vit) * 10);
   }
+  function getHeroMaxMana() {
+    const h = state.hero;
+    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
+    const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const helmet = ITEM_MAP[h.equip.helmet];
+    const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
+    const bonus = (weapon.bonusMana||0) + (armor.bonusMana||0) + (helmet ? helmet.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0);
+    return Math.max(10, 50 + ((h.attrInt||0) + getEquipAttrs().int) * 10 + bonus);
+  }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
     const h = state.hero;
@@ -3236,7 +3219,7 @@
       showMessage('🎯 Obratnost +1! Crit okno zvětšeno!');
     } else if (attr === 'int') {
       h.attrInt = (h.attrInt||0) + 1;
-      h.maxMana = 50 + (h.attrInt||0) * 10;
+      h.maxMana = getHeroMaxMana();
       h.mana = h.maxMana;
       showMessage('🧠 Intelekt +1! Max many +10!');
     } else {
@@ -3496,6 +3479,8 @@
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
+    h.maxMana = getHeroMaxMana();
+    h.mana = h.maxMana;
     saveGame();
     showMessage(`🎽 Oblékl jsi ${item.icon} ${item.name}!`);
     renderInventory();
@@ -3526,6 +3511,8 @@
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
+    h.maxMana = getHeroMaxMana();
+    h.mana = h.maxMana;
     saveGame();
     showMessage(`📦 Sundal jsi ${item.icon} ${item.name} do inventáře!`);
     renderInventory();
