@@ -863,11 +863,13 @@
     const spellIcons = { firebolt:'🔥', fireblast:'💥', fireball:'🔥', frostbolt:'❄️', blizzard:'❄️', heal:'💚', strongStrike:'💢', slash:'⚡', whirlwind:'🌀' };
     const spellIcon = spellIcons[spellId] || '⚔️';
     btn.innerHTML = spellIcon;
-    // Aktivni: freeze vzdy, ostatni jen v attack okne
-    // Aktivni: freeze vzdy, ostatni jen v attack okne
+    // Aktivni: freeze vzdy (pokud je mana), ostatni jen v attack okne (pokud je mana)
+    const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15, strongStrike: 8, slash: 15, whirlwind: 25 };
+    const cost = (manaCosts[spellId] || 15) + lv * 2;
+    const hasMana = (state.hero.mana || 0) >= cost;
     if (activeId === 'ice') {
-      btn.classList.add('active');
-    } else if (mb.inAttackWindow) {
+      if (hasMana) btn.classList.add('active');
+    } else if (mb.inAttackWindow && hasMana) {
       btn.classList.add('active');
     }
   }
