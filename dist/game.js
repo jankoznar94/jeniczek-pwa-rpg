@@ -2062,7 +2062,6 @@
         });
         setTimeout(() => { if (p.parentNode) p.remove(); }, 450);
       }
-      displayDamageText('❄️');
     }, 350);
   }
 
