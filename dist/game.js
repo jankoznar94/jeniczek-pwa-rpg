@@ -48,6 +48,8 @@
   function getHitSfx() { return getWeaponType() === 'staff' ? hitSfx : meleeHitSfx; }
   function getCritSfx() { return getWeaponType() === 'staff' ? critSfx : meleeCritSfx; }
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+  const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 1.0; return a; })();
+  const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -587,6 +589,7 @@
     // Fáze 2: otevření truhly po kliknutí
     el.addEventListener('click', function openHandler() {
       el.removeEventListener('click', openHandler);
+      playSFX(treasureSfx);
 
       // Sestavit loot čtverečky
       let lootSquares = '';
@@ -2579,8 +2582,16 @@
         if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
         displayDamageText('🌀');
       }, 120);
+    } else if (spellId === 'heal') {
+      const hotBase = lv * 3;
+      const vitPct = 5 + lv * 5;
+      const vitBonus = Math.round((state.hero.attrVit||0) * vitPct / 100);
+      mb.hot = Math.max(mb.hot || 0, hotBase + vitBonus);
+      mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, 2);
+      effectMsg = `💚 Léčení! +${mb.hot}/tick na ${mb.hotTicksLeft} ticky!`;
+      displayDamageText('💚');
     }
-    sfxSuccess();
+    if (spellId === 'heal') { playSFX(healSfx); } else { sfxSuccess(); }
     // (hint: zachovat bonus info)
     updateMapBattleUI();
     // Odstranit spell tlačítka

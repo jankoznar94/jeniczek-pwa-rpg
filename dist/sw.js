@@ -1,5 +1,5 @@
-const CACHE = 'boss-slayer-v15';
-const FILES = ['/', '/index.html', '/style.css', '/game.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/bgm.mp3', '/overworld.mp3', '/defeat.mp3', '/dodge.mp3', '/block.mp3', '/hit.mp3', '/crit.mp3', '/melee_hit.mp3', '/melee_crit.mp3'];
+const CACHE = 'boss-slayer-v16';
+const FILES = ['/', '/index.html', '/style.css', '/game.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/bgm.mp3', '/overworld.mp3', '/defeat.mp3', '/dodge.mp3', '/block.mp3', '/hit.mp3', '/crit.mp3', '/melee_hit.mp3', '/melee_crit.mp3', '/heal.mp3', '/treasure.mp3'];
 
 self.addEventListener('install', e => {
   self.skipWaiting();
