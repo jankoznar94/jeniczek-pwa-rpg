@@ -43,6 +43,10 @@
   const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 1.0; return a; })();
   const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 1.0; return a; })();
   const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 1.0; return a; })();
+  const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
+  const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
+  function getHitSfx() { return getWeaponType() === 'staff' ? hitSfx : meleeHitSfx; }
+  function getCritSfx() { return getWeaponType() === 'staff' ? critSfx : meleeCritSfx; }
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
   // ===== BACKGROUND MUSIC (MP3) =====
@@ -2085,8 +2089,7 @@
       if (mb._bonusActive) {
         isCrit = true;
         dmg = Math.round(dmg * critMult);
-        playSFX(critSfx);
-        // ⭐ Vizuální feedback — kruh zvýraznit
+        playSFX(getCritSfx());
         const critCircle = document.querySelector('.bonus-zone-circle');
         if (critCircle) {
           critCircle.style.stroke = '#ffd700';
@@ -2099,10 +2102,10 @@
           }, 400);
         }
       } else {
-        playSFX(hitSfx);
+        playSFX(getHitSfx());
       }
     } else {
-      playSFX(hitSfx);
+      playSFX(getHitSfx());
     }
     
     // === PASIVNÍ EFEKTY ŠKOL (PŘI ÚTOKU) ===
