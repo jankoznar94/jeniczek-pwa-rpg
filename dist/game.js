@@ -1811,6 +1811,55 @@
     }
   }
 
+  function spawnCrossSlashEffect() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const aRect = arena.getBoundingClientRect();
+    const boss = $('mbFigure');
+    let cx = aRect.width / 2, cy = 30;
+    if (boss) {
+      const bRect = boss.getBoundingClientRect();
+      cx = bRect.left + bRect.width / 2 - aRect.left;
+      cy = bRect.top + bRect.height / 2 - aRect.top;
+    }
+    const sc = getSchoolColors(false);
+    const size = 80;
+    // První sek — z leva dolů doprava nahoru
+    const s1 = document.createElement('div');
+    s1.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:0;`;
+    s1.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
+      <path d="M 10 70 Q 40 10 70 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
+        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
+        <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
+      </path>
+      <path d="M 10 70 Q 40 10 70 10" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
+        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.1s" fill="freeze"/>
+        <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
+      </path>
+    </svg>`;
+    arena.appendChild(s1);
+    requestAnimationFrame(() => { s1.style.opacity = '1'; });
+    setTimeout(() => { if (s1.parentNode) s1.remove(); }, 400);
+    // Druhý sek — z prava dolů doleva nahoru, 80ms později
+    const s2 = document.createElement('div');
+    s2.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:21;pointer-events:none;opacity:0;`;
+    s2.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
+      <path d="M 70 70 Q 40 10 10 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
+        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
+        <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
+      </path>
+      <path d="M 70 70 Q 40 10 10 10" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
+        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.1s" fill="freeze"/>
+        <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
+      </path>
+    </svg>`;
+    setTimeout(() => {
+      arena.appendChild(s2);
+      requestAnimationFrame(() => { s2.style.opacity = '1'; });
+      setTimeout(() => { if (s2.parentNode) s2.remove(); }, 400);
+    }, 80);
+  }
+
   function spawnWeaponProjectile(isCrit) {
     const wType = getWeaponType();
     if (wType === 'blade') { spawnSlashEffect(isCrit); }
@@ -2554,8 +2603,7 @@
       if (rendCrit > 0) dmg = Math.round(dmg * (1 + rendCrit / 100));
       mb.bossHp -= dmg;
       effectMsg = `💢 Silný úder! ${dmg} poškození!`;
-      spawnSlashEffect();
-      setTimeout(() => spawnSlashEffect(), 100);
+      spawnCrossSlashEffect();
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
