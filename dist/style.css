@@ -435,6 +435,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 #mbSpellFireBtn { bottom:84px; }
 #mbSpellFreezeBtn { bottom:84px; }
 .arena-spell-attack-btn.active { opacity:1;pointer-events:auto; border-color:var(--spell-color, #e94560); background:var(--spell-bg, #1a1035); box-shadow:0 0 10px var(--spell-glow, rgba(233,69,96,0.4)); }
+#mbSpellPhysBtn { bottom:84px; }
 #mbSpellHealBtn.active { border-color:#2ecc71; box-shadow:0 0 10px rgba(46,204,113,0.4); }
 .arena-spell-attack-btn.used {
   opacity:0.35; pointer-events:none; filter:grayscale(1);

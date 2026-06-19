@@ -847,15 +847,15 @@
     const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : activeId === 'physical' ? physBtn : healBtn;
     if (!btn) return;
     btn.classList.remove('hidden');
+    const spellIcons = { firebolt:'🔥', fireblast:'💥', fireball:'🔥', frostbolt:'❄️', blizzard:'❄️', heal:'💚', strongStrike:'💢', slash:'⚡', whirlwind:'🌀' };
+    const spellIcon = spellIcons[spellId] || '⚔️';
     if (onCooldown) {
       btn.classList.add('used');
-      const icons = { fire:'🔥', ice:'❄️', physical:'⚔️' };
-      btn.innerHTML = `${icons[activeId] || '💚'}<span class="spell-cd">${mb._spellCooldownTicks}</span>`;
+      btn.innerHTML = `${spellIcon}<span class="spell-cd">${mb._spellCooldownTicks}</span>`;
       return;
     }
     // Obnovit puvodni obsah
-    const icons = { fire:'🔥', ice:'❄️', physical:'⚔️' };
-    btn.innerHTML = icons[activeId] || '💚';
+    btn.innerHTML = spellIcon;
     // Aktivni: freeze vzdy, ostatni jen v attack okne
     if (activeId === 'ice') {
       btn.classList.add('active');
