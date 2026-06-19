@@ -2007,6 +2007,63 @@
     displayHealText('💚');
   }
 
+  function spawnIceProjectile() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const aRect = arena.getBoundingClientRect();
+
+    // Start od hráče (dole)
+    const playerFig = $('mbPlayerFigure');
+    let startX = rect.width / 2, startY = rect.height - 40;
+    if (playerFig) {
+      const pRect = playerFig.getBoundingClientRect();
+      startX = pRect.left + pRect.width/2 - aRect.left;
+      startY = pRect.top + pRect.height/2 - aRect.top;
+    }
+
+    // Cíl: boss (nahoře)
+    const bossFig = $('mbFigure');
+    let targetX = rect.width / 2, targetY = 20;
+    if (bossFig) {
+      const bRect = bossFig.getBoundingClientRect();
+      targetX = bRect.left + bRect.width/2 - aRect.left;
+      targetY = bRect.top + bRect.height/2 - aRect.top;
+    }
+
+    // Ledová koule — modrobílá, s mrazivým ocasem
+    const ball = document.createElement('div');
+    const size = 32;
+    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#4fc3f7 50%,#1565c0 90%);box-shadow:0 0 20px rgba(79,195,247,0.8),0 0 40px rgba(21,101,192,0.4);transition:left 0.35s ease-in,top 0.35s ease-in;`;
+    arena.appendChild(ball);
+    void ball.offsetHeight;
+    ball.style.left = (targetX - size/2) + 'px';
+    ball.style.top = (targetY - size/2) + 'px';
+
+    // Mrazivá exploze po dopadu
+    setTimeout(() => {
+      if (ball.parentNode) ball.remove();
+      for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        const pSize = 3 + Math.random() * 10;
+        const angle = Math.random() * 2 * Math.PI;
+        const dist = 10 + Math.random() * 50;
+        const colors = ['#4fc3f7','#81d4fa','#fff','#b3e5fc'];
+        const color = colors[i % colors.length];
+        p.style.cssText = `position:absolute;width:${pSize}px;height:${pSize}px;border-radius:50%;z-index:31;pointer-events:none;left:${targetX - pSize/2}px;top:${targetY - pSize/2}px;background:${color};box-shadow:0 0 ${5+Math.random()*8}px ${color};opacity:1;`;
+        arena.appendChild(p);
+        requestAnimationFrame(() => {
+          p.style.transition = `left 0.4s ease-out, top 0.4s ease-out, opacity 0.4s ease-out`;
+          p.style.left = (targetX + Math.cos(angle) * dist - pSize/2) + 'px';
+          p.style.top = (targetY + Math.sin(angle) * dist - pSize/2) + 'px';
+          p.style.opacity = '0';
+        });
+        setTimeout(() => { if (p.parentNode) p.remove(); }, 450);
+      }
+      displayDamageText('❄️');
+    }, 350);
+  }
+
   function spawnDodgeEffect(arena, dir) {
     // Oblak/částice fouknuté od středu arény směrem úhybu — rychlejší a dál
     const rect = arena.getBoundingClientRect();
@@ -2543,8 +2600,8 @@
       mb.bossHp -= dmg;
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = dotDur; }
       effectMsg = `🔥 Fireball! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
-      // Projektil podle zbraně
-      spawnWeaponProjectile();
+      // Ohnivá koule
+      spawnFireballProjectile();
       // Dodatečná exploze po 200ms
       setTimeout(() => {
         const bossFig = $('mbFigure');
@@ -2564,7 +2621,7 @@
       mb.bossHp -= dmg;
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 2; }
       effectMsg = `💥 Fire Blast! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
-      spawnWeaponProjectile();
+      spawnFireballProjectile();
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) {
@@ -2580,7 +2637,7 @@
       let dmg = Math.round(baseDmg * pct / 100 * resistMult);
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
-      spawnWeaponProjectile();
+      spawnFireballProjectile();
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) {
@@ -2604,6 +2661,7 @@
       mb.chillPercent = Math.max(mb.chillPercent || 0, slowPct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
       effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení 40% na ${ticks} ticků!`;
+      spawnIceProjectile();
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
       const circle = document.querySelector('.timer-circle');
@@ -2630,6 +2688,7 @@
       // Blizzard — zmrazení: 3 útoky po sobě
       mb._blizzardFreeAttacks = 3;
       effectMsg = `❄️ Blizard! Boss zmrazen! 3 útoky po sobě!`;
+      spawnIceProjectile();
       // Modrý efekt na bossovi
       const bossFig = $('mbFigure');
       if (bossFig) {
