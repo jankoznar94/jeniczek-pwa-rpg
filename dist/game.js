@@ -1750,7 +1750,7 @@
     }
   }
 
-  function spawnSlashEffect() {
+  function spawnSlashEffect(isCrit) {
     const arena = $('mbArena');
     if (!arena) return;
     const aRect = arena.getBoundingClientRect();
@@ -1761,28 +1761,56 @@
       cx = bRect.left + bRect.width / 2 - aRect.left;
       cy = bRect.top + bRect.height / 2 - aRect.top;
     }
-    const sc = getSchoolColors(false);
-    // Oblouček místo rovné čáry — path s quadratic bezier
-    const slash = document.createElement('div');
-    slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;`;
-    slash.innerHTML = `<svg viewBox="0 0 80 80" width="80" height="80" style="display:block">
-      <path d="M 10 70 Q 40 10 70 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
-        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
-        <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
-      </path>
-      <path d="M 10 70 Q 40 10 70 10" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
-        <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.1s" fill="freeze"/>
-        <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
-      </path>
-    </svg>`;
-    arena.appendChild(slash);
-    requestAnimationFrame(() => { slash.style.opacity = '1'; });
-    setTimeout(() => { if (slash.parentNode) slash.remove(); }, 400);
+    if (isCrit) {
+      // Dvojitý kříž (X) — červený
+      const size = 100;
+      const slash = document.createElement('div');
+      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:0;`;
+      slash.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
+        <path d="M 15 ${size-15} Q ${size/2} ${size/2} ${size-15} 15" stroke="#e74c3c" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.95">
+          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="0.1s" fill="freeze"/>
+          <animate attributeName="opacity" from="1" to="0" dur="0.35s" begin="0.1s" fill="freeze"/>
+        </path>
+        <path d="M ${size-15} ${size-15} Q ${size/2} ${size/2} 15 15" stroke="#e74c3c" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.95">
+          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="0.1s" begin="0.04s" fill="freeze"/>
+          <animate attributeName="opacity" from="1" to="0" dur="0.35s" begin="0.14s" fill="freeze"/>
+        </path>
+        <path d="M 15 ${size-15} Q ${size/2} ${size/2} ${size-15} 15" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7">
+          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="0.08s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.7" to="0" dur="0.3s" begin="0.08s" fill="freeze"/>
+        </path>
+        <path d="M ${size-15} ${size-15} Q ${size/2} ${size/2} 15 15" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7">
+          <animate attributeName="stroke-dashoffset" from="120" to="0" dur="0.08s" begin="0.04s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.7" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
+        </path>
+      </svg>`;
+      arena.appendChild(slash);
+      requestAnimationFrame(() => { slash.style.opacity = '1'; });
+      setTimeout(() => { if (slash.parentNode) slash.remove(); }, 450);
+    } else {
+      const sc = getSchoolColors(false);
+      // Oblouček místo rovné čáry — path s quadratic bezier
+      const slash = document.createElement('div');
+      slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;`;
+      slash.innerHTML = `<svg viewBox="0 0 80 80" width="80" height="80" style="display:block">
+        <path d="M 10 70 Q 40 10 70 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
+          <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
+          <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
+        </path>
+        <path d="M 10 70 Q 40 10 70 10" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
+          <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.1s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
+        </path>
+      </svg>`;
+      arena.appendChild(slash);
+      requestAnimationFrame(() => { slash.style.opacity = '1'; });
+      setTimeout(() => { if (slash.parentNode) slash.remove(); }, 400);
+    }
   }
 
-  function spawnWeaponProjectile() {
+  function spawnWeaponProjectile(isCrit) {
     const wType = getWeaponType();
-    if (wType === 'blade') { spawnSlashEffect(); }
+    if (wType === 'blade') { spawnSlashEffect(isCrit); }
     else { spawnProjectileEffect(0, false, false); }
   }
 
@@ -2183,7 +2211,7 @@
     // Projektil podle zbraně: blade = seknutí, staff/fists = koule
     const wType = getWeaponType();
     if (wType === 'blade') {
-      spawnSlashEffect();
+      spawnSlashEffect(isCrit);
     } else {
       spawnProjectileEffect(null, false, isCrit);
     }
