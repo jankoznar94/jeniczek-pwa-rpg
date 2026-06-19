@@ -1,4 +1,4 @@
-const CACHE = 'boss-slayer-v19';
+const CACHE = 'boss-slayer-v20';
 const FILES = ['/', '/index.html', '/style.css', '/game.js', '/manifest.json', '/icon-192.png', '/icon-512.png', '/bgm.mp3', '/overworld.mp3', '/defeat.mp3', '/dodge.mp3', '/block.mp3', '/hit.mp3', '/crit.mp3', '/melee_hit.mp3', '/melee_crit.mp3', '/heal.mp3', '/treasure.mp3', '/strong_strike.mp3', '/fist_hit.mp3', '/fist_crit.mp3', '/fire_spell.mp3', '/ice_spell.mp3'];
 
 self.addEventListener('install', e => {
