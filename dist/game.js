@@ -1379,8 +1379,9 @@
     const eqAttrs = getEquipAttrs();
     const manaRegen = 1 + ((h.attrInt || 0) + eqAttrs.int) * 2;
     h.mana = Math.min(h.maxMana, (h.mana || 0) + manaRegen);
-    if (arenaMana) {
-      const span = arenaMana.querySelector('span');
+    const am = $('mbPlayerArenaMana');
+    if (am) {
+      const span = am.querySelector('span');
       if (span) span.textContent = `${h.mana}/${h.maxMana}`;
       const fill = $('mbPlayerArenaManaFill');
       if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
