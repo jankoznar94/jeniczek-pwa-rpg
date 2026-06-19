@@ -1951,7 +1951,7 @@
     // Fireball — pulzující ohnivá koule letící od hráče k bossovi
     const ball = document.createElement('div');
     const size = 36;
-    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#f39c12 40%,#e74c3c 80%);box-shadow:0 0 25px rgba(231,76,60,0.8),0 0 50px rgba(243,156,18,0.4);transition:left 0.35s ease-in,top 0.35s ease-in;`;
+    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#f39c12 40%,#e74c3c 80%);box-shadow:0 0 25px rgba(231,76,60,0.8),0 0 50px rgba(243,156,18,0.4);transition:left 0.2s ease-in,top 0.2s ease-in;`;
     arena.appendChild(ball);
     void ball.offsetHeight;
     ball.style.left = (targetX - size/2) + 'px';
@@ -1959,6 +1959,7 @@
     // Exploze po dopadu
     setTimeout(() => {
       if (ball.parentNode) ball.remove();
+      playSFX(hitSfx);
       // Ohnivá exploze
       for (let i = 0; i < 25; i++) {
         const p = document.createElement('div');
@@ -2034,7 +2035,7 @@
     // Ledová koule — modrobílá, s mrazivým ocasem
     const ball = document.createElement('div');
     const size = 32;
-    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#4fc3f7 50%,#1565c0 90%);box-shadow:0 0 20px rgba(79,195,247,0.8),0 0 40px rgba(21,101,192,0.4);transition:left 0.35s ease-in,top 0.35s ease-in;`;
+    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#4fc3f7 50%,#1565c0 90%);box-shadow:0 0 20px rgba(79,195,247,0.8),0 0 40px rgba(21,101,192,0.4);transition:left 0.2s ease-in,top 0.2s ease-in;`;
     arena.appendChild(ball);
     void ball.offsetHeight;
     ball.style.left = (targetX - size/2) + 'px';
@@ -2043,6 +2044,7 @@
     // Mrazivá exploze po dopadu
     setTimeout(() => {
       if (ball.parentNode) ball.remove();
+      playSFX(critSfx);
       for (let i = 0; i < 20; i++) {
         const p = document.createElement('div');
         const pSize = 3 + Math.random() * 10;
@@ -2602,16 +2604,6 @@
       effectMsg = `🔥 Fireball! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
       // Ohnivá koule
       spawnFireballProjectile();
-      // Dodatečná exploze po 200ms
-      setTimeout(() => {
-        const bossFig = $('mbFigure');
-        if (bossFig) {
-          bossFig.style.transition = 'filter 0.2s';
-          bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)';
-          setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
-        }
-        displayDamageText('🔥');
-      }, 180);
     } else if (spellId === 'fireblast') {
       const pct = 100 + lv * 50; // 150% @ lv1, 200% @ lv2, 250% @ lv3
       const resistMult = getSchoolResistMult('fire');
@@ -2622,15 +2614,6 @@
       if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 2; }
       effectMsg = `💥 Fire Blast! ${dmg} poškození!${dotTick > 0 ? ` ☠️ DoT ${dotTick}/tick` : ''}`;
       spawnFireballProjectile();
-      setTimeout(() => {
-        const bossFig = $('mbFigure');
-        if (bossFig) {
-          bossFig.style.transition = 'filter 0.2s';
-          bossFig.style.filter = 'brightness(2.5) hue-rotate(-20deg) saturate(2)';
-          setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
-        }
-        displayDamageText('💥');
-      }, 180);
     } else if (spellId === 'firebolt') {
       const pct = 75 + lv * 25; // 100% @ lv1, 125% @ lv2, 150% @ lv3
       const resistMult = getSchoolResistMult('fire');
@@ -2638,15 +2621,6 @@
       mb.bossHp -= dmg;
       effectMsg = `🔥 Firebolt! ${dmg} poškození!`;
       spawnFireballProjectile();
-      setTimeout(() => {
-        const bossFig = $('mbFigure');
-        if (bossFig) {
-          bossFig.style.transition = 'filter 0.2s';
-          bossFig.style.filter = 'brightness(2) hue-rotate(-20deg) saturate(1.5)';
-          setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
-        }
-        displayDamageText('🔥');
-      }, 180);
     } else if (spellId === 'frostbolt') {
       const dmgPct = 125 + lv * 25; // 150% @ lv1, 175% @ lv2, ... 250% @ lv5
       const resistMult = getSchoolResistMult('ice');
@@ -2679,6 +2653,7 @@
       mb.chillPercent = Math.max(mb.chillPercent || 0, slowPct);
       mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
       effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení 40% na ${ticks} ticků!`;
+      spawnIceProjectile();
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
       const circle = document.querySelector('.timer-circle');
