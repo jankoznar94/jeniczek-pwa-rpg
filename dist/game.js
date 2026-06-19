@@ -1980,8 +1980,6 @@
         });
         setTimeout(() => { if (p.parentNode) p.remove(); }, 450);
       }
-      // Damage text
-      displayDamageText('🔥');
     }, 350);
   }
 
