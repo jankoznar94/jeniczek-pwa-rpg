@@ -50,6 +50,7 @@
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
   const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 1.0; return a; })();
   const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 1.0; return a; })();
+  const strongStrikeSfx = (() => { const a = new Audio('strong_strike.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -2604,10 +2605,10 @@
       mb.bossHp -= dmg;
       effectMsg = `💢 Silný úder! ${dmg} poškození!`;
       spawnCrossSlashEffect();
+      playSFX(strongStrikeSfx);
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
-        displayDamageText('💢');
       }, 120);
     } else if (spellId === 'slash') {
       const pct = 150 + lv * 50;
@@ -2640,7 +2641,7 @@
       effectMsg = `💚 Léčení! +${mb.hot}/tick na ${mb.hotTicksLeft} ticky!`;
       displayDamageText('💚');
     }
-    if (spellId === 'heal') { playSFX(healSfx); } else { sfxSuccess(); }
+    if (spellId === 'heal') { playSFX(healSfx); } else if (spellId === 'strongStrike') { /* strongStrikeSfx už přehrán */ } else { sfxSuccess(); }
     // (hint: zachovat bonus info)
     updateMapBattleUI();
     // Odstranit spell tlačítka
