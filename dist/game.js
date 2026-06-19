@@ -47,6 +47,8 @@
   const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
   const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
   const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
+  const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 1.0; return a; })();
+  const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 1.0; return a; })();
   function getHitSfx() {
     const wt = getWeaponType();
     if (wt === 'fists') return fistHitSfx;
@@ -1959,7 +1961,7 @@
     // Exploze po dopadu
     setTimeout(() => {
       if (ball.parentNode) ball.remove();
-      playSFX(hitSfx);
+      playSFX(fireSpellSfx);
       // Ohnivá exploze
       for (let i = 0; i < 25; i++) {
         const p = document.createElement('div');
@@ -2044,7 +2046,7 @@
     // Mrazivá exploze po dopadu
     setTimeout(() => {
       if (ball.parentNode) ball.remove();
-      playSFX(critSfx);
+      playSFX(iceSpellSfx);
       for (let i = 0; i < 20; i++) {
         const p = document.createElement('div');
         const pSize = 3 + Math.random() * 10;
