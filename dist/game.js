@@ -1374,10 +1374,10 @@
     if (regen > 0) {
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + regen);
     }
-    // Mana regen — 1 mana každý tick, +1 za každých 5 intelektu
+    // Mana regen — 1 mana každý tick, +2 za každý intelekt
     const h = state.hero;
     const eqAttrs = getEquipAttrs();
-    const manaRegen = 1 + Math.floor(((h.attrInt || 0) + eqAttrs.int) / 5);
+    const manaRegen = 1 + ((h.attrInt || 0) + eqAttrs.int) * 2;
     h.mana = Math.min(h.maxMana, (h.mana || 0) + manaRegen);
     if (arenaMana) {
       const span = arenaMana.querySelector('span');
