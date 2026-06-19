@@ -2555,6 +2555,7 @@
       mb.bossHp -= dmg;
       effectMsg = `💢 Silný úder! ${dmg} poškození!`;
       spawnSlashEffect();
+      setTimeout(() => spawnSlashEffect(), 100);
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
