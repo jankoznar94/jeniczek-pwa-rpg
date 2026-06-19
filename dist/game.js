@@ -169,7 +169,7 @@
       tiers: [
         { choices: [
           { k:'burn', name:'Žhnutí', icon:'🔥', maxLv:5, desc:lv=>`Při zásahu: +${20+lv*10}% dmg ohněm` },
-          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:3, desc:lv=>`${75+lv*25}% dmg ohněm` },
+          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:5, desc:lv=>`${75+lv*25}% dmg ohněm` },
         ]},
         { choices: [
           { k:'ignite', name:'Vznícení', icon:'💥', maxLv:5, requires:'fire_burn', requiresLv:5, desc:lv=>`+${lv*12}% poškození ohněm` },
@@ -865,13 +865,11 @@
     const spellIcons = { firebolt:'🔥', fireblast:'💥', fireball:'🔥', frostbolt:'❄️', blizzard:'❄️', heal:'💚', strongStrike:'💢', slash:'⚡', whirlwind:'🌀' };
     const spellIcon = spellIcons[spellId] || '⚔️';
     btn.innerHTML = spellIcon;
-    // Aktivni: freeze vzdy (pokud je mana), ostatni jen v attack okne (pokud je mana)
+    // Aktivni jen v attack okne (pokud je mana)
     const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15, strongStrike: 8, slash: 15, whirlwind: 25 };
     const cost = (manaCosts[spellId] || 15) + lv * 2;
     const hasMana = (state.hero.mana || 0) >= cost;
-    if (activeId === 'ice') {
-      if (hasMana) btn.classList.add('active');
-    } else if (mb.inAttackWindow && hasMana) {
+    if (mb.inAttackWindow && hasMana) {
       btn.classList.add('active');
     }
   }
@@ -2580,8 +2578,8 @@
     if (mb.ended) return;
     let lv = getSpellLv(spellId);
     if (lv === 0) return;
-    // Kouzlo lze použít jen v attack window (kromě ice — vždy aktivní)
-    if (state.activeSchool !== 'ice' && !mb.inAttackWindow) return;
+    // Kouzlo lze použít jen v attack window
+    if (!mb.inAttackWindow) return;
     // Mana cost podle kouzla a levelu
     const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15, strongStrike: 8, slash: 15, whirlwind: 25 };
     const cost = (manaCosts[spellId] || 15) + lv * 2;
