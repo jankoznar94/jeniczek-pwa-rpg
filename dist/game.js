@@ -45,8 +45,18 @@
   const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 1.0; return a; })();
   const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
   const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
-  function getHitSfx() { return getWeaponType() === 'staff' ? hitSfx : meleeHitSfx; }
-  function getCritSfx() { return getWeaponType() === 'staff' ? critSfx : meleeCritSfx; }
+  const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
+  const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
+  function getHitSfx() {
+    const wt = getWeaponType();
+    if (wt === 'fists') return fistHitSfx;
+    return wt === 'staff' ? hitSfx : meleeHitSfx;
+  }
+  function getCritSfx() {
+    const wt = getWeaponType();
+    if (wt === 'fists') return fistCritSfx;
+    return wt === 'staff' ? critSfx : meleeCritSfx;
+  }
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
   const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 1.0; return a; })();
   const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 1.0; return a; })();
@@ -1802,6 +1812,60 @@
     }
   }
 
+  function spawnFistEffect(isCrit) {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const aRect = arena.getBoundingClientRect();
+    const boss = $('mbFigure');
+    let cx = aRect.width / 2, cy = 30;
+    if (boss) {
+      const bRect = boss.getBoundingClientRect();
+      cx = bRect.left + bRect.width / 2 - aRect.left;
+      cy = bRect.top + bRect.height / 2 - aRect.top;
+    }
+    if (isCrit) {
+      // Dvě soustředné kruhové rány — shockwave
+      const size = 120;
+      const el = document.createElement('div');
+      el.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:0;`;
+      el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
+        <circle cx="${size/2}" cy="${size/2}" r="10" fill="none" stroke="#e74c3c" stroke-width="6" stroke-linecap="round" opacity="0.9">
+          <animate attributeName="r" from="10" to="${size/2-4}" dur="0.2s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.9" to="0" dur="0.3s" fill="freeze"/>
+        </circle>
+        <circle cx="${size/2}" cy="${size/2}" r="10" fill="none" stroke="#ff6b6b" stroke-width="4" stroke-linecap="round" opacity="0.7">
+          <animate attributeName="r" from="10" to="${size/2-4}" dur="0.2s" begin="0.05s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.7" to="0" dur="0.3s" begin="0.05s" fill="freeze"/>
+        </circle>
+        <circle cx="${size/2}" cy="${size/2}" r="10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.5">
+          <animate attributeName="r" from="10" to="${size/2-4}" dur="0.2s" begin="0.1s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.5" to="0" dur="0.3s" begin="0.1s" fill="freeze"/>
+        </circle>
+      </svg>`;
+      arena.appendChild(el);
+      requestAnimationFrame(() => { el.style.opacity = '1'; });
+      setTimeout(() => { if (el.parentNode) el.remove(); }, 400);
+    } else {
+      // Jednoduchá kruhová rána
+      const size = 80;
+      const el = document.createElement('div');
+      el.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:0;`;
+      el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
+        <circle cx="${size/2}" cy="${size/2}" r="8" fill="none" stroke="#e74c3c" stroke-width="5" stroke-linecap="round" opacity="0.85">
+          <animate attributeName="r" from="8" to="${size/2-4}" dur="0.15s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.85" to="0" dur="0.25s" begin="0.15s" fill="freeze"/>
+        </circle>
+        <circle cx="${size/2}" cy="${size/2}" r="8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.5">
+          <animate attributeName="r" from="8" to="${size/2-4}" dur="0.15s" begin="0.05s" fill="freeze"/>
+          <animate attributeName="opacity" from="0.5" to="0" dur="0.25s" begin="0.2s" fill="freeze"/>
+        </circle>
+      </svg>`;
+      arena.appendChild(el);
+      requestAnimationFrame(() => { el.style.opacity = '1'; });
+      setTimeout(() => { if (el.parentNode) el.remove(); }, 350);
+    }
+  }
+
   function spawnCrossSlashEffect() {
     const arena = $('mbArena');
     if (!arena) return;
@@ -1854,6 +1918,7 @@
   function spawnWeaponProjectile(isCrit) {
     const wType = getWeaponType();
     if (wType === 'blade') { spawnSlashEffect(isCrit); }
+    else if (wType === 'fists') { spawnFistEffect(isCrit); }
     else { spawnProjectileEffect(0, false, false); }
   }
 
@@ -2251,10 +2316,12 @@
     }
 
     mb.bossHp -= dmg;
-    // Projektil podle zbraně: blade = seknutí, staff/fists = koule
+    // Projektil podle zbraně: blade = seknutí, fists = rána pěstí, staff = koule
     const wType = getWeaponType();
     if (wType === 'blade') {
       spawnSlashEffect(isCrit);
+    } else if (wType === 'fists') {
+      spawnFistEffect(isCrit);
     } else {
       spawnProjectileEffect(null, false, isCrit);
     }
