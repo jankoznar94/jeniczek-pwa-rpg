@@ -749,8 +749,8 @@
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
-    const monsterHp = Math.round((42 + locId * 90) + 18 * floor + 6 * progress);
-    const bossHp = Math.round(240 + locId * 240 + floor * 36 + 100);
+    const monsterHp = Math.round((80 + locId * 150) + 30 * floor + 10 * progress);
+    const bossHp = Math.round(400 + locId * 400 + floor * 60 + 200);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
@@ -2451,7 +2451,7 @@
     // Chill tick i při neúspěchu — jeden tick zpomalení uběhl
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
-    const baseBossDmg = Math.max(5, 5 + mb.turn * 4 + mb.locId * 5);
+    const baseBossDmg = Math.max(8, 8 + mb.turn * 6 + mb.locId * 8);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
     let amount = bossDmg;
     if (mb.shieldActive) {
