@@ -238,7 +238,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .arena-pause-btn:active { background:rgba(255,255,255,0.15); transform:scale(1.1); }
 /* Seq progress — svisle vlevo */
 .seq-progress {
-  position:absolute;left:6px;top:50%;transform:translateY(-50%);
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
   display:flex;flex-direction:column;gap:6px;align-items:center;z-index:20;
 }
 .seq-dot {
