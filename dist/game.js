@@ -3223,6 +3223,12 @@
     }
     // Sequence dots — šedé = hotovo, červené = chyba
     const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');
+    const seqContainer = document.getElementById('tutSeq');
+    if (step.seqDots) {
+      seqContainer.classList.add('tut-seq-highlight');
+    } else {
+      seqContainer.classList.remove('tut-seq-highlight');
+    }
     dots.forEach((d,i) => {
       d.className = 'tut-seq-dot';
       if (step.seqDots) {

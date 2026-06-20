@@ -889,7 +889,9 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   align-items:center;
 }
 /* Seq progress dots inside tutorial */
-#tutSeq .tut-seq-dot { width:10px; height:10px; border-radius:50%; background:#333; display:inline-block; }
-#tutSeq .tut-seq-dot.active { background:#f1c40f; box-shadow:0 0 6px #f1c40f; }
+#tutSeq .tut-seq-dot { width:22px; height:22px; border-radius:50%; background:#333; display:inline-block; border:2px solid #555; }
+#tutSeq.tut-seq-highlight { padding:8px; border:2px dashed #f1c40f; border-radius:12px; background:rgba(241,196,15,0.08); }
+#tutSeq .tut-seq-dot.active { background:#f1c40f; box-shadow:0 0 10px #f1c40f; animation:tutSeqPulse 1s ease-in-out infinite; }
 #tutSeq .tut-seq-dot.done { background:#888; }
 #tutSeq .tut-seq-dot.error { background:#e74c3c; }
+@keyframes tutSeqPulse { 0%,100%{transform:scale(1);box-shadow:0 0 10px #f1c40f} 50%{transform:scale(1.25);box-shadow:0 0 18px #f1c40f} }
