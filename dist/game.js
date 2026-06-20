@@ -3248,7 +3248,7 @@
     }
     // Tlačítko Další
     const nextBtn = document.getElementById('tutNextBtn');
-    nextBtn.textContent = step.isFinal ? '🏁 Dokončit' : 'Další →';
+    nextBtn.textContent = step.isFinal ? 'Dokončit' : 'Další';
   }
 
   // ===== TALENTS =====
