@@ -3057,10 +3057,6 @@
         if (locEl && locEl.classList.contains('locked')) {
           locEl.classList.remove('locked');
           locEl.classList.add('unlocking');
-          // Odstranit CSS `::after` lock overlay dočasně
-          const iconBig = locEl.querySelector('.map-loc-icon-big');
-          if (iconBig) iconBig.style.setProperty('--unlock', 'true');
-          // Zahrát zvuk
           playSFX(treasureSfx);
           setTimeout(() => {
             locEl.classList.remove('unlocking');
