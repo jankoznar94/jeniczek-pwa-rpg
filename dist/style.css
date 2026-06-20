@@ -820,88 +820,78 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   background:rgba(0,0,0,0.75);
   z-index:0;
 }
-.tutorial-arena {
+.tutorial-card {
   position:relative; z-index:1;
-  background:#1a141e; border:1px solid #2a2040; border-radius:12px;
-  padding:24px 32px;
-  width:300px;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  display:flex; flex-direction:column; align-items:center;
+  width:340px;
 }
-.tutorial-monster { font-size:48px; }
-.tutorial-player { font-size:40px; margin-top:4px; }
-.tutorial-arrow { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#bbb; z-index:2; }
-.tutorial-arrow.hidden { display:none; }
-.tutorial-arrow-area { position:relative; width:100px; height:60px; display:flex; align-items:center; justify-content:center; }
+.tutorial-arena {
+  position:relative;
+  background:#1a141e; border:1px solid #2a2040; border-radius:12px;
+  padding:20px 24px;
+  width:100%;
+  display:flex; flex-direction:column; align-items:center;
+  min-height:200px;
+}
+.tutorial-monster { font-size:48px; margin-bottom:8px; }
 .tutorial-swipe {
-  position:absolute; font-size:24px; z-index:3;
+  position:absolute; top:50%; left:50%; font-size:24px; z-index:30;
   animation:tutSwipeAnim 1.2s ease-in-out infinite;
   pointer-events:none;
+  transform:translate(-50%,-50%);
 }
+.tutorial-swipe.hidden { display:none; }
 @keyframes tutSwipeAnim {
-  0% { opacity:0; transform:translate(0,0) scale(0.5); }
-  20% { opacity:1; transform:translate(0,0) scale(1); }
+  0% { opacity:0; transform:translate(-50%,-50%) scale(0.5); }
+  20% { opacity:1; transform:translate(-50%,-50%) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(0,-30px) scale(0.8); }
+  100% { opacity:0; transform:translate(-50%,calc(-50% - 30px)) scale(0.8); }
 }
 .tutorial-swipe.dir-right { animation-name:tutSwipeRight; }
 .tutorial-swipe.dir-left { animation-name:tutSwipeLeft; }
 .tutorial-swipe.dir-down { animation-name:tutSwipeDown; }
 .tutorial-swipe.dir-up { animation-name:tutSwipeUp; }
 @keyframes tutSwipeRight {
-  0% { opacity:0; transform:translate(-20px,0) scale(0.5); }
-  20% { opacity:1; transform:translate(-10px,0) scale(1); }
+  0% { opacity:0; transform:translate(calc(-50% - 20px),-50%) scale(0.5); }
+  20% { opacity:1; transform:translate(calc(-50% - 10px),-50%) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(20px,0) scale(0.8); }
+  100% { opacity:0; transform:translate(calc(-50% + 20px),-50%) scale(0.8); }
 }
 @keyframes tutSwipeLeft {
-  0% { opacity:0; transform:translate(20px,0) scale(0.5); }
-  20% { opacity:1; transform:translate(10px,0) scale(1); }
+  0% { opacity:0; transform:translate(calc(-50% + 20px),-50%) scale(0.5); }
+  20% { opacity:1; transform:translate(calc(-50% + 10px),-50%) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(-20px,0) scale(0.8); }
+  100% { opacity:0; transform:translate(calc(-50% - 20px),-50%) scale(0.8); }
 }
 @keyframes tutSwipeDown {
-  0% { opacity:0; transform:translate(0,-20px) scale(0.5); }
-  20% { opacity:1; transform:translate(0,-10px) scale(1); }
+  0% { opacity:0; transform:translate(-50%,calc(-50% - 20px)) scale(0.5); }
+  20% { opacity:1; transform:translate(-50%,calc(-50% - 10px)) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(0,20px) scale(0.8); }
+  100% { opacity:0; transform:translate(-50%,calc(-50% + 20px)) scale(0.8); }
 }
 @keyframes tutSwipeUp {
-  0% { opacity:0; transform:translate(0,20px) scale(0.5); }
-  20% { opacity:1; transform:translate(0,10px) scale(1); }
+  0% { opacity:0; transform:translate(-50%,calc(-50% + 20px)) scale(0.5); }
+  20% { opacity:1; transform:translate(-50%,calc(-50% + 10px)) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(0,-20px) scale(0.8); }
+  100% { opacity:0; transform:translate(-50%,calc(-50% - 20px)) scale(0.8); }
 }
-.tutorial-ring { position:relative; margin:4px 0; }
-.tutorial-seq { display:flex; gap:6px; margin:4px 0; }
-.tut-seq-dot { width:10px; height:10px; border-radius:50%; background:#333; }
-.tut-seq-dot.active { background:#f1c40f; box-shadow:0 0 6px #f1c40f; }
-.tut-seq-dot.done { background:#2ecc71; }
-.tut-seq-dot.error { background:#e74c3c; }
-.tutorial-buttons { display:flex; gap:20px; margin:4px 0; }
-.tut-btn {
-  font-size:28px; padding:6px 16px; border-radius:8px;
-  background:#221c28; border:1px solid #2a2040; cursor:default;
-  opacity:0.5; transition:0.2s;
-}
-.tut-btn.highlight { opacity:1; border-color:#f1c40f; box-shadow:0 0 12px rgba(241,196,15,0.5); }
 .tutorial-text-box {
   position:relative; z-index:1;
   margin-top:12px;
   background:#1a141e; border:1px solid #2a2040; border-radius:10px;
-  padding:14px 18px; max-width:320px;
+  padding:14px 18px; width:100%;
   text-align:center;
+  box-sizing:border-box;
 }
 .tutorial-text { font-size:14px; color:#e8e0e8; line-height:1.5; }
 .tutorial-text strong { color:#f1c40f; }
-.tutorial-dismiss {
-  position:relative; z-index:1;
-  margin-top:16px;
-  font-size:13px; color:#666688; cursor:pointer;
-  padding:8px 16px;
-}
-.tutorial-dismiss:hover { color:#aaaabb; }
 .tutorial-nav {
   position:relative; z-index:1;
   display:flex; gap:12px; margin-top:12px;
   align-items:center;
 }
+/* Seq progress dots inside tutorial */
+#tutSeq .tut-seq-dot { width:10px; height:10px; border-radius:50%; background:#333; display:inline-block; }
+#tutSeq .tut-seq-dot.active { background:#f1c40f; box-shadow:0 0 6px #f1c40f; }
+#tutSeq .tut-seq-dot.done { background:#2ecc71; }
+#tutSeq .tut-seq-dot.error { background:#e74c3c; }

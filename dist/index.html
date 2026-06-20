@@ -292,47 +292,37 @@
 <!-- ===== TUTORIAL OVERLAY ===== -->
 <div id="tutorialOverlay" class="tutorial-overlay hidden">
   <div class="tutorial-scrim"></div>
-  <div class="tutorial-arena">
-    <div class="tutorial-monster" id="tutMonster">👹</div>
-    <div class="tutorial-player" id="tutPlayer">🧝</div>
-    <div class="tutorial-arrow-area" id="tutArrowArea">
-      <svg id="tutArrow" class="tutorial-arrow hidden" viewBox="0 0 16 16" width="60" height="60">
-        <path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#bbb" stroke="#bbb" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+  <div class="tutorial-card">
+    <div class="tutorial-arena" id="tutArena">
+      <div class="tutorial-monster" id="tutMonster">👹</div>
+      <svg id="tutArrow" class="boss-attack-arrow hidden" viewBox="0 0 16 16" width="60" height="60">
+        <path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
       </svg>
-      <svg id="tutHeavyArrows" class="tutorial-arrow hidden" viewBox="0 0 48 16" width="100" height="40">
-        <g transform="translate(-6,0)" opacity="0.5"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>
-        <g transform="translate(6,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>
-      </svg>
-      <svg id="tutTwinArrows" class="tutorial-arrow hidden" viewBox="0 0 48 20" width="100" height="50">
-        <g transform="translate(-6,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g>
-        <g transform="translate(6,0)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>
-      </svg>
+      <div class="attack-timer-ring" id="tutRing">
+        <svg viewBox="0 0 110 110" width="110" height="110" style="transform:rotate(-90deg)">
+          <circle cx="55" cy="55" r="44" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="276" stroke-dashoffset="276" class="timer-circle"/>
+          <circle cx="55" cy="55" r="44" stroke="#f1c40f" stroke-width="7" fill="none" stroke-dasharray="0 276" stroke-dashoffset="276" class="bonus-zone-circle" opacity="0.85"/>
+        </svg>
+        <span class="action-info-icon hidden" id="tutActionInfo"></span>
+      </div>
       <div class="tutorial-swipe" id="tutSwipe">👆</div>
+      <div class="arena-block-btn" id="tutBlockBtn">🛡️</div>
+      <div class="arena-attack-btn" id="tutAttackBtn">⚔️</div>
+      <div class="seq-progress" id="tutSeq">
+        <span class="tut-seq-dot"></span>
+        <span class="tut-seq-dot"></span>
+        <span class="tut-seq-dot"></span>
+        <span class="tut-seq-dot"></span>
+        <span class="tut-seq-dot"></span>
+      </div>
     </div>
-    <div class="tutorial-ring" id="tutRing">
-      <svg viewBox="0 0 110 110" width="80" height="80" style="transform:rotate(-90deg)">
-        <circle cx="55" cy="55" r="44" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="276" stroke-dashoffset="276"/>
-        <circle cx="55" cy="55" r="44" stroke="#f1c40f" stroke-width="7" fill="none" stroke-dasharray="0 276" stroke-dashoffset="276" class="tut-bonus-zone" opacity="0.85"/>
-      </svg>
+    <div class="tutorial-text-box" id="tutTextBox">
+      <div class="tutorial-text" id="tutText"></div>
     </div>
-    <div class="tutorial-seq" id="tutSeq">
-      <span class="tut-seq-dot"></span>
-      <span class="tut-seq-dot"></span>
-      <span class="tut-seq-dot"></span>
-      <span class="tut-seq-dot"></span>
-      <span class="tut-seq-dot"></span>
+    <div class="tutorial-nav">
+      <button class="btn btn-secondary" id="tutStopBtn" style="width:auto;padding:8px 14px;font-size:12px">✖ Ukončit návod</button>
+      <button class="btn btn-primary" id="tutNextBtn" style="width:auto;padding:8px 20px;font-size:13px">Další →</button>
     </div>
-    <div class="tutorial-buttons">
-      <span class="tut-btn" id="tutBlockBtn">🛡️</span>
-      <span class="tut-btn" id="tutAttackBtn">⚔️</span>
-    </div>
-  </div>
-  <div class="tutorial-text-box" id="tutTextBox">
-    <div class="tutorial-text" id="tutText"></div>
-  </div>
-  <div class="tutorial-nav">
-    <button class="btn btn-secondary" id="tutStopBtn" style="width:auto;padding:8px 14px;font-size:12px">✖ Ukončit návod</button>
-    <button class="btn btn-primary" id="tutNextBtn" style="width:auto;padding:8px 20px;font-size:13px">Další →</button>
   </div>
 </div>
 

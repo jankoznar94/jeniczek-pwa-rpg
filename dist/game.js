@@ -3081,58 +3081,54 @@
   const TUTORIAL_STEPS = [
     {
       text: '💀 Monstra útočí! Vidíš <strong>šipku</strong>? Swipni stejným směrem, kterým ukazuje.\n⬆️ = swipe nahoru, ⬇️ = dolů, ⬅️ = doleva, ➡️ = doprava.',
-      arrowDir: '⬆️', arrowColor: '#bbb',
-      swipeDir: 'up',
-      showArrow: true, highlight: null
+      arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
+      showTimer: true, highlight: null
     },
     {
       text: 'Tentokrát jich bude <strong>5 za sebou</strong> — tomu se říká <strong>sekvence</strong>. Každý zásah tě zraní a sekvence začne znova!',
-      arrowDir: '➡️', arrowColor: '#bbb',
-      swipeDir: 'right',
-      showArrow: true, seqDots: [0], highlight: null
+      arrowType: 'normal', arrowDir: '➡️', swipeDir: 'right',
+      showTimer: true, seqDots: [0], highlight: null
     },
     {
       text: 'Šipka se objeví <strong>nad monstrem</strong> a ukazuje směr. Swipni stejně a útok uhneš!\nPo každém úhybu se puntík rozsvítí zeleně.',
-      arrowDir: '⬆️', arrowColor: '#bbb',
-      swipeDir: 'up',
-      showArrow: true, seqDots: ['done',0,0,0,0], highlight: null
+      arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
+      showTimer: true, seqDots: ['done',0,0,0,0], highlight: null
     },
     {
       text: '❌ Chyba! Když netrefíš směr, <strong>sekvence začne od začátku</strong>. Musíš odvrátit všechny útoky v řadě!',
-      arrowDir: '⬆️', arrowColor: '#bbb',
-      swipeDir: 'up',
-      showArrow: true, seqDots: ['done','done','error'], highlight: null
+      arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
+      showTimer: true, seqDots: ['done','done','error'], highlight: null
     },
     {
       text: '✅ Celá sekvence odvrácena! Otevřelo se <strong>útočné okno</strong>. Klikni na ⚔️ pro útok!',
-      showArrow: false, highlightBtn: 'attack',
-      showRing: true, bonusZone: true, highlight: null
+      showTimer: true, showAttackWindow: true, highlight: null
+    },
+    {
+      text: '⚡ <strong>Kritický útok</strong> — na timeru se objeví <strong>zlatá výseč</strong>. Klikni na ⚔️ v jejím průběhu pro kritický zásah (×1.5 poškození). Čím vyšší Obratnost, tím větší výseč!',
+      showTimer: true, showBonusZone: true, highlight: null
     },
     {
       text: '⚔️⚔️ <strong>Těžký útok</strong> — dvě šipky vedle sebe. Swipni <strong>2× stejným směrem</strong>. Timer je delší, první swipe připraví, druhý provede.',
-      showArrow: false, showHeavy: true,
-      swipeDir: 'right',
-      highlight: null
+      arrowType: 'heavy', arrowDir: '➡️', swipeDir: 'right',
+      showTimer: true, highlight: null
     },
     {
       text: '🛡️ Místo šipky je štít! To je <strong>blok útok</strong> — nesmíš swipnout! Stiskni tlačítko 🛡️ (Blok). Swipnutí = zásah!',
-      showArrow: false, highlightBtn: 'block', highlight: null
+      showTimer: true, showShield: true, highlight: null
     },
     {
       text: '🟢 <strong>Zelená šipka</strong> = inverzní útok. Swipni <strong>opačným směrem</strong>! ⬆️ na obrazovce = swipe dolů.',
-      arrowDir: '⬆️', arrowColor: '#5fa87a',
-      swipeDir: 'down',
-      showArrow: true, highlight: null
+      arrowType: 'inverted', arrowDir: '⬆️', swipeDir: 'down',
+      showTimer: true, highlight: null
     },
     {
       text: '🔵 <strong>Dvě modré šipky</strong> = dvojitý útok. Swipni <strong>oba směry</strong>, na pořadí nezáleží.',
-      showArrow: false, showTwin: true,
-      swipeDir: 'right',
-      highlight: null
+      arrowType: 'twin', arrowDir: '⬆️', swipeDir: 'right',
+      showTimer: true, highlight: null
     },
     {
       text: '🏆 <strong>Teď už víš všechno!</strong> Hodně štěstí v dungeonu! 🎮',
-      showArrow: false, isFinal: true, highlight: null
+      isFinal: true, highlight: null
     }
   ];
   function startTutorial() {
@@ -3150,18 +3146,20 @@
     _tutorialStep = -1;
   }
   function resetTutorialVisuals() {
-    document.getElementById('tutArrow').classList.add('hidden');
-    document.getElementById('tutHeavyArrows').classList.add('hidden');
-    document.getElementById('tutTwinArrows').classList.add('hidden');
+    const arrow = document.getElementById('tutArrow');
+    arrow.className = 'boss-attack-arrow hidden';
+    arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    arrow.style.transform = '';
     document.getElementById('tutSwipe').classList.add('hidden');
-    document.querySelectorAll('.tut-seq-dot').forEach(d => d.className = 'tut-seq-dot');
-    document.getElementById('tutBlockBtn').classList.remove('highlight');
-    document.getElementById('tutAttackBtn').classList.remove('highlight');
+    document.querySelectorAll('#tutSeq .tut-seq-dot').forEach(d => d.className = 'tut-seq-dot');
+    document.getElementById('tutBlockBtn').classList.remove('active');
+    document.getElementById('tutAttackBtn').classList.remove('active');
+    document.getElementById('tutActionInfo').classList.add('hidden');
+    document.getElementById('tutActionInfo').textContent = '';
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
-    const ringCircle = ringSvg ? ringSvg.querySelector('circle:first-child') : null;
-    const bonusCircle = ringSvg ? ringSvg.querySelector('.tut-bonus-zone') : null;
-    if (ringCircle) ringCircle.style.strokeDasharray = '276';
-    if (bonusCircle) bonusCircle.style.strokeDasharray = '0 276';
+    const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
+    if (circles[0]) { circles[0].style.strokeDasharray = '276'; circles[0].style.strokeDashoffset = '276'; }
+    if (circles[1]) { circles[1].style.strokeDasharray = '0 276'; circles[1].style.strokeDashoffset = '276'; }
   }
   function advanceTutorial() {
     _tutorialStep++;
@@ -3170,28 +3168,60 @@
     resetTutorialVisuals();
     // Text
     document.getElementById('tutText').innerHTML = step.text.replace(/\n/g, '<br>');
-    // Arrow
+    // Arrow — stejné třídy jako v reálném souboji
     const arrow = document.getElementById('tutArrow');
-    if (step.showArrow && step.arrowDir) {
-      const rot = { '⬆️':0, '⬇️':180, '⬅️':-90, '➡️':90 }[step.arrowDir] || 0;
-      const path = arrow.querySelector('path');
-      if (path) { path.setAttribute('fill', step.arrowColor); path.setAttribute('stroke', step.arrowColor); }
-      arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+    if (step.arrowType) {
       arrow.classList.remove('hidden');
+      const rot = { '⬆️':0, '⬇️':180, '⬅️':-90, '➡️':90 }[step.arrowDir] || 0;
+      if (step.arrowType === 'heavy') {
+        arrow.classList.add('boss-attack-yellow');
+        arrow.setAttribute('viewBox', '0 0 16 16');
+        arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g>';
+        arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+      } else if (step.arrowType === 'twin') {
+        arrow.classList.add('boss-attack-blue');
+        arrow.setAttribute('viewBox', '0 -2 16 20');
+        if (step.arrowDir === '⬆️') {
+          arrow.innerHTML = '<g transform="translate(-2.5,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(2.5,0)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
+        } else {
+          arrow.innerHTML = '<g transform="translate(0,-2.5)"><path d="M1 8L8 3L8 5.5L15 5.5L15 10.5L8 10.5L8 13L1 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(0,2.5)"><path d="M15 8L8 13L8 10.5L1 10.5L1 5.5L8 5.5L8 3L15 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
+        }
+        arrow.style.transform = 'translate(-50%,-50%)';
+      } else if (step.arrowType === 'inverted') {
+        arrow.classList.add('boss-attack-green');
+        arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+      } else {
+        // normal
+        arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+      }
     }
-    // Heavy / Twin arrows
-    document.getElementById('tutHeavyArrows').classList.toggle('hidden', !step.showHeavy);
-    document.getElementById('tutTwinArrows').classList.toggle('hidden', !step.showTwin);
-    // Swipe animation
-    const swipe = document.getElementById('tutSwipe');
-    if (step.swipeDir) {
-      swipe.className = 'tutorial-swipe dir-' + step.swipeDir;
-      swipe.classList.remove('hidden');
-    } else {
-      swipe.classList.add('hidden');
+    // Timer ring
+    if (step.showTimer) {
+      const ringSvg = document.getElementById('tutRing').querySelector('svg');
+      const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
+      if (circles[0]) circles[0].style.strokeDasharray = '276';
+      if (circles[1]) {
+        if (step.showBonusZone) {
+          circles[1].style.strokeDasharray = '55 276';
+        } else if (step.showAttackWindow) {
+          circles[1].style.strokeDasharray = '276';
+        } else {
+          circles[1].style.strokeDasharray = '0 276';
+        }
+      }
+    }
+    // Shield in action info
+    if (step.showShield) {
+      const ai = document.getElementById('tutActionInfo');
+      ai.textContent = '🛡️';
+      ai.classList.remove('hidden');
+    }
+    // Attack window — zvýraznit tlačítko
+    if (step.showAttackWindow || step.showBonusZone) {
+      document.getElementById('tutAttackBtn').classList.add('active');
     }
     // Sequence dots
-    const dots = document.querySelectorAll('.tut-seq-dot');
+    const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');
     dots.forEach((d,i) => {
       d.className = 'tut-seq-dot';
       if (step.seqDots) {
@@ -3201,24 +3231,17 @@
         else if (step.seqDots[i] === 0 && i === 0) d.classList.add('active');
       }
     });
-    // Button highlights
-    document.getElementById('tutBlockBtn').classList.toggle('highlight', step.highlightBtn === 'block');
-    document.getElementById('tutAttackBtn').classList.toggle('highlight', step.highlightBtn === 'attack');
-    // Ring with bonus zone
-    const ringSvg = document.getElementById('tutRing').querySelector('svg');
-    const ringCircle = ringSvg ? ringSvg.querySelector('circle:first-child') : null;
-    const bonusCircle = ringSvg ? ringSvg.querySelector('.tut-bonus-zone') : null;
-    if (step.showRing) {
-      if (ringCircle) ringCircle.style.strokeDasharray = '276';
-      if (bonusCircle) bonusCircle.style.strokeDasharray = step.bonusZone ? '55 276' : '0 276';
+    // Swipe animation
+    const swipe = document.getElementById('tutSwipe');
+    if (step.swipeDir) {
+      swipe.className = 'tutorial-swipe dir-' + step.swipeDir;
+      swipe.classList.remove('hidden');
+    } else {
+      swipe.classList.add('hidden');
     }
     // Tlačítko Další
     const nextBtn = document.getElementById('tutNextBtn');
-    if (step.isFinal) {
-      nextBtn.textContent = '🏁 Dokončit';
-    } else {
-      nextBtn.textContent = 'Další →';
-    }
+    nextBtn.textContent = step.isFinal ? '🏁 Dokončit' : 'Další →';
   }
 
   // ===== TALENTS =====
