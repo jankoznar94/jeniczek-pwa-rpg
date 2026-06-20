@@ -540,7 +540,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:50, hero:{level:1,xp:0,gold:5000,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:50}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{} };
     return s;
   }
