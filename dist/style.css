@@ -827,13 +827,14 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .tutorial-arena {
   position:relative;
-  background:#1a141e; border:1px solid #2a2040; border-radius:12px;
-  padding:20px 24px;
+  background:#16101a; border:1px solid #3a3a5a; border-radius:10px;
+  padding:0;
   width:100%;
-  display:flex; flex-direction:column; align-items:center;
-  min-height:200px;
+  height:280px;
+  overflow:hidden;
+  touch-action:none;
 }
-.tutorial-monster { font-size:48px; margin-bottom:8px; }
+.tutorial-monster { position:absolute; top:34px; left:50%; transform:translateX(-50%); font-size:44px; }
 .tutorial-swipe {
   position:absolute; top:50%; left:50%; font-size:24px; z-index:30;
   animation:tutSwipeAnim 1.2s ease-in-out infinite;
