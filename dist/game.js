@@ -3037,14 +3037,38 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
-      $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.showScreen('map')">🌍 Mapa</button><button class="btn btn-secondary" onclick="game.showScreen('hero')">🎒 Inventář</button>`;
-      if (locId + 1 < LOCATIONS.length) {
-        $('resultBtn').innerHTML += `<button class="btn btn-secondary" onclick="game.enterLocation(${locId+1})">🚀 Další dungeon</button>`;
-      }
+      $('resultBtn').innerHTML = '';
+      $('resultMsg').innerHTML += '<div class="result-tap">👆 klepni pro návrat</div>';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
       saveGame();
     }
     showScreen('result');
     if (won) switchBGM('win');
+  }
+
+  function showMapWithUnlock(doneLocId) {
+    showScreen('map');
+    renderMap();
+    const nextLocId = doneLocId + 1;
+    if (nextLocId < LOCATIONS.length) {
+      const el = document.querySelectorAll('.map-location-wrap')[nextLocId];
+      if (el) {
+        const locEl = el.querySelector('.map-location');
+        if (locEl && locEl.classList.contains('locked')) {
+          locEl.classList.remove('locked');
+          locEl.classList.add('unlocking');
+          // Odstranit CSS `::after` lock overlay dočasně
+          const iconBig = locEl.querySelector('.map-loc-icon-big');
+          if (iconBig) iconBig.style.setProperty('--unlock', 'true');
+          // Zahrát zvuk
+          playSFX(treasureSfx);
+          setTimeout(() => {
+            locEl.classList.remove('unlocking');
+            renderMap(); // překreslit v odemčeném stavu
+          }, 900);
+        }
+      }
+    }
   }
 
   function continueDungeon() {

@@ -571,8 +571,29 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .map-location:hover { filter:brightness(1.4);box-shadow:0 0 12px var(--theme-glow,rgba(255,255,255,0.1)); }
 .map-location.completed { opacity:0.7; }
-.map-location.locked { opacity:0.4;cursor:not-allowed; }
+.map-location.locked {
+  opacity:0.6; cursor:not-allowed;
+  filter:grayscale(0.85) brightness(0.5);
+  position:relative;
+  overflow:hidden;
+}
 .map-location.locked:hover { border-color:#2a2a4a; }
+.map-location.locked .map-loc-icon-big { position:relative; }
+.map-location.locked .map-loc-icon-big::after {
+  content:'🔒'; position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%); font-size:44px;
+  text-shadow:0 0 10px rgba(0,0,0,0.8);
+  filter:grayscale(0) brightness(1);
+}
+.map-location.unlocking {
+  animation:unlockPop 0.8s ease-out forwards;
+}
+.map-location.unlocking .map-loc-icon-big::after { display:none; }
+@keyframes unlockPop {
+  0% { filter:grayscale(0.85) brightness(0.5); transform:scale(1); }
+  50% { filter:grayscale(0.4) brightness(0.8); transform:scale(1.06); }
+  100% { filter:grayscale(0) brightness(1); transform:scale(1); }
+}
 .map-loc-icon-big { font-size:42px;line-height:1;flex-shrink:0; }
 .map-loc-info { flex:1; min-width:0; }
 .map-loc-name { font-size:20px;font-weight:bold; }
