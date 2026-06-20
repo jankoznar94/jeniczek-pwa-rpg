@@ -226,14 +226,25 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .arena-block-btn.active { border-color:#3498db; background:#1a1a2a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
 .boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:0; }
+.arena-pause-btn {
+  position:absolute; top:4px; right:4px; z-index:50;
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; cursor:pointer; touch-action:manipulation;
+  transition:0.2s; color:#ccc;
+}
+.arena-pause-btn:active { background:rgba(255,255,255,0.15); transform:scale(1.1); }
+/* Seq progress — horizontální řada dole, nad tlačítky */
 .seq-progress {
-  position:absolute;left:14px;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:10px;align-items:center;z-index:20;
+  position:absolute; left:50%; bottom:46px; transform:translateX(-50%);
+  display:flex; flex-direction:row; gap:6px; align-items:center; z-index:20;
 }
 .seq-dot {
   width:22px;height:22px;border-radius:50%;background:transparent;
   border:2px solid #bbb;transition:0.2s;flex-shrink:0;
 }
+.seq-compact .seq-dot { width:16px; height:16px; border-width:1.5px; }
 .seq-dot.done {
   background:var(--seq-dot-done,#bbb); border-color:var(--seq-dot-done,#bbb); box-shadow:0 0 4px var(--seq-dot-glow,rgba(187,187,187,0.4));
 }
@@ -486,6 +497,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   text-shadow:0 0 12px var(--rapid-target-glow, rgba(176,100,255,0.8));
   pointer-events:none;
 }
+/* Rapid swap — plošky nahradí tlačítka Blok/Útok */
+.rapid-active .arena-block-btn,
+.rapid-active .arena-attack-btn { display:none; }
+.rapid-active .rapid-tap-area.rapid-tap-left { left:25%; }
+.rapid-active .rapid-tap-area.rapid-tap-right { right:25%; }
 
 /* Talent Tree — WoW style */
 .talent-schools { display:flex; flex-direction:column; gap:8px; }
@@ -641,6 +657,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 
 /* Countdown */
 .countdown-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:200; }
+/* Pause overlay — transparentní, aby byla vidět aréna */
+.pause-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:transparent; display:flex; align-items:center; justify-content:center; z-index:201; pointer-events:none; }
 .countdown-number { font-size:100px; font-weight:bold; color:#fff; text-shadow:0 0 40px rgba(74,127,255,0.8); animation:countPulse 0.6s ease-in-out infinite alternate; }
 @keyframes countPulse { from{transform:scale(0.8);opacity:0.6} to{transform:scale(1.1);opacity:1} }
 

@@ -129,6 +129,62 @@
     renderHero();
   }
   let _currentBattleBgmIdx = 0;
+  let _mapPaused = false;
+  function toggleMapPause() {
+    const mb = mapBattleState;
+    if (!mb || !mb.loc) return;
+    const btn = document.getElementById('mbPauseBtn');
+    const overlay = document.getElementById('pauseOverlay');
+    const numEl = document.getElementById('pauseCountdownNumber');
+    if (!_mapPaused) {
+      // Pauznout
+      _mapPaused = true;
+      btn.textContent = '▶️';
+      // Zastavit timery
+      if (mb._sequenceTimer) { clearTimeout(mb._sequenceTimer); mb._sequenceTimer = null; }
+      if (mb._attackWindowTimer) { clearTimeout(mb._attackWindowTimer); mb._attackWindowTimer = null; }
+      if (mb._ringTimer) { clearTimeout(mb._ringTimer); mb._ringTimer = null; }
+      if (mb._freezeTimer) { clearTimeout(mb._freezeTimer); mb._freezeTimer = null; }
+      if (mb._bonusRaf) { cancelAnimationFrame(mb._bonusRaf); mb._bonusRaf = null; }
+      // Pozastavit CSS animaci timer ringu
+      mb._pausedAtkCircle = document.querySelector('.timer-circle');
+      if (mb._pausedAtkCircle) {
+        const style = getComputedStyle(mb._pausedAtkCircle);
+        mb._pausedDashoffset = style.strokeDashoffset;
+        mb._pausedAtkCircle.style.animationPlayState = 'paused';
+      }
+    } else {
+      // Odpočet 3 vteřin
+      overlay.classList.remove('hidden');
+      let count = 3;
+      numEl.textContent = count;
+      minigameState.pauseCountdown = setInterval(() => {
+        count--;
+        if (count <= 0) {
+          clearInterval(minigameState.pauseCountdown);
+          minigameState.pauseCountdown = null;
+          overlay.classList.add('hidden');
+          _mapPaused = false;
+          btn.textContent = '⏸️';
+          // Obnovit CSS animaci
+          const ac = mb._pausedAtkCircle;
+          if (ac) ac.style.animationPlayState = 'running';
+          // Pokud je útočné okno, restartovat rAF
+          if (mb.inAttackWindow && mb._atkTime) {
+            openAttackWindow();
+          } else if (mb._currentWindowTime) {
+            if (ac) restartTimerRing(ac, mb._currentWindowTime);
+            mb._sequenceTimer = setTimeout(() => {
+              if (mapBattleState.ended) return;
+              onMapHit();
+            }, mb._currentWindowTime);
+          }
+        } else {
+          numEl.textContent = count;
+        }
+      }, 1000);
+    }
+  }
   let _forceNewBattleBgm = false;
   function switchBGM(mode) {
     // Vynucený nový výběr battle stopy při novém patře
@@ -1155,6 +1211,12 @@
     circle.style.opacity = '1';
     circle.style.animation = `timer-ring-shrink ${durationMs}ms linear forwards`;
   }
+  function restartTimerRing(circle, durationMs) {
+    if (!circle) return;
+    circle.style.animation = 'none';
+    void circle.offsetWidth; // reflow
+    circle.style.animation = `timer-ring-shrink ${durationMs}ms linear forwards`;
+  }
 
   function mapBattleTurn() {
     if (mapBattleState.ended) return;
@@ -1212,7 +1274,10 @@
     if (!total) { el.innerHTML = ''; return; }
     const idx = mb.sequenceIndex;
     const inAtk = mb.inAttackWindow;
-    const allDone = idx >= total; // všech 5 hotovo → rovnou zářit
+    const allDone = idx >= total;
+    // Kompaktní puntíky při 7+ krocích
+    if (total > 5) el.classList.add('seq-compact');
+    else el.classList.remove('seq-compact');
     let html = '';
     for (let i = 0; i < total; i++) {
       let cls = 'seq-dot';
@@ -1298,7 +1363,7 @@
         actionInfo.classList.remove('hidden');
       }
     } else if (attack.type === 'rapid') {
-      // Rapid: číslo v kolečku, tap plošky po stranách
+      // Rapid: číslo v kolečku, tap plošky nahradí tlačítka
       applySchoolColors();
       if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
       if (actionInfo) actionInfo.classList.add('hidden');
@@ -1307,6 +1372,8 @@
         target.textContent = `${attack.rapidTarget}`;
         target.classList.remove('hidden');
       }
+      const arena = $('mbArena');
+      if (arena) arena.classList.add('rapid-active');
       const leftTap = $('mbTapLeft');
       const rightTap = $('mbTapRight');
       if (leftTap) leftTap.classList.remove('hidden');
@@ -1452,6 +1519,8 @@
     const rTap = $('mbTapRight');
     if (lTap) lTap.classList.add('hidden');
     if (rTap) rTap.classList.add('hidden');
+    const arena = $('mbArena');
+    if (arena) arena.classList.remove('rapid-active');
 
     mb.sequenceIndex++;
     renderSeqProgress(mb);
@@ -4002,6 +4071,10 @@
     document.getElementById('testToggle').addEventListener('click', (e) => {
       e.preventDefault();
       toggleTestMode();
+    });
+    document.getElementById('mbPauseBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMapPause();
     });
     // Spustit BGM při první user interakci
     let _firstInteraction = true;
