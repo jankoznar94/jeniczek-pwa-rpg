@@ -3122,8 +3122,12 @@
       showTimer: true, highlight: null
     },
     {
+      text: '⏰ <strong>Rychlý útok (Rapid)</strong> — ťukej co nejrychleji na plošky po stranách! Čím víc ťukneš, tím menší zranění dostaneš.',
+      showTimer: true, showRapid: true, highlight: null
+    },
+    {
       text: '🏆 <strong>Teď už víš všechno!</strong> Hodně štěstí v dungeonu! 🎮',
-      isFinal: true, highlight: null
+      isFinal: true, showCheckmark: true, highlight: null
     }
   ];
   function startTutorial() {
@@ -3149,6 +3153,10 @@
     document.getElementById('tutAttackBtn').classList.remove('active');
     document.getElementById('tutActionInfo').classList.add('hidden');
     document.getElementById('tutActionInfo').textContent = '';
+    document.getElementById('tutTapLeft').classList.add('hidden');
+    document.getElementById('tutTapRight').classList.add('hidden');
+    document.getElementById('tutRapidTarget').classList.add('hidden');
+    document.getElementById('tutCheckmark').classList.add('hidden');
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
     if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '97'); }
@@ -3220,6 +3228,16 @@
       const ai = document.getElementById('tutActionInfo');
       ai.textContent = '⚔️';
       ai.classList.remove('hidden');
+    }
+    // Rapid — zobrazit plošky a target
+    if (step.showRapid) {
+      document.getElementById('tutTapLeft').classList.remove('hidden');
+      document.getElementById('tutTapRight').classList.remove('hidden');
+      document.getElementById('tutRapidTarget').classList.remove('hidden');
+    }
+    // Checkmark — velká fajfka na posledním snímku
+    if (step.showCheckmark) {
+      document.getElementById('tutCheckmark').classList.remove('hidden');
     }
     // Sequence dots — šedé = hotovo, červené = chyba
     const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');

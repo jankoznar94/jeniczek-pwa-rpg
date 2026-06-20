@@ -885,6 +885,16 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   54% { opacity:0; transform:translate(-50%,calc(-50% - 40px)) scale(0.8); }
   100% { opacity:0; transform:translate(-50%,calc(-50% - 40px)) scale(0.5); }
 }
+.tutorial-checkmark {
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:80px; z-index:35; pointer-events:none;
+  animation:tutCheckPop 0.5s ease-out;
+}
+@keyframes tutCheckPop {
+  0% { transform:translate(-50%,-50%) scale(0); opacity:0; }
+  60% { transform:translate(-50%,-50%) scale(1.2); opacity:1; }
+  100% { transform:translate(-50%,-50%) scale(1); opacity:1; }
+}
 .tutorial-text-box {
   position:relative; z-index:1;
   margin-top:12px;
