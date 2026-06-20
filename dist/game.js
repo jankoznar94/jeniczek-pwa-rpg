@@ -3122,7 +3122,7 @@
       showTimer: true, highlight: null
     },
     {
-      text: '⏰ <strong>Rychlý útok (Rapid)</strong> — ťukej co nejrychleji na plošky po stranách! Čím víc ťukneš, tím menší zranění dostaneš.',
+      text: '⏰ <strong>Rychlý útok (Rapid)</strong> — ťukej co nejrychleji na plošky po stranách! Čím víc stihneš, tím menší zranění dostaneš.',
       showTimer: true, showRapid: true, highlight: null
     },
     {

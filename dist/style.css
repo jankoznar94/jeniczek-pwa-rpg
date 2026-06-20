@@ -455,8 +455,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   transition:0.1s;touch-action:manipulation;
   transform:translateY(-50%);
 }
-.rapid-tap-left { left:8px; }
-.rapid-tap-right { right:8px; }
+.rapid-tap-left { left:25%; }
+.rapid-tap-right { right:25%; }
 .rapid-tap-area:not(.hidden) { pointer-events:auto; }
 .rapid-tap-area.tapped {
   background:var(--rapid-tap-bg, rgba(180,100,255,0.2));border-color:var(--rapid-tap-border, rgba(180,100,255,0.8));
