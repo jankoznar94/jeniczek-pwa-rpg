@@ -3156,7 +3156,7 @@
     document.getElementById('tutActionInfo').textContent = '';
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '0'); }
+    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '97'); }
     if (circles[1]) { circles[1].setAttribute('stroke-dasharray', '0 276'); circles[1].setAttribute('stroke-dashoffset', '276'); }
   }
   function prevTutorialStep() {
@@ -3202,7 +3202,7 @@
     if (step.showTimer) {
       const ringSvg = document.getElementById('tutRing').querySelector('svg');
       const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-      if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '0'); }
+      if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '97'); }
       if (circles[1]) {
         if (step.showBonusZone) {
           circles[1].setAttribute('stroke-dasharray', '55 276');
