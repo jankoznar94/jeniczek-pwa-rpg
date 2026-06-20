@@ -108,6 +108,26 @@
     battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
     document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
   }
+  let testMode = false;
+  function toggleTestMode() {
+    testMode = !testMode;
+    const btn = document.getElementById('testToggle');
+    if (testMode) {
+      state.hero.gold = 5000;
+      state.talentPoints = 50;
+      state.hero.attrPoints = 150;
+      state.bossesDefeated = LOCATIONS.map(() => true);
+      state.floorProgress = LOCATIONS.map(() => 5);
+      state.locationProgress = LOCATIONS.map(() => 5);
+      btn.classList.add('active');
+    } else {
+      state = defaultState();
+      btn.classList.remove('active');
+    }
+    saveGame();
+    renderMap();
+    renderHero();
+  }
   let _currentBattleBgmIdx = 0;
   let _forceNewBattleBgm = false;
   function switchBGM(mode) {
@@ -3765,6 +3785,10 @@
     document.getElementById('musicToggle').addEventListener('click', (e) => {
       e.preventDefault();
       toggleMusic();
+    });
+    document.getElementById('testToggle').addEventListener('click', (e) => {
+      e.preventDefault();
+      toggleTestMode();
     });
     // Spustit BGM při první user interakci
     let _firstInteraction = true;
