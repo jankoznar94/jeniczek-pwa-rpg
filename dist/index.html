@@ -286,6 +286,40 @@
       <div class="guide-desc">Po odvrácení všech útoků se otevře <strong>útočné okno</strong>. Na timeru se objeví <strong>zlatá výseč</strong> — klikni na ⚔️ v jejím průběhu pro <strong>kritický zásah (×1.5 poškození)</strong>. Čím vyšší Obratnost, tím větší výseč!</div>
     </div>
   </div>
+  <button class="btn btn-primary" style="margin-top:16px" onclick="game.startTutorial()">🎬 Spustit interaktivní návod</button>
+</div>
+
+<!-- ===== TUTORIAL OVERLAY ===== -->
+<div id="tutorialOverlay" class="tutorial-overlay hidden">
+  <div class="tutorial-scrim"></div>
+  <div class="tutorial-arena">
+    <div class="tutorial-monster" id="tutMonster">👹</div>
+    <div class="tutorial-player" id="tutPlayer">🧝</div>
+    <svg id="tutArrow" class="tutorial-arrow hidden" viewBox="0 0 16 16" width="60" height="60">
+      <path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#bbb" stroke="#bbb" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>
+    <div class="tutorial-ring" id="tutRing">
+      <svg viewBox="0 0 110 110" width="80" height="80" style="transform:rotate(-90deg)">
+        <circle cx="55" cy="55" r="44" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="276" stroke-dashoffset="276"/>
+        <circle cx="55" cy="55" r="44" stroke="#f1c40f" stroke-width="7" fill="none" stroke-dasharray="0 276" stroke-dashoffset="276" class="tut-bonus-zone" opacity="0.85"/>
+      </svg>
+    </div>
+    <div class="tutorial-seq" id="tutSeq">
+      <span class="tut-seq-dot"></span>
+      <span class="tut-seq-dot"></span>
+      <span class="tut-seq-dot"></span>
+      <span class="tut-seq-dot"></span>
+      <span class="tut-seq-dot"></span>
+    </div>
+    <div class="tutorial-buttons">
+      <span class="tut-btn" id="tutBlockBtn">🛡️</span>
+      <span class="tut-btn" id="tutAttackBtn">⚔️</span>
+    </div>
+  </div>
+  <div class="tutorial-text-box" id="tutTextBox">
+    <div class="tutorial-text" id="tutText"></div>
+  </div>
+  <div class="tutorial-dismiss" id="tutDismiss">👆 Klikni pro ukončení</div>
 </div>
 
 <script src="game.js"></script>

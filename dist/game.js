@@ -3076,6 +3076,183 @@
     mapBattleState.floorMistakes = oldMistakes;
   }
 
+  // ===== TUTORIAL (interactive guide) =====
+  let _tutorialStep = -1;
+  let _tutorialTimer = null;
+  let _tutorialSeq = [];
+  const TUTORIAL_STEPS = [
+    {
+      text: '💀 Monstra útočí! Vidíš <strong>šipku</strong>? Swipni stejným směrem, kterým ukazuje.\n⬆️ = swipe nahoru, ⬇️ = dolů, ⬅️ = doleva, ➡️ = doprava.',
+      arrowDir: '⬆️',
+      arrowColor: '#bbb',
+      showArrow: true, duration: 2500, highlight: null
+    },
+    {
+      text: 'Tentokrát jich bude <strong>5 za sebou</strong> — tomu se říká <strong>sekvence</strong>. Každý zásah tě zraní a sekvence začne znova!',
+      arrowDir: '➡️',
+      arrowColor: '#bbb',
+      showArrow: true, seqDots: [0], duration: 1500, highlight: null
+    },
+    {
+      text: 'Šipka se objeví <strong>nad monstrem</strong> a ukazuje směr. Swipni stejně a útok uhneš!\nPo každém úhybu se puntík rozsvítí zeleně.',
+      arrowDir: '⬆️',
+      arrowColor: '#bbb',
+      showArrow: true, seqDots: ['done',0,0,0,0], duration: 2500, highlight: null
+    },
+    {
+      text: '❌ Chyba! Když netrefíš směr, <strong>sekvence začne od začátku</strong>. Musíš odvrátit všechny útoky v řadě!',
+      arrowDir: '⬆️',
+      arrowColor: '#bbb',
+      showArrow: true, seqDots: ['done','done','error'],
+      highlightError: 2, duration: 2500, highlight: null
+    },
+    {
+      text: '✅ Celá sekvence odvrácena! Otevřelo se <strong>útočné okno</strong>. Klikni na ⚔️ pro útok!',
+      showArrow: false,
+      highlightBtn: 'attack',
+      showRing: true, bonusZone: true,
+      duration: 2500, highlight: null
+    },
+    {
+      text: '⚔️ ⚔️  <strong>Těžký útok</strong> — dvě šipky vedle sebe. Swipni <strong>2× stejným směrem</strong>. Timer je delší, první swipe připraví, druhý provede.',
+      showArrow: false, showHeavy: true,
+      duration: 2500, highlight: null
+    },
+    {
+      text: '🛡️ Místo šipky je štít! To je <strong>blok útok</strong> — nesmíš swipnout! Stiskni tlačítko 🛡️ (Blok). Swipnutí = zásah!',
+      showArrow: false,
+      highlightBtn: 'block',
+      duration: 2500, highlight: null
+    },
+    {
+      text: '🟢 <strong>Zelená šipka</strong> = inverzní útok. Swipni <strong>opačným směrem</strong>! ⬆️ na obrazovce = swipe dolů.',
+      arrowDir: '⬆️',
+      arrowColor: '#5fa87a',
+      showArrow: true, duration: 2500, highlight: null
+    },
+    {
+      text: '🔵 <strong>Dvě modré šipky</strong> = dvojitý útok. Swipni <strong>oba směry</strong>, na pořadí nezáleží.',
+      showArrow: false, showTwin: true,
+      duration: 2500, highlight: null
+    },
+    {
+      text: '🏆 <strong>Teď už víš všechno!</strong> Hodně štěstí v dungeonu! 🎮\nKlikni kamkoli pro zavření.',
+      arrowDir: null,
+      showArrow: false, duration: 4000,
+      isFinal: true, highlight: null
+    }
+  ];
+  function startTutorial() {
+    _tutorialStep = -1;
+    const overlay = document.getElementById('tutorialOverlay');
+    if (!overlay) return;
+    overlay.classList.remove('hidden');
+    document.getElementById('tutDismiss').addEventListener('click', stopTutorial, {once:true});
+    // Reset vizuálů
+    document.getElementById('tutArrow').classList.add('hidden');
+    document.querySelectorAll('.tut-seq-dot').forEach(d => d.className = 'tut-seq-dot');
+    document.getElementById('tutBlockBtn').classList.remove('highlight');
+    document.getElementById('tutAttackBtn').classList.remove('highlight');
+    advanceTutorial();
+  }
+  function stopTutorial() {
+    if (_tutorialTimer) { clearTimeout(_tutorialTimer); _tutorialTimer = null; }
+    document.getElementById('tutorialOverlay').classList.add('hidden');
+    _tutorialStep = -1;
+  }
+  function advanceTutorial() {
+    _tutorialStep++;
+    if (_tutorialTimer) { clearTimeout(_tutorialTimer); _tutorialTimer = null; }
+    if (_tutorialStep >= TUTORIAL_STEPS.length) { stopTutorial(); return; }
+    const step = TUTORIAL_STEPS[_tutorialStep];
+    // Text
+    document.getElementById('tutText').textContent = '';
+    document.getElementById('tutText').innerHTML = step.text.replace(/\n/g, '<br>');
+    // Arrow
+    const arrow = document.getElementById('tutArrow');
+    if (step.showArrow && step.arrowDir) {
+      const rot = { '⬆️':0, '⬇️':180, '⬅️':-90, '➡️':90 }[step.arrowDir] || 0;
+      const path = arrow.querySelector('path');
+      if (path) { path.setAttribute('fill', step.arrowColor); path.setAttribute('stroke', step.arrowColor); }
+      arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+      arrow.classList.remove('hidden');
+    } else {
+      arrow.classList.add('hidden');
+    }
+    // Sequence dots
+    const dots = document.querySelectorAll('.tut-seq-dot');
+    dots.forEach((d,i) => {
+      d.className = 'tut-seq-dot';
+      if (step.seqDots) {
+        if (step.seqDots[i] === 'done') d.classList.add('done');
+        else if (step.seqDots[i] === 'error') d.classList.add('error');
+        else if (step.seqDots[i] >= 0 && i <= step.seqDots[i]) d.classList.add('done');
+        else if (step.seqDots[i] === 0 && i === 0) d.classList.add('active');
+      }
+    });
+    // Button highlights
+    document.getElementById('tutBlockBtn').classList.toggle('highlight', step.highlightBtn === 'block');
+    document.getElementById('tutAttackBtn').classList.toggle('highlight', step.highlightBtn === 'attack');
+    // Ring with bonus zone
+    const ringSvg = document.getElementById('tutRing').querySelector('svg');
+    const ringCircle = ringSvg ? ringSvg.querySelector('circle:first-child') : null;
+    const bonusCircle = ringSvg ? ringSvg.querySelector('.tut-bonus-zone') : null;
+    if (step.showRing) {
+      if (ringCircle) ringCircle.style.strokeDasharray = '276';
+      if (bonusCircle) bonusCircle.style.strokeDasharray = step.bonusZone ? '55 276' : '0 276';
+    } else {
+      if (ringCircle) ringCircle.style.strokeDasharray = '276';
+      if (bonusCircle) bonusCircle.style.strokeDasharray = '0 276';
+    }
+    // Heavy attack viz: two arrows
+    document.querySelector('.tutorial-arena').style.position = 'relative';
+    let heavyEl = document.getElementById('tutHeavyArrows');
+    if (!heavyEl) {
+      heavyEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      heavyEl.id = 'tutHeavyArrows';
+      heavyEl.setAttribute('viewBox', '0 0 32 16');
+      heavyEl.setAttribute('width', '80');
+      heavyEl.setAttribute('height', '40');
+      heavyEl.style.position = 'absolute';
+      heavyEl.style.top = '50%';
+      heavyEl.style.left = '50%';
+      heavyEl.style.transform = 'translate(-50%,-50%)';
+      heavyEl.style.zIndex = '2';
+      heavyEl.innerHTML = `<g transform="translate(-4,0)" opacity="0.5"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g><g transform="translate(4,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>`;
+      document.querySelector('.tutorial-arena').appendChild(heavyEl);
+    }
+    heavyEl.classList.toggle('hidden', !step.showHeavy);
+    // Twin arrows
+    let twinEl = document.getElementById('tutTwinArrows');
+    if (!twinEl) {
+      twinEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      twinEl.id = 'tutTwinArrows';
+      twinEl.setAttribute('viewBox', '0 0 32 20');
+      twinEl.setAttribute('width', '80');
+      twinEl.setAttribute('height', '50');
+      twinEl.style.position = 'absolute';
+      twinEl.style.top = '50%';
+      twinEl.style.left = '50%';
+      twinEl.style.transform = 'translate(-50%,-50%)';
+      twinEl.style.zIndex = '2';
+      twinEl.innerHTML = `<g transform="translate(-6,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(6,0)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>`;
+      document.querySelector('.tutorial-arena').appendChild(twinEl);
+    }
+    twinEl.classList.toggle('hidden', !step.showTwin);
+    // Pokud je isFinal, klik na overlay = stop
+    if (step.isFinal) {
+      document.removeEventListener('click', stopTutorial);
+      setTimeout(() => {
+        document.getElementById('tutorialOverlay').addEventListener('click', stopTutorial, {once:true});
+      }, 500);
+      return;
+    }
+    // Auto-pokračovat po duration
+    if (step.duration > 0) {
+      _tutorialTimer = setTimeout(advanceTutorial, step.duration);
+    }
+  }
+
   // ===== TALENTS =====
   function getTierPoints(schoolId, tierIdx) {
     const s = SCHOOL_MAP[schoolId];
@@ -3899,7 +4076,8 @@
     showScreen, enterLocation, toggleDungeon,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, unequipItem, unequipSlot,
     onMapRapidTap,
-    investTalent, activateSchool, resetTalents
+    investTalent, activateSchool, resetTalents,
+    startTutorial, stopTutorial
   };
   init();
 })();
