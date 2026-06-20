@@ -3136,15 +3136,6 @@
     const overlay = document.getElementById('tutorialOverlay');
     if (!overlay) return;
     overlay.classList.remove('hidden');
-    // Odstranit staré listenery a přidat nové
-    const nextBtn = document.getElementById('tutNextBtn');
-    const stopBtn = document.getElementById('tutStopBtn');
-    const newNext = nextBtn.cloneNode(true);
-    const newStop = stopBtn.cloneNode(true);
-    nextBtn.parentNode.replaceChild(newNext, nextBtn);
-    stopBtn.parentNode.replaceChild(newStop, stopBtn);
-    newNext.addEventListener('click', advanceTutorial);
-    newStop.addEventListener('click', stopTutorial);
     resetTutorialVisuals();
     advanceTutorial();
   }
@@ -4075,7 +4066,7 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, activateSchool, resetTalents,
-    startTutorial, stopTutorial
+    startTutorial, stopTutorial, advanceTutorial
   };
   init();
 })();
