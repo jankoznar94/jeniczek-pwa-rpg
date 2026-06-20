@@ -3080,19 +3080,14 @@
   let _tutorialStep = -1;
   const TUTORIAL_STEPS = [
     {
-      text: '💀 Monstra útočí! Vidíš <strong>šipku</strong>? Swipni stejným směrem, kterým ukazuje.\n⬆️ = swipe nahoru, ⬇️ = dolů, ⬅️ = doleva, ➡️ = doprava.',
+      text: '💀 Monstra útočí! Vidíš <strong>šipku</strong>? Pro úhyb swipni stejným směrem.\n⬆️ = swipe nahoru, ⬇️ = dolů, ⬅️ = doleva, ➡️ = doprava.',
       arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
       showTimer: true, highlight: null
     },
     {
-      text: 'Tentokrát jich bude <strong>5 za sebou</strong> — tomu se říká <strong>sekvence</strong>. Každý zásah tě zraní a sekvence začne znova!',
+      text: 'Akcí bude třeba <strong>5 v řadě</strong> — tomu se říká <strong>sekvence</strong>.',
       arrowType: 'normal', arrowDir: '➡️', swipeDir: 'right',
       showTimer: true, seqDots: [0], highlight: null
-    },
-    {
-      text: 'Šipka se objeví <strong>nad monstrem</strong> a ukazuje směr. Swipni stejně a útok uhneš!\nPo každém úhybu se puntík rozsvítí zeleně.',
-      arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
-      showTimer: true, seqDots: ['done',0,0,0,0], highlight: null
     },
     {
       text: '❌ Chyba! Když netrefíš směr, <strong>sekvence začne od začátku</strong>. Musíš odvrátit všechny útoky v řadě!',
