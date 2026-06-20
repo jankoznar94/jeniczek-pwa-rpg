@@ -3156,8 +3156,13 @@
     document.getElementById('tutActionInfo').textContent = '';
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '276'); }
+    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '0'); }
     if (circles[1]) { circles[1].setAttribute('stroke-dasharray', '0 276'); circles[1].setAttribute('stroke-dashoffset', '276'); }
+  }
+  function prevTutorialStep() {
+    if (_tutorialStep <= 0) return;
+    _tutorialStep -= 2; // -2 protože advanceTutorial udělá ++
+    advanceTutorial();
   }
   function advanceTutorial() {
     _tutorialStep++;
@@ -3193,18 +3198,21 @@
         arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
       }
     }
-    // Timer ring
+    // Timer ring — vždy zobrazit plný kruh (dashoffset=0)
     if (step.showTimer) {
       const ringSvg = document.getElementById('tutRing').querySelector('svg');
       const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-      if (circles[0]) circles[0].setAttribute('stroke-dasharray', '276');
+      if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '0'); }
       if (circles[1]) {
         if (step.showBonusZone) {
           circles[1].setAttribute('stroke-dasharray', '55 276');
+          circles[1].setAttribute('stroke-dashoffset', '0');
         } else if (step.showAttackWindow) {
           circles[1].setAttribute('stroke-dasharray', '276');
+          circles[1].setAttribute('stroke-dashoffset', '0');
         } else {
           circles[1].setAttribute('stroke-dasharray', '0 276');
+          circles[1].setAttribute('stroke-dashoffset', '276');
         }
       }
     }
@@ -3218,7 +3226,7 @@
     if (step.showAttackWindow || step.showBonusZone) {
       document.getElementById('tutAttackBtn').classList.add('active');
     }
-    // Sequence dots
+    // Sequence dots — šedé = hotovo, červené = chyba
     const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');
     dots.forEach((d,i) => {
       d.className = 'tut-seq-dot';
@@ -4066,7 +4074,7 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, activateSchool, resetTalents,
-    startTutorial, stopTutorial, advanceTutorial
+    startTutorial, stopTutorial, advanceTutorial, prevTutorialStep
   };
   init();
 })();
