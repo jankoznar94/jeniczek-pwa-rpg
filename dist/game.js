@@ -3145,7 +3145,7 @@
   }
   function resetTutorialVisuals() {
     const arrow = document.getElementById('tutArrow');
-    arrow.className = 'boss-attack-arrow hidden';
+    arrow.setAttribute('class', 'boss-attack-arrow hidden');
     arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
     arrow.style.transform = '';
     document.getElementById('tutSwipe').classList.add('hidden');
@@ -3156,8 +3156,8 @@
     document.getElementById('tutActionInfo').textContent = '';
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-    if (circles[0]) { circles[0].style.strokeDasharray = '276'; circles[0].style.strokeDashoffset = '276'; }
-    if (circles[1]) { circles[1].style.strokeDasharray = '0 276'; circles[1].style.strokeDashoffset = '276'; }
+    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '276'); }
+    if (circles[1]) { circles[1].setAttribute('stroke-dasharray', '0 276'); circles[1].setAttribute('stroke-dashoffset', '276'); }
   }
   function advanceTutorial() {
     _tutorialStep++;
@@ -3197,14 +3197,14 @@
     if (step.showTimer) {
       const ringSvg = document.getElementById('tutRing').querySelector('svg');
       const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-      if (circles[0]) circles[0].style.strokeDasharray = '276';
+      if (circles[0]) circles[0].setAttribute('stroke-dasharray', '276');
       if (circles[1]) {
         if (step.showBonusZone) {
-          circles[1].style.strokeDasharray = '55 276';
+          circles[1].setAttribute('stroke-dasharray', '55 276');
         } else if (step.showAttackWindow) {
-          circles[1].style.strokeDasharray = '276';
+          circles[1].setAttribute('stroke-dasharray', '276');
         } else {
-          circles[1].style.strokeDasharray = '0 276';
+          circles[1].setAttribute('stroke-dasharray', '0 276');
         }
       }
     }
