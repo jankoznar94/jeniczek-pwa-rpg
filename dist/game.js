@@ -3086,7 +3086,7 @@
     },
     {
       text: 'Akcí bude třeba <strong>5 v řadě</strong> — tomu se říká <strong>sekvence</strong>.',
-      arrowType: 'normal', arrowDir: '➡️', swipeDir: 'right',
+      arrowType: 'normal', arrowDir: '➡️', swipeDir: null,
       showTimer: true, seqDots: [0], highlight: null
     },
     {
