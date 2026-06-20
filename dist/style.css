@@ -833,7 +833,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .tutorial-monster { position:absolute; top:34px; left:50%; transform:translateX(-50%); font-size:44px; }
 .tutorial-swipe {
-  position:absolute; top:50%; left:50%; font-size:24px; z-index:30;
+  position:absolute; top:50%; left:50%; font-size:48px; z-index:30;
   animation:tutSwipeAnim 1.2s ease-in-out infinite;
   pointer-events:none;
   transform:translate(-50%,-50%);
@@ -843,35 +843,35 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   0% { opacity:0; transform:translate(-50%,-50%) scale(0.5); }
   20% { opacity:1; transform:translate(-50%,-50%) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(-50%,calc(-50% - 30px)) scale(0.8); }
+  100% { opacity:0; transform:translate(-50%,calc(-50% - 60px)) scale(0.8); }
 }
 .tutorial-swipe.dir-right { animation-name:tutSwipeRight; }
 .tutorial-swipe.dir-left { animation-name:tutSwipeLeft; }
 .tutorial-swipe.dir-down { animation-name:tutSwipeDown; }
 .tutorial-swipe.dir-up { animation-name:tutSwipeUp; }
 @keyframes tutSwipeRight {
-  0% { opacity:0; transform:translate(calc(-50% - 20px),-50%) scale(0.5); }
-  20% { opacity:1; transform:translate(calc(-50% - 10px),-50%) scale(1); }
+  0% { opacity:0; transform:translate(calc(-50% - 40px),-50%) scale(0.5); }
+  20% { opacity:1; transform:translate(calc(-50% - 20px),-50%) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(calc(-50% + 20px),-50%) scale(0.8); }
+  100% { opacity:0; transform:translate(calc(-50% + 40px),-50%) scale(0.8); }
 }
 @keyframes tutSwipeLeft {
-  0% { opacity:0; transform:translate(calc(-50% + 20px),-50%) scale(0.5); }
-  20% { opacity:1; transform:translate(calc(-50% + 10px),-50%) scale(1); }
+  0% { opacity:0; transform:translate(calc(-50% + 40px),-50%) scale(0.5); }
+  20% { opacity:1; transform:translate(calc(-50% + 20px),-50%) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(calc(-50% - 20px),-50%) scale(0.8); }
+  100% { opacity:0; transform:translate(calc(-50% - 40px),-50%) scale(0.8); }
 }
 @keyframes tutSwipeDown {
-  0% { opacity:0; transform:translate(-50%,calc(-50% - 20px)) scale(0.5); }
-  20% { opacity:1; transform:translate(-50%,calc(-50% - 10px)) scale(1); }
+  0% { opacity:0; transform:translate(-50%,calc(-50% - 40px)) scale(0.5); }
+  20% { opacity:1; transform:translate(-50%,calc(-50% - 20px)) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(-50%,calc(-50% + 20px)) scale(0.8); }
+  100% { opacity:0; transform:translate(-50%,calc(-50% + 40px)) scale(0.8); }
 }
 @keyframes tutSwipeUp {
-  0% { opacity:0; transform:translate(-50%,calc(-50% + 20px)) scale(0.5); }
-  20% { opacity:1; transform:translate(-50%,calc(-50% + 10px)) scale(1); }
+  0% { opacity:0; transform:translate(-50%,calc(-50% + 40px)) scale(0.5); }
+  20% { opacity:1; transform:translate(-50%,calc(-50% + 20px)) scale(1); }
   80% { opacity:1; }
-  100% { opacity:0; transform:translate(-50%,calc(-50% - 20px)) scale(0.8); }
+  100% { opacity:0; transform:translate(-50%,calc(-50% - 40px)) scale(0.8); }
 }
 .tutorial-text-box {
   position:relative; z-index:1;
