@@ -849,6 +849,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .tutorial-swipe.dir-left { animation-name:tutSwipeLeft; }
 .tutorial-swipe.dir-down { animation-name:tutSwipeDown; }
 .tutorial-swipe.dir-up { animation-name:tutSwipeUp; }
+.tutorial-swipe.dir-twin { animation-name:tutSwipeTwin; }
 @keyframes tutSwipeRight {
   0% { opacity:0; transform:translate(calc(-50% - 40px),-50%) scale(0.5); }
   20% { opacity:1; transform:translate(calc(-50% - 20px),-50%) scale(1); }
@@ -872,6 +873,17 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   20% { opacity:1; transform:translate(-50%,calc(-50% + 20px)) scale(1); }
   80% { opacity:1; }
   100% { opacity:0; transform:translate(-50%,calc(-50% - 40px)) scale(0.8); }
+}
+@keyframes tutSwipeTwin {
+  0% { opacity:0; transform:translate(calc(-50% - 40px),-50%) scale(0.5); }
+  8% { opacity:1; transform:translate(calc(-50% - 20px),-50%) scale(1); }
+  16% { opacity:1; transform:translate(-50%,-50%) scale(1); }
+  24% { opacity:0; transform:translate(calc(-50% + 40px),-50%) scale(0.8); }
+  30% { opacity:0; transform:translate(calc(-50% + 40px),-50%) scale(0.5); }
+  38% { opacity:1; transform:translate(calc(-50% + 20px),-50%) scale(1); }
+  46% { opacity:1; transform:translate(-50%,-50%) scale(1); }
+  54% { opacity:0; transform:translate(calc(-50% - 40px),-50%) scale(0.8); }
+  100% { opacity:0; transform:translate(calc(-50% - 40px),-50%) scale(0.5); }
 }
 .tutorial-text-box {
   position:relative; z-index:1;

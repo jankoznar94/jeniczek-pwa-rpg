@@ -3118,7 +3118,7 @@
     },
     {
       text: '🔵 <strong>Dvě modré šipky</strong> = dvojitý útok. Swipni <strong>oba směry</strong>, na pořadí nezáleží.',
-      arrowType: 'twin', arrowDir: '⬆️', swipeDir: 'right',
+      arrowType: 'twin', arrowDir: '⬆️', swipeDir: 'twin',
       showTimer: true, highlight: null
     },
     {
