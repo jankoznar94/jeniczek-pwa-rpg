@@ -595,7 +595,7 @@
       <div class="levelup-sparkle">⭐</div>
       <div class="levelup-title">LEVEL UP!</div>
       <div class="levelup-level">Lv.${prevLevel} → Lv.${h.level}</div>
-      <div class="levelup-details"><span>💪 +1 atributový bod</span><span>❤️ Plné vyléčení</span></div>
+      <div class="levelup-details"><span>💪 +5 atributových bodů</span><span>🎓 +1 talentový bod</span><span>❤️ Plné vyléčení</span></div>
     </div>`;
     document.body.appendChild(overlay);
     sfxLevelUp();
