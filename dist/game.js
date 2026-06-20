@@ -3202,9 +3202,6 @@
         if (step.showBonusZone) {
           circles[1].setAttribute('stroke-dasharray', '55 276');
           circles[1].setAttribute('stroke-dashoffset', '0');
-        } else if (step.showAttackWindow) {
-          circles[1].setAttribute('stroke-dasharray', '276');
-          circles[1].setAttribute('stroke-dashoffset', '0');
         } else {
           circles[1].setAttribute('stroke-dasharray', '0 276');
           circles[1].setAttribute('stroke-dashoffset', '276');
@@ -3217,9 +3214,12 @@
       ai.textContent = '🛡️';
       ai.classList.remove('hidden');
     }
-    // Attack window — zvýraznit tlačítko
+    // Attack window — zvýraznit tlačítko a zobrazit ⚔️ v timeru
     if (step.showAttackWindow || step.showBonusZone) {
       document.getElementById('tutAttackBtn').classList.add('active');
+      const ai = document.getElementById('tutActionInfo');
+      ai.textContent = '⚔️';
+      ai.classList.remove('hidden');
     }
     // Sequence dots — šedé = hotovo, červené = chyba
     const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');
