@@ -61,7 +61,12 @@
       </div>
       <div class="arena-block-btn" id="mbBlockBtn">🛡️</div>
       <div class="arena-attack-btn" id="mbAttackBtn">⚔️</div>
-      <div class="arena-pause-btn" id="mbPauseBtn">⏸️</div>
+      <div class="arena-pause-btn" id="mbPauseBtn" onclick="game.toggleMapPause()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="7" y1="5" x2="7" y2="19"/>
+          <line x1="17" y1="5" x2="17" y2="19"/>
+        </svg>
+      </div>
       <div class="arena-spell-attack-btn hidden" id="mbSpellFireBtn">🔥</div>
       <div class="arena-spell-attack-btn hidden" id="mbSpellHealBtn">💚</div>
       <div class="arena-spell-attack-btn hidden" id="mbSpellFreezeBtn">❄️</div>
@@ -318,6 +323,12 @@
       <div class="rapid-tap-area rapid-tap-right hidden" id="tutTapRight"><span class="rapid-tap-dot"></span></div>
       <div class="rapid-target hidden" id="tutRapidTarget">10</div>
       <div class="tutorial-checkmark hidden" id="tutCheckmark">✅</div>
+      <div class="arena-pause-btn" id="tutPauseBtn" onclick="game.toggleTutorialPause()">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="7" y1="5" x2="7" y2="19"/>
+          <line x1="17" y1="5" x2="17" y2="19"/>
+        </svg>
+      </div>
       <div class="seq-progress" id="tutSeq">
         <span class="tut-seq-dot"></span>
         <span class="tut-seq-dot"></span>

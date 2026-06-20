@@ -130,6 +130,12 @@
   }
   let _currentBattleBgmIdx = 0;
   let _mapPaused = false;
+  let _tutorialPaused = false;
+  function setPauseIcon(btn, paused) {
+    btn.innerHTML = paused
+      ? '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>'
+      : '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="7" y1="5" x2="7" y2="19"/><line x1="17" y1="5" x2="17" y2="19"/></svg>';
+  }
   function toggleMapPause() {
     const mb = mapBattleState;
     if (!mb || !mb.loc) return;
@@ -139,7 +145,7 @@
     if (!_mapPaused) {
       // Pauznout
       _mapPaused = true;
-      btn.textContent = '▶️';
+      setPauseIcon(btn, true);
       // Zastavit timery
       if (mb._sequenceTimer) { clearTimeout(mb._sequenceTimer); mb._sequenceTimer = null; }
       if (mb._attackWindowTimer) { clearTimeout(mb._attackWindowTimer); mb._attackWindowTimer = null; }
@@ -165,7 +171,7 @@
           minigameState.pauseCountdown = null;
           overlay.classList.add('hidden');
           _mapPaused = false;
-          btn.textContent = '⏸️';
+          setPauseIcon(btn, false);
           // Obnovit CSS animaci
           const ac = mb._pausedAtkCircle;
           if (ac) ac.style.animationPlayState = 'running';
@@ -179,6 +185,31 @@
               onMapHit();
             }, mb._currentWindowTime);
           }
+        } else {
+          numEl.textContent = count;
+        }
+      }, 1000);
+    }
+  }
+  function toggleTutorialPause() {
+    const btn = document.getElementById('tutPauseBtn');
+    const overlay = document.getElementById('pauseOverlay');
+    const numEl = document.getElementById('pauseCountdownNumber');
+    if (!_tutorialPaused) {
+      _tutorialPaused = true;
+      setPauseIcon(btn, true);
+    } else {
+      overlay.classList.remove('hidden');
+      let count = 3;
+      numEl.textContent = count;
+      minigameState.pauseCountdown = setInterval(() => {
+        count--;
+        if (count <= 0) {
+          clearInterval(minigameState.pauseCountdown);
+          minigameState.pauseCountdown = null;
+          overlay.classList.add('hidden');
+          _tutorialPaused = false;
+          setPauseIcon(btn, false);
         } else {
           numEl.textContent = count;
         }
@@ -4170,7 +4201,8 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, activateSchool, resetTalents,
-    startTutorial, stopTutorial, advanceTutorial, prevTutorialStep
+    startTutorial, stopTutorial, advanceTutorial, prevTutorialStep,
+    toggleMapPause, toggleTutorialPause
   };
   init();
 })();

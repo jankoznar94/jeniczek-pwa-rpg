@@ -228,12 +228,13 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .boss-hint { text-align:center;font-size:11px;color:#8888aa;margin:2px 0;min-height:0; }
 .arena-pause-btn {
   position:absolute; top:4px; right:4px; z-index:50;
-  width:32px; height:32px; border-radius:50%;
+  width:40px; height:40px; border-radius:50%;
   background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2);
   display:flex; align-items:center; justify-content:center;
-  font-size:16px; cursor:pointer; touch-action:manipulation;
+  cursor:pointer; touch-action:manipulation;
   transition:0.2s; color:#ccc;
 }
+.arena-pause-btn svg { display:block; }
 .arena-pause-btn:active { background:rgba(255,255,255,0.15); transform:scale(1.1); }
 /* Seq progress — svisle vlevo */
 .seq-progress {
