@@ -3226,6 +3226,7 @@
     document.getElementById('tutTapRight').classList.add('hidden');
     document.getElementById('tutRapidTarget').classList.add('hidden');
     document.getElementById('tutCheckmark').classList.add('hidden');
+    document.getElementById('tutArena').classList.remove('rapid-active');
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
     if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '97'); }
@@ -3303,6 +3304,9 @@
       document.getElementById('tutTapLeft').classList.remove('hidden');
       document.getElementById('tutTapRight').classList.remove('hidden');
       document.getElementById('tutRapidTarget').classList.remove('hidden');
+      document.getElementById('tutArena').classList.add('rapid-active');
+    } else {
+      document.getElementById('tutArena').classList.remove('rapid-active');
     }
     // Checkmark — velká fajfka na posledním snímku
     if (step.showCheckmark) {
