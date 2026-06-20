@@ -726,7 +726,7 @@
     if (!loc) return;
     if (locId > 1 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
 
-    if (optFloor !== undefined && !state.bossesDefeated[locId]) {
+    if (optFloor !== undefined) {
       state.floorProgress[locId] = optFloor;
       state.locationProgress[locId] = 0;
     }
