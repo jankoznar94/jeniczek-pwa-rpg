@@ -901,6 +901,38 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .bestiary-atk span {
   font-size: 14px;
 }
+.bestiary-boss-card {
+  width: 140px;
+  padding: 16px 12px;
+  border-width: 2px;
+  background: linear-gradient(135deg, #1a141e, #2a1a2e);
+  position: relative;
+}
+.bestiary-boss-badge {
+  font-size: 10px;
+  font-weight: bold;
+  color: #f1c40f;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.bestiary-boss-face {
+  font-size: 48px;
+}
+.bestiary-boss-name {
+  font-size: 14px;
+  color: #f1c40f;
+}
+.bestiary-boss-types {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 4px 0;
+}
+.bestiary-boss-type {
+  font-size: 10px;
+  color: #ddd;
+}
 
 /* ===== TUTORIAL OVERLAY ===== */
 .tutorial-overlay {

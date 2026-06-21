@@ -690,18 +690,18 @@
     { bg:'#1a0505', border:'#c0392b', borderGlow:'rgba(192,57,43,0.3)' },    // 11 Smrt — tmavě červená
   ];
   const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:5, name:'Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26}, reward:{gold:30}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:6, name:'Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30}, reward:{gold:40,weapon:'warHammer'}, resists:{fire:0.75, ice:0.75, nature:1.5} },
-    { id:7, name:'Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35}, reward:{gold:50}, resists:{fire:0.5, ice:1.0, nature:0.5} },
-    { id:8, name:'Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:84, bossXp:280, boss:{name:'Anděl pomsty',face:'👼',hp:40}, reward:{gold:60,armor:'dragonScale'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:9, name:'Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:100, bossXp:340, boss:{name:'Pán temnot',face:'💀',hp:50}, reward:{gold:80,weapon:'excalibur'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:10, name:'Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:120, bossXp:400, boss:{name:'Chaos lord',face:'👾',hp:60}, reward:{gold:100,weapon:'voidBlade'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:11, name:'Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:150, bossXp:500, boss:{name:'Smrták',face:'💀',hp:80}, reward:{gold:150,armor:'voidPlate'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Stínový pán',face:'👹',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
+    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
+    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:5, name:'Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26,types:[MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:6, name:'Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.LIFESTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:40,weapon:'warHammer'}, resists:{fire:0.75, ice:0.75, nature:1.5} },
+    { id:7, name:'Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:50}, resists:{fire:0.5, ice:1.0, nature:0.5} },
+    { id:8, name:'Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:84, bossXp:280, boss:{name:'Anděl pomsty',face:'👼',hp:40,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:60,armor:'dragonScale'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:9, name:'Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:100, bossXp:340, boss:{name:'Pán temnot',face:'💀',hp:50,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.IMPROVER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:80,weapon:'excalibur'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:10, name:'Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:120, bossXp:400, boss:{name:'Chaos lord',face:'👾',hp:60,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.IMPROVER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:100,weapon:'voidBlade'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:11, name:'Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:150, bossXp:500, boss:{name:'Smrták',face:'💀',hp:80,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:150,armor:'voidPlate'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
   ];
 
   // ===== STATE =====
@@ -968,7 +968,8 @@
       monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
       currentMonsterName: isBoss ? loc.boss.name : floorMonsters[progress].name,
       monsterType: isBoss ? null : (floorMonsters[progress].type || null),
-      monsterAttackType: isBoss ? ATTACK_TYPES.MELEE : (floorMonsters[progress].attackType || ATTACK_TYPES.MELEE),
+      monsterAttackType: isBoss ? (loc.boss.attackType || ATTACK_TYPES.MELEE) : (floorMonsters[progress].attackType || ATTACK_TYPES.MELEE),
+      bossTypes: isBoss ? (loc.boss.types || []) : [],
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       // Loot drops per monster (pro vizuální indikaci)
@@ -1008,7 +1009,15 @@
     const mb = mapBattleState;
     if (!mb.loc) return;
     if (mb.isBoss) {
-      $('mbEnemyName').textContent = `${mb.loc.boss.face} ${mb.loc.boss.name}`;
+      const b = mb.loc.boss;
+      const bossTypesHtml = (b.types || []).map(t => {
+        const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
+          t === MONSTER_TYPES.MANASTEALER ? '💧' :
+          t === MONSTER_TYPES.IMPROVER ? '📈' : '🎯';
+        return ti;
+      }).join('');
+      const atkIcon = (b.attackType || ATTACK_TYPES.MELEE) === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
+      $('mbEnemyName').textContent = `${b.face} ${b.name} ${bossTypesHtml}${atkIcon}`;
       $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P5`;
     } else {
       const floorStr = `P${mb.floor+1}`;
@@ -2680,26 +2689,27 @@
     let bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
     // Speciální schopnosti monster
     const mType = mb.monsterType;
+    const bossTypes = mb.bossTypes || [];
     let isCrit = false;
     let lifeStealAmt = 0;
     let manaStealAmt = 0;
-    if (mType === MONSTER_TYPES.CRITMASTER) {
-      // 33% šance na 2.0x crit
-      if (Math.random() < 0.33) {
-        bossDmg = Math.round(bossDmg * 2.0);
-        isCrit = true;
+    // Boss může mít vícero typů — aplikujeme všechny
+    const typesToApply = bossTypes.length > 0 ? bossTypes : (mType ? [mType] : []);
+    typesToApply.forEach(t => {
+      if (t === MONSTER_TYPES.CRITMASTER) {
+        if (Math.random() < 0.33) {
+          bossDmg = Math.round(bossDmg * 2.0);
+          isCrit = true;
+        }
+      } else if (t === MONSTER_TYPES.IMPROVER) {
+        mb._improverStacks = (mb._improverStacks || 0) + 1;
+        bossDmg = Math.round(bossDmg * (1 + mb._improverStacks * 0.25));
+      } else if (t === MONSTER_TYPES.LIFESTEALER) {
+        lifeStealAmt += Math.round(bossDmg * 0.5);
+      } else if (t === MONSTER_TYPES.MANASTEALER) {
+        manaStealAmt += Math.round(bossDmg * 0.5);
       }
-    } else if (mType === MONSTER_TYPES.IMPROVER) {
-      // +25% poškození za každý předchozí zásah
-      mb._improverStacks = (mb._improverStacks || 0) + 1;
-      bossDmg = Math.round(bossDmg * (1 + mb._improverStacks * 0.25));
-    } else if (mType === MONSTER_TYPES.LIFESTEALER) {
-      // Při zásahu si monster léčí 50% z uděleného poškození
-      lifeStealAmt = Math.round(bossDmg * 0.5);
-    } else if (mType === MONSTER_TYPES.MANASTEALER) {
-      // Při zásahu krade manu — 50% z uděleného poškození
-      manaStealAmt = Math.round(bossDmg * 0.5);
-    }
+    });
     let amount = bossDmg;
     if (mb.shieldActive) {
       const block = mb.shieldActive;
@@ -3575,6 +3585,28 @@
       const loc = LOCATIONS[themeIdx];
       const locName = loc ? loc.name : `Oblast ${themeIdx+1}`;
       html += `<div class="bestiary-section"><div class="bestiary-section-title" style="color:${theme.border}">${locName}</div><div class="bestiary-row">`;
+      // Boss card — výraznější, první v řadě
+      if (loc && loc.boss) {
+        const b = loc.boss;
+        const bossTypesHtml = b.types.map(t => {
+          const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
+            t === MONSTER_TYPES.MANASTEALER ? '💧' :
+            t === MONSTER_TYPES.IMPROVER ? '📈' : '🎯';
+          const tn = t === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
+            t === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
+            t === MONSTER_TYPES.IMPROVER ? 'Improver' : 'Critmaster';
+          return `<span class="bestiary-boss-type">${ti} ${tn}</span>`;
+        }).join(' ');
+        const atkIcon = b.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
+        const atkName = b.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
+        html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid ${theme.border};border-color:${theme.border}">
+          <div class="bestiary-boss-badge">👑 BOSS</div>
+          <div class="bestiary-face bestiary-boss-face">${b.face}</div>
+          <div class="bestiary-name bestiary-boss-name">${b.name}</div>
+          <div class="bestiary-boss-types">${bossTypesHtml}</div>
+          <div class="bestiary-atk"><span>${atkIcon}</span> ${atkName}</div>
+        </div>`;
+      }
       themeMonsters.forEach(m => {
         const typeIcon = m.type === MONSTER_TYPES.LIFESTEALER ? '🩸' :
           m.type === MONSTER_TYPES.MANASTEALER ? '💧' :
