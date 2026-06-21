@@ -3381,6 +3381,14 @@
       showTimer: true, showRapid: true, highlight: null
     },
     {
+      text: '🩸💧📈🎯 <strong>Monstra mají typy!</strong> Vedle jména vidíš ikonku:<br>🩸 = Lifestealer (saje život)<br>💧 = Manastealer (krade manu)<br>📈 = Improver (s každým zásahem sílí)<br>🎯 = Critmaster (umí kritické zásahy)',
+      showTimer: true, highlight: null
+    },
+    {
+      text: '⚔️🔮 A <strong>způsob útoku</strong>:<br>⚔️ = <strong>Melee</strong> — fyzický útok (sečný)<br>🔮 = <strong>Caster</strong> — magický útok (kouzlem)<br><br>Poznáš je i podle projektilu: melee = červený, caster = fialový.',
+      showTimer: true, highlight: null
+    },
+    {
       text: '🏆 <strong>Teď už víš všechno!</strong> Hodně štěstí v dungeonu! 🎮',
       isFinal: true, showCheckmark: true, highlight: null
     }
