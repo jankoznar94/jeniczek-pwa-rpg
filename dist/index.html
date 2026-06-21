@@ -16,6 +16,7 @@
   <a href="#" data-screen="inventory">🎒 Inventář</a>
   <a href="#" data-screen="shop">🏪 Obchod</a>
   <a href="#" data-screen="guide">📖 Návod</a>
+  <a href="#" data-screen="bestiary">📚 Bestiář</a>
   <a href="#" id="musicToggle" style="font-size:18px">🔊</a>
   <a href="#" id="testToggle" style="font-size:18px">🧪</a>
 </nav>
@@ -301,6 +302,15 @@
     </div>
   </div>
   <button class="btn btn-primary" style="margin-top:16px" onclick="game.startTutorial()">🎬 Spustit interaktivní návod</button>
+</div>
+
+<!-- ===== BESTIARY ===== -->
+<div id="bestiaryScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title">📚 Bestiář</div>
+    <div class="card-subtitle">Všechna monstra, jejich typy a způsob útoku.</div>
+  </div>
+  <div class="bestiary-grid" id="bestiaryGrid"></div>
 </div>
 
 <!-- ===== PAUSE COUNTDOWN OVERLAY ===== -->

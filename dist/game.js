@@ -748,7 +748,7 @@
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen' };
+  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen', bestiary:'bestiaryScreen' };
   function showScreen(name) {
     cleanupTimers();
     
@@ -3565,6 +3565,37 @@
     nextBtn.textContent = step.isFinal ? 'Dokončit' : 'Další';
   }
 
+  // ===== BESTIARY =====
+  function renderBestiary() {
+    const grid = document.getElementById('bestiaryGrid');
+    if (!grid) return;
+    let html = '';
+    MONSTER_DB.forEach((themeMonsters, themeIdx) => {
+      const theme = DUNGEON_THEMES[themeIdx] || DUNGEON_THEMES[0];
+      const loc = LOCATIONS[themeIdx];
+      const locName = loc ? loc.name : `Oblast ${themeIdx+1}`;
+      html += `<div class="bestiary-section"><div class="bestiary-section-title" style="color:${theme.border}">${locName}</div><div class="bestiary-row">`;
+      themeMonsters.forEach(m => {
+        const typeIcon = m.type === MONSTER_TYPES.LIFESTEALER ? '🩸' :
+          m.type === MONSTER_TYPES.MANASTEALER ? '💧' :
+          m.type === MONSTER_TYPES.IMPROVER ? '📈' : '🎯';
+        const typeName = m.type === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
+          m.type === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
+          m.type === MONSTER_TYPES.IMPROVER ? 'Improver' : 'Critmaster';
+        const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
+        const atkName = m.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
+        html += `<div class="bestiary-card" style="border-left:3px solid ${theme.border}">
+          <div class="bestiary-face">${m.face}</div>
+          <div class="bestiary-name">${m.name}</div>
+          <div class="bestiary-type"><span>${typeIcon}</span> ${typeName}</div>
+          <div class="bestiary-atk"><span>${atkIcon}</span> ${atkName}</div>
+        </div>`;
+      });
+      html += `</div></div>`;
+    });
+    grid.innerHTML = html;
+  }
+
   // ===== TALENTS =====
   function getTierPoints(schoolId, tierIdx) {
     const s = SCHOOL_MAP[schoolId];
@@ -4287,6 +4318,7 @@
         else if (a.dataset.screen === 'shop') showScreen('shop');
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
         else if (a.dataset.screen === 'guide') showScreen('guide');
+        else if (a.dataset.screen === 'bestiary') { showScreen('bestiary'); renderBestiary(); }
         // Inicializovat audio hned při prvním kliku (user gesture)
         firstUserInteraction();
       });
@@ -4394,7 +4426,8 @@
     onMapRapidTap,
     investTalent, activateSchool, resetTalents,
     startTutorial, stopTutorial, advanceTutorial, prevTutorialStep,
-    toggleMapPause, toggleTutorialPause
+    toggleMapPause, toggleTutorialPause,
+    renderBestiary
   };
   init();
 })();
