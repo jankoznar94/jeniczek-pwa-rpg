@@ -547,7 +547,7 @@
     // Theme 0 — Les
     [
       {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a2a1a" stroke="#5fa87a" stroke-width="1.5"/><ellipse cx="24" cy="26" rx="3" ry="4" fill="#e8e0e8"/><ellipse cx="40" cy="26" rx="3" ry="4" fill="#e8e0e8"/><circle cx="24" cy="26" r="1.5" fill="#1a2a1a"/><circle cx="40" cy="26" r="1.5" fill="#1a2a1a"/><ellipse cx="32" cy="34" rx="4" ry="2" fill="#5fa87a" opacity="0.6"/><path d="M28 38 Q32 44 36 38" stroke="#5fa87a" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="22" cy="18" rx="6" ry="3" fill="#5fa87a" opacity="0.4" transform="rotate(-20,22,18)"/><ellipse cx="42" cy="18" rx="6" ry="3" fill="#5fa87a" opacity="0.4" transform="rotate(20,42,18)"/><circle cx="32" cy="14" r="2" fill="#f1c40f" opacity="0.6"/></svg>',name:'Víla',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a0a" stroke="#8e8e5e" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="18" ry="16" fill="#3a3a1a"/><circle cx="24" cy="26" r="4" fill="#c0392b"/><circle cx="40" cy="26" r="4" fill="#c0392b"/><circle cx="24" cy="26" r="2" fill="#1a1a0a"/><circle cx="40" cy="26" r="2" fill="#1a1a0a"/><ellipse cx="32" cy="36" rx="6" ry="3" fill="#5a3a1a"/><path d="M26 40 Q32 48 38 40" stroke="#5a3a1a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M14 28 Q8 22 10 16" stroke="#8e8e5e" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M50 28 Q56 22 54 16" stroke="#8e8e5e" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="16" cy="14" r="3" fill="#8e8e5e"/><circle cx="48" cy="14" r="3" fill="#8e8e5e"/></svg>',name:'Skřítek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/troll_test_small.png',name:'Skřítek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a0a0a" stroke="#e74c3c" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="16" ry="18" fill="#2a0a0a"/><circle cx="24" cy="24" r="3" fill="#fff"/><circle cx="40" cy="24" r="3" fill="#fff"/><circle cx="24" cy="24" r="1.5" fill="#1a0a0a"/><circle cx="40" cy="24" r="1.5" fill="#1a0a0a"/><path d="M28 34 Q32 40 36 34" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="16" r="6" fill="#e74c3c" opacity="0.7"/><circle cx="32" cy="16" r="3" fill="#fff" opacity="0.5"/><path d="M18 20 Q14 12 10 16" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/><path d="M46 20 Q50 12 54 16" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/></svg>',name:'Muchomůrka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a1a" stroke="#888" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="18" ry="16" fill="#2a2a2a"/><ellipse cx="20" cy="22" rx="6" ry="4" fill="#3a3a3a"/><ellipse cx="44" cy="22" rx="6" ry="4" fill="#3a3a3a"/><circle cx="24" cy="26" r="3" fill="#f1c40f"/><circle cx="40" cy="26" r="3" fill="#f1c40f"/><circle cx="24" cy="26" r="1.5" fill="#1a1a1a"/><circle cx="40" cy="26" r="1.5" fill="#1a1a1a"/><path d="M28 36 Q32 42 36 36" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M16 18 Q12 10 8 14" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M48 18 Q52 10 56 14" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a0a" stroke="#8e6e3e" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="18" ry="16" fill="#2a1a0a"/><ellipse cx="20" cy="24" rx="5" ry="3" fill="#3a2a0a"/><ellipse cx="44" cy="24" rx="5" ry="3" fill="#3a2a0a"/><circle cx="24" cy="26" r="3" fill="#3a2a0a"/><circle cx="40" cy="26" r="3" fill="#3a2a0a"/><circle cx="24" cy="26" r="1.5" fill="#1a1a0a"/><circle cx="40" cy="26" r="1.5" fill="#1a1a0a"/><path d="M28 36 Q32 42 36 36" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M14 20 Q10 12 6 16" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M50 20 Q54 12 58 16" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="14" r="2" fill="#8e6e3e" opacity="0.5"/></svg>',name:'Jelen',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
@@ -1041,7 +1041,15 @@
         iconRow.classList.remove('hidden');
         iconRow.innerHTML = mb.monsterIcons.map((face, i) => {
           const defeated = i < mb.progress;
-          return `<span class="monster-icon${defeated?' defeated':''}">${face}${defeated?'<span class="monster-icon-x">❌</span>':''}</span>`;
+          let inner;
+          if (face.startsWith('assets/')) {
+            inner = '<div class="mini-portrait-frame"><img src="'+face+'" alt="" class="mini-portrait-img"/></div>';
+          } else if (face.startsWith('<svg')) {
+            inner = face;
+          } else {
+            inner = face;
+          }
+          return `<span class="monster-icon${defeated?' defeated':''}">${inner}${defeated?'<span class="monster-icon-x">❌</span>':''}</span>`;
         }).join('');
       } else {
         iconRow.classList.add('hidden');
@@ -1076,7 +1084,9 @@
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
-    if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; } else { fig.textContent = emoji; }
+    if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-portrait-frame\"><img src=\"'+emoji+'\" alt=\"\" class=\"monster-portrait-img\"/></div>'; }
+    else { fig.textContent = emoji; }
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
     // School spells — HTML tlacitka nad Utokem, vzdy na stejne pozici (84px)
@@ -3576,6 +3586,11 @@
   }
 
   // ===== BESTIARY =====
+  function renderFace(face) {
+    if (face.startsWith('<svg')) return face;
+    if (face.startsWith('assets/')) return '<div class="bestiary-portrait-frame"><img src="'+face+'" alt="" class="bestiary-portrait-img"/></div>';
+    return face;
+  }
   function renderBestiary() {
     const grid = document.getElementById('bestiaryGrid');
     if (!grid) return;
@@ -3601,7 +3616,7 @@
         const atkName = b.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
         html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid ${theme.border};border-color:${theme.border}">
           <div class="bestiary-boss-badge">👑 BOSS</div>
-          <div class="bestiary-face bestiary-boss-face">${b.face}</div>
+          <div class="bestiary-face bestiary-boss-face">${renderFace(b.face)}</div>
           <div class="bestiary-name bestiary-boss-name">${b.name}</div>
           <div class="bestiary-boss-types">${bossTypesHtml}</div>
           <div class="bestiary-atk"><span>${atkIcon}</span> ${atkName}</div>
@@ -3617,7 +3632,7 @@
         const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
         const atkName = m.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
         html += `<div class="bestiary-card" style="border-left:3px solid ${theme.border}">
-          <div class="bestiary-face">${m.face}</div>
+          <div class="bestiary-face">${renderFace(m.face)}</div>
           <div class="bestiary-name">${m.name}</div>
           <div class="bestiary-type"><span>${typeIcon}</span> ${typeName}</div>
           <div class="bestiary-atk"><span>${atkIcon}</span> ${atkName}</div>

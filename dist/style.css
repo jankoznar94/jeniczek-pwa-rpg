@@ -175,6 +175,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   transition:box-shadow 0.25s ease-out;
 }
 .boss-fight-boss { position:absolute;top:34px;left:50%;transform:translateX(-50%);font-size:44px;cursor:pointer;transition:0.1s; }
+.boss-fight-boss .monster-portrait-frame { width:88px; height:88px; border-radius:50%; border:2px solid #5fa87a; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#0a0a0a; box-shadow:0 0 12px rgba(95,168,122,0.3); }
+.boss-fight-boss .monster-portrait-img { width:100%; height:100%; object-fit:cover; display:block; }
 .boss-fight-player { position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:44px;transition:0.08s;z-index:5; }
 .boss-fight-player .damage-text { position:absolute;top:-60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
 #mbDamageText.damage-text { position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
@@ -643,6 +645,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .monster-icon { position:relative; display:flex; align-items:center; justify-content:center; flex:1; font-size:26px; padding:6px 2px; min-width:0; }
 .monster-icon.defeated { filter:grayscale(1) brightness(0.5); opacity:0.6; }
 .monster-icon-x { position:absolute; top:0; left:0; width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:22px; color:#e94560; }
+.mini-portrait-frame { width:26px; height:26px; border-radius:50%; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; background:#0a0a0a; border:1px solid #3a3a5a; }
+.mini-portrait-img { width:100%; height:100%; object-fit:cover; display:block; }
 
 /* Dungeon floor sub-cards */
 .map-location-wrap { display:flex;flex-direction:column;gap:4px; }
@@ -882,6 +886,9 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   font-size: 36px;
   line-height: 1;
 }
+.bestiary-portrait-frame { width:48px; height:48px; border-radius:50%; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; background:#0a0a0a; border:1px solid #3a3a5a; }
+.bestiary-portrait-img { width:100%; height:100%; object-fit:cover; display:block; }
+.bestiary-boss-face .bestiary-portrait-frame { width:56px; height:56px; border-color:#f1c40f; }
 .bestiary-name {
   font-size: 12px;
   color: #e8e0e8;
