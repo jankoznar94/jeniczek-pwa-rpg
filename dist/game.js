@@ -139,6 +139,9 @@
   function toggleMapPause() {
     const mb = mapBattleState;
     if (!mb || !mb.loc) return;
+    // GUARD: zabránit reentrancy (prevence double-event z jednoho kliku)
+    if (mb._pauseToggling) return;
+    mb._pauseToggling = true;
     const btn = document.getElementById('mbPauseBtn');
     const overlay = document.getElementById('pauseOverlay');
     const numEl = document.getElementById('pauseCountdownNumber');
@@ -159,11 +162,15 @@
         mb._pausedDashoffset = style.strokeDashoffset;
         mb._pausedAtkCircle.style.animationPlayState = 'paused';
       }
+      mb._pauseToggling = false;
     } else {
+      // GUARD: pokud už countdown běží, nezačínat znovu
+      if (minigameState.pauseCountdown) { mb._pauseToggling = false; return; }
       // Odpočet 3 vteřin
       overlay.classList.remove('hidden');
       let count = 3;
       numEl.textContent = count;
+      mb._pauseToggling = false;
       minigameState.pauseCountdown = setInterval(() => {
         count--;
         if (count <= 0) {
