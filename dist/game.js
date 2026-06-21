@@ -3382,11 +3382,11 @@
     },
     {
       text: '🩸💧📈🎯 <strong>Monstra mají typy!</strong> Vedle jména vidíš ikonku:<br>🩸 = Lifestealer (saje život)<br>💧 = Manastealer (krade manu)<br>📈 = Improver (s každým zásahem sílí)<br>🎯 = Critmaster (umí kritické zásahy)',
-      showTimer: true, highlight: null
+      showTimer: true, showMonsterTypes: true, highlight: null
     },
     {
       text: '⚔️🔮 A <strong>způsob útoku</strong>:<br>⚔️ = <strong>Melee</strong> — fyzický útok (sečný)<br>🔮 = <strong>Caster</strong> — magický útok (kouzlem)<br><br>Poznáš je i podle projektilu: melee = červený, caster = fialový.',
-      showTimer: true, highlight: null
+      showTimer: true, showAttackTypes: true, highlight: null
     },
     {
       text: '🏆 <strong>Teď už víš všechno!</strong> Hodně štěstí v dungeonu! 🎮',
@@ -3421,6 +3421,9 @@
     document.getElementById('tutRapidTarget').classList.add('hidden');
     document.getElementById('tutCheckmark').classList.add('hidden');
     document.getElementById('tutArena').classList.remove('rapid-active');
+    document.getElementById('tutMonster').textContent = '👹';
+    const tutName = document.getElementById('tutEnemyName');
+    if (tutName) { tutName.textContent = ''; tutName.classList.add('hidden'); }
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
     if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '276'); circles[0].setAttribute('stroke-dashoffset', '97'); }
@@ -3505,6 +3508,36 @@
     // Checkmark — velká fajfka na posledním snímku
     if (step.showCheckmark) {
       document.getElementById('tutCheckmark').classList.remove('hidden');
+    }
+    // Monster types demo — zobrazit reálný vzhled monstra s typy
+    const nameEl = document.getElementById('tutEnemyName');
+    if (step.showMonsterTypes) {
+      // Zobrazit 4 monstra s různými typy
+      const demoMonsters = [
+        {face:'🐺',name:'Vlk',type:'🩸',atk:'⚔️'},
+        {face:'🔮',name:'Mág',type:'💧',atk:'🔮'},
+        {face:'🗿',name:'Golem',type:'📈',atk:'⚔️'},
+        {face:'👹',name:'Démon',type:'🎯',atk:'🔮'},
+      ];
+      const idx = Math.floor(_tutorialStep / 2) % demoMonsters.length;
+      const m = demoMonsters[idx];
+      document.getElementById('tutMonster').textContent = m.face;
+      if (nameEl) nameEl.textContent = `${m.name} ${m.type}${m.atk}`;
+      nameEl.classList.remove('hidden');
+    } else if (step.showAttackTypes) {
+      // Zobrazit melee a caster monstra vedle sebe
+      const idx = Math.floor(_tutorialStep / 2) % 2;
+      if (idx === 0) {
+        document.getElementById('tutMonster').textContent = '🗿';
+        if (nameEl) nameEl.textContent = 'Golem 📈⚔️';
+      } else {
+        document.getElementById('tutMonster').textContent = '🔮';
+        if (nameEl) nameEl.textContent = 'Mág 💧🔮';
+      }
+      nameEl.classList.remove('hidden');
+    } else {
+      document.getElementById('tutMonster').textContent = '👹';
+      if (nameEl) { nameEl.textContent = ''; nameEl.classList.add('hidden'); }
     }
     // Sequence dots — šedé = hotovo, červené = chyba
     const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');
