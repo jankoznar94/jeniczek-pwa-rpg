@@ -781,7 +781,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 #guideScreen .guide-grid {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
   padding: 0;
 }
 .guide-card {
@@ -816,14 +816,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .guide-icon-text {
   font-size: 36px;
   line-height: 1;
-}
-.guide-card.guide-monster-types .guide-icon-text,
-.guide-card.guide-attack-type .guide-icon-text {
-  font-size: 28px;
-  line-height: 1.2;
-  text-align: center;
-  white-space: normal;
-  word-break: break-word;
 }
 .guide-desc {
   font-size: 12px;

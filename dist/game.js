@@ -3515,7 +3515,7 @@
       // Zobrazit 4 monstra s různými typy
       const demoMonsters = [
         {face:'🐺',name:'Vlk',type:'🩸',atk:'⚔️'},
-        {face:'🔮',name:'Mág',type:'💧',atk:'🔮'},
+        {face:'👻',name:'Duch',type:'💧',atk:'🔮'},
         {face:'🗿',name:'Golem',type:'📈',atk:'⚔️'},
         {face:'👹',name:'Démon',type:'🎯',atk:'🔮'},
       ];
@@ -3531,8 +3531,8 @@
         document.getElementById('tutMonster').textContent = '🗿';
         if (nameEl) nameEl.textContent = 'Golem 📈⚔️';
       } else {
-        document.getElementById('tutMonster').textContent = '🔮';
-        if (nameEl) nameEl.textContent = 'Mág 💧🔮';
+        document.getElementById('tutMonster').textContent = '👻';
+        if (nameEl) nameEl.textContent = 'Duch 💧🔮';
       }
       nameEl.classList.remove('hidden');
     } else {
