@@ -803,6 +803,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .guide-card.guide-twin { border-left: 3px solid #5a8aaa; }
 .guide-card.guide-attack { border-left: 3px solid #d4a038; }
 .guide-card.guide-rapid { border-left: 3px solid #b064ff; }
+.guide-card.guide-monster-types { border-left: 3px solid #e74c3c; }
+.guide-card.guide-attack-type { border-left: 3px solid #6366f1; }
 .guide-icon {
   flex-shrink: 0;
   width: 48px;
