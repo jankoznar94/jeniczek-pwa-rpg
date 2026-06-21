@@ -861,59 +861,63 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .bestiary-section-title {
   font-size: 14px;
   font-weight: bold;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
-.bestiary-row {
+.bestiary-section {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
 }
 .bestiary-card {
   background: #1a141e;
   border: 1px solid #2a2040;
   border-radius: 10px;
-  padding: 12px;
+  padding: 10px 14px;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  width: 100px;
-  text-align: center;
+  gap: 12px;
   transition: 0.2s;
 }
 .bestiary-card:hover {
   border-color: #4a7dff;
 }
 .bestiary-face {
-  font-size: 36px;
-  line-height: 1;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.bestiary-portrait-frame { width:48px; height:48px; border-radius:50%; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; background:#0a0a0a; border:1px solid #3a3a5a; }
+.bestiary-portrait-frame { width:40px; height:40px; border-radius:50%; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; background:#0a0a0a; border:1px solid #3a3a5a; }
 .bestiary-portrait-img { width:100%; height:100%; object-fit:cover; display:block; }
-.bestiary-boss-face .bestiary-portrait-frame { width:56px; height:56px; border-color:#f1c40f; }
+.bestiary-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
 .bestiary-name {
-  font-size: 12px;
+  font-size: 14px;
   color: #e8e0e8;
   font-weight: bold;
 }
-.bestiary-type {
-  font-size: 11px;
+.bestiary-meta {
+  font-size: 12px;
   color: #aaaabb;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
-.bestiary-type span {
-  font-size: 14px;
-}
-.bestiary-atk {
-  font-size: 11px;
-  color: #aaaabb;
-}
-.bestiary-atk span {
-  font-size: 14px;
+.bestiary-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 .bestiary-boss-card {
-  width: 140px;
-  padding: 16px 12px;
   border-width: 2px;
+  border-color: #f1c40f;
   background: linear-gradient(135deg, #1a141e, #2a1a2e);
   position: relative;
 }
@@ -923,24 +927,15 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   color: #f1c40f;
   text-transform: uppercase;
   letter-spacing: 1px;
-  margin-bottom: 2px;
+  margin-right: 4px;
 }
-.bestiary-boss-face {
-  font-size: 48px;
+.bestiary-boss-face .bestiary-portrait-frame {
+  width: 48px;
+  height: 48px;
+  border-color: #f1c40f;
 }
 .bestiary-boss-name {
-  font-size: 14px;
   color: #f1c40f;
-}
-.bestiary-boss-types {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin: 4px 0;
-}
-.bestiary-boss-type {
-  font-size: 10px;
-  color: #ddd;
 }
 
 /* ===== TUTORIAL OVERLAY ===== */
