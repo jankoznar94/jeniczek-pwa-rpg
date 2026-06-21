@@ -161,6 +161,12 @@
         const style = getComputedStyle(mb._pausedAtkCircle);
         mb._pausedDashoffset = style.strokeDashoffset;
         mb._pausedAtkCircle.style.animationPlayState = 'paused';
+        // Spočítat zbývající čas z dashoffsetu
+        const totalDash = 276;
+        const remaining = parseFloat(mb._pausedDashoffset) || totalDash;
+        mb._pausedRemainingTime = Math.max(0, mb._currentWindowTime * (remaining / totalDash));
+      } else {
+        mb._pausedRemainingTime = mb._currentWindowTime || 0;
       }
       mb._pauseToggling = false;
     } else {
@@ -179,18 +185,19 @@
           overlay.classList.add('hidden');
           _mapPaused = false;
           setPauseIcon(btn, false);
-          // Obnovit CSS animaci
+          // Obnovit CSS animaci — pokračuje tam, kde přestala
           const ac = mb._pausedAtkCircle;
           if (ac) ac.style.animationPlayState = 'running';
+          // Použít zbývající čas místo restartu animace
+          const remainingMs = mb._pausedRemainingTime || mb._currentWindowTime || 0;
           // Pokud je útočné okno, restartovat rAF
           if (mb.inAttackWindow && mb._atkTime) {
             openAttackWindow();
           } else if (mb._currentWindowTime) {
-            if (ac) restartTimerRing(ac, mb._currentWindowTime);
             mb._sequenceTimer = setTimeout(() => {
               if (mapBattleState.ended) return;
               onMapHit();
-            }, mb._currentWindowTime);
+            }, remainingMs);
           }
         } else {
           numEl.textContent = count;
