@@ -553,7 +553,7 @@
       {face:'🐺',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🏹',name:'Kentaur',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'🌱',name:'Masožravá kytka',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'💧',name:'Močálová příšera',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 1 — Poušť
     [
