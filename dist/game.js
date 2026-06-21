@@ -546,14 +546,14 @@
   const MONSTER_DB = [
     // Theme 0 — Les
     [
-      {face:'🧚',name:'Víla',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🌳',name:'Skřítek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🍄',name:'Muchomůrka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🐺',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦌',name:'Jelen',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦋',name:'Motýl',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🐿️',name:'Veverka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🐗',name:'Kanec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a2a1a" stroke="#5fa87a" stroke-width="1.5"/><ellipse cx="24" cy="26" rx="3" ry="4" fill="#e8e0e8"/><ellipse cx="40" cy="26" rx="3" ry="4" fill="#e8e0e8"/><circle cx="24" cy="26" r="1.5" fill="#1a2a1a"/><circle cx="40" cy="26" r="1.5" fill="#1a2a1a"/><ellipse cx="32" cy="34" rx="4" ry="2" fill="#5fa87a" opacity="0.6"/><path d="M28 38 Q32 44 36 38" stroke="#5fa87a" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="22" cy="18" rx="6" ry="3" fill="#5fa87a" opacity="0.4" transform="rotate(-20,22,18)"/><ellipse cx="42" cy="18" rx="6" ry="3" fill="#5fa87a" opacity="0.4" transform="rotate(20,42,18)"/><circle cx="32" cy="14" r="2" fill="#f1c40f" opacity="0.6"/></svg>',name:'Víla',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a0a" stroke="#8e8e5e" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="18" ry="16" fill="#3a3a1a"/><circle cx="24" cy="26" r="4" fill="#c0392b"/><circle cx="40" cy="26" r="4" fill="#c0392b"/><circle cx="24" cy="26" r="2" fill="#1a1a0a"/><circle cx="40" cy="26" r="2" fill="#1a1a0a"/><ellipse cx="32" cy="36" rx="6" ry="3" fill="#5a3a1a"/><path d="M26 40 Q32 48 38 40" stroke="#5a3a1a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M14 28 Q8 22 10 16" stroke="#8e8e5e" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M50 28 Q56 22 54 16" stroke="#8e8e5e" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="16" cy="14" r="3" fill="#8e8e5e"/><circle cx="48" cy="14" r="3" fill="#8e8e5e"/></svg>',name:'Skřítek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a0a0a" stroke="#e74c3c" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="16" ry="18" fill="#2a0a0a"/><circle cx="24" cy="24" r="3" fill="#fff"/><circle cx="40" cy="24" r="3" fill="#fff"/><circle cx="24" cy="24" r="1.5" fill="#1a0a0a"/><circle cx="40" cy="24" r="1.5" fill="#1a0a0a"/><path d="M28 34 Q32 40 36 34" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="16" r="6" fill="#e74c3c" opacity="0.7"/><circle cx="32" cy="16" r="3" fill="#fff" opacity="0.5"/><path d="M18 20 Q14 12 10 16" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/><path d="M46 20 Q50 12 54 16" stroke="#e74c3c" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/></svg>',name:'Muchomůrka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a1a" stroke="#888" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="18" ry="16" fill="#2a2a2a"/><ellipse cx="20" cy="22" rx="6" ry="4" fill="#3a3a3a"/><ellipse cx="44" cy="22" rx="6" ry="4" fill="#3a3a3a"/><circle cx="24" cy="26" r="3" fill="#f1c40f"/><circle cx="40" cy="26" r="3" fill="#f1c40f"/><circle cx="24" cy="26" r="1.5" fill="#1a1a1a"/><circle cx="40" cy="26" r="1.5" fill="#1a1a1a"/><path d="M28 36 Q32 42 36 36" stroke="#888" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M16 18 Q12 10 8 14" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M48 18 Q52 10 56 14" stroke="#888" stroke-width="2" fill="none" stroke-linecap="round"/></svg>',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a0a" stroke="#8e6e3e" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="18" ry="16" fill="#2a1a0a"/><ellipse cx="20" cy="24" rx="5" ry="3" fill="#3a2a0a"/><ellipse cx="44" cy="24" rx="5" ry="3" fill="#3a2a0a"/><circle cx="24" cy="26" r="3" fill="#3a2a0a"/><circle cx="40" cy="26" r="3" fill="#3a2a0a"/><circle cx="24" cy="26" r="1.5" fill="#1a1a0a"/><circle cx="40" cy="26" r="1.5" fill="#1a1a0a"/><path d="M28 36 Q32 42 36 36" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M14 20 Q10 12 6 16" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M50 20 Q54 12 58 16" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="32" cy="14" r="2" fill="#8e6e3e" opacity="0.5"/></svg>',name:'Jelen',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#0d0d1a" stroke="#8e5eae" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="16" ry="14" fill="#1a1a2a"/><circle cx="24" cy="26" r="3" fill="#8e5eae"/><circle cx="40" cy="26" r="3" fill="#8e5eae"/><circle cx="24" cy="26" r="1.5" fill="#0d0d1a"/><circle cx="40" cy="26" r="1.5" fill="#0d0d1a"/><path d="M28 34 Q32 40 36 34" stroke="#8e5eae" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="20" cy="18" rx="8" ry="4" fill="#8e5eae" opacity="0.3" transform="rotate(-15,20,18)"/><ellipse cx="44" cy="18" rx="8" ry="4" fill="#8e5eae" opacity="0.3" transform="rotate(15,44,18)"/><circle cx="32" cy="12" r="2" fill="#8e5eae" opacity="0.5"/></svg>',name:'Motýl',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a1a0a" stroke="#8e6e3e" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="16" ry="18" fill="#2a1a0a"/><circle cx="24" cy="26" r="3" fill="#1a1a0a"/><circle cx="40" cy="26" r="3" fill="#1a1a0a"/><circle cx="24" cy="26" r="1.5" fill="#e8e0e8"/><circle cx="40" cy="26" r="1.5" fill="#e8e0e8"/><path d="M28 36 Q32 42 36 36" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><ellipse cx="20" cy="18" rx="4" ry="3" fill="#8e6e3e" opacity="0.4"/><ellipse cx="44" cy="18" rx="4" ry="3" fill="#8e6e3e" opacity="0.4"/><path d="M16 14 Q12 8 8 12" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M48 14 Q52 8 56 12" stroke="#8e6e3e" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>',name:'Veverka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'<svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="#1a0a0a" stroke="#c0392b" stroke-width="1.5"/><ellipse cx="32" cy="30" rx="20" ry="18" fill="#2a0a0a"/><circle cx="22" cy="24" r="4" fill="#c0392b"/><circle cx="42" cy="24" r="4" fill="#c0392b"/><circle cx="22" cy="24" r="2" fill="#1a0a0a"/><circle cx="42" cy="24" r="2" fill="#1a0a0a"/><ellipse cx="32" cy="36" rx="8" ry="4" fill="#3a0a0a"/><path d="M24 40 Q32 50 40 40" stroke="#3a0a0a" stroke-width="2.5" fill="none" stroke-linecap="round"/><ellipse cx="18" cy="16" rx="5" ry="3" fill="#c0392b" opacity="0.3"/><ellipse cx="46" cy="16" rx="5" ry="3" fill="#c0392b" opacity="0.3"/></svg>',name:'Kanec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
     ],
     // Theme 1 — Poušť
     [
@@ -1017,7 +1017,7 @@
         return ti;
       }).join('');
       const atkIcon = (b.attackType || ATTACK_TYPES.MELEE) === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
-      $('mbEnemyName').textContent = `${b.face} ${b.name} ${bossTypesHtml}${atkIcon}`;
+      $('mbEnemyName').textContent = `${b.name} ${bossTypesHtml}${atkIcon}`;
       $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P5`;
     } else {
       const floorStr = `P${mb.floor+1}`;
@@ -1026,7 +1026,7 @@
         mb.monsterType === MONSTER_TYPES.IMPROVER ? '📈' :
         mb.monsterType === MONSTER_TYPES.CRITMASTER ? '🎯' : '';
       const atkIcon = mb.monsterAttackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
-      $('mbEnemyName').textContent = `${mb.monsterFace} ${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
+      $('mbEnemyName').textContent = `${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
       $('mbLocation').textContent = `${mb.loc.name} — P${mb.floor+1}`;
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
@@ -1076,7 +1076,7 @@
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
-    fig.textContent = emoji;
+    if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; } else { fig.textContent = emoji; }
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
     // School spells — HTML tlacitka nad Utokem, vzdy na stejne pozici (84px)
