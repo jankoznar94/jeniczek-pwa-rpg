@@ -557,14 +557,14 @@
     ],
     // Theme 1 — Poušť
     [
-      {face:'assets/monsters/troll_test_small.png',name:'Pouštní troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🐍',name:'Zmije',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦂',name:'Štír',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'👺',name:'Pouštní démon',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🏜️',name:'Poutník',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🐪',name:'Velbloud',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🪲',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦎',name:'Ještěr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/desert_scorpion.png',name:'Štír',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/desert_worm.png',name:'Pouštní červ',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/desert_centaur.png',name:'Kentaur',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/desert_nomad.png',name:'Nomád',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/desert_djinn.png',name:'Djinn',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/desert_mummy.png',name:'Mumie',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/desert_beetle.png',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/desert_cobra.png',name:'Kobra',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 2 — Propasti
     [
@@ -702,7 +702,7 @@
   ];
   const LOCATIONS = [
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
     { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
     { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
