@@ -825,6 +825,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   gap: 10px;
   line-height: 1;
 }
+.guide-card.guide-monster-types .guide-icon,
+.guide-card.guide-attack-type .guide-icon {
+  height: auto;
+  min-height: 48px;
+}
 .guide-desc {
   font-size: 12px;
   color: #aaaabb;
