@@ -699,27 +699,13 @@
     { bg:'#0d0d2d', border:'#3498db', borderGlow:'rgba(52,152,219,0.3)' },   // 2 Propasti — modrá
     { bg:'#2d0d0d', border:'#e74c3c', borderGlow:'rgba(231,76,60,0.3)' },    // 3 Výspy — červená
     { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
-    { bg:'#2a0d1a', border:'#f1c40f', borderGlow:'rgba(241,196,15,0.3)' },   // 5 Věž — žlutá
-    { bg:'#100d2d', border:'#9b59b6', borderGlow:'rgba(155,89,182,0.3)' },   // 6 Jeskyně — fialová
-    { bg:'#1a2a0d', border:'#e91e63', borderGlow:'rgba(233,30,99,0.3)' },    // 7 Zahrady — růžová
-    { bg:'#0d0d24', border:'#b0d0ff', borderGlow:'rgba(176,208,255,0.3)' },  // 8 Nebe — světle modrá
-    { bg:'#150d1a', border:'#8e44ad', borderGlow:'rgba(142,68,173,0.3)' },   // 9 Stíny — tmavě fialová
-    { bg:'#2a000d', border:'#ff6b6b', borderGlow:'rgba(255,107,107,0.3)' },  // 10 Chaos — rudá
-    { bg:'#1a0505', border:'#c0392b', borderGlow:'rgba(192,57,43,0.3)' },    // 11 Smrt — tmavě červená
   ];
   const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:5, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:5, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:5, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:5, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:5, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:5, name:'Hromová věž', icon:'⚡', theme:5, monsters:5, floors:5, xpReward:50, bossXp:160, boss:{name:'Arcimág',face:'🔮',hp:26,types:[MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:6, name:'Jeskyně pokladů', icon:'💎', theme:6, monsters:5, floors:5, xpReward:60, bossXp:200, boss:{name:'Král trollů',face:'🧌',hp:30,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.LIFESTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:40,weapon:'warHammer'}, resists:{fire:0.75, ice:0.75, nature:1.5} },
-    { id:7, name:'Kvetoucí zahrady', icon:'🌸', theme:7, monsters:5, floors:5, xpReward:72, bossXp:240, boss:{name:'Jarní víla',face:'🧚',hp:35,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:50}, resists:{fire:0.5, ice:1.0, nature:0.5} },
-    { id:8, name:'Nebeská říše', icon:'☁️', theme:8, monsters:5, floors:5, xpReward:84, bossXp:280, boss:{name:'Anděl pomsty',face:'👼',hp:40,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:60,armor:'dragonScale'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:9, name:'Stínová říše', icon:'🌑', theme:9, monsters:5, floors:5, xpReward:100, bossXp:340, boss:{name:'Pán temnot',face:'💀',hp:50,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.IMPROVER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:80,weapon:'excalibur'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:10, name:'Zóna chaosu', icon:'🌀', theme:0, monsters:5, floors:5, xpReward:120, bossXp:400, boss:{name:'Chaos lord',face:'👾',hp:60,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.IMPROVER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:100,weapon:'voidBlade'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:11, name:'Síně smrti', icon:'💀', theme:0, monsters:5, floors:5, xpReward:150, bossXp:500, boss:{name:'Smrták',face:'💀',hp:80,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:150,armor:'voidPlate'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraonova kletba',face:'🐍',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
+    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
+    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
   ];
 
   // ===== STATE =====
@@ -757,7 +743,7 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0,0,0,0,0,0,0,0], bossesDefeated:[false,false,false,false,false,false,false,false,false,false,false,false], floorProgress:[0,0,0,0,0,0,0,0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{} };
+      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{} };
     return s;
   }
   function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) { // Obnovit loot itemy do ITEM_MAP
@@ -896,16 +882,16 @@
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
       } else if (!unlocked) {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
-      } else if (curFloor >= 4) {
+      } else if (curFloor >= 9) {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">BOSS</div></div>`;
       } else {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">P${curFloor+1}</div><div class="badge-count">${curProgress}/${loc.monsters}</div></div>`;
       }
-      // Floor sub-cards P1-P5
+      // Floor sub-cards P1-P10
       let floorHtml = '';
       if (unlocked && expanded) {
-        for (let f = 0; f < 5; f++) {
-          const isBossFloor = f >= 4;
+        for (let f = 0; f < 10; f++) {
+          const isBossFloor = f >= 9;
           const floorDone = completed || f < curFloor;
           const lockedFloor = f > state.floorProgress[i] && !completed;
           let fIcon, fIconStyle, fText;
@@ -954,9 +940,9 @@
   function startLocation(locId) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    const floor = state.floorProgress[locId] || 0; // 0-4 (0=patro1, 4=boss)
+    const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
     const progress = state.locationProgress[locId] || 0; // kills on current floor 0-4
-    const isBoss = floor >= 4; // boss v 5. patře
+    const isBoss = floor >= 9; // boss v 10. patře
     // Každé nové patro resetuje HP hrdiny
     if (progress === 0) {
       state.hero.hp = state.hero.maxHp;
@@ -1282,22 +1268,22 @@
   }
 
   function getFloorTimerMultiplier(floor) {
-    // P1=100%, P2=92%, P3=84%, P4=76%, P5/boss=68%
-    const mults = [1.0, 0.92, 0.84, 0.76, 0.68];
-    return mults[Math.min(floor, 4)] || 1.0;
+    // 1200ms base, každé patro -5%: 1200 * 0.95^floor
+    return Math.pow(0.95, floor);
   }
 
   function getDungeonAttackChances(locId) {
-    if (locId === 0) return { normal: 100, heavy: 0, block: 0, inverted: 0, twin: 0 };
-    if (locId === 1) return { normal: 70, heavy: 0, block: 30, inverted: 0, twin: 0 };
-    if (locId === 2) return { normal: 70, heavy: 30, block: 0, inverted: 0, twin: 0 };
-    if (locId === 3) return { normal: 70, heavy: 0, block: 0, inverted: 0, twin: 30 };
-    if (locId === 4) return { normal: 70, heavy: 0, block: 0, inverted: 30, twin: 0 };
-    if (locId === 5) return { normal: 70, heavy: 0, block: 0, inverted: 0, twin: 0, rapid: 30 };
-    if (locId === 6) return { normal: 25, heavy: 40, block: 35, inverted: 0, twin: 0, rapid: 0 };
-    if (locId === 7) return { normal: 20, heavy: 25, block: 25, inverted: 0, twin: 20, rapid: 10 };
-    if (locId === 8 || locId === 9 || locId === 10 || locId === 11) return { normal: 22, heavy: 18, block: 18, inverted: 18, twin: 15, rapid: 12 };
-    return { normal: 70, heavy: 20, block: 10, inverted: 0, twin: 0 };
+    // D1: dodge, block
+    if (locId === 0) return { normal: 70, heavy: 0, block: 30, inverted: 0, twin: 0, rapid: 0 };
+    // D2: dodge, block, double arrow
+    if (locId === 1) return { normal: 60, heavy: 20, block: 20, inverted: 0, twin: 0, rapid: 0 };
+    // D3: dodge, block, DA, modrá (inverted)
+    if (locId === 2) return { normal: 50, heavy: 20, block: 15, inverted: 15, twin: 0, rapid: 0 };
+    // D4: dodge, block, DA, modrá, zelená (twin)
+    if (locId === 3) return { normal: 40, heavy: 20, block: 15, inverted: 15, twin: 10, rapid: 0 };
+    // D5: dodge, block, DA, modrá, zelená, rapid
+    if (locId === 4) return { normal: 30, heavy: 20, block: 15, inverted: 15, twin: 10, rapid: 10 };
+    return { normal: 70, heavy: 20, block: 10, inverted: 0, twin: 0, rapid: 0 };
   }
 
   const _arrowSvg = (fill, extra = '') =>
@@ -1341,9 +1327,9 @@
     else if (randNum < chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
     else if (randNum < chances.inverted + chances.block + chances.heavy + chances.twin) { type = 'twin'; }
     else if (randNum < chances.inverted + chances.block + chances.heavy + chances.twin + (chances.rapid||0)) { type = 'rapid'; }
-    // Timer: base 1000ms, floor multiplikátor (P1=1000, P5/boss=500ms)
+    // Timer: base 1200ms, floor multiplikátor (P1=1200, P10=~720ms)
     const mult = getFloorTimerMultiplier(floor || 0);
-    const baseTime = Math.round(1000 * mult);
+    const baseTime = Math.round(1200 * mult);
     // Malá náhoda ±10% pro pestrost
     const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
     const windowTime = (type === 'heavy' || type === 'twin') ? Math.round(jitter * 1.5) : (type === 'rapid' ? Math.round(jitter * 3.0) : jitter);
@@ -1424,10 +1410,8 @@
 
     // Generovat sekvenci
     const chances = getDungeonAttackChances(mb.locId);
-    // seqLen: locId 10=7, locId 11=10, jinak 5
-    let seqLen = 5;
-    if (mb.locId === 10) seqLen = 7;
-    else if (mb.locId >= 11) seqLen = 10;
+    // seqLen: D1=5, D2=6, D3=7, D4=8, D5=9
+    let seqLen = 5 + mb.locId;
     mb.sequence = [];
     let prevType = null;
     for (let i = 0; i < seqLen; i++) {
