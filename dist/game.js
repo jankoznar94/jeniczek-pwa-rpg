@@ -532,48 +532,145 @@
     return ITEM_MAP[id] || _lootItemMap[id] || null;
   }
 
-  // ===== MONSTER FACES =====
-  const MONSTER_FACES = [
-    ['🧚','🌳','🍄','🐺','🦌','🦋','🐿️','🐗'],
-    ['🐍','🦂','👺','🏜️','🐪','🪲','🦎','☀️'],
-    ['🐙','🦈','🐟','🦀','🐚','🐳','🪼','🐠'],
-    ['👹','🐉','🔥','👺','💀','🗿','⚔️','🦅'],
-    ['👻','❄️','🧊','🐺','🦅','⛄','🧝','🌨️'],
-    ['⚡','🤖','🔮','👁️','🌀','🧙','🕳️','💫'],
-    ['🪨','⛏️','🐭','🕷️','🦇','💎','🧌','🐜'],
-    ['🌿','🌸','🦋','🐞','🌺','🍃','🌈','🕊️'],
-    ['☁️','🏰','🦄','✨','🌙','⭐','🪽','👼'],
-    ['💀','☠️','🖤','🔪','🩸','👁️‍🗨️','🌑','🐦‍⬛'],
-  ];
-  const MONSTER_NAMES = [
-    ['Víla','Skřítek','Muchomůrka','Vlk','Jelen','Motýl','Veverka','Kanec'],
-    ['Zmije','Štír','Pouštní démon','Poutník','Velbloud','Brouk','Ještěr','Žár'],
-    ['Chobotnice','Žralok','Ryba','Krab','Mušle','Velryba','Medúza','Rybička'],
-    ['Pekelník','Drak','Ohnivec','Démon','Kostlivec','Golem','Meč','Sup'],
-    ['Duch','Sníh','Zamrzlec','Vlk','Sokol','Sněhulák','Elf','Vánice'],
-    ['Blesk','Golem','Mág','Vidoucí','Vortex','Čaroděj','Trhlina','Hvězda'],
-    ['Skaloun','Kopáč','Netopýr','Pavouk','Krysa','Drahokam','Troll','Mravenec'],
-    ['Kvítek','Jaro','Motýl','Beruška','Růže','Lístek','Duha','Holubice'],
-    ['Oblak','Strážce','Jednorožec','Třpyt','Luna','Hvězda','Anděl','Křídlo'],
-    ['Smrt','Mor','Tma','Čepel','Krev','Stín','Měsíc','Havran'],
+  // ===== MONSTER TYPES =====
+  const MONSTER_TYPES = {
+    LIFESTEALER: 'lifestealer',
+    MANASTEALER: 'manastealer',
+    IMPROVER: 'improver',
+    CRITMASTER: 'critmaster'
+  };
+  const ATTACK_TYPES = { MELEE: 'melee', CASTER: 'caster' };
+
+  // ===== MONSTER DB =====
+  // Každé monstrum má fixní face, name, type a attackType — nikdy se nemění
+  const MONSTER_DB = [
+    // Theme 0 — Les
+    [
+      {face:'🧚',name:'Víla',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🌳',name:'Skřítek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🍄',name:'Muchomůrka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐺',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦌',name:'Jelen',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦋',name:'Motýl',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐿️',name:'Veverka',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐗',name:'Kanec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+    ],
+    // Theme 1 — Poušť
+    [
+      {face:'🐍',name:'Zmije',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦂',name:'Štír',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'👺',name:'Pouštní démon',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🏜️',name:'Poutník',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐪',name:'Velbloud',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🪲',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦎',name:'Ještěr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'☀️',name:'Žár',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+    ],
+    // Theme 2 — Propasti
+    [
+      {face:'🐙',name:'Chobotnice',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦈',name:'Žralok',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐟',name:'Ryba',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦀',name:'Krab',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐚',name:'Mušle',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐳',name:'Velryba',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🪼',name:'Medúza',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐠',name:'Rybička',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+    ],
+    // Theme 3 — Výspy
+    [
+      {face:'👹',name:'Pekelník',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐉',name:'Drak',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🔥',name:'Ohnivec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'👺',name:'Démon',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'💀',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🗿',name:'Golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'⚔️',name:'Meč',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦅',name:'Sup',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+    ],
+    // Theme 4 — Štíty
+    [
+      {face:'👻',name:'Duch',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'❄️',name:'Sníh',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🧊',name:'Zamrzlec',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐺',name:'Vlk',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦅',name:'Sokol',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'⛄',name:'Sněhulák',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🧝',name:'Elf',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🌨️',name:'Vánice',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+    ],
+    // Theme 5 — Věž
+    [
+      {face:'⚡',name:'Blesk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🤖',name:'Golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🔮',name:'Mág',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'👁️',name:'Vidoucí',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🌀',name:'Vortex',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🧙',name:'Čaroděj',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🕳️',name:'Trhlina',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'💫',name:'Hvězda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+    ],
+    // Theme 6 — Jeskyně
+    [
+      {face:'🪨',name:'Skaloun',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'⛏️',name:'Kopáč',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐭',name:'Netopýr',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🕷️',name:'Pavouk',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦇',name:'Krysa',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'💎',name:'Drahokam',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🧌',name:'Troll',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🐜',name:'Mravenec',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+    ],
+    // Theme 7 — Zahrady
+    [
+      {face:'🌿',name:'Kvítek',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🌸',name:'Jaro',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🦋',name:'Motýl',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐞',name:'Beruška',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🌺',name:'Růže',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🍃',name:'Lístek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🌈',name:'Duha',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🕊️',name:'Holubice',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+    ],
+    // Theme 8 — Nebe
+    [
+      {face:'☁️',name:'Oblak',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🏰',name:'Strážce',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🦄',name:'Jednorožec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'✨',name:'Třpyt',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🌙',name:'Luna',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'⭐',name:'Hvězda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🪽',name:'Anděl',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'👼',name:'Křídlo',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+    ],
+    // Theme 9 — Stíny
+    [
+      {face:'💀',name:'Smrt',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'☠️',name:'Mor',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🖤',name:'Tma',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🔪',name:'Čepel',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🩸',name:'Krev',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'👁️‍🗨️',name:'Stín',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'🌑',name:'Měsíc',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'🐦‍⬛',name:'Havran',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+    ],
   ];
 
   // ===== LOCATIONS (MAP) =====
   function getMonsterFace(theme, floor) {
-    const pool = MONSTER_FACES[theme] || MONSTER_FACES[0];
-    return pool[rand(0, pool.length - 1)];
+    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
+    return pool[rand(0, pool.length - 1)].face;
   }
   function getMonsterName(theme) {
-    const pool = MONSTER_NAMES[theme] || MONSTER_NAMES[0];
-    return pool[rand(0, pool.length - 1)];
+    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
+    return pool[rand(0, pool.length - 1)].name;
   }
   function getFloorMonsterSet(theme, floor) {
-    const faces = MONSTER_FACES[theme] || MONSTER_FACES[0];
-    const names = MONSTER_NAMES[theme] || MONSTER_NAMES[0];
+    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
     const result = [];
     for (let i = 0; i < 5; i++) {
-      const idx = (floor * 5 + i + theme * 3) % faces.length;
-      result.push({face: faces[idx], name: names[idx]});
+      const idx = (floor * 5 + i + theme * 3) % pool.length;
+      result.push({face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType});
     }
     return result;
   }
@@ -866,9 +963,12 @@
       spellCooldowns: {},
       _spellCooldownTicks: 0,
       _blizzardFreeAttacks: 0,
+      _improverStacks: 0,
       floorMonsters,
       monsterFace: isBoss ? loc.boss.face : floorMonsters[progress].face,
       currentMonsterName: isBoss ? loc.boss.name : floorMonsters[progress].name,
+      monsterType: isBoss ? null : (floorMonsters[progress].type || null),
+      monsterAttackType: isBoss ? ATTACK_TYPES.MELEE : (floorMonsters[progress].attackType || ATTACK_TYPES.MELEE),
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       // Loot drops per monster (pro vizuální indikaci)
@@ -912,7 +1012,12 @@
       $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P5`;
     } else {
       const floorStr = `P${mb.floor+1}`;
-      $('mbEnemyName').textContent = `${mb.monsterFace} ${mb.currentMonsterName}`;
+      const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :
+        mb.monsterType === MONSTER_TYPES.MANASTEALER ? '💧' :
+        mb.monsterType === MONSTER_TYPES.IMPROVER ? '📈' :
+        mb.monsterType === MONSTER_TYPES.CRITMASTER ? '🎯' : '';
+      const atkIcon = mb.monsterAttackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
+      $('mbEnemyName').textContent = `${mb.monsterFace} ${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
       $('mbLocation').textContent = `${mb.loc.name} — P${mb.floor+1}`;
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
@@ -1722,7 +1827,7 @@
     return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
   }
 
-  function spawnProjectileEffect(dir, targetIsPlayer, isCrit) {
+  function spawnProjectileEffect(dir, targetIsPlayer, isCrit, attackType) {
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
@@ -1759,7 +1864,13 @@
     const size = isCrit ? 32 : 22;
     const half = size / 2;
     const proj = document.createElement('div');
-    proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 ${isCrit ? 20:10}px rgba(${rgb},${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
+    // Caster projektil (magický) vs melee (fyzický)
+    if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
+      // Magická koule — fialová/modrá záře
+      proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,#a855f7,#6366f1);box-shadow:0 0 ${isCrit ? 20:10}px rgba(168,85,247,${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
+    } else {
+      proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 ${isCrit ? 20:10}px rgba(${rgb},${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
+    }
     proj.style.left = (startX - half) + 'px';
     proj.style.top = (startY - half) + 'px';
     arena.appendChild(proj);
@@ -2566,7 +2677,29 @@
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
     const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
-    const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
+    let bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
+    // Speciální schopnosti monster
+    const mType = mb.monsterType;
+    let isCrit = false;
+    let lifeStealAmt = 0;
+    let manaStealAmt = 0;
+    if (mType === MONSTER_TYPES.CRITMASTER) {
+      // 33% šance na 2.0x crit
+      if (Math.random() < 0.33) {
+        bossDmg = Math.round(bossDmg * 2.0);
+        isCrit = true;
+      }
+    } else if (mType === MONSTER_TYPES.IMPROVER) {
+      // +25% poškození za každý předchozí zásah
+      mb._improverStacks = (mb._improverStacks || 0) + 1;
+      bossDmg = Math.round(bossDmg * (1 + mb._improverStacks * 0.25));
+    } else if (mType === MONSTER_TYPES.LIFESTEALER) {
+      // Při zásahu si monster léčí 50% z uděleného poškození
+      lifeStealAmt = Math.round(bossDmg * 0.5);
+    } else if (mType === MONSTER_TYPES.MANASTEALER) {
+      // Při zásahu krade manu — 50% z uděleného poškození
+      manaStealAmt = Math.round(bossDmg * 0.5);
+    }
     let amount = bossDmg;
     if (mb.shieldActive) {
       const block = mb.shieldActive;
@@ -2579,11 +2712,19 @@
       mb.shieldActive = null;
     }
     mb.playerHp -= amount;
+    // Life steal — monster si léčí HP
+    if (lifeStealAmt > 0) {
+      mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
+    }
+    // Mana steal — hráč ztrácí manu
+    if (manaStealAmt > 0) {
+      state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);
+    }
     mb.mistakes = (mb.mistakes || 0) + 1;
     playSFX(hitSfx);
 
     // Červený projektil od středu k hráči
-    spawnProjectileEffect(null, true);
+    spawnProjectileEffect(null, true, false, mb.monsterAttackType);
     // Probliknutí hráče
     const playerFig = $('mbPlayerFigure');
     if (playerFig) { playerFig.style.transition = 'filter 0.15s'; playerFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 100); }
