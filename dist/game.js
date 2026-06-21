@@ -557,6 +557,7 @@
     ],
     // Theme 1 — Poušť
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Pouštní troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐍',name:'Zmije',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🦂',name:'Štír',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'👺',name:'Pouštní démon',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
@@ -564,10 +565,10 @@
       {face:'🐪',name:'Velbloud',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🪲',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🦎',name:'Ještěr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'☀️',name:'Žár',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 2 — Propasti
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Hlubinný troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐙',name:'Chobotnice',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'🦈',name:'Žralok',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐟',name:'Ryba',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
@@ -575,10 +576,10 @@
       {face:'🐚',name:'Mušle',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'🐳',name:'Velryba',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'🪼',name:'Medúza',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🐠',name:'Rybička',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 3 — Výspy
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Pekelný troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'👹',name:'Pekelník',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐉',name:'Drak',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'🔥',name:'Ohnivec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
@@ -586,10 +587,10 @@
       {face:'💀',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🗿',name:'Golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'⚔️',name:'Meč',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦅',name:'Sup',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
     ],
     // Theme 4 — Štíty
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Ledový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'👻',name:'Duch',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'❄️',name:'Sníh',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
       {face:'🧊',name:'Zamrzlec',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
@@ -597,10 +598,10 @@
       {face:'🦅',name:'Sokol',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'⛄',name:'Sněhulák',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'🧝',name:'Elf',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🌨️',name:'Vánice',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 5 — Věž
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Věžový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'⚡',name:'Blesk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
       {face:'🤖',name:'Golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'🔮',name:'Mág',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
@@ -608,10 +609,10 @@
       {face:'🌀',name:'Vortex',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'🧙',name:'Čaroděj',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
       {face:'🕳️',name:'Trhlina',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'💫',name:'Hvězda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 6 — Jeskyně
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Jeskynní troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🪨',name:'Skaloun',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'⛏️',name:'Kopáč',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐭',name:'Netopýr',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
@@ -619,10 +620,10 @@
       {face:'🦇',name:'Krysa',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'💎',name:'Drahokam',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
       {face:'🧌',name:'Troll',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🐜',name:'Mravenec',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
     ],
     // Theme 7 — Zahrady
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Zahradní troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🌿',name:'Kvítek',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'🌸',name:'Jaro',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'🦋',name:'Motýl',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
@@ -630,10 +631,10 @@
       {face:'🌺',name:'Růže',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🍃',name:'Lístek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🌈',name:'Duha',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🕊️',name:'Holubice',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 8 — Nebe
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Nebeský troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'☁️',name:'Oblak',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'🏰',name:'Strážce',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'🦄',name:'Jednorožec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
@@ -641,10 +642,10 @@
       {face:'🌙',name:'Luna',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'⭐',name:'Hvězda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'🪽',name:'Anděl',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'👼',name:'Křídlo',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
     ],
     // Theme 9 — Stíny
     [
+      {face:'assets/monsters/troll_test_small.png',name:'Stínový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'💀',name:'Smrt',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'☠️',name:'Mor',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'🖤',name:'Tma',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
@@ -652,7 +653,6 @@
       {face:'🩸',name:'Krev',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'👁️‍🗨️',name:'Stín',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'🌑',name:'Měsíc',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🐦‍⬛',name:'Havran',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
     ],
   ];
 
@@ -670,11 +670,25 @@
     const result = [];
     for (let i = 0; i < 5; i++) {
       const idx = (floor * 5 + i + theme * 3) % pool.length;
-      result.push({face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType});
+      result.push({face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
     }
     return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
+  const DUNGEON_THEME_FILTERS = [
+    '',                                    // 0 Les — žádný filtr (zelený troll)
+    'hue-rotate(40deg) sepia(0.3)',       // 1 Poušť — žlutohnědá
+    'hue-rotate(200deg) saturate(0.8)',    // 2 Propasti — modrá
+    'hue-rotate(340deg) saturate(1.2)',    // 3 Výspy — červená
+    'hue-rotate(180deg) brightness(1.2)',  // 4 Štíty — ledová modrá
+    'hue-rotate(280deg)',                  // 5 Věž — fialová
+    'hue-rotate(0deg) saturate(0.5) brightness(0.8)', // 6 Jeskyně — tmavá
+    'hue-rotate(300deg) saturate(0.9)',    // 7 Zahrady — růžová
+    'hue-rotate(180deg) brightness(1.3) saturate(0.7)', // 8 Nebe — světlá
+    'hue-rotate(0deg) saturate(0.3) brightness(0.6)',   // 9 Stíny — tmavá
+    'hue-rotate(340deg) saturate(1.4) brightness(0.9)',  // 10 Chaos — rudá
+    'hue-rotate(0deg) saturate(0.2) brightness(0.5)',    // 11 Smrt — skoro černobílá
+  ];
   const DUNGEON_THEMES = [
     { bg:'#0d2d0d', border:'#2ecc71', borderGlow:'rgba(46,204,113,0.3)' },   // 0 Les — zelená
     { bg:'#2a1a08', border:'#e67e22', borderGlow:'rgba(230,126,34,0.3)' },   // 1 Poušť — oranžová
@@ -972,6 +986,7 @@
       bossTypes: isBoss ? (loc.boss.types || []) : [],
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
+      monsterTheme: isBoss ? loc.theme : (floorMonsters[progress].theme !== undefined ? floorMonsters[progress].theme : loc.theme),
       // Loot drops per monster (pro vizuální indikaci)
       _lootDrops: state._floorLootDrops || [],
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
@@ -1043,7 +1058,7 @@
           const defeated = i < mb.progress;
           let inner;
           if (face.startsWith('assets/')) {
-            inner = '<div class="mini-portrait-frame"><img src="'+face+'" alt="" class="mini-portrait-img"/></div>';
+            inner = '<div class="mini-portrait-frame" style="filter:'+DUNGEON_THEME_FILTERS[mb.monsterTheme]+'"><img src="'+face+'" alt="" class="mini-portrait-img"/></div>';
           } else if (face.startsWith('<svg')) {
             inner = face;
           } else {
@@ -1084,8 +1099,9 @@
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
+    const themeFilter = DUNGEON_THEME_FILTERS[mb.monsterTheme] || '';
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
-    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-portrait-frame\"><img src=\"'+emoji+'\" alt=\"\" class=\"monster-portrait-img\"/></div>'; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-portrait-frame\" style=\"filter:'+themeFilter+'\"><img src=\"'+emoji+'\" alt=\"\" class=\"monster-portrait-img\"/></div>'; }
     else { fig.textContent = emoji; }
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
@@ -3586,9 +3602,12 @@
   }
 
   // ===== BESTIARY =====
-  function renderFace(face) {
+  function renderFace(face, themeIdx) {
     if (face.startsWith('<svg')) return face;
-    if (face.startsWith('assets/')) return '<div class="bestiary-portrait-frame"><img src="'+face+'" alt="" class="bestiary-portrait-img"/></div>';
+    if (face.startsWith('assets/')) {
+      const filter = DUNGEON_THEME_FILTERS[themeIdx] || '';
+      return '<div class="bestiary-portrait-frame" style="filter:'+filter+'"><img src="'+face+'" alt="" class="bestiary-portrait-img"/></div>';
+    }
     return face;
   }
   function renderBestiary() {
@@ -3616,7 +3635,7 @@
         const atkName = b.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
         html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid ${theme.border};border-color:${theme.border}">
           <div class="bestiary-boss-badge">👑 BOSS</div>
-          <div class="bestiary-face bestiary-boss-face">${renderFace(b.face)}</div>
+          <div class="bestiary-face bestiary-boss-face">${renderFace(b.face, themeIdx)}</div>
           <div class="bestiary-name bestiary-boss-name">${b.name}</div>
           <div class="bestiary-boss-types">${bossTypesHtml}</div>
           <div class="bestiary-atk"><span>${atkIcon}</span> ${atkName}</div>
@@ -3632,7 +3651,7 @@
         const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
         const atkName = m.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
         html += `<div class="bestiary-card" style="border-left:3px solid ${theme.border}">
-          <div class="bestiary-face">${renderFace(m.face)}</div>
+          <div class="bestiary-face">${renderFace(m.face, themeIdx)}</div>
           <div class="bestiary-name">${m.name}</div>
           <div class="bestiary-type"><span>${typeIcon}</span> ${typeName}</div>
           <div class="bestiary-atk"><span>${atkIcon}</span> ${atkName}</div>
