@@ -667,17 +667,16 @@
   }
   function getFloorMonsterSet(theme, floor) {
     const pool = MONSTER_DB[theme] || MONSTER_DB[0];
-    // Náhodný výběr 5 unikátních monster z poolu
-    const indices = [];
+    const result = [];
     const poolSize = pool.length;
-    while (indices.length < 5) {
-      const r = Math.floor(Math.random() * poolSize);
-      if (!indices.includes(r)) indices.push(r);
+    for (let i = 0; i < 5; i++) {
+      let idx;
+      do {
+        idx = Math.floor(Math.random() * poolSize);
+      } while (result.length > 0 && result[result.length - 1].idx === idx);
+      result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
     }
-    return indices.map(idx => ({
-      face: pool[idx].face, name: pool[idx].name,
-      type: pool[idx].type, attackType: pool[idx].attackType, theme: theme
-    }));
+    return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const DUNGEON_THEME_FILTERS = [
