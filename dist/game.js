@@ -537,7 +537,8 @@
     LIFESTEALER: 'lifestealer',
     MANASTEALER: 'manastealer',
     IMPROVER: 'improver',
-    CRITMASTER: 'critmaster'
+    CRITMASTER: 'critmaster',
+    POISON: 'poison'
   };
   const ATTACK_TYPES = { MELEE: 'melee', CASTER: 'caster' };
 
@@ -553,18 +554,18 @@
       {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'assets/monsters/lesni_rarach.png',name:'Lesní rarach',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 1 — Poušť
     [
-      {face:'assets/monsters/desert_scorpion.png',name:'Štír',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/desert_scorpion.png',name:'Štír',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE},
       {face:'assets/monsters/desert_worm.png',name:'Pouštní červ',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'assets/monsters/desert_centaur.png',name:'Kentaur',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'assets/monsters/desert_nomad.png',name:'Nomád',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'assets/monsters/desert_djinn.png',name:'Djinn',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/desert_mummy.png',name:'Mumie',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/desert_mummy.png',name:'Mumie',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
       {face:'assets/monsters/desert_beetle.png',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/desert_cobra.png',name:'Kobra',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/desert_cobra.png',name:'Kobra',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 2 — Propasti
     [
@@ -704,9 +705,12 @@
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:32, bossXp:100, boss:{name:'Pekelný démon',face:'👹',hp:18,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:20}, resists:{fire:0.5, ice:1.5, nature:0.75} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:3, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, boss:{name:'Pekelný démon',face:'👹',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
   ];
+
+  // Skoková obtížnost — násobitel HP a damage podle dungeonu
+  const DIFFICULTY_MULT = [1.0, 1.5, 2.5, 4.0, 6.0];
 
   // ===== STATE =====
   let state = {};
@@ -951,8 +955,9 @@
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
-    const monsterHp = Math.round((80 + locId * 150) + 30 * floor + 10 * progress);
-    const bossHp = Math.round(400 + locId * 400 + floor * 60 + 200);
+    const diffMult = DIFFICULTY_MULT[locId] || 1.0;
+    const monsterHp = Math.round((80 + locId * 150) * diffMult + 30 * floor + 10 * progress);
+    const bossHp = Math.round((400 + locId * 400) * diffMult + floor * 60 + 200);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
@@ -962,6 +967,7 @@
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0, isAttacking: false,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, hot: 0, hotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
+      playerDot: 0, playerDotTicksLeft: 0,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
@@ -1018,7 +1024,9 @@
       const bossTypesHtml = (b.types || []).map(t => {
         const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
           t === MONSTER_TYPES.MANASTEALER ? '💧' :
-          t === MONSTER_TYPES.IMPROVER ? '📈' : '🎯';
+          t === MONSTER_TYPES.IMPROVER ? '📈' :
+          t === MONSTER_TYPES.CRITMASTER ? '🎯' :
+          t === MONSTER_TYPES.POISON ? '☠️' : '🎯';
         return ti;
       }).join('');
       const atkIcon = (b.attackType || ATTACK_TYPES.MELEE) === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
@@ -1029,7 +1037,8 @@
       const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :
         mb.monsterType === MONSTER_TYPES.MANASTEALER ? '💧' :
         mb.monsterType === MONSTER_TYPES.IMPROVER ? '📈' :
-        mb.monsterType === MONSTER_TYPES.CRITMASTER ? '🎯' : '';
+        mb.monsterType === MONSTER_TYPES.CRITMASTER ? '🎯' :
+        mb.monsterType === MONSTER_TYPES.POISON ? '☠️' : '';
       const atkIcon = mb.monsterAttackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
       $('mbEnemyName').textContent = `${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
       $('mbLocation').textContent = `${mb.loc.name} — P${mb.floor+1}`;
@@ -1630,12 +1639,36 @@
     return false;
   }
 
+  // Player DoT tick — jed z monster, tickuje po každém timeru
+  function doPlayerDotTick(mb) {
+    if (mb.playerDot <= 0 || mb.playerDotTicksLeft <= 0) return false;
+    mb.playerHp -= mb.playerDot;
+    mb.playerDotTicksLeft--;
+    const playerFig = $('mbPlayerFigure');
+    if (playerFig) {
+      playerFig.style.transition = 'filter 0.2s';
+      playerFig.style.filter = 'brightness(2.5) hue-rotate(270deg) saturate(2)';
+      setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 300);
+    }
+    const dotDmgText = $('mbPlayerDamageText');
+    if (dotDmgText) {
+      dotDmgText.textContent = `☠️ -${mb.playerDot}`;
+      dotDmgText.classList.remove('hidden');
+      setTimeout(() => dotDmgText.classList.add('hidden'), 600);
+    }
+    updateMapBattleUI();
+    if (mb.playerHp <= 0) { endMapBattle(false); return true; }
+    return false;
+  }
+
   function advanceSequence() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
     // DoT tick — každý timer (úspěch/neúspěch) = jeden tick
     if (doDotTick(mb)) return;
+    // Player DoT tick — jed z monster
+    if (doPlayerDotTick(mb)) return;
 
     // HoT tick — léčení každý tick (pouze při úspěchu)
     if (mb.hotTicksLeft > 0) {
@@ -2700,7 +2733,8 @@
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
     const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
-    let bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
+    const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
+    let bossDmg = Math.round(baseBossDmg * diffMult * (0.8 + Math.random() * 0.4));
     // Speciální schopnosti monster
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
@@ -2722,6 +2756,11 @@
         lifeStealAmt += Math.round(bossDmg * 0.5);
       } else if (t === MONSTER_TYPES.MANASTEALER) {
         manaStealAmt += Math.round(bossDmg * 0.5);
+      } else if (t === MONSTER_TYPES.POISON) {
+        // Jed: 3 ticky, každý ~20% baseBossDmg
+        const poisonDmg = Math.max(1, Math.round(baseBossDmg * 0.2));
+        mb.playerDot = poisonDmg;
+        mb.playerDotTicksLeft = 3;
       }
     });
     let amount = bossDmg;
@@ -3613,10 +3652,14 @@
         const bossTypesHtml = b.types.map(t => {
           const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
             t === MONSTER_TYPES.MANASTEALER ? '💧' :
-            t === MONSTER_TYPES.IMPROVER ? '📈' : '🎯';
+            t === MONSTER_TYPES.IMPROVER ? '📈' :
+            t === MONSTER_TYPES.CRITMASTER ? '🎯' :
+            t === MONSTER_TYPES.POISON ? '☠️' : '🎯';
           const tn = t === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
             t === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
-            t === MONSTER_TYPES.IMPROVER ? 'Improver' : 'Critmaster';
+            t === MONSTER_TYPES.IMPROVER ? 'Improver' :
+            t === MONSTER_TYPES.CRITMASTER ? 'Critmaster' :
+            t === MONSTER_TYPES.POISON ? 'Poison' : 'Critmaster';
           return `<span class="bestiary-boss-type">${ti} ${tn}</span>`;
         }).join(' ');
         const atkIcon = b.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
@@ -3632,10 +3675,14 @@
       themeMonsters.forEach(m => {
         const typeIcon = m.type === MONSTER_TYPES.LIFESTEALER ? '🩸' :
           m.type === MONSTER_TYPES.MANASTEALER ? '💧' :
-          m.type === MONSTER_TYPES.IMPROVER ? '📈' : '🎯';
+          m.type === MONSTER_TYPES.IMPROVER ? '📈' :
+          m.type === MONSTER_TYPES.CRITMASTER ? '🎯' :
+          m.type === MONSTER_TYPES.POISON ? '☠️' : '🎯';
         const typeName = m.type === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
           m.type === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
-          m.type === MONSTER_TYPES.IMPROVER ? 'Improver' : 'Critmaster';
+          m.type === MONSTER_TYPES.IMPROVER ? 'Improver' :
+          m.type === MONSTER_TYPES.CRITMASTER ? 'Critmaster' :
+          m.type === MONSTER_TYPES.POISON ? 'Poison' : 'Critmaster';
         const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
         const atkName = m.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
         html += `<div class="bestiary-card" style="border-left:3px solid ${theme.border}">
