@@ -1274,7 +1274,7 @@
 
   function getDungeonAttackChances(locId) {
     // D1: dodge, block
-    if (locId === 0) return { normal: 70, heavy: 0, block: 30, inverted: 0, twin: 0, rapid: 0 };
+    if (locId === 0) return { normal: 85, heavy: 0, block: 15, inverted: 0, twin: 0, rapid: 0 };
     // D2: dodge, block, double arrow
     if (locId === 1) return { normal: 60, heavy: 20, block: 20, inverted: 0, twin: 0, rapid: 0 };
     // D3: dodge, block, DA, modrá (inverted)
