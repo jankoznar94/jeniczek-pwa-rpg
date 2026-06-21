@@ -2565,7 +2565,7 @@
     // Chill tick i při neúspěchu — jeden tick zpomalení uběhl
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
-    const baseBossDmg = Math.max(8, 8 + mb.turn * 6 + mb.locId * 8);
+    const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
     const bossDmg = Math.round(baseBossDmg * (0.8 + Math.random() * 0.4));
     let amount = bossDmg;
     if (mb.shieldActive) {
