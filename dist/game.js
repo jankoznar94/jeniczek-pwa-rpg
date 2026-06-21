@@ -3512,26 +3512,22 @@
     // Monster types demo — zobrazit reálný vzhled monstra s typy
     const nameEl = document.getElementById('tutEnemyName');
     if (step.showMonsterTypes) {
-      // Zobrazit 4 monstra s různými typy
+      // Stejná příšera jako na ostatních snímcích, jen se mění text
       const demoMonsters = [
-        {face:'🐺',name:'Vlk',type:'🩸',atk:'⚔️'},
-        {face:'👻',name:'Duch',type:'💧',atk:'🔮'},
-        {face:'🗿',name:'Golem',type:'📈',atk:'⚔️'},
-        {face:'👹',name:'Démon',type:'🎯',atk:'🔮'},
+        {name:'Vlk',type:'🩸',atk:'⚔️'},
+        {name:'Duch',type:'💧',atk:'🔮'},
+        {name:'Golem',type:'📈',atk:'⚔️'},
+        {name:'Démon',type:'🎯',atk:'🔮'},
       ];
       const idx = Math.floor(_tutorialStep / 2) % demoMonsters.length;
       const m = demoMonsters[idx];
-      document.getElementById('tutMonster').textContent = m.face;
       if (nameEl) nameEl.textContent = `${m.name} ${m.type}${m.atk}`;
       nameEl.classList.remove('hidden');
     } else if (step.showAttackTypes) {
-      // Zobrazit melee a caster monstra vedle sebe
       const idx = Math.floor(_tutorialStep / 2) % 2;
       if (idx === 0) {
-        document.getElementById('tutMonster').textContent = '🗿';
         if (nameEl) nameEl.textContent = 'Golem 📈⚔️';
       } else {
-        document.getElementById('tutMonster').textContent = '👻';
         if (nameEl) nameEl.textContent = 'Duch 💧🔮';
       }
       nameEl.classList.remove('hidden');
