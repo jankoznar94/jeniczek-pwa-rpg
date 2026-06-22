@@ -1350,6 +1350,13 @@
 
     // Generovat sekvenci
     const chances = getDungeonAttackChances(mb.locId);
+    // Zelená (heal) jen když chybí HP
+    if (mb.playerHp >= mb.maxPlayerHp) {
+      chances.green = 0;
+      // Rozdělit uvolněnou šanci mezi grey a block
+      chances.grey += 10;
+      chances.block += 5;
+    }
     let seqLen = 5 + mb.locId;
     mb.sequence = [];
     let prevType = null;
@@ -2402,18 +2409,19 @@
       }
       return;
     } else if (attack.type === 'green') {
-      // Green = heal — jen když chybí HP
+      // Green = heal — musíš swipnout opačný směr (jako inverted)
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
       mb._ringTimer = null;
       mb._sequenceTimer = null;
-      if (dir === attack.dir) {
+      const inverseMap = { '⬆️':'⬇️', '⬇️':'⬆️', '⬅️':'➡️', '➡️':'⬅️' };
+      if (dir === inverseMap[attack.dir]) {
         correct = true;
         doArenaGlow(dir, true);
-        // Heal: 15% max HP
+        // Heal: 15% max HP — žádný damage
         const healAmt = Math.max(1, Math.round(mb.maxPlayerHp * 0.15));
         mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + healAmt);
-        playSFX(blockSfx); // použijeme block zvuk pro heal
+        playSFX(blockSfx);
         const dmgText = $('mbPlayerDamageText');
         if (dmgText) {
           dmgText.textContent = `+${healAmt}`;
@@ -2437,8 +2445,10 @@
 
     if (correct) {
       playSFX(dodgeSfx);
-      // Způsobit poškození monstru
-      dealPlayerDamage(mb, dmgMult);
+      // Způsobit poškození monstru (kromě green = heal)
+      if (attack.type !== 'green') {
+        dealPlayerDamage(mb, dmgMult);
+      }
       // Combo counter
       mb.comboCount = (mb.comboCount || 0) + 1;
       // Každých 10 úspěchů = bonusová rána
@@ -2664,9 +2674,11 @@
   function dealPlayerDamage(mb, mult) {
     // Vypočítat damage hráče proti monstru
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
+    // Globální redukce damage — hráč útočí každou akcí, damage musí být nižší
+    const globalMult = 0.4;
     const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
     const critMult = 1.5;
-    let dmg = Math.round(baseDmg * mult);
+    let dmg = Math.round(baseDmg * mult * globalMult);
     // Fire school passive — ignite
     const ignitePct = getFireIgnitePct();
     if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
