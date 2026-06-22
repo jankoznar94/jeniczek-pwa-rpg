@@ -3853,6 +3853,8 @@
     const faceFile = h.face || 'hero';
     const portraitImg = $('heroPortraitImg');
     if (portraitImg) portraitImg.src = `assets/monsters/${faceFile}.png`;
+    const mbPortraitImg = $('mbHeroPortraitImg');
+    if (mbPortraitImg) mbPortraitImg.src = `assets/monsters/${faceFile}.png`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
     if (schoolInfo) {
