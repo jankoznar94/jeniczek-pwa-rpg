@@ -569,14 +569,14 @@
     ],
     // Theme 2 — Nemrtvá země
     [
-      {face:'assets/monsters/troll_test_small.png',name:'Hlubinný troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'💀',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'👻',name:'Duch',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🧟',name:'Zombie',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🕷️',name:'Pavouk',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦇',name:'Netopýr',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'☠️',name:'Kostra',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🪦',name:'Nemocný',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/skeleton.png',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/zombie.png',name:'Zombie',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/lich.png',name:'Lich',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/bone_dragon.png',name:'Kostěný drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/death_knight.png',name:'Nemrtvý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/raven.png',name:'Havran',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/ghost.png',name:'Přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
     ],
     // Theme 3 — Výspy
     [
@@ -638,7 +638,7 @@
   const LOCATIONS = [
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:2, name:'Nemrtvá země', icon:'🦴', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Upír',face:'assets/monsters/lucifer.png',hp:16,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
+    { id:2, name:'Nemrtvá země', icon:'🦴', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Smrtka',face:'assets/monsters/reaper.png',hp:16,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
     { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, boss:{name:'Lucifer',face:'assets/monsters/lucifer_demon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
     { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
   ];
