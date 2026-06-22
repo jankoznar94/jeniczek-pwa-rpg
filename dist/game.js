@@ -3920,17 +3920,16 @@
   }
 
   const HERO_FACES = [
-    {id:'hero', name:'Válečník', icon:'⚔️'},
-    {id:'hero_warrior_m', name:'Válečník M', icon:'⚔️'},
-    {id:'hero_warrior_f', name:'Válečnice F', icon:'⚔️'},
-    {id:'hero_mage_m', name:'Mág M', icon:'🔮'},
-    {id:'hero_mage_f', name:'Mágyně F', icon:'🔮'},
-    {id:'hero_barbarian_m', name:'Barbar M', icon:'🪓'},
-    {id:'hero_barbarian_f', name:'Barbarka F', icon:'🪓'},
-    {id:'hero_rogue_m', name:'Zloděj M', icon:'🗡️'},
-    {id:'hero_rogue_f', name:'Zlodějka F', icon:'🗡️'},
-    {id:'hero_paladin_m', name:'Paladin M', icon:'🛡️'},
-    {id:'hero_paladin_f', name:'Paladinka F', icon:'🛡️'},
+    {id:'hero', name:'Válečník', gender:'muž', icon:'⚔️'},
+    {id:'hero_warrior_f', name:'Válečník', gender:'žena', icon:'⚔️'},
+    {id:'hero_mage_m', name:'Mág', gender:'muž', icon:'🔮'},
+    {id:'hero_mage_f', name:'Mág', gender:'žena', icon:'🔮'},
+    {id:'hero_barbarian_m', name:'Barbar', gender:'muž', icon:'🪓'},
+    {id:'hero_barbarian_f', name:'Barbar', gender:'žena', icon:'🪓'},
+    {id:'hero_rogue_m', name:'Zloděj', gender:'muž', icon:'🗡️'},
+    {id:'hero_rogue_f', name:'Zloděj', gender:'žena', icon:'🗡️'},
+    {id:'hero_paladin_m', name:'Paladin', gender:'muž', icon:'🛡️'},
+    {id:'hero_paladin_f', name:'Paladin', gender:'žena', icon:'🛡️'},
   ];
 
   function showFaceSelect() {
@@ -3939,11 +3938,13 @@
     if (!overlay || !grid) return;
     grid.innerHTML = HERO_FACES.map(f => {
       const current = (state.hero.face || 'hero') === f.id;
+      const genderIcon = f.gender === 'muž' ? '♂️' : '♀️';
       return `<div onclick="game.selectFace('${f.id}')" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:8px;border-radius:8px;background:${current ? '#2a2a5a' : '#1a1a3a'};border:2px solid ${current ? '#4a7dff' : 'transparent'};transition:all 0.2s">
         <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #4a7dff;display:flex;align-items:center;justify-content:center;background:#0a0a0a">
           <img src="assets/monsters/${f.id}.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>
         </div>
         <span style="font-size:11px;margin-top:4px;color:#ccc">${f.icon} ${f.name}</span>
+        <span style="font-size:10px;color:#888">${genderIcon} ${f.gender}</span>
       </div>`;
     }).join('');
     overlay.classList.remove('hidden');
