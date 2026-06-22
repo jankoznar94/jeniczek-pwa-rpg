@@ -576,7 +576,7 @@
       {face:'assets/monsters/death_knight.png',name:'Nemrtvý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'assets/monsters/raven.png',name:'Havran',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
       {face:'assets/monsters/ghost.png',name:'Přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/lucifer.png',name:'Upír',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
     ],
     // Theme 3 — Výspy
     [
