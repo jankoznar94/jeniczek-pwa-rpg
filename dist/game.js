@@ -591,14 +591,14 @@
     ],
     // Theme 4 — Štíty
     [
-      {face:'assets/monsters/troll_test_small.png',name:'Ledový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'👻',name:'Duch',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'❄️',name:'Sníh',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🧊',name:'Zamrzlec',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🐺',name:'Vlk',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦅',name:'Sokol',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'⛄',name:'Sněhulák',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🧝',name:'Elf',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/ice_troll.png',name:'Ledový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/frost_giant.png',name:'Ledový obr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/polar_bear.png',name:'Lední medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/snow_wolf.png',name:'Sněžný vlk',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/ice_dragon.png',name:'Ledový drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/snow_golem.png',name:'Sněžný golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/frozen_knight.png',name:'Zmrzlý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/ice_lizard.png',name:'Ledový ještěr',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE},
     ],
   ];
 
@@ -640,7 +640,7 @@
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:2, name:'Nemrtvá země', icon:'🦴', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Smrtka',face:'assets/monsters/reaper.png',hp:16,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
     { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, boss:{name:'Lucifer',face:'assets/monsters/lucifer_demon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový titán',face:'assets/monsters/frost_titan.png',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
   ];
 
   // Skoková obtížnost — násobitel HP a damage podle dungeonu
@@ -921,10 +921,10 @@
       _lootDrops: state._floorLootDrops || [],
       // Sekvence: hráč musí přežít várku útoků, pak může udeřit
       sequence: [], sequenceIndex: 0, inAttackWindow: false,
-      currentAttack: null, isHeavyAttack: false, isBlockAttack: false,
-      isInvertedAttack: false, isWaitAttack: false, isTwinAttack: false,
-      _heavySwipes: 0, _twinSwipes: [], // twin: které směry už hráč swipnul
-      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0
+      currentAttack: null, isHeavyAttack: false,
+      isInvertedAttack: false, isTwinAttack: false, isGreenAttack: false,
+      _heavySwipes: 0, _twinSwipes: [],
+      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0, comboCount: 0
     };
     // Schools handled via activeSchool
 
@@ -1072,15 +1072,9 @@
     const mb = mapBattleState;
     const atk = $('mbAttackBtn');
     const blk = $('mbBlockBtn');
-    // Tlacitko Utok jen v utocnem okne
-    if (atk) {
-      if (mb.inAttackWindow) {
-        atk.classList.add('active');
-      } else {
-        atk.classList.remove('active');
-      }
-    }
-    // Blok stale aktivni (unahleny blok = chyba)
+    // Útok — vždy aktivní (každá akce = útok)
+    if (atk) atk.classList.add('active');
+    // Blok — vždy aktivní
     if (blk) blk.classList.add('active');
   }
 
@@ -1216,17 +1210,19 @@
   }
 
   function getDungeonAttackChances(locId) {
-    // D1: dodge, block
-    if (locId === 0) return { normal: 85, heavy: 0, block: 15, inverted: 0, twin: 0, rapid: 0 };
-    // D2: dodge, block, double arrow
-    if (locId === 1) return { normal: 60, heavy: 20, block: 20, inverted: 0, twin: 0, rapid: 0 };
-    // D3: dodge, block, DA, modrá (inverted)
-    if (locId === 2) return { normal: 50, heavy: 20, block: 15, inverted: 15, twin: 0, rapid: 0 };
-    // D4: dodge, block, DA, modrá, zelená (twin)
-    if (locId === 3) return { normal: 40, heavy: 20, block: 15, inverted: 15, twin: 10, rapid: 0 };
-    // D5: dodge, block, DA, modrá, zelená, rapid
-    if (locId === 4) return { normal: 30, heavy: 20, block: 15, inverted: 15, twin: 10, rapid: 10 };
-    return { normal: 70, heavy: 20, block: 10, inverted: 0, twin: 0, rapid: 0 };
+    // Nový systém: každá akce = útok (kromě bloku)
+    // grey=1.0x, yellow=charge 2.0x, blue=0.75x+0.75x, green=heal, rapid=tap, inverted=ztížení
+    // D1: grey, block (tlačítko)
+    if (locId === 0) return { grey: 70, yellow: 0, blue: 0, green: 15, inverted: 0, rapid: 0 };
+    // D2: + yellow
+    if (locId === 1) return { grey: 50, yellow: 20, blue: 0, green: 15, inverted: 0, rapid: 0 };
+    // D3: + inverted
+    if (locId === 2) return { grey: 40, yellow: 20, blue: 0, green: 15, inverted: 15, rapid: 0 };
+    // D4: + blue
+    if (locId === 3) return { grey: 30, yellow: 20, blue: 15, green: 10, inverted: 15, rapid: 0 };
+    // D5: + rapid
+    if (locId === 4) return { grey: 25, yellow: 20, blue: 15, green: 10, inverted: 15, rapid: 15 };
+    return { grey: 70, yellow: 0, blue: 0, green: 15, inverted: 0, rapid: 0 };
   }
 
   const _arrowSvg = (fill, extra = '') =>
@@ -1262,22 +1258,22 @@
   }
 
   function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.normal + chances.heavy + chances.block + chances.inverted + chances.twin + (chances.rapid||0);
+    const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0);
     const randNum = Math.random() * randTotal;
-    let type = 'normal';
+    let type = 'grey';
     if (randNum < chances.inverted) { type = 'inverted'; }
-    else if (randNum < chances.inverted + chances.block) { type = 'block'; }
-    else if (randNum < chances.inverted + chances.block + chances.heavy) { type = 'heavy'; }
-    else if (randNum < chances.inverted + chances.block + chances.heavy + chances.twin) { type = 'twin'; }
-    else if (randNum < chances.inverted + chances.block + chances.heavy + chances.twin + (chances.rapid||0)) { type = 'rapid'; }
+    else if (randNum < chances.inverted + chances.green) { type = 'green'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow) { type = 'yellow'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue) { type = 'blue'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0)) { type = 'rapid'; }
     // Timer: base 1200ms, floor multiplikátor (P1=1200, P10=~720ms)
     const mult = getFloorTimerMultiplier(floor || 0);
     const baseTime = Math.round(1200 * mult);
     // Malá náhoda ±10% pro pestrost
     const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
-    const windowTime = (type === 'heavy' || type === 'twin') ? Math.round(jitter * 1.5) : (type === 'rapid' ? Math.round(jitter * 3.0) : jitter);
+    const windowTime = (type === 'yellow' || type === 'blue') ? Math.round(jitter * 1.5) : (type === 'rapid' ? Math.round(jitter * 3.0) : jitter);
     const dir = DIRECTIONS[rand(0,3)];
-    if (type === 'twin') {
+    if (type === 'blue') {
       // Dvojitá šipka: vyber protichůdný pár (nahoru-dolů nebo vlevo-vpravo)
       const pairs = [['⬆️','⬇️'], ['⬅️','➡️']];
       const pair = pairs[rand(0,1)];
@@ -1294,13 +1290,13 @@
 
   function getAttackHint(attack) {
     const dir = attack.dir;
-    if (attack.type === 'normal') return `${dir} ⚫ Normální — uhni!`;
-    if (attack.type === 'heavy') return `${dir} 🟡 Heavy — 2× ${dir}!`;
-    if (attack.type === 'twin') return `${dir}↔${attack.twinDir} 🔷 Twin — oba směry!`;
-    if (attack.type === 'block') return `🛡️ ${dir} 🔴 Zákeřný — použij ŠTÍT!`;
+    if (attack.type === 'grey') return `${dir} ⚪ Útok — swipni!`;
+    if (attack.type === 'yellow') return `${dir} 🟡 Silný útok — 2× ${dir}!`;
+    if (attack.type === 'blue') return `${dir}↔${attack.twinDir} 🔷 Dvojitý útok — oba směry!`;
+    if (attack.type === 'green') return `${dir} 🟢 Léčení — swipni pro HP!`;
     if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
     if (attack.type === 'rapid') return `🔮 Ťukej! ${attack.rapidTarget}× na plošky!`;
-    return `${dir} uhni!`;
+    return `${dir} útok!`;
   }
 
   function resetTimerRing() {
@@ -1343,17 +1339,15 @@
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
     mb.turn++;
-    mb._attackProcessed = false; // reset guard pro nové kolo
     updateMapBattleUI();
 
-    // RPG baseDmg: zbran + level bonus (base 10 + level*3, zbraň dodává baseDmg)
+    // RPG baseDmg
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     const eqAttrs = getEquipAttrs();
     mb.baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
 
     // Generovat sekvenci
     const chances = getDungeonAttackChances(mb.locId);
-    // seqLen: D1=5, D2=6, D3=7, D4=8, D5=9
     let seqLen = 5 + mb.locId;
     mb.sequence = [];
     let prevType = null;
@@ -1376,8 +1370,6 @@
     if (playerEl) playerEl.className = 'boss-fight-player';
     mb._sequenceTimer = null;
     updateActionButtons();
-
-    // (hint necháme pro bonus info)
 
     // Začít první útok sekvence
     playSequenceAttack();
@@ -1433,22 +1425,21 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     if (mb.sequenceIndex >= mb.sequence.length) {
-      setTimeout(() => openAttackWindow(), 0);
+      // Sekvence hotová — další kolo
+      setTimeout(() => mapBattleTurn(), 0);
       return;
     }
-    if (mb.inAttackWindow) return;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
-    // Boss smrt s odstupem pro animaci (konec tahu v mapBattleTurn)
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
     const attack = mb.sequence[mb.sequenceIndex];
 
     mb.currentAttack = attack.dir;
-    mb.isHeavyAttack = attack.type === 'heavy';
-    mb.isBlockAttack = attack.type === 'block';
+    mb.isHeavyAttack = attack.type === 'yellow';
     mb.isInvertedAttack = attack.type === 'inverted';
-    mb.isTwinAttack = attack.type === 'twin';
+    mb.isTwinAttack = attack.type === 'blue';
     mb.isRapidAttack = attack.type === 'rapid';
+    mb.isGreenAttack = attack.type === 'green';
     if (attack.type === 'rapid') {
       mb.rapidTaps = 0;
       mb.rapidTarget = attack.rapidTarget || 10;
@@ -1456,10 +1447,9 @@
       mb.rapidTaps = 0;
       mb.rapidTarget = 0;
     }
-    mb._hitProcessed = false; // reset guard pro aktuální útok
+    mb._hitProcessed = false;
 
     const windowTime = attack.windowTime;
-    // Ice school passive — chill: zpomalit timer na zbývající ticky
     mb._currentWindowTime = windowTime;
     if (mb.chillTicksLeft > 0) {
       mb._currentWindowTime = Math.round(windowTime * (1 + mb.chillPercent / 100));
@@ -1468,18 +1458,10 @@
     // Reset kolečka
     const circle = resetTimerRing();
 
-    // Zobrazit šipku nebo štít
+    // Zobrazit šipku
     const actionInfo = $('mbActionInfo');
     const arrow = $('mbArrow');
-    if (attack.type === 'block') {
-      // Block útok: místo šipky ukážeme 🛡️ v kolečku
-      if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
-      if (actionInfo) {
-        actionInfo.textContent = '🛡️';
-        actionInfo.classList.remove('hidden');
-      }
-    } else if (attack.type === 'rapid') {
-      // Rapid: číslo v kolečku, tap plošky nahradí tlačítka
+    if (attack.type === 'rapid') {
       applySchoolColors();
       if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
       if (actionInfo) actionInfo.classList.add('hidden');
@@ -1495,17 +1477,16 @@
       if (leftTap) leftTap.classList.remove('hidden');
       if (rightTap) rightTap.classList.remove('hidden');
     } else {
-      // Ostatní útoky: šipka
       if (actionInfo) actionInfo.classList.add('hidden');
       if (arrow) {
         arrow.setAttribute('class', 'boss-attack-arrow');
         arrow.setAttribute('viewBox', '0 0 16 16');
         const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.dir] || 0;
         arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-        if (attack.type === 'heavy') {
+        if (attack.type === 'yellow') {
           arrow.classList.add('boss-attack-yellow');
           arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g>';
-        } else if (attack.type === 'twin') {
+        } else if (attack.type === 'blue') {
           arrow.style.transform = 'translate(-50%, -50%)';
           arrow.classList.add('boss-attack-blue');
           arrow.setAttribute('viewBox', '0 -2 16 20');
@@ -1514,6 +1495,9 @@
           } else {
             arrow.innerHTML = '<g transform="translate(0,-2.5)"><path d="M1 8L8 3L8 5.5L15 5.5L15 10.5L8 10.5L8 13L1 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(0,2.5)"><path d="M15 8L8 13L8 10.5L1 10.5L1 5.5L8 5.5L8 3L15 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
           }
+        } else if (attack.type === 'green') {
+          arrow.classList.add('boss-attack-green');
+          arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
         } else {
           arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
           if (attack.type === 'inverted') arrow.classList.add('boss-attack-green');
@@ -1521,33 +1505,21 @@
       }
     }
 
-    // Update action buttons
     updateActionButtons();
 
-    const seqStr = `[${mb.sequenceIndex+1}/${mb.sequence.length}]`;
-    // (hint necháme pro bonus info)
-
-    // Timer ring - počkat na vykreslení resetu (fresh circle), pak spustit animaci
-    // Barva ringu podle aktivního pasivního bonusu
-    if (mb.dotTicksLeft > 0) circle.style.stroke = '#4caf50'; // zelená = jed
-    else if (mb.chillTicksLeft > 0) circle.style.stroke = '#4fc3f7'; // modrá = chlad
+    // Timer ring
+    if (mb.dotTicksLeft > 0) circle.style.stroke = '#4caf50';
+    else if (mb.chillTicksLeft > 0) circle.style.stroke = '#4fc3f7';
     else circle.style.stroke = '#888';
     requestAnimationFrame(() => {
       startTimerRing(circle, mb._currentWindowTime);
     });
 
-    if (attack.type === 'rapid') {
-          // Rapid — timeout = zásah (nestihl natapat)
-          mb._sequenceTimer = setTimeout(() => {
-            if (mapBattleState.ended) return;
-            onMapHit();
-          }, mb._currentWindowTime);
-        } else {
-      mb._sequenceTimer = setTimeout(() => {
-        if (mapBattleState.ended) return;
-        onMapHit();
-      }, mb._currentWindowTime);
-    }
+    // Timeout = chyba (nestihl zareagovat)
+    mb._sequenceTimer = setTimeout(() => {
+      if (mapBattleState.ended) return;
+      onMapHit();
+    }, mb._currentWindowTime);
   }
 
   // DoT tick helper — volá se po každém timeru (ať už hráč uspěl, nebo dostal ránu)
@@ -1599,22 +1571,22 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
-    // DoT tick — každý timer (úspěch/neúspěch) = jeden tick
+    // DoT tick — každý timer = jeden tick
     if (doDotTick(mb)) return;
     // Player DoT tick — jed z monster
     if (doPlayerDotTick(mb)) return;
 
-    // HoT tick — léčení každý tick (pouze při úspěchu)
+    // HoT tick — léčení každý tick
     if (mb.hotTicksLeft > 0) {
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + mb.hot);
       mb.hotTicksLeft--;
     }
-    // Pasivní regenerace — malý heal každý tick
+    // Pasivní regenerace
     const regen = getNatureRegen();
     if (regen > 0) {
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + regen);
     }
-    // Mana regen — 1 mana každý tick, +2 za každý intelekt
+    // Mana regen
     const h = state.hero;
     const eqAttrs = getEquipAttrs();
     const manaRegen = 1 + ((h.attrInt || 0) + eqAttrs.int) * 2;
@@ -1627,23 +1599,22 @@
       if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
     }
 
-    // Chill tick — odečti jeden tick zpomalení
+    // Chill tick
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
-    // Pokud aktivní kouzlo došlo, reset flag — pasivy můžou zase běžet
     if (mb.chillTicksLeft <= 0 && mb._activeSpellChillActive) mb._activeSpellChillActive = false;
 
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
-    mb._hitProcessed = true; // pojistka proti duplicitnímu timer callbacku
-    // Skrýt bonusový kruh (pokud zbyl z útočného okna)
+    mb._hitProcessed = true;
+    // Skrýt bonusový kruh
     const bc2 = document.querySelector('.bonus-zone-circle');
     if (bc2) bc2.style.strokeDasharray = '0 276';
     mb.currentAttack = null;
     mb.isHeavyAttack = false;
-    mb.isBlockAttack = false;
     mb.isInvertedAttack = false;
     mb.isTwinAttack = false;
     mb.isRapidAttack = false;
+    mb.isGreenAttack = false;
     mb.rapidTaps = 0;
     mb.rapidTarget = 0;
     mb._heavySwipes = 0;
@@ -1666,16 +1637,14 @@
     renderSeqProgress(mb);
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
-    // Boss smrt s odstupem pro animaci (DoT nebo poslední zásah)
     if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
 
-    // Pokud je sekvence hotová, otevřít útočné okno — reset ringu necháme na openAttackWindow
+    // Sekvence hotová — nové kolo
     if (mb.sequenceIndex >= mb.sequence.length) {
-      setTimeout(() => openAttackWindow(), 0);
+      setTimeout(() => mapBattleTurn(), 0);
       return;
     }
 
-    // Reset ringu až teď, když sekvence pokračuje (ne koliduje s openAttackWindow)
     resetTimerRing();
     setTimeout(() => playSequenceAttack(), 150);
   }
@@ -2336,31 +2305,19 @@
   function onMapDodge(dir) {
     if (mapBattleState.ended || !mapBattleState.sequence) return;
     const mb = mapBattleState;
-    // Rapid — swipe nemá co dělat, zpracovává onMapRapidTap
+    // Rapid — zpracovává onMapRapidTap
     if (mb.isRapidAttack) return;
     const attack = mb.sequence[mb.sequenceIndex];
     if (!attack) return;
-    if (mb.inAttackWindow) {
-      // Při útočném okně: swipe = promarněná šance
-      clearTimeout(mb._attackWindowTimer);
-      // (hint: zachovat bonus info)
-      flashSeqFail();
-      missedAttackWindow();
-      return;
-    }
-
-    // GUARD: pokud _sequenceTimer už je null, útok už byl vyřešen (timer propadl)
+    // GUARD: útok už byl vyřešen
     if (mb._sequenceTimer === null) return;
 
-    // Zář strany (nahrazuje pohyb panáčka)
-    doArenaGlow(dir, false); // nejdřív červeně (default), přebarvíme na zelenou pokud correct
+    doArenaGlow(dir, false);
 
     let correct = false;
+    let dmgMult = 1.0; // násobitel poškození hrdiny
 
-    if (attack.type === 'block') {
-      // Block = musí štít, swipování ignorujeme (necháme timer doběhnout)
-      return;
-    } else if (attack.type === 'inverted') {
+    if (attack.type === 'inverted') {
       // Inverzní: musíš swipnout opačný směr
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
@@ -2370,11 +2327,11 @@
       if (dir === inverseMap[attack.dir]) {
         correct = true;
         doArenaGlow(dir, true);
+        dmgMult = 1.0;
       }
-    } else if (attack.type === 'heavy') {
-      // Heavy: musíš uhnout 2× stejným směrem ve stejném timeru
+    } else if (attack.type === 'yellow') {
+      // Yellow: 2× stejným směrem
       if (dir !== attack.dir) {
-        // Špatný směr — zásah
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
         mb._ringTimer = null;
@@ -2385,19 +2342,18 @@
       mb._heavySwipes++;
       doArenaGlow(dir, true);
       playSFX(dodgeSfx);
-      // (hint: zachovat bonus info)
       if (mb._heavySwipes >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
         mb._ringTimer = null;
         mb._sequenceTimer = null;
-        advanceSequence();
+        correct = true;
+        dmgMult = 2.0;
+      } else {
+        return; // čekáme na druhý swipe
       }
-      // Po prvním správném swipu NEpropadnout do correct kontroly
-      return;
-    } else if (attack.type === 'twin') {
-      // Twin: musíš swipnout oba směry (libovolné pořadí)
-      // Špatný nebo už swipnutý směr = zásah
+    } else if (attack.type === 'blue') {
+      // Blue: oba směry
       if (dir !== attack.dir && dir !== attack.twinDir) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
@@ -2407,7 +2363,6 @@
         return;
       }
       if (mb._twinSwipes.includes(dir)) {
-        // Už swipnuto → zásah
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
         mb._ringTimer = null;
@@ -2418,17 +2373,17 @@
       mb._twinSwipes.push(dir);
       doArenaGlow(dir, true);
       playSFX(dodgeSfx);
-      // (hint: zachovat bonus info)
       if (mb._twinSwipes.length >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
         mb._ringTimer = null;
         mb._sequenceTimer = null;
-        advanceSequence();
+        correct = true;
+        dmgMult = 0.75; // každá rána 0.75×, dohromady 1.5×
       }
       return;
-    } else {
-      // Normal: musíš uhnout do směru šipky
+    } else if (attack.type === 'green') {
+      // Green = heal — jen když chybí HP
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
       mb._ringTimer = null;
@@ -2436,12 +2391,49 @@
       if (dir === attack.dir) {
         correct = true;
         doArenaGlow(dir, true);
+        // Heal: 15% max HP
+        const healAmt = Math.max(1, Math.round(mb.maxPlayerHp * 0.15));
+        mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + healAmt);
+        playSFX(blockSfx); // použijeme block zvuk pro heal
+        const dmgText = $('mbPlayerDamageText');
+        if (dmgText) {
+          dmgText.textContent = `+${healAmt}`;
+          dmgText.style.color = '#2ecc71';
+          dmgText.classList.remove('hidden');
+          setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
+        }
+      }
+    } else {
+      // Grey: normální útok
+      clearTimeout(mb._sequenceTimer);
+      clearTimeout(mb._ringTimer);
+      mb._ringTimer = null;
+      mb._sequenceTimer = null;
+      if (dir === attack.dir) {
+        correct = true;
+        doArenaGlow(dir, true);
+        dmgMult = 1.0;
       }
     }
 
     if (correct) {
       playSFX(dodgeSfx);
-      // (hint: zachovat bonus info)
+      // Způsobit poškození monstru
+      dealPlayerDamage(mb, dmgMult);
+      // Combo counter
+      mb.comboCount = (mb.comboCount || 0) + 1;
+      // Každých 10 úspěchů = bonusová rána
+      if (mb.comboCount >= 10) {
+        mb.comboCount = 0;
+        dealPlayerDamage(mb, 1.0); // bonusový útok
+        const comboText = $('mbDamageText');
+        if (comboText) {
+          comboText.textContent = '🔥 COMBO ×10!';
+          comboText.style.color = '#f1c40f';
+          comboText.classList.remove('hidden');
+          setTimeout(() => { comboText.classList.add('hidden'); comboText.style.color = ''; }, 800);
+        }
+      }
       advanceSequence();
     } else {
       onMapHit();
@@ -2451,19 +2443,8 @@
   function onMapBlock() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
-    // GUARD: aktuální útok už byl zpracován (např. blokem nebo timeoutem)
     if (mb._sequenceTimer === null) return;
-    // Rapid — blok nemá smysl, zpracovává onMapRapidTap
     if (mb.isRapidAttack) return;
-    if (mb.inAttackWindow) {
-      // Během útočného okna: blok = promarněná šance
-      clearTimeout(mb._attackWindowTimer);
-      flashSeqFail();
-      missedAttackWindow();
-      return;
-    }
-
-    // GUARD: útok už byl zpracován (timer propadl)
     if (mb._hitProcessed) return;
 
     clearTimeout(mb._sequenceTimer);
@@ -2471,188 +2452,20 @@
     mb._ringTimer = null;
     mb._sequenceTimer = null;
 
-    // Blok funguje jen proti block útokům — jinak je to chyba
-    if (mb.isBlockAttack) {
-      playSFX(blockSfx);
-      advanceSequence();
-    } else {
-      onMapHit();
-    }
+    // Blok = čistá obrana, žádný damage, žádný útok
+    playSFX(blockSfx);
+    doArenaGlow(mb.currentAttack || '⬆️', true);
+    advanceSequence();
   }
 
   function onMapAttack() {
+    // V novém systému každá akce = útok, tlačítko útoku není potřeba
     if (mapBattleState.ended) return;
-    const mb = mapBattleState;
-    // Rapid — nelze útočit, zpracovává onMapRapidTap
-    if (mb.isRapidAttack) { return; }
-    if (mb._attackProcessed) return; // zabránění dvojitému útoku
-    mb._attackProcessed = true; // OKAMŽITÝ guard
-    if (!mb.inAttackWindow) {
-      mb.mistakes = (mb.mistakes || 0) + 1;
-      return;
-    }
-
-    // Hráč udeřil — zrušit timer okna
-    clearTimeout(mb._attackWindowTimer);
-
-    // Reset kolečka
-    resetTimerRing();
-    // Skrýt bonusový kruh
-    const bc = document.querySelector('.bonus-zone-circle');
-    if (bc) bc.style.strokeDasharray = '0 276';
-    const actInfo = $('mbActionInfo');
-    if (actInfo) actInfo.classList.add('hidden');
-    updateActionButtons();
-    mb._attackProcessed = true; // označit útok jako provedený
-
-    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
-    const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
-    const critMult = 1.5;
-    let dmg = baseDmg;
-    // Fire school passive — ignite (% bonus fire damage)
-    const ignitePct = getFireIgnitePct();
-    if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
-    
-    // 🎯 Crit window — trefa = crit (×1.5), mino = normální útok
-    let isCrit = false;
-    if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      if (mb._bonusActive) {
-        isCrit = true;
-        dmg = Math.round(dmg * critMult);
-        playSFX(getCritSfx());
-        const critCircle = document.querySelector('.bonus-zone-circle');
-        if (critCircle) {
-          critCircle.style.stroke = '#ffd700';
-          critCircle.style.opacity = '1';
-          critCircle.style.strokeWidth = '9';
-          setTimeout(() => {
-            critCircle.style.stroke = '#f1c40f';
-            critCircle.style.opacity = '0.85';
-            critCircle.style.strokeWidth = '7';
-          }, 400);
-        }
-      } else {
-        playSFX(getHitSfx());
-      }
-    } else {
-      playSFX(getHitSfx());
-    }
-    
-    // === PASIVNÍ EFEKTY ŠKOL (PŘI ÚTOKU) ===
-    // Aktivní kouzlo má vždy prioritu — pasivy se neaplikují, dokud běží aktivní spell
-    let applyPassives = true;
-    if (mb._activeSpellChillActive) applyPassives = false; // blizzard běží — pasivní chill ne
-        
-    // Fire — burn (žhnutí) — jednorázový bonus dmg při útoku
-    const burnPct = getFireBurnPct();
-    if (burnPct > 0 && applyPassives && state.activeSchool === 'fire') {
-      const wasBurning = mb.dot > 0;
-      const resistMult = getSchoolResistMult('fire');
-      const burnBonus = Math.round(dmg * burnPct / 100 * resistMult);
-      dmg += burnBonus;
-      // Inferno — pokud cíl už hořel, exploze 5.0×
-      if (wasBurning && hasFireInferno()) {
-        const infernoDmg = Math.round(dmg * 5.0);
-        mb.bossHp -= infernoDmg;
-        displayDamageText(`💥 ${infernoDmg}`);
-        playSFX(critSfx);
-      }
-    }
-    // Ice — chill (mráz)
-    const chillTicks = getIceChillTicks();
-    if (chillTicks > 0 && applyPassives && state.activeSchool === 'ice') {
-      const wasChilled = mb.chillTicksLeft > 0;
-      const chillPct = 25 + getIceChillAddedPct();
-      mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, chillTicks);
-      // Death Freeze — pokud cíl už zpomalen, krit 5.0×
-      if (wasChilled && hasIceDeathFreeze()) {
-        const deathDmg = Math.round(dmg * 5.0);
-        mb.bossHp -= deathDmg;
-        displayDamageText(`💀 ${deathDmg}`);
-        playSFX(critSfx);
-      }
-    }
-    // Nature — poison (jed) — % z dmg/tick
-    const poisonPct = getNaturePoisonPct();
-    if (poisonPct > 0 && applyPassives && state.activeSchool === 'nature') {
-      const poisonDur = getNaturePoisonDuration();
-      const resistMult = getSchoolResistMult('nature');
-      const poisonDmg = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
-      mb.dot = poisonDmg;
-      mb.dotTicksLeft = poisonDur;
-      // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
-      if (hasNatureRevitalize()) mb._poisonBlockHeal = true;
-    }
-    // Nature — heal (léčení HoT) — fixní HP/tick + % z vitality
-    const healAmt = getNatureHealPct();
-    if (healAmt > 0 && applyPassives && state.activeSchool === 'nature') {
-      const healDur = getNatureHealDuration();
-      const resistMult = getSchoolResistMult('nature');
-      const vitBonus = getNatureHealVitalityBonus();
-      mb.hot = Math.max(mb.hot || 0, Math.round(healAmt * resistMult) + vitBonus);
-      mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
-    }
-    // Physical — edge (ostří) — % bonus dmg
-    const edgePct = getPhysicalEdgePct();
-    if (edgePct > 0 && applyPassives && state.activeSchool === 'physical') {
-      const edgeBonus = Math.round(dmg * edgePct / 100);
-      dmg += edgeBonus;
-    }
-    // Physical — executioner (kat) — 5× dmg pod 20% HP
-    if (hasPhysicalExecutioner() && applyPassives && state.activeSchool === 'physical') {
-      const hpPct = (mb.bossHp / mb.maxBossHp) * 100;
-      if (hpPct <= 20) {
-        dmg = Math.round(dmg * 5.0);
-        displayDamageText(`💀 ${dmg}`);
-        playSFX(critSfx);
-      }
-    }
-
-    mb.bossHp -= dmg;
-    // Projektil podle zbraně: blade = seknutí, fists = rána pěstí, staff = koule
-    const wType = getWeaponType();
-    if (wType === 'blade') {
-      spawnSlashEffect(isCrit);
-    } else if (wType === 'fists') {
-      spawnFistEffect(isCrit);
-    } else {
-      spawnProjectileEffect(null, false, isCrit);
-    }
-    // Probliknutí bosse
-    const bossFig = $('mbFigure');
-    if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
-
-    // Damage text
-    const damageText = $('mbDamageText');
-    if (damageText) {
-      damageText.textContent = `-${dmg}`;
-      damageText.classList.remove('hidden');
-      setTimeout(() => damageText.classList.add('hidden'), 600);
-    }
-
-    if (mb.bossHp <= 0) {
-      // Počkat na animaci projektilu a damage textu (500ms)
-      setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 300);
-      return;
-    }
-    updateMapBattleUI();
-    mb.inAttackWindow = false;
-    $('mbActionInfo').classList.add('hidden');
-    updateActionButtons();
-    // Blizzard — 3 útoky po sobě
-    if (mb._blizzardFreeAttacks > 0) {
-      mb._blizzardFreeAttacks--;
-      setTimeout(() => openAttackWindow(), 100);
-    } else {
-      setTimeout(() => mapBattleTurn(), 300);
-    }
   }
 
   function onMapHit() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
-    // GUARD: pokud _hitProcessed, tohle je druhé volání (např. timer+swipe ve stejném ticku)
     if (mb._hitProcessed) return;
     mb._hitProcessed = true;
     clearTimeout(mb._sequenceTimer);
@@ -2660,22 +2473,19 @@
     mb._ringTimer = null;
     mb._sequenceTimer = null;
 
-    // DoT tick i při neúspěchu — timer proběhl, i když hráč neuhnul
+    // DoT tick
     if (doDotTick(mb)) return;
-
-    // Chill tick i při neúspěchu — jeden tick zpomalení uběhl
+    // Chill tick
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
     const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
     const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
     let bossDmg = Math.round(baseBossDmg * diffMult * (0.8 + Math.random() * 0.4));
-    // Speciální schopnosti monster
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
     let isCrit = false;
     let lifeStealAmt = 0;
     let manaStealAmt = 0;
-    // Boss může mít vícero typů — aplikujeme všechny
     const typesToApply = bossTypes.length > 0 ? bossTypes : (mType ? [mType] : []);
     typesToApply.forEach(t => {
       if (t === MONSTER_TYPES.CRITMASTER) {
@@ -2691,44 +2501,33 @@
       } else if (t === MONSTER_TYPES.MANASTEALER) {
         manaStealAmt += Math.round(bossDmg * 0.5);
       } else if (t === MONSTER_TYPES.POISON) {
-        // Jed: 3 ticky, každý ~20% baseBossDmg
         const poisonDmg = Math.max(1, Math.round(baseBossDmg * 0.2));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
       }
     });
     let amount = bossDmg;
-    if (mb.shieldActive) {
-      const block = mb.shieldActive;
-      if (block >= 100) {
-        // (hint: zachovat bonus info)
-        advanceSequence();
-        return;
-      }
-      amount = Math.max(1, Math.round(amount * (1 - block/100)));
-      mb.shieldActive = null;
-    }
     mb.playerHp -= amount;
-    // Life steal — monster si léčí HP
+    // Life steal
     if (lifeStealAmt > 0) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
     }
-    // Mana steal — hráč ztrácí manu
+    // Mana steal
     if (manaStealAmt > 0) {
       state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);
     }
     mb.mistakes = (mb.mistakes || 0) + 1;
+    mb.comboCount = 0; // reset combo při chybě
     playSFX(hitSfx);
 
-    // Červený projektil od středu k hráči
     spawnProjectileEffect(null, true, false, mb.monsterAttackType);
-    // Probliknutí hráče
     const playerFig = $('mbPlayerFigure');
     if (playerFig) { playerFig.style.transition = 'filter 0.15s'; playerFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 100); }
 
     const playerDamageText = $('mbPlayerDamageText');
     if (playerDamageText) {
       playerDamageText.textContent = `-${amount}`;
+      playerDamageText.style.color = '';
       playerDamageText.classList.remove('hidden');
       setTimeout(() => playerDamageText.classList.add('hidden'), 600);
     }
@@ -2739,9 +2538,6 @@
     if (actionInfo) actionInfo.classList.add('hidden');
     updateActionButtons();
     resetTimerRing();
-    const counterIcon = $('mbCounterAttack');
-    if (counterIcon) counterIcon.classList.add('hidden');
-    // Rapid cleanup
     const rTarget = $('mbRapidTarget');
     if (rTarget) rTarget.classList.add('hidden');
     const lTap = $('mbTapLeft');
@@ -2749,13 +2545,12 @@
     if (lTap) lTap.classList.add('hidden');
     if (rTap) rTap.classList.add('hidden');
 
-    // (hint: zachovat bonus info)
     flashSeqFail();
     updateMapBattleUI();
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
-    // Po zásahu restartovat sekvenci — hráč byl potrestán
+    // Po zásahu restartovat sekvenci
     setTimeout(() => mapBattleTurn(), 300);
   }
 
@@ -2823,26 +2618,129 @@
     if (!mb.isRapidAttack) return;
     if (mb._hitProcessed) return;
     mb.rapidTaps = (mb.rapidTaps || 0) + 1;
-    // Vizuální feedback — jen ta ploška, na kterou se kliklo
+    // Každý tap = malý útok
+    dealPlayerDamage(mb, 0.3);
+    // Vizuální feedback
     if (tapId) {
       const el = $(tapId);
       if (el) { el.classList.add('tapped'); setTimeout(() => el.classList.remove('tapped'), 80); }
     }
     playSFX(dodgeSfx);
-    // Update cíle v kolečku
     const remaining = mb.rapidTarget - mb.rapidTaps;
     const target = $('mbRapidTarget');
     if (target) target.textContent = `${remaining}`;
-    // (hint: zachovat bonus info)
     if (mb.rapidTaps >= mb.rapidTarget) {
-      // Hotovo!
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
       mb._ringTimer = null;
       mb._sequenceTimer = null;
-      // (hint: zachovat bonus info)
       advanceSequence();
     }
+  }
+
+  function dealPlayerDamage(mb, mult) {
+    // Vypočítat damage hráče proti monstru
+    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
+    const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
+    const critMult = 1.5;
+    let dmg = Math.round(baseDmg * mult);
+    // Fire school passive — ignite
+    const ignitePct = getFireIgnitePct();
+    if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
+    
+    // 🎯 Crit window
+    let isCrit = false;
+    if (mb._bonusStartMs != null && mb._bonusMs > 0) {
+      if (mb._bonusActive) {
+        isCrit = true;
+        dmg = Math.round(dmg * critMult);
+        playSFX(getCritSfx());
+        const critCircle = document.querySelector('.bonus-zone-circle');
+        if (critCircle) {
+          critCircle.style.stroke = '#ffd700';
+          critCircle.style.opacity = '1';
+          critCircle.style.strokeWidth = '9';
+          setTimeout(() => {
+            critCircle.style.stroke = '#f1c40f';
+            critCircle.style.opacity = '0.85';
+            critCircle.style.strokeWidth = '7';
+          }, 400);
+        }
+      } else {
+        playSFX(getHitSfx());
+      }
+    } else {
+      playSFX(getHitSfx());
+    }
+    
+    // === PASIVNÍ EFEKTY ŠKOL ===
+    let applyPassives = true;
+    if (mb._activeSpellChillActive) applyPassives = false;
+        
+    // Fire — burn
+    const burnPct = getFireBurnPct();
+    if (burnPct > 0 && applyPassives && state.activeSchool === 'fire') {
+      const wasBurning = mb.dot > 0;
+      const resistMult = getSchoolResistMult('fire');
+      const burnBonus = Math.round(dmg * burnPct / 100 * resistMult);
+      dmg += burnBonus;
+      if (wasBurning && hasFireInferno()) {
+        const infernoDmg = Math.round(dmg * 5.0);
+        mb.bossHp -= infernoDmg;
+        const dmgText = $('mbDamageText');
+        if (dmgText) {
+          dmgText.textContent = `💥 Inferno! -${infernoDmg}`;
+          dmgText.classList.remove('hidden');
+          setTimeout(() => dmgText.classList.add('hidden'), 600);
+        }
+      }
+      // Fire dot
+      const dotPct = getFireDotPct();
+      if (dotPct > 0) {
+        const dotTick = Math.max(1, Math.round(dmg * dotPct / 100));
+        if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 3; }
+      }
+    }
+    
+    // Ice — chill
+    const chillPct = getIceChillPct();
+    if (chillPct > 0 && applyPassives && state.activeSchool === 'ice') {
+      if (!mb._activeSpellChillActive) {
+        mb.chillPercent = chillPct;
+        mb.chillTicksLeft = 3;
+      }
+    }
+    
+    // Nature — poison
+    const poisonPct = getNaturePoisonPct();
+    if (poisonPct > 0 && applyPassives && state.activeSchool === 'nature') {
+      const resistMult = getSchoolResistMult('nature');
+      const dotTick = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
+      if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 3; }
+    }
+    
+    // Physical — bleed
+    const bleedPct = getPhysicalBleedPct();
+    if (bleedPct > 0 && applyPassives && state.activeSchool === 'physical') {
+      const dotTick = Math.max(1, Math.round(dmg * bleedPct / 100));
+      if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 3; }
+    }
+    
+    mb.bossHp -= dmg;
+    const dmgText = $('mbDamageText');
+    if (dmgText) {
+      dmgText.textContent = isCrit ? `💥 -${dmg}` : `-${dmg}`;
+      dmgText.classList.remove('hidden');
+      setTimeout(() => dmgText.classList.add('hidden'), 600);
+    }
+    const bossFig = $('mbFigure');
+    if (bossFig) {
+      bossFig.style.transition = 'filter 0.15s';
+      bossFig.style.filter = isCrit ? 'brightness(3) saturate(2) hue-rotate(45deg)' : 'brightness(2) saturate(1.5)';
+      setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100);
+    }
+    spawnProjectileEffect(null, false, isCrit, ATTACK_TYPES.MELEE);
+    updateMapBattleUI();
   }
 
   function castMapSpell(spellId) { if (!spellId) { spellId = getBestSpellId(state.activeSchool); if (!spellId) return; }
