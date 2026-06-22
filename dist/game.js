@@ -581,7 +581,7 @@
     // Theme 3 — Výspy
     [
       {face:'assets/monsters/kerberos.png',name:'Kerberos',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'👹',name:'Pekelník',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/hellhound.png',name:'Pekelník',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐉',name:'Drak',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'🔥',name:'Ohnivec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'👺',name:'Démon',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
