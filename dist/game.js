@@ -680,7 +680,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{} };
     return s;
   }
@@ -3849,6 +3849,10 @@
     $('heroGold').textContent = h.gold;
     const critChance = ((h.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
     $('heroCrit').textContent = `${critChance}% okno (×1.5)`;
+    // Portrét
+    const faceFile = h.face || 'hero';
+    const portraitImg = $('heroPortraitImg');
+    if (portraitImg) portraitImg.src = `assets/monsters/${faceFile}.png`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
     if (schoolInfo) {
@@ -3913,6 +3917,48 @@
       saveGame();
       renderHero();
     }
+  }
+
+  const HERO_FACES = [
+    {id:'hero', name:'Válečník', icon:'⚔️'},
+    {id:'hero_warrior_m', name:'Válečník M', icon:'⚔️'},
+    {id:'hero_warrior_f', name:'Válečnice F', icon:'⚔️'},
+    {id:'hero_mage_m', name:'Mág M', icon:'🔮'},
+    {id:'hero_mage_f', name:'Mágyně F', icon:'🔮'},
+    {id:'hero_barbarian_m', name:'Barbar M', icon:'🪓'},
+    {id:'hero_barbarian_f', name:'Barbarka F', icon:'🪓'},
+    {id:'hero_rogue_m', name:'Zloděj M', icon:'🗡️'},
+    {id:'hero_rogue_f', name:'Zlodějka F', icon:'🗡️'},
+    {id:'hero_paladin_m', name:'Paladin M', icon:'🛡️'},
+    {id:'hero_paladin_f', name:'Paladinka F', icon:'🛡️'},
+  ];
+
+  function showFaceSelect() {
+    const overlay = $('faceSelectOverlay');
+    const grid = $('faceSelectGrid');
+    if (!overlay || !grid) return;
+    grid.innerHTML = HERO_FACES.map(f => {
+      const current = (state.hero.face || 'hero') === f.id;
+      return `<div onclick="game.selectFace('${f.id}')" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:8px;border-radius:8px;background:${current ? '#2a2a5a' : '#1a1a3a'};border:2px solid ${current ? '#4a7dff' : 'transparent'};transition:all 0.2s">
+        <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #4a7dff;display:flex;align-items:center;justify-content:center;background:#0a0a0a">
+          <img src="assets/monsters/${f.id}.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>
+        </div>
+        <span style="font-size:11px;margin-top:4px;color:#ccc">${f.icon} ${f.name}</span>
+      </div>`;
+    }).join('');
+    overlay.classList.remove('hidden');
+  }
+
+  function closeFaceSelect() {
+    const overlay = $('faceSelectOverlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+
+  function selectFace(id) {
+    state.hero.face = id;
+    saveGame();
+    renderHero();
+    closeFaceSelect();
   }
 
   function upgradeAttr(attr) {
@@ -4475,7 +4521,8 @@
     startTutorial, stopTutorial, advanceTutorial, prevTutorialStep,
     toggleMapPause, toggleTutorialPause,
     renderBestiary,
-    renameHero
+    renameHero,
+    showFaceSelect, closeFaceSelect, selectFace
   };
   init();
 })();
