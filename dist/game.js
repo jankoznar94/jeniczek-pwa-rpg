@@ -581,7 +581,7 @@
     // Theme 3 — Výspy
     [
       {face:'assets/monsters/kerberos.png',name:'Kerberos',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/hellhound.png',name:'Pekelník',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/hellhound.png',name:'Pekelný pes',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🐉',name:'Drak',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
       {face:'🔥',name:'Ohnivec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'👺',name:'Démon',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
@@ -680,7 +680,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{} };
     return s;
   }
@@ -3839,7 +3839,7 @@
     const h = state.hero;
     const active = state.activeSchool ? SCHOOL_MAP[state.activeSchool] : null;
     const schoolLv = active ? getTierPoints(state.activeSchool, 0) : 0;
-    $('heroName').textContent = 'Dobrodruh';
+    $('heroName').textContent = h.name || 'Dobrodruh';
     $('heroLevel').textContent = `Lv.${h.level}`;
     $('heroDeaths').textContent = state.deaths;
     $('heroWins').textContent = state.wins;
@@ -3902,6 +3902,17 @@
     const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); if (r1 && r1.rarity) hr1s.style.borderColor = RARITY[r1.rarity].border; }
     const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.textContent = r2 ? r2.icon : '💍';
     const hr2s = $('heroSlotRing2'); if (hr2s) { hr2s.classList.toggle('empty', !r2); if (r2 && r2.rarity) hr2s.style.borderColor = RARITY[r2.rarity].border; }
+  }
+
+  function renameHero() {
+    const h = state.hero;
+    const currentName = h.name || 'Dobrodruh';
+    const newName = prompt('Zadej nové jméno hrdiny:', currentName);
+    if (newName && newName.trim().length > 0 && newName.trim() !== currentName) {
+      h.name = newName.trim().substring(0, 20);
+      saveGame();
+      renderHero();
+    }
   }
 
   function upgradeAttr(attr) {
@@ -4463,7 +4474,8 @@
     investTalent, activateSchool, resetTalents,
     startTutorial, stopTutorial, advanceTutorial, prevTutorialStep,
     toggleMapPause, toggleTutorialPause,
-    renderBestiary
+    renderBestiary,
+    renameHero
   };
   init();
 })();
