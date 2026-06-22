@@ -3939,7 +3939,7 @@
     grid.innerHTML = HERO_FACES.map(f => {
       const current = (state.hero.face || 'hero') === f.id;
       return `<div onclick="game.selectFace('${f.id}')" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;padding:6px;border-radius:8px;background:${current ? '#2a2a5a' : '#1a1a3a'};border:2px solid ${current ? '#4a7dff' : 'transparent'};transition:all 0.2s">
-        <div style="width:56px;height:56px;border-radius:50%;overflow:hidden;border:2px solid #4a7dff;display:flex;align-items:center;justify-content:center;background:#0a0a0a">
+        <div style="width:72px;height:72px;border-radius:50%;overflow:hidden;border:2px solid #4a7dff;display:flex;align-items:center;justify-content:center;background:#0a0a0a">
           <img src="assets/monsters/${f.id}.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block"/>
         </div>
       </div>`;
