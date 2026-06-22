@@ -2726,11 +2726,12 @@
     }
     
     // Ice — chill
-    const chillPct = getIceChillPct();
-    if (chillPct > 0 && applyPassives && state.activeSchool === 'ice') {
+    const chillTicks = getIceChillTicks();
+    if (chillTicks > 0 && applyPassives && state.activeSchool === 'ice') {
       if (!mb._activeSpellChillActive) {
-        mb.chillPercent = chillPct;
-        mb.chillTicksLeft = 3;
+        const chillPct = 25 + getIceChillAddedPct();
+        mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
+        mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, chillTicks);
       }
     }
     
