@@ -600,61 +600,6 @@
       {face:'⛄',name:'Sněhulák',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'🧝',name:'Elf',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
     ],
-    // Theme 5 — Věž
-    [
-      {face:'assets/monsters/troll_test_small.png',name:'Věžový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'⚡',name:'Blesk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🤖',name:'Golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🔮',name:'Mág',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'👁️',name:'Vidoucí',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🌀',name:'Vortex',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🧙',name:'Čaroděj',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🕳️',name:'Trhlina',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-    ],
-    // Theme 6 — Jeskyně
-    [
-      {face:'assets/monsters/troll_test_small.png',name:'Jeskynní troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🪨',name:'Skaloun',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'⛏️',name:'Kopáč',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🐭',name:'Netopýr',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🕷️',name:'Pavouk',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦇',name:'Krysa',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'💎',name:'Drahokam',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🧌',name:'Troll',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-    ],
-    // Theme 7 — Zahrady
-    [
-      {face:'assets/monsters/troll_test_small.png',name:'Zahradní troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🌿',name:'Kvítek',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🌸',name:'Jaro',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🦋',name:'Motýl',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🐞',name:'Beruška',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🌺',name:'Růže',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🍃',name:'Lístek',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🌈',name:'Duha',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-    ],
-    // Theme 8 — Nebe
-    [
-      {face:'assets/monsters/troll_test_small.png',name:'Nebeský troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'☁️',name:'Oblak',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🏰',name:'Strážce',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🦄',name:'Jednorožec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'✨',name:'Třpyt',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🌙',name:'Luna',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'⭐',name:'Hvězda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🪽',name:'Anděl',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-    ],
-    // Theme 9 — Stíny
-    [
-      {face:'assets/monsters/troll_test_small.png',name:'Stínový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'💀',name:'Smrt',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'☠️',name:'Mor',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🖤',name:'Tma',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🔪',name:'Čepel',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🩸',name:'Krev',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'👁️‍🗨️',name:'Stín',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🌑',name:'Měsíc',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-    ],
   ];
 
   // ===== LOCATIONS (MAP) =====
