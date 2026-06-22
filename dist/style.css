@@ -319,6 +319,13 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .hero-attr-row:last-child { border-bottom:none; }
 .hero-xp-wrap { margin:8px 0 0;padding:6px 0;border-top:1px solid #1a1a3a; }
 
+/* Hero screen — portrét */
+.hero-header { display:flex; gap:14px; align-items:center; }
+.hero-portrait-lg { flex-shrink:0; }
+.hero-portrait-lg-frame { width:100px; height:100px; border-radius:50%; border:2px solid #4a7dff; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#0a0a0a; box-shadow:0 0 16px rgba(74,125,255,0.4); }
+.hero-portrait-lg-img { width:100%; height:100%; object-fit:cover; display:block; object-position:center 30%; }
+.hero-header-info { flex:1; min-width:0; }
+
 /* Shop */
 .shop-item { background:#1a1a3a;border:1px solid #2a2a4a;border-radius:8px;padding:14px;margin:8px 0; }
 .shop-item .shop-item-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
