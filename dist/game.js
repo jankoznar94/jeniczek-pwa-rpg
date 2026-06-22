@@ -486,43 +486,43 @@
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
     // === ZÁKLADNÍ (bez ceny, startovní) ===
-    { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', weaponType:'fists' },
-    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢' },
+    { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists' },
+    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢', iconImg:'' },
     // === ZBRANĚ — magické (staff) ===
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', weaponType:'staff', tier:1 },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', weaponType:'staff', tier:2 },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', weaponType:'staff', tier:2 },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', weaponType:'staff', tier:3 },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', weaponType:'staff', tier:3 },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', weaponType:'staff', tier:4 },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', weaponType:'staff', tier:4 },
-    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', weaponType:'staff', tier:5 },
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1 },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:12, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2 },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:15, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2 },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:20, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3 },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:24, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3 },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:28, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4 },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:33, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4 },
+    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5 },
     // === ZBRANĚ — fyzické (blade) ===
-    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:10, bonusHp:0, cost:20, icon:'⚔️', weaponType:'blade', tier:1 },
-    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, cost:35, icon:'⚔️', weaponType:'blade', tier:2 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:22, bonusHp:0, cost:50, icon:'🪓', weaponType:'blade', tier:3 },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:30, bonusHp:0, cost:80, icon:'⚔️', weaponType:'blade', tier:4 },
-    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', weaponType:'blade', tier:5 },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', weaponType:'blade', tier:5 },
-    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', weaponType:'blade', tier:6 },
+    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:10, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1 },
+    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:22, bonusHp:0, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3 },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:30, bonusHp:0, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4 },
+    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
+    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6 },
     // === BRNĚNÍ ===
-    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, cost:20, icon:'👘', tier:1 },
-    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, cost:35, icon:'👘', tier:2 },
-    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, cost:60, icon:'👘', tier:3 },
-    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, bonusMana:20, cost:80, icon:'👘', tier:4 },
-    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, cost:110, icon:'👘', tier:4 },
-    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, cost:160, icon:'👘', tier:5 },
-    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, bonusMana:50, cost:250, icon:'👘', tier:6 },
+    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
+    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
+    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, cost:60, icon:'👘', iconImg:'/assets/items/armor_scale.png', tier:3 },
+    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, bonusMana:20, cost:80, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
+    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, cost:110, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
+    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, cost:160, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:5 },
+    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, bonusMana:50, cost:250, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:6 },
     // === HELMY ===
-    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, cost:15, icon:'🎭', tier:1 },
-    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️', tier:2 },
-    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️', tier:3 },
-    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑', tier:5 },
+    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, cost:15, icon:'🎭', iconImg:'/assets/items/helmet_linen_hood.png', tier:1 },
+    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️', iconImg:'/assets/items/helmet_iron_helm.png', tier:2 },
+    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️', iconImg:'/assets/items/helmet_steel_helm.png', tier:3 },
+    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑', iconImg:'/assets/items/helmet_crown.png', tier:5 },
     // === PRSTENY ===
-    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:15, icon:'💍', tier:1 },
-    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍', tier:3 },
-    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:10, bonusHp:20, cost:100, icon:'💍', tier:4 },
-    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:15, bonusHp:30, cost:180, icon:'💍', tier:5 },
+    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:15, icon:'💍', iconImg:'/assets/items/ring_copper.png', tier:1 },
+    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍', iconImg:'/assets/items/ring_silver.png', tier:3 },
+    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:10, bonusHp:20, cost:100, icon:'💍', iconImg:'/assets/items/ring_gold.png', tier:4 },
+    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:15, bonusHp:30, cost:180, icon:'💍', iconImg:'/assets/items/ring_gem.png', tier:5 },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
   // Mapa pro generované loot itemy (doplňuje ITEM_MAP)
@@ -530,6 +530,15 @@
 
   function getItemInfo(id) {
     return ITEM_MAP[id] || _lootItemMap[id] || null;
+  }
+
+  function renderItemIcon(item, size) {
+    if (!item) return '';
+    const s = size || 28;
+    if (item.iconImg) {
+      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;">`;
+    }
+    return `<span style="font-size:${s}px;display:inline-flex;align-items:center;vertical-align:middle">${item.icon}</span>`;
   }
 
   // ===== MONSTER TYPES =====
@@ -3176,7 +3185,7 @@
         if (lootItems.length > 0) {
           lootItems.forEach(item => {
             const r = RARITY[item.rarity] || RARITY.common;
-            lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${item.icon}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
+            lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,16)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
           });
         } else {
           lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
@@ -3258,7 +3267,7 @@
       let lootListHtml = '';
       if (bossLoot.type === 'boss') {
         const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
-        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${bossLoot.item.icon}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
+        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(bossLoot.item,16)}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
       } else {
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
@@ -3872,15 +3881,15 @@
     const helm = ITEM_MAP[h.equip.helmet];
     const r1 = ITEM_MAP[h.equip.ring1];
     const r2 = ITEM_MAP[h.equip.ring2];
-    const hw = $('heroSlotWeaponIcon'); if (hw) hw.textContent = w.icon;
+    const hw = $('heroSlotWeaponIcon'); if (hw) hw.innerHTML = renderItemIcon(w, 28);
     const hws = $('heroSlotWeapon'); if (hws) { hws.classList.toggle('empty', h.equip.weapon === 'fists'); if (w.rarity) hws.style.borderColor = RARITY[w.rarity].border; }
-    const ha = $('heroSlotArmorIcon'); if (ha) ha.textContent = a.icon;
+    const ha = $('heroSlotArmorIcon'); if (ha) ha.innerHTML = renderItemIcon(a, 28);
     const has = $('heroSlotArmor'); if (has) { has.classList.toggle('empty', h.equip.armor === 'rags'); if (a.rarity) has.style.borderColor = RARITY[a.rarity].border; }
-    const hh = $('heroSlotHelmetIcon'); if (hh) hh.textContent = helm ? helm.icon : '⛑️';
+    const hh = $('heroSlotHelmetIcon'); if (hh) hh.innerHTML = helm ? renderItemIcon(helm, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">⛑️</span>';
     const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); if (helm && helm.rarity) hhs.style.borderColor = RARITY[helm.rarity].border; }
-    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.textContent = r1 ? r1.icon : '💍';
+    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
     const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); if (r1 && r1.rarity) hr1s.style.borderColor = RARITY[r1.rarity].border; }
-    const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.textContent = r2 ? r2.icon : '💍';
+    const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.innerHTML = r2 ? renderItemIcon(r2, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
     const hr2s = $('heroSlotRing2'); if (hr2s) { hr2s.classList.toggle('empty', !r2); if (r2 && r2.rarity) hr2s.style.borderColor = RARITY[r2.rarity].border; }
   }
 
@@ -3974,7 +3983,7 @@
       else stats = `❤️+${item.bonusHp} HP`;
       return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
         <div class="shop-item-header">
-          <div class="shop-item-name"><span class="item-icon">${item.icon}</span>${item.name}</div>
+          <div class="shop-item-name">${renderItemIcon(item,28)}${item.name}</div>
           <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
         </div>
         <div class="shop-item-actions">
@@ -4039,17 +4048,17 @@
     const helmet = ITEM_MAP[h.equip.helmet];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
-    $('invSlotWeaponIcon').textContent = weapon.icon;
+    $('invSlotWeaponIcon').innerHTML = renderItemIcon(weapon, 28);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     if (weapon.rarity) $('invSlotWeapon').style.borderColor = RARITY[weapon.rarity].border;
-    $('invSlotArmorIcon').textContent = armor.icon;
+    $('invSlotArmorIcon').innerHTML = renderItemIcon(armor, 28);
     $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
     if (armor.rarity) $('invSlotArmor').style.borderColor = RARITY[armor.rarity].border;
-    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.textContent = helmet ? helmet.icon : '⛑️';
+    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">⛑️</span>';
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); if (helmet && helmet.rarity) hS.style.borderColor = RARITY[helmet.rarity].border; }
-    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.textContent = ring1 ? ring1.icon : '💍';
+    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); if (ring1 && ring1.rarity) r1S.style.borderColor = RARITY[ring1.rarity].border; }
-    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.textContent = ring2 ? ring2.icon : '💍';
+    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
     const r2S = $('invSlotRing2'); if (r2S) { r2S.classList.toggle('empty', !ring2); if (ring2 && ring2.rarity) r2S.style.borderColor = RARITY[ring2.rarity].border; }
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
@@ -4064,7 +4073,7 @@
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : `❤️${item.bonusHp}`;
         const r = RARITY[item.rarity] || RARITY.common;
         html += `<div class="inv-grid-cell" data-idx="${i}" style="border-color:${r.border}">
-          <div class="cell-icon">${item.icon}</div>
+          <div class="cell-icon">${renderItemIcon(item,24)}</div>
           <div class="cell-name" style="color:${r.color}">${item.name}</div>
           <div class="cell-actions">
             <button class="btn-equip" onclick="event.stopPropagation();game.equipItem(${i})">🎽 Obléci</button>
@@ -4080,7 +4089,7 @@
     function showItemInfo(item) {
       const panel = $('invInfoPanel');
       if (!panel || !item) { if (panel) panel.classList.add('hidden'); return; }
-      $('invInfoIcon').textContent = item.icon;
+      $('invInfoIcon').innerHTML = renderItemIcon(item, 48);
       $('invInfoName').textContent = item.name;
       const r = RARITY[item.rarity] || RARITY.common;
       $('invInfoName').style.color = r.color;
