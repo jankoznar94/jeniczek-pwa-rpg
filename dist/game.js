@@ -582,9 +582,9 @@
     [
       {face:'assets/monsters/kerberos.png',name:'Kerberos',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
       {face:'assets/monsters/hellhound.png',name:'Pekelný pes',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'🐉',name:'Drak',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'🔥',name:'Ohnivec',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'👺',name:'Démon',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/imp.png',name:'Ďáblík',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/fire_ghost.png',name:'Ohnivý přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/succubus.png',name:'Succuba',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
       {face:'💀',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
       {face:'🗿',name:'Golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
       {face:'⚔️',name:'Meč',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
@@ -639,7 +639,7 @@
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:2, name:'Hlubinné propasti', icon:'🌊', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Hlubinář',face:'🐙',hp:16,types:[MONSTER_TYPES.IMPROVER,MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, boss:{name:'Pekelný démon',face:'👹',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
+    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, boss:{name:'Lucifer',face:'assets/monsters/lucifer.png',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
     { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový král',face:'❄️',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
   ];
 
