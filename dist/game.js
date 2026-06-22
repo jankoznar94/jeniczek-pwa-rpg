@@ -2700,13 +2700,14 @@
     let applyPassives = true;
     if (mb._activeSpellChillActive) applyPassives = false;
         
-    // Fire — burn
+    // Fire — burn (žhnutí) — jednorázový bonus dmg při útoku
     const burnPct = getFireBurnPct();
     if (burnPct > 0 && applyPassives && state.activeSchool === 'fire') {
       const wasBurning = mb.dot > 0;
       const resistMult = getSchoolResistMult('fire');
       const burnBonus = Math.round(dmg * burnPct / 100 * resistMult);
       dmg += burnBonus;
+      // Inferno — pokud cíl už hořel, exploze 5.0×
       if (wasBurning && hasFireInferno()) {
         const infernoDmg = Math.round(dmg * 5.0);
         mb.bossHp -= infernoDmg;
@@ -2717,37 +2718,58 @@
           setTimeout(() => dmgText.classList.add('hidden'), 600);
         }
       }
-      // Fire dot
-      const dotPct = getFireDotPct();
-      if (dotPct > 0) {
-        const dotTick = Math.max(1, Math.round(dmg * dotPct / 100));
-        if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 3; }
-      }
     }
-    
-    // Ice — chill
+    // Ice — chill (mráz)
     const chillTicks = getIceChillTicks();
     if (chillTicks > 0 && applyPassives && state.activeSchool === 'ice') {
-      if (!mb._activeSpellChillActive) {
-        const chillPct = 25 + getIceChillAddedPct();
-        mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
-        mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, chillTicks);
+      const wasChilled = mb.chillTicksLeft > 0;
+      const chillPct = 25 + getIceChillAddedPct();
+      mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, chillTicks);
+      // Death Freeze — pokud cíl už zpomalen, krit 5.0×
+      if (wasChilled && hasIceDeathFreeze()) {
+        const deathDmg = Math.round(dmg * 5.0);
+        mb.bossHp -= deathDmg;
+        const dmgText = $('mbDamageText');
+        if (dmgText) {
+          dmgText.textContent = `💀 ${deathDmg}`;
+          dmgText.classList.remove('hidden');
+          setTimeout(() => dmgText.classList.add('hidden'), 600);
+        }
       }
     }
-    
-    // Nature — poison
+    // Nature — poison (jed) — % z dmg/tick
     const poisonPct = getNaturePoisonPct();
     if (poisonPct > 0 && applyPassives && state.activeSchool === 'nature') {
+      const poisonDur = getNaturePoisonDuration();
       const resistMult = getSchoolResistMult('nature');
-      const dotTick = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
-      if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 3; }
+      const poisonDmg = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
+      mb.dot = poisonDmg;
+      mb.dotTicksLeft = poisonDur;
+      // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
+      if (hasNatureRevitalize()) mb._poisonBlockHeal = true;
     }
-    
-    // Physical — bleed
-    const bleedPct = getPhysicalBleedPct();
-    if (bleedPct > 0 && applyPassives && state.activeSchool === 'physical') {
-      const dotTick = Math.max(1, Math.round(dmg * bleedPct / 100));
-      if (dotTick > 0) { mb.dot = dotTick; mb.dotTicksLeft = 3; }
+    // Nature — heal (léčení HoT) — fixní HP/tick + % z vitality
+    const healAmt = getNatureHealPct();
+    if (healAmt > 0 && applyPassives && state.activeSchool === 'nature') {
+      const healDur = getNatureHealDuration();
+      const resistMult = getSchoolResistMult('nature');
+      const vitBonus = getNatureHealVitalityBonus();
+      mb.hot = Math.max(mb.hot || 0, Math.round(healAmt * resistMult) + vitBonus);
+      mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
+    }
+    // Physical — edge (ostří) — % bonus dmg
+    const edgePct = getPhysicalEdgePct();
+    if (edgePct > 0 && applyPassives && state.activeSchool === 'physical') {
+      const edgeBonus = Math.round(dmg * edgePct / 100);
+      dmg += edgeBonus;
+    }
+    // Physical — executioner (kat) — 5× dmg pod 20% HP
+    if (hasPhysicalExecutioner() && applyPassives && state.activeSchool === 'physical') {
+      const hpPct = (mb.bossHp / mb.maxBossHp) * 100;
+      if (hpPct <= 20) {
+        dmg = Math.round(dmg * 5.0);
+      }
     }
     
     mb.bossHp -= dmg;
