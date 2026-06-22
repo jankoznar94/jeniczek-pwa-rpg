@@ -924,7 +924,8 @@
       currentAttack: null, isHeavyAttack: false,
       isInvertedAttack: false, isTwinAttack: false, isGreenAttack: false,
       _heavySwipes: 0, _twinSwipes: [],
-      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0, comboCount: 0
+      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0, comboCount: 0,
+      _lastSwipeDir: null
     };
     // Schools handled via activeSchool
 
@@ -1357,7 +1358,7 @@
       chances.grey += 10;
       chances.block += 5;
     }
-    let seqLen = 5 + mb.locId;
+    let seqLen = 10; // fixní délka sekvence pro všechny dungeony
     mb.sequence = [];
     let prevType = null;
     for (let i = 0; i < seqLen; i++) {
@@ -1439,7 +1440,7 @@
       return;
     }
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
-    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
 
     const attack = mb.sequence[mb.sequenceIndex];
 
@@ -1655,7 +1656,7 @@
     renderSeqProgress(mb);
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
-    if (mb.bossHp <= 0) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return; }
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
 
     // Sekvence hotová — nové kolo
     if (mb.sequenceIndex >= mb.sequence.length) {
@@ -1979,7 +1980,7 @@
     }
   }
 
-  function spawnSlashEffect(isCrit) {
+  function spawnSlashEffect(isCrit, dir) {
     const arena = $('mbArena');
     if (!arena) return;
     const aRect = arena.getBoundingClientRect();
@@ -1990,11 +1991,17 @@
       cx = bRect.left + bRect.width / 2 - aRect.left;
       cy = bRect.top + bRect.height / 2 - aRect.top;
     }
+    // Rotace podle směru swipu
+    let rotation = 0;
+    if (dir === '⬆️') rotation = 0;
+    else if (dir === '⬇️') rotation = 180;
+    else if (dir === '⬅️') rotation = -90;
+    else if (dir === '➡️') rotation = 90;
     if (isCrit) {
-      // Dvojitý kříž (X) — červený
+      // Dvojitý kříž (X) — červený, s rotací podle směru
       const size = 100;
       const slash = document.createElement('div');
-      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:0;`;
+      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:0;transform:rotate(${rotation}deg);`;
       slash.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
         <path d="M 15 ${size-15} Q ${size/2} ${size/2} ${size-15} 15" stroke="#e74c3c" stroke-width="5" stroke-linecap="round" fill="none" opacity="0.95">
           <animate attributeName="stroke-dashoffset" from="120" to="0" dur="0.1s" fill="freeze"/>
@@ -2018,9 +2025,9 @@
       setTimeout(() => { if (slash.parentNode) slash.remove(); }, 450);
     } else {
       const sc = getSchoolColors(false);
-      // Oblouček místo rovné čáry — path s quadratic bezier
+      // Oblouček s rotací podle směru swipu
       const slash = document.createElement('div');
-      slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;`;
+      slash.style.cssText = `position:absolute;left:${cx-40}px;top:${cy-40}px;width:80px;height:80px;z-index:20;pointer-events:none;opacity:0;transform:rotate(${rotation}deg);`;
       slash.innerHTML = `<svg viewBox="0 0 80 80" width="80" height="80" style="display:block">
         <path d="M 10 70 Q 40 10 70 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
           <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
@@ -2331,6 +2338,9 @@
     if (mb._sequenceTimer === null) return;
 
     doArenaGlow(dir, false);
+
+    // Uložit směr swipu pro animaci
+    mb._lastSwipeDir = dir;
 
     let correct = false;
     let dmgMult = 1.0; // násobitel poškození hrdiny
@@ -2800,7 +2810,7 @@
     // Projektil podle zbraně
     const wType = getWeaponType();
     if (wType === 'blade') {
-      spawnSlashEffect(isCrit);
+      spawnSlashEffect(isCrit, mb._lastSwipeDir);
     } else if (wType === 'fists') {
       spawnFistEffect(isCrit);
     } else {
