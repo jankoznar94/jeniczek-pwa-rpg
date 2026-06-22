@@ -2797,7 +2797,15 @@
       bossFig.style.filter = isCrit ? 'brightness(3) saturate(2) hue-rotate(45deg)' : 'brightness(2) saturate(1.5)';
       setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100);
     }
-    spawnProjectileEffect(null, false, isCrit, ATTACK_TYPES.MELEE);
+    // Projektil podle zbraně
+    const wType = getWeaponType();
+    if (wType === 'blade') {
+      spawnSlashEffect(isCrit);
+    } else if (wType === 'fists') {
+      spawnFistEffect(isCrit);
+    } else {
+      spawnProjectileEffect(null, false, isCrit);
+    }
     updateMapBattleUI();
   }
 
