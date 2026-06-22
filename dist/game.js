@@ -681,18 +681,7 @@
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
   const DUNGEON_THEME_FILTERS = [
-    '',                                    // 0 Les — žádný filtr (zelený troll)
-    'hue-rotate(40deg) sepia(0.3)',       // 1 Poušť — žlutohnědá
-    'hue-rotate(200deg) saturate(0.8)',    // 2 Propasti — modrá
-    'hue-rotate(340deg) saturate(1.2)',    // 3 Výspy — červená
-    'hue-rotate(180deg) brightness(1.2)',  // 4 Štíty — ledová modrá
-    'hue-rotate(280deg)',                  // 5 Věž — fialová
-    'hue-rotate(0deg) saturate(0.5) brightness(0.8)', // 6 Jeskyně — tmavá
-    'hue-rotate(300deg) saturate(0.9)',    // 7 Zahrady — růžová
-    'hue-rotate(180deg) brightness(1.3) saturate(0.7)', // 8 Nebe — světlá
-    'hue-rotate(0deg) saturate(0.3) brightness(0.6)',   // 9 Stíny — tmavá
-    'hue-rotate(340deg) saturate(1.4) brightness(0.9)',  // 10 Chaos — rudá
-    'hue-rotate(0deg) saturate(0.2) brightness(0.5)',    // 11 Smrt — skoro černobílá
+    '', '', '', '', '', '', '', '', '', '', '', '',
   ];
   const DUNGEON_THEMES = [
     { bg:'#0d2d0d', border:'#2ecc71', borderGlow:'rgba(46,204,113,0.3)' },   // 0 Les — zelená
