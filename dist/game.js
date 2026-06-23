@@ -119,6 +119,18 @@
       state.bossesDefeated = LOCATIONS.map(() => true);
       state.floorProgress = LOCATIONS.map(() => 5);
       state.locationProgress = LOCATIONS.map(() => 5);
+      // Odemknout celý bestiář
+      state.encounteredMonsters = [];
+      MONSTER_DB.forEach(themeMonsters => {
+        themeMonsters.forEach(m => {
+          if (!state.encounteredMonsters.includes(m.face)) state.encounteredMonsters.push(m.face);
+        });
+      });
+      LOCATIONS.forEach(loc => {
+        if (loc && loc.boss && loc.boss.face && !state.encounteredMonsters.includes(loc.boss.face)) {
+          state.encounteredMonsters.push(loc.boss.face);
+        }
+      });
       btn.classList.add('active');
     } else {
       state = defaultState();
@@ -127,6 +139,7 @@
     saveGame();
     renderMap();
     renderHero();
+    renderBestiary();
   }
   let _currentBattleBgmIdx = 0;
   let _mapPaused = false;
