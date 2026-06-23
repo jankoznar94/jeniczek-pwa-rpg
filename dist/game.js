@@ -4003,7 +4003,7 @@
   function renderShop() {
     const h = state.hero;
     $('shopGold').textContent = `💰 ${h.gold} zlatých`;
-    $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0).map(item => {
+    $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0 && i.tier === 1).map(item => {
       const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id;
       const canBuy = h.gold >= item.cost && !owned;
       let stats = '';
