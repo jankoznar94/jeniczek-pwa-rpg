@@ -553,6 +553,10 @@
     const borderColor = tierColors[item.tier] || '#888';
     const border = `border:2px solid ${borderColor};`;
     if (item.iconImg) {
+      if (size === 0) {
+        // Full-cover pro inventory buňky — bez fixní velikosti, CSS natáhne
+        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:cover;${border}">`;
+      }
       return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${border}">`;
     }
     return `<span style="font-size:${s}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
@@ -4155,7 +4159,7 @@
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : `❤️${item.bonusHp}`;
         const r = RARITY[item.rarity] || RARITY.common;
         html += `<div class="inv-grid-cell" data-idx="${i}" style="border-color:${r.border}">
-          <div class="cell-icon">${renderItemIcon(item,24)}</div>
+          <div class="cell-icon">${renderItemIcon(item,0)}</div>
           <div class="cell-name" style="color:${r.color}">${item.name}</div>
           <div class="cell-actions">
             <button class="btn-equip" onclick="event.stopPropagation();game.equipItem(${i})">🎽 Obléci</button>
