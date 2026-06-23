@@ -535,10 +535,14 @@
   function renderItemIcon(item, size) {
     if (!item) return '';
     const s = size || 28;
+    // Rámeček podle tieru
+    const tierColors = {1:'#888',2:'#4caf50',3:'#4caf50',4:'#4a8af4',5:'#9c27b0',6:'#9c27b0',7:'#ffd700'};
+    const borderColor = tierColors[item.tier] || '#888';
+    const border = `border:2px solid ${borderColor};`;
     if (item.iconImg) {
-      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;">`;
+      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${border}">`;
     }
-    return `<span style="font-size:${s}px;display:inline-flex;align-items:center;vertical-align:middle">${item.icon}</span>`;
+    return `<span style="font-size:${s}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
   }
 
   // ===== MONSTER TYPES =====
@@ -2440,7 +2444,7 @@
         // Heal: 15% max HP — žádný damage
         const healAmt = Math.max(1, Math.round(mb.maxPlayerHp * 0.15));
         mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + healAmt);
-        playSFX(blockSfx);
+        playSFX(healSfx);
         const dmgText = $('mbPlayerDamageText');
         if (dmgText) {
           dmgText.textContent = `+${healAmt}`;
@@ -2448,6 +2452,7 @@
           dmgText.classList.remove('hidden');
           setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
         }
+        updateMapBattleUI();
       }
     } else {
       // Grey: normální útok
@@ -3094,8 +3099,32 @@
 
     const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
     const icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
+    // Mapovat na PNG podle typu a tieru
+    const iconImg = (function() {
+      if (type === 'weapon') {
+        const tierMap = {1:'staff_wooden',2:'staff_fire',3:'staff_lightning',4:'staff_archmage',5:'staff_archmage',6:'staff_archmage',7:'staff_archmage'};
+        if (subtype === 'blade') {
+          const bMap = {1:'weapon_iron_sword',2:'weapon_broad_sword',3:'weapon_battle_axe',4:'weapon_claymore',5:'weapon_war_hammer',6:'weapon_war_hammer',7:'weapon_claymore'};
+          return '/assets/items/' + (bMap[tier] || 'weapon_iron_sword') + '.png';
+        }
+        return '/assets/items/' + (tierMap[tier] || 'staff_wooden') + '.png';
+      }
+      if (type === 'armor') {
+        const aMap = {1:'armor_leather',2:'armor_chainmail',3:'armor_scale',4:'armor_plate',5:'armor_dragon_scale',6:'armor_dragon_scale',7:'armor_dragon_scale'};
+        return '/assets/items/' + (aMap[tier] || 'armor_leather') + '.png';
+      }
+      if (type === 'helmet') {
+        const hMap = {1:'helmet_linen_hood',2:'helmet_iron_helm',3:'helmet_steel_helm',4:'helmet_steel_helm',5:'helmet_crown',6:'helmet_crown',7:'helmet_crown'};
+        return '/assets/items/' + (hMap[tier] || 'helmet_linen_hood') + '.png';
+      }
+      if (type === 'ring') {
+        const rMap = {1:'ring_copper',2:'ring_copper',3:'ring_silver',4:'ring_gold',5:'ring_gem',6:'ring_gem',7:'ring_platinum'};
+        return '/assets/items/' + (rMap[tier] || 'ring_copper') + '.png';
+      }
+      return '';
+    })();
     const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
-    const item = { id, name, type, subtype, baseDmg, bonusHp, icon, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
+    const item = { id, name, type, subtype, baseDmg, bonusHp, icon, iconImg, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
     ITEM_MAP[id] = item;
     state.lootItems = state.lootItems || {};
     state.lootItems[id] = item;
@@ -3983,7 +4012,7 @@
       else stats = `❤️+${item.bonusHp} HP`;
       return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
         <div class="shop-item-header">
-          <div class="shop-item-name">${renderItemIcon(item,28)}${item.name}</div>
+          <div class="shop-item-name">${renderItemIcon(item,48)}${item.name}</div>
           <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
         </div>
         <div class="shop-item-actions">
