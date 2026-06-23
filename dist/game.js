@@ -559,7 +559,9 @@
       }
       return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${border}">`;
     }
-    return `<span style="font-size:${s}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
+    // Bez iconImg — použít emoji s rozumnou velikostí (ne 0)
+    const fs = size === 0 ? 28 : s;
+    return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
   }
 
   // ===== MONSTER TYPES =====
@@ -4134,17 +4136,17 @@
     const helmet = ITEM_MAP[h.equip.helmet];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
-    $('invSlotWeaponIcon').innerHTML = renderItemIcon(weapon, 28);
+    $('invSlotWeaponIcon').innerHTML = renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     if (weapon.rarity) $('invSlotWeapon').style.borderColor = RARITY[weapon.rarity].border;
-    $('invSlotArmorIcon').innerHTML = renderItemIcon(armor, 28);
+    $('invSlotArmorIcon').innerHTML = renderItemIcon(armor, 0);
     $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
     if (armor.rarity) $('invSlotArmor').style.borderColor = RARITY[armor.rarity].border;
-    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">⛑️</span>';
+    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); if (helmet && helmet.rarity) hS.style.borderColor = RARITY[helmet.rarity].border; }
-    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
+    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); if (ring1 && ring1.rarity) r1S.style.borderColor = RARITY[ring1.rarity].border; }
-    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
+    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const r2S = $('invSlotRing2'); if (r2S) { r2S.classList.toggle('empty', !ring2); if (ring2 && ring2.rarity) r2S.style.borderColor = RARITY[ring2.rarity].border; }
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
