@@ -694,7 +694,7 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{} };
+      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[] };
     return s;
   }
   function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) { // Obnovit loot itemy do ITEM_MAP
@@ -908,6 +908,22 @@
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
+    // Zaznamenat setkání s monstry do bestiáře
+    if (!isBoss) {
+      state.encounteredMonsters = state.encounteredMonsters || [];
+      floorMonsters.forEach(m => {
+        const key = m.face;
+        if (!state.encounteredMonsters.includes(key)) {
+          state.encounteredMonsters.push(key);
+        }
+      });
+    } else {
+      // Boss setkání
+      state.encounteredMonsters = state.encounteredMonsters || [];
+      if (loc.boss && loc.boss.face && !state.encounteredMonsters.includes(loc.boss.face)) {
+        state.encounteredMonsters.push(loc.boss.face);
+      }
+    }
     mapBattleState = {
       locId, loc, isBoss, progress, floor,
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
@@ -3586,15 +3602,50 @@
   function renderBestiary() {
     const grid = document.getElementById('bestiaryGrid');
     if (!grid) return;
+    const encountered = state.encounteredMonsters || [];
     let html = '';
     MONSTER_DB.forEach((themeMonsters, themeIdx) => {
       const theme = DUNGEON_THEMES[themeIdx] || DUNGEON_THEMES[0];
       const loc = LOCATIONS[themeIdx];
       const locName = loc ? loc.name : `Oblast ${themeIdx+1}`;
       html += `<div class="bestiary-section"><div class="bestiary-section-title" style="color:${theme.border}">${locName}</div>`;
-      // Boss card — první v sekci
+      // Normální monstra — první
+      themeMonsters.forEach(m => {
+        const seen = encountered.includes(m.face);
+        const typeIcon = m.type === MONSTER_TYPES.LIFESTEALER ? '🩸' :
+          m.type === MONSTER_TYPES.MANASTEALER ? '💧' :
+          m.type === MONSTER_TYPES.IMPROVER ? '📈' :
+          m.type === MONSTER_TYPES.CRITMASTER ? '🎯' :
+          m.type === MONSTER_TYPES.POISON ? '☠️' : '🎯';
+        const typeName = m.type === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
+          m.type === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
+          m.type === MONSTER_TYPES.IMPROVER ? 'Improver' :
+          m.type === MONSTER_TYPES.CRITMASTER ? 'Critmaster' :
+          m.type === MONSTER_TYPES.POISON ? 'Poison' : 'Critmaster';
+        const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
+        const atkName = m.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
+        if (seen) {
+          html += `<div class="bestiary-card" style="border-left:3px solid ${theme.border}">
+          <div class="bestiary-face">${renderFace(m.face, themeIdx)}</div>
+          <div class="bestiary-info">
+            <div class="bestiary-name">${m.name}</div>
+            <div class="bestiary-meta"><span>${typeIcon} ${typeName}</span> <span>${atkIcon} ${atkName}</span></div>
+          </div>
+        </div>`;
+        } else {
+          html += `<div class="bestiary-card" style="border-left:3px solid #333;opacity:0.5;filter:grayscale(1)">
+          <div class="bestiary-face"><div class="bestiary-portrait-frame" style="background:#111;border-color:#333"><span style="font-size:28px;color:#555">🔒</span></div></div>
+          <div class="bestiary-info">
+            <div class="bestiary-name" style="color:#555">???</div>
+            <div class="bestiary-meta" style="color:#444"><span>???</span> <span>???</span></div>
+          </div>
+        </div>`;
+        }
+      });
+      // Boss karta — až na konci sekce
       if (loc && loc.boss) {
         const b = loc.boss;
+        const seen = encountered.includes(b.face);
         const bossTypesHtml = b.types.map(t => {
           const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
             t === MONSTER_TYPES.MANASTEALER ? '💧' :
@@ -3610,35 +3661,24 @@
         }).join(' ');
         const atkIcon = b.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
         const atkName = b.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
-        html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid ${theme.border}">
+        if (seen) {
+          html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid ${theme.border}">
           <div class="bestiary-face bestiary-boss-face">${renderFace(b.face, themeIdx)}</div>
           <div class="bestiary-info">
             <div class="bestiary-name bestiary-boss-name"><span class="bestiary-boss-badge">👑 BOSS</span> ${b.name}</div>
             <div class="bestiary-meta">${bossTypesHtml} <span>${atkIcon} ${atkName}</span></div>
           </div>
         </div>`;
-      }
-      themeMonsters.forEach(m => {
-        const typeIcon = m.type === MONSTER_TYPES.LIFESTEALER ? '🩸' :
-          m.type === MONSTER_TYPES.MANASTEALER ? '💧' :
-          m.type === MONSTER_TYPES.IMPROVER ? '📈' :
-          m.type === MONSTER_TYPES.CRITMASTER ? '🎯' :
-          m.type === MONSTER_TYPES.POISON ? '☠️' : '🎯';
-        const typeName = m.type === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
-          m.type === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
-          m.type === MONSTER_TYPES.IMPROVER ? 'Improver' :
-          m.type === MONSTER_TYPES.CRITMASTER ? 'Critmaster' :
-          m.type === MONSTER_TYPES.POISON ? 'Poison' : 'Critmaster';
-        const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
-        const atkName = m.attackType === ATTACK_TYPES.CASTER ? 'Caster' : 'Melee';
-        html += `<div class="bestiary-card" style="border-left:3px solid ${theme.border}">
-          <div class="bestiary-face">${renderFace(m.face, themeIdx)}</div>
+        } else {
+          html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid #333;opacity:0.5;filter:grayscale(1)">
+          <div class="bestiary-face bestiary-boss-face"><div class="bestiary-portrait-frame" style="background:#111;border-color:#333"><span style="font-size:28px;color:#555">🔒</span></div></div>
           <div class="bestiary-info">
-            <div class="bestiary-name">${m.name}</div>
-            <div class="bestiary-meta"><span>${typeIcon} ${typeName}</span> <span>${atkIcon} ${atkName}</span></div>
+            <div class="bestiary-name bestiary-boss-name" style="color:#555"><span class="bestiary-boss-badge">👑 BOSS</span> ???</div>
+            <div class="bestiary-meta" style="color:#444">???</div>
           </div>
         </div>`;
-      });
+        }
+      }
       html += `</div>`;
     });
     grid.innerHTML = html;
