@@ -4012,7 +4012,7 @@
       else stats = `❤️+${item.bonusHp} HP`;
       return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
         <div class="shop-item-header">
-          <div class="shop-item-name">${renderItemIcon(item,48)}${item.name}</div>
+          <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
           <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
         </div>
         <div class="shop-item-actions">
