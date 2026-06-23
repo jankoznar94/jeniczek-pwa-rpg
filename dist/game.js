@@ -2464,8 +2464,9 @@
         mb._sequenceTimer = null;
         correct = true;
         dmgMult = 0.75; // každá rána 0.75×, dohromady 1.5×
+      } else {
+        return; // čekáme na druhý swipe
       }
-      return;
     } else if (attack.type === 'green') {
       // Green = heal — musíš swipnout opačný směr (jako inverted)
       clearTimeout(mb._sequenceTimer);
