@@ -4136,10 +4136,10 @@
     const helmet = ITEM_MAP[h.equip.helmet];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
-    $('invSlotWeaponIcon').innerHTML = renderItemIcon(weapon, 0);
+    $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     if (weapon.rarity) $('invSlotWeapon').style.borderColor = RARITY[weapon.rarity].border;
-    $('invSlotArmorIcon').innerHTML = renderItemIcon(armor, 0);
+    $('invSlotArmorIcon').innerHTML = h.equip.armor === 'rags' ? renderItemIcon({iconImg:'/assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
     $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
     if (armor.rarity) $('invSlotArmor').style.borderColor = RARITY[armor.rarity].border;
     const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
