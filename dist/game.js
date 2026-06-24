@@ -1120,11 +1120,8 @@
   function updateActionButtons() {
     const mb = mapBattleState;
     const atk = $('mbAttackBtn');
-    const blk = $('mbBlockBtn');
     // Útok — vždy aktivní (každá akce = útok)
     if (atk) atk.classList.add('active');
-    // Blok — vždy aktivní
-    if (blk) blk.classList.add('active');
   }
 
   function setupMapBattleInput() {
@@ -1145,17 +1142,6 @@
       };
       atkBtn.addEventListener('pointerdown', atkHandler);
       handlers.push(['pointerdown', atkHandler]);
-    }
-
-    // Click handler for block button (pointerdown = immediate, no 300ms click delay)
-    const blkBtn = $('mbBlockBtn');
-    if (blkBtn) {
-      const blkHandler = (e) => {
-        e.stopPropagation();
-        onMapBlock();
-      };
-      blkBtn.addEventListener('pointerdown', blkHandler);
-      handlers.push(['pointerdown', blkHandler]);
     }
 
     const ts = (e) => { if (mapBattleState.ended) return; const t=e.touches[0]; startX=t.clientX; startY=t.clientY; };
@@ -1183,7 +1169,6 @@
       const dir = map[e.key];
       if (dir) { e.preventDefault(); onMapDodge(dir); return; }
       if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (mapBattleState._attackProcessed) return; onMapAttack(); }
-      if (e.key === 'Control' || e.key === 'ctrl') { e.preventDefault(); onMapBlock(); }
     };
     window.addEventListener('keydown', kh);
     handlers.push(['keydown', kh]);
@@ -1259,19 +1244,19 @@
   }
 
   function getDungeonAttackChances(locId) {
-    // Nový systém: každá akce = útok (kromě bloku)
-    // grey=1.0x, yellow=charge 2.0x, blue=0.75x+0.75x, green=heal, rapid=tap, block=obrana, inverted=ztížení
-    // D1: grey, block
-    if (locId === 0) return { grey: 60, yellow: 0, blue: 0, green: 15, block: 15, inverted: 0, rapid: 0 };
+    // Nový systém: každá akce = útok (blok je nyní pasivní)
+    // grey=1.0x, yellow=charge 2.0x, blue=0.75x+0.75x, green=heal, rapid=tap, inverted=ztížení
+    // D1: grey
+    if (locId === 0) return { grey: 75, yellow: 0, blue: 0, green: 15, inverted: 0, rapid: 0 };
     // D2: + yellow
-    if (locId === 1) return { grey: 40, yellow: 20, blue: 0, green: 15, block: 15, inverted: 0, rapid: 0 };
+    if (locId === 1) return { grey: 55, yellow: 20, blue: 0, green: 15, inverted: 0, rapid: 0 };
     // D3: + inverted
-    if (locId === 2) return { grey: 30, yellow: 20, blue: 0, green: 15, block: 15, inverted: 15, rapid: 0 };
+    if (locId === 2) return { grey: 45, yellow: 20, blue: 0, green: 15, inverted: 15, rapid: 0 };
     // D4: + blue
-    if (locId === 3) return { grey: 20, yellow: 20, blue: 15, green: 10, block: 15, inverted: 15, rapid: 0 };
+    if (locId === 3) return { grey: 35, yellow: 20, blue: 15, green: 10, inverted: 15, rapid: 0 };
     // D5: + rapid
-    if (locId === 4) return { grey: 15, yellow: 20, blue: 15, green: 10, block: 15, inverted: 15, rapid: 10 };
-    return { grey: 60, yellow: 0, blue: 0, green: 15, block: 15, inverted: 0, rapid: 0 };
+    if (locId === 4) return { grey: 30, yellow: 20, blue: 15, green: 10, inverted: 15, rapid: 10 };
+    return { grey: 75, yellow: 0, blue: 0, green: 15, inverted: 0, rapid: 0 };
   }
 
   const _arrowSvg = (fill, extra = '') =>
@@ -1307,15 +1292,14 @@
   }
 
   function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.block + chances.inverted + (chances.rapid||0);
+    const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0);
     const randNum = Math.random() * randTotal;
     let type = 'grey';
     if (randNum < chances.inverted) { type = 'inverted'; }
-    else if (randNum < chances.inverted + chances.block) { type = 'block'; }
-    else if (randNum < chances.inverted + chances.block + chances.green) { type = 'green'; }
-    else if (randNum < chances.inverted + chances.block + chances.green + chances.yellow) { type = 'yellow'; }
-    else if (randNum < chances.inverted + chances.block + chances.green + chances.yellow + chances.blue) { type = 'blue'; }
-    else if (randNum < chances.inverted + chances.block + chances.green + chances.yellow + chances.blue + (chances.rapid||0)) { type = 'rapid'; }
+    else if (randNum < chances.inverted + chances.green) { type = 'green'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow) { type = 'yellow'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue) { type = 'blue'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0)) { type = 'rapid'; }
     // Timer: base 1200ms, floor multiplikátor (P1=1200, P10=~720ms)
     const mult = getFloorTimerMultiplier(floor || 0);
     const baseTime = Math.round(1200 * mult);
@@ -1340,7 +1324,6 @@
 
   function getAttackHint(attack) {
     const dir = attack.dir;
-    if (attack.type === 'block') return `🛡️ ${dir} 🔴 Blok — použij ŠTÍT!`;
     if (attack.type === 'grey') return `${dir} ⚪ Útok — swipni!`;
     if (attack.type === 'yellow') return `${dir} 🟡 Silný útok — 2× ${dir}!`;
     if (attack.type === 'blue') return `${dir}↔${attack.twinDir} 🔷 Dvojitý útok — oba směry!`;
@@ -1494,7 +1477,6 @@
 
     mb.currentAttack = attack.dir;
     mb.isHeavyAttack = attack.type === 'yellow';
-    mb.isBlockAttack = attack.type === 'block';
     mb.isInvertedAttack = attack.type === 'inverted';
     mb.isTwinAttack = attack.type === 'blue';
     mb.isRapidAttack = attack.type === 'rapid';
@@ -1517,17 +1499,10 @@
     // Reset kolečka
     const circle = resetTimerRing();
 
-    // Zobrazit šipku nebo štít
+    // Zobrazit šipku
     const actionInfo = $('mbActionInfo');
     const arrow = $('mbArrow');
-    if (attack.type === 'block') {
-      // Block útok: místo šipky ukážeme 🛡️ v kolečku
-      if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
-      if (actionInfo) {
-        actionInfo.textContent = '🛡️';
-        actionInfo.classList.remove('hidden');
-      }
-    } else if (attack.type === 'rapid') {
+    if (attack.type === 'rapid') {
       applySchoolColors();
       if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
       if (actionInfo) actionInfo.classList.add('hidden');
@@ -1677,7 +1652,6 @@
     if (bc2) bc2.style.strokeDasharray = '0 276';
     mb.currentAttack = null;
     mb.isHeavyAttack = false;
-    mb.isBlockAttack = false;
     mb.isInvertedAttack = false;
     mb.isTwinAttack = false;
     mb.isRapidAttack = false;
@@ -2523,28 +2497,6 @@
           setTimeout(() => { comboText.classList.add('hidden'); comboText.style.color = ''; }, 800);
         }
       }
-      advanceSequence();
-    } else {
-      onMapHit();
-    }
-  }
-
-  function onMapBlock() {
-    if (mapBattleState.ended) return;
-    const mb = mapBattleState;
-    if (mb._sequenceTimer === null) return;
-    if (mb.isRapidAttack) return;
-    if (mb._hitProcessed) return;
-
-    clearTimeout(mb._sequenceTimer);
-    clearTimeout(mb._ringTimer);
-    mb._ringTimer = null;
-    mb._sequenceTimer = null;
-
-    // Blok funguje jen proti block útokům — jinak je to chyba
-    if (mb.isBlockAttack) {
-      playSFX(blockSfx);
-      doArenaGlow(mb.currentAttack || '⬆️', true);
       advanceSequence();
     } else {
       onMapHit();

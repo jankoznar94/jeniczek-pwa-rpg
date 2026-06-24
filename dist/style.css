@@ -215,20 +215,12 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .arena-attack-btn {
   position:absolute;bottom:20px;right:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
+  border:2px solid #4a4a6a;background:#1a1a1a;color:#ccc;
   display:flex;align-items:center;justify-content:center;
-  border:3px solid #2a2a2a;background:#1a1a1a;transition:0.15s;opacity:0.3;
   outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation;
 }
 .arena-attack-btn.active { opacity:1; border-color:#f1c40f; background:#1a1a1a; box-shadow:0 0 10px rgba(241,196,15,0.3); }
 .arena-attack-btn:not(.active) { pointer-events:none; }
-.arena-block-btn { opacity:1; border-color:#4a4a6a; background:#1a1a1a; transition:0.15s;
-  position:absolute;bottom:20px;left:20px;z-index:25;
-  width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  border:3px solid #2a2a2a;
-  outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation;
-}
-.arena-block-btn.active { border-color:#3498db; background:#1a1a1a; box-shadow:0 0 10px rgba(52,152,219,0.3); }
 .boss-hint { text-align:center;font-size:11px;color:#888888;margin:2px 0;min-height:0; }
 .arena-pause-btn {
   position:absolute; top:4px; right:4px; z-index:50;
@@ -513,8 +505,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   text-shadow:0 0 12px var(--rapid-target-glow, rgba(176,100,255,0.8));
   pointer-events:none;
 }
-/* Rapid swap — plošky nahradí tlačítka Blok/Útok na jejich pozici */
-.rapid-active .arena-block-btn,
+/* Rapid swap — plošky nahradí tlačítko Útok na jeho pozici */
 .rapid-active .arena-attack-btn { display:none; }
 .rapid-active .rapid-tap-area.rapid-tap-left {
   left:20px; bottom:20px; top:auto; transform:none;
