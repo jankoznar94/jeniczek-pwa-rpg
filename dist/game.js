@@ -168,16 +168,13 @@
       if (mb._ringTimer) { clearTimeout(mb._ringTimer); mb._ringTimer = null; }
       if (mb._freezeTimer) { clearTimeout(mb._freezeTimer); mb._freezeTimer = null; }
       if (mb._bonusRaf) { cancelAnimationFrame(mb._bonusRaf); mb._bonusRaf = null; }
-      // Pozastavit CSS animaci timer ringu
-      mb._pausedAtkCircle = document.querySelector('.timer-circle');
-      if (mb._pausedAtkCircle) {
-        const style = getComputedStyle(mb._pausedAtkCircle);
-        mb._pausedDashoffset = style.strokeDashoffset;
-        mb._pausedAtkCircle.style.animationPlayState = 'paused';
-        // Spočítat zbývající čas z dashoffsetu
-        const totalDash = 691;
-        const remaining = parseFloat(mb._pausedDashoffset) || totalDash;
-        mb._pausedRemainingTime = Math.max(0, mb._currentWindowTime * (remaining / totalDash));
+      // Uložit elapsed čas pro rAF loop
+      const circle = document.querySelector('.timer-circle');
+      if (circle) {
+        const style = getComputedStyle(circle);
+        const dashoffset = parseFloat(style.strokeDashoffset) || 691;
+        const pct = 1 - dashoffset / 691;
+        mb._pausedRemainingTime = Math.max(0, mb._currentWindowTime * (1 - pct));
       } else {
         mb._pausedRemainingTime = mb._currentWindowTime || 0;
       }
@@ -198,15 +195,61 @@
           overlay.classList.add('hidden');
           _mapPaused = false;
           setPauseIcon(btn, false);
-          // Obnovit CSS animaci — pokračuje tam, kde přestala
-          const ac = mb._pausedAtkCircle;
-          if (ac) ac.style.animationPlayState = 'running';
-          // Použít zbývající čas místo restartu animace
+          // Restartovat rAF loop s upraveným startTime
           const remainingMs = mb._pausedRemainingTime || mb._currentWindowTime || 0;
-          // Pokud je útočné okno, restartovat rAF
-          if (mb.inAttackWindow && mb._atkTime) {
-            openAttackWindow();
-          } else if (mb._currentWindowTime) {
+          if (mb._currentWindowTime && remainingMs > 0) {
+            const elapsed = mb._currentWindowTime - remainingMs;
+            const attackStartTime = performance.now() - elapsed;
+            const winTime = mb._currentWindowTime;
+            const circle = document.querySelector('.timer-circle');
+            if (circle) {
+              (function frame() {
+                if (mapBattleState.ended) return;
+                const now = performance.now();
+                const rawElapsed = now - attackStartTime;
+                
+                // D5 timer freeze
+                let isFrozen = false;
+                if (mb.locId === 4 && mb._freezeIntervals && mb._freezeIntervals.length > 0) {
+                  for (let fi = 0; fi < mb._freezeIntervals.length; fi++) {
+                    const fz = mb._freezeIntervals[fi];
+                    if (rawElapsed >= fz.startMs && rawElapsed < fz.startMs + fz.duration) {
+                      isFrozen = true;
+                      mb._freezeUntil = fz.startMs + fz.duration;
+                      break;
+                    }
+                  }
+                  if (!isFrozen) mb._freezeUntil = null;
+                }
+                
+                let totalFrozen = 0;
+                if (mb.locId === 4 && mb._freezeIntervals) {
+                  for (let fi = 0; fi < mb._freezeIntervals.length; fi++) {
+                    const fz = mb._freezeIntervals[fi];
+                    if (rawElapsed >= fz.startMs + fz.duration) totalFrozen += fz.duration;
+                    else if (rawElapsed > fz.startMs) totalFrozen += rawElapsed - fz.startMs;
+                  }
+                }
+                
+                const effectiveElapsed = rawElapsed - totalFrozen;
+                const pct = Math.min(effectiveElapsed / winTime, 1);
+                mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
+                if (circle) {
+                  circle.style.opacity = '1';
+                  if (isFrozen) {
+                    circle.style.stroke = '#4fc3f7';
+                  } else {
+                    circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
+                  }
+                }
+                if (effectiveElapsed < winTime) {
+                  mb._bonusRaf = requestAnimationFrame(frame);
+                } else {
+                  mb._bonusActive = false;
+                  mb._bonusRaf = null;
+                }
+              })();
+            }
             mb._sequenceTimer = setTimeout(() => {
               if (mapBattleState.ended) return;
               onMapHit();
