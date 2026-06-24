@@ -175,7 +175,7 @@
         mb._pausedDashoffset = style.strokeDashoffset;
         mb._pausedAtkCircle.style.animationPlayState = 'paused';
         // Spočítat zbývající čas z dashoffsetu
-        const totalDash = 333;
+        const totalDash = 691;
         const remaining = parseFloat(mb._pausedDashoffset) || totalDash;
         mb._pausedRemainingTime = Math.max(0, mb._currentWindowTime * (remaining / totalDash));
       } else {
@@ -985,7 +985,8 @@
       isRapidAttack: false, rapidTaps: 0, rapidTarget: 0, comboCount: 0,
       stamina: 100, maxStamina: 100, _staminaInterval: null,
       _lastSwipeDir: null,
-      _heatLevel: 0 // D4 přehřívání: 0 = normální, kladné = rychlejší
+      _heatLevel: 0, // D4 přehřívání: 0 = normální, kladné = rychlejší
+      _freezeUntil: null // D5 timer freeze: timestamp kdy freeze končí (null = není frozen)
     };
     // Schools handled via activeSchool
 
@@ -1104,7 +1105,7 @@
     // D4 heat indicator
     const heatEl = $('mbHeatIndicator');
     if (heatEl) {
-      if (mb.locId === 3 && mb._heatLevel > 0) {
+      if ((mb.locId === 3 || mb.locId === 4) && mb._heatLevel > 0) {
         heatEl.classList.remove('hidden');
         const numEl = heatEl.querySelector('.heat-num');
         if (numEl) numEl.textContent = `${mb._heatLevel}/10`;
@@ -1119,8 +1120,9 @@
     }
     const fig = $('mbFigure');
     const themeFilter = DUNGEON_THEME_FILTERS[mb.monsterTheme] || '';
+    const theme = DUNGEON_THEMES[mb.monsterTheme] || DUNGEON_THEMES[0];
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
-    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-portrait-frame\" style=\"filter:'+themeFilter+'\"><img src=\"'+emoji+'\" alt=\"\" class=\"monster-portrait-img\"/></div>'; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\" style=\"border-color:'+theme.border+';box-shadow:0 0 12px '+theme.borderGlow+'\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
     else { fig.textContent = emoji; }
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
@@ -1304,6 +1306,14 @@
       const freeze = Math.min(40, 20 + f * 2);
       return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
     }
+    // D5 (Mrazivé štíty): truth/lie/freeze + přehřívání + timer freeze
+    if (locId === 4) {
+      const f = floor || 0;
+      const truth = Math.max(20, 60 - f * 4);
+      const lie = Math.min(40, 20 + f * 2);
+      const freeze = Math.min(40, 20 + f * 2);
+      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
+    }
     return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth: 0, lie: 0, freeze: 0 };
   }
 
@@ -1328,6 +1338,14 @@
       icons.push(_arrowSvg('#e94560')); // lie — červená
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔵</span>'); // freeze — modrá
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔥</span>'); // přehřívání
+    }
+    // D5 — lživé šipky + přehřívání + timer freeze
+    if (locId === 4) {
+      icons.push(_arrowSvg('#2ecc71')); // truth — zelená
+      icons.push(_arrowSvg('#e94560')); // lie — červená
+      icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔵</span>'); // freeze — modrá
+      icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔥</span>'); // přehřívání
+      icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">❄️</span>'); // timer freeze
     }
     return icons;
   }
@@ -1409,7 +1427,7 @@
     }
     fresh.style.opacity = '0';
     fresh.style.animation = 'none';
-    fresh.style.strokeDashoffset = '333';
+    fresh.style.strokeDashoffset = '691';
     fresh.classList.add('timer-circle');
     parent.replaceChild(fresh, circle);
     // Vynutit reflow na novém elementu
@@ -1480,34 +1498,7 @@
   function renderSeqProgress(mb) {
     const el = $('mbSeqProgress');
     if (!el) return;
-    const total = mb.sequence.length;
-    if (!total) { el.innerHTML = ''; return; }
-    const idx = mb.sequenceIndex;
-    const inAtk = mb.inAttackWindow;
-    const allDone = idx >= total;
-    // Kompaktní puntíky při 7+ krocích
-    if (total > 5) el.classList.add('seq-compact');
-    else el.classList.remove('seq-compact');
-    let html = '';
-    for (let i = 0; i < total; i++) {
-      let cls = 'seq-dot';
-      if (inAtk || allDone || i < idx) {
-        cls += ' done';
-      }
-      html += `<div class="${cls}"></div>`;
-    }
-    if (inAtk || allDone) {
-      el.classList.add('seq-ready');
-    } else {
-      el.classList.remove('seq-ready');
-    }
-    // Rozsvítit tlačítko útoku hned s puntíky (ne až po 300ms)
-    const atk = $('mbAttackBtn');
-    if (atk) {
-      if (inAtk || allDone) atk.classList.add('active');
-      else atk.classList.remove('active');
-    }
-    el.innerHTML = html;
+    el.innerHTML = '';
   }
 
   function flashSeqFail() {
@@ -1675,38 +1666,126 @@
       }
     }
     
+    // D5 (Mrazivé štíty) — přehřívání + červená/modrá + timer freeze
+    if (mb.locId === 4) {
+      const floor = mb.floor;
+      const minSpeed = Math.max(0.3, 0.75 - floor * 0.05);
+      const maxSpeed = Math.min(1.6, 1.35 + floor * 0.025);
+      const isFast = Math.random() < 0.5;
+      const speed = isFast ? maxSpeed : minSpeed;
+      let baseWinTime = Math.round(winTime / speed);
+      // Heat overlay
+      const heatMult = 1 + mb._heatLevel * 0.08;
+      winTime = Math.round(baseWinTime / heatMult);
+      // Barva: základ červená/modrá, s heatem se posouvá
+      if (mb._heatLevel > 0) {
+        const heatPct = Math.min(mb._heatLevel / 10, 1);
+        let r, g, b;
+        if (isFast) {
+          r = 233;
+          g = Math.round(69 + heatPct * (200 - 69));
+          b = Math.round(96 - heatPct * 96);
+        } else {
+          r = Math.round(74 + heatPct * (200 - 74));
+          g = Math.round(127 - heatPct * 60);
+          b = Math.round(255 - heatPct * 60);
+        }
+        circle.style.stroke = `rgb(${r},${g},${b})`;
+      } else {
+        circle.style.stroke = isFast ? '#e94560' : '#4a7dff';
+      }
+      // Generovat freeze intervaly — 0-2 náhodné freeze, 500-1500ms
+      const freezeCount = Math.random() < 0.5 ? 1 : (Math.random() < 0.3 ? 2 : 0);
+      mb._freezeIntervals = [];
+      mb._totalFrozenMs = 0;
+      mb._freezeUntil = null;
+      for (let fi = 0; fi < freezeCount; fi++) {
+        const minStart = 500;
+        const maxStart = Math.max(minStart + 100, winTime - 500);
+        const startMs = minStart + Math.random() * (maxStart - minStart);
+        const duration = 500 + Math.random() * 1000; // 500-1500ms
+        mb._freezeIntervals.push({ startMs, duration });
+      }
+    }
+    
     const bStartMs = Math.round(winTime * 0.5); // výseč začíná v 50% timeru (6 hodin)
-    const bMs = Math.round(winTime * 0.2); // 20% šířka
+    const bMs = Math.round(winTime * 0.15); // 15% šířka
     mb._bonusStartMs = bStartMs;
     mb._bonusMs = bMs;
     
     // Vizuální znázornění výseče na kolečku
-    const bCircum = 364;
-    const zWidthPx = Math.max(1, Math.round((bMs / winTime) * 364));
-    const zStartPx = Math.round((bStartMs / winTime) * 364);
+    const bCircum = 741;
+    const zWidthPx = Math.max(1, Math.round((bMs / winTime) * 741));
+    const zStartPx = Math.round((bStartMs / winTime) * 741);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
-      const remaining = Math.max(0, 364 - zStartPx - zWidthPx);
+      const remaining = Math.max(0, 741 - zStartPx - zWidthPx);
       bonusCircle.style.strokeDasharray = `0 ${zStartPx} ${zWidthPx} ${remaining}`;
       bonusCircle.style.strokeDashoffset = '0';
     }
     mb._zoneWidthPx = zWidthPx;
     mb._zoneStartPx = zStartPx;
-    mb._bonusCircum = 364;
+    mb._bonusCircum = 741;
     
     if (mb._bonusRaf) cancelAnimationFrame(mb._bonusRaf);
     const attackStartTime = performance.now();
+    let _lastEffectiveElapsed = 0; // D5: poslední effectiveElapsed před freeze
     (function frame() {
       if (mapBattleState.ended) return;
       const now = performance.now();
-      const elapsed = now - attackStartTime;
-      const pct = Math.min(elapsed / winTime, 1);
-      mb._bonusActive = (elapsed >= mb._bonusStartMs && elapsed < mb._bonusStartMs + mb._bonusMs);
+      const rawElapsed = now - attackStartTime;
+      
+      // D5 timer freeze — zkontrolovat jestli jsme v freeze intervalu
+      let isFrozen = false;
+      if (mb.locId === 4 && mb._freezeIntervals && mb._freezeIntervals.length > 0) {
+        for (let fi = 0; fi < mb._freezeIntervals.length; fi++) {
+          const fz = mb._freezeIntervals[fi];
+          if (rawElapsed >= fz.startMs && rawElapsed < fz.startMs + fz.duration) {
+            isFrozen = true;
+            mb._freezeUntil = fz.startMs + fz.duration;
+            break;
+          }
+        }
+        if (!isFrozen) {
+          mb._freezeUntil = null;
+        }
+      }
+      
+      // Spočítat celkový freeze čas (jen dokončené intervaly)
+      let totalFrozen = 0;
+      if (mb.locId === 4 && mb._freezeIntervals) {
+        for (let fi = 0; fi < mb._freezeIntervals.length; fi++) {
+          const fz = mb._freezeIntervals[fi];
+          if (rawElapsed >= fz.startMs + fz.duration) {
+            totalFrozen += fz.duration;
+          } else if (rawElapsed > fz.startMs) {
+            totalFrozen += rawElapsed - fz.startMs;
+          }
+        }
+      }
+      
+      let effectiveElapsed;
+      if (isFrozen) {
+        // Během freeze — effectiveElapsed stojí na poslední hodnotě
+        effectiveElapsed = _lastEffectiveElapsed;
+      } else {
+        // Mimo freeze — effectiveElapsed = rawElapsed - celkový freeze čas
+        effectiveElapsed = rawElapsed - totalFrozen;
+        _lastEffectiveElapsed = effectiveElapsed;
+      }
+      
+      const pct = Math.min(effectiveElapsed / winTime, 1);
+      mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
       if (circle) {
         circle.style.opacity = '1';
-        circle.style.strokeDashoffset = Math.round(333 * (1 - pct));
+        if (isFrozen) {
+          // Během freeze — kolečko stojí, modrá barva
+          circle.style.stroke = '#4fc3f7';
+        } else {
+          circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
+        }
       }
-      if (elapsed < winTime) {
+      if (effectiveElapsed < winTime) {
         mb._bonusRaf = requestAnimationFrame(frame);
       } else {
         mb._bonusActive = false;
@@ -1715,6 +1794,13 @@
     })();
 
     // Timeout = chyba (nestihl zareagovat), kromě freeze — tam je timeout = úspěch
+    // Pro D5: winTime + celkový freeze čas
+    let timeoutWinTime = winTime;
+    if (mb.locId === 4 && mb._freezeIntervals) {
+      let totalFrozen = 0;
+      mb._freezeIntervals.forEach(fz => totalFrozen += fz.duration);
+      timeoutWinTime = winTime + totalFrozen;
+    }
     mb._sequenceTimer = setTimeout(() => {
       if (mapBattleState.ended) return;
       if (attack.type === 'freeze') {
@@ -1723,11 +1809,15 @@
         if (mb.locId === 3 && mb._heatLevel > 0) {
           mb._heatLevel = Math.max(0, mb._heatLevel - 1);
         }
+        // D5 — ochlazení: úspěšná freeze snižuje heat
+        if (mb.locId === 4 && mb._heatLevel > 0) {
+          mb._heatLevel = Math.max(0, mb._heatLevel - 1);
+        }
         advanceSequence();
       } else {
         onMapHit();
       }
-    }, winTime);
+    }, timeoutWinTime);
   }
 
   // DoT tick helper — volá se po každém timeru (ať už hráč uspěl, nebo dostal ránu)
@@ -1816,7 +1906,7 @@
     mb._hitProcessed = true;
     // Skrýt bonusový kruh
     const bc2 = document.querySelector('.bonus-zone-circle');
-    if (bc2) bc2.style.strokeDasharray = '0 364';
+    if (bc2) bc2.style.strokeDasharray = '0 741';
     mb.currentAttack = null;
     mb.isHeavyAttack = false;
     mb.isInvertedAttack = false;
@@ -1889,14 +1979,14 @@
     
     // Skrýt bonusový kruh
     const bonusCircle = document.querySelector('.bonus-zone-circle');
-    if (bonusCircle) bonusCircle.style.strokeDasharray = '0 364';
+    if (bonusCircle) bonusCircle.style.strokeDasharray = '0 741';
     
     mb._atkTime = atkTime;
     
     requestAnimationFrame(() => {
       if (atkCircle) {
         atkCircle.style.opacity = '1';
-        atkCircle.style.strokeDashoffset = '333';
+        atkCircle.style.strokeDashoffset = '691';
       }
       startTimerRing(atkCircle, atkTime);
     });
@@ -1913,7 +2003,7 @@
     const mb = mapBattleState;
     // Skrýt bonusový kruh
     const bCircle = document.querySelector('.bonus-zone-circle');
-    if (bCircle) bCircle.style.strokeDasharray = '0 364';
+    if (bCircle) bCircle.style.strokeDasharray = '0 741';
     // GUARD: už bylo zpracováno
     if (!mb.inAttackWindow) return;
     mb.mistakes = (mb.mistakes || 0) + 1;
@@ -2691,7 +2781,7 @@
     mb._hitProcessed = true;
     
     // D4 — přehřívání: každá chyba zvyšuje heat
-    if (mb.locId === 3) {
+    if (mb.locId === 3 || mb.locId === 4) {
       mb._heatLevel = Math.min((mb._heatLevel || 0) + 1, 10);
     }
     
@@ -3175,7 +3265,7 @@
     clearTimeout(mb._attackWindowTimer);
     resetTimerRing();
     const bc = document.querySelector('.bonus-zone-circle');
-    if (bc) bc.style.strokeDasharray = '0 364';
+    if (bc) bc.style.strokeDasharray = '0 741';
     const actInfo = $('mbActionInfo');
     if (actInfo) actInfo.classList.add('hidden');
     mb.inAttackWindow = false;
@@ -3623,8 +3713,8 @@
     if (tutName) { tutName.textContent = ''; tutName.classList.add('hidden'); }
     const ringSvg = document.getElementById('tutRing').querySelector('svg');
     const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '333'); circles[0].setAttribute('stroke-dashoffset', '97'); }
-    if (circles[1]) { circles[1].setAttribute('stroke-dasharray', '0 364'); circles[1].setAttribute('stroke-dashoffset', '364'); }
+    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '691'); circles[0].setAttribute('stroke-dashoffset', '97'); }
+    if (circles[1]) { circles[1].setAttribute('stroke-dasharray', '0 741'); circles[1].setAttribute('stroke-dashoffset', '741'); }
   }
   function prevTutorialStep() {
     if (_tutorialStep <= 0) return;
@@ -3669,14 +3759,14 @@
     if (step.showTimer) {
       const ringSvg = document.getElementById('tutRing').querySelector('svg');
       const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-      if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '333'); circles[0].setAttribute('stroke-dashoffset', '97'); }
+      if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '691'); circles[0].setAttribute('stroke-dashoffset', '97'); }
       if (circles[1]) {
         if (step.showBonusZone) {
-          circles[1].setAttribute('stroke-dasharray', '55 364');
+          circles[1].setAttribute('stroke-dasharray', '55 741');
           circles[1].setAttribute('stroke-dashoffset', '0');
         } else {
-          circles[1].setAttribute('stroke-dasharray', '0 364');
-          circles[1].setAttribute('stroke-dashoffset', '364');
+          circles[1].setAttribute('stroke-dasharray', '0 741');
+          circles[1].setAttribute('stroke-dashoffset', '741');
         }
       }
     }
@@ -3806,7 +3896,7 @@
         </div>`;
         } else {
           html += `<div class="bestiary-card" style="border-left:3px solid #333;opacity:0.5;filter:grayscale(1)">
-          <div class="bestiary-face"><div class="bestiary-portrait-frame" style="background:#111;border-color:#333"><span style="font-size:28px;color:#555">🔒</span></div></div>
+          <div class="bestiary-face"><div class="bestiary-portrait-frame" style="background:#111;border-color:#691"><span style="font-size:28px;color:#555">🔒</span></div></div>
           <div class="bestiary-info">
             <div class="bestiary-name" style="color:#555">???</div>
             <div class="bestiary-meta" style="color:#444"><span>???</span> <span>???</span></div>
@@ -3843,7 +3933,7 @@
         </div>`;
         } else {
           html += `<div class="bestiary-card bestiary-boss-card" style="border-left:3px solid #333;opacity:0.5;filter:grayscale(1)">
-          <div class="bestiary-face bestiary-boss-face"><div class="bestiary-portrait-frame" style="background:#111;border-color:#333"><span style="font-size:28px;color:#555">🔒</span></div></div>
+          <div class="bestiary-face bestiary-boss-face"><div class="bestiary-portrait-frame" style="background:#111;border-color:#691"><span style="font-size:28px;color:#555">🔒</span></div></div>
           <div class="bestiary-info">
             <div class="bestiary-name bestiary-boss-name" style="color:#555"><span class="bestiary-boss-badge">👑 BOSS</span> ???</div>
             <div class="bestiary-meta" style="color:#444">???</div>
