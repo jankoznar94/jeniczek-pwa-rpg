@@ -995,7 +995,7 @@
       const mb = mapBattleState;
       if (mb.ended) { clearInterval(mb._staminaInterval); mb._staminaInterval = null; return; }
       if (mb.stamina < mb.maxStamina) {
-        mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.3); // 3/s = 0.3 per 100ms
+        mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.15); // 1.5/s = 0.15 per 100ms
         updateMapBattleUI();
       }
     }, 100);
@@ -2422,7 +2422,6 @@
       }
       mb._heavySwipes++;
       doArenaGlow(dir, true);
-      playSFX(dodgeSfx);
       if (mb._heavySwipes >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
@@ -2453,7 +2452,6 @@
       }
       mb._twinSwipes.push(dir);
       doArenaGlow(dir, true);
-      playSFX(dodgeSfx);
       if (mb._twinSwipes.length >= 2) {
         clearTimeout(mb._sequenceTimer);
         clearTimeout(mb._ringTimer);
@@ -2501,7 +2499,6 @@
     }
 
     if (correct) {
-      playSFX(dodgeSfx);
       // Způsobit poškození monstru (kromě green = heal)
       if (attack.type !== 'green') {
         dealPlayerDamage(mb, dmgMult);
