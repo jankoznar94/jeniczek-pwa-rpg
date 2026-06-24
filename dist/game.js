@@ -2978,19 +2978,13 @@
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
     // Globální redukce damage — hráč útočí každou akcí, damage musí být nižší
     const globalMult = 0.4;
-    const critMult = 1.5;
     let dmg = Math.round(baseDmg * mult * globalMult);
     // Fire school passive — ignite
     const ignitePct = getFireIgnitePct();
     if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
     
-    // 🎯 Crit window — jen damage bonus, žádný vizuální efekt
-    if (mb._bonusStartMs != null && mb._bonusMs > 0 && mb._bonusActive) {
-      dmg = Math.round(dmg * critMult);
-    }
-    
-    // Zvuk — náhodně střídat normální a crit zvuk pro rozličnost
-    playSFX(Math.random() < 0.5 ? getHitSfx() : getCritSfx());
+    // Zvuk — normální úder
+    playSFX(getHitSfx());
     
     // === PASIVNÍ EFEKTY ŠKOL ===
     let applyPassives = true;
