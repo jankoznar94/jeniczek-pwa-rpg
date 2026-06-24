@@ -893,8 +893,6 @@
           <div class="map-loc-icon-big">${loc.icon}</div>
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
-            <div class="map-loc-mechs">${getDungeonMechanics(i).join(' ')}</div>
-            ${getDungeonResistIcons(i) ? `<div class="map-loc-resists">${getDungeonResistIcons(i)}</div>` : ''}
           </div>
           ${badgeHtml}
         </div>
