@@ -512,12 +512,17 @@
     { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5 },
     // === ZBRANĚ — fyzické (blade) ===
     { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:10, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1 },
     { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2 },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:14, bonusHp:0, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2 },
     { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:22, bonusHp:0, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3 },
     { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:30, bonusHp:0, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4 },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:32, bonusHp:0, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4 },
     { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:40, bonusHp:0, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5 },
     { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
     { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6 },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:50, bonusHp:20, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6 },
     // === BRNĚNÍ ===
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
