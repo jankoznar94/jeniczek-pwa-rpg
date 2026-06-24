@@ -212,15 +212,15 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   0%   { stroke-dashoffset: 276; }
   100% { stroke-dashoffset: 0; }
 }
-.arena-attack-btn {
-  position:absolute;bottom:20px;right:20px;z-index:25;
+.arena-dodge-btn {
+  position:absolute;bottom:20px;left:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
   border:2px solid #4a4a6a;background:#1a1a1a;color:#ccc;
   display:flex;align-items:center;justify-content:center;
   outline:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation;
 }
-.arena-attack-btn.active { opacity:1; border-color:#f1c40f; background:#1a1a1a; box-shadow:0 0 10px rgba(241,196,15,0.3); }
-.arena-attack-btn:not(.active) { pointer-events:none; }
+.arena-dodge-btn.active { opacity:1; border-color:#2ecc71; background:#1a1a1a; box-shadow:0 0 10px rgba(46,204,113,0.3); }
+.arena-dodge-btn:not(.active) { pointer-events:none; }
 .boss-hint { text-align:center;font-size:11px;color:#888888;margin:2px 0;min-height:0; }
 .arena-pause-btn {
   position:absolute; top:4px; right:4px; z-index:50;
@@ -293,16 +293,16 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .mb-hp-bar span {
   position:relative;z-index:1;
 }
-.mb-mana-bar {
-  position:relative;background:#0a0a2a;border:1px solid #3498db;border-radius:6px;
+.mb-stamina-bar {
+  position:relative;background:#1a2a0a;border:1px solid #2ecc71;border-radius:6px;
   height:22px;display:flex;align-items:center;justify-content:center;
   font-size:12px;color:#fff;font-weight:bold;overflow:hidden;
 }
-.mb-mana-bar-fill {
-  position:absolute;left:0;top:0;height:100%;background:#3498db;
+.mb-stamina-bar-fill {
+  position:absolute;left:0;top:0;height:100%;background:#2ecc71;
   transition:width 0.2s ease-out;
 }
-.mb-mana-bar span {
+.mb-stamina-bar span {
   position:relative;z-index:1;
 }
 
@@ -505,8 +505,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   text-shadow:0 0 12px var(--rapid-target-glow, rgba(176,100,255,0.8));
   pointer-events:none;
 }
-/* Rapid swap — plošky nahradí tlačítko Útok na jeho pozici */
-.rapid-active .arena-attack-btn { display:none; }
+/* Rapid swap — plošky nahradí tlačítko Dodge na jeho pozici */
+.rapid-active .arena-dodge-btn { display:none; }
 .rapid-active .rapid-tap-area.rapid-tap-left {
   left:20px; bottom:20px; top:auto; transform:none;
   width:64px; height:52px; border-radius:14px;

@@ -710,6 +710,7 @@
       if (mapBattleState._glowTimer) { clearTimeout(mapBattleState._glowTimer); mapBattleState._glowTimer = null; }
       if (mapBattleState._freezeTimer) { clearInterval(mapBattleState._freezeTimer); mapBattleState._freezeTimer = null; }
       if (mapBattleState._bonusRaf) { cancelAnimationFrame(mapBattleState._bonusRaf); mapBattleState._bonusRaf = null; }
+      if (mapBattleState._staminaInterval) { clearInterval(mapBattleState._staminaInterval); mapBattleState._staminaInterval = null; }
     }
   }
 
@@ -982,11 +983,22 @@
       isInvertedAttack: false, isTwinAttack: false, isGreenAttack: false,
       _heavySwipes: 0, _twinSwipes: [],
       isRapidAttack: false, rapidTaps: 0, rapidTarget: 0, comboCount: 0,
+      stamina: 100, maxStamina: 100, _staminaInterval: null,
       _lastSwipeDir: null
     };
     // Schools handled via activeSchool
 
     showScreen('mapBattle');
+    // Spustit stamina regen (3/s)
+    if (mapBattleState._staminaInterval) clearInterval(mapBattleState._staminaInterval);
+    mapBattleState._staminaInterval = setInterval(() => {
+      const mb = mapBattleState;
+      if (mb.ended) { clearInterval(mb._staminaInterval); mb._staminaInterval = null; return; }
+      if (mb.stamina < mb.maxStamina) {
+        mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.3); // 3/s = 0.3 per 100ms
+        updateMapBattleUI();
+      }
+    }, 100);
     // Skrýt starou šipku z předchozího boje ihned
     const arrowReset = $('mbArrow');
     if (arrowReset) arrowReset.setAttribute('class', 'boss-attack-arrow hidden');
@@ -1079,14 +1091,13 @@
       const fill = $('mbPlayerArenaHpFill');
       if (fill) fill.style.width = Math.max(0, pHpPct) + '%';
     }
-    // Mana bar pod HP
-    const arenaMana = $('mbPlayerArenaMana');
-    if (arenaMana) {
-      const h = state.hero;
-      const span = arenaMana.querySelector('span');
-      if (span) span.textContent = `${h.mana}/${h.maxMana}`;
-      const fill = $('mbPlayerArenaManaFill');
-      if (fill) fill.style.width = Math.max(0, Math.round((h.mana / h.maxMana) * 100)) + '%';
+    // Stamina bar
+    const arenaStamina = $('mbPlayerArenaStamina');
+    if (arenaStamina) {
+      const span = arenaStamina.querySelector('span');
+      if (span) span.textContent = `${Math.round(mb.stamina)}/${mb.maxStamina}`;
+      const fill = $('mbPlayerArenaStaminaFill');
+      if (fill) fill.style.width = Math.max(0, Math.round((mb.stamina / mb.maxStamina) * 100)) + '%';
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     const fig = $('mbFigure');
@@ -1128,9 +1139,12 @@
 
   function updateActionButtons() {
     const mb = mapBattleState;
-    const atk = $('mbAttackBtn');
-    // Útok — vždy aktivní (každá akce = útok)
-    if (atk) atk.classList.add('active');
+    const dodge = $('mbDodgeBtn');
+    // Dodge — aktivní jen když je dost staminy a není rapid
+    if (dodge) {
+      if (mb.stamina >= 30 && !mb.isRapidAttack) dodge.classList.add('active');
+      else dodge.classList.remove('active');
+    }
   }
 
   function setupMapBattleInput() {
@@ -1142,15 +1156,15 @@
     let startX, startY;
     const handlers = [];
 
-    // Click handler for attack button (pointerdown = immediate, no 300ms click delay)
-    const atkBtn = $('mbAttackBtn');
-    if (atkBtn) {
-      const atkHandler = (e) => {
+    // Click handler for dodge button (pointerdown = immediate, no 300ms click delay)
+    const dodgeBtn = $('mbDodgeBtn');
+    if (dodgeBtn) {
+      const dodgeHandler = (e) => {
         e.stopPropagation();
-        onMapAttack();
+        onMapDodgeAction();
       };
-      atkBtn.addEventListener('pointerdown', atkHandler);
-      handlers.push(['pointerdown', atkHandler]);
+      dodgeBtn.addEventListener('pointerdown', dodgeHandler);
+      handlers.push(['pointerdown', dodgeHandler]);
     }
 
     const ts = (e) => { if (mapBattleState.ended) return; const t=e.touches[0]; startX=t.clientX; startY=t.clientY; };
@@ -1177,7 +1191,7 @@
       const map = { ArrowUp:'⬆️',ArrowDown:'⬇️',ArrowLeft:'⬅️',ArrowRight:'➡️','w':'⬆️','s':'⬇️','a':'⬅️','d':'➡️' };
       const dir = map[e.key];
       if (dir) { e.preventDefault(); onMapDodge(dir); return; }
-      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (mapBattleState._attackProcessed) return; onMapAttack(); }
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (mapBattleState._attackProcessed) return; onMapDodgeAction(); }
     };
     window.addEventListener('keydown', kh);
     handlers.push(['keydown', kh]);
@@ -2512,9 +2526,22 @@
     }
   }
 
-  function onMapAttack() {
-    // V novém systému každá akce = útok, tlačítko útoku není potřeba
+  function onMapDodgeAction() {
     if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    if (mb.isRapidAttack) return;
+    if (mb._sequenceTimer === null) return;
+    if (mb._hitProcessed) return;
+    // Potřebuje 30 staminy
+    if (mb.stamina < 30) return;
+    mb.stamina -= 30;
+    clearTimeout(mb._sequenceTimer);
+    clearTimeout(mb._ringTimer);
+    mb._ringTimer = null;
+    mb._sequenceTimer = null;
+    playSFX(dodgeSfx);
+    doArenaGlow(mb.currentAttack || '⬆️', true);
+    advanceSequence();
   }
 
   function onMapHit() {
