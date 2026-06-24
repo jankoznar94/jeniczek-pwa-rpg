@@ -982,7 +982,7 @@
       currentAttack: null, isHeavyAttack: false,
       isInvertedAttack: false, isTwinAttack: false, isGreenAttack: false,
       _heavySwipes: 0, _twinSwipes: [],
-      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0, comboCount: 0,
+      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0,
       stamina: 100, maxStamina: 100, _staminaInterval: null,
       _lastSwipeDir: null,
       _heatLevel: 0, // D4 přehřívání: 0 = normální, kladné = rychlejší
@@ -2747,20 +2747,6 @@
       if (attack.type !== 'green') {
         dealPlayerDamage(mb, dmgMult);
       }
-      // Combo counter
-      mb.comboCount = (mb.comboCount || 0) + 1;
-      // Každých 10 úspěchů = bonusová rána
-      if (mb.comboCount >= 10) {
-        mb.comboCount = 0;
-        dealPlayerDamage(mb, 1.0); // bonusový útok
-        const comboText = $('mbDamageText');
-        if (comboText) {
-          comboText.textContent = '🔥 COMBO ×10!';
-          comboText.style.color = '#f1c40f';
-          comboText.classList.remove('hidden');
-          setTimeout(() => { comboText.classList.add('hidden'); comboText.style.color = ''; }, 800);
-        }
-      }
       advanceSequence();
     } else {
       onMapHit();
@@ -2860,7 +2846,6 @@
     }
     if (!blocked) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      mb.comboCount = 0; // reset combo při chybě
       playSFX(hitSfx);
     }
 
