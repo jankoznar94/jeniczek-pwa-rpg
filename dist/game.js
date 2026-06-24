@@ -712,7 +712,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,shield:null,ring1:null,ring2:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[] };
     return s;
   }
@@ -3814,8 +3814,8 @@
   }
   function getEquipAttrs() {
     const h = state.hero;
-    const slots = ['weapon','armor','helmet','ring1','ring2'];
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+    const slots = ['weapon','armor','helmet','shield','ring1','ring2'];
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, ring2:null };
     const total = { str:0, vit:0, dex:0, int:0 };
     slots.forEach(slot => {
       const itemId = h.equip[slot];
@@ -3842,9 +3842,10 @@
     const h = state.hero;
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
     const helmet = ITEM_MAP[h.equip.helmet];
+    const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
-    const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0);
+    const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0);
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + ((h.attrVit||0) + eqAttrs.vit) * 10);
   }
@@ -3853,9 +3854,10 @@
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
     const helmet = ITEM_MAP[h.equip.helmet];
+    const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
-    const bonus = (weapon.bonusMana||0) + (armor.bonusMana||0) + (helmet ? helmet.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0);
+    const bonus = (weapon.bonusMana||0) + (armor.bonusMana||0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0);
     return Math.max(10, 50 + ((h.attrInt||0) + getEquipAttrs().int) * 10 + bonus);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
@@ -3920,6 +3922,7 @@
     const w = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const a = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
     const helm = ITEM_MAP[h.equip.helmet];
+    const shield = ITEM_MAP[h.equip.shield];
     const r1 = ITEM_MAP[h.equip.ring1];
     const r2 = ITEM_MAP[h.equip.ring2];
     const hw = $('heroSlotWeaponIcon'); if (hw) hw.innerHTML = renderItemIcon(w, 28);
@@ -3928,6 +3931,8 @@
     const has = $('heroSlotArmor'); if (has) { has.classList.toggle('empty', h.equip.armor === 'rags'); if (a.rarity) has.style.borderColor = RARITY[a.rarity].border; }
     const hh = $('heroSlotHelmetIcon'); if (hh) hh.innerHTML = helm ? renderItemIcon(helm, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">⛑️</span>';
     const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); if (helm && helm.rarity) hhs.style.borderColor = RARITY[helm.rarity].border; }
+    const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">🛡️</span>';
+    const hss = $('heroSlotShield'); if (hss) { hss.classList.toggle('empty', !shield); if (shield && shield.rarity) hss.style.borderColor = RARITY[shield.rarity].border; }
     const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
     const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); if (r1 && r1.rarity) hr1s.style.borderColor = RARITY[r1.rarity].border; }
     const hr2 = $('heroSlotRing2Icon'); if (hr2) hr2.innerHTML = r2 ? renderItemIcon(r2, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
@@ -4083,10 +4088,11 @@
   function renderInventory() {
     const h = state.hero;
     $('invGold').textContent = `💰 ${h.gold}`;
-    // Equipment sloty — 5 slotů
+    // Equipment sloty — 6 slotů
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
     const helmet = ITEM_MAP[h.equip.helmet];
+    const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
@@ -4097,6 +4103,8 @@
     if (armor.rarity) $('invSlotArmor').style.borderColor = RARITY[armor.rarity].border;
     const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); if (helmet && helmet.rarity) hS.style.borderColor = RARITY[helmet.rarity].border; }
+    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0);
+    const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); if (shield && shield.rarity) sS.style.borderColor = RARITY[shield.rarity].border; }
     const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); if (ring1 && ring1.rarity) r1S.style.borderColor = RARITY[ring1.rarity].border; }
     const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
@@ -4171,7 +4179,7 @@
       });
     });
     // Klik na equipment slot = akce (sundat/prodat) + info
-    const slotNames = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotRing1:'ring1', invSlotRing2:'ring2' };
+    const slotNames = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2' };
     Object.keys(slotNames).forEach(slotId => {
       const el = $(slotId);
       if (!el) return;
@@ -4179,7 +4187,7 @@
         if (e.target.closest('.cell-actions')) return;
         const slot = slotNames[slotId];
         const itemId = h.equip[slot];
-        const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+        const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, ring2:null };
         if (!itemId || itemId === defaults[slot]) return;
         const item = ITEM_MAP[itemId];
         if (item) showItemInfo(item);
@@ -4213,7 +4221,7 @@
 
   function unequipSlot(slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, ring2:null };
     const current = h.equip[slot];
     if (!current || current === defaults[slot]) return;
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
@@ -4236,6 +4244,13 @@
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     h.inventory.splice(invIdx, 1);
     if (item.type === 'weapon') {
+      // Obouruční zbraň (blade tier 4+) vyhodí štít zpět do batohu
+      const isTwoHanded = item.weaponType === 'blade' && item.tier >= 4;
+      if (isTwoHanded && h.equip.shield) {
+        h.inventory.push(h.equip.shield);
+        h.equip.shield = null;
+      }
+      // Pokud má hráč štít a chce nasadit obouruční zbraň, štít je už vyhozen výše
       if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
       h.equip.weapon = itemId;
     } else if (item.type === 'armor') {
@@ -4244,6 +4259,16 @@
     } else if (item.type === 'helmet') {
       if (h.equip.helmet) h.inventory.push(h.equip.helmet);
       h.equip.helmet = itemId;
+    } else if (item.type === 'shield') {
+      // Štít nejde s obouruční zbraní — vyhodit zbraň zpět
+      const curWeapon = ITEM_MAP[h.equip.weapon];
+      const isTwoHanded = curWeapon && curWeapon.weaponType === 'blade' && curWeapon.tier >= 4;
+      if (isTwoHanded) {
+        h.inventory.push(h.equip.weapon);
+        h.equip.weapon = 'fists';
+      }
+      if (h.equip.shield) h.inventory.push(h.equip.shield);
+      h.equip.shield = itemId;
     } else if (item.type === 'ring') {
       if (!h.equip.ring1) {
         h.equip.ring1 = itemId;
@@ -4271,7 +4296,7 @@
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, ring2:null };
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, ring2:null };
     if (item.type === 'weapon') {
       if (h.equip.weapon !== itemId) return;
       h.equip.weapon = defaults.weapon;
@@ -4281,6 +4306,9 @@
     } else if (item.type === 'helmet') {
       if (h.equip.helmet !== itemId) return;
       h.equip.helmet = defaults.helmet;
+    } else if (item.type === 'shield') {
+      if (h.equip.shield !== itemId) return;
+      h.equip.shield = defaults.shield;
     } else if (item.type === 'ring') {
       if (h.equip.ring1 === itemId) h.equip.ring1 = defaults.ring1;
       else if (h.equip.ring2 === itemId) h.equip.ring2 = defaults.ring2;
