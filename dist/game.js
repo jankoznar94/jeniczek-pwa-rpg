@@ -1318,7 +1318,7 @@
   }
 
   const _arrowSvg = (fill, extra = '') =>
-    `<svg viewBox="0 0 16 16" width="26" height="26"><path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+    `<svg viewBox="0 0 16 16" width="39" height="39"><path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
 
   function getDungeonMechanics(locId, floor) {
     const c = getDungeonAttackChances(locId, floor);
@@ -3482,7 +3482,7 @@
         if (lootItems.length > 0) {
           lootItems.forEach(item => {
             const r = RARITY[item.rarity] || RARITY.common;
-            lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,16)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
+            lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,24)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
           });
         } else {
           lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
@@ -3564,7 +3564,7 @@
       let lootListHtml = '';
       if (bossLoot.type === 'boss') {
         const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
-        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(bossLoot.item,16)}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
+        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(bossLoot.item,24)}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
       } else {
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
