@@ -531,6 +531,12 @@
     { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, cost:30, icon:'⛑️', iconImg:'/assets/items/helmet_iron_helm.png', tier:2 },
     { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️', iconImg:'/assets/items/helmet_steel_helm.png', tier:3 },
     { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑', iconImg:'/assets/items/helmet_crown.png', tier:5 },
+    // === ŠTÍTY ===
+    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, cost:15, icon:'🛡️', iconImg:'', tier:1 },
+    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:30, cost:30, icon:'🛡️', iconImg:'', tier:2 },
+    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:40, cost:55, icon:'🛡️', iconImg:'', tier:3 },
+    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:50, cost:85, icon:'🛡️', iconImg:'', tier:4 },
+    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:65, cost:150, icon:'🛡️', iconImg:'', tier:5 },
     // === PRSTENY ===
     { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:15, icon:'💍', iconImg:'/assets/items/ring_copper.png', tier:1 },
     { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍', iconImg:'/assets/items/ring_silver.png', tier:3 },
@@ -2552,27 +2558,59 @@
       }
     });
     let amount = bossDmg;
-    mb.playerHp -= amount;
-    // Life steal
-    if (lifeStealAmt > 0) {
+
+    // Pasivní blok — pokud má hráč štít, šance na vyblokování damage
+    let blocked = false;
+    const shieldItem = ITEM_MAP[state.hero.equip.shield];
+    if (shieldItem && shieldItem.blockChance > 0) {
+      if (Math.random() * 100 < shieldItem.blockChance) {
+        blocked = true;
+        amount = 0;
+        playSFX(blockSfx);
+        // Vizuální feedback — velká průhledná ikona štítu
+        const shieldOverlay = $('mbShieldOverlay');
+        if (shieldOverlay) {
+          shieldOverlay.classList.remove('hidden');
+          shieldOverlay.style.opacity = '0.6';
+          setTimeout(() => {
+            shieldOverlay.style.transition = 'opacity 0.3s';
+            shieldOverlay.style.opacity = '0';
+            setTimeout(() => {
+              shieldOverlay.classList.add('hidden');
+              shieldOverlay.style.transition = '';
+            }, 300);
+          }, 200);
+        }
+      }
+    }
+
+    if (!blocked) {
+      mb.playerHp -= amount;
+    }
+    // Life steal — jen pokud nebylo blokováno
+    if (!blocked && lifeStealAmt > 0) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
     }
-    // Mana steal
-    if (manaStealAmt > 0) {
+    // Mana steal — jen pokud nebylo blokováno
+    if (!blocked && manaStealAmt > 0) {
       state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);
     }
-    mb.mistakes = (mb.mistakes || 0) + 1;
-    mb.comboCount = 0; // reset combo při chybě
-    playSFX(hitSfx);
+    if (!blocked) {
+      mb.mistakes = (mb.mistakes || 0) + 1;
+      mb.comboCount = 0; // reset combo při chybě
+      playSFX(hitSfx);
+    }
 
-    spawnProjectileEffect(null, true, false, mb.monsterAttackType);
-    const playerFig = $('mbPlayerFigure');
-    if (playerFig) { playerFig.style.transition = 'filter 0.15s'; playerFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 100); }
+    if (!blocked) {
+      spawnProjectileEffect(null, true, false, mb.monsterAttackType);
+      const playerFig = $('mbPlayerFigure');
+      if (playerFig) { playerFig.style.transition = 'filter 0.15s'; playerFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 100); }
+    }
 
     const playerDamageText = $('mbPlayerDamageText');
     if (playerDamageText) {
-      playerDamageText.textContent = `-${amount}`;
-      playerDamageText.style.color = '';
+      playerDamageText.textContent = blocked ? '🛡️ BLOCK!' : `-${amount}`;
+      playerDamageText.style.color = blocked ? '#3498db' : '';
       playerDamageText.classList.remove('hidden');
       setTimeout(() => playerDamageText.classList.add('hidden'), 600);
     }
