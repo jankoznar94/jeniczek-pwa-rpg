@@ -184,7 +184,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 #mbDamageText.damage-text { position:absolute;top:65px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeDown { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
-.boss-attack-arrow { position:absolute;top:50%;left:50%;width:60px;height:60px;transform-origin:center;transform-box:fill-box;transform:translate(-50%,-50%);z-index:10;animation:arrowPulse 0.3s ease-out; fill:currentColor; color:#bbb; }
+.boss-attack-arrow { position:absolute;top:50%;left:50%;width:120px;height:120px;transform-origin:center;transform-box:fill-box;transform:translate(-50%,-50%);z-index:10;animation:arrowPulse 0.3s ease-out; fill:currentColor; color:#bbb; }
 @keyframes arrowPulse { 0%{opacity:0}100%{opacity:1} }
 .boss-attack-yellow { color:#c4a84c; fill:#c4a84c; }
 .boss-attack-red { color:#c86a5a; fill:#c86a5a; }
