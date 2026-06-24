@@ -532,11 +532,11 @@
     { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, cost:60, icon:'⛑️', iconImg:'/assets/items/helmet_steel_helm.png', tier:3 },
     { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, cost:140, icon:'👑', iconImg:'/assets/items/helmet_crown.png', tier:5 },
     // === ŠTÍTY ===
-    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, cost:15, icon:'🛡️', iconImg:'', tier:1 },
-    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:30, cost:30, icon:'🛡️', iconImg:'', tier:2 },
-    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:40, cost:55, icon:'🛡️', iconImg:'', tier:3 },
-    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:50, cost:85, icon:'🛡️', iconImg:'', tier:4 },
-    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:65, cost:150, icon:'🛡️', iconImg:'', tier:5 },
+    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, cost:15, icon:'🛡️', iconImg:'/assets/items/shield_wooden.png', tier:1 },
+    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, cost:30, icon:'🛡️', iconImg:'/assets/items/shield_leather.png', tier:2 },
+    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, cost:55, icon:'🛡️', iconImg:'/assets/items/shield_iron.png', tier:3 },
+    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, cost:85, icon:'🛡️', iconImg:'/assets/items/shield_steel.png', tier:4 },
+    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, cost:150, icon:'🛡️', iconImg:'/assets/items/shield_paladin.png', tier:5 },
     // === PRSTENY ===
     { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:3, bonusHp:0, cost:15, icon:'💍', iconImg:'/assets/items/ring_copper.png', tier:1 },
     { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:6, bonusHp:10, cost:55, icon:'💍', iconImg:'/assets/items/ring_silver.png', tier:3 },
