@@ -2273,16 +2273,16 @@
       setTimeout(() => { if (slash.parentNode) slash.remove(); }, 450);
     } else {
       const sc = getSchoolColors(false);
-      // Oblouček s rotací podle směru swipu — zvětšeno na 160×160
+      // Oblouček s rotací podle směru swipu — méně zahnutý, tenčí
       const size = 160;
       const slash = document.createElement('div');
       slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:0;transform:rotate(${rotation}deg);`;
       slash.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
-        <path d="M 20 ${size-20} Q ${size/2} 20 ${size-20} 20" stroke="${sc.c1}" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9">
+        <path d="M 20 ${size-20} Q ${size/2} 40 ${size-20} 20" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
           <animate attributeName="stroke-dashoffset" from="200" to="0" dur="0.12s" fill="freeze"/>
           <animate attributeName="opacity" from="1" to="0" dur="0.3s" begin="0.12s" fill="freeze"/>
         </path>
-        <path d="M 20 ${size-20} Q ${size/2} 20 ${size-20} 20" stroke="white" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.6">
+        <path d="M 20 ${size-20} Q ${size/2} 40 ${size-20} 20" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6">
           <animate attributeName="stroke-dashoffset" from="200" to="0" dur="0.1s" fill="freeze"/>
           <animate attributeName="opacity" from="0.6" to="0" dur="0.25s" begin="0.1s" fill="freeze"/>
         </path>
