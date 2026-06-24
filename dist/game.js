@@ -3974,7 +3974,7 @@
     const has = $('heroSlotArmor'); if (has) { has.classList.toggle('empty', h.equip.armor === 'rags'); if (a.rarity) has.style.borderColor = RARITY[a.rarity].border; }
     const hh = $('heroSlotHelmetIcon'); if (hh) hh.innerHTML = helm ? renderItemIcon(helm, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">⛑️</span>';
     const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); if (helm && helm.rarity) hhs.style.borderColor = RARITY[helm.rarity].border; }
-    const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">🛡️</span>';
+    const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 28) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 28);
     const hss = $('heroSlotShield'); if (hss) { hss.classList.toggle('empty', !shield); if (shield && shield.rarity) hss.style.borderColor = RARITY[shield.rarity].border; }
     const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 28) : '<span style="font-size:28px;display:inline-flex;align-items:center;vertical-align:middle">💍</span>';
     const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); if (r1 && r1.rarity) hr1s.style.borderColor = RARITY[r1.rarity].border; }
@@ -4146,7 +4146,7 @@
     if (armor.rarity) $('invSlotArmor').style.borderColor = RARITY[armor.rarity].border;
     const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); if (helmet && helmet.rarity) hS.style.borderColor = RARITY[helmet.rarity].border; }
-    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0);
+    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 0);
     const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); if (shield && shield.rarity) sS.style.borderColor = RARITY[shield.rarity].border; }
     const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); if (ring1 && ring1.rarity) r1S.style.borderColor = RARITY[ring1.rarity].border; }
