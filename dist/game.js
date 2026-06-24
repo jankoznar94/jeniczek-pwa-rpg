@@ -2978,37 +2978,19 @@
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
     // Globální redukce damage — hráč útočí každou akcí, damage musí být nižší
     const globalMult = 0.4;
-    const critChance = ((state.hero.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
     const critMult = 1.5;
     let dmg = Math.round(baseDmg * mult * globalMult);
     // Fire school passive — ignite
     const ignitePct = getFireIgnitePct();
     if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
     
-    // 🎯 Crit window
-    let isCrit = false;
-    if (mb._bonusStartMs != null && mb._bonusMs > 0) {
-      if (mb._bonusActive) {
-        isCrit = true;
-        dmg = Math.round(dmg * critMult);
-        playSFX(getCritSfx());
-        const critCircle = document.querySelector('.bonus-zone-circle');
-        if (critCircle) {
-          critCircle.style.stroke = '#ffd700';
-          critCircle.style.opacity = '1';
-          critCircle.style.strokeWidth = '9';
-          setTimeout(() => {
-            critCircle.style.stroke = '#f1c40f';
-            critCircle.style.opacity = '0.85';
-            critCircle.style.strokeWidth = '7';
-          }, 400);
-        }
-      } else {
-        playSFX(getHitSfx());
-      }
-    } else {
-      playSFX(getHitSfx());
+    // 🎯 Crit window — jen damage bonus, žádný vizuální efekt
+    if (mb._bonusStartMs != null && mb._bonusMs > 0 && mb._bonusActive) {
+      dmg = Math.round(dmg * critMult);
     }
+    
+    // Zvuk — náhodně střídat normální a crit zvuk pro rozličnost
+    playSFX(Math.random() < 0.5 ? getHitSfx() : getCritSfx());
     
     // === PASIVNÍ EFEKTY ŠKOL ===
     let applyPassives = true;
@@ -3089,24 +3071,24 @@
     mb.bossHp -= dmg;
     const dmgText = $('mbDamageText');
     if (dmgText) {
-      dmgText.textContent = isCrit ? `💥 -${dmg}` : `-${dmg}`;
+      dmgText.textContent = `-${dmg}`;
       dmgText.classList.remove('hidden');
       setTimeout(() => dmgText.classList.add('hidden'), 600);
     }
     const bossFig = $('mbFigure');
     if (bossFig) {
       bossFig.style.transition = 'filter 0.15s';
-      bossFig.style.filter = isCrit ? 'brightness(3) saturate(2) hue-rotate(45deg)' : 'brightness(2) saturate(1.5)';
+      bossFig.style.filter = 'brightness(2) saturate(1.5)';
       setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100);
     }
-    // Projektil podle zbraně
+    // Projektil podle zbraně — vždy normální vizuál (žádný crit efekt)
     const wType = getWeaponType();
     if (wType === 'blade') {
-      spawnSlashEffect(isCrit, mb._lastSwipeDir);
+      spawnSlashEffect(false, mb._lastSwipeDir);
     } else if (wType === 'fists') {
-      spawnFistEffect(isCrit);
+      spawnFistEffect(false);
     } else {
-      spawnProjectileEffect(null, false, isCrit);
+      spawnProjectileEffect(null, false, false);
     }
     updateMapBattleUI();
   }
