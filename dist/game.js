@@ -1740,6 +1740,7 @@
     if (mb._bonusRaf) cancelAnimationFrame(mb._bonusRaf);
     const attackStartTime = performance.now();
     let _lastEffectiveElapsed = 0; // D5: poslední effectiveElapsed před freeze
+    let _savedStrokeColor = null; // D5: původní barva kruhu před freeze
     (function frame() {
       if (mapBattleState.ended) return;
       const now = performance.now();
@@ -1790,8 +1791,14 @@
         circle.style.opacity = '1';
         if (isFrozen) {
           // Během freeze — kolečko stojí, modrá barva
+          if (_savedStrokeColor === null) _savedStrokeColor = circle.style.stroke;
           circle.style.stroke = '#4fc3f7';
         } else {
+          // Po freeze — obnovit původní barvu
+          if (_savedStrokeColor !== null) {
+            circle.style.stroke = _savedStrokeColor;
+            _savedStrokeColor = null;
+          }
           circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
         }
       }
