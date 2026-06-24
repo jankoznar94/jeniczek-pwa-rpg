@@ -512,17 +512,17 @@
     { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:50, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5 },
     // === ZBRANĚ — fyzické (blade) ===
     { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:10, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1 },
-    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:8, bonusHp:0, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1 },
-    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2 },
-    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:14, bonusHp:0, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:22, bonusHp:0, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3 },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:30, bonusHp:0, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4 },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:32, bonusHp:0, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4 },
-    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
-    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:40, bonusHp:0, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5 },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
-    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6 },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:50, bonusHp:20, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1 },
+    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:16, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2 },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:14, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:22, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3 },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:30, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4 },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:32, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4 },
+    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:38, bonusHp:0, critChance:10, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:40, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5 },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:44, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
+    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:55, bonusHp:30, critChance:25, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6 },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:50, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6 },
     // === BRNĚNÍ ===
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
@@ -2983,8 +2983,17 @@
     const ignitePct = getFireIgnitePct();
     if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
     
-    // Zvuk — normální úder
-    playSFX(getHitSfx());
+    // 🎯 Crit chance ze zbraně — náhodná šance na 2.0× poškození
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const critChance = weapon.critChance || 0;
+    let isCrit = false;
+    if (critChance > 0 && Math.random() * 100 < critChance) {
+      dmg = Math.round(dmg * 2.0);
+      isCrit = true;
+    }
+    
+    // Zvuk — crit má vlastní zvuk, jinak normální
+    playSFX(isCrit ? getCritSfx() : getHitSfx());
     
     // === PASIVNÍ EFEKTY ŠKOL ===
     let applyPassives = true;
@@ -3379,6 +3388,10 @@
     })();
     const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
     const item = { id, name, type, subtype, baseDmg, bonusHp, icon, iconImg, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
+    // Crit chance pro blade zbraně (5-25% podle tieru)
+    if (type === 'weapon' && subtype === 'blade') {
+      item.critChance = Math.min(25, 5 + tier * 3 + rand(0, 5));
+    }
     ITEM_MAP[id] = item;
     state.lootItems = state.lootItems || {};
     state.lootItems[id] = item;
@@ -4139,8 +4152,9 @@
     $('heroMaxHp').textContent = h.maxHp;
     $('heroDmg').textContent = getHeroDmg();
     $('heroGold').textContent = h.gold;
-    const critChance = ((h.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
-    $('heroCrit').textContent = `${critChance}% okno (×1.5)`;
+    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
+    const critChance = weapon.critChance || 0;
+    $('heroCrit').textContent = critChance > 0 ? `${critChance}% (×2.0)` : `0%`;
     // Block chance ze štítu
     const shieldItem = ITEM_MAP[h.equip.shield];
     const blockChance = shieldItem ? (shieldItem.blockChance || 0) : 0;
@@ -4413,7 +4427,10 @@
       const r = RARITY[item.rarity] || RARITY.common;
       $('invInfoName').style.color = r.color;
       let stats = `<span style="color:${r.color};font-size:11px">${r.name}</span><br>`;
-      if (item.type === 'weapon') stats += `⚔️ +${item.baseDmg} poškození`;
+      if (item.type === 'weapon') {
+        stats += `⚔️ +${item.baseDmg} poškození`;
+        if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
+      }
       else if (item.type === 'armor') stats += `❤️ +${item.bonusHp} HP`;
       else if (item.type === 'helmet') stats += `❤️ +${item.bonusHp} HP`;
       else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok · ❤️ +${item.bonusHp||0} HP`;
