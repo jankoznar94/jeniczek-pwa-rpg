@@ -1584,7 +1584,7 @@
       if (actionInfo) actionInfo.classList.add('hidden');
       if (arrow) {
         arrow.setAttribute('class', 'boss-attack-arrow');
-        arrow.setAttribute('viewBox', '0 0 16 16');
+        arrow.setAttribute('viewBox', '-3 -3 22 22');
         arrow.style.color = ''; // reset barvy z předchozího útoku
         const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[attack.dir] || 0;
         arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
@@ -1594,7 +1594,7 @@
         } else if (attack.type === 'blue') {
           arrow.style.transform = 'translate(-50%, -50%)';
           arrow.classList.add('boss-attack-blue');
-          arrow.setAttribute('viewBox', '0 -2 16 20');
+          arrow.setAttribute('viewBox', '-3 -5 22 26');
           if (attack.dir === '⬆️') {
             arrow.innerHTML = '<g transform="translate(-2.5,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="none" stroke="#3a5a7a" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(2.5,0)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="none" stroke="#3a5a7a" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
           } else {
