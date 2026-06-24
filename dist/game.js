@@ -2570,20 +2570,6 @@
         blocked = true;
         amount = 0;
         playSFX(blockSfx);
-        // Vizuální feedback — velká průhledná ikona štítu
-        const shieldOverlay = $('mbShieldOverlay');
-        if (shieldOverlay) {
-          shieldOverlay.classList.remove('hidden');
-          shieldOverlay.style.opacity = '0.6';
-          setTimeout(() => {
-            shieldOverlay.style.transition = 'opacity 0.3s';
-            shieldOverlay.style.opacity = '0';
-            setTimeout(() => {
-              shieldOverlay.classList.add('hidden');
-              shieldOverlay.style.transition = '';
-            }, 300);
-          }, 200);
-        }
       }
     }
 
@@ -3916,6 +3902,10 @@
     $('heroGold').textContent = h.gold;
     const critChance = ((h.attrDex||0) + getEquipAttrs().dex) * 0.5 + 5;
     $('heroCrit').textContent = `${critChance}% okno (×1.5)`;
+    // Block chance ze štítu
+    const shieldItem = ITEM_MAP[h.equip.shield];
+    const blockChance = shieldItem ? (shieldItem.blockChance || 0) : 0;
+    $('heroBlock').textContent = `${blockChance}%`;
     // Portrét
     const faceFile = h.face || 'hero';
     const portraitImg = $('heroPortraitImg');
@@ -4187,6 +4177,7 @@
       if (item.type === 'weapon') stats += `⚔️ +${item.baseDmg} poškození`;
       else if (item.type === 'armor') stats += `❤️ +${item.bonusHp} HP`;
       else if (item.type === 'helmet') stats += `❤️ +${item.bonusHp} HP`;
+      else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok · ❤️ +${item.bonusHp||0} HP`;
       else if (item.type === 'ring') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
       else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
