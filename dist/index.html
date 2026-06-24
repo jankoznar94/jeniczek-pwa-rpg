@@ -54,13 +54,14 @@
       <div class="boss-fight-player" id="mbPlayerFigure"><div class="hero-portrait-frame"><img src="assets/monsters/hero.png" alt="" class="hero-portrait-img" id="mbHeroPortraitImg"/></div><span class="damage-text hidden" id="mbPlayerDamageText"></span></div>
       <svg id="mbArrow" class="boss-attack-arrow hidden" viewBox="0 0 16 16" width="60" height="60"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
       <div class="attack-timer-ring" id="mbTimerRing">
-        <svg viewBox="0 0 110 110" width="110" height="110" style="transform:rotate(-90deg)">
-          <circle cx="55" cy="55" r="44" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="276" stroke-dashoffset="276" class="timer-circle"/>
-          <circle cx="55" cy="55" r="44" stroke="#f1c40f" stroke-width="7" fill="none" stroke-dasharray="0 276" stroke-dashoffset="276" class="bonus-zone-circle" opacity="0.85"/>
+        <svg viewBox="0 0 130 130" width="130" height="130" style="transform:rotate(-90deg)">
+          <circle cx="65" cy="65" r="53" stroke="#888" stroke-width="9" fill="none" stroke-dasharray="333" stroke-dashoffset="333" class="timer-circle"/>
+          <circle cx="65" cy="65" r="58" stroke="#f1c40f" stroke-width="9" fill="none" stroke-dasharray="0 364" stroke-dashoffset="364" class="bonus-zone-circle" opacity="0.85"/>
         </svg>
         <span class="action-info-icon hidden" id="mbActionInfo"></span>
       </div>
       <div class="arena-dodge-btn" id="mbDodgeBtn">🏃</div>
+      <div class="arena-heat-indicator hidden" id="mbHeatIndicator"><span>🔥</span><span class="heat-num">0/10</span></div>
       <div class="arena-pause-btn" id="mbPauseBtn">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
           <line x1="7" y1="5" x2="7" y2="19"/>
@@ -354,9 +355,9 @@
         <path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
       </svg>
       <div class="attack-timer-ring" id="tutRing">
-        <svg viewBox="0 0 110 110" width="110" height="110" style="transform:rotate(-90deg)">
-          <circle cx="55" cy="55" r="44" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="276" stroke-dashoffset="276" class="timer-circle"/>
-          <circle cx="55" cy="55" r="44" stroke="#f1c40f" stroke-width="7" fill="none" stroke-dasharray="0 276" stroke-dashoffset="276" class="bonus-zone-circle" opacity="0.85"/>
+        <svg viewBox="0 0 130 130" width="130" height="130" style="transform:rotate(-90deg)">
+          <circle cx="65" cy="65" r="53" stroke="#888" stroke-width="9" fill="none" stroke-dasharray="333" stroke-dashoffset="333" class="timer-circle"/>
+          <circle cx="65" cy="65" r="58" stroke="#f1c40f" stroke-width="9" fill="none" stroke-dasharray="0 364" stroke-dashoffset="364" class="bonus-zone-circle" opacity="0.85"/>
         </svg>
         <span class="action-info-icon hidden" id="tutActionInfo"></span>
       </div>
