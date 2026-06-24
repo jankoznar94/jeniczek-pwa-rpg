@@ -1317,8 +1317,18 @@
     return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth: 0, lie: 0, freeze: 0 };
   }
 
-  const _arrowSvg = (fill, extra = '') =>
-    `<svg viewBox="0 0 16 16" width="39" height="39"><path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+  const _arrowSvg = (fill, extra = '') => {
+    // Tmavší border — odečíst 60 od každé RGB složky
+    const hex = fill.replace('#','');
+    const r = Math.max(0, parseInt(hex.substr(0,2),16) - 60);
+    const g = Math.max(0, parseInt(hex.substr(2,2),16) - 60);
+    const b = Math.max(0, parseInt(hex.substr(4,2),16) - 60);
+    const border = `#${(r<16?'0':'')+r.toString(16)}${(g<16?'0':'')+g.toString(16)}${(b<16?'0':'')+b.toString(16)}`;
+    return `<svg viewBox="0 0 16 16" width="39" height="39">
+      <path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="none" stroke="${border}" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+      <path${extra} d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="${fill}" stroke="${fill}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`;
+  };
 
   function getDungeonMechanics(locId, floor) {
     const c = getDungeonAttackChances(locId, floor);
