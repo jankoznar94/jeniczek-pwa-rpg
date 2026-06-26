@@ -233,22 +233,13 @@
                 
                 const effectiveElapsed = rawElapsed - totalFrozen;
                 const pct = Math.min(effectiveElapsed / winTime, 1);
-                const _isMirror = mb.sequence && mb.sequence[mb.sequenceIndex] && mb.sequence[mb.sequenceIndex].type === 'mirror';
-                if (_isMirror) {
-                  mb._bonusActive = (effectiveElapsed >= 0 && effectiveElapsed < (mb._bonusMs || 0));
-                } else {
-                  mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
-                }
+                mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
                 if (circle) {
                   circle.style.opacity = '1';
                   if (isFrozen) {
                     circle.style.stroke = '#4fc3f7';
                   } else {
-                    if (_isMirror) {
-                      circle.style.strokeDashoffset = Math.round(691 * pct);
-                    } else {
-                      circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
-                    }
+                    circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
                   }
                 }
                 if (effectiveElapsed < winTime) {
@@ -1757,8 +1748,7 @@
       }
     }
     
-    const isMirror = attack.type === 'mirror';
-    const bStartMs = isMirror ? 0 : Math.round(winTime * 0.5); // mirror: výseč hned na začátku
+    const bStartMs = Math.round(winTime * 0.5); // výseč začíná v 50% timeru (6 hodin)
     const bMs = Math.round(winTime * 0.15); // 15% šířka
     mb._bonusStartMs = bStartMs;
     mb._bonusMs = bMs;
@@ -1766,7 +1756,7 @@
     // Vizuální znázornění výseče na kolečku
     const bCircum = 741;
     const zWidthPx = Math.max(1, Math.round((bMs / winTime) * 741));
-    const zStartPx = isMirror ? 0 : Math.round((bStartMs / winTime) * 741);
+    const zStartPx = Math.round((bStartMs / winTime) * 741);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
       const remaining = Math.max(0, 741 - zStartPx - zWidthPx);
@@ -1776,6 +1766,15 @@
     mb._zoneWidthPx = zWidthPx;
     mb._zoneStartPx = zStartPx;
     mb._bonusCircum = 741;
+    
+    // Mirror: horizontálně překlopit SVG kruh
+    const isMirror = attack.type === 'mirror';
+    if (isMirror) {
+      circle.style.transform = 'scaleX(-1)';
+      circle.style.transformOrigin = 'center';
+    } else {
+      circle.style.transform = '';
+    }
     
     if (mb._bonusRaf) cancelAnimationFrame(mb._bonusRaf);
     const attackStartTime = performance.now();
@@ -1826,12 +1825,7 @@
       }
       
       const pct = Math.min(effectiveElapsed / winTime, 1);
-      if (isMirror) {
-        // Mirror: bonus aktivní hned na začátku (0 až bMs)
-        mb._bonusActive = (effectiveElapsed >= 0 && effectiveElapsed < bMs);
-      } else {
-        mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
-      }
+      mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
       if (circle) {
         circle.style.opacity = '1';
         if (isFrozen) {
@@ -1844,12 +1838,7 @@
             circle.style.stroke = _savedStrokeColor;
             _savedStrokeColor = null;
           }
-          if (isMirror) {
-            // Mirror: timer roste (0 → 691)
-            circle.style.strokeDashoffset = Math.round(691 * pct);
-          } else {
-            circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
-          }
+          circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
         }
       }
       if (effectiveElapsed < winTime) {
