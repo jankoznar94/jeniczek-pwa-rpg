@@ -1771,9 +1771,9 @@
     mb._zoneStartPx = zStartPx;
     mb._bonusCircum = 741;
     
-    // Mirror: horizontálně překlopit SVG kruh timeru (jen vizuálně, výseč je samostatný element)
+    // Mirror: vertikálně překlopit SVG kruh timeru — začátek zůstává na 12h, ubývá proti směru
     if (isMirror) {
-      circle.style.transform = 'scaleX(-1)';
+      circle.style.transform = 'scaleY(-1)';
       circle.style.transformOrigin = 'center';
     } else {
       circle.style.transform = '';
