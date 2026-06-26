@@ -1750,13 +1750,17 @@
     
     const bStartMs = Math.round(winTime * 0.5); // výseč začíná v 50% timeru (6 hodin)
     const bMs = Math.round(winTime * 0.15); // 15% šířka
-    mb._bonusStartMs = bStartMs;
+    
+    // Mirror: výseč zrcadlově horizontálně — od 35% do 50%
+    const isMirror = attack.type === 'mirror';
+    const effBStartMs = isMirror ? Math.round(winTime * 0.35) : bStartMs;
+    mb._bonusStartMs = effBStartMs;
     mb._bonusMs = bMs;
     
     // Vizuální znázornění výseče na kolečku
     const bCircum = 741;
     const zWidthPx = Math.max(1, Math.round((bMs / winTime) * 741));
-    const zStartPx = Math.round((bStartMs / winTime) * 741);
+    const zStartPx = Math.round((effBStartMs / winTime) * 741);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
       const remaining = Math.max(0, 741 - zStartPx - zWidthPx);
@@ -1767,8 +1771,7 @@
     mb._zoneStartPx = zStartPx;
     mb._bonusCircum = 741;
     
-    // Mirror: horizontálně překlopit SVG kruh
-    const isMirror = attack.type === 'mirror';
+    // Mirror: horizontálně překlopit SVG kruh timeru (jen vizuálně, výseč je samostatný element)
     if (isMirror) {
       circle.style.transform = 'scaleX(-1)';
       circle.style.transformOrigin = 'center';
