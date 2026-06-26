@@ -4273,17 +4273,17 @@
     const shield = ITEM_MAP[h.equip.shield];
     const r1 = ITEM_MAP[h.equip.ring1];
     const amulet = ITEM_MAP[h.equip.amulet];
-    const hw = $('heroSlotWeaponIcon'); if (hw) hw.innerHTML = renderItemIcon(w, 28);
+    const hw = $('heroSlotWeaponIcon'); if (hw) hw.innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(w, 0);
     const hws = $('heroSlotWeapon'); if (hws) { hws.classList.toggle('empty', h.equip.weapon === 'fists'); if (w.rarity) hws.style.borderColor = RARITY[w.rarity].border; }
-    const ha = $('heroSlotArmorIcon'); if (ha) ha.innerHTML = renderItemIcon(a, 28);
+    const ha = $('heroSlotArmorIcon'); if (ha) ha.innerHTML = h.equip.armor === 'rags' ? renderItemIcon({iconImg:'/assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(a, 0);
     const has = $('heroSlotArmor'); if (has) { has.classList.toggle('empty', h.equip.armor === 'rags'); if (a.rarity) has.style.borderColor = RARITY[a.rarity].border; }
-    const hh = $('heroSlotHelmetIcon'); if (hh) hh.innerHTML = helm ? renderItemIcon(helm, 28) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 28);
+    const hh = $('heroSlotHelmetIcon'); if (hh) hh.innerHTML = helm ? renderItemIcon(helm, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
     const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); if (helm && helm.rarity) hhs.style.borderColor = RARITY[helm.rarity].border; }
-    const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 28) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 28);
+    const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 0);
     const hss = $('heroSlotShield'); if (hss) { hss.classList.toggle('empty', !shield); if (shield && shield.rarity) hss.style.borderColor = RARITY[shield.rarity].border; }
-    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 28) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 28);
+    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); if (r1 && r1.rarity) hr1s.style.borderColor = RARITY[r1.rarity].border; }
-    const ham = $('heroSlotAmuletIcon'); if (ham) ham.innerHTML = amulet ? renderItemIcon(amulet, 28) : renderItemIcon({iconImg:'/assets/items/amulet_bone.png',tier:1}, 28);
+    const ham = $('heroSlotAmuletIcon'); if (ham) ham.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'/assets/items/amulet_bone.png',tier:1}, 0);
     const hams = $('heroSlotAmulet'); if (hams) { hams.classList.toggle('empty', !amulet); if (amulet && amulet.rarity) hams.style.borderColor = RARITY[amulet.rarity].border; }
   }
 
