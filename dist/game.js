@@ -933,8 +933,8 @@
         }
       }
       return `<div class="map-location-wrap">
-        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg},${theme.bg}88 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
-          <div class="map-loc-icon-big">${loc.icon}</div>
+        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
+          <div class="map-loc-bg" style="background-image:url(assets/dungeons/${['forest','desert','undead','hell','frost'][i]||'forest'}.png)"></div>
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
           </div>
