@@ -663,6 +663,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .map-loc-badge {
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:8px 12px;border-radius:10px;flex-shrink:0;min-width:56px;
+  position:relative;z-index:1;box-shadow:0 0 8px rgba(0,0,0,0.5);
 }
 .badge-floor { font-size:18px;font-weight:bold; }
 .badge-count { font-size:13px;font-weight:bold; }
