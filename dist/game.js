@@ -233,13 +233,22 @@
                 
                 const effectiveElapsed = rawElapsed - totalFrozen;
                 const pct = Math.min(effectiveElapsed / winTime, 1);
-                mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
+                const _isMirror = mb.sequence && mb.sequence[mb.sequenceIndex] && mb.sequence[mb.sequenceIndex].type === 'mirror';
+                if (_isMirror) {
+                  mb._bonusActive = (effectiveElapsed >= 0 && effectiveElapsed < (mb._bonusMs || 0));
+                } else {
+                  mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
+                }
                 if (circle) {
                   circle.style.opacity = '1';
                   if (isFrozen) {
                     circle.style.stroke = '#4fc3f7';
                   } else {
-                    circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
+                    if (_isMirror) {
+                      circle.style.strokeDashoffset = Math.round(691 * pct);
+                    } else {
+                      circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
+                    }
                   }
                 }
                 if (effectiveElapsed < winTime) {
@@ -1332,32 +1341,29 @@
 
   function getDungeonAttackChances(locId, floor) {
     // D1, D2: jen šedé šipky
-    if (locId === 0 || locId === 1) return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth: 0, lie: 0, freeze: 0 };
-    // D3 (Nemrtvá země): truth (zelená=normální), lie (červená=opačný), freeze (modrá=nic)
+    if (locId === 0 || locId === 1) return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, mirror: 0, freeze: 0 };
+    // D3 (Nemrtvá země): mirror (zrcadlový timer), freeze (modrá=nic)
     if (locId === 2) {
       const f = floor || 0;
-      const truth = Math.max(30, 70 - f * 4);
-      const lie = Math.min(35, 15 + f * 2);
+      const mirror = Math.min(70, 30 + f * 4);
       const freeze = Math.min(35, 15 + f * 2);
-      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
+      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, mirror, freeze };
     }
-    // D4 (Pekelné výspy): truth/lie/freeze + přehřívání
+    // D4 (Pekelné výspy): mirror/freeze + přehřívání
     if (locId === 3) {
       const f = floor || 0;
-      const truth = Math.max(20, 60 - f * 4);
-      const lie = Math.min(40, 20 + f * 2);
+      const mirror = Math.min(80, 40 + f * 4);
       const freeze = Math.min(40, 20 + f * 2);
-      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
+      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, mirror, freeze };
     }
-    // D5 (Mrazivé štíty): truth/lie/freeze + přehřívání + timer freeze
+    // D5 (Mrazivé štíty): mirror/freeze + přehřívání + timer freeze
     if (locId === 4) {
       const f = floor || 0;
-      const truth = Math.max(20, 60 - f * 4);
-      const lie = Math.min(40, 20 + f * 2);
+      const mirror = Math.min(80, 40 + f * 4);
       const freeze = Math.min(40, 20 + f * 2);
-      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
+      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, mirror, freeze };
     }
-    return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth: 0, lie: 0, freeze: 0 };
+    return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, mirror: 0, freeze: 0 };
   }
 
   const _arrowSvg = (fill, extra = '') => {
@@ -1379,23 +1385,20 @@
     icons.push(_arrowSvg('#bbb')); // normální úhyb — vždy
     // D2 — nestabilní timer (červená/modrá)
     if (locId === 1) icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">⚡</span>');
-    // D3 — lživé šipky
+    // D3 — zrcadlový timer
     if (locId === 2) {
-      icons.push(_arrowSvg('#2ecc71')); // truth — zelená
-      icons.push(_arrowSvg('#e94560')); // lie — červená
+      icons.push(_arrowSvg('#bbb')); // mirror — stejná šedá šipka, timer se točí pozpátku
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔵</span>'); // freeze — modrá
     }
-    // D4 — lživé šipky + přehřívání
+    // D4 — zrcadlový timer + přehřívání
     if (locId === 3) {
-      icons.push(_arrowSvg('#2ecc71')); // truth — zelená
-      icons.push(_arrowSvg('#e94560')); // lie — červená
+      icons.push(_arrowSvg('#bbb')); // mirror — stejná šedá šipka
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔵</span>'); // freeze — modrá
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔥</span>'); // přehřívání
     }
-    // D5 — lživé šipky + přehřívání + timer freeze
+    // D5 — zrcadlový timer + přehřívání + timer freeze
     if (locId === 4) {
-      icons.push(_arrowSvg('#2ecc71')); // truth — zelená
-      icons.push(_arrowSvg('#e94560')); // lie — červená
+      icons.push(_arrowSvg('#bbb')); // mirror — stejná šedá šipka
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔵</span>'); // freeze — modrá
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">🔥</span>'); // přehřívání
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">❄️</span>'); // timer freeze
@@ -1420,7 +1423,7 @@
   }
 
   function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0);
+    const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0) + (chances.mirror||0) + (chances.freeze||0);
     const randNum = Math.random() * randTotal;
     let type = 'grey';
     if (randNum < chances.inverted) { type = 'inverted'; }
@@ -1428,9 +1431,8 @@
     else if (randNum < chances.inverted + chances.green + chances.yellow) { type = 'yellow'; }
     else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue) { type = 'blue'; }
     else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0)) { type = 'rapid'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0)) { type = 'truth'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0)) { type = 'lie'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0)) { type = 'freeze'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.mirror||0)) { type = 'mirror'; }
+    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.mirror||0) + (chances.freeze||0)) { type = 'freeze'; }
     // Timer: base 1500ms, floor multiplikátor (P1=1500, P10=~900ms)
     const mult = getFloorTimerMultiplier(floor || 0, locId);
     const baseTime = Math.round(1500 * mult);
@@ -1461,8 +1463,7 @@
     if (attack.type === 'green') return `${dir} 🟢 Léčení — swipni pro HP!`;
     if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
     if (attack.type === 'rapid') return `🔮 Ťukej! ${attack.rapidTarget}× na plošky!`;
-    if (attack.type === 'truth') return `${dir} 🟢 Pravda — swipni jak šipka!`;
-    if (attack.type === 'lie') return `${dir} 🔴 Lež — udělej OPAK!`;
+    if (attack.type === 'mirror') return `${dir} ⚪ Zrcadlo — timer běží pozpátku, udělej OPAK!`;
     if (attack.type === 'freeze') return `${dir} 🔵 Zmrzni — NESMÍŠ swipnout!`;
     return `${dir} útok!`;
   }
@@ -1585,7 +1586,7 @@
     mb.isInvertedAttack = attack.type === 'inverted';
     mb.isTwinAttack = attack.type === 'blue';
     mb.isRapidAttack = attack.type === 'rapid';
-    mb.isGreenAttack = attack.type === 'green' || attack.type === 'truth' || attack.type === 'lie';
+    mb.isGreenAttack = attack.type === 'green';
     mb.isRapidAttack = attack.type === 'rapid';
     if (attack.type === 'rapid') {
       mb.rapidTaps = 0;
@@ -1646,14 +1647,9 @@
         } else if (attack.type === 'green') {
           arrow.classList.add('boss-attack-green');
           arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="none" stroke="#3a7a5a" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-        } else if (attack.type === 'truth') {
-          arrow.classList.add('boss-attack-green');
-          arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="none" stroke="#3a7a5a" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-        } else if (attack.type === 'lie') {
-          arrow.classList.remove('boss-attack-green');
-          arrow.style.color = '#e94560';
-          arrow.style.fill = '#e94560';
-          arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="none" stroke="#b01a30" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#e94560" stroke="#e94560" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
+        } else if (attack.type === 'mirror') {
+          // Mirror — stejná šedá šipka jako grey, timer se točí pozpátku
+          arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="none" stroke="#888" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
         } else if (attack.type === 'freeze') {
           arrow.classList.remove('boss-attack-green');
           arrow.style.color = '#4a7dff';
@@ -1761,7 +1757,8 @@
       }
     }
     
-    const bStartMs = Math.round(winTime * 0.5); // výseč začíná v 50% timeru (6 hodin)
+    const isMirror = attack.type === 'mirror';
+    const bStartMs = isMirror ? 0 : Math.round(winTime * 0.5); // mirror: výseč hned na začátku
     const bMs = Math.round(winTime * 0.15); // 15% šířka
     mb._bonusStartMs = bStartMs;
     mb._bonusMs = bMs;
@@ -1769,7 +1766,7 @@
     // Vizuální znázornění výseče na kolečku
     const bCircum = 741;
     const zWidthPx = Math.max(1, Math.round((bMs / winTime) * 741));
-    const zStartPx = Math.round((bStartMs / winTime) * 741);
+    const zStartPx = isMirror ? 0 : Math.round((bStartMs / winTime) * 741);
     const bonusCircle = document.querySelector('.bonus-zone-circle');
     if (bonusCircle) {
       const remaining = Math.max(0, 741 - zStartPx - zWidthPx);
@@ -1829,7 +1826,12 @@
       }
       
       const pct = Math.min(effectiveElapsed / winTime, 1);
-      mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
+      if (isMirror) {
+        // Mirror: bonus aktivní hned na začátku (0 až bMs)
+        mb._bonusActive = (effectiveElapsed >= 0 && effectiveElapsed < bMs);
+      } else {
+        mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
+      }
       if (circle) {
         circle.style.opacity = '1';
         if (isFrozen) {
@@ -1842,7 +1844,12 @@
             circle.style.stroke = _savedStrokeColor;
             _savedStrokeColor = null;
           }
-          circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
+          if (isMirror) {
+            // Mirror: timer roste (0 → 691)
+            circle.style.strokeDashoffset = Math.round(691 * pct);
+          } else {
+            circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
+          }
         }
       }
       if (effectiveElapsed < winTime) {
@@ -2739,19 +2746,8 @@
         }
         updateMapBattleUI();
       }
-    } else if (attack.type === 'truth') {
-      // Truth — zelená šipka, swipni jak ukazuje
-      clearTimeout(mb._sequenceTimer);
-      clearTimeout(mb._ringTimer);
-      mb._ringTimer = null;
-      mb._sequenceTimer = null;
-      if (dir === attack.dir) {
-        correct = true;
-        doArenaGlow(dir, true);
-        dmgMult = 1.0;
-      }
-    } else if (attack.type === 'lie') {
-      // Lie — červená šipka, swipni opačný směr
+    } else if (attack.type === 'mirror') {
+      // Mirror — šedá šipka, timer se točí pozpátku, swipni opačný směr
       clearTimeout(mb._sequenceTimer);
       clearTimeout(mb._ringTimer);
       mb._ringTimer = null;

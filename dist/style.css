@@ -212,6 +212,10 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   0%   { stroke-dashoffset: 691; }
   100% { stroke-dashoffset: 0; }
 }
+@keyframes timer-ring-grow {
+  0%   { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: 691; }
+}
 .arena-dodge-btn {
   position:absolute;bottom:20px;left:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
