@@ -985,7 +985,11 @@
     const bossHp = Math.round((400 + locId * 400) * diffMult + floor * 60 + 200);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
-    const floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
+    // Sada monster pro celé patro — generuje se jen jednou na začátku patra
+    if (progress === 0 || !state._floorMonsters || state._floorMonsters.length === 0) {
+      state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, floor);
+    }
+    const floorMonsters = state._floorMonsters;
     // Zaznamenat setkání s monstry do bestiáře
     if (!isBoss) {
       state.encounteredMonsters = state.encounteredMonsters || [];
