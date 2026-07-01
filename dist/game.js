@@ -747,6 +747,9 @@
 
   function cleanupTimers() {
     document.body.classList.remove('battle-active');
+    // Schovat timer ring
+    const circle = document.querySelector('.timer-circle');
+    if (circle) { circle.style.opacity = '0'; circle.style.animation = 'none'; }
     _activeIntervals.forEach(id => { try { clearInterval(id); } catch {} }); _activeIntervals = [];
     if (minigameState.timerInterval) { clearInterval(minigameState.timerInterval); minigameState.timerInterval = null; }
     if (minigameState.countdownInterval) { clearInterval(minigameState.countdownInterval); minigameState.countdownInterval = null; }
