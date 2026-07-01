@@ -208,6 +208,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   stroke:#888;
   stroke-width:9;
 }
+.hp-circle {
+  stroke:#e74c3c;
+  stroke-width:8;
+  transition:stroke-dashoffset 0.2s ease-out;
+}
 @keyframes timer-ring-shrink {
   0%   { stroke-dashoffset: 691; }
   100% { stroke-dashoffset: 0; }
@@ -286,22 +291,6 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .player-hp-bar { text-align:center;font-size:13px;color:#e74c3c;padding:4px 0;margin:2px 0;font-weight:bold; }
 
 /* Enemy HP bar — nad příšerou v aréně */
-.enemy-hp-row {
-  position:absolute;top:10px;left:50%;transform:translateX(-50%);
-}
-.enemy-hp-text {
-  position:absolute;left:-44px;top:50%;transform:translateY(-50%);
-  font-size:11px;color:#e74c3c;font-weight:bold;white-space:nowrap;
-}
-.enemy-hp-bar-wrap {
-  width:120px;height:10px;background:#2a0a0a;border:1px solid #e74c3c;
-  overflow:hidden;
-}
-.enemy-hp-bar-fill {
-  height:100%;background:#e74c3c;
-  transition:width 0.2s ease-out;
-}
-
 /* Arena HP/Mana — pruhy na spodku */
 .mb-hp-mana-bars {
   display:flex;flex-direction:column;gap:3px;margin:6px 8px;

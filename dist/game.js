@@ -1107,9 +1107,12 @@
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
-    $('mbEnemyHpText').textContent = `${mb.bossHp}/${mb.maxBossHp}`;
-    const enemyBar = $('mbEnemyHpBar');
-    if (enemyBar) enemyBar.style.width = Math.max(0, eHpPct) + '%';
+    // Kruhový HP bar
+    const hpCircle = document.querySelector('.hp-circle');
+    if (hpCircle) {
+      const circ = 741;
+      hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - eHpPct / 100)));
+    }
     // Monster icons row
     const iconRow = $('mbMonsterIcons');
     if (iconRow) {
