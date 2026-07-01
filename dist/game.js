@@ -1107,10 +1107,10 @@
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
-    // Kruhový HP bar
-    const hpCircle = document.querySelector('.hp-circle');
+    // Kruhový HP bar — okraj obrázku monstra
+    const hpCircle = document.querySelector('#mbFigure .hp-circle');
     if (hpCircle) {
-      const circ = 741;
+      const circ = 490;
       hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - eHpPct / 100)));
     }
     // Monster icons row
