@@ -241,9 +241,9 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   text-shadow:0 0 20px rgba(0,0,0,0.5);
   width:160px;height:160px;
 }
-#mbArena .monster-in-ring .hp-ring-svg {
-  position:absolute;top:0;left:0;width:160px;height:160px;pointer-events:none;
-  transform:rotate(-90deg);
+#mbArena .hp-ring-svg {
+  position:absolute;top:50%;left:50%;z-index:4;pointer-events:none;
+  transform:translate(-50%,-50%) rotate(-90deg);
 }
 #mbArena .monster-in-ring img {
   width:160px;height:160px;object-fit:contain;border-radius:50%;

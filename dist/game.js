@@ -1108,7 +1108,7 @@
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
     // Kruhový HP bar — okraj obrázku monstra
-    const hpCircle = document.querySelector('#mbFigure .hp-circle');
+    const hpCircle = document.querySelector('.hp-ring-svg .hp-circle');
     if (hpCircle) {
       const circ = 490;
       hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - eHpPct / 100)));
@@ -2929,10 +2929,16 @@
         arena.style.backgroundColor = 'rgba(233,69,96,0.45)';
         setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 100);
       }
-      // Záblesk na celém těle stránky
-      document.body.style.transition = 'background-color 0.1s';
-      document.body.style.backgroundColor = 'rgba(233,69,96,0.12)';
-      setTimeout(() => { document.body.style.backgroundColor = ''; setTimeout(() => { document.body.style.transition = ''; }, 200); }, 100);
+      // Záblesk overlay — tmavý overlay s červeným nádechem
+      let hitOverlay = $('mbHitOverlay');
+      if (!hitOverlay) {
+        hitOverlay = document.createElement('div');
+        hitOverlay.id = 'mbHitOverlay';
+        hitOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;pointer-events:none;transition:background-color 0.1s;background-color:transparent;';
+        document.body.appendChild(hitOverlay);
+      }
+      hitOverlay.style.backgroundColor = 'rgba(200,40,40,0.2)';
+      setTimeout(() => { hitOverlay.style.backgroundColor = 'transparent'; }, 100);
     }
 
     const playerDamageText = $('mbPlayerDamageText');
