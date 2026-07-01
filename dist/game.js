@@ -2312,7 +2312,7 @@
       // Dvojitý kříž (X) — červený, s rotací podle směru
       const size = 200;
       const slash = document.createElement('div');
-      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:0;transform:rotate(${rotation}deg);`;
+      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:1;transform:rotate(${rotation}deg);`;
       slash.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
         <path d="M 30 ${size-30} Q ${size/2} ${size/2} ${size-30} 30" stroke="#e74c3c" stroke-width="8" stroke-linecap="round" fill="none" opacity="0.95">
           <animate attributeName="stroke-dashoffset" from="250" to="0" dur="0.1s" fill="freeze"/>
@@ -2339,7 +2339,7 @@
       // Oblouček s rotací podle směru swipu — méně zahnutý, tenčí
       const size = 160;
       const slash = document.createElement('div');
-      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:0;transform:rotate(${rotation}deg);`;
+      slash.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:1;transform:rotate(${rotation}deg);`;
       slash.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
         <path d="M 20 ${size-20} Q ${size/2} 40 ${size-20} 20" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
           <animate attributeName="stroke-dashoffset" from="200" to="0" dur="0.12s" fill="freeze"/>
@@ -2371,7 +2371,7 @@
       // Dvě soustředné kruhové rány — shockwave
       const size = 120;
       const el = document.createElement('div');
-      el.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:0;`;
+      el.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:25;pointer-events:none;opacity:1;`;
       el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
         <circle cx="${size/2}" cy="${size/2}" r="10" fill="none" stroke="#e74c3c" stroke-width="6" stroke-linecap="round" opacity="0.9">
           <animate attributeName="r" from="10" to="${size/2-4}" dur="0.2s" fill="freeze"/>
@@ -2390,10 +2390,10 @@
       requestAnimationFrame(() => { el.style.opacity = '1'; });
       setTimeout(() => { if (el.parentNode) el.remove(); }, 400);
     } else {
-      // Jednoduchá kruhová rána
+      // Jednoduchá kruhová rána — opacity hned, ne přes rAF (SVG animate běží okamžitě)
       const size = 80;
       const el = document.createElement('div');
-      el.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:0;`;
+      el.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:1;`;
       el.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
         <circle cx="${size/2}" cy="${size/2}" r="8" fill="none" stroke="#e74c3c" stroke-width="5" stroke-linecap="round" opacity="0.85">
           <animate attributeName="r" from="8" to="${size/2-4}" dur="0.15s" fill="freeze"/>
@@ -2425,7 +2425,7 @@
     const size = 80;
     // První sek — z leva dolů doprava nahoru
     const s1 = document.createElement('div');
-    s1.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:0;`;
+    s1.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:20;pointer-events:none;opacity:1;`;
     s1.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
       <path d="M 10 70 Q 40 10 70 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
         <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
@@ -2441,7 +2441,7 @@
     setTimeout(() => { if (s1.parentNode) s1.remove(); }, 400);
     // Druhý sek — z prava dolů doleva nahoru, 80ms později
     const s2 = document.createElement('div');
-    s2.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:21;pointer-events:none;opacity:0;`;
+    s2.style.cssText = `position:absolute;left:${cx-size/2}px;top:${cy-size/2}px;width:${size}px;height:${size}px;z-index:21;pointer-events:none;opacity:1;`;
     s2.innerHTML = `<svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" style="display:block">
       <path d="M 70 70 Q 40 10 10 10" stroke="${sc.c1}" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.9">
         <animate attributeName="stroke-dashoffset" from="90" to="0" dur="0.12s" fill="freeze"/>
@@ -3512,6 +3512,9 @@
 
     // Monster killed - regular enemy
     if (won && !mb.isBoss) {
+      // Schovat timer ring hned
+      const circle = document.querySelector('.timer-circle');
+      if (circle) { circle.style.opacity = '0'; circle.style.animation = 'none'; }
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
       const monsterGold = 1 + rand(0, 2);
