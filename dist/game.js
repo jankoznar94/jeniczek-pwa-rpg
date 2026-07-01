@@ -2920,16 +2920,19 @@
     }
     if (!blocked) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      // Zvuk podle typu monstra
-      const atkType = mb.monsterAttackType || ATTACK_TYPES.MELEE;
-      playSFX(atkType === ATTACK_TYPES.CASTER ? fireSpellSfx : meleeHitSfx);
-      // Červený záblesk celé obrazovky
+      // Zvuk — melee hit vždy
+      playSFX(meleeHitSfx);
+      // Výrazný červený záblesk celé obrazovky
       const arena = $('mbArena');
       if (arena) {
-        arena.style.transition = 'background-color 0.15s';
-        arena.style.backgroundColor = 'rgba(233,69,96,0.25)';
+        arena.style.transition = 'background-color 0.1s';
+        arena.style.backgroundColor = 'rgba(233,69,96,0.45)';
         setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 100);
       }
+      // Záblesk na celém těle stránky
+      document.body.style.transition = 'background-color 0.1s';
+      document.body.style.backgroundColor = 'rgba(233,69,96,0.12)';
+      setTimeout(() => { document.body.style.backgroundColor = ''; setTimeout(() => { document.body.style.transition = ''; }, 200); }, 100);
     }
 
     const playerDamageText = $('mbPlayerDamageText');
