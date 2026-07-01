@@ -3512,9 +3512,8 @@
 
     // Monster killed - regular enemy
     if (won && !mb.isBoss) {
-      // Schovat timer ring hned
-      const circle = document.querySelector('.timer-circle');
-      if (circle) { circle.style.opacity = '0'; circle.style.animation = 'none'; }
+      mapBattleState.ended = true;
+      cleanupTimers();
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
       const monsterGold = 1 + rand(0, 2);
@@ -3690,7 +3689,7 @@
 
   function continueDungeon() {
     const mb = mapBattleState;
-    if (mb.ended) return;
+    mb.ended = false;
     const oldMistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
     const locId = mb.locId;
     startLocation(locId);
