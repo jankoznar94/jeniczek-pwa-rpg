@@ -210,7 +210,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 }
 .hp-circle {
   stroke:#e74c3c;
-  stroke-width:4;
+  stroke-width:6;
   transition:stroke-dashoffset 0.2s ease-out;
 }
 @keyframes timer-ring-shrink {
@@ -249,7 +249,7 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   width:160px;height:160px;object-fit:contain;border-radius:50%;
 }
 #mbArena .monster-ring-frame {
-  width:160px;height:160px;border-radius:50%;border:3px solid;
+  width:160px;height:160px;border-radius:50%;border:none;
   overflow:hidden;display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,0.3);
 }

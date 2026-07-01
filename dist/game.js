@@ -1181,7 +1181,7 @@
     const themeFilter = DUNGEON_THEME_FILTERS[mb.monsterTheme] || '';
     const theme = DUNGEON_THEMES[mb.monsterTheme] || DUNGEON_THEMES[0];
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
-    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\" style=\"border-color:'+theme.border+';box-shadow:0 0 12px '+theme.borderGlow+'\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
     else { fig.textContent = emoji; }
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
