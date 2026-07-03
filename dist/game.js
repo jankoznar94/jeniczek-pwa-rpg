@@ -3067,9 +3067,9 @@
     // Globální redukce damage — hráč útočí každou akcí, damage musí být nižší
     const globalMult = 0.4;
     let dmg = Math.round(baseDmg * mult * globalMult);
-    // Rozptyl ±10% — každá rána je jiná
-    const variance = 0.9 + Math.random() * 0.2; // 0.9 až 1.1
-    dmg = Math.round(dmg * variance);
+    // Rozptyl ±2 — každá rána je jiná
+    dmg += Math.floor(Math.random() * 5) - 2; // -2, -1, 0, +1, +2
+    dmg = Math.max(1, dmg);
     // Fire school passive — ignite
     const ignitePct = getFireIgnitePct();
     if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
