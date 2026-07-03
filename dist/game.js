@@ -809,6 +809,10 @@
       if (!el) return;
       if (id === SCREEN_IDS[name]) { el.classList.remove('hidden'); el.classList.add('active'); } else { el.classList.add('hidden'); el.classList.remove('active'); }
     });
+    // Aktivovat nav tlačítko
+    document.querySelectorAll('.nav-bar a[data-screen]').forEach(a => {
+      a.classList.toggle('active', a.dataset.screen === name);
+    });
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
     if (name === 'map') renderMap();
@@ -944,6 +948,7 @@
       return `<div class="map-location-wrap">
         <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
           <div class="map-loc-bg" style="background-image:url(assets/dungeons/${['forest','desert','undead','hell','frost'][i]||'forest'}.png)"></div>
+          ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${['forest','desert','undead','hell','frost'][i]||'forest'}.png)"></div>` : ''}
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
           </div>
@@ -1110,8 +1115,9 @@
     // Kruhový HP bar — okraj obrázku monstra
     const hpCircle = document.querySelector('.hp-ring-svg .hp-circle');
     if (hpCircle) {
-      const circ = 490;
-      hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - eHpPct / 100)));
+      const circ = 471;
+      const pct = Math.max(0, Math.min(100, eHpPct));
+      hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - pct / 100)));
     }
     // Monster icons row
     const iconRow = $('mbMonsterIcons');
@@ -4273,6 +4279,8 @@
     if (portraitImg) portraitImg.src = `assets/monsters/${faceFile}.png`;
     const mbPortraitImg = $('mbHeroPortraitImg');
     if (mbPortraitImg) mbPortraitImg.src = `assets/monsters/${faceFile}.png`;
+    const navHeroIcon = $('navHeroIcon');
+    if (navHeroIcon) navHeroIcon.src = `assets/monsters/${faceFile}.png`;
     // Aktivni skola
     const schoolInfo = $('activeSchoolInfo');
     if (schoolInfo) {
