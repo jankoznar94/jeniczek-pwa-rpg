@@ -187,10 +187,11 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
 .boss-fight-player .hero-portrait-frame { width:70px; height:70px; border-radius:50%; border:2px solid #4a7dff; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#0a0a0a; box-shadow:0 0 12px rgba(74,125,255,0.3); }
 .boss-fight-player .hero-portrait-img { width:100%; height:100%; object-fit:cover; display:block; object-position:center 30%; }
 .boss-fight-player .damage-text { position:absolute;top:-60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; white-space:nowrap; }
-#mbDamageText.damage-text { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#f1c40f;font-size:64px;font-weight:bold;animation:fadeDown 0.6s ease-out; white-space:nowrap; z-index:15; text-shadow:0 0 25px rgba(241,196,15,0.8), 0 0 50px rgba(241,196,15,0.4); }
-#mbPlayerDamageText.damage-text { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#e74c3c;font-size:64px;font-weight:bold;animation:fadeDown 0.6s ease-out; white-space:nowrap; z-index:15; text-shadow:0 0 20px rgba(200,40,40,0.6); }
+#mbDamageText.damage-text { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#f1c40f;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:15; text-shadow:0 0 25px rgba(241,196,15,0.8), 0 0 50px rgba(241,196,15,0.4); }
+#mbPlayerDamageText.damage-text { position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#e74c3c;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:15; text-shadow:0 0 20px rgba(200,40,40,0.6); }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeDown { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
+@keyframes fadeInOut { 0%{opacity:0} 20%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
 .boss-attack-arrow { position:absolute;top:50%;left:50%;width:90px;height:90px;transform-origin:center;transform-box:fill-box;transform:translate(-50%,-50%);z-index:10;animation:arrowPulse 0.3s ease-out; fill:currentColor; color:#bbb; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
 @keyframes arrowPulse { 0%{opacity:0}100%{opacity:1} }
 .boss-attack-yellow { color:#c4a84c; fill:#c4a84c; }

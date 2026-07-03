@@ -1115,7 +1115,7 @@
     // Kruhový HP bar — okraj obrázku monstra
     const hpCircle = document.querySelector('.hp-ring-svg .hp-circle');
     if (hpCircle) {
-      const circ = 534;
+      const circ = 547;
       const pct = Math.max(0, Math.min(100, eHpPct));
       hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - pct / 100)));
     }
@@ -1912,7 +1912,7 @@
     if (dotDmgText) {
       dotDmgText.textContent = `☠️ -${mb.dot}`;
       dotDmgText.classList.remove('hidden');
-      setTimeout(() => dotDmgText.classList.add('hidden'), 600);
+      setTimeout(() => dotDmgText.classList.add('hidden'), 800);
     }
     const bossFig = $('mbFigure');
     if (bossFig) {
@@ -1940,7 +1940,7 @@
     if (dotDmgText) {
       dotDmgText.textContent = `☠️ -${mb.playerDot}`;
       dotDmgText.classList.remove('hidden');
-      setTimeout(() => dotDmgText.classList.add('hidden'), 600);
+      setTimeout(() => dotDmgText.classList.add('hidden'), 800);
     }
     updateMapBattleUI();
     if (mb.playerHp <= 0) { endMapBattle(false); return true; }
@@ -2757,7 +2757,7 @@
           dmgText.textContent = `+${healAmt}`;
           dmgText.style.color = '#2ecc71';
           dmgText.classList.remove('hidden');
-          setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
+          setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 800);
         }
         updateMapBattleUI();
       }
@@ -2952,7 +2952,7 @@
       playerDamageText.textContent = blocked ? '🛡️ BLOCK!' : `-${amount}`;
       playerDamageText.style.color = blocked ? '#3498db' : '';
       playerDamageText.classList.remove('hidden');
-      setTimeout(() => playerDamageText.classList.add('hidden'), 600);
+      setTimeout(() => playerDamageText.classList.add('hidden'), 800);
     }
 
     const arrow = $('mbArrow');
@@ -3102,7 +3102,7 @@
         if (dmgText) {
           dmgText.textContent = `💥 Inferno! -${infernoDmg}`;
           dmgText.classList.remove('hidden');
-          setTimeout(() => dmgText.classList.add('hidden'), 600);
+          setTimeout(() => dmgText.classList.add('hidden'), 800);
         }
       }
     }
@@ -3121,7 +3121,7 @@
         if (dmgText) {
           dmgText.textContent = `💀 ${deathDmg}`;
           dmgText.classList.remove('hidden');
-          setTimeout(() => dmgText.classList.add('hidden'), 600);
+          setTimeout(() => dmgText.classList.add('hidden'), 800);
         }
       }
     }
@@ -3164,7 +3164,7 @@
     if (dmgText) {
       dmgText.textContent = `-${dmg}`;
       dmgText.classList.remove('hidden');
-      setTimeout(() => dmgText.classList.add('hidden'), 600);
+      setTimeout(() => dmgText.classList.add('hidden'), 800);
     }
     const bossFig = $('mbFigure');
     if (bossFig) {
