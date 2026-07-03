@@ -1115,7 +1115,7 @@
     // Kruhový HP bar — okraj obrázku monstra
     const hpCircle = document.querySelector('.hp-ring-svg .hp-circle');
     if (hpCircle) {
-      const circ = 471;
+      const circ = 534;
       const pct = Math.max(0, Math.min(100, eHpPct));
       hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - pct / 100)));
     }
