@@ -3064,9 +3064,7 @@
   function dealPlayerDamage(mb, mult) {
     // Vypočítat damage hráče proti monstru
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
-    // Globální redukce damage — hráč útočí každou akcí, damage musí být nižší
-    const globalMult = 0.4;
-    let dmg = Math.round(baseDmg * mult * globalMult);
+    let dmg = Math.round(baseDmg * mult);
     // Rozptyl ±2 — každá rána je jiná
     dmg += Math.floor(Math.random() * 5) - 2; // -2, -1, 0, +1, +2
     dmg = Math.max(1, dmg);
