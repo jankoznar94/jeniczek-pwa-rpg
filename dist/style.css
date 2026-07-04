@@ -267,12 +267,16 @@ body.no-scroll { overflow: hidden; }
   text-shadow:0 0 8px rgba(0,0,0,0.9);
   pointer-events:none;
   margin-top:-55px;
-  background:rgba(0,0,0,0.55);
-  padding:3px 8px;
-  border-radius:4px;
 }
 #mbArena .monster-in-ring img {
   width:180px;height:180px;object-fit:contain;border-radius:50%;
+}
+#mbArena .monster-ring-overlay {
+  position:absolute;top:50%;left:50%;z-index:4;pointer-events:none;
+  width:180px;height:180px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 20%, transparent 20%, transparent 100%);
 }
 #mbArena .monster-ring-frame {
   width:180px;height:180px;border-radius:50%;border:none;
