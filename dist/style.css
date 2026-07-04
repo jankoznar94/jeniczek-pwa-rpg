@@ -263,10 +263,10 @@ body.no-scroll { overflow: hidden; }
 .hp-ring-label {
   position:absolute;top:50%;left:50%;z-index:5;
   transform:translate(-50%,-50%);
-  font-size:13px;font-weight:bold;color:#e74c3c;
-  text-shadow:0 0 6px rgba(0,0,0,0.8);
+  font-size:16px;font-weight:bold;color:#e74c3c;
+  text-shadow:0 0 8px rgba(0,0,0,0.9);
   pointer-events:none;
-  margin-top:-95px;
+  margin-top:-80px;
 }
 #mbArena .monster-in-ring img {
   width:180px;height:180px;object-fit:contain;border-radius:50%;
