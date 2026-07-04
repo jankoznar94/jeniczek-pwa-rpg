@@ -2741,6 +2741,10 @@
         mb._sequenceTimer = null;
         correct = true;
         dmgMult = 0.75; // každá rána 0.75×, dohromady 1.5×
+        // Modrá šipka — snížení heatu o 1
+        if ((mb.locId === 3 || mb.locId === 4) && mb._heatLevel > 0) {
+          mb._heatLevel = Math.max(0, mb._heatLevel - 1);
+        }
       } else {
         return; // čekáme na druhý swipe
       }
@@ -2855,8 +2859,10 @@
     if (mb._hitProcessed) return;
     mb._hitProcessed = true;
     
-    // D4/D5 — přehřívání: každá chyba zvyšuje heat (teď přesunuto do úspěšného útoku)
-    if (false) {}
+    // D4/D5 — přehřívání: reset na 0 při chybě (zásahu)
+    if (mb.locId === 3 || mb.locId === 4) {
+      mb._heatLevel = 0;
+    }
     clearTimeout(mb._sequenceTimer);
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
