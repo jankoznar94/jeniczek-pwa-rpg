@@ -106,7 +106,7 @@
     winAudio.volume = musicMuted ? 0 : 0.80;
     bossBgm.volume = musicMuted ? 0 : 0.50;
     battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
-    document.getElementById('musicToggle').className = musicMuted ? 'muted' : '';
+    document.getElementById('musicToggle').className = musicMuted ? '' : 'music-active';
   }
   let testMode = false;
   function toggleTestMode() {
