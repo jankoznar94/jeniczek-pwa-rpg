@@ -4489,7 +4489,6 @@
   // ===== INVENTORY =====
   function renderInventory() {
     const h = state.hero;
-    $('invGold').textContent = `💰 ${h.gold}`;
     // Equipment sloty — 6 slotů
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
