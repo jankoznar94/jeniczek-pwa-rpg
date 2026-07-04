@@ -276,7 +276,7 @@ body.no-scroll { overflow: hidden; }
   width:180px;height:180px;
   transform:translate(-50%,-50%);
   border-radius:50%;
-  background:linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 20%, transparent 20%, transparent 100%);
+  background:linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 40%, transparent 40%, transparent 100%);
 }
 #mbArena .monster-ring-frame {
   width:180px;height:180px;border-radius:50%;border:none;
