@@ -4868,6 +4868,17 @@
   function init() {
     state = loadSave();
 
+    // Přednačtení obrázků monster do cache pro okamžité zobrazení v souboji
+    const allMonsterFaces = [];
+    MONSTER_DB.forEach(theme => theme.forEach(m => {
+      if (m.face && m.face.startsWith('assets/')) allMonsterFaces.push(m.face);
+    }));
+    LOCATIONS.forEach(loc => {
+      if (loc.boss && loc.boss.face && loc.boss.face.startsWith('assets/')) allMonsterFaces.push(loc.boss.face);
+    });
+    // Deduplikace a prefetch
+    [...new Set(allMonsterFaces)].forEach(src => { const img = new Image(); img.src = src; });
+
     if (!state.bossesDefeated || state.bossesDefeated.length < LOCATIONS.length) state.bossesDefeated = Array(LOCATIONS.length).fill(false);
     if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
     if (!state.floorProgress || state.floorProgress.length < LOCATIONS.length) state.floorProgress = Array(LOCATIONS.length).fill(0);
