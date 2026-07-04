@@ -2741,10 +2741,6 @@
         mb._sequenceTimer = null;
         correct = true;
         dmgMult = 0.75; // každá rána 0.75×, dohromady 1.5×
-        // Modrá šipka — snížení heatu o 1
-        if ((mb.locId === 3 || mb.locId === 4) && mb._heatLevel > 0) {
-          mb._heatLevel = Math.max(0, mb._heatLevel - 1);
-        }
       } else {
         return; // čekáme na druhý swipe
       }
