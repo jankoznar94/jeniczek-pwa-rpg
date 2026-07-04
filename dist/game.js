@@ -1134,7 +1134,7 @@
       hpLabel.textContent = `${Math.max(0, Math.round(mb.bossHp))}/${Math.round(mb.maxBossHp)}`;
       // Dynamická velikost fontu — při delším textu zmenšit, aby nepřetekl
       const len = hpLabel.textContent.length;
-      if (len > 9) hpLabel.style.fontSize = Math.round(24 * 9 / len) + 'px';
+      if (len > 7) hpLabel.style.fontSize = Math.max(14, Math.round(24 * 7 / len)) + 'px';
       else hpLabel.style.fontSize = '24px';
     }
     // Monster icons row
