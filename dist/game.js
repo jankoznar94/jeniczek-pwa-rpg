@@ -2855,11 +2855,8 @@
     if (mb._hitProcessed) return;
     mb._hitProcessed = true;
     
-    // D4 — přehřívání: každá chyba zvyšuje heat
-    if (mb.locId === 3 || mb.locId === 4) {
-      mb._heatLevel = Math.min((mb._heatLevel || 0) + 1, 10);
-    }
-    
+    // D4/D5 — přehřívání: každá chyba zvyšuje heat (teď přesunuto do úspěšného útoku)
+    if (false) {}
     clearTimeout(mb._sequenceTimer);
     clearTimeout(mb._ringTimer);
     mb._ringTimer = null;
@@ -3074,6 +3071,10 @@
     // Rozptyl ±2 — každá rána je jiná
     dmg += Math.floor(Math.random() * 5) - 2; // -2, -1, 0, +1, +2
     dmg = Math.max(1, dmg);
+    // D4/D5 — přehřívání: každý úspěšný útok zvyšuje heat
+    if (mb.locId === 3 || mb.locId === 4) {
+      mb._heatLevel = Math.min((mb._heatLevel || 0) + 1, 10);
+    }
     // Fire school passive — ignite
     const ignitePct = getFireIgnitePct();
     if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
