@@ -266,7 +266,7 @@ body.no-scroll { overflow: hidden; }
   font-size:24px;font-weight:bold;color:#e74c3c;
   text-shadow:0 0 8px rgba(0,0,0,0.9);
   pointer-events:none;
-  margin-top:-60px;
+  margin-top:-55px;
 }
 #mbArena .monster-in-ring img {
   width:180px;height:180px;object-fit:contain;border-radius:50%;
