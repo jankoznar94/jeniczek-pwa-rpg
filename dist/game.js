@@ -858,6 +858,7 @@
       <div class="treasure-tap-open">👆 Otevřít</div>
     </div>`;
     document.body.appendChild(el);
+    document.body.classList.add('no-scroll');
 
     // Fáze 2: otevření truhly po kliknutí
     el.addEventListener('click', function openHandler() {
@@ -893,6 +894,7 @@
         el.removeEventListener('click', closeHandler);
         _treasurePopupOpen = false;
         el.classList.add('fade-out');
+        document.body.classList.remove('no-scroll');
         setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
       });
     });
