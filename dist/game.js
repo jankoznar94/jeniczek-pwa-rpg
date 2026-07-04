@@ -991,8 +991,8 @@
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
     const diffMult = DIFFICULTY_MULT[locId] || 1.0;
-    const monsterHp = Math.round((80 + locId * 150) * diffMult + 30 * floor + 10 * progress);
-    const bossHp = Math.round((400 + locId * 400) * diffMult + floor * 60 + 200);
+    const monsterHp = Math.round((80 + locId * 150) * diffMult + 20 + 28 * floor + 10 * progress);
+    const bossHp = Math.round((400 + locId * 400) * diffMult + 150 + 43 * floor + 200);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
     // Sada monster pro celé patro — generuje se jen jednou na začátku patra

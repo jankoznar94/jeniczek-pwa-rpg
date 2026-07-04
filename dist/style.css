@@ -242,7 +242,7 @@ body.no-scroll { overflow: hidden; }
 .arena-dodge-btn.active { opacity:1; border-color:#2ecc71; background:#1a1a1a; box-shadow:0 0 10px rgba(46,204,113,0.3); }
 .arena-dodge-btn:not(.active) { pointer-events:none; }
 .arena-heat-indicator {
-  position:absolute; top:50%; right:16px; transform:translateY(-50%); z-index:30;
+  position:absolute; bottom:15px; right:15px; z-index:30;
   font-size:28px; font-weight:bold; pointer-events:none; text-align:center;
   text-shadow:0 0 12px rgba(233,69,96,0.6);
   line-height:1.2;
