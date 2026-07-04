@@ -57,6 +57,7 @@
       <svg class="hp-ring-svg" viewBox="0 0 180 180" width="180" height="180">
         <circle cx="90" cy="90" r="87" stroke="#e74c3c" stroke-width="6" fill="none" stroke-dasharray="547" stroke-dashoffset="547" class="hp-circle"/>
       </svg>
+      <div class="hp-ring-label" id="mbHpLabel">0/0</div>
       <div class="arena-dodge-btn" id="mbDodgeBtn">🏃</div>
       <div class="arena-heat-indicator hidden" id="mbHeatIndicator"><span>🔥</span><span class="heat-num">0/10</span></div>
       <div class="arena-pause-btn" id="mbPauseBtn">
@@ -116,56 +117,49 @@
         <button class="btn-change-face" onclick="game.showFaceSelect()" title="Změnit vzhled">🔄</button>
       </div>
       <div class="hero-header-info">
-        <div class="flex-between">
-          <span class="card-title" id="heroName">Dobrodruh</span>
+        <div class="hero-name-row">
+          <span class="hero-name" id="heroName">Dobrodruh</span>
           <button class="btn-rename" onclick="game.renameHero()" title="Přejmenovat">✏️</button>
-          <span id="heroLevel" style="color:#f1c40f;font-weight:bold">Lv.1</span>
+          <span class="hero-level" id="heroLevel">Lv.1</span>
         </div>
-        <div class="card-subtitle">💀 <span id="heroDeaths">0</span> proher · 🏆 <span id="heroWins">0</span> výher</div>
-        <div class="hero-stats-row">
-          <span>❤️ <span id="heroHp">100</span>/<span id="heroMaxHp">100</span></span>
-          <span>⚔️ <span id="heroDmg">12</span></span>
-          <span>💰 <span id="heroGold">0</span></span>
-        </div>
-        <div class="hero-stats-row" style="margin-top:4px">
-          <span>🗡️ Krit: <span id="heroCrit">—</span></span>
-        </div>
-        <div class="hero-stats-row">
-          <span>🛡️ Blok: <span id="heroBlock">0%</span></span>
-        </div>
-        <div class="hero-stats-row">
-          <span>🛡️ Defense: <span id="heroDefense">0 (0%)</span></span>
+        <div class="hero-subtitle">💀 <span id="heroDeaths">0</span> · 🏆 <span id="heroWins">0</span></div>
+        <div class="hero-stats-grid">
+          <div class="hero-stat"><span class="hero-stat-icon">❤️</span><span id="heroHp">100</span>/<span id="heroMaxHp">100</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">⚔️</span><span id="heroDmg">12</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">💰</span><span id="heroGold">0</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">🗡️</span>Krit <span id="heroCrit">—</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">🛡️</span>Blok <span id="heroBlock">0%</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">🛡️</span>Def <span id="heroDefense">0</span></div>
         </div>
       </div>
     </div>
-    <!-- XP bar -->
     <div class="hero-xp-wrap">
       <div class="flex-between">
-        <span style="font-size:11px;color:#8888aa">XP</span>
-        <span style="font-size:11px;color:#f1c40f" id="heroXpLabel">0/80</span>
+        <span class="hero-xp-label">XP</span>
+        <span class="hero-xp-value" id="heroXpLabel">0/80</span>
       </div>
-      <div class="mb-xp-bar-bg" style="height:8px">
+      <div class="mb-xp-bar-bg" style="height:6px">
         <div class="mb-xp-bar-fill" id="heroXpBar" style="width:0%"></div>
       </div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title">💪 Atributy <span style="font-size:12px;color:#f1c40f">(body: <span id="heroAttrPts">0</span>)</span></div>
+    <div class="card-title">💪 Atributy <span class="hero-attr-pts">(body: <span id="heroAttrPts">0</span>)</span></div>
     <div class="hero-attr-row">
       <span>💪 Síla: <span id="heroAttrStr">0</span></span>
-      <button class="btn btn-primary" style="width:auto;padding:4px 10px;font-size:11px" id="heroUpStr" onclick="game.upgradeAttr('str')">⬆️ Síla</button>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpStr" onclick="game.upgradeAttr('str')">⬆️</button>
     </div>
     <div class="hero-attr-row">
       <span>❤️ Vitalita: <span id="heroAttrVit">0</span></span>
-      <button class="btn btn-primary" style="width:auto;padding:4px 10px;font-size:11px" id="heroUpVit" onclick="game.upgradeAttr('vit')">⬆️ Vitalita</button>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpVit" onclick="game.upgradeAttr('vit')">⬆️</button>
     </div>
     <div class="hero-attr-row">
       <span>🎯 Obratnost: <span id="heroAttrDex">0</span></span>
-      <button class="btn btn-primary" style="width:auto;padding:4px 10px;font-size:11px" id="heroUpDex" onclick="game.upgradeAttr('dex')">⬆️ Obratnost</button>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpDex" onclick="game.upgradeAttr('dex')">⬆️</button>
     </div>
     <div class="hero-attr-row">
       <span>🧠 Intelekt: <span id="heroAttrInt">0</span></span>
-      <button class="btn btn-primary" style="width:auto;padding:4px 10px;font-size:11px" id="heroUpInt" onclick="game.upgradeAttr('int')">⬆️ Intelekt</button>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpInt" onclick="game.upgradeAttr('int')">⬆️</button>
     </div>
   </div>
   <div class="card">
@@ -174,24 +168,24 @@
   </div>
   <div class="card">
     <div class="card-title">🎒 Vybavení</div>
-    <div class="inv-equip-panel" style="margin:25px 0 0">
-      <div class="inv-equip-slot" id="heroSlotHelmet" style="width:80px;height:80px;cursor:default">
-        <div class="inv-slot-icon" id="heroSlotHelmetIcon" style="font-size:22px">⛑️</div>
+    <div class="inv-equip-panel" style="margin:12px 0 0">
+      <div class="inv-equip-slot" id="heroSlotHelmet" style="width:72px;height:72px;cursor:default">
+        <div class="inv-slot-icon" id="heroSlotHelmetIcon" style="font-size:20px">⛑️</div>
       </div>
-      <div class="inv-equip-slot" id="heroSlotArmor" style="width:80px;height:80px;cursor:default">
-        <div class="inv-slot-icon" id="heroSlotArmorIcon" style="font-size:22px">🛡️</div>
+      <div class="inv-equip-slot" id="heroSlotArmor" style="width:72px;height:72px;cursor:default">
+        <div class="inv-slot-icon" id="heroSlotArmorIcon" style="font-size:20px">🛡️</div>
       </div>
-      <div class="inv-equip-slot" id="heroSlotWeapon" style="width:80px;height:80px;cursor:default">
-        <div class="inv-slot-icon" id="heroSlotWeaponIcon" style="font-size:22px">⚔️</div>
+      <div class="inv-equip-slot" id="heroSlotWeapon" style="width:72px;height:72px;cursor:default">
+        <div class="inv-slot-icon" id="heroSlotWeaponIcon" style="font-size:20px">⚔️</div>
       </div>
-      <div class="inv-equip-slot" id="heroSlotShield" style="width:80px;height:80px;cursor:default">
-        <div class="inv-slot-icon" id="heroSlotShieldIcon" style="font-size:22px">🛡️</div>
+      <div class="inv-equip-slot" id="heroSlotShield" style="width:72px;height:72px;cursor:default">
+        <div class="inv-slot-icon" id="heroSlotShieldIcon" style="font-size:20px">🛡️</div>
       </div>
-      <div class="inv-equip-slot inv-equip-ring" id="heroSlotRing1" style="width:80px;height:80px;cursor:default">
-        <div class="inv-slot-icon" id="heroSlotRing1Icon" style="font-size:22px">💍</div>
+      <div class="inv-equip-slot inv-equip-ring" id="heroSlotRing1" style="width:72px;height:72px;cursor:default">
+        <div class="inv-slot-icon" id="heroSlotRing1Icon" style="font-size:20px">💍</div>
       </div>
-      <div class="inv-equip-slot inv-equip-ring" id="heroSlotAmulet" style="width:80px;height:80px;cursor:default">
-        <div class="inv-slot-icon" id="heroSlotAmuletIcon" style="font-size:22px">📿</div>
+      <div class="inv-equip-slot inv-equip-ring" id="heroSlotAmulet" style="width:72px;height:72px;cursor:default">
+        <div class="inv-slot-icon" id="heroSlotAmuletIcon" style="font-size:20px">📿</div>
       </div>
     </div>
   </div>
