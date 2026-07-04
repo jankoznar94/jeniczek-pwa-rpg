@@ -49,6 +49,14 @@
   const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
   const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 1.0; return a; })();
   const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 1.0; return a; })();
+  // Zvuky zranění hráče — 4 náhodné
+  const hurtSfx = [
+    (() => { const a = new Audio('assets/sfx/hurt1.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/hurt2.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/hurt3.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/hurt4.mp3'); a.volume = 1.0; return a; })(),
+  ];
+  function getHurtSfx() { return hurtSfx[Math.floor(Math.random() * hurtSfx.length)]; }
   function getHitSfx() {
     const wt = getWeaponType();
     if (wt === 'fists') return fistHitSfx;
@@ -2931,8 +2939,8 @@
     }
     if (!blocked) {
       mb.mistakes = (mb.mistakes || 0) + 1;
-      // Zvuk — melee hit vždy
-      playSFX(meleeHitSfx);
+      // Zvuk — náhodný hurt zvuk
+      playSFX(getHurtSfx());
       // Výrazný červený záblesk celé obrazovky
       const arena = $('mbArena');
       if (arena) {
