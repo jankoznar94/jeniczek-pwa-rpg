@@ -1090,7 +1090,7 @@
       void newFig.offsetWidth;
       newFig.classList.add('monster-appear');
     }
-    setTimeout(() => mapBattleTurn(), 1000);
+    setTimeout(() => mapBattleTurn(), 500);
   }
 
   function updateMapBattleUI() {
