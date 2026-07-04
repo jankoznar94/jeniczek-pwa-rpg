@@ -106,7 +106,7 @@
     winAudio.volume = musicMuted ? 0 : 0.80;
     bossBgm.volume = musicMuted ? 0 : 0.50;
     battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
-    document.getElementById('musicToggle').textContent = musicMuted ? '🔇' : '🔊';
+    document.getElementById('musicToggle').className = musicMuted ? 'muted' : '';
   }
   let testMode = false;
   function toggleTestMode() {
@@ -131,10 +131,10 @@
           state.encounteredMonsters.push(loc.boss.face);
         }
       });
-      btn.classList.add('active');
+      btn.classList.add('test-active');
     } else {
       state = defaultState();
-      btn.classList.remove('active');
+      btn.classList.remove('test-active');
     }
     saveGame();
     renderMap();
