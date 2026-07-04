@@ -29,8 +29,8 @@ body.battle-active { overflow: hidden; position: fixed; width: 100%; }
   border-radius: 4px; background: #1a1a1a;
 }
 .page-icon {
-  width: 22px; height: 22px; vertical-align: middle; margin-right: 4px;
-  border-radius: 3px;
+  width: 32px; height: 32px; vertical-align: middle; margin-right: 6px;
+  border-radius: 4px;
 }
 
 /* Buttons */
