@@ -3460,6 +3460,9 @@
     } else if (type === 'amulet') {
       baseDmg = Math.round((2 + tier * 3 + rand(0, 2)) * rarityMult * floorMult);
       bonusHp = Math.round((3 + tier * 6 + rand(0, 4)) * rarityMult * floorMult);
+    } else if (type === 'shield') {
+      defense = Math.round((8 + floor * 4 + rand(0, 4)) * rarityMult);
+      bonusHp = Math.round((3 + tier * 4 + rand(0, 3)) * rarityMult * floorMult);
     }
 
     const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
@@ -3501,6 +3504,10 @@
     // Crit chance pro blade zbraně (5-25% podle tieru)
     if (type === 'weapon' && subtype === 'blade') {
       item.critChance = Math.min(25, 5 + tier * 3 + rand(0, 5));
+    }
+    // Block chance pro štíty (15-45% podle tieru)
+    if (type === 'shield') {
+      item.blockChance = Math.min(45, 15 + tier * 4 + rand(0, 5));
     }
     ITEM_MAP[id] = item;
     state.lootItems = state.lootItems || {};
