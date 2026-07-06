@@ -1600,6 +1600,8 @@
     const physBtn = $('mbSpellPhysBtn');
     // Vsechna schovat (default)
     [fireBtn, healBtn, freezeBtn, physBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active', 'used'); } });
+    // Class spells (barbar rage kouzla) — vždy, nezávisle na škole
+    renderClassSpells();
     const activeId = state.activeSchool;
     if (!activeId) return;
     const school = SCHOOL_MAP[activeId];
@@ -1621,8 +1623,6 @@
     if (hasMana) {
       btn.classList.add('active');
     }
-    // Class spells (barbar rage kouzla)
-    renderClassSpells();
   }
 
   function updateActionButtons() {
