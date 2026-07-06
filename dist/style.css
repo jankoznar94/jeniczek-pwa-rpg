@@ -599,28 +599,19 @@ body.no-scroll { overflow: hidden; }
   position:absolute;top:0;left:0;width:100%;height:100%;
   display:flex;align-items:center;justify-content:center;
   font-size:16px;color:#e94560;font-weight:bold;line-height:1;
-  background:rgba(0,0,0,0.6);border-radius:6px;z-index:2;
+  z-index:3;text-shadow:0 0 4px #000;
 }
 .arena-class-spell-btn .spell-gcd-overlay {
   position:absolute;top:0;left:0;width:100%;height:100%;
   border-radius:6px;z-index:1;pointer-events:none;
   background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) var(--gcd-deg, 0deg), transparent var(--gcd-deg, 0deg), transparent 360deg);
-  animation: gcdSweep 0.5s linear forwards;
-}
-@keyframes gcdSweep {
-  from { --gcd-deg: 0deg; }
-  to { --gcd-deg: 360deg; }
-}
-@property --gcd-deg {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
 }
 
 /* Debuff overlay nad příšerou */
 .debuff-overlay {
-  position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:30;
-  display:flex;gap:4px;pointer-events:none;
+  position:absolute;bottom:calc(50% + 95px);left:50%;transform:translateX(-50%);z-index:30;
+  display:flex;flex-direction:row;justify-content:flex-start;gap:4px;pointer-events:none;
+  width:auto;
 }
 .debuff-icon {
   display:flex;flex-direction:column;align-items:center;

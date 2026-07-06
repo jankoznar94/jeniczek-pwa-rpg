@@ -799,6 +799,9 @@
   // ===== STATE =====
   let state = {};
   let mapBattleState = {};
+  // Session-persistent spell cooldowns a debuffy (nemažou se při změně monstra)
+  let _sessionSpellCooldowns = {};
+  let _sessionDebuffs = {};
   let trainingState = {};
   let minigameState = {};
   let _activeIntervals = [];
@@ -1267,25 +1270,21 @@
     if (!mb) return;
     // GCD tick
     if (state._gcdTimer > 0) state._gcdTimer = Math.max(0, state._gcdTimer - 1);
-    // Per-spell cooldown tick
-    if (mb.spellCooldowns) {
-      Object.keys(mb.spellCooldowns).forEach(spellId => {
-        if (mb.spellCooldowns[spellId] > 0) {
-          mb.spellCooldowns[spellId]--;
-          if (mb.spellCooldowns[spellId] <= 0) delete mb.spellCooldowns[spellId];
-        }
-      });
-    }
-    // Debuff tick
-    if (mb.debuffs) {
-      Object.keys(mb.debuffs).forEach(spellId => {
-        const d = mb.debuffs[spellId];
-        if (d && d.ticks > 0) {
-          d.ticks--;
-          if (d.ticks <= 0) delete mb.debuffs[spellId];
-        }
-      });
-    }
+    // Per-spell cooldown tick (session persistent)
+    Object.keys(_sessionSpellCooldowns).forEach(spellId => {
+      if (_sessionSpellCooldowns[spellId] > 0) {
+        _sessionSpellCooldowns[spellId]--;
+        if (_sessionSpellCooldowns[spellId] <= 0) delete _sessionSpellCooldowns[spellId];
+      }
+    });
+    // Debuff tick (session persistent)
+    Object.keys(_sessionDebuffs).forEach(spellId => {
+      const d = _sessionDebuffs[spellId];
+      if (d && d.ticks > 0) {
+        d.ticks--;
+        if (d.ticks <= 0) delete _sessionDebuffs[spellId];
+      }
+    });
     // Battle shout
     if (state.battleShoutTimer > 0) {
       state.battleShoutTimer--;
@@ -1616,7 +1615,7 @@
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
     // Debuff ikony nad příšerou
-    renderDebuffs(mb);
+    renderDebuffs();
 
     // School spells — HTML tlacitka nad Utokem, vzdy na stejne pozici (84px)
     const fireBtn = $('mbSpellFireBtn');
@@ -1660,14 +1659,12 @@
     if (!container) return;
     const cls = CLASSES[state.heroClass];
     if (!cls || !cls.spells) { container.innerHTML = ''; return; }
-    const mb = mapBattleState;
-    if (!mb) return;
     let html = '';
     cls.spells.forEach(spell => {
       const onGcd = state._gcdTimer > 0;
       const hasRage = (state.rage || 0) >= spell.cost;
-      const onCooldown = mb.spellCooldowns && mb.spellCooldowns[spell.id] > 0;
-      const cdRemaining = onCooldown ? Math.ceil(mb.spellCooldowns[spell.id] / 60) : 0;
+      const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
+      const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
       const canUse = hasRage && !onGcd && !onCooldown;
       const gcdActive = onGcd && !onCooldown;
       const gcdPct = onGcd ? Math.min(1, state._gcdTimer / 30) : 0;
@@ -1682,14 +1679,14 @@
     container.innerHTML = html;
   }
 
-  function renderDebuffs(mb) {
+  function renderDebuffs() {
     const container = document.getElementById('mbDebuffs');
     if (!container) return;
-    const debuffKeys = Object.keys(mb.debuffs || {});
+    const debuffKeys = Object.keys(_sessionDebuffs);
     if (debuffKeys.length === 0) { container.innerHTML = ''; return; }
     let html = '';
     debuffKeys.forEach(spellId => {
-      const d = mb.debuffs[spellId];
+      const d = _sessionDebuffs[spellId];
       if (!d) return;
       const remaining = Math.ceil(d.ticks / 60);
       html += `<div class="debuff-icon" title="${d.name || spellId}">
@@ -1713,16 +1710,15 @@
     // Rage check
     if ((state.rage || 0) < spell.cost) return;
     // Per-spell cooldown check
-    if (mb.spellCooldowns && mb.spellCooldowns[spellId] > 0) return;
+    if (_sessionSpellCooldowns[spellId] > 0) return;
 
     // Odečíst rage
     state.rage = Math.max(0, (state.rage || 0) - spell.cost);
     // Nastavit GCD (0.5s = ~30 ticků při 60fps)
     state._gcdTimer = Math.round(spell.gcd * 60);
-    // Nastavit per-spell cooldown
+    // Nastavit per-spell cooldown (session persistent)
     if (spell.cooldown > 0) {
-      if (!mb.spellCooldowns) mb.spellCooldowns = {};
-      mb.spellCooldowns[spellId] = Math.round(spell.cooldown * 60);
+      _sessionSpellCooldowns[spellId] = Math.round(spell.cooldown * 60);
     }
 
     // Efekty kouzel
@@ -1739,8 +1735,7 @@
       state.thunderClapTimer = 600; // 10s * 60fps
       state.thunderClapSlowPct = 10;
       // Debuff ikona nad příšerou
-      if (!mb.debuffs) mb.debuffs = {};
-      mb.debuffs['thunderClap'] = { icon: '🌊', name: 'Zpomalení', ticks: 600, maxTicks: 600 };
+      _sessionDebuffs['thunderClap'] = { icon: '🌊', name: 'Zpomalení', ticks: 600, maxTicks: 600 };
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
@@ -1774,8 +1769,7 @@
       mb._enemyStunTimer = 300; // 5s
       mb._enemySwingReady = false;
       // Debuff ikona nad příšerou
-      if (!mb.debuffs) mb.debuffs = {};
-      mb.debuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: 300, maxTicks: 300 };
+      _sessionDebuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: 300, maxTicks: 300 };
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
