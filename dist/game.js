@@ -1634,14 +1634,13 @@
     const container = document.getElementById('mbClassSpells');
     if (!container) return;
     const cls = CLASSES[state.heroClass];
-    if (!cls || !cls.spells) { container.innerHTML = ''; container.classList.add('hidden'); return; }
-    container.classList.remove('hidden');
+    if (!cls || !cls.spells) { container.innerHTML = ''; return; }
     let html = '';
     cls.spells.forEach(spell => {
       const onGcd = state._gcdTimer > 0;
       const hasRage = (state.rage || 0) >= spell.cost;
       const canUse = hasRage && !onGcd;
-      html += `<button class="class-spell-btn${canUse ? ' active' : ''}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
+      html += `<button class="arena-class-spell-btn${canUse ? ' active' : ''}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
         <span class="spell-icon">${spell.icon}</span>
         <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
       </button>`;
