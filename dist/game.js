@@ -1224,6 +1224,9 @@
     mb.bossHp -= dmg;
     playSFX(getHitSfx());
 
+    // Projektilová animace — od hráče k nepříteli
+    spawnProjectileEffect(null, false, false, mb.monsterAttackType);
+
     // Damage text
     const dmgText = $('mbDamageText');
     if (dmgText) {
@@ -1261,6 +1264,9 @@
 
     mb.playerHp -= dmg;
     playSFX(getHurtSfx());
+
+    // Projektilová animace — od nepřítele k hráči
+    spawnProjectileEffect(null, true, false, mb.monsterAttackType);
 
     // Damage text
     const dmgText = $('mbPlayerDamageText');
