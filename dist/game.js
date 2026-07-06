@@ -1223,6 +1223,8 @@
 
     // Tick buffů a GCD každou smyčku
     tickBuffs();
+    // Aktualizovat UI spell tlačítek (cooldown čísla, GCD sweep)
+    renderClassSpells();
 
     // Hráčův swing
     if (!mb._playerSwingReady) {
