@@ -550,30 +550,30 @@
   // ===== ITEMS (WEAPONS/ARMOR) =====
   const ITEMS = [
     // === ZÁKLADNÍ (bez ceny, startovní) ===
-    { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists' },
+    { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢', iconImg:'' },
     // === ZBRANĚ — magické (staff) ===
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1 },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2 },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2 },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3 },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3 },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:18, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4 },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:22, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4 },
-    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:30, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5 },
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:18, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1500 },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:22, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1400 },
+    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:30, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5, swingMs:1300 },
     // === ZBRANĚ — fyzické (blade) ===
-    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1 },
-    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1 },
-    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2 },
-    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3 },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4 },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4 },
-    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:24, bonusHp:0, critChance:10, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
-    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5 },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5 },
-    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:35, bonusHp:30, critChance:25, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6 },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6 },
+    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
+    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000 },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100 },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000 },
+    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:24, bonusHp:0, critChance:10, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2200 },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
+    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:35, bonusHp:30, critChance:25, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6, swingMs:2000 },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
     // === BRNĚNÍ ===
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
@@ -763,6 +763,9 @@
     if (minigameState.countdownInterval) { clearInterval(minigameState.countdownInterval); minigameState.countdownInterval = null; }
     ['simonTimeout'].forEach(k => { if (minigameState[k]) { clearTimeout(minigameState[k]); delete minigameState[k]; } });
     if (mapBattleState) {
+      if (mapBattleState._combatLoop) { cancelAnimationFrame(mapBattleState._combatLoop); mapBattleState._combatLoop = null; }
+      if (mapBattleState._playerSwingTimer) { clearTimeout(mapBattleState._playerSwingTimer); mapBattleState._playerSwingTimer = null; }
+      if (mapBattleState._enemySwingTimer) { clearTimeout(mapBattleState._enemySwingTimer); mapBattleState._enemySwingTimer = null; }
       if (mapBattleState._attackTimer) { clearTimeout(mapBattleState._attackTimer); mapBattleState._attackTimer = null; }
       if (mapBattleState._sequenceTimer) { clearTimeout(mapBattleState._sequenceTimer); mapBattleState._sequenceTimer = null; }
       if (mapBattleState._ringTimer) { clearTimeout(mapBattleState._ringTimer); mapBattleState._ringTimer = null; }
@@ -1018,7 +1021,7 @@
       locId, loc, isBoss, progress, floor,
       bossHp: bossBaseHp, maxBossHp: bossBaseHp,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
-      ended: false, turn: 0, isAttacking: false,
+      ended: false, turn: 0,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, hot: 0, hotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
       playerDot: 0, playerDotTicksLeft: 0,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
@@ -1036,18 +1039,23 @@
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       monsterTheme: isBoss ? loc.theme : (floorMonsters[progress].theme !== undefined ? floorMonsters[progress].theme : loc.theme),
-      // Loot drops per monster (pro vizuální indikaci)
       _lootDrops: state._floorLootDrops || [],
-      // Sekvence: hráč musí přežít várku útoků, pak může udeřit
-      sequence: [], sequenceIndex: 0, inAttackWindow: false,
-      currentAttack: null, isHeavyAttack: false,
-      isInvertedAttack: false, isTwinAttack: false, isGreenAttack: false,
-      _heavySwipes: 0, _twinSwipes: [],
-      isRapidAttack: false, rapidTaps: 0, rapidTarget: 0,
-      stamina: 100, maxStamina: 100, _staminaInterval: null,
-      _lastSwipeDir: null,
-      _heatLevel: 0, // D4 přehřívání: 0 = normální, kladné = rychlejší
-      _freezeUntil: null // D5 timer freeze: timestamp kdy freeze končí (null = není frozen)
+      // Auto-combat swing timery
+      playerSwingMs: 0,        // aktuální délka hráčova swingu (ms)
+      enemySwingMs: 0,         // aktuální délka nepřítelova swingu (ms)
+      _playerSwingTimer: null, // timeout pro hráčův swing
+      _enemySwingTimer: null,  // timeout pro nepřítelův swing
+      _combatLoop: null,       // requestAnimationFrame id
+      _playerSwingStart: 0,    // performance.now() start hráčova swingu
+      _enemySwingStart: 0,     // performance.now() start nepřítelova swingu
+      _playerSwingPct: 0,      // 0-1 průběh hráčova swingu
+      _enemySwingPct: 0,       // 0-1 průběh nepřítelova swingu
+      _playerSwingReady: false, // true = hráč může udeřit
+      _enemySwingReady: false,  // true = nepřítel udeří
+      _playerAttackProcessed: false, // zabránit double-attacku
+      _enemyAttackProcessed: false,
+      _spellButtonsVisible: true, // spell tlačítka jsou vždy vidět
+      // Schools handled via activeSchool
     };
     // Schools handled via activeSchool
 
@@ -1080,7 +1088,184 @@
       void newFig.offsetWidth;
       newFig.classList.add('monster-appear');
     }
-    setTimeout(() => mapBattleTurn(), 500);
+    setTimeout(() => startAutoCombat(), 500);
+  }
+
+  function getSwingTime(weaponId) {
+    // Rychlost zbraně v ms — čím rychlejší zbraň, tím kratší swing
+    const w = ITEM_MAP[weaponId] || ITEM_MAP['fists'];
+    const base = w.swingMs || 2000; // default 2s
+    // DEX zkracuje swing
+    const h = state.hero;
+    const eqAttrs = getEquipAttrs();
+    const dex = (h.attrDex || 0) + eqAttrs.dex;
+    return Math.max(600, Math.round(base * (1 - dex * 0.01)));
+  }
+
+  function getEnemySwingTime(mb) {
+    // Nepřítelův swing — závisí na dungeonu a patře
+    const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
+    const floor = mb.floor || 0;
+    // Base 2500ms, s každým patrem -5%, dungeon násobitel
+    const base = 2500;
+    const floorMult = Math.pow(0.95, floor);
+    return Math.max(800, Math.round(base * floorMult / diffMult));
+  }
+
+  function startAutoCombat() {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+
+    // Inicializovat swing timery
+    mb.playerSwingMs = getSwingTime(state.hero.equip.weapon);
+    mb.enemySwingMs = getEnemySwingTime(mb);
+    mb._playerSwingStart = performance.now();
+    mb._enemySwingStart = performance.now();
+    mb._playerSwingReady = false;
+    mb._enemySwingReady = false;
+    mb._playerAttackProcessed = false;
+    mb._enemyAttackProcessed = false;
+
+    // Spustit rAF loop
+    autoCombatLoop();
+  }
+
+  function autoCombatLoop() {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    const now = performance.now();
+
+    // Hráčův swing
+    if (!mb._playerSwingReady) {
+      const playerElapsed = now - mb._playerSwingStart;
+      mb._playerSwingPct = Math.min(playerElapsed / mb.playerSwingMs, 1);
+      if (playerElapsed >= mb.playerSwingMs) {
+        mb._playerSwingReady = true;
+        mb._playerAttackProcessed = false;
+      }
+    }
+
+    // Nepřítelův swing
+    if (!mb._enemySwingReady) {
+      const enemyElapsed = now - mb._enemySwingStart;
+      mb._enemySwingPct = Math.min(enemyElapsed / mb.enemySwingMs, 1);
+      if (enemyElapsed >= mb.enemySwingMs) {
+        mb._enemySwingReady = true;
+        mb._enemyAttackProcessed = false;
+      }
+    }
+
+    // Update timer ring vizuál
+    updateSwingRings(mb);
+
+    // Zpracovat útoky
+    if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
+      mb._enemyAttackProcessed = true;
+      onAutoEnemyAttack();
+    }
+    if (mb._playerSwingReady && !mb._playerAttackProcessed) {
+      mb._playerAttackProcessed = true;
+      onAutoPlayerAttack();
+    }
+
+    mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+  }
+
+  function updateSwingRings(mb) {
+    // Hráčův ring (velký)
+    const playerCircle = document.getElementById('mbPlayerTimerCircle');
+    if (playerCircle) {
+      if (mb._playerSwingReady) {
+        playerCircle.style.strokeDashoffset = '0';
+        playerCircle.style.stroke = '#2ecc71'; // zelená = připraven
+      } else {
+        const offset = Math.round(691 * (1 - mb._playerSwingPct));
+        playerCircle.style.strokeDashoffset = offset;
+        playerCircle.style.stroke = '#888';
+      }
+    }
+    // Nepřítelův ring (malý)
+    const enemyCircle = document.getElementById('mbEnemyTimerCircle');
+    if (enemyCircle) {
+      if (mb._enemySwingReady) {
+        enemyCircle.style.strokeDashoffset = '0';
+        enemyCircle.style.stroke = '#e74c3c'; // červená = útočí
+      } else {
+        const offset = Math.round(597 * (1 - mb._enemySwingPct));
+        enemyCircle.style.strokeDashoffset = offset;
+        enemyCircle.style.stroke = '#e74c3c';
+      }
+    }
+  }
+
+  function onAutoPlayerAttack() {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+
+    // Výpočet damage
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const eqAttrs = getEquipAttrs();
+    const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+    const dmg = Math.max(1, baseDmg);
+
+    mb.bossHp -= dmg;
+    playSFX(getHitSfx());
+
+    // Damage text
+    const dmgText = $('mbDamageText');
+    if (dmgText) {
+      dmgText.textContent = `-${dmg}`;
+      dmgText.classList.remove('hidden');
+      setTimeout(() => dmgText.classList.add('hidden'), 500);
+    }
+
+    updateMapBattleUI();
+
+    // Reset hráčova swingu
+    mb._playerSwingStart = performance.now();
+    mb._playerSwingReady = false;
+    mb._playerSwingPct = 0;
+
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+  }
+
+  function onAutoEnemyAttack() {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    if (mb.playerHp <= 0) { endMapBattle(false); return; }
+
+    // Výpočet damage nepřítele
+    const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
+    const floor = mb.floor || 0;
+    const baseDmg = Math.round((8 + mb.locId * 8 + floor * 4) * diffMult);
+    const variance = 0.8 + Math.random() * 0.4;
+    let dmg = Math.round(baseDmg * variance);
+
+    // Snížit o defense
+    const eqAttrs = getEquipAttrs();
+    const defense = eqAttrs.def || 0;
+    dmg = Math.max(1, dmg - Math.round(dmg * defense / 100));
+
+    mb.playerHp -= dmg;
+    playSFX(getHurtSfx());
+
+    // Damage text
+    const dmgText = $('mbPlayerDamageText');
+    if (dmgText) {
+      dmgText.textContent = `-${dmg}`;
+      dmgText.classList.remove('hidden');
+      setTimeout(() => dmgText.classList.add('hidden'), 500);
+    }
+
+    updateMapBattleUI();
+
+    // Reset nepřítelova swingu
+    mb._enemySwingStart = performance.now();
+    mb._enemySwingReady = false;
+    mb._enemySwingPct = 0;
+
+    if (mb.playerHp <= 0) { endMapBattle(false); return; }
   }
 
   function updateMapBattleUI() {
@@ -1213,18 +1398,18 @@
     const spellId = getBestSpellId(activeId);
     if (!spellId) return;
     const lv = getSpellLv(spellId);
-    // Ukazat spravne kouzlo — VZDY viditelne, aktivni jen kdyz je prilezitost
+    // Ukazat spravne kouzlo — VZDY viditelne
     const btn = activeId === 'fire' ? fireBtn : activeId === 'ice' ? freezeBtn : activeId === 'physical' ? physBtn : healBtn;
     if (!btn) return;
     btn.classList.remove('hidden');
     const spellIcons = { firebolt:'🔥', fireblast:'💥', fireball:'🔥', frostbolt:'❄️', blizzard:'❄️', heal:'💚', strongStrike:'💢', slash:'⚡', whirlwind:'🌀' };
     const spellIcon = spellIcons[spellId] || '⚔️';
     btn.innerHTML = spellIcon;
-    // Aktivni jen v attack okne (pokud je mana)
+    // Aktivni jen kdyz je mana
     const manaCosts = { firebolt: 10, fireblast: 20, fireball: 35, frostbolt: 10, icebolt: 10, blizzard: 30, heal: 15, strongStrike: 8, slash: 15, whirlwind: 25 };
     const cost = (manaCosts[spellId] || 15) + lv * 2;
     const hasMana = (state.hero.mana || 0) >= cost;
-    if (mb.inAttackWindow && hasMana) {
+    if (hasMana) {
       btn.classList.add('active');
     }
   }

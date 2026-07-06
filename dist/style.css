@@ -223,13 +223,16 @@ body.no-scroll { overflow: hidden; }
   stroke:#888;
   stroke-width:9;
 }
-.hp-circle {
+.enemy-timer-circle {
   stroke:#e74c3c;
-  stroke-width:6;
-  transition:stroke-dashoffset 0.2s ease-out;
+  stroke-width:7;
 }
 @keyframes timer-ring-shrink {
   0%   { stroke-dashoffset: 691; }
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes enemy-timer-shrink {
+  0%   { stroke-dashoffset: 597; }
   100% { stroke-dashoffset: 0; }
 }
 .arena-dodge-btn {
