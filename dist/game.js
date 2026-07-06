@@ -5234,16 +5234,11 @@
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
     if (state.heroClass === undefined) state.heroClass = null;
 
-    // Pokud hráč ještě nemá vybranou classu, zobrazit výběr
-    if (!state.heroClass) {
-      showScreen('classSelect');
-      return;
-    }
-
+    // Nav-bar handlery musí být zaregistrované vždy, i když hráč ještě nevybral classu
     document.querySelectorAll('.nav-bar a').forEach(a => {
       a.addEventListener('click', (e) => {
         e.preventDefault();
-        e.stopPropagation(); // zabránit propagaci na document
+        e.stopPropagation();
         if (a.dataset.screen === 'map') showScreen('map');
         else if (a.dataset.screen === 'talents') showScreen('talents');
         else if (a.dataset.screen === 'hero') showScreen('hero');
@@ -5251,7 +5246,6 @@
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
         else if (a.dataset.screen === 'guide') showScreen('guide');
         else if (a.dataset.screen === 'bestiary') { showScreen('bestiary'); renderBestiary(); }
-        // Inicializovat audio hned při prvním kliku (user gesture)
         firstUserInteraction();
       });
     });
@@ -5267,6 +5261,12 @@
       e.stopPropagation();
       toggleMapPause();
     });
+
+    // Pokud hráč ještě nemá vybranou classu, zobrazit výběr
+    if (!state.heroClass) {
+      showScreen('classSelect');
+      return;
+    }
     // Spustit BGM při první user interakci
     let _firstInteraction = true;
     function firstUserInteraction() {
