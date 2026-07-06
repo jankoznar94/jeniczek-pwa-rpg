@@ -1224,9 +1224,23 @@
     mb.bossHp -= dmg;
     playSFX(getHitSfx());
 
-    // Projektil podle zbraně
-    const playerAtkType = getWeaponType() === 'staff' ? ATTACK_TYPES.CASTER : ATTACK_TYPES.MELEE;
-    spawnProjectileEffect(null, false, false, playerAtkType);
+    // Animace podle zbraně
+    const wt = getWeaponType();
+    if (wt === 'staff') {
+      // Hůlky — magický projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+    } else {
+      // Pěsti a meče — melee efekt (záblesk na monster)
+      const fig = $('mbFigure');
+      if (fig) {
+        fig.style.transition = 'filter 0.05s';
+        fig.style.filter = 'brightness(2) saturate(1.5)';
+        setTimeout(() => {
+          fig.style.transition = 'filter 0.2s ease-out';
+          fig.style.filter = '';
+        }, 50);
+      }
+    }
 
     // Damage text
     const dmgText = $('mbDamageText');
