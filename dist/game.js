@@ -1175,6 +1175,7 @@
     // Hráčův ring (velký)
     const playerCircle = document.getElementById('mbPlayerTimerCircle');
     if (playerCircle) {
+      playerCircle.style.opacity = '1';
       if (mb._playerSwingReady) {
         playerCircle.style.strokeDashoffset = '0';
         playerCircle.style.stroke = '#2ecc71'; // zelená = připraven
@@ -1187,6 +1188,7 @@
     // Nepřítelův ring (malý)
     const enemyCircle = document.getElementById('mbEnemyTimerCircle');
     if (enemyCircle) {
+      enemyCircle.style.opacity = '1';
       if (mb._enemySwingReady) {
         enemyCircle.style.strokeDashoffset = '0';
         enemyCircle.style.stroke = '#e74c3c'; // červená = útočí
