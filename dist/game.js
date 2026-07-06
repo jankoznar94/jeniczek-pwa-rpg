@@ -1476,13 +1476,7 @@
   }
 
   function updateActionButtons() {
-    const mb = mapBattleState;
-    const dodge = $('mbDodgeBtn');
-    // Dodge — aktivní jen když je dost staminy a není rapid
-    if (dodge) {
-      if (mb.stamina >= 30 && !mb.isRapidAttack) dodge.classList.add('active');
-      else dodge.classList.remove('active');
-    }
+    // V auto-combatu není potřeba — dodge tlačítko odstraněno
   }
 
   function setupMapBattleInput() {
@@ -1493,17 +1487,6 @@
 
     let startX, startY;
     const handlers = [];
-
-    // Click handler for dodge button (pointerdown = immediate, no 300ms click delay)
-    const dodgeBtn = $('mbDodgeBtn');
-    if (dodgeBtn) {
-      const dodgeHandler = (e) => {
-        e.stopPropagation();
-        onMapDodgeAction();
-      };
-      dodgeBtn.addEventListener('pointerdown', dodgeHandler);
-      handlers.push(['pointerdown', dodgeHandler]);
-    }
 
     const ts = (e) => { if (mapBattleState.ended) return; const t=e.touches[0]; startX=t.clientX; startY=t.clientY; };
     const te = (e) => {
