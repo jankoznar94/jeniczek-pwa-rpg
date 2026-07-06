@@ -48,16 +48,19 @@
       <svg id="mbArrow" class="boss-attack-arrow hidden" viewBox="0 0 16 16" width="120" height="120"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
       <div class="attack-timer-ring" id="mbTimerRing">
         <svg viewBox="0 0 260 260" width="260" height="260" style="transform:rotate(-90deg)">
-          <circle cx="130" cy="130" r="110" stroke="#888" stroke-width="12" fill="none" stroke-dasharray="691" stroke-dashoffset="691" class="timer-circle" id="mbPlayerTimerCircle"/>
-          <circle cx="130" cy="130" r="95" stroke="#e74c3c" stroke-width="8" fill="none" stroke-dasharray="597" stroke-dashoffset="597" class="enemy-timer-circle" id="mbEnemyTimerCircle"/>
+          <circle cx="130" cy="130" r="110" stroke="#f1c40f" stroke-width="12" fill="none" stroke-dasharray="691" stroke-dashoffset="691" class="timer-circle" id="mbPlayerTimerCircle"/>
         </svg>
         <span class="action-info-icon hidden" id="mbActionInfo"></span>
       </div>
       <div class="monster-in-ring" id="mbFigure">👹</div>
       <div class="monster-ring-overlay"></div>
-      <svg class="hp-ring-svg" viewBox="0 0 180 180" width="180" height="180">
-        <circle cx="90" cy="90" r="87" stroke="#e74c3c" stroke-width="6" fill="none" stroke-dasharray="547" stroke-dashoffset="547" class="hp-circle"/>
-      </svg>
+      <div class="enemy-hp-bar" id="mbEnemyHpBar">
+        <div class="enemy-hp-segment" data-seg="0"></div>
+        <div class="enemy-hp-segment" data-seg="1"></div>
+        <div class="enemy-hp-segment" data-seg="2"></div>
+        <div class="enemy-hp-segment" data-seg="3"></div>
+        <div class="enemy-hp-segment" data-seg="4"></div>
+      </div>
       <div class="hp-ring-label" id="mbHpLabel">0/0</div>
       <div class="arena-dodge-btn" id="mbDodgeBtn">🏃</div>
       <div class="arena-heat-indicator hidden" id="mbHeatIndicator"><span>🔥</span><span class="heat-num">0/10</span></div>

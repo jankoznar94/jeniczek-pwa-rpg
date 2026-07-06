@@ -1127,6 +1127,7 @@
     mb._enemyAttackProcessed = false;
 
     // Spustit rAF loop
+    updateEnemyHpBar(mb);
     autoCombatLoop();
   }
 
@@ -1172,7 +1173,7 @@
   }
 
   function updateSwingRings(mb) {
-    // Hráčův ring (velký)
+    // Hráčův ring (velký, žlutý)
     const playerCircle = document.getElementById('mbPlayerTimerCircle');
     if (playerCircle) {
       playerCircle.style.opacity = '1';
@@ -1182,22 +1183,21 @@
       } else {
         const offset = Math.round(691 * (1 - mb._playerSwingPct));
         playerCircle.style.strokeDashoffset = offset;
-        playerCircle.style.stroke = '#888';
+        playerCircle.style.stroke = '#f1c40f';
       }
     }
-    // Nepřítelův ring (malý)
-    const enemyCircle = document.getElementById('mbEnemyTimerCircle');
-    if (enemyCircle) {
-      enemyCircle.style.opacity = '1';
-      if (mb._enemySwingReady) {
-        enemyCircle.style.strokeDashoffset = '0';
-        enemyCircle.style.stroke = '#e74c3c'; // červená = útočí
-      } else {
-        const offset = Math.round(597 * (1 - mb._enemySwingPct));
-        enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#e74c3c';
-      }
-    }
+    // Nepřítelův HP bar — segmenty
+    updateEnemyHpBar(mb);
+  }
+
+  function updateEnemyHpBar(mb) {
+    const segments = document.querySelectorAll('.enemy-hp-segment');
+    if (!segments.length) return;
+    const pct = mb.maxBossHp > 0 ? mb.bossHp / mb.maxBossHp : 0;
+    const filledCount = Math.round(pct * 5);
+    segments.forEach((seg, i) => {
+      seg.classList.toggle('filled', i < filledCount);
+    });
   }
 
   function onAutoPlayerAttack() {
@@ -1299,13 +1299,8 @@
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
-    // Kruhový HP bar — okraj obrázku monstra
-    const hpCircle = document.querySelector('.hp-ring-svg .hp-circle');
-    if (hpCircle) {
-      const circ = 547;
-      const pct = Math.max(0, Math.min(100, eHpPct));
-      hpCircle.setAttribute('stroke-dashoffset', Math.round(circ * (1 - pct / 100)));
-    }
+    // Segmentový HP bar
+    updateEnemyHpBar(mb);
     const hpLabel = $('mbHpLabel');
     if (hpLabel) {
       hpLabel.textContent = `${Math.max(0, Math.round(mb.bossHp))}/${Math.round(mb.maxBossHp)}`;

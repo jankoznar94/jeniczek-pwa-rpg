@@ -220,21 +220,24 @@ body.no-scroll { overflow: hidden; }
   transform:translate(-50%,-50%);z-index:5;
 }
 .timer-circle {
-  stroke:#888;
+  stroke:#f1c40f;
   stroke-width:9;
-}
-.enemy-timer-circle {
-  stroke:#e74c3c;
-  stroke-width:7;
 }
 @keyframes timer-ring-shrink {
   0%   { stroke-dashoffset: 691; }
   100% { stroke-dashoffset: 0; }
 }
-@keyframes enemy-timer-shrink {
-  0%   { stroke-dashoffset: 597; }
-  100% { stroke-dashoffset: 0; }
+.enemy-hp-bar {
+  position:absolute;top:50%;left:50%;z-index:6;
+  transform:translate(-50%,-50%);margin-top:55px;
+  display:flex;gap:3px;pointer-events:none;
 }
+.enemy-hp-segment {
+  width:30px;height:8px;border-radius:2px;
+  background:#4a1a1a;border:1px solid #2a0a0a;
+  transition:background 0.2s ease-out;
+}
+.enemy-hp-segment.filled { background:#e74c3c; }
 .arena-dodge-btn {
   position:absolute;bottom:20px;left:20px;z-index:25;
   width:64px;height:52px;border-radius:14px;font-size:28px;cursor:pointer;
