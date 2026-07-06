@@ -54,6 +54,21 @@ body.no-scroll { overflow: hidden; }
 .card-title { font-size: 16px; font-weight: bold; margin-bottom: 6px; }
 .card-subtitle { font-size: 12px; color: #888888; margin-bottom: 4px; }
 
+/* Class select */
+.class-cards {
+  display: flex; flex-direction: column; gap: 10px;
+}
+.class-card {
+  background: #1a1a1a; border: 2px solid #2a2a2a; border-radius: 12px;
+  padding: 16px; cursor: pointer; transition: 0.2s;
+}
+.class-card:hover { border-color: #4a7dff; background: #1a1a2a; }
+.class-card-icon { font-size: 40px; text-align: center; margin-bottom: 6px; }
+.class-card-name { font-size: 18px; font-weight: bold; text-align: center; color: #eee; margin-bottom: 4px; }
+.class-card-resource { font-size: 12px; text-align: center; color: #f1c40f; margin-bottom: 6px; }
+.class-card-desc { font-size: 12px; color: #aaa; line-height: 1.5; margin-bottom: 6px; text-align: center; }
+.class-card-weapons { font-size: 11px; color: #888; text-align: center; }
+
 /* Hero */
 .hero-stats-row { display: flex; gap: 12px; flex-wrap: wrap; font-size: 13px; margin-top: 6px; }
 .hero-stats-row span { background: #1a1a1a; padding: 4px 10px; border-radius: 6px; }

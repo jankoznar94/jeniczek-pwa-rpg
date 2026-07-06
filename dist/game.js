@@ -5,6 +5,49 @@
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rand(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
+  // ===== CLASSES =====
+  const CLASSES = {
+    barbarian: {
+      id:'barbarian', name:'Barbar', icon:'🪓',
+      resource:'rage', resourceName:'💢 Rage', maxResource:100, startResource:0,
+      resourceRegen:0, // rage se nedoplňuje samo
+      desc:'Hromadí vztek za utržené a udělené poškození.',
+      allowedWeapons:['blade','fists'], // obouruční meče, sekery, pěsti
+      allowedShield:true,
+      allowedOffhand:true, // dvě jednoruční zbraně
+      primaryAttr:'str',
+      talentSchool:'physical',
+      baseHp:120, baseDmg:14, baseMana:0,
+      attrBonus:{str:3, vit:2, dex:0, int:0}
+    },
+    assassin: {
+      id:'assassin', name:'Assassin', icon:'🗡️',
+      resource:'energy', resourceName:'⚡ Energy', maxResource:100, startResource:100,
+      resourceRegen:5, // 5/tick
+      desc:'Energy se samovolně doplňuje. Rychlé přesné útoky.',
+      allowedWeapons:['blade','fists'],
+      allowedShield:false,
+      allowedOffhand:false,
+      primaryAttr:'dex',
+      talentSchool:'physical',
+      baseHp:80, baseDmg:10, baseMana:0,
+      attrBonus:{str:0, vit:1, dex:3, int:0}
+    },
+    mage: {
+      id:'mage', name:'Kouzelník', icon:'🪄',
+      resource:'mana', resourceName:'💧 Mana', maxResource:100, startResource:100,
+      resourceRegen:2, // 2/tick + INT bonus
+      desc:'Mana škáluje s INT a gearem. Mocná kouzla na dálku.',
+      allowedWeapons:['staff','fists'],
+      allowedShield:false,
+      allowedOffhand:true, // artefakt
+      primaryAttr:'int',
+      talentSchool:'fire',
+      baseHp:60, baseDmg:6, baseMana:100,
+      attrBonus:{str:0, vit:0, dex:0, int:5}
+    }
+  };
+
   // ===== AUDIO =====
   let audioCtx = null;
   let _audioInitErr = false;
@@ -788,7 +831,7 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,shield:null,ring1:null,amulet:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[] };
+      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null };
     return s;
   }
   function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) { // Obnovit loot itemy do ITEM_MAP
@@ -796,8 +839,30 @@
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
+  // ===== CLASS SELECT =====
+  function selectClass(classId) {
+    const cls = CLASSES[classId];
+    if (!cls) return;
+    state.heroClass = classId;
+    state.hero.hp = cls.baseHp;
+    state.hero.maxHp = cls.baseHp;
+    state.hero.mana = cls.baseMana;
+    state.hero.maxMana = cls.baseMana;
+    state.hero.baseDmg = cls.baseDmg;
+    state.hero.attrStr = cls.attrBonus.str;
+    state.hero.attrVit = cls.attrBonus.vit;
+    state.hero.attrDex = cls.attrBonus.dex;
+    state.hero.attrInt = cls.attrBonus.int;
+    state.activeSchool = cls.talentSchool;
+    // První talent point zdarma
+    state.talentPoints = 1;
+    saveGame();
+    showScreen('map');
+    renderMap();
+  }
+
   // ===== SCREENS =====
-  const SCREEN_IDS = { map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen', bestiary:'bestiaryScreen' };
+  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen', bestiary:'bestiaryScreen' };
   function showScreen(name) {
     cleanupTimers();
     
@@ -5167,6 +5232,13 @@
     if (state.hero.mana === undefined) state.hero.mana = 50;
     if (state.hero.maxMana === undefined) state.hero.maxMana = 50;
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
+    if (state.heroClass === undefined) state.heroClass = null;
+
+    // Pokud hráč ještě nemá vybranou classu, zobrazit výběr
+    if (!state.heroClass) {
+      showScreen('classSelect');
+      return;
+    }
 
     document.querySelectorAll('.nav-bar a').forEach(a => {
       a.addEventListener('click', (e) => {
@@ -5289,7 +5361,8 @@
     toggleMapPause, toggleTutorialPause,
     renderBestiary,
     renameHero,
-    showFaceSelect, closeFaceSelect, selectFace
+    showFaceSelect, closeFaceSelect, selectFace,
+    selectClass
   };
   init();
 })();

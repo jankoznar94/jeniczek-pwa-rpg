@@ -21,6 +21,37 @@
   <a href="#" id="testToggle"><img src="assets/menu-icons/testmode.png" alt="Test" class="nav-icon"></a>
 </nav>
 
+<!-- ===== CLASS SELECT ===== -->
+<div id="classSelectScreen" class="container">
+  <div class="card">
+    <div class="card-title" style="text-align:center;font-size:20px">⚔️ Vyber si povolání</div>
+    <div class="card-subtitle" style="text-align:center">Každé povolání má vlastní zdroj energie, talentové stromy a omezení na zbraně.</div>
+  </div>
+  <div class="class-cards">
+    <div class="class-card" onclick="game.selectClass('barbarian')">
+      <div class="class-card-icon">🪓</div>
+      <div class="class-card-name">Barbar</div>
+      <div class="class-card-resource">💢 Rage (0–100)</div>
+      <div class="class-card-desc">Hromadí vztek za utržené a udělené poškození. Dvouruční zbraně, sekery, štíty. Vysoká síla a výdrž.</div>
+      <div class="class-card-weapons">⚔️ Obouručák · 1R+štít · 2×1R</div>
+    </div>
+    <div class="class-card" onclick="game.selectClass('assassin')">
+      <div class="class-card-icon">🗡️</div>
+      <div class="class-card-name">Assassin</div>
+      <div class="class-card-resource">⚡ Energy (100, regeneruje)</div>
+      <div class="class-card-desc">Rychlé, přesné útoky. Energy se samovolně doplňuje. Dýky a jednoruční meče. Vysoká obratnost.</div>
+      <div class="class-card-weapons">🗡️ Dýky · ⚔️ Jednoruční meče</div>
+    </div>
+    <div class="class-card" onclick="game.selectClass('mage')">
+      <div class="class-card-icon">🪄</div>
+      <div class="class-card-name">Kouzelník</div>
+      <div class="class-card-resource">💧 Mana (škáluje s INT + gear)</div>
+      <div class="class-card-desc">Mocná kouzla na dálku. Hůlky a magické artefakty. Vysoký intelekt, nízká obrana.</div>
+      <div class="class-card-weapons">🪄 1R hůlka + artefakt · 2R hůl</div>
+    </div>
+  </div>
+</div>
+
 <!-- ===== MAP ===== -->
 <div id="mapScreen" class="container">
   <div class="map-guide-link">
