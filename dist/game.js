@@ -1233,38 +1233,95 @@
     const mb = mapBattleState;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
-    // Výpočet damage nepřítele
+    // Výpočet damage — stejný jako v onMapHit
+    const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
     const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
-    const floor = mb.floor || 0;
-    const baseDmg = Math.round((8 + mb.locId * 8 + floor * 4) * diffMult);
-    const variance = 0.8 + Math.random() * 0.4;
-    let dmg = Math.round(baseDmg * variance);
+    let bossDmg = Math.round(baseBossDmg * diffMult * (0.8 + Math.random() * 0.4));
+    const mType = mb.monsterType;
+    const bossTypes = mb.bossTypes || [];
+    let isCrit = false;
+    let lifeStealAmt = 0;
+    let manaStealAmt = 0;
+    const typesToApply = bossTypes.length > 0 ? bossTypes : (mType ? [mType] : []);
+    typesToApply.forEach(t => {
+      if (t === MONSTER_TYPES.CRITMASTER) {
+        if (Math.random() < 0.33) {
+          bossDmg = Math.round(bossDmg * 2.0);
+          isCrit = true;
+        }
+      } else if (t === MONSTER_TYPES.IMPROVER) {
+        mb._improverStacks = (mb._improverStacks || 0) + 1;
+        bossDmg = Math.round(bossDmg * (1 + mb._improverStacks * 0.25));
+      } else if (t === MONSTER_TYPES.LIFESTEALER) {
+        lifeStealAmt += Math.round(bossDmg * 0.5);
+      } else if (t === MONSTER_TYPES.MANASTEALER) {
+        manaStealAmt += Math.round(bossDmg * 0.5);
+      } else if (t === MONSTER_TYPES.POISON) {
+        const poisonDmg = Math.max(1, Math.round(baseBossDmg * 0.2));
+        mb.playerDot = poisonDmg;
+        mb.playerDotTicksLeft = 3;
+      }
+    });
+    // 🛡️ Defense — WoW styl
+    const armorDef = (ITEM_MAP[state.hero.equip.armor] || ITEM_MAP['rags']).defense || 0;
+    const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
+    const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
+    const totalDefense = armorDef + helmetDef + shieldDef;
+    if (totalDefense > 0) {
+      bossDmg = Math.round(bossDmg * 100 / (100 + totalDefense));
+    }
+    let amount = bossDmg;
 
-    // Snížit o defense
-    const eqAttrs = getEquipAttrs();
-    const defense = eqAttrs.def || 0;
-    dmg = Math.max(1, dmg - Math.round(dmg * defense / 100));
+    // Pasivní blok ze štítu
+    let blocked = false;
+    const shieldItem = ITEM_MAP[state.hero.equip.shield];
+    if (shieldItem && shieldItem.blockChance > 0) {
+      if (Math.random() * 100 < shieldItem.blockChance) {
+        blocked = true;
+        amount = 0;
+        playSFX(blockSfx);
+      }
+    }
 
-    mb.playerHp -= dmg;
-    playSFX(getHurtSfx());
-
-    // Červený záblesk na obrazovce
-    const arena = $('mbArena');
-    if (arena) {
-      arena.style.transition = 'background 0s';
-      arena.style.background = 'rgba(233,69,96,0.2)';
-      setTimeout(() => {
-        arena.style.transition = 'background 0.3s ease-out';
-        arena.style.background = 'transparent';
-      }, 50);
+    if (!blocked) {
+      mb.playerHp -= amount;
+    }
+    // Life steal / mana steal
+    if (!blocked && lifeStealAmt > 0) {
+      mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
+    }
+    if (!blocked && manaStealAmt > 0) {
+      state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);
+    }
+    if (!blocked) {
+      // Zvuk
+      playSFX(getHurtSfx());
+      // Červený záblesk arény
+      const arena = $('mbArena');
+      if (arena) {
+        arena.style.transition = 'background-color 0.1s';
+        arena.style.backgroundColor = 'rgba(233,69,96,0.45)';
+        setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 100);
+      }
+      // Záblesk overlay
+      let hitOverlay = $('mbHitOverlay');
+      if (!hitOverlay) {
+        hitOverlay = document.createElement('div');
+        hitOverlay.id = 'mbHitOverlay';
+        hitOverlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:999;pointer-events:none;transition:background-color 0.1s;background-color:transparent;';
+        document.body.appendChild(hitOverlay);
+      }
+      hitOverlay.style.backgroundColor = 'rgba(200,40,40,0.2)';
+      setTimeout(() => { hitOverlay.style.backgroundColor = 'transparent'; }, 100);
     }
 
     // Damage text
-    const dmgText = $('mbPlayerDamageText');
-    if (dmgText) {
-      dmgText.textContent = `-${dmg}`;
-      dmgText.classList.remove('hidden');
-      setTimeout(() => dmgText.classList.add('hidden'), 500);
+    const playerDamageText = $('mbPlayerDamageText');
+    if (playerDamageText) {
+      playerDamageText.textContent = blocked ? '🛡️ BLOCK!' : `-${amount}`;
+      playerDamageText.style.color = blocked ? '#3498db' : '';
+      playerDamageText.classList.remove('hidden');
+      setTimeout(() => playerDamageText.classList.add('hidden'), 800);
     }
 
     updateMapBattleUI();
