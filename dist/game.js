@@ -10,15 +10,22 @@
     barbarian: {
       id:'barbarian', name:'Barbar', icon:'🪓',
       resource:'rage', resourceName:'💢 Rage', maxResource:100, startResource:0,
-      resourceRegen:0, // rage se nedoplňuje samo
+      resourceRegen:0,
       desc:'Hromadí vztek za utržené a udělené poškození.',
-      allowedWeapons:['blade','fists'], // obouruční meče, sekery, pěsti
+      allowedWeapons:['blade','fists'],
       allowedShield:true,
-      allowedOffhand:true, // dvě jednoruční zbraně
+      allowedOffhand:true,
       primaryAttr:'str',
       talentSchool:'physical',
       baseHp:120, baseDmg:14, baseMana:0,
-      attrBonus:{str:3, vit:2, dex:0, int:0}
+      attrBonus:{str:3, vit:2, dex:0, int:0},
+      spells: [
+        { id:'heroicStrike', name:'Heroic Strike', icon:'⚡', cost:20, cooldown:0, gcd:0.5, desc:'150% dmg při příštím swingu' },
+        { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + zpomalení nepřítele 10% na 10s' },
+        { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% zisk Rage na 10s' },
+        { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + omráčení 5s' },
+        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg na 30s' }
+      ]
     },
     assassin: {
       id:'assassin', name:'Assassin', icon:'🗡️',
@@ -831,7 +838,16 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,shield:null,ring1:null,amulet:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null };
+      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
+      rage:0, maxRage:100, // Barbar resource
+      rageMultiplier:1, // Bloodrage buff
+      _bloodrageTimer:0,
+      battleShoutTimer:0, // Battle shout zbývající čas (ticky)
+      battleShoutDmgPct:0, // % bonus dmg z battle shout
+      thunderClapTimer:0, // Zbývající čas thunder clapu (ticky)
+      thunderClapSlowPct:0, // % zpomalení nepřítele
+      _gcdTimer:0 // Global cooldown (ticky)
+    };
     return s;
   }
   function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) { // Obnovit loot itemy do ITEM_MAP
@@ -1120,6 +1136,9 @@
       _playerAttackProcessed: false, // zabránit double-attacku
       _enemyAttackProcessed: false,
       _spellButtonsVisible: true, // spell tlačítka jsou vždy vidět
+      _enemyStunned: false, // omráčení nepřítele
+      _enemyStunTimer: 0, // zbývající ticky omráčení
+      _heroicStrikeQueued: false, // Heroic Strike čeká na příští swing
       // Schools handled via activeSchool
     };
     // Schools handled via activeSchool
@@ -1201,6 +1220,9 @@
     const mb = mapBattleState;
     const now = performance.now();
 
+    // Tick buffů a GCD každou smyčku
+    tickBuffs();
+
     // Hráčův swing
     if (!mb._playerSwingReady) {
       const playerElapsed = now - mb._playerSwingStart;
@@ -1211,8 +1233,8 @@
       }
     }
 
-    // Nepřítelův swing
-    if (!mb._enemySwingReady) {
+    // Nepřítelův swing — pokud není omráčený
+    if (!mb._enemySwingReady && !mb._enemyStunned) {
       const enemyElapsed = now - mb._enemySwingStart;
       mb._enemySwingPct = Math.min(enemyElapsed / mb.enemySwingMs, 1);
       if (enemyElapsed >= mb.enemySwingMs) {
@@ -1235,6 +1257,36 @@
     }
 
     mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+  }
+
+  function tickBuffs() {
+    const mb = mapBattleState;
+    if (!mb) return;
+    // GCD tick
+    if (state._gcdTimer > 0) state._gcdTimer = Math.max(0, state._gcdTimer - 1);
+    // Battle shout
+    if (state.battleShoutTimer > 0) {
+      state.battleShoutTimer--;
+      if (state.battleShoutTimer <= 0) state.battleShoutDmgPct = 0;
+    }
+    // Thunder clap slow
+    if (state.thunderClapTimer > 0) {
+      state.thunderClapTimer--;
+      if (state.thunderClapTimer <= 0) state.thunderClapSlowPct = 0;
+    }
+    // Bloodrage
+    if (state._bloodrageTimer > 0) {
+      state._bloodrageTimer--;
+      if (state._bloodrageTimer <= 0) state.rageMultiplier = 1;
+    }
+    // Enemy stun
+    if (mb._enemyStunned && mb._enemyStunTimer > 0) {
+      mb._enemyStunTimer--;
+      if (mb._enemyStunTimer <= 0) {
+        mb._enemyStunned = false;
+        mb._enemySwingStart = performance.now(); // restart timeru po omráčení
+      }
+    }
   }
 
   function updateSwingRings(mb) {
@@ -1280,8 +1332,26 @@
     const mb = mapBattleState;
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
 
-    // Použít původní dealPlayerDamage — obsahuje všechny animace, zvuky, pasiva
-    dealPlayerDamage(mb, 1.0);
+    // Rage gain za útok (barbar)
+    if (state.heroClass === 'barbarian') {
+      const rageGain = Math.round(5 * state.rageMultiplier);
+      state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
+    }
+
+    // Heroic Strike — 150% dmg
+    let dmgMult = 1.0;
+    if (mb._heroicStrikeQueued) {
+      dmgMult = 1.5;
+      mb._heroicStrikeQueued = false;
+    }
+
+    // Battle shout bonus
+    if (state.battleShoutDmgPct > 0) {
+      dmgMult *= (1 + state.battleShoutDmgPct / 100);
+    }
+
+    // Použít původní dealPlayerDamage
+    dealPlayerDamage(mb, dmgMult);
 
     updateMapBattleUI();
 
@@ -1350,6 +1420,11 @@
 
     if (!blocked) {
       mb.playerHp -= amount;
+      // Rage gain za utržené poškození (barbar)
+      if (state.heroClass === 'barbarian') {
+        const rageGain = Math.round(3 * state.rageMultiplier);
+        state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
+      }
     }
     // Life steal / mana steal
     if (!blocked && lifeStealAmt > 0) {
@@ -1477,13 +1552,21 @@
       const fill = $('mbPlayerArenaHpFill');
       if (fill) fill.style.width = Math.max(0, pHpPct) + '%';
     }
-    // Stamina bar
+    // Stamina bar — schovat, nahrazeno rage/mana/energy
     const arenaStamina = $('mbPlayerArenaStamina');
-    if (arenaStamina) {
-      const span = arenaStamina.querySelector('span');
-      if (span) span.textContent = `${Math.round(mb.stamina)}/${mb.maxStamina}`;
-      const fill = $('mbPlayerArenaStaminaFill');
-      if (fill) fill.style.width = Math.max(0, Math.round((mb.stamina / mb.maxStamina) * 100)) + '%';
+    if (arenaStamina) arenaStamina.classList.add('hidden');
+    // Rage bar (barbar)
+    const rageBar = $('mbPlayerArenaRage');
+    if (rageBar) {
+      if (state.heroClass === 'barbarian') {
+        rageBar.classList.remove('hidden');
+        const span = rageBar.querySelector('span');
+        if (span) span.textContent = `💢 ${state.rage || 0}/${state.maxRage || 100}`;
+        const fill = $('mbPlayerArenaRageFill');
+        if (fill) fill.style.width = Math.max(0, Math.round(((state.rage || 0) / (state.maxRage || 100)) * 100)) + '%';
+      } else {
+        rageBar.classList.add('hidden');
+      }
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     // D4 heat indicator
@@ -1538,10 +1621,113 @@
     if (hasMana) {
       btn.classList.add('active');
     }
+    // Class spells (barbar rage kouzla)
+    renderClassSpells();
   }
 
   function updateActionButtons() {
     // V auto-combatu není potřeba — dodge tlačítko odstraněno
+  }
+
+  // ===== CLASS SPELLS (Barbar) =====
+  function renderClassSpells() {
+    const container = document.getElementById('mbClassSpells');
+    if (!container) return;
+    const cls = CLASSES[state.heroClass];
+    if (!cls || !cls.spells) { container.innerHTML = ''; container.classList.add('hidden'); return; }
+    container.classList.remove('hidden');
+    let html = '';
+    cls.spells.forEach(spell => {
+      const onGcd = state._gcdTimer > 0;
+      const hasRage = (state.rage || 0) >= spell.cost;
+      const canUse = hasRage && !onGcd;
+      html += `<button class="class-spell-btn${canUse ? ' active' : ''}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
+        <span class="spell-icon">${spell.icon}</span>
+        <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
+      </button>`;
+    });
+    container.innerHTML = html;
+  }
+
+  function castClassSpell(spellId) {
+    const cls = CLASSES[state.heroClass];
+    if (!cls) return;
+    const spell = cls.spells.find(s => s.id === spellId);
+    if (!spell) return;
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+
+    // GCD check
+    if (state._gcdTimer > 0) return;
+    // Rage check
+    if ((state.rage || 0) < spell.cost) return;
+
+    // Odečíst rage
+    state.rage = Math.max(0, (state.rage || 0) - spell.cost);
+    // Nastavit GCD (0.5s = ~30 ticků při 60fps)
+    state._gcdTimer = Math.round(spell.gcd * 60);
+
+    // Efekty kouzel
+    if (spellId === 'heroicStrike') {
+      mb._heroicStrikeQueued = true;
+    } else if (spellId === 'thunderClap') {
+      // 30% dmg
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const dmg = Math.max(1, Math.round(baseDmg * 0.3));
+      mb.bossHp -= dmg;
+      // Zpomalení nepřítele 10% na 10s
+      state.thunderClapTimer = 600; // 10s * 60fps
+      state.thunderClapSlowPct = 10;
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `🌊 -${dmg}`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'bloodrage') {
+      // -15% HP, +100% zisk Rage na 10s
+      const hpCost = Math.round(mb.playerHp * 0.15);
+      mb.playerHp = Math.max(1, mb.playerHp - hpCost);
+      state.rageMultiplier = 2;
+      state._bloodrageTimer = 600; // 10s
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = `🩸 -${hpCost} HP`;
+        dmgText.style.color = '#e74c3c';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'thunderBolt') {
+      // 120% dmg + omráčení 5s
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const dmg = Math.max(1, Math.round(baseDmg * 1.2));
+      mb.bossHp -= dmg;
+      // Omráčení
+      mb._enemyStunned = true;
+      mb._enemyStunTimer = 300; // 5s
+      mb._enemySwingReady = false;
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `⚡ -${dmg}`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'battleShout') {
+      // +15% dmg na 30s
+      state.battleShoutDmgPct = 15;
+      state.battleShoutTimer = 1800; // 30s
+    }
+
+    updateMapBattleUI();
+    saveGame();
   }
 
   function setupMapBattleInput() {
@@ -5362,7 +5548,8 @@
     renderBestiary,
     renameHero,
     showFaceSelect, closeFaceSelect, selectFace,
-    selectClass
+    selectClass,
+    castClassSpell
   };
   init();
 })();
