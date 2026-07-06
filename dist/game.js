@@ -3879,6 +3879,7 @@
     if (!won) {
           state.deaths = (state.deaths || 0) + 1;
           state.locationProgress[locId] = 0;
+          state._floorLootDrops = []; // vyčistit loot při smrti
           // floorProgress NEresetujeme — hráč zůstává na stejném patře
           state.hero.hp = state.hero.maxHp;
           saveGame();
@@ -4820,6 +4821,44 @@
       if (item.cost) stats += ` · 💰 ${item.cost}`;
       $('invInfoStats').innerHTML = stats;
       panel.classList.remove('hidden');
+
+      // Srovnávací panel — nasazený předmět stejného slotu
+      const comparePanel = $('invComparePanel');
+      if (!comparePanel) return;
+      const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', amulet:'amulet' };
+      const equipSlot = slotMap[item.type];
+      if (!equipSlot) { comparePanel.classList.add('hidden'); return; }
+      const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+      const equippedId = state.hero.equip[equipSlot];
+      if (!equippedId || equippedId === defaults[equipSlot]) { comparePanel.classList.add('hidden'); return; }
+      const equipped = ITEM_MAP[equippedId];
+      if (!equipped) { comparePanel.classList.add('hidden'); return; }
+      $('invCompareIcon').innerHTML = renderItemIcon(equipped, 48);
+      $('invCompareName').textContent = equipped.name;
+      const er = RARITY[equipped.rarity] || RARITY.common;
+      $('invCompareName').style.color = er.color;
+      let eStats = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
+      if (equipped.type === 'weapon') {
+        eStats += `⚔️ +${equipped.baseDmg} poškození`;
+        if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% krit (×2.0)`;
+      }
+      else if (equipped.type === 'armor') eStats += `❤️ +${equipped.bonusHp} HP · 🛡️ +${equipped.defense||0} Defense`;
+      else if (equipped.type === 'helmet') eStats += `❤️ +${equipped.bonusHp} HP · 🛡️ +${equipped.defense||0} Defense`;
+      else if (equipped.type === 'shield') eStats += `🛡️ ${equipped.blockChance||0}% blok · ❤️ +${equipped.bonusHp||0} HP · 🛡️ +${equipped.defense||0} Defense`;
+      else if (equipped.type === 'ring') eStats += `⚔️ +${equipped.baseDmg||0} dmg · ❤️ +${equipped.bonusHp||0} HP`;
+      else if (equipped.type === 'amulet') eStats += `⚔️ +${equipped.baseDmg||0} dmg · ❤️ +${equipped.bonusHp||0} HP`;
+      if (equipped.weaponType === 'staff') eStats += ' 🪄 magická';
+      else if (equipped.weaponType === 'blade') eStats += ' ⚔️ fyzická';
+      if (equipped.attrs) {
+        const attrStr = Object.keys(equipped.attrs).map(k => {
+          const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
+          return `${names[k]||k}+${equipped.attrs[k]}`;
+        }).join(' · ');
+        eStats += '<br>' + attrStr;
+      }
+      if (equipped.cost) eStats += ` · 💰 ${equipped.cost}`;
+      $('invCompareStats').innerHTML = eStats;
+      comparePanel.classList.remove('hidden');
     }
     // Klik na buňku = přepnutí viditelnosti akcí + info panel
     grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
@@ -4874,6 +4913,8 @@
       document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
       const panel = $('invInfoPanel');
       if (panel) panel.classList.add('hidden');
+      const comparePanel = $('invComparePanel');
+      if (comparePanel) comparePanel.classList.add('hidden');
     };
     document.removeEventListener('click', grid._hideActions);
     grid._hideActions = hideActions;
