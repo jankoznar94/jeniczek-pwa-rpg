@@ -1186,6 +1186,19 @@
         playerCircle.style.stroke = '#f1c40f';
       }
     }
+    // Nepřítelův ring (malý, červený)
+    const enemyCircle = document.getElementById('mbEnemyTimerCircle');
+    if (enemyCircle) {
+      enemyCircle.style.opacity = '1';
+      if (mb._enemySwingReady) {
+        enemyCircle.style.strokeDashoffset = '0';
+        enemyCircle.style.stroke = '#e74c3c';
+      } else {
+        const offset = Math.round(597 * (1 - mb._enemySwingPct));
+        enemyCircle.style.strokeDashoffset = offset;
+        enemyCircle.style.stroke = '#e74c3c';
+      }
+    }
     // Nepřítelův HP bar — segmenty
     updateEnemyHpBar(mb);
   }
