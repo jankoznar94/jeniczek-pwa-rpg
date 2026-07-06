@@ -859,52 +859,42 @@
   function showTreasurePopup(loot, xpGain, onContinue) {
     if (_treasurePopupOpen) return;
     _treasurePopupOpen = true;
-    const el = document.createElement('div');
-    el.className = 'treasure-overlay';
-    el.innerHTML = `<div class="treasure-content">
-      <div class="treasure-chest">📦</div>
-      <div class="treasure-tap-open">👆 Otevřít</div>
-    </div>`;
-    document.body.appendChild(el);
-    document.body.classList.add('no-scroll');
+    playSFX(treasureSfx);
 
-    // Fáze 2: otevření truhly po kliknutí
-    el.addEventListener('click', function openHandler() {
-      el.removeEventListener('click', openHandler);
-      playSFX(treasureSfx);
-
-      // Sestavit loot čtverečky
-      let lootSquares = '';
-      if (loot.type === 'gold') {
-        lootSquares = `<div class="treasure-slot" style="border-color:#f1c40f">
+    // Sestavit loot čtverečky
+    let lootSquares = '';
+    if (loot.type === 'gold') {
+      lootSquares = `<div class="treasure-slot" style="border-color:#f1c40f">
+        <div class="treasure-slot-icon">💰</div>
+        <div class="treasure-slot-label">+${loot.gold}</div>
+      </div>`;
+    } else if (loot.type === 'item' || loot.type === 'boss') {
+      const r = RARITY[loot.item.rarity] || RARITY.common;
+      lootSquares = `<div class="treasure-slot" style="border-color:${r.border}">
+        <div class="treasure-slot-icon">❓</div>
+        <div class="treasure-slot-label" style="color:${r.color}">${r.name}</div>
+      </div>`;
+      if (loot.type === 'boss' && loot.gold) {
+        lootSquares += `<div class="treasure-slot" style="border-color:#f1c40f">
           <div class="treasure-slot-icon">💰</div>
           <div class="treasure-slot-label">+${loot.gold}</div>
         </div>`;
-      } else if (loot.type === 'item' || loot.type === 'boss') {
-        const r = RARITY[loot.item.rarity] || RARITY.common;
-        lootSquares = `<div class="treasure-slot" style="border-color:${r.border}">
-          <div class="treasure-slot-icon">❓</div>
-          <div class="treasure-slot-label" style="color:${r.color}">${r.name}</div>
-        </div>`;
-        if (loot.type === 'boss' && loot.gold) {
-          lootSquares += `<div class="treasure-slot" style="border-color:#f1c40f">
-            <div class="treasure-slot-icon">💰</div>
-            <div class="treasure-slot-label">+${loot.gold}</div>
-          </div>`;
-        }
       }
+    }
 
-      el.className = 'treasure-overlay-open';
-      el.innerHTML = `<div class="treasure-loot-row">${lootSquares}</div>
-        <div class="treasure-tap-close">👆 Pokračovat</div>`;
+    const el = document.createElement('div');
+    el.className = 'treasure-overlay-open';
+    el.innerHTML = `<div class="treasure-loot-row">${lootSquares}</div>
+      <div class="treasure-tap-close">👆 Pokračovat</div>`;
+    document.body.appendChild(el);
+    document.body.classList.add('no-scroll');
 
-      el.addEventListener('click', function closeHandler() {
-        el.removeEventListener('click', closeHandler);
-        _treasurePopupOpen = false;
-        el.classList.add('fade-out');
-        document.body.classList.remove('no-scroll');
-        setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
-      });
+    el.addEventListener('click', function closeHandler() {
+      el.removeEventListener('click', closeHandler);
+      _treasurePopupOpen = false;
+      el.classList.add('fade-out');
+      document.body.classList.remove('no-scroll');
+      setTimeout(() => { el.remove(); if (onContinue) onContinue(); }, 350);
     });
   }
 
