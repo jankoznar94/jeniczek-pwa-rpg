@@ -1224,8 +1224,9 @@
     mb.bossHp -= dmg;
     playSFX(getHitSfx());
 
-    // Projektilová animace — od hráče k nepříteli
-    spawnProjectileEffect(null, false, false, mb.monsterAttackType);
+    // Projektil podle zbraně
+    const playerAtkType = getWeaponType() === 'staff' ? ATTACK_TYPES.CASTER : ATTACK_TYPES.MELEE;
+    spawnProjectileEffect(null, false, false, playerAtkType);
 
     // Damage text
     const dmgText = $('mbDamageText');
