@@ -1266,8 +1266,16 @@
     mb.playerHp -= dmg;
     playSFX(getHurtSfx());
 
-    // Projektilová animace — od nepřítele k hráči
-    spawnProjectileEffect(null, true, false, mb.monsterAttackType);
+    // Červený záblesk na obrazovce
+    const arena = $('mbArena');
+    if (arena) {
+      arena.style.transition = 'background 0s';
+      arena.style.background = 'rgba(233,69,96,0.2)';
+      setTimeout(() => {
+        arena.style.transition = 'background 0.3s ease-out';
+        arena.style.background = 'transparent';
+      }, 50);
+    }
 
     // Damage text
     const dmgText = $('mbPlayerDamageText');
