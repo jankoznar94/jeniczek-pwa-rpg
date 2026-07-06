@@ -1215,40 +1215,8 @@
     const mb = mapBattleState;
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
 
-    // Výpočet damage
-    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-    const eqAttrs = getEquipAttrs();
-    const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-    const dmg = Math.max(1, baseDmg);
-
-    mb.bossHp -= dmg;
-    playSFX(getHitSfx());
-
-    // Animace podle zbraně
-    const wt = getWeaponType();
-    if (wt === 'staff') {
-      // Hůlky — magický projektil
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
-    } else {
-      // Pěsti a meče — melee efekt (záblesk na monster)
-      const fig = $('mbFigure');
-      if (fig) {
-        fig.style.transition = 'filter 0.05s';
-        fig.style.filter = 'brightness(2) saturate(1.5)';
-        setTimeout(() => {
-          fig.style.transition = 'filter 0.2s ease-out';
-          fig.style.filter = '';
-        }, 50);
-      }
-    }
-
-    // Damage text
-    const dmgText = $('mbDamageText');
-    if (dmgText) {
-      dmgText.textContent = `-${dmg}`;
-      dmgText.classList.remove('hidden');
-      setTimeout(() => dmgText.classList.add('hidden'), 500);
-    }
+    // Použít původní dealPlayerDamage — obsahuje všechny animace, zvuky, pasiva
+    dealPlayerDamage(mb, 1.0);
 
     updateMapBattleUI();
 
