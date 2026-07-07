@@ -772,13 +772,12 @@
     const pool = MONSTER_DB[theme] || MONSTER_DB[0];
     const result = [];
     const poolSize = pool.length;
-    for (let i = 0; i < 5; i++) {
-      let idx;
-      do {
-        idx = Math.floor(Math.random() * poolSize);
-      } while (result.length > 0 && result[result.length - 1].idx === idx);
-      result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
-    }
+    // 1 silné monstrum na patro
+    let idx;
+    do {
+      idx = Math.floor(Math.random() * poolSize);
+    } while (result.length > 0 && result[result.length - 1].idx === idx);
+    result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
     return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
@@ -1077,6 +1076,8 @@
   function startLocation(locId) {
     // Reset debuffů při novém nepříteli (buffy hráče zůstávají)
     _sessionDebuffs = {};
+    // Reset combo pointů při novém nepříteli
+    state.comboPoints = 0;
     const loc = LOCATIONS[locId];
     if (!loc) return;
     const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
@@ -1091,7 +1092,7 @@
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a patrem — progresivně
     const diffMult = DIFFICULTY_MULT[locId] || 1.0;
-    const monsterHp = Math.round((80 + locId * 150) * diffMult + 20 + 28 * floor + 10 * progress);
+    const monsterHp = Math.round((80 + locId * 150) * diffMult + 20 + 28 * floor + 10 * progress) * 5;
     const bossHp = Math.round((400 + locId * 400) * diffMult + 150 + 43 * floor + 200);
     const bossBaseHp = isBoss ? bossHp : monsterHp;
 
@@ -1392,10 +1393,10 @@
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
       if (mb._enemyStunned) {
-        // Stun — šedý ring odpočítává délku stunu
-        const stunMax = 300; // 5s při 60fps
-        const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
-        const offset = Math.round(597 * (1 - stunPct));
+        // Stun — šedý ring, po směru hodinových ručiček od 0 do 100%
+        const stunMax = mb._enemyStunTimer > 0 ? mb._enemyStunTimer : 300;
+        const stunPct = 1 - Math.min(1, mb._enemyStunTimer / stunMax);
+        const offset = Math.round(597 * stunPct);
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#666';
       } else if (mb._enemySwingReady) {
@@ -4314,14 +4315,14 @@
       cleanupTimers();
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
-      const monsterGold = 1 + rand(0, 2);
-      const xpGain = mb.loc.xpReward + mb.floor * 2;
+      const monsterGold = (1 + rand(0, 2)) * 5;
+      const xpGain = (mb.loc.xpReward + mb.floor * 2) * 5;
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
-      // Loot roll za toto monstrum
+      // Loot roll za toto monstrum — 1× velký loot
       const loot = rollLoot(locId, mb.floor);
       state._floorLootDrops = state._floorLootDrops || [];
       state._floorLootDrops.push(loot);
@@ -4334,65 +4335,49 @@
       saveGame();
       sfxSuccess();
 
-      if (p >= 5) {
-        // ALL 5 monsters killed -> result screen se sumarizací
-        mapBattleState.ended = true;
-        cleanupTimers();
-        const nextFloor = mb.floor + 1;
-        state.floorProgress[locId] = nextFloor;
-        state.locationProgress[locId] = 0;
-        saveGame();
-        // Sumarizace lootu
-        let totalLootGold = 0;
-        const lootItems = [];
-        (state._floorLootDrops || []).forEach(d => {
-          if (d.type === 'gold') totalLootGold += d.gold;
-          else if (d.type === 'item') { lootItems.push(d.item); }
-          else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
-        });
-        state._floorLootDrops = []; // vyčistit po sumarizaci
-        $('resultIcon').textContent = '🎉';
-        $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
-        const floorXp = mb.loc.xpReward * 5 + mb.floor * 10;
-        const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
-        const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
-        $('resultMsg').innerHTML = '<div class="result-stats">'
-                  + '<div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
-                  + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
-                  + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + totalLootGold + '</span></div>'
-                  + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
-                  + '<div class="result-tap">👆 klepni pro návrat</div>'
-                  + '</div>';
-        // Loot list — scroll okno s itemy
-        let lootListHtml = '';
-        if (lootItems.length > 0) {
-          lootItems.forEach(item => {
-            const r = RARITY[item.rarity] || RARITY.common;
-            lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,24)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
-          });
-        } else {
-          lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
-        }
-        $('resultLootList').innerHTML = lootListHtml;
-        $('resultBtn').innerHTML = '';
-        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); };
-        showScreen('result');
-        switchBGM('win');
-        return;
-      }
-      // Treasure popup pro normální monstrum (1-4)
-      showTreasurePopup(loot, xpGain, () => {
-        const fig2 = $('mbFigure');
-        if (fig2) fig2.classList.remove('monster-dying');
-        continueDungeon();
+      // 1 monstrum = konec patra
+      mapBattleState.ended = true;
+      cleanupTimers();
+      const nextFloor = mb.floor + 1;
+      state.floorProgress[locId] = nextFloor;
+      state.locationProgress[locId] = 0;
+      saveGame();
+      // Sumarizace lootu
+      let totalLootGold = 0;
+      const lootItems = [];
+      (state._floorLootDrops || []).forEach(d => {
+        if (d.type === 'gold') totalLootGold += d.gold;
+        else if (d.type === 'item') { lootItems.push(d.item); }
+        else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
       });
-      updateMapBattleUI();
-      // Animace smrti
-      const fig = $('mbFigure');
-      if (fig) {
-        fig.classList.remove('monster-appear');
-        fig.classList.add('monster-dying');
+      state._floorLootDrops = []; // vyčistit po sumarizaci
+      $('resultIcon').textContent = '🎉';
+      $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
+      const floorXp = (mb.loc.xpReward + mb.floor * 2) * 5;
+      const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
+      const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
+      $('resultMsg').innerHTML = '<div class="result-stats">'
+                + '<div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + floorXp + ' XP</span></div>'
+                + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
+                + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + totalLootGold + '</span></div>'
+                + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
+                + '<div class="result-tap">👆 klepni pro návrat</div>'
+                + '</div>';
+      // Loot list — scroll okno s itemy
+      let lootListHtml = '';
+      if (lootItems.length > 0) {
+        lootItems.forEach(item => {
+          const r = RARITY[item.rarity] || RARITY.common;
+          lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,24)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
+        });
+      } else {
+        lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
+      $('resultLootList').innerHTML = lootListHtml;
+      $('resultBtn').innerHTML = '';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); };
+      showScreen('result');
+      switchBGM('win');
       return;
     }
 
