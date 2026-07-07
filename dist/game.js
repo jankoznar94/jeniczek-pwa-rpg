@@ -1271,9 +1271,15 @@
     mb._combatLoop = requestAnimationFrame(autoCombatLoop);
   }
 
+  let _lastBuffTick = 0;
   function tickBuffs() {
     const mb = mapBattleState;
     if (!mb) return;
+    // Time-based ochrana: tickovat max ~60×/s (1 tick per 16ms)
+    // Zabrání rychlejšímu tickování po restartu rAF loop (catch-up frames)
+    const now = performance.now();
+    if (now - _lastBuffTick < 15) return;
+    _lastBuffTick = now;
     // GCD tick
     if (state._gcdTimer > 0) state._gcdTimer = Math.max(0, state._gcdTimer - 1);
     // Per-spell cooldown tick (session persistent)
