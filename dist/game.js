@@ -30,7 +30,7 @@
     assassin: {
       id:'assassin', name:'Assassin', icon:'🗡️',
       resource:'energy', resourceName:'⚡ Energy', maxResource:100, startResource:100,
-      resourceRegen:5, // 5/tick
+      resourceRegen:10, // 10/s
       desc:'Energy se samovolně doplňuje. Rychlé přesné útoky.',
       allowedWeapons:['blade','fists'],
       allowedShield:false,
@@ -41,10 +41,10 @@
       attrBonus:{str:0, vit:1, dex:3, int:0},
       spells: [
         { id:'sinisterStrike', name:'Sinister Strike', icon:'🗡️', cost:40, cooldown:0, gcd:0.5, desc:'150% dmg + 1 combo point' },
-        { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, desc:'Poškození dle combo pointů (1:150%–5:350%)' },
-        { id:'kidneyShot', name:'Kidney Shot', icon:'🔨', cost:35, cooldown:20, gcd:0.5, desc:'Omráčení dle combo pointů (1:1s–5:5s)' },
+        { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'Poškození dle combo pointů (1:150%–5:350%)' },
+        { id:'kidneyShot', name:'Kidney Shot', icon:'🔨', cost:35, cooldown:20, gcd:0.5, needsCombo:true, desc:'Omráčení dle combo pointů (1:1s–5:5s)' },
         { id:'evasion', name:'Evasion', icon:'💨', cost:50, cooldown:60, gcd:0.5, desc:'+50% dodge na 10s' },
-        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, desc:'+20% rychlost útoku dle combo pointů (1:5s–5:17s)' }
+        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'+20% rychlost útoku dle combo pointů (1:5s–5:17s)' }
       ]
     },
     mage: {
@@ -1355,10 +1355,10 @@
       state._bloodrageTimer--;
       if (state._bloodrageTimer <= 0) state.rageMultiplier = 1;
     }
-    // Energy regen (assassin) — 5/s = 5/60 za tick při 60fps
+    // Energy regen (assassin) — 10/s = 10/60 za tick při 60fps
     if (state.heroClass === 'assassin') {
       const cls = CLASSES.assassin;
-      const regen = (cls.resourceRegen || 0) / 60; // 5/s → ~0.083/tick
+      const regen = (cls.resourceRegen || 0) / 60; // 10/s → ~0.167/tick
       if (regen > 0 && (state.energy || 0) < (state.maxEnergy || 100)) {
         state.energy = Math.min(state.maxEnergy || 100, (state.energy || 0) + regen);
       }
@@ -1794,12 +1794,16 @@
       const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
       const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
       const canUse = hasResource && !onGcd && !onCooldown;
+      // Kouzla vyžadující combo pointy — bez nich nerozsvítit
+      const hasCombo = (state.comboPoints || 0) > 0;
+      const needsCombo = spell.needsCombo === true;
+      const canUseFinal = canUse && (!needsCombo || hasCombo);
       const isQueued = spell.id === 'heroicStrike' && mapBattleState && mapBattleState._heroicStrikeQueued;
       const gcdActive = onGcd && !onCooldown && !isQueued;
       const gcdPct = onGcd ? Math.min(1, state._gcdTimer / 30) : 0;
       const gcdDeg = Math.round(gcdPct * 360);
       let btnClass = 'arena-class-spell-btn';
-      if (canUse) btnClass += ' active';
+      if (canUseFinal) btnClass += ' active';
       if (isQueued) btnClass += ' queued';
       html += `<button class="${btnClass}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
         <span class="spell-icon">${spell.icon}</span>
