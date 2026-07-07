@@ -1408,7 +1408,7 @@
         // Stun — šedý ring, od 0% (prázdný) do 100% (plný) po směru hodin
         const stunMax = mb._enemyStunTimer > 0 ? mb._enemyStunTimer : 300;
         const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
-        const offset = Math.round(597 * (1 - stunPct));
+        const offset = Math.round(597 * stunPct);
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#666';
       } else if (mb._enemySwingReady) {
