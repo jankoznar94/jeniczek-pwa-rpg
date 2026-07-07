@@ -1074,10 +1074,22 @@
   }
 
   function startLocation(locId) {
-    // Reset debuffů při novém nepříteli (buffy hráče zůstávají)
+    // Kompletní reset session stavu při vstupu do souboje
     _sessionDebuffs = {};
-    // Reset combo pointů při novém nepříteli
+    _sessionBuffs = {};
+    _sessionSpellCooldowns = {};
     state.comboPoints = 0;
+    state.energy = state.maxEnergy || 100;
+    state._dodgeBuffTimer = 0;
+    state._speedBoostTimer = 0;
+    state._speedBoostPct = 0;
+    state._gcdTimer = 0;
+    state.rageMultiplier = 1;
+    state._bloodrageTimer = 0;
+    state.battleShoutTimer = 0;
+    state.battleShoutDmgPct = 0;
+    state.thunderClapTimer = 0;
+    state.thunderClapSlowPct = 0;
     const loc = LOCATIONS[locId];
     if (!loc) return;
     const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
