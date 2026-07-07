@@ -1405,7 +1405,7 @@
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
       if (mb._enemyStunned) {
-        // Stun — šedý ring, stejný princip jako swing: od 0 do 100%
+        // Stun — šedý ring, od 0% (prázdný) do 100% (plný) po směru hodin
         const stunMax = mb._enemyStunTimer > 0 ? mb._enemyStunTimer : 300;
         const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
         const offset = Math.round(597 * (1 - stunPct));
