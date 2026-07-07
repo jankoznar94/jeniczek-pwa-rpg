@@ -197,13 +197,13 @@ body.no-scroll { overflow: hidden; }
 
 /* === Boss Fight Arena (shared for map & boss) === */
 .boss-fight-arena {
-  position:relative;width:100%;flex:1;min-height:180px;
+  position:relative;width:100%;flex:1;min-height:0;
   background:#161616;overflow:hidden;
   touch-action:none;
   transition:box-shadow 0.25s ease-out;
 }
 .arena-wrapper {
-  position:relative;flex:1;display:flex;flex-direction:column;
+  position:relative;flex:1;display:flex;flex-direction:column;min-height:0;
 }
 /* Battle mód — plná obrazovka, bez borderů a paddingů */
 #mapBattleScreen.container { padding:0;display:flex;flex-direction:column;height:100vh;overflow:hidden; }
