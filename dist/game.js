@@ -1251,6 +1251,8 @@
     renderDebuffs();
     // Aktualizovat UI spell tlačítek (cooldown čísla, GCD sweep)
     renderClassSpells();
+    // Aktualizovat resource bary a combo indikátor každou smyčku
+    updateResourceBars();
 
     // Hráčův swing
     if (!mb._playerSwingReady) {
@@ -1340,10 +1342,10 @@
       state._bloodrageTimer--;
       if (state._bloodrageTimer <= 0) state.rageMultiplier = 1;
     }
-    // Energy regen (assassin) — 5/tick = 5/s při 60fps
+    // Energy regen (assassin) — 5/s = 5/60 za tick při 60fps
     if (state.heroClass === 'assassin') {
       const cls = CLASSES.assassin;
-      const regen = cls.resourceRegen || 0;
+      const regen = (cls.resourceRegen || 0) / 60; // 5/s → ~0.083/tick
       if (regen > 0 && (state.energy || 0) < (state.maxEnergy || 100)) {
         state.energy = Math.min(state.maxEnergy || 100, (state.energy || 0) + regen);
       }
@@ -1665,34 +1667,6 @@
         rageBar.classList.add('hidden');
       }
     }
-    // Energy bar (assassin)
-    const energyBar = $('mbPlayerArenaEnergy');
-    if (energyBar) {
-      if (state.heroClass === 'assassin') {
-        energyBar.classList.remove('hidden');
-        const span = energyBar.querySelector('span');
-        if (span) span.textContent = `⚡ ${Math.round(state.energy || 0)}/${state.maxEnergy || 100}`;
-        const fill = $('mbPlayerArenaEnergyFill');
-        if (fill) fill.style.width = Math.max(0, Math.round(((state.energy || 0) / (state.maxEnergy || 100)) * 100)) + '%';
-      } else {
-        energyBar.classList.add('hidden');
-      }
-    }
-    // Combo point indikátor (assassin)
-    const comboEl = document.getElementById('mbComboIndicator');
-    if (comboEl) {
-      if (state.heroClass === 'assassin') {
-        comboEl.classList.remove('hidden');
-        const cp = state.comboPoints || 0;
-        let dotsHtml = '';
-        for (let i = 0; i < 5; i++) {
-          dotsHtml += `<div class="mb-combo-dot${i < cp ? ' active' : ''}"></div>`;
-        }
-        comboEl.innerHTML = dotsHtml;
-      } else {
-        comboEl.classList.add('hidden');
-      }
-    }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     // D4 heat indicator
     const heatEl = $('mbHeatIndicator');
@@ -1757,6 +1731,38 @@
 
   function updateActionButtons() {
     // V auto-combatu není potřeba — dodge tlačítko odstraněno
+  }
+
+  // ===== RESOURCE BARS (energy, combo) =====
+  function updateResourceBars() {
+    // Energy bar (assassin)
+    const energyBar = $('mbPlayerArenaEnergy');
+    if (energyBar) {
+      if (state.heroClass === 'assassin') {
+        energyBar.classList.remove('hidden');
+        const span = energyBar.querySelector('span');
+        if (span) span.textContent = `⚡ ${Math.round(state.energy || 0)}/${state.maxEnergy || 100}`;
+        const fill = $('mbPlayerArenaEnergyFill');
+        if (fill) fill.style.width = Math.max(0, Math.round(((state.energy || 0) / (state.maxEnergy || 100)) * 100)) + '%';
+      } else {
+        energyBar.classList.add('hidden');
+      }
+    }
+    // Combo point indikátor (assassin)
+    const comboEl = document.getElementById('mbComboIndicator');
+    if (comboEl) {
+      if (state.heroClass === 'assassin') {
+        comboEl.classList.remove('hidden');
+        const cp = state.comboPoints || 0;
+        let dotsHtml = '';
+        for (let i = 0; i < 5; i++) {
+          dotsHtml += `<div class="mb-combo-dot${i < cp ? ' active' : ''}"></div>`;
+        }
+        comboEl.innerHTML = dotsHtml;
+      } else {
+        comboEl.classList.add('hidden');
+      }
+    }
   }
 
   // ===== CLASS SPELLS (Barbar) =====
