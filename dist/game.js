@@ -1393,10 +1393,10 @@
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
       if (mb._enemyStunned) {
-        // Stun — šedý ring, po směru hodinových ručiček od 0 do 100%
+        // Stun — šedý ring, stejný princip jako swing: od 0 do 100%
         const stunMax = mb._enemyStunTimer > 0 ? mb._enemyStunTimer : 300;
-        const stunPct = 1 - Math.min(1, mb._enemyStunTimer / stunMax);
-        const offset = Math.round(597 * stunPct);
+        const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
+        const offset = Math.round(597 * (1 - stunPct));
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#666';
       } else if (mb._enemySwingReady) {
