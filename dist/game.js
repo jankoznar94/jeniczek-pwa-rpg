@@ -1698,10 +1698,14 @@
       const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
       const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
       const canUse = hasRage && !onGcd && !onCooldown;
-      const gcdActive = onGcd && !onCooldown;
+      const isQueued = spell.id === 'heroicStrike' && mapBattleState && mapBattleState._heroicStrikeQueued;
+      const gcdActive = onGcd && !onCooldown && !isQueued;
       const gcdPct = onGcd ? Math.min(1, state._gcdTimer / 30) : 0;
       const gcdDeg = Math.round(gcdPct * 360);
-      html += `<button class="arena-class-spell-btn${canUse ? ' active' : ''}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
+      let btnClass = 'arena-class-spell-btn';
+      if (canUse) btnClass += ' active';
+      if (isQueued) btnClass += ' queued';
+      html += `<button class="${btnClass}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
         <span class="spell-icon">${spell.icon}</span>
         <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
         ${onCooldown ? `<span class="spell-cd-num">${cdRemaining}</span>` : ''}

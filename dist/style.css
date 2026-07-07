@@ -242,7 +242,7 @@ body.no-scroll { overflow: hidden; }
 .boss-fight-player .hero-portrait-img { width:100%; height:100%; object-fit:cover; display:block; object-position:center 30%; }
 .boss-fight-player .damage-text { position:absolute;top:-60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; white-space:nowrap; }
 #mbDamageText.damage-text { position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:15; text-shadow:0 0 25px rgba(241,196,15,0.8), 0 0 50px rgba(241,196,15,0.4); }
-#mbPlayerDamageText.damage-text { position:absolute;bottom:10px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:15; text-shadow:0 0 20px rgba(200,40,40,0.6); }
+#mbPlayerDamageText.damage-text { position:absolute;bottom:60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:35; text-shadow:0 0 20px rgba(200,40,40,0.6); }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeDown { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeInOut { 0%{opacity:0} 20%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
@@ -622,6 +622,7 @@ body.no-scroll { overflow: hidden; }
   position:relative;
 }
 .arena-class-spell-btn.active { opacity:1;pointer-events:auto; border-color:#e67e22; background:#1a1a0a; box-shadow:0 0 8px rgba(230,126,34,0.3); }
+.arena-class-spell-btn.queued { opacity:1;pointer-events:auto; border-color:#f1c40f; background:#1a1a00; box-shadow:0 0 12px rgba(241,196,15,0.5), inset 0 0 8px rgba(241,196,15,0.15); }
 .arena-class-spell-btn .spell-cost {
   position:absolute;bottom:1px;right:3px;
   font-size:8px;color:#e67e22;font-weight:bold;
