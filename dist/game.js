@@ -802,6 +802,7 @@
   // Session-persistent spell cooldowns a debuffy (nemažou se při změně monstra)
   let _sessionSpellCooldowns = {};
   let _sessionDebuffs = {};
+  let _sessionBuffs = {};
   let trainingState = {};
   let minigameState = {};
   let _activeIntervals = [];
@@ -1285,6 +1286,17 @@
         if (d.ticks <= 0) delete _sessionDebuffs[spellId];
       }
     });
+    // Buff tick (session persistent)
+    Object.keys(_sessionBuffs).forEach(spellId => {
+      const b = _sessionBuffs[spellId];
+      if (b && b.ticks > 0) {
+        b.ticks--;
+        if (b.ticks <= 0) {
+          delete _sessionBuffs[spellId];
+          if (b.onExpire) b.onExpire();
+        }
+      }
+    });
     // Battle shout
     if (state.battleShoutTimer > 0) {
       state.battleShoutTimer--;
@@ -1295,7 +1307,7 @@
       state.thunderClapTimer--;
       if (state.thunderClapTimer <= 0) state.thunderClapSlowPct = 0;
     }
-    // Bloodrage
+    // Bloodrage — tick řeší _sessionBuffs
     if (state._bloodrageTimer > 0) {
       state._bloodrageTimer--;
       if (state._bloodrageTimer <= 0) state.rageMultiplier = 1;
@@ -1616,6 +1628,8 @@
 
     // Debuff ikony nad příšerou
     renderDebuffs();
+    // Buff ikony hráče
+    renderBuffs();
 
     // School spells — HTML tlacitka nad Utokem, vzdy na stejne pozici (84px)
     const fireBtn = $('mbSpellFireBtn');
@@ -1697,6 +1711,24 @@
     container.innerHTML = html;
   }
 
+  function renderBuffs() {
+    const container = document.getElementById('mbBuffs');
+    if (!container) return;
+    const buffKeys = Object.keys(_sessionBuffs);
+    if (buffKeys.length === 0) { container.innerHTML = ''; return; }
+    let html = '';
+    buffKeys.forEach(spellId => {
+      const b = _sessionBuffs[spellId];
+      if (!b) return;
+      const remaining = Math.ceil(b.ticks / 60);
+      html += `<div class="buff-icon" title="${b.name || spellId}">
+        <span class="buff-icon-emoji">${b.icon}</span>
+        <span class="buff-icon-timer">${remaining}s</span>
+      </div>`;
+    });
+    container.innerHTML = html;
+  }
+
   function castClassSpell(spellId) {
     const cls = CLASSES[state.heroClass];
     if (!cls) return;
@@ -1750,6 +1782,8 @@
       mb.playerHp = Math.max(1, mb.playerHp - hpCost);
       state.rageMultiplier = 2;
       state._bloodrageTimer = 600; // 10s
+      // Buff ikona hráče
+      _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
       const dmgText = $('mbPlayerDamageText');
       if (dmgText) {
         dmgText.textContent = `🩸 -${hpCost} HP`;

@@ -607,10 +607,10 @@ body.no-scroll { overflow: hidden; }
   background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) var(--gcd-deg, 0deg), transparent var(--gcd-deg, 0deg), transparent 360deg);
 }
 
-/* Debuff overlay nad příšerou */
+/* Debuff overlay nad příšerou — vertikálně vlevo nahoře, odshora dolů */
 .debuff-overlay {
-  position:absolute;bottom:calc(50% + 95px);left:50%;transform:translateX(-50%);z-index:30;
-  display:flex;flex-direction:row;justify-content:flex-start;gap:4px;pointer-events:none;
+  position:absolute;top:calc(50% - 100px);left:calc(50% - 100px);z-index:30;
+  display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
 .debuff-icon {
@@ -620,6 +620,20 @@ body.no-scroll { overflow: hidden; }
 }
 .debuff-icon-emoji { font-size:16px;line-height:1.2; }
 .debuff-icon-timer { font-size:10px;color:#e94560;font-weight:bold;line-height:1; }
+
+/* Buff overlay hráče — vertikálně vpravo dole, odspodu nahoru */
+.buff-overlay {
+  position:absolute;bottom:calc(50% - 100px);right:calc(50% - 100px);z-index:30;
+  display:flex;flex-direction:column-reverse;align-items:center;gap:4px;pointer-events:none;
+  width:auto;
+}
+.buff-icon {
+  display:flex;flex-direction:column;align-items:center;
+  background:rgba(0,0,0,0.7);border:1px solid #2ecc71;border-radius:6px;
+  padding:2px 4px;min-width:32px;
+}
+.buff-icon-emoji { font-size:16px;line-height:1.2; }
+.buff-icon-timer { font-size:10px;color:#2ecc71;font-weight:bold;line-height:1; }
 
 /* Rapid Tap — dve plosky s puntikem a tenkym borderem */
 .rapid-tap-area {
