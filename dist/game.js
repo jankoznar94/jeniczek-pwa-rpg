@@ -1479,6 +1479,14 @@
       playSFX(dodgeSfx);
       mb._enemySwingStart = performance.now();
       mb._enemySwingReady = false;
+      // Vizuální feedback
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = '💨 Dodge!';
+        dmgText.style.color = '#f1c40f';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
       return;
     }
 
