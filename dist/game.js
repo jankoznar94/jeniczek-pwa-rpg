@@ -1816,6 +1816,8 @@
       // +15% dmg na 30s
       state.battleShoutDmgPct = 15;
       state.battleShoutTimer = 1800; // 30s
+      // Buff ikona hráče
+      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
     }
 
     updateMapBattleUI();
