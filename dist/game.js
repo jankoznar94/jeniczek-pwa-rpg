@@ -1540,7 +1540,7 @@
       }).join('');
       const atkIcon = (b.attackType || ATTACK_TYPES.MELEE) === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
       $('mbEnemyName').textContent = `${b.name} ${bossTypesHtml}${atkIcon}`;
-      $('mbLocation').textContent = `👑 BOSS ${mb.loc.name} — P5`;
+      $('mbLocation').textContent = `👑 Boss — ${mb.loc.name}`;
     } else {
       const floorStr = `P${mb.floor+1}`;
       const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :

@@ -205,6 +205,31 @@ body.no-scroll { overflow: hidden; }
 .arena-wrapper {
   position:relative;
 }
+/* Battle header — jméno příšery + lokace */
+.battle-header {
+  padding: 6px 12px;
+  background: linear-gradient(180deg, rgba(20,20,30,0.95) 0%, rgba(20,20,30,0.7) 100%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.battle-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.battle-enemy-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #e8e8e8;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+.battle-location {
+  font-size: 12px;
+  font-weight: 600;
+  color: #999;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
 /* Battle mód — plná obrazovka, bez borderů a paddingů */
 #mapBattleScreen.container { padding:0; }
 #mapBattleScreen .card { padding:0; margin:0; border:none; border-radius:0; background:transparent; }
