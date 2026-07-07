@@ -1063,6 +1063,8 @@
   }
 
   function startLocation(locId) {
+    // Reset debuffů při novém nepříteli (buffy hráče zůstávají)
+    _sessionDebuffs = {};
     const loc = LOCATIONS[locId];
     if (!loc) return;
     const floor = state.floorProgress[locId] || 0; // 0-9 (0=patro1, 9=boss)
