@@ -364,7 +364,7 @@ body.no-scroll { overflow: hidden; }
 /* Enemy HP bar — nad příšerou v aréně */
 /* Arena HP/Mana — pruhy na spodku */
 .mb-hp-mana-bars {
-  display:flex;flex-direction:column;gap:3px;margin:6px 8px;
+  display:flex;flex-direction:column;gap:3px;margin:6px 12px;
 }
 .mb-hp-bar {
   position:relative;background:#2a0a0a;border:1px solid #e74c3c;border-radius:6px;
@@ -542,7 +542,7 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* XP bar pro swipe fight */
-.mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; }
+.mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; margin:0 12px; }
 .mb-xp-bar-bg { flex:1; height:10px; background:#1a1a1a; border-radius:4px; overflow:hidden; }
 .mb-xp-bar-fill { height:100%; border-radius:4px; background:#f1c40f; transition:width 0.3s; }
 
@@ -612,9 +612,9 @@ body.no-scroll { overflow: hidden; }
   background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) var(--gcd-deg, 0deg), transparent var(--gcd-deg, 0deg), transparent 360deg);
 }
 
-/* Debuff overlay — vlevo od arény, vertikálně odshora dolů */
+/* Debuff overlay — vlevo v aréně, vertikálně odshora dolů */
 .debuff-overlay {
-  position:absolute;top:10px;left:-50px;z-index:30;
+  position:absolute;top:10px;left:10px;z-index:30;
   display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
@@ -626,9 +626,9 @@ body.no-scroll { overflow: hidden; }
 .debuff-icon-emoji { font-size:16px;line-height:1.2; }
 .debuff-icon-timer { font-size:10px;color:#e94560;font-weight:bold;line-height:1; }
 
-/* Buff overlay — vpravo od arény, vertikálně odspodu nahoru */
+/* Buff overlay — vpravo v aréně, vertikálně odspodu nahoru */
 .buff-overlay {
-  position:absolute;bottom:60px;right:-50px;z-index:30;
+  position:absolute;bottom:60px;right:10px;z-index:30;
   display:flex;flex-direction:column-reverse;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
