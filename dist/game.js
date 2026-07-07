@@ -1169,6 +1169,7 @@
       _spellButtonsVisible: true, // spell tlačítka jsou vždy vidět
       _enemyStunned: false, // omráčení nepřítele
       _enemyStunTimer: 0, // zbývající ticky omráčení
+      _enemyStunMax: 0, // původní délka stunu (pro výpočet pct)
       _heroicStrikeQueued: false, // Heroic Strike čeká na příští swing
       debuffs: {}, // { spellId: { icon, ticks, maxTicks } }
       // Schools handled via activeSchool
@@ -1406,7 +1407,7 @@
       enemyCircle.style.opacity = '1';
       if (mb._enemyStunned) {
         // Stun — šedý ring, od prázdného (offset=597) do plného (offset=0)
-        const stunMax = mb._enemyStunTimer > 0 ? mb._enemyStunTimer : 300;
+        const stunMax = mb._enemyStunMax > 0 ? mb._enemyStunMax : 300;
         const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
         const offset = Math.round(597 * stunPct);
         enemyCircle.style.strokeDasharray = '597';
@@ -1925,6 +1926,7 @@
       // Omráčení
       mb._enemyStunned = true;
       mb._enemyStunTimer = 300; // 5s
+      mb._enemyStunMax = 300;
       mb._enemySwingReady = false;
       // Debuff ikona nad příšerou
       _sessionDebuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: 300, maxTicks: 300 };
@@ -1983,6 +1985,7 @@
       const stunDuration = cp; // 1-5 sekund
       mb._enemyStunned = true;
       mb._enemyStunTimer = stunDuration * 60; // 60 ticků/s
+      mb._enemyStunMax = stunDuration * 60;
       mb._enemySwingReady = false;
       state.comboPoints = 0; // spotřebovat combo pointy
       // Debuff ikona
