@@ -1227,6 +1227,9 @@
 
     // Tick buffů a GCD každou smyčku
     tickBuffs();
+    // Aktualizovat buff/debuff UI každou smyčku (nezávisle na swing timeru)
+    renderBuffs();
+    renderDebuffs();
     // Aktualizovat UI spell tlačítek (cooldown čísla, GCD sweep)
     renderClassSpells();
 
