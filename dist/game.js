@@ -1932,8 +1932,8 @@
       const dmg = Math.max(1, Math.round(baseDmg * 1.5));
       mb.bossHp -= dmg;
       state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
-      // Projektil
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      // Projektil podle zbraně
+      spawnWeaponProjectile(false);
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `🗡️ -${dmg}`;
@@ -1951,8 +1951,8 @@
       const dmg = Math.max(1, Math.round(baseDmg * mult));
       mb.bossHp -= dmg;
       state.comboPoints = 0; // spotřebovat combo pointy
-      // Projektil
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      // Projektil podle zbraně
+      spawnWeaponProjectile(false);
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `💥 -${dmg}`;

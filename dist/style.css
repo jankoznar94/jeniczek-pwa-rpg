@@ -441,17 +441,17 @@ body.no-scroll { overflow: hidden; }
 .mb-energy-bar span {
   position:relative;z-index:1;
 }
-/* Combo point indikátor */
+/* Combo point indikátor — mezi HP barem a kouzly */
 .mb-combo-indicator {
-  display:flex;gap:3px;justify-content:center;margin:2px 12px 4px;height:10px;
+  display:flex;gap:6px;justify-content:center;padding:4px 0;height:22px;
 }
 .mb-combo-dot {
-  width:8px;height:8px;border-radius:50%;
-  background:#3a3a3a;border:1px solid #5a5a5a;transition:0.15s;
+  width:16px;height:16px;border-radius:50%;
+  background:#3a3a3a;border:2px solid #5a5a5a;transition:0.15s;
 }
 .mb-combo-dot.active {
   background:#f1c40f;border-color:#f1c40f;
-  box-shadow:0 0 4px rgba(241,196,15,0.6);
+  box-shadow:0 0 6px rgba(241,196,15,0.7);
 }
 
 /* Hero attributes */
