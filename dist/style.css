@@ -441,12 +441,15 @@ body.no-scroll { overflow: hidden; }
 .mb-energy-bar span {
   position:relative;z-index:1;
 }
-/* Combo point indikátor — mezi HP barem a kouzly */
+/* Combo point indikátor — těsně pod HP barem nepřítele */
 .mb-combo-indicator {
-  display:flex;gap:6px;justify-content:center;padding:4px 0;height:22px;
+  position:absolute;top:50%;left:50%;z-index:7;
+  transform:translate(-50%,-50%);margin-top:-22px;
+  display:flex;gap:6px;justify-content:center;padding:2px 0;height:16px;
+  pointer-events:none;
 }
 .mb-combo-dot {
-  width:16px;height:16px;border-radius:50%;
+  width:14px;height:14px;border-radius:50%;
   background:#3a3a3a;border:2px solid #5a5a5a;transition:0.15s;
 }
 .mb-combo-dot.active {
