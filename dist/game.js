@@ -1336,11 +1336,18 @@
         playerCircle.style.stroke = '#f1c40f';
       }
     }
-    // Nepřítelův ring (malý, červený)
+    // Nepřítelův ring (malý, červený / šedý při stunu)
     const enemyCircle = document.getElementById('mbEnemyTimerCircle');
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
-      if (mb._enemySwingReady) {
+      if (mb._enemyStunned) {
+        // Stun — šedý ring odpočítává délku stunu
+        const stunMax = 300; // 5s při 60fps
+        const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
+        const offset = Math.round(597 * (1 - stunPct));
+        enemyCircle.style.strokeDashoffset = offset;
+        enemyCircle.style.stroke = '#666';
+      } else if (mb._enemySwingReady) {
         enemyCircle.style.strokeDashoffset = '0';
         enemyCircle.style.stroke = '#e74c3c';
       } else {
