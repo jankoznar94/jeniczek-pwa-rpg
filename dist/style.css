@@ -428,6 +428,31 @@ body.no-scroll { overflow: hidden; }
 .mb-rage-bar span {
   position:relative;z-index:1;
 }
+/* Energy bar (assassin) — žlutá */
+.mb-energy-bar {
+  position:relative;background:#2a2a1a;border:1px solid #5a5a2a;border-radius:6px;
+  height:22px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:#fff;font-weight:bold;overflow:hidden;
+}
+.mb-energy-bar-fill {
+  position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg, #d4a017, #f1c40f);
+  transition:width 0.2s ease-out;
+}
+.mb-energy-bar span {
+  position:relative;z-index:1;
+}
+/* Combo point indikátor */
+.mb-combo-indicator {
+  display:flex;gap:3px;justify-content:center;margin:2px 12px 4px;height:10px;
+}
+.mb-combo-dot {
+  width:8px;height:8px;border-radius:50%;
+  background:#3a3a3a;border:1px solid #5a5a5a;transition:0.15s;
+}
+.mb-combo-dot.active {
+  background:#f1c40f;border-color:#f1c40f;
+  box-shadow:0 0 4px rgba(241,196,15,0.6);
+}
 
 /* Hero attributes */
 .hero-attr-row { display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1a1a1a;font-size:14px; }

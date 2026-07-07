@@ -38,7 +38,14 @@
       primaryAttr:'dex',
       talentSchool:'physical',
       baseHp:80, baseDmg:10, baseMana:0,
-      attrBonus:{str:0, vit:1, dex:3, int:0}
+      attrBonus:{str:0, vit:1, dex:3, int:0},
+      spells: [
+        { id:'sinisterStrike', name:'Sinister Strike', icon:'🗡️', cost:40, cooldown:0, gcd:0.5, desc:'150% dmg + 1 combo point' },
+        { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, desc:'Poškození dle combo pointů (1:150%–5:350%)' },
+        { id:'kidneyShot', name:'Kidney Shot', icon:'🔨', cost:35, cooldown:20, gcd:0.5, desc:'Omráčení dle combo pointů (1:1s–5:5s)' },
+        { id:'evasion', name:'Evasion', icon:'💨', cost:50, cooldown:60, gcd:0.5, desc:'+50% dodge na 10s' },
+        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, desc:'+20% rychlost útoku dle combo pointů (1:5s–5:17s)' }
+      ]
     },
     mage: {
       id:'mage', name:'Kouzelník', icon:'🪄',
@@ -846,6 +853,11 @@
       rage:0, maxRage:100, // Barbar resource
       rageMultiplier:1, // Bloodrage buff
       _bloodrageTimer:0,
+      energy:100, maxEnergy:100, // Assassin resource
+      comboPoints:0, // Assassin combo points (0-5)
+      _dodgeBuffTimer:0, // Evasion buff (ticky)
+      _speedBoostTimer:0, // Speed boost (ticky)
+      _speedBoostPct:0, // Speed boost procento
       battleShoutTimer:0, // Battle shout zbývající čas (ticky)
       battleShoutDmgPct:0, // % bonus dmg z battle shout
       thunderClapTimer:0, // Zbývající čas thunder clapu (ticky)
@@ -1190,7 +1202,12 @@
     const h = state.hero;
     const eqAttrs = getEquipAttrs();
     const dex = (h.attrDex || 0) + eqAttrs.dex;
-    return Math.max(600, Math.round(base * (1 - dex * 0.01)));
+    let ms = Math.max(600, Math.round(base * (1 - dex * 0.01)));
+    // Speed boost (assassin) — +20% rychlost = -20% času
+    if (state._speedBoostPct > 0) {
+      ms = Math.max(400, Math.round(ms * (1 - state._speedBoostPct / 100)));
+    }
+    return ms;
   }
 
   function getEnemySwingTime(mb) {
@@ -1323,6 +1340,27 @@
       state._bloodrageTimer--;
       if (state._bloodrageTimer <= 0) state.rageMultiplier = 1;
     }
+    // Energy regen (assassin) — 5/tick = 5/s při 60fps
+    if (state.heroClass === 'assassin') {
+      const cls = CLASSES.assassin;
+      const regen = cls.resourceRegen || 0;
+      if (regen > 0 && (state.energy || 0) < (state.maxEnergy || 100)) {
+        state.energy = Math.min(state.maxEnergy || 100, (state.energy || 0) + regen);
+      }
+    }
+    // Dodge buff (Evasion)
+    if (state._dodgeBuffTimer > 0) {
+      state._dodgeBuffTimer--;
+      if (state._dodgeBuffTimer <= 0) state._dodgeBuffTimer = 0;
+    }
+    // Speed boost
+    if (state._speedBoostTimer > 0) {
+      state._speedBoostTimer--;
+      if (state._speedBoostTimer <= 0) {
+        state._speedBoostTimer = 0;
+        state._speedBoostPct = 0;
+      }
+    }
     // Enemy stun
     if (mb._enemyStunned && mb._enemyStunTimer > 0) {
       mb._enemyStunTimer--;
@@ -1418,6 +1456,14 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
+
+    // Evasion (assassin) — 50% šance na dodge
+    if (state._dodgeBuffTimer > 0 && Math.random() < 0.5) {
+      playSFX(dodgeSfx);
+      mb._enemySwingStart = performance.now();
+      mb._enemySwingReady = false;
+      return;
+    }
 
     // Výpočet damage — stejný jako v onMapHit
     const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
@@ -1619,6 +1665,34 @@
         rageBar.classList.add('hidden');
       }
     }
+    // Energy bar (assassin)
+    const energyBar = $('mbPlayerArenaEnergy');
+    if (energyBar) {
+      if (state.heroClass === 'assassin') {
+        energyBar.classList.remove('hidden');
+        const span = energyBar.querySelector('span');
+        if (span) span.textContent = `⚡ ${Math.round(state.energy || 0)}/${state.maxEnergy || 100}`;
+        const fill = $('mbPlayerArenaEnergyFill');
+        if (fill) fill.style.width = Math.max(0, Math.round(((state.energy || 0) / (state.maxEnergy || 100)) * 100)) + '%';
+      } else {
+        energyBar.classList.add('hidden');
+      }
+    }
+    // Combo point indikátor (assassin)
+    const comboEl = document.getElementById('mbComboIndicator');
+    if (comboEl) {
+      if (state.heroClass === 'assassin') {
+        comboEl.classList.remove('hidden');
+        const cp = state.comboPoints || 0;
+        let dotsHtml = '';
+        for (let i = 0; i < 5; i++) {
+          dotsHtml += `<div class="mb-combo-dot${i < cp ? ' active' : ''}"></div>`;
+        }
+        comboEl.innerHTML = dotsHtml;
+      } else {
+        comboEl.classList.add('hidden');
+      }
+    }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     // D4 heat indicator
     const heatEl = $('mbHeatIndicator');
@@ -1694,10 +1768,13 @@
     let html = '';
     cls.spells.forEach(spell => {
       const onGcd = state._gcdTimer > 0;
-      const hasRage = (state.rage || 0) >= spell.cost;
+      const clsDef = CLASSES[state.heroClass];
+      const resourceKey = clsDef.resource === 'energy' ? 'energy' : 'rage';
+      const maxResource = clsDef.resource === 'energy' ? (state.maxEnergy || 100) : (state.maxRage || 100);
+      const hasResource = (state[resourceKey] || 0) >= spell.cost;
       const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
       const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
-      const canUse = hasRage && !onGcd && !onCooldown;
+      const canUse = hasResource && !onGcd && !onCooldown;
       const isQueued = spell.id === 'heroicStrike' && mapBattleState && mapBattleState._heroicStrikeQueued;
       const gcdActive = onGcd && !onCooldown && !isQueued;
       const gcdPct = onGcd ? Math.min(1, state._gcdTimer / 30) : 0;
@@ -1761,13 +1838,14 @@
 
     // GCD check
     if (state._gcdTimer > 0) return;
-    // Rage check
-    if ((state.rage || 0) < spell.cost) return;
+    // Resource check (rage nebo energy)
+    const resourceKey = cls.resource === 'energy' ? 'energy' : 'rage';
+    if ((state[resourceKey] || 0) < spell.cost) return;
     // Per-spell cooldown check
     if (_sessionSpellCooldowns[spellId] > 0) return;
 
-    // Odečíst rage
-    state.rage = Math.max(0, (state.rage || 0) - spell.cost);
+    // Odečíst resource
+    state[resourceKey] = Math.max(0, (state[resourceKey] || 0) - spell.cost);
     // Nastavit GCD (0.5s = ~30 ticků při 60fps)
     state._gcdTimer = Math.round(spell.gcd * 60);
     // Nastavit per-spell cooldown (session persistent)
@@ -1840,6 +1918,87 @@
       state.battleShoutTimer = 1800; // 30s
       // Buff ikona hráče
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
+    } else if (spellId === 'sinisterStrike') {
+      // 150% dmg + 1 combo point
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const dmg = Math.max(1, Math.round(baseDmg * 1.5));
+      mb.bossHp -= dmg;
+      state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `🗡️ -${dmg}`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'eviscerate') {
+      const cp = state.comboPoints || 0;
+      if (cp < 1) return; // nelze použít bez combo pointů
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const mults = [0, 1.5, 2.0, 2.5, 3.0, 3.5];
+      const mult = mults[Math.min(cp, 5)] || 1.5;
+      const dmg = Math.max(1, Math.round(baseDmg * mult));
+      mb.bossHp -= dmg;
+      state.comboPoints = 0; // spotřebovat combo pointy
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `💥 -${dmg}`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'kidneyShot') {
+      const cp = state.comboPoints || 0;
+      if (cp < 1) return; // nelze použít bez combo pointů
+      const stunDuration = cp; // 1-5 sekund
+      mb._enemyStunned = true;
+      mb._enemyStunTimer = stunDuration * 60; // 60 ticků/s
+      mb._enemySwingReady = false;
+      state.comboPoints = 0; // spotřebovat combo pointy
+      // Debuff ikona
+      _sessionDebuffs['kidneyShot'] = { icon: '🔨', name: 'Omráčení', ticks: stunDuration * 60, maxTicks: stunDuration * 60 };
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `🔨 Stun ${stunDuration}s`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'evasion') {
+      // +50% dodge na 10s
+      state._dodgeBuffTimer = 600; // 10s * 60fps
+      _sessionBuffs['evasion'] = { icon: '💨', name: 'Evasion', ticks: 600, maxTicks: 600, onExpire: function() { /* timer už je v state._dodgeBuffTimer */ } };
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = `💨 Evasion!`;
+        dmgText.style.color = '#f1c40f';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'speedBoost') {
+      const cp = state.comboPoints || 0;
+      if (cp < 1) return; // nelze použít bez combo pointů
+      const durations = [0, 5, 8, 11, 14, 17];
+      const duration = durations[Math.min(cp, 5)] || 5;
+      state._speedBoostPct = 20; // +20% rychlost
+      state._speedBoostTimer = duration * 60; // v tickách
+      state.comboPoints = 0; // spotřebovat combo pointy
+      // Buff ikona
+      _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
+      // Přepočítat swing timer
+      mb.playerSwingMs = getSwingTime(state.hero.equip.weapon);
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = `⚡ Speed +${duration}s`;
+        dmgText.style.color = '#f1c40f';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
     }
 
     updateMapBattleUI();
