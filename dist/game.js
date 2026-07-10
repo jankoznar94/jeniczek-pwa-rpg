@@ -1531,6 +1531,11 @@
     const mb = mapBattleState;
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
 
+    // Reset swingu PŘED útokem — i kdyby byl MISS/DODGE, swing se nezasekne
+    mb._playerSwingStart = performance.now();
+    mb._playerSwingReady = false;
+    mb._playerSwingPct = 0;
+
     // Rage gain za útok (barbar)
     if (state.heroClass === 'barbarian') {
       const rageGain = Math.round(5 * state.rageMultiplier);
@@ -1554,11 +1559,6 @@
 
     updateMapBattleUI();
 
-    // Reset hráčova swingu
-    mb._playerSwingStart = performance.now();
-    mb._playerSwingReady = false;
-    mb._playerSwingPct = 0;
-
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
 
@@ -1566,13 +1566,13 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
-    // Offhand útok — 50% damage hlavní zbraně
-    dealPlayerDamage(mb, 0.5);
-    updateMapBattleUI();
-    // Reset offhand swingu
+    // Reset offhand swingu PŘED útokem
     mb._offhandSwingStart = performance.now();
     mb._offhandSwingReady = false;
     mb._offhandSwingPct = 0;
+    // Offhand útok — 50% damage hlavní zbraně
+    dealPlayerDamage(mb, 0.5);
+    updateMapBattleUI();
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
 
@@ -3971,8 +3971,18 @@
     if (!mb.isRapidAttack) return;
     if (mb._hitProcessed) return;
     mb.rapidTaps = (mb.rapidTaps || 0) + 1;
-    // Každý tap = malý útok
-    dealPlayerDamage(mb, 0.3);
+    // Každý tap = malý útok (bez attack table — rapid tappy jsou příliš rychlé na miss/dodge roll)
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
+    let dmg = Math.max(1, Math.round(baseDmg * 0.3));
+    mb.bossHp -= dmg;
+    // Damage text
+    const dmgText = $('mbDamageText');
+    if (dmgText) {
+      dmgText.textContent = `-${dmg}`;
+      dmgText.classList.remove('hidden');
+      setTimeout(() => dmgText.classList.add('hidden'), 400);
+    }
     // Vizuální feedback
     if (tapId) {
       const el = $(tapId);
