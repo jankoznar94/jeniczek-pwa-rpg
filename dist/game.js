@@ -15,6 +15,7 @@
       allowedWeapons:['blade','fists'],
       allowedShield:true,
       allowedOffhand:true,
+      dualWield:true,
       primaryAttr:'str',
       talentSchool:'physical',
       baseHp:120, baseDmg:14, baseMana:0,
@@ -24,7 +25,8 @@
         { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + zpomalení nepřítele 10% na 10s' },
         { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% zisk Rage na 10s' },
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + omráčení 5s' },
-        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg na 30s' }
+        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg na 30s' },
+        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg oběma zbraněmi + reset swing timerů' }
       ]
     },
     assassin: {
@@ -35,6 +37,7 @@
       allowedWeapons:['blade','fists'],
       allowedShield:false,
       allowedOffhand:false,
+      dualWield:true,
       primaryAttr:'dex',
       talentSchool:'physical',
       baseHp:80, baseDmg:10, baseMana:0,
@@ -55,6 +58,7 @@
       allowedWeapons:['staff','fists'],
       allowedShield:false,
       allowedOffhand:true, // artefakt
+      dualWield:false,
       primaryAttr:'int',
       talentSchool:'fire',
       baseHp:60, baseDmg:6, baseMana:100,
@@ -208,7 +212,6 @@
   }
   let _currentBattleBgmIdx = 0;
   let _mapPaused = false;
-  let _tutorialPaused = false;
   function setPauseIcon(btn, paused) {
     btn.innerHTML = paused
       ? '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>'
@@ -320,31 +323,6 @@
               onMapHit();
             }, remainingMs);
           }
-        } else {
-          numEl.textContent = count;
-        }
-      }, 1000);
-    }
-  }
-  function toggleTutorialPause() {
-    const btn = document.getElementById('tutPauseBtn');
-    const overlay = document.getElementById('pauseOverlay');
-    const numEl = document.getElementById('pauseCountdownNumber');
-    if (!_tutorialPaused) {
-      _tutorialPaused = true;
-      setPauseIcon(btn, true);
-    } else {
-      overlay.classList.remove('hidden');
-      let count = 3;
-      numEl.textContent = count;
-      minigameState.pauseCountdown = setInterval(() => {
-        count--;
-        if (count <= 0) {
-          clearInterval(minigameState.pauseCountdown);
-          minigameState.pauseCountdown = null;
-          overlay.classList.add('hidden');
-          _tutorialPaused = false;
-          setPauseIcon(btn, false);
         } else {
           numEl.textContent = count;
         }
@@ -610,57 +588,57 @@
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢', iconImg:'' },
     // === ZBRANĚ — magické (staff) ===
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:18, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1500 },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:22, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1400 },
-    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:30, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5, swingMs:1300 },
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800, hitRating:2 },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700, hitRating:3 },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700, hitRating:3 },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600, hitRating:4 },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600, hitRating:4 },
+    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:18, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1500, hitRating:5 },
+    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:22, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1400, hitRating:5 },
+    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:30, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5, swingMs:1300, hitRating:7 },
     // === ZBRANĚ — fyzické (blade) ===
-    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
-    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
-    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
-    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000 },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100 },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000 },
-    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:24, bonusHp:0, critChance:10, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2200 },
-    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
-    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:35, bonusHp:30, critChance:25, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6, swingMs:2000 },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
+    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900, hitRating:2, expertiseRating:1 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400, hitRating:2, expertiseRating:1 },
+    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800, hitRating:3, expertiseRating:2 },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500, hitRating:3, expertiseRating:2 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000, hitRating:4, expertiseRating:3 },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100, hitRating:5, expertiseRating:4 },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000, hitRating:5, expertiseRating:4 },
+    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:24, bonusHp:0, critChance:10, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2200, hitRating:6, expertiseRating:5 },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200, hitRating:6, expertiseRating:5 },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300, hitRating:6, expertiseRating:5 },
+    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:35, bonusHp:30, critChance:25, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6, swingMs:2000, hitRating:8, expertiseRating:6 },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400, hitRating:7, expertiseRating:5 },
     // === BRNĚNÍ ===
-    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
-    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
-    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'/assets/items/armor_scale.png', tier:3 },
-    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, bonusMana:20, defense:30, cost:80, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
-    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:30, cost:110, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
-    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:35, cost:160, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:5 },
-    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, bonusMana:50, defense:40, cost:250, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:6 },
+    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1, dodgeRating:1 },
+    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2, dodgeRating:1 },
+    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'/assets/items/armor_scale.png', tier:3, dodgeRating:2 },
+    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, bonusMana:20, defense:30, cost:80, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4, dodgeRating:2 },
+    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:30, cost:110, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4, dodgeRating:2 },
+    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:35, cost:160, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:5, dodgeRating:3 },
+    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, bonusMana:50, defense:40, cost:250, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:6, dodgeRating:4 },
     // === HELMY ===
-    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, defense:8, cost:15, icon:'🎭', iconImg:'/assets/items/helmet_linen_hood.png', tier:1 },
-    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:11, cost:30, icon:'⛑️', iconImg:'/assets/items/helmet_iron_helm.png', tier:2 },
-    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, defense:14, cost:60, icon:'⛑️', iconImg:'/assets/items/helmet_steel_helm.png', tier:3 },
-    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, defense:20, cost:140, icon:'👑', iconImg:'/assets/items/helmet_crown.png', tier:5 },
+    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, defense:8, cost:15, icon:'🎭', iconImg:'/assets/items/helmet_linen_hood.png', tier:1, hitRating:1 },
+    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:11, cost:30, icon:'⛑️', iconImg:'/assets/items/helmet_iron_helm.png', tier:2, hitRating:2 },
+    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, defense:14, cost:60, icon:'⛑️', iconImg:'/assets/items/helmet_steel_helm.png', tier:3, hitRating:3 },
+    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, defense:20, cost:140, icon:'👑', iconImg:'/assets/items/helmet_crown.png', tier:5, hitRating:5 },
     // === ŠTÍTY ===
-    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'/assets/items/shield_wooden.png', tier:1 },
-    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:9, cost:30, icon:'🛡️', iconImg:'/assets/items/shield_leather.png', tier:2 },
-    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:12, cost:55, icon:'🛡️', iconImg:'/assets/items/shield_iron.png', tier:3 },
-    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:15, cost:85, icon:'🛡️', iconImg:'/assets/items/shield_steel.png', tier:4 },
-    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:18, cost:150, icon:'🛡️', iconImg:'/assets/items/shield_paladin.png', tier:5 },
+    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'/assets/items/shield_wooden.png', tier:1, dodgeRating:2 },
+    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:9, cost:30, icon:'🛡️', iconImg:'/assets/items/shield_leather.png', tier:2, dodgeRating:3 },
+    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:12, cost:55, icon:'🛡️', iconImg:'/assets/items/shield_iron.png', tier:3, dodgeRating:4 },
+    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:15, cost:85, icon:'🛡️', iconImg:'/assets/items/shield_steel.png', tier:4, dodgeRating:5 },
+    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:18, cost:150, icon:'🛡️', iconImg:'/assets/items/shield_paladin.png', tier:5, dodgeRating:6 },
     // === PRSTENY ===
-    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:2, bonusHp:0, cost:15, icon:'💍', iconImg:'/assets/items/ring_copper.png', tier:1 },
-    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:4, bonusHp:10, cost:55, icon:'💍', iconImg:'/assets/items/ring_silver.png', tier:3 },
-    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:6, bonusHp:20, cost:100, icon:'💍', iconImg:'/assets/items/ring_gold.png', tier:4 },
-    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:9, bonusHp:30, cost:180, icon:'💍', iconImg:'/assets/items/ring_gem.png', tier:5 },
+    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:2, bonusHp:0, cost:15, icon:'💍', iconImg:'/assets/items/ring_copper.png', tier:1, hitRating:1 },
+    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:4, bonusHp:10, cost:55, icon:'💍', iconImg:'/assets/items/ring_silver.png', tier:3, hitRating:2 },
+    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:6, bonusHp:20, cost:100, icon:'💍', iconImg:'/assets/items/ring_gold.png', tier:4, hitRating:3 },
+    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:9, bonusHp:30, cost:180, icon:'💍', iconImg:'/assets/items/ring_gem.png', tier:5, hitRating:4 },
     // === AMULETY ===
-    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', baseDmg:1, bonusHp:5, cost:20, icon:'📿', iconImg:'/assets/items/amulet_bone.png', tier:1 },
-    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', baseDmg:3, bonusHp:12, cost:60, icon:'📿', iconImg:'/assets/items/amulet_silver.png', tier:3 },
-    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', baseDmg:5, bonusHp:22, cost:110, icon:'📿', iconImg:'/assets/items/amulet_gold.png', tier:4 },
-    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'/assets/items/amulet_ruby.png', tier:5 },
-    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'/assets/items/amulet_arcane.png', tier:6 },
+    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', baseDmg:1, bonusHp:5, cost:20, icon:'📿', iconImg:'/assets/items/amulet_bone.png', tier:1, hitRating:1 },
+    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', baseDmg:3, bonusHp:12, cost:60, icon:'📿', iconImg:'/assets/items/amulet_silver.png', tier:3, hitRating:2 },
+    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', baseDmg:5, bonusHp:22, cost:110, icon:'📿', iconImg:'/assets/items/amulet_gold.png', tier:4, hitRating:3 },
+    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'/assets/items/amulet_ruby.png', tier:5, hitRating:4 },
+    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'/assets/items/amulet_arcane.png', tier:6, hitRating:5 },
   ];
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
   // Mapa pro generované loot itemy (doplňuje ITEM_MAP)
@@ -792,15 +770,93 @@
     { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
   ];
   const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:2, name:'Nemrtvá země', icon:'🦴', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, boss:{name:'Smrtka',face:'assets/monsters/reaper.png',hp:16,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, boss:{name:'Lucifer',face:'assets/monsters/lucifer_demon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
-    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, boss:{name:'Ledový titán',face:'assets/monsters/frost_titan.png',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, monsters:5, floors:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3, boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:10,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:5,weapon:'dagger'}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, monsters:5, floors:10, xpReward:16, bossXp:50, minLevel:4, maxLevel:6, boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+    { id:2, name:'Nemrtvá země', icon:'🦴', theme:2, monsters:5, floors:10, xpReward:24, bossXp:70, minLevel:7, maxLevel:9, boss:{name:'Smrtka',face:'assets/monsters/reaper.png',hp:16,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:15,weapon:'sword'}, resists:{fire:0.5, ice:1.0, nature:1.5} },
+    { id:3, name:'Pekelné výspy', icon:'🔥', theme:3, monsters:5, floors:10, xpReward:50, bossXp:180, minLevel:10, maxLevel:12, boss:{name:'Lucifer',face:'assets/monsters/lucifer_demon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
+    { id:4, name:'Mrazivé štíty', icon:'❄️', theme:4, monsters:5, floors:10, xpReward:40, bossXp:130, minLevel:13, maxLevel:15, boss:{name:'Ledový titán',face:'assets/monsters/frost_titan.png',hp:22,types:[MONSTER_TYPES.LIFESTEALER,MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER}, reward:{gold:25,armor:'chainmail'}, resists:{fire:1.5, ice:0.5, nature:1.0} },
   ];
 
   // Skoková obtížnost — násobitel HP a damage podle dungeonu
   const DIFFICULTY_MULT = [1.0, 1.5, 2.5, 4.0, 6.0];
+
+  // ===== LEVEL / HIT / DODGE / XP HELPERS =====
+  function getMonsterLevel(mb) {
+    const loc = mb.loc;
+    if (!loc || loc.minLevel === undefined) return 1;
+    // Level se lineárně zvyšuje od minLevel do maxLevel podle patra
+    const floorPct = (mb.floor || 0) / 9; // 0-1, patro 0-9
+    const range = loc.maxLevel - loc.minLevel;
+    return loc.minLevel + Math.round(range * floorPct);
+  }
+
+  function getLevelDiff(mb) {
+    const monsterLv = getMonsterLevel(mb);
+    return (state.hero.level || 1) - monsterLv;
+  }
+
+  function getPlayerAttackTable(mb) {
+    // Vrací { missChance, dodgeChance } pro hráčův útok
+    const diff = getLevelDiff(mb);
+    // Base: 5% miss, 5% dodge proti stejně silnému
+    // Každý +1 level hráče = -2% k oběma (hráč je lepší)
+    // Každý -1 level hráče = +2% k oběma (monstrum je lepší)
+    let baseMiss = 5 - diff * 2;
+    let baseDodge = 5 - diff * 2;
+    baseMiss = clamp(baseMiss, 0, 40);
+    baseDodge = clamp(baseDodge, 0, 40);
+
+    // HitRating z equipu: 1 bod = -0.5% miss
+    const eq = state.hero.equip;
+    let totalHit = 0;
+    const hitSlots = ['weapon','helmet','ring1','amulet'];
+    hitSlots.forEach(slot => {
+      const item = ITEM_MAP[eq[slot]];
+      if (item) totalHit += item.hitRating || 0;
+    });
+    // ExpertiseRating z equipu: 1 bod = -0.25% dodge
+    let totalExp = 0;
+    const expSlots = ['weapon'];
+    expSlots.forEach(slot => {
+      const item = ITEM_MAP[eq[slot]];
+      if (item) totalExp += item.expertiseRating || 0;
+    });
+
+    const missChance = Math.max(0, baseMiss - totalHit * 0.5);
+    const dodgeChance = Math.max(0, baseDodge - totalExp * 0.25);
+    return { missChance, dodgeChance };
+  }
+
+  function getPlayerDodgeChance(mb) {
+    // Pasivní dodge šance hráče (proti bossovým útokům)
+    const diff = getLevelDiff(mb);
+    // Base: 3% dodge proti stejně silnému
+    let baseDodge = 3 - diff * 1.5;
+    baseDodge = clamp(baseDodge, 0, 30);
+    // dodgeRating z equipu (štíty, brnění)
+    const eq = state.hero.equip;
+    let totalDodge = 0;
+    const dodgeSlots = ['shield','armor'];
+    dodgeSlots.forEach(slot => {
+      const item = ITEM_MAP[eq[slot]];
+      if (item) totalDodge += item.dodgeRating || 0;
+    });
+    // 1 dodgeRating = +1% pasivní dodge
+    return Math.min(baseDodge + totalDodge, 50);
+  }
+
+  function getXpModifier(mb) {
+    const diff = getLevelDiff(mb);
+    // diff > 0 = hráč je vyšší level
+    // diff >= 5: 0 XP (moc slabé)
+    if (diff >= 5) return 0;
+    // diff 1-4: -20% za každý level
+    if (diff > 0) return Math.max(0, 1 - diff * 0.2);
+    // diff < 0 = hráč je nižší level (silnější monstra)
+    // +10% za každý level, max +50%
+    if (diff < 0) return Math.min(1.5, 1 + Math.abs(diff) * 0.1);
+    return 1.0;
+  }
 
   // ===== STATE =====
   let state = {};
@@ -893,7 +949,7 @@
   }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', guide:'guideScreen', bestiary:'bestiaryScreen' };
+  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen' };
   function showScreen(name) {
     cleanupTimers();
     
@@ -927,6 +983,7 @@
     else if (name === 'hero') renderHero();
     else if (name === 'shop') renderShop();
     else if (name === 'inventory') renderInventory();
+    else if (name === 'spellbook') renderSpellbook();
   }
 
   function showMessage(msg) {
@@ -1154,17 +1211,22 @@
       _lootDrops: state._floorLootDrops || [],
       // Auto-combat swing timery
       playerSwingMs: 0,        // aktuální délka hráčova swingu (ms)
+      offhandSwingMs: 0,       // offhand swing (ms)
       enemySwingMs: 0,         // aktuální délka nepřítelova swingu (ms)
       _playerSwingTimer: null, // timeout pro hráčův swing
       _enemySwingTimer: null,  // timeout pro nepřítelův swing
       _combatLoop: null,       // requestAnimationFrame id
       _playerSwingStart: 0,    // performance.now() start hráčova swingu
+      _offhandSwingStart: 0,   // performance.now() start offhand swingu
       _enemySwingStart: 0,     // performance.now() start nepřítelova swingu
       _playerSwingPct: 0,      // 0-1 průběh hráčova swingu
+      _offhandSwingPct: 0,     // 0-1 průběh offhand swingu
       _enemySwingPct: 0,       // 0-1 průběh nepřítelova swingu
       _playerSwingReady: false, // true = hráč může udeřit
+      _offhandSwingReady: false,// true = offhand může udeřit
       _enemySwingReady: false,  // true = nepřítel udeří
       _playerAttackProcessed: false, // zabránit double-attacku
+      _offhandAttackProcessed: false,
       _enemyAttackProcessed: false,
       _spellButtonsVisible: true, // spell tlačítka jsou vždy vidět
       _enemyStunned: false, // omráčení nepřítele
@@ -1240,12 +1302,18 @@
 
     // Inicializovat swing timery
     mb.playerSwingMs = getSwingTime(state.hero.equip.weapon);
+    const cls = CLASSES[state.heroClass];
+    const isDualWield = cls && cls.dualWield;
+    mb.offhandSwingMs = (isDualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? getSwingTime(state.hero.equip.shield) : 0;
     mb.enemySwingMs = getEnemySwingTime(mb);
     mb._playerSwingStart = performance.now();
+    mb._offhandSwingStart = performance.now();
     mb._enemySwingStart = performance.now();
     mb._playerSwingReady = false;
+    mb._offhandSwingReady = false;
     mb._enemySwingReady = false;
     mb._playerAttackProcessed = false;
+    mb._offhandAttackProcessed = false;
     mb._enemyAttackProcessed = false;
 
     // Spustit rAF loop
@@ -1278,6 +1346,16 @@
       }
     }
 
+    // Offhand swing (dual wield)
+    if (mb.offhandSwingMs > 0 && !mb._offhandSwingReady) {
+      const offhandElapsed = now - mb._offhandSwingStart;
+      mb._offhandSwingPct = Math.min(offhandElapsed / mb.offhandSwingMs, 1);
+      if (offhandElapsed >= mb.offhandSwingMs) {
+        mb._offhandSwingReady = true;
+        mb._offhandAttackProcessed = false;
+      }
+    }
+
     // Nepřítelův swing — pokud není omráčený
     if (!mb._enemySwingReady && !mb._enemyStunned) {
       const enemyElapsed = now - mb._enemySwingStart;
@@ -1288,10 +1366,7 @@
       }
     }
 
-    // Update timer ring vizuál
-    updateSwingRings(mb);
-
-    // Zpracovat útoky
+    // Zpracovat útoky (nejdřív, aby se ring nevykreslil jako zelený v přechodovém framu)
     if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
       mb._enemyAttackProcessed = true;
       onAutoEnemyAttack();
@@ -1300,6 +1375,13 @@
       mb._playerAttackProcessed = true;
       onAutoPlayerAttack();
     }
+    if (mb._offhandSwingReady && !mb._offhandAttackProcessed) {
+      mb._offhandAttackProcessed = true;
+      onAutoOffhandAttack();
+    }
+
+    // Update timer ring vizuál (až po zpracování útoků, aby nedošlo k zelenému probliku)
+    updateSwingRings(mb);
 
     mb._combatLoop = requestAnimationFrame(autoCombatLoop);
   }
@@ -1401,6 +1483,23 @@
         playerCircle.style.stroke = '#f1c40f';
       }
     }
+    // Offhand ring (větší, světlejší — nad hlavním)
+    const offhandCircle = document.getElementById('mbOffhandTimerCircle');
+    if (offhandCircle) {
+      if (mb.offhandSwingMs > 0) {
+        offhandCircle.style.opacity = '0.5';
+        if (mb._offhandSwingReady) {
+          offhandCircle.style.strokeDashoffset = '0';
+          offhandCircle.style.stroke = '#2ecc71';
+        } else {
+          const offset = Math.round(754 * (1 - mb._offhandSwingPct));
+          offhandCircle.style.strokeDashoffset = offset;
+          offhandCircle.style.stroke = '#f1c40f';
+        }
+      } else {
+        offhandCircle.style.opacity = '0';
+      }
+    }
     // Nepřítelův ring (malý, červený / šedý při stunu)
     const enemyCircle = document.getElementById('mbEnemyTimerCircle');
     if (enemyCircle) {
@@ -1466,6 +1565,20 @@
     mb._playerSwingReady = false;
     mb._playerSwingPct = 0;
 
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+  }
+
+  function onAutoOffhandAttack() {
+    if (mapBattleState.ended) return;
+    const mb = mapBattleState;
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    // Offhand útok — 50% damage hlavní zbraně
+    dealPlayerDamage(mb, 0.5);
+    updateMapBattleUI();
+    // Reset offhand swingu
+    mb._offhandSwingStart = performance.now();
+    mb._offhandSwingReady = false;
+    mb._offhandSwingPct = 0;
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
 
@@ -1635,27 +1748,6 @@
       if (len > 7) hpLabel.style.fontSize = Math.max(14, Math.round(24 * 7 / len)) + 'px';
       else hpLabel.style.fontSize = '24px';
     }
-    // Monster icons row
-    const iconRow = $('mbMonsterIcons');
-    if (iconRow) {
-      if (!mb.isBoss) {
-        iconRow.classList.remove('hidden');
-        iconRow.innerHTML = mb.monsterIcons.map((face, i) => {
-          const defeated = i < mb.progress;
-          let inner;
-          if (face.startsWith('assets/')) {
-            inner = '<div class="mini-portrait-frame" style="filter:'+DUNGEON_THEME_FILTERS[mb.monsterTheme]+'"><img src="'+face+'" alt="" class="mini-portrait-img"/></div>';
-          } else if (face.startsWith('<svg')) {
-            inner = face;
-          } else {
-            inner = face;
-          }
-          return `<span class="monster-icon${defeated?' defeated':''}">${inner}${defeated?'<span class="monster-icon-x">❌</span>':''}</span>`;
-        }).join('');
-      } else {
-        iconRow.classList.add('hidden');
-      }
-    }
     // XP Bar
     const xpWrap = $('mbXpBarWrap');
     if (xpWrap) {
@@ -1816,7 +1908,7 @@
       if (canUseFinal) btnClass += ' active';
       if (isQueued) btnClass += ' queued';
       html += `<button class="${btnClass}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
-        <span class="spell-icon">${spell.icon}</span>
+        <img class="spell-icon-img" src="/assets/spells/${spell.id}.png" alt="${spell.name}">
         <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
         ${onCooldown ? `<span class="spell-cd-num">${cdRemaining}</span>` : ''}
         ${gcdActive ? `<div class="spell-gcd-overlay" style="background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) ${gcdDeg}deg, transparent ${gcdDeg}deg, transparent 360deg)"></div>` : ''}
@@ -1835,8 +1927,9 @@
       const d = _sessionDebuffs[spellId];
       if (!d) return;
       const remaining = Math.ceil(d.ticks / 60);
+      const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
       html += `<div class="debuff-icon" title="${d.name || spellId}">
-        <span class="debuff-icon-emoji">${d.icon}</span>
+        ${hasImg ? `<img class="buff-icon-img" src="/assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
         <span class="debuff-icon-timer">${remaining}s</span>
       </div>`;
     });
@@ -1853,8 +1946,9 @@
       const b = _sessionBuffs[spellId];
       if (!b) return;
       const remaining = Math.ceil(b.ticks / 60);
+      const hasImg = spellId === 'bloodrage' || spellId === 'battleShout';
       html += `<div class="buff-icon" title="${b.name || spellId}">
-        <span class="buff-icon-emoji">${b.icon}</span>
+        ${hasImg ? `<img class="buff-icon-img" src="/assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
         <span class="buff-icon-timer">${remaining}s</span>
       </div>`;
     });
@@ -1952,6 +2046,33 @@
       state.battleShoutTimer = 1800; // 30s
       // Buff ikona hráče
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
+    } else if (spellId === 'doubleSwing') {
+      // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const offhandWeapon = (mb.offhandSwingMs > 0 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const mainDmg = baseDmg + weapon.baseDmg;
+      const offDmg = offhandWeapon ? baseDmg + offhandWeapon.baseDmg : 0;
+      const totalDmg = Math.max(1, Math.round((mainDmg + offDmg) * 1.5));
+      mb.bossHp -= totalDmg;
+      // Reset obou swing timerů
+      mb._playerSwingStart = performance.now();
+      mb._playerSwingReady = false;
+      mb._playerSwingPct = 0;
+      if (mb.offhandSwingMs > 0) {
+        mb._offhandSwingStart = performance.now();
+        mb._offhandSwingReady = false;
+        mb._offhandSwingPct = 0;
+      }
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `⚔️ -${totalDmg}`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
     } else if (spellId === 'sinisterStrike') {
       // 150% dmg + 1 combo point
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -3661,6 +3782,24 @@
     // Chill tick
     if (mb.chillTicksLeft > 0) mb.chillTicksLeft--;
 
+    // 🛡️ Pasivní dodge hráče — šance se zcela vyhnout bossovu útoku
+    const playerDodgeChance = getPlayerDodgeChance(mb);
+    if (Math.random() * 100 < playerDodgeChance) {
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = 'DODGE!';
+        dmgText.style.color = '#f39c12';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
+      }
+      playSFX(dodgeSfx);
+      // Počkat na vykreslení resetu před novým kolem
+      requestAnimationFrame(() => {
+        setTimeout(() => mapBattleTurn(), 0);
+      });
+      return;
+    }
+
     const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.floor * 4);
     const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
     let bossDmg = Math.round(baseBossDmg * diffMult * (0.8 + Math.random() * 0.4));
@@ -3859,6 +3998,36 @@
   }
 
   function dealPlayerDamage(mb, mult) {
+    // 🎲 ATTACK TABLE — Miss / Dodge check
+    const at = getPlayerAttackTable(mb);
+    const roll = Math.random() * 100;
+    if (roll < at.missChance) {
+      // MISS!
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = 'MISS!';
+        dmgText.style.color = '#888';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
+      }
+      playSFX(dodgeSfx);
+      advanceSequence();
+      return;
+    }
+    if (roll < at.missChance + at.dodgeChance) {
+      // DODGE!
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = 'DODGE!';
+        dmgText.style.color = '#f39c12';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
+      }
+      playSFX(dodgeSfx);
+      advanceSequence();
+      return;
+    }
+    // HIT — normální damage
     // Vypočítat damage hráče proti monstru
     const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*2);
     let dmg = Math.round(baseDmg * mult);
@@ -4344,7 +4513,8 @@
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
       const monsterGold = (1 + rand(0, 2)) * 5;
-      const xpGain = (mb.loc.xpReward + mb.floor * 2) * 5;
+      const xpMod = getXpModifier(mb);
+      const xpGain = Math.round((mb.loc.xpReward + mb.floor * 2) * 5 * xpMod);
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
@@ -4381,7 +4551,7 @@
       state._floorLootDrops = []; // vyčistit po sumarizaci
       $('resultIcon').textContent = '🎉';
       $('resultTitle').textContent = 'Patro ' + (mb.floor+1) + ' dobyto!';
-      const floorXp = (mb.loc.xpReward + mb.floor * 2) * 5;
+      const floorXp = Math.round((mb.loc.xpReward + mb.floor * 2) * 5 * getXpModifier(mb));
       const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
       const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
       $('resultMsg').innerHTML = '<div class="result-stats">'
@@ -4438,7 +4608,7 @@
       state.hero.hp = mb.playerHp;
       // Boss defeated
       state.bossesDefeated[locId] = true;
-      state.hero.xp = (state.hero.xp || 0) + mb.loc.bossXp + mb.floor * 10;
+      state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.floor * 10) * getXpModifier(mb));
       state.floorProgress[locId] = 0;
       state.locationProgress[locId] = 0;
       applyLevelUp();
@@ -4506,240 +4676,6 @@
     const locId = mb.locId;
     startLocation(locId);
     mapBattleState.floorMistakes = oldMistakes;
-  }
-
-  // ===== TUTORIAL (interactive guide) =====
-  let _tutorialStep = -1;
-  const TUTORIAL_STEPS = [
-    {
-      text: '💀 Monstra útočí! Vidíš <strong>šipku</strong>? Pro úhyb swipni stejným směrem.\n⬆️ = swipe nahoru, ⬇️ = dolů, ⬅️ = doleva, ➡️ = doprava.',
-      arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
-      showTimer: true, highlight: null
-    },
-    {
-      text: 'Akcí bude třeba <strong>5 v řadě</strong> — tomu se říká <strong>sekvence</strong>.',
-      arrowType: 'normal', arrowDir: '➡️', swipeDir: null,
-      showTimer: true, seqDots: [0], highlight: null
-    },
-    {
-      text: '❌ Chyba! Když netrefíš směr, <strong>sekvence začne od začátku</strong>. Musíš odvrátit všechny útoky v řadě!',
-      arrowType: 'normal', arrowDir: '⬆️', swipeDir: 'up',
-      showTimer: true, seqDots: ['done','done','error'], highlight: null
-    },
-    {
-      text: '✅ Celá sekvence odvrácena! Otevřelo se <strong>útočné okno</strong>. Klikni na ⚔️ pro útok!',
-      showTimer: true, showAttackWindow: true, highlight: null
-    },
-    {
-      text: '⚡ <strong>Kritický útok</strong> — na timeru se objeví <strong>zlatá výseč</strong>. Klikni na ⚔️ v jejím průběhu pro kritický zásah (×1.5 poškození). Čím vyšší Obratnost, tím větší výseč!',
-      showTimer: true, showBonusZone: true, highlight: null
-    },
-    {
-      text: '⚔️⚔️ <strong>Těžký útok</strong> — dvě šipky vedle sebe. Swipni <strong>2× stejným směrem</strong>. Timer je delší, první swipe připraví, druhý provede.',
-      arrowType: 'heavy', arrowDir: '➡️', swipeDir: 'right',
-      showTimer: true, highlight: null
-    },
-    {
-      text: '🛡️ Místo šipky je štít! To je <strong>blok útok</strong> — nesmíš swipnout! Stiskni tlačítko 🛡️ (Blok). Swipnutí = zásah!',
-      showTimer: true, showShield: true, highlight: null
-    },
-    {
-      text: '🟢 <strong>Zelená šipka</strong> = inverzní útok. Swipni <strong>opačným směrem</strong>! ⬆️ na obrazovce = swipe dolů.',
-      arrowType: 'inverted', arrowDir: '⬆️', swipeDir: 'down',
-      showTimer: true, highlight: null
-    },
-    {
-      text: '🔵 <strong>Dvě modré šipky</strong> = dvojitý útok. Swipni <strong>oba směry</strong>, na pořadí nezáleží.',
-      arrowType: 'twin', arrowDir: '⬆️', swipeDir: 'twin',
-      showTimer: true, highlight: null
-    },
-    {
-      text: '⏰ <strong>Rychlý útok (Rapid)</strong> — ťukej co nejrychleji na plošky po stranách! Čím víc stihneš, tím menší zranění dostaneš.',
-      showTimer: true, showRapid: true, highlight: null
-    },
-    {
-      text: '🩸💧📈🎯 <strong>Monstra mají typy!</strong> Vedle jména vidíš ikonku:<br>🩸 = Lifestealer (saje život)<br>💧 = Manastealer (krade manu)<br>📈 = Improver (s každým zásahem sílí)<br>🎯 = Critmaster (umí kritické zásahy)',
-      showTimer: true, showMonsterTypes: true, highlight: null
-    },
-    {
-      text: '⚔️🔮 A <strong>způsob útoku</strong>:<br>⚔️ = <strong>Melee</strong> — fyzický útok (sečný)<br>🔮 = <strong>Caster</strong> — magický útok (kouzlem)<br><br>Poznáš je i podle projektilu: melee = červený, caster = fialový.',
-      showTimer: true, showAttackTypes: true, highlight: null
-    },
-    {
-      text: '🏆 <strong>Teď už víš všechno!</strong> Hodně štěstí v dungeonu! 🎮',
-      isFinal: true, showCheckmark: true, highlight: null
-    }
-  ];
-  function startTutorial() {
-    _tutorialStep = -1;
-    const overlay = document.getElementById('tutorialOverlay');
-    if (!overlay) return;
-    overlay.classList.remove('hidden');
-    resetTutorialVisuals();
-    advanceTutorial();
-  }
-  function stopTutorial() {
-    document.getElementById('tutorialOverlay').classList.add('hidden');
-    _tutorialStep = -1;
-  }
-  function resetTutorialVisuals() {
-    const arrow = document.getElementById('tutArrow');
-    arrow.setAttribute('class', 'boss-attack-arrow hidden');
-    arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-    arrow.style.transform = '';
-    document.getElementById('tutSwipe').classList.add('hidden');
-    document.querySelectorAll('#tutSeq .tut-seq-dot').forEach(d => d.className = 'tut-seq-dot');
-    document.getElementById('tutBlockBtn').classList.remove('active');
-    document.getElementById('tutAttackBtn').classList.remove('active');
-    document.getElementById('tutActionInfo').classList.add('hidden');
-    document.getElementById('tutActionInfo').textContent = '';
-    document.getElementById('tutTapLeft').classList.add('hidden');
-    document.getElementById('tutTapRight').classList.add('hidden');
-    document.getElementById('tutRapidTarget').classList.add('hidden');
-    document.getElementById('tutCheckmark').classList.add('hidden');
-    document.getElementById('tutArena').classList.remove('rapid-active');
-    document.getElementById('tutMonster').textContent = '👹';
-    const tutName = document.getElementById('tutEnemyName');
-    if (tutName) { tutName.textContent = ''; tutName.classList.add('hidden'); }
-    const ringSvg = document.getElementById('tutRing').querySelector('svg');
-    const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-    if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '691'); circles[0].setAttribute('stroke-dashoffset', '97'); }
-    if (circles[1]) { circles[1].setAttribute('stroke-dasharray', '0 741'); circles[1].setAttribute('stroke-dashoffset', '741'); }
-  }
-  function prevTutorialStep() {
-    if (_tutorialStep <= 0) return;
-    _tutorialStep -= 2; // -2 protože advanceTutorial udělá ++
-    advanceTutorial();
-  }
-  function advanceTutorial() {
-    _tutorialStep++;
-    if (_tutorialStep >= TUTORIAL_STEPS.length) { stopTutorial(); return; }
-    const step = TUTORIAL_STEPS[_tutorialStep];
-    resetTutorialVisuals();
-    // Text
-    document.getElementById('tutText').innerHTML = step.text.replace(/\n/g, '<br>');
-    // Arrow — stejné třídy jako v reálném souboji
-    const arrow = document.getElementById('tutArrow');
-    if (step.arrowType) {
-      arrow.classList.remove('hidden');
-      const rot = { '⬆️':0, '⬇️':180, '⬅️':-90, '➡️':90 }[step.arrowDir] || 0;
-      if (step.arrowType === 'heavy') {
-        arrow.classList.add('boss-attack-yellow');
-        arrow.setAttribute('viewBox', '0 0 16 16');
-        arrow.innerHTML = '<g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g>';
-        arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
-      } else if (step.arrowType === 'twin') {
-        arrow.classList.add('boss-attack-blue');
-        arrow.setAttribute('viewBox', '0 -2 16 20');
-        if (step.arrowDir === '⬆️') {
-          arrow.innerHTML = '<g transform="translate(-2.5,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g><g transform="translate(2.5,0)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
-        } else {
-          arrow.innerHTML = '<g transform="translate(0,-2.5)"><path d="M1 8L8 3L8 5.5L15 5.5L15 10.5L8 10.5L8 13L1 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g><g transform="translate(0,2.5)"><path d="M15 8L8 13L8 10.5L1 10.5L1 5.5L8 5.5L8 3L15 8Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g>';
-        }
-        arrow.style.transform = 'translate(-50%,-50%)';
-      } else if (step.arrowType === 'inverted') {
-        arrow.classList.add('boss-attack-green');
-        arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
-      } else {
-        // normal
-        arrow.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
-      }
-    }
-    // Timer ring — vždy zobrazit plný kruh (dashoffset=0)
-    if (step.showTimer) {
-      const ringSvg = document.getElementById('tutRing').querySelector('svg');
-      const circles = ringSvg ? ringSvg.querySelectorAll('circle') : [];
-      if (circles[0]) { circles[0].setAttribute('stroke-dasharray', '691'); circles[0].setAttribute('stroke-dashoffset', '97'); }
-      if (circles[1]) {
-        if (step.showBonusZone) {
-          circles[1].setAttribute('stroke-dasharray', '55 741');
-          circles[1].setAttribute('stroke-dashoffset', '0');
-        } else {
-          circles[1].setAttribute('stroke-dasharray', '0 741');
-          circles[1].setAttribute('stroke-dashoffset', '741');
-        }
-      }
-    }
-    // Shield in action info
-    if (step.showShield) {
-      const ai = document.getElementById('tutActionInfo');
-      ai.textContent = '🛡️';
-      ai.classList.remove('hidden');
-    }
-    // Attack window — zvýraznit tlačítko a zobrazit ⚔️ v timeru
-    if (step.showAttackWindow || step.showBonusZone) {
-      document.getElementById('tutAttackBtn').classList.add('active');
-      const ai = document.getElementById('tutActionInfo');
-      ai.textContent = '⚔️';
-      ai.classList.remove('hidden');
-    }
-    // Rapid — zobrazit plošky a target
-    if (step.showRapid) {
-      document.getElementById('tutTapLeft').classList.remove('hidden');
-      document.getElementById('tutTapRight').classList.remove('hidden');
-      document.getElementById('tutRapidTarget').classList.remove('hidden');
-      document.getElementById('tutArena').classList.add('rapid-active');
-    } else {
-      document.getElementById('tutArena').classList.remove('rapid-active');
-    }
-    // Checkmark — velká fajfka na posledním snímku
-    if (step.showCheckmark) {
-      document.getElementById('tutCheckmark').classList.remove('hidden');
-    }
-    // Monster types demo — zobrazit reálný vzhled monstra s typy
-    const nameEl = document.getElementById('tutEnemyName');
-    if (step.showMonsterTypes) {
-      // Stejná příšera jako na ostatních snímcích, jen se mění text
-      const demoMonsters = [
-        {name:'Vlk',type:'🩸',atk:'⚔️'},
-        {name:'Duch',type:'💧',atk:'🔮'},
-        {name:'Golem',type:'📈',atk:'⚔️'},
-        {name:'Démon',type:'🎯',atk:'🔮'},
-      ];
-      const idx = Math.floor(_tutorialStep / 2) % demoMonsters.length;
-      const m = demoMonsters[idx];
-      if (nameEl) nameEl.textContent = `${m.name} ${m.type}${m.atk}`;
-      nameEl.classList.remove('hidden');
-    } else if (step.showAttackTypes) {
-      const idx = Math.floor(_tutorialStep / 2) % 2;
-      if (idx === 0) {
-        if (nameEl) nameEl.textContent = 'Golem 📈⚔️';
-      } else {
-        if (nameEl) nameEl.textContent = 'Duch 💧🔮';
-      }
-      nameEl.classList.remove('hidden');
-    } else {
-      document.getElementById('tutMonster').textContent = '👹';
-      if (nameEl) { nameEl.textContent = ''; nameEl.classList.add('hidden'); }
-    }
-    // Sequence dots — šedé = hotovo, červené = chyba
-    const dots = document.querySelectorAll('#tutSeq .tut-seq-dot');
-    const seqContainer = document.getElementById('tutSeq');
-    if (step.seqDots) {
-      seqContainer.classList.add('tut-seq-highlight');
-    } else {
-      seqContainer.classList.remove('tut-seq-highlight');
-    }
-    dots.forEach((d,i) => {
-      d.className = 'tut-seq-dot';
-      if (step.seqDots) {
-        if (step.seqDots[i] === 'done') d.classList.add('done');
-        else if (step.seqDots[i] === 'error') d.classList.add('error');
-        else if (step.seqDots[i] >= 0 && i <= step.seqDots[i]) d.classList.add('done');
-        else if (step.seqDots[i] === 0 && i === 0) d.classList.add('active');
-      }
-    });
-    // Swipe animation
-    const swipe = document.getElementById('tutSwipe');
-    if (step.swipeDir) {
-      swipe.className = 'tutorial-swipe dir-' + step.swipeDir;
-      swipe.classList.remove('hidden');
-    } else {
-      swipe.classList.add('hidden');
-    }
-    // Tlačítko Další
-    const nextBtn = document.getElementById('tutNextBtn');
-    nextBtn.textContent = step.isFinal ? 'Dokončit' : 'Další';
   }
 
   // ===== BESTIARY =====
@@ -4834,6 +4770,35 @@
       html += `</div>`;
     });
     grid.innerHTML = html;
+  }
+
+  function renderSpellbook() {
+    const container = document.getElementById('spellbookList');
+    if (!container) return;
+    const cls = CLASSES[state.heroClass];
+    if (!cls || !cls.spells) { container.innerHTML = '<div class="card"><div class="card-subtitle">Nejprve si vyber povolání.</div></div>'; return; }
+    const subtitle = document.getElementById('spellbookSubtitle');
+    if (subtitle) subtitle.textContent = `Kouzla povolání: ${cls.name}`;
+    let html = '';
+    cls.spells.forEach(spell => {
+      const costKey = cls.resource === 'energy' ? '⚡ Energy' : '💢 Rage';
+      const cdText = spell.cooldown > 0 ? `${spell.cooldown}s` : '—';
+      const gcdText = spell.gcd > 0 ? `${spell.gcd}s` : '—';
+      html += `<div class="spellbook-card">
+        <div class="spellbook-icon"><img src="/assets/spells/${spell.id}.png" alt="${spell.name}"></div>
+        <div class="spellbook-info">
+          <div class="spellbook-name">${spell.name}</div>
+          <div class="spellbook-desc">${spell.desc}</div>
+          <div class="spellbook-stats">
+            <span>${costKey}: ${spell.cost}</span>
+            <span>⏱️ CD: ${cdText}</span>
+            <span>⚡ GCD: ${gcdText}</span>
+            ${spell.needsCombo ? '<span>🔗 Combo: ✅</span>' : ''}
+          </div>
+        </div>
+      </div>`;
+    });
+    container.innerHTML = html;
   }
 
   // ===== TALENTS =====
@@ -5126,6 +5091,9 @@
     const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); setSlotBorder('heroSlotHelmet', helm); }
     const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 0);
     const hss = $('heroSlotShield'); if (hss) { hss.classList.toggle('empty', !shield); setSlotBorder('heroSlotShield', shield); }
+    const offhand = ITEM_MAP[h.equip.shield];
+    const ho = $('heroSlotShieldIcon'); if (ho) ho.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'/assets/items/weapon_hunting_knife.png',tier:1}, 0);
+    const hos = $('heroSlotShield'); if (hos) { hos.classList.toggle('empty', !offhand); setSlotBorder('heroSlotShield', offhand); }
     const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); setSlotBorder('heroSlotRing1', r1); }
     const ham = $('heroSlotAmuletIcon'); if (ham) ham.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'/assets/items/amulet_bone.png',tier:1}, 0);
@@ -5263,11 +5231,11 @@
 
   function sellSlotItem(itemId, slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
     if (h.equip[slot] !== itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    const sellPrice = Math.round(item.cost * 0.5);
+    // Získat gold
     h.equip[slot] = defaults[slot];
     h.gold += sellPrice;
     h.baseDmg = getHeroDmg();
@@ -5307,6 +5275,9 @@
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); setSlotBorder('invSlotHelmet', helmet); }
     const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 0);
     const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); setSlotBorder('invSlotShield', shield); }
+    const offhand = ITEM_MAP[h.equip.shield];
+    const oEl = $('invSlotShieldIcon'); if (oEl) oEl.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'/assets/items/weapon_hunting_knife.png',tier:1}, 0);
+    const oS = $('invSlotShield'); if (oS) { oS.classList.toggle('empty', !offhand); setSlotBorder('invSlotShield', offhand); }
     const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); setSlotBorder('invSlotRing1', ring1); }
     const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'/assets/items/amulet_bone.png',tier:1}, 0);
@@ -5323,13 +5294,9 @@
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : item.type === 'amulet' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : `❤️${item.bonusHp}`;
         const r = RARITY[item.rarity] || RARITY.common;
-        html += `<div class="inv-grid-cell" data-idx="${i}" style="border-color:${r.border}">
+        html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="border-color:${r.border}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
           <div class="cell-name" style="color:${r.color}">${item.name}</div>
-          <div class="cell-actions">
-            <button class="btn-equip" onclick="event.stopPropagation();game.equipItem(${i})">🎽 Obléci</button>
-            <button class="btn-sell" onclick="event.stopPropagation();game.sellItem('${itemId}')">💰 ${Math.round(item.cost*0.5)}</button>
-          </div>
         </div>`;
       } else {
         html += '<div class="inv-grid-cell empty"></div>';
@@ -5405,57 +5372,80 @@
       $('invCompareStats').innerHTML = eStats;
       comparePanel.classList.remove('hidden');
     }
-    // Klik na buňku = přepnutí viditelnosti akcí + info panel
+    // Tap-to-equip: vybrat item v batohu → kliknout na slot
+    let _selectedInvIdx = null;
+    let _selectedSlot = null;
+    function clearSelection() {
+      _selectedInvIdx = null;
+      _selectedSlot = null;
+      document.querySelectorAll('.inv-grid-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
+    }
+    // Klik na item v batohu = vybrat (nebo equipnout, pokud je vybraný slot)
     grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
       cell.addEventListener('click', function(e) {
-        if (e.target.closest('.cell-actions')) return;
-        const idx = this.dataset.idx;
+        const idx = parseInt(this.dataset.idx);
         const itemId = inv[idx];
         const item = itemId ? ITEM_MAP[itemId] : null;
-        if (item) showItemInfo(item);
-        const actions = this.querySelector('.cell-actions');
-        if (!actions) return;
-        // Skrýt všechny ostatní (batoh + sloty)
-        grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
-        document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
-        if (!actions.classList.contains('visible')) {
-          actions.classList.add('visible');
+        if (!item) return;
+        // Pokud je vybraný equip slot, equipnout tam
+        if (_selectedSlot) {
+          equipItemToSlot(idx, _selectedSlot);
+          clearSelection();
+          return;
         }
+        // Jinak vybrat item
+        clearSelection();
+        _selectedInvIdx = idx;
+        this.classList.add('selected');
+        showItemInfo(item);
       });
     });
-    // Klik na equipment slot = akce (sundat/prodat) + info
-    const slotNames = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotAmulet:'amulet' };
-    Object.keys(slotNames).forEach(slotId => {
+    // Klik na equip slot = vybrat slot (nebo sundat, pokud je vybraný item)
+    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotAmulet:'amulet' };
+    Object.keys(slotMap).forEach(slotId => {
       const el = $(slotId);
       if (!el) return;
       el.addEventListener('click', function(e) {
-        if (e.target.closest('.cell-actions')) return;
-        const slot = slotNames[slotId];
+        const slot = slotMap[slotId];
+        const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
         const itemId = h.equip[slot];
-        const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+        const item = itemId ? ITEM_MAP[itemId] : null;
+        // Pokud je vybraný item v batohu, equipnout
+        if (_selectedInvIdx !== null) {
+          equipItemToSlot(_selectedInvIdx, slot);
+          clearSelection();
+          return;
+        }
+        // Pokud je slot prázdný, nic
         if (!itemId || itemId === defaults[slot]) return;
-        const item = ITEM_MAP[itemId];
-        if (item) showItemInfo(item);
-        // Skrýt ostatní akce (batoh + sloty)
-        grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
-        document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
-        // Zobrazit akce pro tento slot
-        const actionsEl = $(slotId + 'Actions');
-        if (actionsEl && item) {
-          actionsEl.innerHTML = `<button class="btn-equip" onclick="event.stopPropagation();game.unequipSlot('${slot}')">📦 Sundat</button>
-            <button class="btn-sell" onclick="event.stopPropagation();game.sellSlotItem('${itemId}','${slot}')">💰 ${Math.round(item.cost*0.5)}</button>`;
-          actionsEl.classList.add('visible');
+        // Pokud je vybraný slot, sundat
+        if (_selectedSlot === slot) {
+          unequipSlot(slot);
+          clearSelection();
+          return;
+        }
+        // Jinak vybrat slot
+        clearSelection();
+        _selectedSlot = slot;
+        this.classList.add('selected');
+        showItemInfo(item);
+      });
+    });
+    // Klik na prázdnou buňku = sundat vybraný slot
+    grid.querySelectorAll('.inv-grid-cell.empty').forEach(cell => {
+      cell.addEventListener('click', function(e) {
+        if (_selectedSlot) {
+          unequipSlot(_selectedSlot);
+          clearSelection();
         }
       });
     });
-    // Klik mimo buňky = schovat všechny akce + info panel
+    // Klik mimo buňky = schovat info panel
     const hideActions = (e) => {
       const cell = e.target.closest('.inv-grid-cell');
       if (cell && !cell.classList.contains('empty')) return;
       const slotEl = e.target.closest('.inv-equip-slot');
       if (slotEl) return;
-      grid.querySelectorAll('.cell-actions.visible').forEach(a => a.classList.remove('visible'));
-      document.querySelectorAll('.slot-actions.visible').forEach(a => a.classList.remove('visible'));
       const panel = $('invInfoPanel');
       if (panel) panel.classList.add('hidden');
       const comparePanel = $('invComparePanel');
@@ -5482,6 +5472,39 @@
     renderHero();
   }
 
+  function equipItemToSlot(invIdx, targetSlot) {
+    const h = state.hero;
+    const itemId = h.inventory[invIdx];
+    if (!itemId) return;
+    const item = ITEM_MAP[itemId];
+    if (!item) return;
+    // Zjistit správný slot podle typu itemu
+    const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', amulet:'amulet' };
+    let correctSlot = typeToSlot[item.type];
+    if (!correctSlot) return;
+    // Shield slot může přijmout: shield, weapon (dual wield), nebo cokoliv jako artefakt
+    if (targetSlot === 'shield' && (item.type === 'weapon' || item.type === 'shield' || item.type === 'offhand')) {
+      correctSlot = 'shield';
+    }
+    // Pokud target slot neodpovídá, nedělat nic
+    if (targetSlot !== correctSlot) return;
+    // Pokud je to weapon a target je shield, dát do shield slotu
+    if (item.type === 'weapon' && targetSlot === 'shield') {
+      h.inventory.splice(invIdx, 1);
+      if (h.equip.shield) h.inventory.push(h.equip.shield);
+      h.equip.shield = itemId;
+      h.baseDmg = getHeroDmg();
+      h.maxHp = getHeroMaxHp();
+      h.hp = h.maxHp;
+      saveGame();
+      renderInventory();
+      renderHero();
+      return;
+    }
+    // Jinak použít existující equipItem
+    equipItem(invIdx);
+  }
+
   function equipItem(invIdx) {
     const h = state.hero;
     const itemId = h.inventory[invIdx];
@@ -5491,15 +5514,23 @@
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     h.inventory.splice(invIdx, 1);
     if (item.type === 'weapon') {
-      // Obouruční zbraň (blade tier 4+) vyhodí štít zpět do batohu
+      // Obouruční zbraň (blade tier 4+) vyhodí štít i offhand zpět do batohu
       const isTwoHanded = item.weaponType === 'blade' && item.tier >= 4;
-      if (isTwoHanded && h.equip.shield) {
-        h.inventory.push(h.equip.shield);
-        h.equip.shield = null;
+      if (isTwoHanded) {
+        if (h.equip.shield) { h.inventory.push(h.equip.shield); h.equip.shield = null; }
       }
-      // Pokud má hráč štít a chce nasadit obouruční zbraň, štít je už vyhozen výše
-      if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
-      h.equip.weapon = itemId;
+      // Dual wield: pokud už má zbraň a classa povoluje dual wield, dát do shield slotu
+      const cls = CLASSES[state.heroClass];
+      const canDualWield = cls && cls.dualWield;
+      if (h.equip.weapon !== 'fists' && canDualWield && !isTwoHanded) {
+        // Přesunout současnou zbraň do shield slotu (nebo nahradit)
+        if (h.equip.shield) h.inventory.push(h.equip.shield);
+        h.equip.shield = h.equip.weapon;
+        h.equip.weapon = itemId;
+      } else {
+        if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
+        h.equip.weapon = itemId;
+      }
     } else if (item.type === 'armor') {
       if (h.equip.armor !== 'rags') h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
@@ -5688,6 +5719,32 @@
   function init() {
     state = loadSave();
 
+    // Splash screen — fade in, 2.5s, fade out, pak teprve zobrazit UI
+    const splash = document.getElementById('splashScreen');
+    if (splash) {
+      setTimeout(() => {
+        splash.classList.add('fade-out');
+        setTimeout(() => {
+          splash.classList.add('hidden');
+          // Až po splashi zobrazit class select nebo mapu
+          if (!state.heroClass) {
+            showScreen('classSelect');
+          } else {
+            showScreen('map');
+            renderMap();
+          }
+        }, 600);
+      }, 2500);
+    } else {
+      // Fallback — splash není, rovnou ukázat
+      if (!state.heroClass) {
+        showScreen('classSelect');
+      } else {
+        showScreen('map');
+        renderMap();
+      }
+    }
+
     // Přednačtení obrázků monster do cache pro okamžité zobrazení v souboji
     const allMonsterFaces = [];
     MONSTER_DB.forEach(theme => theme.forEach(m => {
@@ -5713,6 +5770,10 @@
     if (state.hero.maxMana === undefined) state.hero.maxMana = 50;
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
     if (state.heroClass === undefined) state.heroClass = null;
+    // Migrace: staré savy (bez resource polí) musí projít class selectem
+    if (state.heroClass && state.rage === undefined && state.energy === undefined) {
+      state.heroClass = null;
+    }
 
     // Nav-bar handlery musí být zaregistrované vždy, i když hráč ještě nevybral classu
     document.querySelectorAll('.nav-bar a').forEach(a => {
@@ -5724,8 +5785,8 @@
         else if (a.dataset.screen === 'hero') showScreen('hero');
         else if (a.dataset.screen === 'shop') showScreen('shop');
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
-        else if (a.dataset.screen === 'guide') showScreen('guide');
         else if (a.dataset.screen === 'bestiary') { showScreen('bestiary'); renderBestiary(); }
+        else if (a.dataset.screen === 'spellbook') { showScreen('spellbook'); renderSpellbook(); }
         firstUserInteraction();
       });
     });
@@ -5737,16 +5798,18 @@
       e.preventDefault();
       toggleTestMode();
     });
+    document.getElementById('clearSave').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('dungeonRecallV7');
+      state = defaultState();
+      saveGame();
+      showScreen('classSelect');
+    });
     document.getElementById('mbPauseBtn').addEventListener('click', (e) => {
       e.stopPropagation();
       toggleMapPause();
     });
 
-    // Pokud hráč ještě nemá vybranou classu, zobrazit výběr
-    if (!state.heroClass) {
-      showScreen('classSelect');
-      return;
-    }
     // Spustit BGM při první user interakci
     let _firstInteraction = true;
     function firstUserInteraction() {
@@ -5834,12 +5897,12 @@
 
   window.game = {
     showScreen, enterLocation, toggleDungeon,
-    upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, unequipItem, unequipSlot,
+    upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, activateSchool, resetTalents,
-    startTutorial, stopTutorial, advanceTutorial, prevTutorialStep,
-    toggleMapPause, toggleTutorialPause,
+    toggleMapPause,
     renderBestiary,
+    renderSpellbook,
     renameHero,
     showFaceSelect, closeFaceSelect, selectFace,
     selectClass,

@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <title>Dungeon Recall</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=121">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
 </head>
 <body>
 
@@ -15,14 +18,15 @@
   <a href="#" data-screen="talents"><img src="assets/menu-icons/talenty.png" alt="Talenty" class="nav-icon"></a>
   <a href="#" data-screen="inventory"><img src="assets/menu-icons/inventar.png" alt="Inventář" class="nav-icon"></a>
   <a href="#" data-screen="shop"><img src="assets/menu-icons/obchod.png" alt="Obchod" class="nav-icon"></a>
-  <a href="#" data-screen="guide"><img src="assets/menu-icons/navod.png" alt="Návod" class="nav-icon"></a>
   <a href="#" data-screen="bestiary"><img src="assets/menu-icons/bestiar.png" alt="Bestiář" class="nav-icon"></a>
   <a href="#" id="musicToggle"><img src="assets/menu-icons/music.png" alt="Hudba" class="nav-icon"></a>
   <a href="#" id="testToggle"><img src="assets/menu-icons/testmode.png" alt="Test" class="nav-icon"></a>
+  <a href="#" id="clearSave" style="color:#e94560;font-size:16px;font-weight:bold">🗑️</a>
+  <a href="#" data-screen="spellbook" style="color:#f1c40f;font-size:18px;font-weight:bold">📖</a>
 </nav>
 
 <!-- ===== CLASS SELECT ===== -->
-<div id="classSelectScreen" class="container">
+<div id="classSelectScreen" class="container hidden">
   <div class="card">
     <div class="card-title" style="text-align:center;font-size:20px">⚔️ Vyber si povolání</div>
     <div class="card-subtitle" style="text-align:center">Každé povolání má vlastní zdroj energie, talentové stromy a omezení na zbraně.</div>
@@ -53,10 +57,7 @@
 </div>
 
 <!-- ===== MAP ===== -->
-<div id="mapScreen" class="container">
-  <div class="map-guide-link">
-    <a href="#" onclick="game.showScreen('guide')"><span class="guide-icon">📖</span><span class="guide-text"><span class="guide-new">Nový?</span> Podívej se na návod!</span></a>
-  </div>
+<div id="mapScreen" class="container hidden">
   <div class="map-scroll" id="mapScroll">
     <!-- Dynamically generated -->
   </div>
@@ -74,7 +75,6 @@
     <div class="flex-between" style="margin-top:4px">
       <span id="mbEnemyHp" class="hidden">❤️ 0/0</span>
     </div>
-    <div class="monster-icons hidden" id="mbMonsterIcons"></div>
     <div class="arena-wrapper">
     <div class="boss-fight-arena" id="mbArena">
       <span class="damage-text hidden" id="mbDamageText"></span>
@@ -83,6 +83,7 @@
       <div class="attack-timer-ring" id="mbTimerRing">
         <svg viewBox="0 0 260 260" width="260" height="260" style="transform:rotate(-90deg)">
           <circle cx="130" cy="130" r="110" stroke="#f1c40f" stroke-width="12" fill="none" stroke-dasharray="691" stroke-dashoffset="691" class="timer-circle" id="mbPlayerTimerCircle"/>
+          <circle cx="130" cy="130" r="120" stroke="#f1c40f" stroke-width="8" fill="none" stroke-dasharray="754" stroke-dashoffset="754" class="timer-circle" id="mbOffhandTimerCircle" style="opacity:0.5"/>
           <circle cx="130" cy="130" r="95" stroke="#333" stroke-width="8" fill="none" class="enemy-timer-bg" id="mbEnemyTimerBg"/>
           <circle cx="130" cy="130" r="95" stroke="#e74c3c" stroke-width="8" fill="none" stroke-dasharray="597" stroke-dashoffset="597" class="enemy-timer-circle" id="mbEnemyTimerCircle"/>
         </svg>
@@ -282,29 +283,23 @@
   <div class="inv-equip-panel">
     <div class="inv-equip-slot" id="invSlotHelmet">
       <div class="inv-slot-icon" id="invSlotHelmetIcon">⛑️</div>
-      <div class="cell-actions slot-actions" id="invSlotHelmetActions"></div>
     </div>
     <div class="inv-equip-slot" id="invSlotArmor">
       <div class="inv-slot-icon" id="invSlotArmorIcon">🛡️</div>
-      <div class="cell-actions slot-actions" id="invSlotArmorActions"></div>
     </div>
     <div class="inv-equip-slot" id="invSlotWeapon">
       <div class="inv-slot-icon" id="invSlotWeaponIcon">⚔️</div>
-      <div class="cell-actions slot-actions" id="invSlotWeaponActions"></div>
     </div>
     <div class="inv-equip-slot" id="invSlotShield">
       <div class="inv-slot-icon" id="invSlotShieldIcon">🛡️</div>
-      <div class="cell-actions slot-actions" id="invSlotShieldActions"></div>
     </div>
   </div>
   <div class="inv-equip-panel" style="margin-top:0">
     <div class="inv-equip-slot" id="invSlotRing1">
       <div class="inv-slot-icon" id="invSlotRing1Icon">💍</div>
-      <div class="cell-actions slot-actions" id="invSlotRing1Actions"></div>
     </div>
     <div class="inv-equip-slot" id="invSlotAmulet">
       <div class="inv-slot-icon" id="invSlotAmuletIcon">📿</div>
-      <div class="cell-actions slot-actions" id="invSlotAmuletActions"></div>
     </div>
   </div>
   <!-- Grid batohu (scrollovatelný) -->
@@ -329,58 +324,6 @@
   </div>
 </div>
 
-<!-- ===== GUIDE ===== -->
-<div id="guideScreen" class="container hidden">
-  <div class="card">
-    <div class="card-title"><img src="assets/menu-icons/navod.png" class="page-icon" alt=""> Návod hrou</div>
-    <div class="card-subtitle">Každý útok monster se zobrazí šipkou. Podle barvy a vzhledu poznáš, jak na něj!</div>
-  </div>
-  <div class="guide-grid">
-    <div class="guide-card">
-      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#bbb" stroke="#bbb" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
-      <div class="guide-desc">Šedá šipka — <strong>swipni stejným směrem</strong>, kterým ukazuje. Základní pohyb v aréně.</div>
-    </div>
-    <div class="guide-card guide-heavy">
-      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><g><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(-3,0)" opacity="0.5"/><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#c4a84c" stroke="#c4a84c" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" transform="translate(3,0)"/></g></svg></div>
-      <div class="guide-desc">Dvě žluté šipky — <strong>swipni 2× stejným směrem</strong> během delšího timeru. První swipe připraví, druhý provede.</div>
-    </div>
-    <div class="guide-card guide-block">
-      <div class="guide-icon guide-icon-text">🛡️</div>
-      <div class="guide-desc">Místo šipky štít — <strong>nesmíš swipnout</strong>! Místo pohybu stiskni tlačítko 🛡️ (Blok). Swipnutí = zásah.</div>
-    </div>
-    <div class="guide-card guide-inverted">
-      <div class="guide-icon"><svg viewBox="0 0 16 16" width="48" height="48"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5fa87a" stroke="#5fa87a" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg></div>
-      <div class="guide-desc">Zelená šipka — <strong>swipni opačným směrem</strong>, než šipka ukazuje. Nahoru = dolů, doleva = doprava.</div>
-    </div>
-    <div class="guide-card guide-twin">
-      <div class="guide-icon"><svg viewBox="0 -2 16 20" width="48" height="48"><g transform="translate(-2.5,0)"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" opacity="0.5"/></g><g transform="translate(2.5,0)"><path d="M8 15L3 8L5.5 8L5.5 1L10.5 1L10.5 8L13 8L8 15Z" fill="#5a8aaa" stroke="#5a8aaa" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></g></svg></div>
-      <div class="guide-desc">Dvě modré šipky — <strong>swipni oba směry</strong>, na pořadí nezáleží. Levo-pravá = swipe vlevo a vpravo (nebo opačně).</div>
-    </div>
-    <div class="guide-card guide-rapid">
-      <div class="guide-icon guide-icon-text">⏰</div>
-      <div class="guide-desc">Budík s číslem a puntíky po stranách — <strong>ťukej</strong> na puntíky co nejrychleji, než vyprší timer. Nestihneš číslo = zásah!</div>
-    </div>
-    <div class="guide-card guide-attack">
-      <div class="guide-icon">
-        <svg viewBox="0 0 110 110" width="55" height="55" style="transform:rotate(-90deg)">
-          <circle cx="55" cy="55" r="44" stroke="#888" stroke-width="3" fill="none" stroke-dasharray="165 276" stroke-dashoffset="0"/>
-          <circle cx="55" cy="55" r="44" stroke="#f1c40f" stroke-width="7" fill="none" stroke-dasharray="55 276" stroke-dashoffset="165" opacity="0.85"/>
-        </svg>
-      </div>
-      <div class="guide-desc">Po odvrácení všech útoků se otevře <strong>útočné okno</strong>. Na timeru se objeví <strong>zlatá výseč</strong> — klikni na ⚔️ v jejím průběhu pro <strong>kritický zásah (×1.5 poškození)</strong>. Čím vyšší Obratnost, tím větší výseč!</div>
-    </div>
-    <div class="guide-card guide-monster-types">
-      <div class="guide-icon guide-icon-text"><span>🩸</span><span>💧</span><span>📈</span><span>🎯</span></div>
-      <div class="guide-desc"><strong>Typy monster</strong> — vedle jména vidíš ikonku:<br>🩸 = <strong>Lifestealer</strong> — při zásahu si léčí život<br>💧 = <strong>Manastealer</strong> — při zásahu krade manu<br>📈 = <strong>Improver</strong> — s každým zásahem sílí (+25%)<br>🎯 = <strong>Critmaster</strong> — 33% šance na 2.0× kritický zásah</div>
-    </div>
-    <div class="guide-card guide-attack-type">
-      <div class="guide-icon guide-icon-text"><span>⚔️</span><span>🔮</span></div>
-      <div class="guide-desc"><strong>Způsob útoku</strong>:<br>⚔️ = <strong>Melee</strong> — fyzický útok (červený projektil)<br>🔮 = <strong>Caster</strong> — magický útok (fialový projektil)<br><br>Ovlivňuje, jaký typ resistence na něj platí.</div>
-    </div>
-  </div>
-  <button class="btn btn-primary" style="margin-top:16px" onclick="game.startTutorial()">🎬 Spustit interaktivní návod</button>
-</div>
-
 <!-- ===== BESTIARY ===== -->
 <div id="bestiaryScreen" class="container hidden">
   <div class="card">
@@ -390,60 +333,43 @@
   <div class="bestiary-grid" id="bestiaryGrid"></div>
 </div>
 
+<!-- ===== SPELLBOOK ===== -->
+<div id="spellbookScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title">📖 Spellbook</div>
+    <div class="card-subtitle" id="spellbookSubtitle">Přehled kouzel pro vybranou classu.</div>
+  </div>
+  <div id="spellbookList"></div>
+</div>
+
 <!-- ===== PAUSE COUNTDOWN OVERLAY ===== -->
 <div id="pauseOverlay" class="pause-overlay hidden">
   <div class="countdown-number" id="pauseCountdownNumber">3</div>
 </div>
 
-<!-- ===== TUTORIAL OVERLAY ===== -->
-<div id="tutorialOverlay" class="tutorial-overlay hidden">
-  <div class="tutorial-scrim"></div>
-  <div class="tutorial-card">
-    <div class="tutorial-arena" id="tutArena">
-      <div class="tutorial-monster" id="tutMonster">👹</div>
-      <div class="tutorial-enemy-name" id="tutEnemyName"></div>
-      <svg id="tutArrow" class="boss-attack-arrow hidden" viewBox="0 0 16 16" width="60" height="60">
-        <path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-      </svg>
-      <div class="attack-timer-ring" id="tutRing">
-        <svg viewBox="0 0 260 260" width="260" height="260" style="transform:rotate(-90deg)">
-          <circle cx="130" cy="130" r="110" stroke="#888" stroke-width="12" fill="none" stroke-dasharray="691" stroke-dashoffset="691" class="timer-circle"/>
-          <circle cx="130" cy="130" r="118" stroke="#f1c40f" stroke-width="8" fill="none" stroke-dasharray="0 741" stroke-dashoffset="741" class="bonus-zone-circle" opacity="0.85"/>
-        </svg>
-        <span class="action-info-icon hidden" id="tutActionInfo"></span>
-      </div>
-      <div class="tutorial-swipe" id="tutSwipe">👆</div>
-      <div class="arena-block-btn" id="tutBlockBtn">🛡️</div>
-      <div class="arena-attack-btn" id="tutAttackBtn">⚔️</div>
-      <div class="rapid-tap-area rapid-tap-left hidden" id="tutTapLeft"><span class="rapid-tap-dot"></span></div>
-      <div class="rapid-tap-area rapid-tap-right hidden" id="tutTapRight"><span class="rapid-tap-dot"></span></div>
-      <div class="rapid-target hidden" id="tutRapidTarget">10</div>
-      <div class="tutorial-checkmark hidden" id="tutCheckmark">✅</div>
-      <div class="arena-pause-btn" id="tutPauseBtn" onclick="game.toggleTutorialPause()">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-          <line x1="7" y1="5" x2="7" y2="19"/>
-          <line x1="17" y1="5" x2="17" y2="19"/>
-        </svg>
-      </div>
-      <div class="seq-progress" id="tutSeq">
-        <span class="tut-seq-dot"></span>
-        <span class="tut-seq-dot"></span>
-        <span class="tut-seq-dot"></span>
-        <span class="tut-seq-dot"></span>
-        <span class="tut-seq-dot"></span>
-      </div>
-    </div>
-    <div class="tutorial-text-box" id="tutTextBox">
-      <div class="tutorial-text" id="tutText"></div>
-    </div>
-    <div class="tutorial-nav">
-      <button class="btn btn-secondary" id="tutPrevBtn" style="width:auto;padding:8px 14px;font-size:12px" onclick="game.prevTutorialStep()">Zpět</button>
-      <button class="btn btn-secondary" id="tutStopBtn" style="width:auto;padding:8px 14px;font-size:12px" onclick="game.stopTutorial()">Ukončit návod</button>
-    <button class="btn btn-primary" id="tutNextBtn" style="width:auto;padding:8px 20px;font-size:13px" onclick="game.advanceTutorial()">Další</button>
-    </div>
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-content">
+    <img src="icon-192.png" alt="Dungeon Recall" class="splash-icon">
+    <div class="splash-title">Dungeon Recall</div>
   </div>
 </div>
 
-<script src="game.js"></script>
+<!-- ===== SCRIPT ===== -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          window.location.reload();
+        }
+      });
+    });
+  });
+}
+</script>
+<script src="game.js?v=121"></script>
 </body>
 </html>
