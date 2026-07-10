@@ -4018,7 +4018,9 @@
           setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
         }
         playSFX(dodgeSfx);
-        advanceSequence();
+        // V auto-combatu se swing už resetoval v onAutoPlayerAttack/onAutoOffhandAttack
+        // Ve swipe režimu potřebujeme advanceSequence
+        if (!mb._combatLoop) advanceSequence();
         return;
       }
       if (roll < at.missChance + at.dodgeChance) {
@@ -4031,7 +4033,7 @@
           setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
         }
         playSFX(dodgeSfx);
-        advanceSequence();
+        if (!mb._combatLoop) advanceSequence();
         return;
       }
     }
