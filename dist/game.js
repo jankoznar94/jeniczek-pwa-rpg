@@ -3412,11 +3412,7 @@
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + mb.hot);
       mb.hotTicksLeft--;
     }
-    // Pasivní regenerace
-    const regen = getNatureRegen();
-    if (regen > 0) {
-      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + regen);
-    }
+    // Pasivní regenerace (prozatím vypnuto — staré school passives smazány)
     // Mana regen
     const h = state.hero;
     const eqAttrs = getEquipAttrs();
@@ -4585,9 +4581,6 @@
     if (mb.locId === 3 || mb.locId === 4) {
       mb._heatLevel = Math.min((mb._heatLevel || 0) + 1, 10);
     }
-    // Fire school passive — ignite
-    const ignitePct = getFireIgnitePct();
-    if (ignitePct > 0) { dmg = Math.round(dmg * (1 + ignitePct / 100)); }
     
     // 🎯 Crit chance ze zbraně — náhodná šance na 2.0× poškození
     const critChance = weapon.critChance || 0;
@@ -4599,82 +4592,6 @@
     
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
-    
-    // === PASIVNÍ EFEKTY ŠKOL ===
-    let applyPassives = true;
-    if (mb._activeSpellChillActive) applyPassives = false;
-        
-    // Fire — burn (žhnutí) — jednorázový bonus dmg při útoku
-    const burnPct = getFireBurnPct();
-    if (burnPct > 0 && applyPassives && state.activeSchool === 'fire') {
-      const wasBurning = mb.dot > 0;
-      const resistMult = getSchoolResistMult('fire');
-      const burnBonus = Math.round(dmg * burnPct / 100 * resistMult);
-      dmg += burnBonus;
-      // Inferno — pokud cíl už hořel, exploze 5.0×
-      if (wasBurning && hasFireInferno()) {
-        const infernoDmg = Math.round(dmg * 5.0);
-        mb.bossHp -= infernoDmg;
-        const dmgText = $('mbDamageText');
-        if (dmgText) {
-          dmgText.textContent = `💥 Inferno! -${infernoDmg}`;
-          dmgText.classList.remove('hidden');
-          setTimeout(() => dmgText.classList.add('hidden'), 800);
-        }
-      }
-    }
-    // Ice — chill (mráz)
-    const chillTicks = getIceChillTicks();
-    if (chillTicks > 0 && applyPassives && state.activeSchool === 'ice') {
-      const wasChilled = mb.chillTicksLeft > 0;
-      const chillPct = 25 + getIceChillAddedPct();
-      mb.chillPercent = Math.max(mb.chillPercent || 0, chillPct);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, chillTicks);
-      // Death Freeze — pokud cíl už zpomalen, krit 5.0×
-      if (wasChilled && hasIceDeathFreeze()) {
-        const deathDmg = Math.round(dmg * 5.0);
-        mb.bossHp -= deathDmg;
-        const dmgText = $('mbDamageText');
-        if (dmgText) {
-          dmgText.textContent = `💀 ${deathDmg}`;
-          dmgText.classList.remove('hidden');
-          setTimeout(() => dmgText.classList.add('hidden'), 800);
-        }
-      }
-    }
-    // Nature — poison (jed) — % z dmg/tick
-    const poisonPct = getNaturePoisonPct();
-    if (poisonPct > 0 && applyPassives && state.activeSchool === 'nature') {
-      const poisonDur = getNaturePoisonDuration();
-      const resistMult = getSchoolResistMult('nature');
-      const poisonDmg = Math.max(1, Math.round(dmg * poisonPct / 100 * resistMult));
-      mb.dot = poisonDmg;
-      mb.dotTicksLeft = poisonDur;
-      // Otrava — pokud má hráč pasivní capstone, blokuje life steal monstra
-      if (hasNatureRevitalize()) mb._poisonBlockHeal = true;
-    }
-    // Nature — heal (léčení HoT) — fixní HP/tick + % z vitality
-    const healAmt = getNatureHealPct();
-    if (healAmt > 0 && applyPassives && state.activeSchool === 'nature') {
-      const healDur = getNatureHealDuration();
-      const resistMult = getSchoolResistMult('nature');
-      const vitBonus = getNatureHealVitalityBonus();
-      mb.hot = Math.max(mb.hot || 0, Math.round(healAmt * resistMult) + vitBonus);
-      mb.hotTicksLeft = Math.max(mb.hotTicksLeft || 0, healDur);
-    }
-    // Physical — edge (ostří) — % bonus dmg
-    const edgePct = getPhysicalEdgePct();
-    if (edgePct > 0 && applyPassives && state.activeSchool === 'physical') {
-      const edgeBonus = Math.round(dmg * edgePct / 100);
-      dmg += edgeBonus;
-    }
-    // Physical — executioner (kat) — 5× dmg pod 20% HP
-    if (hasPhysicalExecutioner() && applyPassives && state.activeSchool === 'physical') {
-      const hpPct = (mb.bossHp / mb.maxBossHp) * 100;
-      if (hpPct <= 20) {
-        dmg = Math.round(dmg * 5.0);
-      }
-    }
     
     mb.bossHp -= dmg;
     const dmgText = $('mbDamageText');
@@ -4803,8 +4720,6 @@
     } else if (spellId === 'strongStrike') {
       const pct = 100 + lv * 50;
       let dmg = Math.round(baseDmg * pct / 100);
-      const rendCrit = getPhysicalRendCritDmg();
-      if (rendCrit > 0) dmg = Math.round(dmg * (1 + rendCrit / 100));
       mb.bossHp -= dmg;
       effectMsg = `💢 Silný úder! ${dmg} poškození!`;
       spawnCrossSlashEffect();
@@ -4816,8 +4731,6 @@
     } else if (spellId === 'slash') {
       const pct = 150 + lv * 50;
       let dmg = Math.round(baseDmg * pct / 100);
-      const rendCrit = getPhysicalRendCritDmg();
-      if (rendCrit > 0) dmg = Math.round(dmg * (1 + rendCrit / 100));
       mb.bossHp -= dmg;
       effectMsg = `⚡ Seknutí! ${dmg} poškození!`;
       spawnSlashEffect();
