@@ -1723,11 +1723,65 @@
 
     const isBoss = chosen.isBoss || false;
     const isReward = chosen.isReward || false;
+    const isFountain = !isBoss && !isReward && chosen.type === ROOM_TYPES.FOUNTAIN;
+    const isChest = !isBoss && !isReward && chosen.type === ROOM_TYPES.CHEST;
+    const isMerchantChoice = !isBoss && !isReward && chosen.type === ROOM_TYPES.MERCHANT;
 
     // Reset HP při vstupu do dungeonu (progress === 0)
     if (progress === 0) {
       state.hero.hp = state.hero.maxHp;
       state._floorLootDrops = [];
+    }
+
+    // Fountain — heal, žádný boj
+    if (isFountain) {
+      const healAmt = Math.round(state.hero.maxHp * 0.4);
+      state.hero.hp = Math.min(state.hero.maxHp, state.hero.hp + healAmt);
+      state.hero.mana = getHeroMaxMana();
+      state.locationProgress[locId] = progress + 1;
+      saveGame();
+      $('resultIcon').textContent = '🩸';
+      $('resultTitle').textContent = 'Léčivý pramen';
+      $('resultMsg').innerHTML = `<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">+${healAmt} HP</span></div><div class="result-stat"><span class="result-stat-icon">💧</span><span class="result-stat-val">Mana plná</span></div></div>`;
+      $('resultLootList').innerHTML = '';
+      $('resultBtn').innerHTML = '';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      showScreen('result');
+      return;
+    }
+
+    // Chest — gold + šance na item
+    if (isChest) {
+      const chestGold = 5 + locId * 3 + rand(0, 8);
+      state.hero.gold = (state.hero.gold || 0) + chestGold;
+      state.locationProgress[locId] = progress + 1;
+      let lootHtml = `<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${chestGold} gold</span></div>`;
+      if (Math.random() < 0.4) {
+        const freeItem = generateLootItem(progress, false);
+        if (freeItem) {
+          state.hero.inventory.push(freeItem.id);
+          ITEM_MAP[freeItem.id] = freeItem;
+          const rr = RARITY[freeItem.rarity] || RARITY.common;
+          lootHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(freeItem,24)}</span><span class="loot-scroll-name" style="color:${rr.color}">${freeItem.name}</span></div>`;
+        }
+      }
+      saveGame();
+      $('resultIcon').textContent = '💰';
+      $('resultTitle').textContent = 'Truhlice!';
+      $('resultMsg').innerHTML = `<div class="result-stats">${lootHtml}</div>`;
+      $('resultLootList').innerHTML = '';
+      $('resultBtn').innerHTML = '';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      showScreen('result');
+      return;
+    }
+
+    // Merchant — otevřít shop
+    if (isMerchantChoice) {
+      state.locationProgress[locId] = progress + 1;
+      saveGame();
+      showScreen('shop');
+      return;
     }
     const playerMaxHp = state.hero.maxHp || 100;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
