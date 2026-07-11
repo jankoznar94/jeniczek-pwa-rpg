@@ -23,6 +23,7 @@
   <a href="#" id="testToggle"><img src="assets/menu-icons/testmode.png" alt="Test" class="nav-icon"></a>
   <a href="#" id="clearSave" style="color:#e94560;font-size:16px;font-weight:bold">🗑️</a>
   <a href="#" data-screen="spellbook" style="color:#f1c40f;font-size:18px;font-weight:bold">📖</a>
+  <a href="#" data-screen="items" style="color:#888;font-size:18px;font-weight:bold">📦</a>
 </nav>
 
 <!-- ===== CLASS SELECT ===== -->
@@ -336,10 +337,19 @@
 <!-- ===== SPELLBOOK ===== -->
 <div id="spellbookScreen" class="container hidden">
   <div class="card">
-    <div class="card-title">📖 Spellbook</div>
+    <div class="card-title">📖 Kniha kouzel</div>
     <div class="card-subtitle" id="spellbookSubtitle">Přehled kouzel pro vybranou classu.</div>
   </div>
   <div id="spellbookList"></div>
+</div>
+
+<!-- ===== ITEMS REFERENCE ===== -->
+<div id="itemsScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title">📦 Přehled předmětů</div>
+    <div class="card-subtitle">Base itemy, affixy a unique předměty.</div>
+  </div>
+  <div id="itemsContent"></div>
 </div>
 
 <!-- ===== PAUSE COUNTDOWN OVERLAY ===== -->

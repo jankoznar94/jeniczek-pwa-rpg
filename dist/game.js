@@ -586,16 +586,12 @@
   const ITEMS = [
     // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
-    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, icon:'🪢', iconImg:'' },
     // === ZBRANĚ — magické (staff) ===
     { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
     { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
     { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
-    { id:'flameSword', name:'Plamená hůl', type:'weapon', baseDmg:18, bonusHp:0, bonusMana:40, cost:70, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1500 },
-    { id:'longsword', name:'Měsíční hůl', type:'weapon', baseDmg:22, bonusHp:0, bonusMana:50, cost:95, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:1400 },
-    { id:'archStaff', name:'Arcimágova hůl', type:'weapon', baseDmg:30, bonusHp:0, bonusMana:80, cost:200, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:5, swingMs:1300 },
     // === ZBRANĚ — fyzické (blade) ===
     { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
     { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
@@ -604,19 +600,15 @@
     { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000 },
     { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100 },
     { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000 },
-    { id:'warHammer', name:'Temný meč', type:'weapon', baseDmg:24, bonusHp:0, critChance:10, cost:120, icon:'⚔️', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2200 },
     { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
     { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
-    { id:'excalibur', name:'Arcimágův meč', type:'weapon', baseDmg:35, bonusHp:30, critChance:25, cost:220, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:6, swingMs:2000 },
     { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
     // === BRNĚNÍ ===
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
     { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'/assets/items/armor_scale.png', tier:3 },
-    { id:'plate', name:'Vyšívaný hábit', type:'armor', baseDmg:0, bonusHp:80, bonusMana:20, defense:30, cost:80, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
     { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:30, cost:110, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
     { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:35, cost:160, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:5 },
-    { id:'adamantPlate', name:'Arcimágův hábit', type:'armor', baseDmg:0, bonusHp:190, bonusMana:50, defense:40, cost:250, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:6 },
     // === HELMY ===
     { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, defense:8, cost:15, icon:'🎭', iconImg:'/assets/items/helmet_linen_hood.png', tier:1 },
     { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:11, cost:30, icon:'⛑️', iconImg:'/assets/items/helmet_iron_helm.png', tier:2 },
@@ -640,6 +632,254 @@
     { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'/assets/items/amulet_ruby.png', tier:5 },
     { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'/assets/items/amulet_arcane.png', tier:6 },
   ];
+
+  // ===== AFFIX DATABÁZE (prefixy + suffixy) =====
+  // Každý affix: id, name, type (prefix/suffix), group (stejná group = vzájemně se vylučují),
+  // minIlvl, weight (vyšší = častější), types (kompatibilní sloty),
+  // stats: { statName: [min, max] }, tint: barva overlay
+  const AFFIXES = [
+    // === PREFIXY ===
+    { id:'fiery', name:'Ohnivý', type:'prefix', group:1, minIlvl:5, weight:8,
+      types:['weapon'], stats:{ fireDmg:[3,8] }, tint:'#e94560' },
+    { id:'icy', name:'Ledový', type:'prefix', group:1, minIlvl:8, weight:8,
+      types:['weapon'], stats:{ iceDmg:[3,8] }, tint:'#4a7dff' },
+    { id:'strong', name:'Silný', type:'prefix', group:2, minIlvl:3, weight:10,
+      types:['weapon'], stats:{ baseDmg:[2,5] }, tint:'#9c27b0' },
+    { id:'sturdy', name:'Pevný', type:'prefix', group:3, minIlvl:3, weight:10,
+      types:['armor','shield','helmet'], stats:{ defense:[3,8] }, tint:'#888' },
+    { id:'vital', name:'Vitální', type:'prefix', group:4, minIlvl:5, weight:9,
+      types:['armor','helmet','ring','amulet'], stats:{ bonusHp:[10,25] }, tint:'#2ecc71' },
+    { id:'arcane', name:'Mocný', type:'prefix', group:5, minIlvl:5, weight:8,
+      types:['weapon','ring','amulet'], stats:{ bonusMana:[5,15] }, tint:'#4a7dff' },
+    { id:'keen', name:'Obratný', type:'prefix', group:6, minIlvl:8, weight:7,
+      types:['weapon','ring'], stats:{ hitRating:[3,8] }, tint:'#f1c40f' },
+    { id:'sharp', name:'Bystrý', type:'prefix', group:7, minIlvl:10, weight:6,
+      types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
+    { id:'bloody', name:'Krvavý', type:'prefix', group:8, minIlvl:12, weight:5,
+      types:['weapon'], stats:{ lifesteal:[2,5] }, tint:'#e94560' },
+    { id:'mystic', name:'Záhadný', type:'prefix', group:9, minIlvl:8, weight:6,
+      types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
+    { id:'dexterous', name:'Hbitý', type:'prefix', group:10, minIlvl:8, weight:6,
+      types:['weapon','ring','amulet'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
+    { id:'poisoned', name:'Jedovatý', type:'prefix', group:11, minIlvl:10, weight:5,
+      types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
+    { id:'manaRegen', name:'Obnovující', type:'prefix', group:12, minIlvl:8, weight:6,
+      types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
+    { id:'skillful', name:'Dovedný', type:'prefix', group:13, minIlvl:10, weight:5,
+      types:['weapon','ring','amulet'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
+    // === SUFFIXY ===
+    { id:'ofPower', name:'Moci', type:'suffix', group:101, minIlvl:5, weight:10,
+      types:['weapon'], stats:{ baseDmg:[2,5] }, tint:'#9c27b0' },
+    { id:'ofProtection', name:'Ochrany', type:'suffix', group:102, minIlvl:5, weight:10,
+      types:['armor','shield','helmet'], stats:{ defense:[3,8] }, tint:'#888' },
+    { id:'ofLife', name:'Života', type:'suffix', group:103, minIlvl:8, weight:9,
+      types:['armor','helmet','ring','amulet'], stats:{ bonusHp:[10,25] }, tint:'#2ecc71' },
+    { id:'ofMana', name:'Many', type:'suffix', group:104, minIlvl:8, weight:8,
+      types:['ring','amulet','weapon'], stats:{ bonusMana:[5,15] }, tint:'#4a7dff' },
+    { id:'ofAccuracy', name:'Přesnosti', type:'suffix', group:105, minIlvl:10, weight:7,
+      types:['weapon','ring'], stats:{ hitRating:[3,8] }, tint:'#f1c40f' },
+    { id:'ofSpeed', name:'Rychlosti', type:'suffix', group:106, minIlvl:12, weight:5,
+      types:['weapon'], stats:{ swingMs:[-200,-100] }, tint:'#1abc9c' },
+    { id:'ofCritical', name:'Kritičnosti', type:'suffix', group:107, minIlvl:12, weight:6,
+      types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
+    { id:'ofWisdom', name:'Moudrosti', type:'suffix', group:108, minIlvl:10, weight:6,
+      types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
+    { id:'ofStrength', name:'Síly', type:'suffix', group:109, minIlvl:10, weight:6,
+      types:['ring','amulet','armor'], stats:{ str:[2,6] }, tint:'#e94560' },
+    { id:'ofEndurance', name:'Odolnosti', type:'suffix', group:110, minIlvl:10, weight:6,
+      types:['ring','amulet','armor'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
+    { id:'ofDexterity', name:'Obratnosti', type:'suffix', group:111, minIlvl:10, weight:6,
+      types:['ring','amulet','weapon'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
+    { id:'ofManaRegen', name:'Regenerace', type:'suffix', group:112, minIlvl:10, weight:5,
+      types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
+    { id:'ofSkill', name:'Dovednosti', type:'suffix', group:113, minIlvl:12, weight:5,
+      types:['ring','amulet','weapon'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
+    { id:'ofVenom', name:'Jed', type:'suffix', group:114, minIlvl:12, weight:4,
+      types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
+  ];
+
+  // ===== UNIQUE ITEMY (fixní sady affixů) =====
+  // uniqueProp: { type, value, desc } — unikátní vlastnost mimo affixy
+  const UNIQUE_ITEMS = [
+    // === STAFF (Mage) ===
+    { id:'unique_dagger', name:'Hůlka počátků', baseId:'dagger',
+      affixIds:['arcane','ofMana'], minLevel:1, tier:2,
+      iconImg:'/assets/items/staff_wooden.png', icon:'🪄',
+      uniqueProp:{ type:'freeCast', value:10, desc:'10% šance sešle kouzlo zdarma' } },
+    { id:'unique_shortsword', name:'Planoucí hůlka', baseId:'shortsword',
+      affixIds:['fiery','ofPower'], minLevel:2, tier:3,
+      iconImg:'/assets/items/staff_fire.png', icon:'🪄',
+      uniqueProp:{ type:'skillDmgBonus', value:15, desc:'+15% fire skill damage' } },
+    { id:'unique_sword', name:'Mrazivá hůl', baseId:'sword',
+      affixIds:['icy','ofWisdom'], minLevel:2, tier:3,
+      iconImg:'/assets/items/staff_ice.png', icon:'🪄',
+      uniqueProp:{ type:'skillDmgBonus', value:15, desc:'+15% ice skill damage' } },
+    { id:'unique_battleAxe', name:'Bouřná hůl', baseId:'battleAxe',
+      affixIds:['keen','ofSpeed'], minLevel:3, tier:4,
+      iconImg:'/assets/items/staff_lightning.png', icon:'🪄',
+      uniqueProp:{ type:'castSpeed', value:10, desc:'+10% cast speed' } },
+    { id:'unique_spear', name:'Hvězdná hůl', baseId:'spear',
+      affixIds:['arcane','ofCritical'], minLevel:3, tier:4,
+      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      uniqueProp:{ type:'magicCrit', value:5, desc:'+5% magic crit chance' } },
+    { id:'unique_flameSword', name:'Plamená hůl', baseId:'flameSword',
+      affixIds:['fiery','ofPower'], minLevel:4, tier:5,
+      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      uniqueProp:{ type:'doubleFireCrit', value:20, desc:'20% šance při critu zdvojnásobí fire dmg' } },
+    { id:'unique_longsword', name:'Měsíční hůl', baseId:'longsword',
+      affixIds:['mystic','ofMana'], minLevel:4, tier:5,
+      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      uniqueProp:{ type:'manaRegenFlat', value:2, desc:'+2 mana/sec regen' } },
+    { id:'unique_archStaff', name:'Arcimágova hůl', baseId:'archStaff',
+      affixIds:['skillful','ofWisdom'], minLevel:5, tier:6,
+      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      uniqueProp:{ type:'skillDmgBonus', value:20, desc:'+20% skill damage' } },
+
+    // === BLADE (Barbar + Assassin) ===
+    { id:'unique_ironSword', name:'Železný meč', baseId:'ironSword',
+      affixIds:['strong','ofPower'], minLevel:1, tier:2,
+      iconImg:'/assets/items/weapon_iron_sword.png', icon:'⚔️',
+      uniqueProp:{ type:'defenseBonus', value:5, desc:'+5 defense při držení' } },
+    { id:'unique_huntingKnife', name:'Lovecký nůž', baseId:'huntingKnife',
+      affixIds:['keen','ofAccuracy'], minLevel:1, tier:2,
+      iconImg:'/assets/items/weapon_hunting_knife.png', icon:'🗡️',
+      uniqueProp:{ type:'critDmgBonus', value:10, desc:'+10% crit damage' } },
+    { id:'unique_flame_sword', name:'Plamenný meč', baseId:'broadSword',
+      affixIds:['fiery','ofCritical'], minLevel:2, tier:3,
+      iconImg:'/assets/items/weapon_broad_sword.png', icon:'⚔️',
+      uniqueProp:{ type:'fireProc', value:15, desc:'15% šance přidá fire dmg' } },
+    { id:'unique_sabre', name:'Šavle větru', baseId:'sabre',
+      affixIds:['keen','ofSpeed'], minLevel:2, tier:3,
+      iconImg:'/assets/items/weapon_sabre.png', icon:'🗡️',
+      uniqueProp:{ type:'attackSpeed', value:10, desc:'+10% attack speed' } },
+    { id:'unique_battleAxePhys', name:'Bojová sekera', baseId:'battleAxePhys',
+      affixIds:['strong','ofStrength'], minLevel:3, tier:4,
+      iconImg:'/assets/items/weapon_battle_axe.png', icon:'🪓',
+      uniqueProp:{ type:'doubleHit', value:20, desc:'20% šance na double hit' } },
+    { id:'unique_claymore', name:'Obouruční meč', baseId:'claymore',
+      affixIds:['sharp','ofCritical'], minLevel:4, tier:5,
+      iconImg:'/assets/items/weapon_claymore.png', icon:'⚔️',
+      uniqueProp:{ type:'doubleDmg', value:10, desc:'10% šance na double damage' } },
+    { id:'unique_warAxe', name:'Válečná sekera', baseId:'warAxe',
+      affixIds:['bloody','ofStrength'], minLevel:4, tier:5,
+      iconImg:'/assets/items/weapon_war_axe.png', icon:'🪓',
+      uniqueProp:{ type:'lifestealBonus', value:20, desc:'+20% lifesteal' } },
+    { id:'unique_greatSword', name:'Velký meč', baseId:'greatSword',
+      affixIds:['sharp','ofStrength'], minLevel:5, tier:6,
+      iconImg:'/assets/items/weapon_great_sword.png', icon:'⚔️',
+      uniqueProp:{ type:'baseDmgBonus', value:15, desc:'+15% base damage' } },
+    { id:'unique_greatAxe', name:'Dračí sekera', baseId:'greatAxe',
+      affixIds:['fiery','ofPower'], minLevel:5, tier:6,
+      iconImg:'/assets/items/weapon_war_hammer.png', icon:'🪓',
+      uniqueProp:{ type:'fireProcDmg', value:50, desc:'10% šance způsobí 50% base dmg jako fire' } },
+    { id:'unique_giantHammer', name:'Obří kladivo', baseId:'giantHammer',
+      affixIds:['strong','ofEndurance'], minLevel:6, tier:7,
+      iconImg:'/assets/items/weapon_giant_hammer.png', icon:'🔨',
+      uniqueProp:{ type:'stunProc', value:15, desc:'15% šance omráčí na 1s' } },
+
+    // === ARMOR ===
+    { id:'unique_leather', name:'Lněný hábit', baseId:'leather',
+      affixIds:['arcane','ofMana'], minLevel:1, tier:2,
+      iconImg:'/assets/items/armor_leather.png', icon:'👘',
+      uniqueProp:{ type:'skillDmgBonus', value:5, desc:'+5% skill damage' } },
+    { id:'unique_chainmail', name:'Kožený hábit', baseId:'chainmail',
+      affixIds:['keen','ofLife'], minLevel:2, tier:3,
+      iconImg:'/assets/items/armor_chainmail.png', icon:'👘',
+      uniqueProp:{ type:'dodgeBonus', value:5, desc:'+5% dodge chance' } },
+    { id:'unique_bulletproof', name:'Neprůstřelná kůže', baseId:'scale',
+      affixIds:['sturdy','ofLife'], minLevel:3, tier:4,
+      iconImg:'/assets/items/armor_scale.png', icon:'👘',
+      uniqueProp:{ type:'dmgReduce', value:50, desc:'5% šance sníží incoming dmg o 50%' } },
+    { id:'unique_fullPlate', name:'Kroužkový hábit', baseId:'fullPlate',
+      affixIds:['sturdy','ofEndurance'], minLevel:4, tier:5,
+      iconImg:'/assets/items/armor_plate.png', icon:'👘',
+      uniqueProp:{ type:'defenseMult', value:10, desc:'+10% k defense (multiplikativně)' } },
+    { id:'unique_dragonScale', name:'Dračí hábit', baseId:'dragonScale',
+      affixIds:['vital','ofLife'], minLevel:5, tier:6,
+      iconImg:'/assets/items/armor_dragon_scale.png', icon:'👘',
+      uniqueProp:{ type:'dmgReflect', value:20, desc:'10% šance odrazí 20% dmg zpět' } },
+
+    // === HELMET ===
+    { id:'unique_linenHood', name:'Lněná kápě', baseId:'linenHood',
+      affixIds:['mystic','ofWisdom'], minLevel:1, tier:2,
+      iconImg:'/assets/items/helmet_linen_hood.png', icon:'🎭',
+      uniqueProp:{ type:'hitRatingBonus', value:5, desc:'+5 hit rating' } },
+    { id:'unique_ironHelm', name:'Železná helma', baseId:'ironHelm',
+      affixIds:['sturdy','ofStrength'], minLevel:2, tier:3,
+      iconImg:'/assets/items/helmet_iron_helm.png', icon:'⛑️',
+      uniqueProp:{ type:'stunResist', value:5, desc:'+5% stun resistance' } },
+    { id:'unique_crown_wisdom', name:'Koruna moudrosti', baseId:'steelHelm',
+      affixIds:['mystic','ofMana'], minLevel:3, tier:4,
+      iconImg:'/assets/items/helmet_steel_helm.png', icon:'⛑️',
+      uniqueProp:{ type:'bonusTalent', value:1, desc:'+1 k náhodnému talentu' } },
+    { id:'unique_crown', name:'Arcimágova koruna', baseId:'crown',
+      affixIds:['skillful','ofWisdom'], minLevel:5, tier:6,
+      iconImg:'/assets/items/helmet_crown.png', icon:'👑',
+      uniqueProp:{ type:'skillDmgBonus', value:10, desc:'+10% skill damage' } },
+
+    // === SHIELD ===
+    { id:'unique_woodenShield', name:'Dřevěný štít', baseId:'woodenShield',
+      affixIds:['sturdy','ofProtection'], minLevel:1, tier:2,
+      iconImg:'/assets/items/shield_wooden.png', icon:'🛡️',
+      uniqueProp:{ type:'blockBonus', value:5, desc:'+5% block chance' } },
+    { id:'unique_leatherShield', name:'Kožený štít', baseId:'leatherShield',
+      affixIds:['vital','ofLife'], minLevel:2, tier:3,
+      iconImg:'/assets/items/shield_leather.png', icon:'🛡️',
+      uniqueProp:{ type:'dodgeBonus', value:3, desc:'+3% dodge chance' } },
+    { id:'unique_shield_endurance', name:'Štít odolnosti', baseId:'ironShield',
+      affixIds:['sturdy','ofLife'], minLevel:3, tier:4,
+      iconImg:'/assets/items/shield_iron.png', icon:'🛡️',
+      uniqueProp:{ type:'fullBlock', value:10, desc:'10% šance při bloku absorbuje 100% dmg' } },
+    { id:'unique_steelShield', name:'Ocelový štít', baseId:'steelShield',
+      affixIds:['sturdy','ofEndurance'], minLevel:4, tier:5,
+      iconImg:'/assets/items/shield_steel.png', icon:'🛡️',
+      uniqueProp:{ type:'blockReflect', value:30, desc:'10% šance při bloku odrazí 30% dmg' } },
+    { id:'unique_paladinShield', name:'Paladinův štít', baseId:'paladinShield',
+      affixIds:['vital','ofStrength'], minLevel:5, tier:6,
+      iconImg:'/assets/items/shield_paladin.png', icon:'🛡️',
+      uniqueProp:{ type:'spellBlock', value:15, desc:'15% šance zablokuje kouzlo' } },
+
+    // === RING ===
+    { id:'unique_copperRing', name:'Měděný prsten', baseId:'copperRing',
+      affixIds:['arcane','ofMana'], minLevel:1, tier:2,
+      iconImg:'/assets/items/ring_copper.png', icon:'💍',
+      uniqueProp:{ type:'manaRegenFlat', value:1, desc:'+1 mana/sec regen' } },
+    { id:'unique_ring_blood', name:'Prsten krve', baseId:'silverRing',
+      affixIds:['bloody','ofPower'], minLevel:3, tier:4,
+      iconImg:'/assets/items/ring_silver.png', icon:'💍',
+      uniqueProp:{ type:'killHeal', value:10, desc:'10% šance při killu obnoví 10% HP' } },
+    { id:'unique_goldRing', name:'Zlatý prsten', baseId:'goldRing',
+      affixIds:['sharp','ofCritical'], minLevel:4, tier:5,
+      iconImg:'/assets/items/ring_gold.png', icon:'💍',
+      uniqueProp:{ type:'critDmgBonus', value:10, desc:'+10% crit damage' } },
+    { id:'unique_gemRing', name:'Drahokamový prsten', baseId:'gemRing',
+      affixIds:['mystic','ofWisdom'], minLevel:5, tier:6,
+      iconImg:'/assets/items/ring_gem.png', icon:'💍',
+      uniqueProp:{ type:'skillDmgBonus', value:5, desc:'+5% skill damage' } },
+
+    // === AMULET ===
+    { id:'unique_boneAmulet', name:'Kostěný amulet', baseId:'boneAmulet',
+      affixIds:['vital','ofLife'], minLevel:1, tier:2,
+      iconImg:'/assets/items/amulet_bone.png', icon:'📿',
+      uniqueProp:{ type:'hpBonus', value:5, desc:'+5% HP' } },
+    { id:'unique_amulet_power', name:'Amulet moci', baseId:'silverAmulet',
+      affixIds:['sharp','ofStrength'], minLevel:3, tier:4,
+      iconImg:'/assets/items/amulet_silver.png', icon:'📿',
+      uniqueProp:{ type:'baseDmgBonus', value:5, desc:'+5% base damage' } },
+    { id:'unique_goldAmulet', name:'Zlatý amulet', baseId:'goldAmulet',
+      affixIds:['arcane','ofMana'], minLevel:4, tier:5,
+      iconImg:'/assets/items/amulet_gold.png', icon:'📿',
+      uniqueProp:{ type:'manaBonus', value:5, desc:'+5% mana' } },
+    { id:'unique_rubyAmulet', name:'Rubínový amulet', baseId:'rubyAmulet',
+      affixIds:['fiery','ofCritical'], minLevel:5, tier:6,
+      iconImg:'/assets/items/amulet_ruby.png', icon:'📿',
+      uniqueProp:{ type:'fireProcDmg', value:30, desc:'10% šance způsobí 30% base dmg jako fire' } },
+    { id:'unique_arcaneAmulet', name:'Arcánní amulet', baseId:'arcaneAmulet',
+      affixIds:['skillful','ofWisdom'], minLevel:6, tier:7,
+      iconImg:'/assets/items/amulet_arcane.png', icon:'📿',
+      uniqueProp:{ type:'skillDmgBonus', value:10, desc:'+10% skill damage' } },
+  ];
+
   const ITEM_MAP = {}; ITEMS.forEach(i => ITEM_MAP[i.id] = i);
   // Mapa pro generované loot itemy (doplňuje ITEM_MAP)
   let _lootItemMap = {};
@@ -648,21 +888,198 @@
     return ITEM_MAP[id] || _lootItemMap[id] || null;
   }
 
+  // ===== LOOT GENERATION =====
+  // Quality podle počtu affixů: normal(0), magic(1-2), rare(3-4), unique(5+)
+  const QUALITY_COLORS = {
+    normal: '#888',
+    magic: '#4a7dff',
+    rare: '#ffd700',
+    unique: '#e94560'
+  };
+
+  function getQualityColor(item) {
+    if (item.unique) return QUALITY_COLORS.unique;
+    const n = (item.affixes || []).length;
+    if (n >= 3) return QUALITY_COLORS.rare;
+    if (n >= 1) return QUALITY_COLORS.magic;
+    return QUALITY_COLORS.normal;
+  }
+
+  function rollQuality() {
+    const roll = Math.random() * 100;
+    if (roll < 1) return 'unique';       // 1% unique
+    if (roll < 6) return 'rare';          // 5% rare
+    if (roll < 30) return 'magic';        // 24% magic
+    return 'normal';                      // 70% common
+  }
+
+  function pickWeighted(arr, weightKey) {
+    const total = arr.reduce((s, a) => s + a[weightKey], 0);
+    let r = Math.random() * total;
+    for (const a of arr) {
+      r -= a[weightKey];
+      if (r <= 0) return a;
+    }
+    return arr[arr.length - 1];
+  }
+
+  function rollStat(statRange) {
+    return statRange[0] + Math.floor(Math.random() * (statRange[1] - statRange[0] + 1));
+  }
+
+  function generateLootItemWithAffixes(baseItem, quality, monsterLevel) {
+    const ilvl = monsterLevel;
+
+    // Filtrovat affixy: minIlvl <= ilvl, kompatibilní typ
+    const candidates = AFFIXES.filter(a =>
+      a.minIlvl <= ilvl && a.types.includes(baseItem.type));
+
+    // Rozdělit na prefixy a suffixy
+    const prefixes = candidates.filter(a => a.type === 'prefix');
+    const suffixes = candidates.filter(a => a.type === 'suffix');
+
+    let chosenAffixes = [];
+    let usedGroups = new Set();
+
+    function pickAffix(pool) {
+      const available = pool.filter(a => !usedGroups.has(a.group));
+      if (available.length === 0) return null;
+      return pickWeighted(available, 'weight');
+    }
+
+    if (quality === 'magic') {
+      // Magic: 1-2 affixy (max 1 prefix + 1 suffix)
+      const p = pickAffix(prefixes);
+      if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
+      const s = pickAffix(suffixes);
+      if (s) { chosenAffixes.push(s); usedGroups.add(s.group); }
+    } else if (quality === 'rare') {
+      // Rare: 3 affixy (střídavě prefix/suffix)
+      for (let i = 0; i < 3; i++) {
+        const pool = (i % 2 === 0) ? prefixes : suffixes;
+        const a = pickAffix(pool);
+        if (a) { chosenAffixes.push(a); usedGroups.add(a.group); }
+      }
+    }
+
+    // Aplikovat staty z affixů na base
+    const lootItem = {
+      ...baseItem,
+      id: 'loot_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      affixes: chosenAffixes,
+      quality: quality,
+      ilvl: ilvl,
+      // Base staty
+      baseDmg: baseItem.baseDmg || 0,
+      bonusHp: baseItem.bonusHp || 0,
+      bonusMana: baseItem.bonusMana || 0,
+      defense: baseItem.defense || 0,
+      critChance: baseItem.critChance || 0,
+      hitRating: baseItem.hitRating || 0,
+      swingMs: baseItem.swingMs || 0,
+      // Affix staty (přičtou se)
+      fireDmg: 0,
+      iceDmg: 0,
+      lifesteal: 0,
+      str: 0,
+      vit: 0,
+      int: 0,
+      dex: 0,
+      skillDmg: 0,
+      manaRegen: 0,
+      poisonDmg: 0,
+    };
+
+    // Aplikovat affix staty
+    chosenAffixes.forEach(a => {
+      Object.keys(a.stats).forEach(stat => {
+        const val = rollStat(a.stats[stat]);
+        if (stat === 'swingMs') {
+          lootItem[stat] += val; // záporné = rychlejší
+        } else {
+          lootItem[stat] += val;
+        }
+      });
+    });
+
+    // Level requirement
+    const maxAffixIlvl = chosenAffixes.length > 0
+      ? Math.max(...chosenAffixes.map(a => a.minIlvl))
+      : 0;
+    lootItem.lvlReq = Math.floor(0.75 * maxAffixIlvl);
+
+    // Název: prefix + base + suffix
+    const prefixName = chosenAffixes.filter(a => a.type === 'prefix').map(a => a.name).join(' ');
+    const suffixName = chosenAffixes.filter(a => a.type === 'suffix').map(a => a.name).join(' ');
+    lootItem.name = [prefixName, baseItem.name, suffixName].filter(Boolean).join(' ');
+
+    return lootItem;
+  }
+
+  function generateUniqueItem(uniqueDef) {
+    const baseItem = ITEM_MAP[uniqueDef.baseId];
+    if (!baseItem) return null;
+
+    const affixes = uniqueDef.affixIds.map(id => AFFIXES.find(a => a.id === id)).filter(Boolean);
+
+    const item = {
+      ...baseItem,
+      id: uniqueDef.id,
+      name: uniqueDef.name,
+      affixes: affixes,
+      quality: 'unique',
+      unique: true,
+      uniqueProp: uniqueDef.uniqueProp || null,
+      tier: uniqueDef.tier || 5,
+      iconImg: uniqueDef.iconImg || baseItem.iconImg,
+      icon: uniqueDef.icon || baseItem.icon,
+      lvlReq: uniqueDef.minLevel || 1,
+      // Base staty
+      baseDmg: baseItem.baseDmg || 0,
+      bonusHp: baseItem.bonusHp || 0,
+      bonusMana: baseItem.bonusMana || 0,
+      defense: baseItem.defense || 0,
+      critChance: baseItem.critChance || 0,
+      hitRating: baseItem.hitRating || 0,
+      swingMs: baseItem.swingMs || 0,
+      fireDmg: 0, iceDmg: 0, lifesteal: 0,
+      str: 0, vit: 0, int: 0, dex: 0,
+      skillDmg: 0, manaRegen: 0, poisonDmg: 0,
+    };
+
+    affixes.forEach(a => {
+      Object.keys(a.stats).forEach(stat => {
+        const val = rollStat(a.stats[stat]);
+        if (stat === 'swingMs') item[stat] += val;
+        else item[stat] += val;
+      });
+    });
+
+    return item;
+  }
+
+  function initUniqueItems() {
+    UNIQUE_ITEMS.forEach(u => {
+      const item = generateUniqueItem(u);
+      if (item) ITEM_MAP[item.id] = item;
+    });
+  }
+
   function renderItemIcon(item, size) {
     if (!item) return '';
     const s = size || 28;
-    // Rámeček podle tieru
-    const tierColors = {1:'#888',2:'#4caf50',3:'#4caf50',4:'#4a8af4',5:'#9c27b0',6:'#9c27b0',7:'#ffd700'};
-    const borderColor = tierColors[item.tier] || '#888';
+    // Barva rámečku podle quality (affixů)
+    const borderColor = getQualityColor(item);
     const border = `border:2px solid ${borderColor};`;
+    // Affix tint — barevný overlay podle prvního affixu
+    const affix = (item.affixes || [])[0];
+    const tintStyle = affix ? `box-shadow:inset 0 0 0 100px ${affix.tint}33,` : '';
     if (item.iconImg) {
       if (size === 0) {
-        // Full-cover pro inventory buňky — bez fixní velikosti, CSS natáhne
-        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:cover;${border}">`;
+        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:cover;${tintStyle}${border}">`;
       }
-      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${border}">`;
+      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${tintStyle}${border}">`;
     }
-    // Bez iconImg — použít emoji s rozumnou velikostí (ne 0)
     const fs = size === 0 ? 28 : s;
     return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
   }
@@ -897,7 +1314,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:'rags',helmet:null,shield:null,ring1:null,amulet:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,amulet:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       rage:0, maxRage:100, // Barbar resource
       rageMultiplier:1, // Bloodrage buff
@@ -943,7 +1360,7 @@
   }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen' };
+  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen' };
   function showScreen(name) {
     cleanupTimers();
     
@@ -1627,7 +2044,7 @@
       }
     });
     // 🛡️ Defense — WoW styl
-    const armorDef = (ITEM_MAP[state.hero.equip.armor] || ITEM_MAP['rags']).defense || 0;
+    const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
     const totalDefense = armorDef + helmetDef + shieldDef;
@@ -3823,7 +4240,7 @@
       }
     });
     // 🛡️ Defense — WoW styl: damage *= 100 / (100 + totalDefense)
-    const armorDef = (ITEM_MAP[state.hero.equip.armor] || ITEM_MAP['rags']).defense || 0;
+    const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
     const totalDefense = armorDef + helmetDef + shieldDef;
@@ -4371,12 +4788,12 @@
   function generateLootItem(floor, bossDrop) {
     const baseTier = Math.min(6, Math.ceil(floor / 2));
     const tier = bossDrop ? Math.min(7, baseTier + rand(1, 2)) : baseTier;
-    // 0. Rarita se určuje první — ovlivňuje všechny staty
-    const rarity = getRarity(bossDrop);
-    const rarityMult = rarity === 'epic' ? 2.5 : rarity === 'rare' ? 1.8 : rarity === 'uncommon' ? 1.4 : 1.0;
-    // Nárůst s obtížností dungeonu: +8 % za patro
-    const floorMult = 1 + (floor - 1) * 0.08;
-    // 1. RNG: typ předmětu
+    const monsterLevel = floor * 2 + (bossDrop ? 5 : 0);
+
+    // 0. Roll quality (fixní šance, nezávislé na levelu)
+    const quality = rollQuality();
+
+    // 1. Vybrat typ a base item z ITEMS podle floor/tieru
     const typeRoll = Math.random();
     let type, subtype;
     if (typeRoll < 0.25) { type = 'weapon'; subtype = Math.random() < 0.5 ? 'staff' : 'blade'; }
@@ -4386,117 +4803,63 @@
     else if (typeRoll < 0.85) { type = 'ring'; subtype = null; }
     else { type = 'amulet'; subtype = null; }
 
-    // 2. RNG: konkrétní jméno podle typu a tieru
-    const namePool = type === 'weapon' ? LOOT_NAMES.weapon[subtype] : LOOT_NAMES[type];
-    const maxIdx = Math.min(namePool.length - 1, tier);
-    const nameIdx = rand(0, maxIdx);
-    const baseName = namePool[nameIdx];
+    // 2. Najít base item z ITEMS podle typu a tieru
+    const candidates = ITEMS.filter(i => {
+      if (type === 'weapon') return i.type === 'weapon' && i.weaponType === subtype && i.tier <= tier;
+      return i.type === type && i.tier <= tier;
+    });
+    // Preferovat nejvyšší možný tier
+    const maxTier = candidates.length > 0 ? Math.max(...candidates.map(c => c.tier)) : 1;
+    const pool = candidates.filter(c => c.tier === maxTier);
+    const baseItem = pool.length > 0 ? pool[rand(0, pool.length - 1)] : ITEMS[0];
 
-    // 3. Atributy — počet podle rarity, hodnoty se překrývají
-    let attrCount;
-    if (rarity === 'common') attrCount = 1;
-    else if (rarity === 'uncommon') attrCount = 2;
-    else if (rarity === 'rare') attrCount = 3;
-    else attrCount = 4; // epic
-    const attrs = {};
-    const usedKeys = [];
-    for (let a = 0; a < attrCount; a++) {
-      let k;
-      do { k = ATTR_KEYS[rand(0, 3)]; } while (usedKeys.includes(k));
-      usedKeys.push(k);
-      // Hodnota atributu — podobné rozsahy, vyšší rarity mají víc atributů
-      let minVal, maxVal;
-      if (rarity === 'common') { minVal = 1; maxVal = 3; }
-      else if (rarity === 'uncommon') { minVal = 2; maxVal = 4; }
-      else if (rarity === 'rare') { minVal = 2; maxVal = 5; }
-      else { minVal = 3; maxVal = 6; }
-      minVal = Math.round(minVal * floorMult);
-      maxVal = Math.round(maxVal * floorMult);
-      attrs[k] = rand(minVal, maxVal);
-    }
-
-    // 4. Název — jen baseName bez statů v názvu
-    const name = baseName;
-
-    // 5. Základní staty podle typu, tieru, rarity a floor
-    let baseDmg = 0, bonusHp = 0, defense = 0;
-    if (type === 'weapon') {
-      baseDmg = Math.round((5 + tier * 7 + rand(0, 3)) * rarityMult * floorMult);
-    } else if (type === 'armor') {
-      bonusHp = Math.round((10 + tier * 25 + rand(0, 10)) * rarityMult * floorMult);
-      defense = Math.round(10 + floor * 5 + rand(0, 5));
-    } else if (type === 'helmet') {
-      bonusHp = Math.round((5 + tier * 15 + rand(0, 5)) * rarityMult * floorMult);
-      defense = Math.round(5 + floor * 3 + rand(0, 3));
-    } else if (type === 'ring') {
-      baseDmg = Math.round((1 + tier * 2 + rand(0, 2)) * rarityMult * floorMult);
-      bonusHp = Math.round((2 + tier * 5 + rand(0, 3)) * rarityMult * floorMult);
-    } else if (type === 'amulet') {
-      baseDmg = Math.round((2 + tier * 3 + rand(0, 2)) * rarityMult * floorMult);
-      bonusHp = Math.round((3 + tier * 6 + rand(0, 4)) * rarityMult * floorMult);
-    } else if (type === 'shield') {
-      defense = Math.round((8 + floor * 4 + rand(0, 4)) * rarityMult);
-      bonusHp = Math.round((3 + tier * 4 + rand(0, 3)) * rarityMult * floorMult);
-    }
-
-    const id = 'loot_' + Date.now() + '_' + rand(1000, 9999);
-    const icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
-    // Mapovat na PNG podle typu a tieru
-    const iconImg = (function() {
-      if (type === 'weapon') {
-        const tierMap = {1:'staff_wooden',2:'staff_fire',3:'staff_lightning',4:'staff_archmage',5:'staff_archmage',6:'staff_archmage',7:'staff_archmage'};
-        if (subtype === 'blade') {
-          const bMap = {1:'weapon_iron_sword',2:'weapon_broad_sword',3:'weapon_battle_axe',4:'weapon_claymore',5:'weapon_war_hammer',6:'weapon_war_hammer',7:'weapon_claymore'};
-          return '/assets/items/' + (bMap[tier] || 'weapon_iron_sword') + '.png';
+    // 3. Unique — najít unikát pro tento base item
+    if (quality === 'unique') {
+      const uniqueDef = UNIQUE_ITEMS.find(u => u.baseId === baseItem.id);
+      if (uniqueDef) {
+        const item = generateUniqueItem(uniqueDef);
+        if (item) {
+          item.tier = tier;
+          item.subtype = subtype;
+          item.rarity = 'epic';
+          item.icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
+          item.cost = 10 + tier * 20 + (item.affixes || []).length * 15;
+          ITEM_MAP[item.id] = item;
+          state.lootItems = state.lootItems || {};
+          state.lootItems[item.id] = item;
+          return item;
         }
-        return '/assets/items/' + (tierMap[tier] || 'staff_wooden') + '.png';
       }
-      if (type === 'armor') {
-        const aMap = {1:'armor_leather',2:'armor_chainmail',3:'armor_scale',4:'armor_plate',5:'armor_dragon_scale',6:'armor_dragon_scale',7:'armor_dragon_scale'};
-        return '/assets/items/' + (aMap[tier] || 'armor_leather') + '.png';
-      }
-      if (type === 'helmet') {
-        const hMap = {1:'helmet_linen_hood',2:'helmet_iron_helm',3:'helmet_steel_helm',4:'helmet_steel_helm',5:'helmet_crown',6:'helmet_crown',7:'helmet_crown'};
-        return '/assets/items/' + (hMap[tier] || 'helmet_linen_hood') + '.png';
-      }
-      if (type === 'shield') {
-        const sMap = {1:'shield_wooden',2:'shield_leather',3:'shield_iron',4:'shield_steel',5:'shield_paladin',6:'shield_paladin',7:'shield_paladin'};
-        return '/assets/items/' + (sMap[tier] || 'shield_wooden') + '.png';
-      }
-      if (type === 'ring') {
-        const rMap = {1:'ring_copper',2:'ring_copper',3:'ring_silver',4:'ring_gold',5:'ring_gem',6:'ring_gem',7:'ring_platinum'};
-        return '/assets/items/' + (rMap[tier] || 'ring_copper') + '.png';
-      }
-      if (type === 'amulet') {
-        const aMap = {1:'amulet_bone',2:'amulet_bone',3:'amulet_silver',4:'amulet_gold',5:'amulet_ruby',6:'amulet_arcane',7:'amulet_arcane'};
-        return '/assets/items/' + (aMap[tier] || 'amulet_bone') + '.png';
-      }
-      return '';
-    })();
-    const cost = 10 + tier * 20 + usedKeys.reduce((s, k) => s + attrs[k] * 5, 0);
-    const item = { id, name, type, subtype, baseDmg, bonusHp, defense, icon, iconImg, attrs, tier, cost, rarity, weaponType: type === 'weapon' ? subtype : null };
-    // Crit chance pro blade zbraně (5-25% podle tieru)
-    if (type === 'weapon' && subtype === 'blade') {
-      item.critChance = Math.min(25, 5 + tier * 3 + rand(0, 5));
+      // Pokud unikát neexistuje, spadnout na rare
     }
-    // Block chance pro štíty (15-45% podle tieru)
+
+    // 4. Vygenerovat affix item (pro magic/rare/normal)
+    const item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
+    item.tier = tier;
+    item.subtype = subtype;
+    item.rarity = quality === 'normal' ? 'common' : quality === 'magic' ? 'uncommon' : 'rare';
+    item.icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
+    item.cost = 10 + tier * 20 + (item.affixes || []).length * 15;
+
+    // 5. HitRating a ExpertiseRating podle rarity
+    if (item.rarity !== 'common') {
+      const hitChance = item.rarity === 'uncommon' ? 0.3 : 0.6;
+      if (Math.random() < hitChance) item.hitRating = (item.hitRating || 0) + 1 + rand(0, Math.ceil(tier * 0.5));
+      const expChance = item.rarity === 'uncommon' ? 0.2 : 0.5;
+      if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil(tier * 0.4));
+    }
+    // Crit chance pro blade zbraně
+    if (type === 'weapon' && subtype === 'blade') {
+      item.critChance = (item.critChance || 0) + Math.min(25, 5 + tier * 3 + rand(0, 5));
+    }
+    // Block chance pro štíty
     if (type === 'shield') {
       item.blockChance = Math.min(45, 15 + tier * 4 + rand(0, 5));
     }
-    // HitRating a ExpertiseRating podle rarity (common nikdy, uncommon vzácně, rare+ často)
-    if (rarity !== 'common') {
-      const hitChance = rarity === 'uncommon' ? 0.3 : rarity === 'rare' ? 0.6 : 0.9;
-      if (Math.random() < hitChance) {
-        item.hitRating = 1 + rand(0, Math.ceil(tier * 0.5));
-      }
-      const expChance = rarity === 'uncommon' ? 0.2 : rarity === 'rare' ? 0.5 : 0.8;
-      if (Math.random() < expChance) {
-        item.expertiseRating = 1 + rand(0, Math.ceil(tier * 0.4));
-      }
-    }
-    ITEM_MAP[id] = item;
+
+    ITEM_MAP[item.id] = item;
     state.lootItems = state.lootItems || {};
-    state.lootItems[id] = item;
+    state.lootItems[item.id] = item;
     return item;
   }
 
@@ -4706,6 +5069,172 @@
     }
     return face;
   }
+
+  // ===== ITEMS REFERENCE =====
+  function renderItemsReference() {
+    const c = $('itemsContent');
+    if (!c) return;
+    const TYPE_LABELS = { weapon:'Zbraň', armor:'Brnění', helmet:'Helma', shield:'Štít', ring:'Prsten', amulet:'Amulet' };
+    const TYPE_ICONS = { weapon:'⚔️', armor:'👘', helmet:'⛑️', shield:'🛡️', ring:'💍', amulet:'📿' };
+    const TYPE_ORDER = ['weapon','armor','helmet','shield','ring','amulet'];
+
+    function typeTag(t) {
+      const colors = { weapon:'#e67e22', armor:'#2ecc71', helmet:'#9b59b6', shield:'#1abc9c', ring:'#f1c40f', amulet:'#e94560' };
+      return `<span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:${colors[t]}33;color:${colors[t]}">${TYPE_ICONS[t]} ${TYPE_LABELS[t]}</span>`;
+    }
+
+    function renderIcon(item) {
+      if (item.iconImg) {
+        return `<img src="${item.iconImg}" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:cover;vertical-align:middle">`;
+      }
+      return `<span style="font-size:24px">${item.icon}</span>`;
+    }
+
+    function renderItemRow(i) {
+      const other = [];
+      if (i.critChance) other.push(`Crit ${i.critChance}%`);
+      if (i.blockChance) other.push(`Block ${i.blockChance}%`);
+      if (i.weaponType) other.push(i.weaponType);
+      return `<tr style="border-bottom:1px solid #1a1a3a">
+        <td style="padding:4px 6px">${renderIcon(i)}</td>
+        <td style="padding:4px 6px"><strong>${i.name}</strong></td>
+        <td style="padding:4px 6px;text-align:center">${i.tier || '-'}</td>
+        <td style="padding:4px 6px;text-align:center">${i.baseDmg || 0}</td>
+        <td style="padding:4px 6px;text-align:center">${i.bonusHp || 0}</td>
+        <td style="padding:4px 6px;text-align:center">${i.bonusMana || 0}</td>
+        <td style="padding:4px 6px;text-align:center">${i.defense || 0}</td>
+        <td style="padding:4px 6px;text-align:center">${i.swingMs ? i.swingMs+'ms' : '-'}</td>
+        <td style="padding:4px 6px;color:#aaa;font-size:11px">${other.join(', ')}</td>
+      </tr>`;
+    }
+
+    let html = '';
+
+    // === BASE ITEMS ===
+    html += `<div class="card"><div class="card-title">🏗️ Base itemy</div>
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Každý base item má fixní jméno a staty. Při lootu se na něj nabalují affixy.</p>`;
+
+    // Zbraně rozdělené do podskupin
+    html += `<div style="margin-top:12px"><strong>⚔️ Zbraně</strong></div>`;
+
+    // Hole (staff) — magické
+    const staves = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'staff');
+    if (staves.length > 0) {
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪄 Hole (magické, jednoruční)</div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+      staves.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    }
+
+    // Nože / dýky (blade, tier 1-2, krátké zbraně)
+    const knives = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.id === 'huntingKnife' || i.id === 'sabre'));
+    if (knives.length > 0) {
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🗡️ Nože a šavle (jednoruční)</div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+      knives.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    }
+
+    // Meče (blade, jméno obsahuje "meč")
+    const swords = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.name.includes('Meč') || i.id === 'ironSword' || i.id === 'broadSword' || i.id === 'claymore' || i.id === 'greatSword' || i.id === 'excalibur' || i.id === 'warHammer'));
+    if (swords.length > 0) {
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">⚔️ Meče (jednoruční i obouruční)</div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+      swords.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    }
+
+    // Sekery (blade, jméno obsahuje "Sekera" nebo "Axe")
+    const axes = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.name.includes('Sekera') || i.id === 'battleAxePhys' || i.id === 'warAxe' || i.id === 'greatAxe'));
+    if (axes.length > 0) {
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪓 Sekery (obouruční)</div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+      axes.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    }
+
+    // Kladiva (blade, jméno obsahuje "Kladivo" nebo "Hammer")
+    const hammers = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.name.includes('Kladivo') || i.id === 'giantHammer'));
+    if (hammers.length > 0) {
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🔨 Kladiva (obouruční)</div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+      hammers.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    }
+
+    // Ostatní sloty (armor, helmet, shield, ring, amulet)
+    ['armor','helmet','shield','ring','amulet'].forEach(type => {
+      const items = ITEMS.filter(i => i.type === type);
+      if (items.length === 0) return;
+      html += `<div style="margin-top:12px"><strong>${TYPE_ICONS[type]} ${TYPE_LABELS[type]}y</strong></div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+      items.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    });
+    html += `</div>`;
+
+    // === AFFIXES ===
+    html += `<div class="card"><div class="card-title">🔧 Affixy (módy)</div>
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Prefixy (před jménem) a suffixy (za jménem). Stejná <strong>group</strong> = vzájemně se vylučují. <strong>minIlvl</strong> = minimální monster level. <strong>Weight</strong> = relativní pravděpodobnost.</p>`;
+
+    ['prefix','suffix'].forEach(type => {
+      const label = type === 'prefix' ? '🔷 Prefixy' : '🔶 Suffixy';
+      const items = AFFIXES.filter(a => a.type === type);
+      html += `<div style="margin-top:12px"><strong>${label}</strong></div>`;
+      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Group</th><th style="padding:4px 6px">minIlvl</th><th style="padding:4px 6px">Wt</th><th style="padding:4px 6px">Typy</th><th style="padding:4px 6px">Stat</th><th style="padding:4px 6px">Rozsah</th><th style="padding:4px 6px">Barva</th></tr>`;
+      items.forEach(a => {
+        const statStr = Object.entries(a.stats).map(([k,v]) => `${k}: ${v[0]}-${v[1]}`).join(', ');
+        html += `<tr style="border-bottom:1px solid #1a1a3a"><td style="padding:4px 6px"><strong>${a.name}</strong></td>
+          <td style="padding:4px 6px;text-align:center">${a.group}</td>
+          <td style="padding:4px 6px;text-align:center">${a.minIlvl}</td>
+          <td style="padding:4px 6px;text-align:center">${a.weight}</td>
+          <td style="padding:4px 6px">${a.types.map(t => typeTag(t)).join(' ')}</td>
+          <td style="padding:4px 6px;font-size:11px">${statStr}</td>
+          <td style="padding:4px 6px;font-size:11px">${a.stats[Object.keys(a.stats)[0]][0]}-${a.stats[Object.keys(a.stats)[0]][1]}</td>
+          <td style="padding:4px 6px"><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:${a.tint};vertical-align:middle;margin-right:2px"></span>${a.tint}</td></tr>`;
+      });
+      html += `</table></div>`;
+    });
+    html += `</div>`;
+
+    // === UNIQUES ===
+    html += `<div class="card"><div class="card-title">🌟 Unique itemy</div>
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Fixní sada affixů, vlastní jméno. Objevují se jako boss dropy.</p>`;
+    UNIQUE_ITEMS.forEach(u => {
+      const base = ITEMS.find(i => i.id === u.baseId);
+      const affixNames = u.affixIds.map(id => {
+        const a = AFFIXES.find(x => x.id === id);
+        return a ? a.name : id;
+      }).join(' + ');
+      const iconHtml = u.iconImg ? `<img src="${u.iconImg}" alt="" style="width:36px;height:36px;border-radius:4px;object-fit:cover">` : `<span style="font-size:28px">${u.icon}</span>`;
+      html += `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border:1px solid #2a2a4a;border-radius:6px;margin-bottom:6px">
+        <div style="min-width:40px;text-align:center">${iconHtml}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#e94560">${u.name}</div>
+        <div style="font-size:12px;color:#8888aa">Base: ${base ? base.name : u.baseId} · Tier ${u.tier} · Min lvl ${u.minLevel}</div>
+        <div style="font-size:12px;color:#aaa">Affixy: ${affixNames}</div></div></div>`;
+    });
+    html += `</div>`;
+
+    // === GENERATION RULES ===
+    html += `<div class="card"><div class="card-title">⚙️ Generování</div>
+    <div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
+      <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px;text-align:left">Monster Level</th><th style="padding:4px 6px">Normal</th><th style="padding:4px 6px">Magic</th><th style="padding:4px 6px">Rare</th></tr>
+      <tr style="border-bottom:1px solid #1a1a3a"><td style="padding:4px 6px">1-4</td><td style="padding:4px 6px;text-align:center">100%</td><td style="padding:4px 6px;text-align:center">0%</td><td style="padding:4px 6px;text-align:center">0%</td></tr>
+      <tr style="border-bottom:1px solid #1a1a3a"><td style="padding:4px 6px">5-9</td><td style="padding:4px 6px;text-align:center">85%</td><td style="padding:4px 6px;text-align:center">15%</td><td style="padding:4px 6px;text-align:center">0%</td></tr>
+      <tr style="border-bottom:1px solid #1a1a3a"><td style="padding:4px 6px">10+</td><td style="padding:4px 6px;text-align:center">80%</td><td style="padding:4px 6px;text-align:center">15%</td><td style="padding:4px 6px;text-align:center">5%</td></tr>
+    </table></div>
+    <p style="font-size:12px;color:#aaa;margin-top:8px">lvlReq = floor(0.75 × max minIlvl affixů) · Název: [prefixy] + [base] + [suffixy]</p></div>`;
+
+    c.innerHTML = html;
+  }
+
   function renderBestiary() {
     const grid = document.getElementById('bestiaryGrid');
     if (!grid) return;
@@ -4979,7 +5508,7 @@
   function getEquipAttrs() {
     const h = state.hero;
     const slots = ['weapon','armor','helmet','shield','ring1','amulet'];
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
     const total = { str:0, vit:0, dex:0, int:0 };
     slots.forEach(slot => {
       const itemId = h.equip[slot];
@@ -5250,7 +5779,7 @@
 
   function sellSlotItem(itemId, slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
     if (h.equip[slot] !== itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
@@ -5359,7 +5888,7 @@
       const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', amulet:'amulet' };
       const equipSlot = slotMap[item.type];
       if (!equipSlot) { comparePanel.classList.add('hidden'); return; }
-      const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
       const equippedId = state.hero.equip[equipSlot];
       if (!equippedId || equippedId === defaults[equipSlot]) { comparePanel.classList.add('hidden'); return; }
       const equipped = ITEM_MAP[equippedId];
@@ -5426,7 +5955,7 @@
       if (!el) return;
       el.addEventListener('click', function(e) {
         const slot = slotMap[slotId];
-        const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
+        const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
         const itemId = h.equip[slot];
         const item = itemId ? ITEM_MAP[itemId] : null;
         // Pokud je vybraný item v batohu, equipnout
@@ -5477,7 +6006,7 @@
 
   function unequipSlot(slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
     const current = h.equip[slot];
     if (!current || current === defaults[slot]) return;
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
@@ -5593,7 +6122,7 @@
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    const defaults = { weapon:'fists', armor:'rags', helmet:null, shield:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
     if (item.type === 'weapon') {
       if (h.equip.weapon !== itemId) return;
       h.equip.weapon = defaults.weapon;
@@ -5737,6 +6266,7 @@
   // ===== INIT =====
   function init() {
     state = loadSave();
+    initUniqueItems();
 
     // Splash screen — fade in, 2.5s, fade out, pak teprve zobrazit UI
     const splash = document.getElementById('splashScreen');
@@ -5778,7 +6308,7 @@
     if (!state.bossesDefeated || state.bossesDefeated.length < LOCATIONS.length) state.bossesDefeated = Array(LOCATIONS.length).fill(false);
     if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
     if (!state.floorProgress || state.floorProgress.length < LOCATIONS.length) state.floorProgress = Array(LOCATIONS.length).fill(0);
-    if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, mana:50, maxMana:50, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:'rags'}, attrStr:0, attrVit:0, attrPoints:0 };
+    if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, mana:50, maxMana:50, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:null}, attrStr:0, attrVit:0, attrPoints:0 };
     if (state.hero.maxHp === undefined) state.hero.maxHp = getHeroMaxHp();
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
     if (state.hero.attrStr === undefined) state.hero.attrStr = 0;
@@ -5806,6 +6336,7 @@
         else if (a.dataset.screen === 'inventory') showScreen('inventory');
         else if (a.dataset.screen === 'bestiary') { showScreen('bestiary'); renderBestiary(); }
         else if (a.dataset.screen === 'spellbook') { showScreen('spellbook'); renderSpellbook(); }
+        else if (a.dataset.screen === 'items') { showScreen('items'); renderItemsReference(); }
         firstUserInteraction();
       });
     });
@@ -5922,6 +6453,7 @@
     toggleMapPause,
     renderBestiary,
     renderSpellbook,
+    renderItemsReference,
     renameHero,
     showFaceSelect, closeFaceSelect, selectFace,
     selectClass,
