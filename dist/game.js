@@ -1376,10 +1376,11 @@
   const SAVE_KEY = 'dungeonRecallV7';
   function defaultState() {
     const talentLevels = {};
-    SCHOOLS.forEach(sk => {
-      sk.tiers.forEach(tier => {
+    Object.keys(CLASS_SKILLS).forEach(classId => {
+      const cls = CLASS_SKILLS[classId];
+      cls.tiers.forEach(tier => {
         tier.choices.forEach(t => {
-          talentLevels[sk.id + '_' + t.k] = 0;
+          talentLevels[classId + '_' + t.k] = 0;
         });
       });
     });
