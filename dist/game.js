@@ -1207,7 +1207,7 @@
   // Skoková obtížnost — násobitel HP a damage podle dungeonu
   const DIFFICULTY_MULT = [1.0, 1.5, 2.5, 4.0, 6.0];
 
-  // ===== DUNGEON ROOM GENERATION =====
+  // ===== DUNGEON ROOM GENERATION (branching) =====
   function pickWeightedFromPool(pool) {
     const total = pool.reduce((s, p) => s + p.weight, 0);
     let r = Math.random() * total;
@@ -1218,51 +1218,74 @@
     return pool[pool.length - 1];
   }
 
-  function generateDungeonRooms(loc, difficulty) {
-    // Vytvoří pole místností: [room1, room2, ..., roomN, BOSS, rewardRoom]
-    const roomCount = loc.rooms || 4;
-    const rooms = [];
-    for (let i = 0; i < roomCount; i++) {
-      const picked = pickWeightedFromPool(ROOM_POOL);
-      const room = {
-        type: picked.type,
-        icon: picked.icon,
-        label: picked.label,
-        completed: false,
-      };
-      // Elitní affix
-      if (picked.type === ROOM_TYPES.ELITE) {
-        room.eliteAffix = ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
+  function generateDungeonChoices(loc, difficulty) {
+    // Vytvoří pole kroků, každý krok = 2-3 možnosti na výběr
+    // Poslední krok vždy vede k bossovi
+    const stepCount = loc.rooms || 3; // 3-4 kroky volby
+    const steps = [];
+
+    for (let step = 0; step < stepCount; step++) {
+      const numChoices = 2 + (Math.random() < 0.4 ? 1 : 0); // 2-3 možnosti
+      const choices = [];
+      const usedTypes = new Set();
+
+      for (let c = 0; c < numChoices; c++) {
+        let picked;
+        let attempts = 0;
+        do {
+          picked = pickWeightedFromPool(ROOM_POOL);
+          attempts++;
+        } while (usedTypes.has(picked.type) && attempts < 20);
+        usedTypes.add(picked.type);
+
+        const choice = {
+          type: picked.type,
+          icon: picked.icon,
+          label: picked.label,
+        };
+        if (picked.type === ROOM_TYPES.ELITE) {
+          choice.eliteAffix = ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
+        }
+        choices.push(choice);
       }
-      rooms.push(room);
+      steps.push({ choices, completed: false, chosenIdx: -1 });
     }
+
     // Boss room
     const bossAffixes = [];
-    const numBossAffixes = 1 + (Math.random() < 0.4 ? 1 : 0); // 1-2
+    const numBossAffixes = 1 + (Math.random() < 0.4 ? 1 : 0);
     for (let i = 0; i < numBossAffixes; i++) {
       const affix = BOSS_AFFIXES[rand(0, BOSS_AFFIXES.length - 1)];
       if (!bossAffixes.find(a => a.name === affix.name)) {
         bossAffixes.push(affix);
       }
     }
-    rooms.push({
-      type: ROOM_TYPES.ENEMY, // boss je speciální, ale používáme ENEMY jako placeholder
-      icon: '👹',
-      label: 'BOSS',
-      isBoss: true,
-      bossAffixes: bossAffixes,
+    steps.push({
+      choices: [{
+        type: ROOM_TYPES.ENEMY,
+        icon: '👹',
+        label: 'BOSS',
+        isBoss: true,
+        bossAffixes: bossAffixes,
+      }],
       completed: false,
+      chosenIdx: -1,
     });
+
     // Reward room po bossovi
     const rewardType = Math.random() < 0.5 ? ROOM_TYPES.CHEST : ROOM_TYPES.MERCHANT;
-    rooms.push({
-      type: rewardType,
-      icon: rewardType === ROOM_TYPES.CHEST ? '💰' : '🛒',
-      label: rewardType === ROOM_TYPES.CHEST ? 'Odměna' : 'Obchod',
-      isReward: true,
+    steps.push({
+      choices: [{
+        type: rewardType,
+        icon: rewardType === ROOM_TYPES.CHEST ? '💰' : '🛒',
+        label: rewardType === ROOM_TYPES.CHEST ? 'Odměna' : 'Obchod',
+        isReward: true,
+      }],
       completed: false,
+      chosenIdx: -1,
     });
-    return rooms;
+
+    return steps;
   }
 
   // ===== LEVEL / HIT / DODGE / XP HELPERS =====
@@ -1270,7 +1293,7 @@
     const loc = mb.loc;
     if (!loc || loc.minLevel === undefined) return 1;
     // Level se lineárně zvyšuje od minLevel do maxLevel podle progresu v dungeonu
-    const totalRooms = (state.dungeonRooms ? state.dungeonRooms.length : 6) - 2; // bez bosse a reward
+    const totalRooms = (state.dungeonSteps ? state.dungeonSteps.length : 6) - 2; // bez bosse a reward
     const roomPct = totalRooms > 0 ? (mb.progress || 0) / totalRooms : 0;
     const range = loc.maxLevel - loc.minLevel;
     return loc.minLevel + Math.round(range * roomPct);
@@ -1387,7 +1410,7 @@
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,amulet:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
-      dungeonRooms: null, // pole místností pro aktuální dungeon run
+      dungeonSteps: null, // pole kroků pro aktuální dungeon run (každý krok = 2-3 možnosti)
       rage:0, maxRage:100, // Barbar resource
       rageMultiplier:1, // Bloodrage buff
       _bloodrageTimer:0,
@@ -1540,12 +1563,12 @@
   let _expandedDungeon = -1;
   function toggleDungeon(idx) {
     _expandedDungeon = _expandedDungeon === idx ? -1 : idx;
-    // Při prvním rozbalení vygenerovat dungeon rooms, pokud neexistují
-    if (_expandedDungeon >= 0 && (!state.dungeonRooms || state.dungeonRooms.length === 0)) {
+    // Při prvním rozbalení vygenerovat dungeon steps, pokud neexistují
+    if (_expandedDungeon >= 0 && (!state.dungeonSteps || state.dungeonSteps.length === 0)) {
       const loc = LOCATIONS[idx];
       if (loc) {
         const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-        state.dungeonRooms = generateDungeonRooms(loc, diff);
+        state.dungeonSteps = generateDungeonChoices(loc, diff);
       }
     }
     renderMap();
@@ -1561,7 +1584,7 @@
       const curProgress = state.locationProgress[i] || 0;
       const expanded = _expandedDungeon === i;
       const theme = DUNGEON_THEMES[i] || DUNGEON_THEMES[0];
-      const rooms = state.dungeonRooms;
+      const steps = state.dungeonSteps;
       let badgeHtml;
       if (completed) {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
@@ -1570,24 +1593,38 @@
       } else {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">Hrát</div></div>`;
       }
-      // Room cards
-      let roomHtml = '';
-      if (unlocked && expanded && rooms && rooms.length > 0) {
-        rooms.forEach((room, ri) => {
-          const roomDone = completed || (curProgress > ri);
-          const lockedRoom = ri > curProgress && !completed;
-          const isActive = ri === curProgress && !completed;
-          let rIcon, rStyle, rText;
-          if (roomDone) { rIcon = '✓'; rStyle = `color:${theme.border}`; rText = 'Hotovo'; }
-          else if (lockedRoom) { rIcon = '🔒\uFE0E'; rStyle = `color:${theme.border}`; rText = 'Zamčeno'; }
-          else if (room.isBoss) { rIcon = '👹'; rStyle = ''; rText = 'BOSS'; }
-          else if (room.isReward) { rIcon = '💰'; rStyle = ''; rText = 'Odměna'; }
-          else if (isActive) { rIcon = '●'; rStyle = ''; rText = room.label; }
-          else { rIcon = '✓'; rStyle = `color:${theme.border}`; rText = ''; }
-          roomHtml += `<div class="map-floor-card ${roomDone?'floor-done':lockedRoom?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)" onclick="${lockedRoom?'':'game.enterLocation('+i+')'}">
-            <span class="floor-card-icon"${rStyle ? ` style="${rStyle}"` : ''}>${rIcon}</span>
-            <span class="floor-card-num">${room.isBoss?'BOSS':room.isReward?'🏁':room.icon}</span>
-            <span class="floor-card-text">${rText}</span>
+      // Step cards — každý krok zobrazuje počet možností
+      let stepHtml = '';
+      if (unlocked && expanded && steps && steps.length > 0) {
+        steps.forEach((step, si) => {
+          const stepDone = completed || (curProgress > si);
+          const lockedStep = si > curProgress && !completed;
+          const isActive = si === curProgress && !completed;
+          const chosen = step.choices[step.chosenIdx];
+          let sIcon, sStyle, sText;
+          if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Hotovo'; }
+          else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Zamčeno'; }
+          else if (isActive) {
+            // Zobrazit možnosti
+            const choiceHtml = step.choices.map((ch, ci) => {
+              const extra = ch.eliteAffix ? ` (${ch.eliteAffix.icon})` : '';
+              return `<div class="dungeon-choice" onclick="game.chooseDungeonPath(${i}, ${si}, ${ci})" style="border-color:${theme.border};background:${theme.bg}88">
+                <span class="dungeon-choice-icon">${ch.icon}</span>
+                <span class="dungeon-choice-label">${ch.label}${extra}</span>
+              </div>`;
+            }).join('');
+            sIcon = '🎲';
+            sStyle = '';
+            sText = `<div class="dungeon-choices">${choiceHtml}</div>`;
+          } else {
+            sIcon = chosen ? chosen.icon : '?';
+            sStyle = '';
+            sText = chosen ? chosen.label : '';
+          }
+          stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
+            <span class="floor-card-icon"${sStyle ? ` style="${sStyle}"` : ''}>${sIcon}</span>
+            <span class="floor-card-num">Krok ${si+1}</span>
+            <span class="floor-card-text">${sText}</span>
           </div>`;
         });
       }
@@ -1600,27 +1637,47 @@
           </div>
           ${badgeHtml}
         </div>
-        ${roomHtml}
+        ${stepHtml}
       </div>`;
     }).join('');
   }
 
   // ===== MAP BATTLE =====
+  function chooseDungeonPath(locId, stepIdx, choiceIdx) {
+    const steps = state.dungeonSteps;
+    if (!steps || !steps[stepIdx]) return;
+    const step = steps[stepIdx];
+    if (step.completed) return;
+    const choice = step.choices[choiceIdx];
+    if (!choice) return;
+
+    // Uložit volbu
+    step.chosenIdx = choiceIdx;
+    step.completed = true;
+    state.locationProgress[locId] = stepIdx + 1;
+
+    // Pokud je to boss nebo reward, rovnou spustit
+    if (choice.isBoss || choice.isReward) {
+      cleanupTimers();
+      startLocation(locId);
+    } else {
+      // Jinak spustit souboj
+      cleanupTimers();
+      startLocation(locId);
+    }
+  }
+
   function enterLocation(locId) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
     if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
 
-    // Reset dungeon rooms při novém vstupu (pokud už není rozpracovaný)
-    const curProgress = state.locationProgress[locId] || 0;
-    if (curProgress === 0 || !state.dungeonRooms || state.dungeonRooms.length === 0) {
-      const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-      state.dungeonRooms = generateDungeonRooms(loc, diff);
-      state.locationProgress[locId] = 0;
-    }
-
-    cleanupTimers();
-    startLocation(locId);
+    // Reset dungeon steps při novém vstupu
+    const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
+    state.dungeonSteps = generateDungeonChoices(loc, diff);
+    state.locationProgress[locId] = 0;
+    _expandedDungeon = locId;
+    renderMap();
   }
 
   function startLocation(locId) {
@@ -1644,19 +1701,21 @@
     const loc = LOCATIONS[locId];
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-    const progress = state.locationProgress[locId] || 0; // aktuální místnost (0 = první)
-    const rooms = state.dungeonRooms;
+    const progress = state.locationProgress[locId] || 0; // aktuální krok (0 = první)
+    const steps = state.dungeonSteps;
 
-    // Generovat dungeon rooms při prvním vstupu
-    if (!rooms || rooms.length === 0) {
-      state.dungeonRooms = generateDungeonRooms(loc, diff);
+    // Generovat dungeon steps při prvním vstupu
+    if (!steps || steps.length === 0) {
+      state.dungeonSteps = generateDungeonChoices(loc, diff);
     }
-    const currentRooms = state.dungeonRooms;
-    const currentRoom = currentRooms[progress];
-    if (!currentRoom) return;
+    const currentSteps = state.dungeonSteps;
+    const currentStep = currentSteps[progress];
+    if (!currentStep) return;
+    const chosen = currentStep.choices[currentStep.chosenIdx];
+    if (!chosen) return;
 
-    const isBoss = currentRoom.isBoss || false;
-    const isReward = currentRoom.isReward || false;
+    const isBoss = chosen.isBoss || false;
+    const isReward = chosen.isReward || false;
 
     // Reset HP při vstupu do dungeonu (progress === 0)
     if (progress === 0) {
@@ -1672,7 +1731,7 @@
     const bossHp = Math.round((400 + locId * 400) * diffMult * diffMultOverall + 150 + 200);
 
     // Elitní HP bonus
-    const isElite = currentRoom.type === ROOM_TYPES.ELITE;
+    const isElite = chosen.type === ROOM_TYPES.ELITE;
     const eliteHpMult = isElite ? 2.0 : 1.0;
     const baseHp = isBoss ? bossHp : Math.round(monsterHp * eliteHpMult);
 
@@ -1700,8 +1759,8 @@
     // Boss affix bonusy
     let bossHpMult = 1.0;
     let bossDmgMult = 1.0;
-    if (isBoss && currentRoom.bossAffixes) {
-      currentRoom.bossAffixes.forEach(a => {
+    if (isBoss && chosen.bossAffixes) {
+      chosen.bossAffixes.forEach(a => {
         if (a.name === 'Nezničitelný') bossHpMult += 0.5;
         if (a.name === 'Ohnivý' || a.name === 'Ledový') bossDmgMult += 1.0;
         if (a.name === 'Rychlý') bossDmgMult += 0.5;
@@ -1710,7 +1769,7 @@
 
     mapBattleState = {
       locId, loc, isBoss, isReward, isElite, progress,
-      currentRoom: currentRoom,
+      currentChoice: chosen,
       bossHp: Math.round(baseHp * bossHpMult), maxBossHp: Math.round(baseHp * bossHpMult),
       bossDmgMult: bossDmgMult,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
@@ -4922,15 +4981,15 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     const locId = mb.locId;
-    const rooms = state.dungeonRooms;
-    const currentRoom = mb.currentRoom;
+    const steps = state.dungeonSteps;
+    const currentChoice = mb.currentChoice;
 
     // Monster killed - regular enemy or elite
     if (won && !mb.isBoss && !mb.isReward) {
       mapBattleState.ended = true;
       cleanupTimers();
-      // Označit místnost jako hotovou
-      if (rooms && currentRoom) currentRoom.completed = true;
+      // Označit krok jako hotový
+      if (steps && currentChoice) currentChoice.completed = true;
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
       const monsterGold = (1 + rand(0, 2)) * 5;
@@ -4971,7 +5030,7 @@
       });
       state._floorLootDrops = [];
       $('resultIcon').textContent = '🎉';
-      $('resultTitle').textContent = currentRoom.isElite ? '💀💀 Elita poražena!' : 'Místnost ' + (mb.progress+1) + ' dobyta!';
+      $('resultTitle').textContent = currentChoice && currentChoice.eliteAffix ? '💀💀 Elita poražena!' : 'Místnost ' + (mb.progress+1) + ' dobyta!';
       const roomXp = Math.round((mb.loc.xpReward + mb.progress * 2) * 5 * getXpModifier(mb));
       const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
       const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
@@ -5025,7 +5084,7 @@
           $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
     } else if (mb.isBoss) {
       // Boss defeated
-      if (rooms && currentRoom) currentRoom.completed = true;
+      if (steps && currentChoice) currentChoice.completed = true;
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
       state.bossesDefeated[locId] = true;
@@ -5062,7 +5121,7 @@
       saveGame();
     } else if (mb.isReward) {
       // Reward room — jen gold/item, žádný boj
-      if (rooms && currentRoom) currentRoom.completed = true;
+      if (steps && currentChoice) currentChoice.completed = true;
       state.hero.hp = mb.playerHp;
       const rewardGold = 5 + locId * 3 + rand(0, 5);
       state.hero.gold = (state.hero.gold || 0) + rewardGold;
@@ -6476,7 +6535,7 @@
   }
 
   window.game = {
-    showScreen, enterLocation, toggleDungeon,
+    showScreen, enterLocation, toggleDungeon, chooseDungeonPath,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     onMapRapidTap,
     investTalent, resetTalents,

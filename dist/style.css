@@ -902,6 +902,17 @@ body.no-scroll { overflow: hidden; }
 .floor-card-num { font-size:13px;font-weight:bold;flex:1; }
 .floor-card-text { font-size:11px;color:#888888; }
 
+/* Dungeon branching choices */
+.dungeon-choices { display:flex;flex-direction:column;gap:4px;padding:4px 0; }
+.dungeon-choice {
+  display:flex;align-items:center;gap:6px;padding:6px 10px;
+  border:1px solid;border-radius:6px;
+  cursor:pointer;transition:0.15s;font-size:12px;
+}
+.dungeon-choice:hover { filter:brightness(1.5); }
+.dungeon-choice-icon { font-size:16px; }
+.dungeon-choice-label { flex:1; }
+
 /* Countdown */
 .countdown-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:200; }
 /* Pause overlay — transparentní, aby byla vidět aréna */
