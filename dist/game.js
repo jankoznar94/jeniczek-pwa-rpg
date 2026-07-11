@@ -1630,6 +1630,7 @@
     _sessionSpellCooldowns = {};
     state.comboPoints = 0;
     state.energy = state.maxEnergy || 100;
+    state.rage = 0;
     state._dodgeBuffTimer = 0;
     state._speedBoostTimer = 0;
     state._speedBoostPct = 0;
@@ -1667,7 +1668,7 @@
     // HP škáluje s dungeonem a obtížností
     const diffMult = DIFFICULTY_MULT[locId] || 1.0;
     const diffMultOverall = diff.mult;
-    const monsterHp = Math.round((80 + locId * 150) * diffMult * diffMultOverall + 20 + 10 * progress) * 5;
+    const monsterHp = Math.round((40 + locId * 80) * diffMult * diffMultOverall + 10 + 5 * progress) * 5;
     const bossHp = Math.round((400 + locId * 400) * diffMult * diffMultOverall + 150 + 200);
 
     // Elitní HP bonus
