@@ -5130,11 +5130,11 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
-      $('resultBtn').innerHTML = '';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
-      showScreen('result');
-      switchBGM('win');
-      return;
+      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
+                $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+                showScreen('result');
+                switchBGM('win');
+                return;
     }
 
     mapBattleState.ended = true;
@@ -5166,7 +5166,7 @@
           $('resultIcon').textContent = '💀';
           $('resultTitle').textContent = 'Padl jsi';
           $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + consXp + ' XP</span></div><div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + consGold + '</span></div></div><div class="result-tap">👆 klepni pro návrat</div>';
-          $('resultBtn').innerHTML = '';
+          $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
           $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
     } else if (mb.isBoss) {
       // Boss defeated
@@ -5202,7 +5202,7 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
-      $('resultBtn').innerHTML = '';
+      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
       $('resultMsg').innerHTML += '<div class="result-tap">👆 klepni pro návrat</div>';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
       saveGame();
@@ -5224,7 +5224,7 @@
       $('resultMsg').innerHTML = '<div class="result-stats">'
                 + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + rewardGold + ' gold</span></div>'
                 + '</div>';
-      $('resultBtn').innerHTML = '';
+      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
       showScreen('result');
       switchBGM('win');
@@ -6100,88 +6100,77 @@
       $('invCompareStats').innerHTML = eStats;
       comparePanel.classList.remove('hidden');
     }
-    // Tap-to-equip: vybrat item v batohu → kliknout na slot
+    // Tap-to-equip: jediná delegace místo per-slot handlerů (zabraňuje kumulaci listenerů)
     let _selectedInvIdx = null;
     let _selectedSlot = null;
+    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotAmulet:'amulet' };
     function clearSelection() {
       _selectedInvIdx = null;
       _selectedSlot = null;
       document.querySelectorAll('.inv-grid-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
     }
-    // Klik na item v batohu = vybrat (nebo equipnout, pokud je vybraný slot)
-    grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
-      cell.addEventListener('click', function(e) {
-        const idx = parseInt(this.dataset.idx);
-        const itemId = inv[idx];
-        const item = itemId ? ITEM_MAP[itemId] : null;
-        if (!item) return;
-        // Pokud je vybraný equip slot, equipnout tam
-        if (_selectedSlot) {
-          equipItemToSlot(idx, _selectedSlot);
-          clearSelection();
-          return;
-        }
-        // Jinak vybrat item
-        clearSelection();
-        _selectedInvIdx = idx;
-        this.classList.add('selected');
-        showItemInfo(item);
-      });
-    });
-    // Klik na equip slot = vybrat slot (nebo sundat, pokud je vybraný item)
-    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotAmulet:'amulet' };
-    Object.keys(slotMap).forEach(slotId => {
-      const el = $(slotId);
-      if (!el) return;
-      el.addEventListener('click', function(e) {
-        const slot = slotMap[slotId];
+    const invScreen = $('inventoryScreen');
+    if (invScreen._invDelegationHandler) {
+      invScreen.removeEventListener('click', invScreen._invDelegationHandler);
+    }
+    invScreen._invDelegationHandler = function(e) {
+      // Equip slot klik
+      const slotEl = e.target.closest('.inv-equip-slot');
+      if (slotEl) {
+        const slot = slotMap[slotEl.id];
+        if (!slot) return;
         const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
         const itemId = h.equip[slot];
         const item = itemId ? ITEM_MAP[itemId] : null;
-        // Pokud je vybraný item v batohu, equipnout
         if (_selectedInvIdx !== null) {
           equipItemToSlot(_selectedInvIdx, slot);
           clearSelection();
           return;
         }
-        // Pokud je slot prázdný, nic
         if (!itemId || itemId === defaults[slot]) return;
-        // Pokud je vybraný slot, sundat
         if (_selectedSlot === slot) {
           unequipSlot(slot);
           clearSelection();
           return;
         }
-        // Jinak vybrat slot
         clearSelection();
         _selectedSlot = slot;
-        this.classList.add('selected');
+        slotEl.classList.add('selected');
         showItemInfo(item);
-      });
-    });
-    // Klik na prázdnou buňku = sundat vybraný slot
-    grid.querySelectorAll('.inv-grid-cell.empty').forEach(cell => {
-      cell.addEventListener('click', function(e) {
-        if (_selectedSlot) {
-          unequipSlot(_selectedSlot);
-          clearSelection();
-        }
-      });
-    });
-    // Klik mimo buňky = schovat info panel
-    const hideActions = (e) => {
+        return;
+      }
+      // Grid cell klik
       const cell = e.target.closest('.inv-grid-cell');
-      if (cell && !cell.classList.contains('empty')) return;
-      const slotEl = e.target.closest('.inv-equip-slot');
-      if (slotEl) return;
+      if (cell) {
+        if (cell.classList.contains('empty')) {
+          if (_selectedSlot) {
+            unequipSlot(_selectedSlot);
+            clearSelection();
+          }
+          return;
+        }
+        const idx = parseInt(cell.dataset.idx);
+        const itemId = inv[idx];
+        const item = itemId ? ITEM_MAP[itemId] : null;
+        if (!item) return;
+        if (_selectedSlot) {
+          equipItemToSlot(idx, _selectedSlot);
+          clearSelection();
+          return;
+        }
+        clearSelection();
+        _selectedInvIdx = idx;
+        cell.classList.add('selected');
+        showItemInfo(item);
+        return;
+      }
+      // Klik mimo — schovat panely
       const panel = $('invInfoPanel');
       if (panel) panel.classList.add('hidden');
       const comparePanel = $('invComparePanel');
       if (comparePanel) comparePanel.classList.add('hidden');
     };
-    document.removeEventListener('click', grid._hideActions);
-    grid._hideActions = hideActions;
-    document.addEventListener('click', hideActions);
+    invScreen.addEventListener('click', invScreen._invDelegationHandler);
   }
 
   function unequipSlot(slot) {
