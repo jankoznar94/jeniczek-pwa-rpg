@@ -6555,7 +6555,7 @@
     showScreen, enterLocation, toggleDungeon,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     onMapRapidTap,
-    investTalent, activateSchool, resetTalents,
+    investTalent, resetTalents,
     toggleMapPause,
     renderBestiary,
     renderSpellbook,
