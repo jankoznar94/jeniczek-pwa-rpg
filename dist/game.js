@@ -1448,6 +1448,16 @@
     state.hero.attrInt = cls.attrBonus.int;
     // První talent point zdarma
     state.talentPoints = 1;
+    // Startovní zbraň podle classy
+    const startWeapons = {
+      barbarian: 'ironSword',  // Železný meč
+      assassin: 'huntingKnife', // Lovecký nůž
+      mage: 'dagger',           // Dřevěná hůlka
+    };
+    const startWpn = startWeapons[classId];
+    if (startWpn && ITEM_MAP[startWpn]) {
+      state.hero.equip.weapon = startWpn;
+    }
     saveGame();
     showScreen('map');
     renderMap();
@@ -1788,7 +1798,7 @@
     // HP škáluje s dungeonem a obtížností
     const diffMult = DIFFICULTY_MULT[locId] || 1.0;
     const diffMultOverall = diff.mult;
-    const monsterHp = Math.round((40 + locId * 80) * diffMult * diffMultOverall + 10 + 5 * progress) * 5;
+    const monsterHp = Math.round((20 + locId * 60) * diffMult * diffMultOverall + 5 + 3 * progress) * 5;
     const bossHp = Math.round((400 + locId * 400) * diffMult * diffMultOverall + 150 + 200);
 
     // Elitní HP bonus
@@ -5141,6 +5151,12 @@
 
     if (!won) {
           state.deaths = (state.deaths || 0) + 1;
+          // Útěcha i za prohru — 20% XP a pár goldů
+          const consXp = Math.max(5, Math.round((mb.loc.xpReward + mb.progress * 2) * 5 * 0.2));
+          const consGold = 1 + rand(0, 2);
+          state.hero.xp = (state.hero.xp || 0) + consXp;
+          state.hero.gold = (state.hero.gold || 0) + consGold;
+          const leveled = applyLevelUp();
           state.locationProgress[locId] = 0;
           state._floorLootDrops = [];
           state.hero.hp = state.hero.maxHp;
@@ -5149,7 +5165,7 @@
           switchBGM('defeat');
           $('resultIcon').textContent = '💀';
           $('resultTitle').textContent = 'Padl jsi';
-          $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">' + mb.loc.name + '</span></div><div class="result-stat"><span class="result-stat-icon">📍</span><span class="result-stat-val">Místnost ' + (mb.progress+1) + '</span></div></div><div class="result-tap">👆 klepni pro návrat</div>';
+          $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + consXp + ' XP</span></div><div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + consGold + '</span></div></div><div class="result-tap">👆 klepni pro návrat</div>';
           $('resultBtn').innerHTML = '';
           $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
     } else if (mb.isBoss) {
@@ -5642,14 +5658,16 @@
       }
 
   // ===== HERO =====
+  // Snížit XP potřebu na prvních levelech
   function applyLevelUp() {
     const h = state.hero;
     const prevLevel = h.level;
     let leveled = false;
     let safety = 0;
     while (true) {
-      if (safety++ > 100) break; // bezpečnostní pojistka proti nekonečné smyčce
-      const xpNeeded = h.level * 80;
+      if (safety++ > 100) break;
+      // Level 1->2: 40 XP, 2->3: 80 XP, pak standard 80/level
+      const xpNeeded = h.level <= 2 ? h.level * 40 : h.level * 80;
       if (h.xp < xpNeeded) break;
       h.xp -= xpNeeded;
       h.level++;
