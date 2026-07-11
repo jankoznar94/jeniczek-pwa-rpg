@@ -395,11 +395,11 @@
       tiers: [
         { choices: [
           { k:'heroicStrike', name:'Heroic Strike', icon:'💢', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
-          { k:'battleShout', name:'Battle Shout', icon:'📯', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 5s` },
+          { k:'battleShout', name:'Battle Shout', icon:'📯', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
           { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', maxLv:5, desc:lv=>`${50+lv*30}% dmg + zpomalí 20% na ${1+lv}s` },
         ]},
         { choices: [
-          { k:'bloodrage', name:'Bloodrage', icon:'🩸', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:3, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 3s` },
+          { k:'bloodrage', name:'Bloodrage', icon:'🩸', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:3, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
           { k:'doubleSwing', name:'Double Swing', icon:'⚔️', maxLv:5, requires:'barbarian_battleShout', requiresLv:3, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
         ]},
         { choices: [
@@ -2563,11 +2563,11 @@
         setTimeout(() => dmgText.classList.add('hidden'), 500);
       }
     } else if (spellId === 'battleShout') {
-      // +15% dmg na 30s
+      // +15% dmg na 60s
       state.battleShoutDmgPct = 15;
-      state.battleShoutTimer = 1800; // 30s
+      state.battleShoutTimer = 3600; // 60s
       // Buff ikona hráče
-      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
