@@ -2326,6 +2326,7 @@
     renderBuffs();
 
     updateSpellButtons();
+  }
 
   function updateSpellButtons() {
     const fireBtn = $('mbSpellFireBtn');
