@@ -5121,7 +5121,7 @@
       }
       $('resultLootList').innerHTML = lootListHtml;
       $('resultBtn').innerHTML = '';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); };
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
       showScreen('result');
       switchBGM('win');
       return;
@@ -5144,12 +5144,14 @@
           state.locationProgress[locId] = 0;
           state._floorLootDrops = [];
           state.hero.hp = state.hero.maxHp;
+          state.dungeonSteps = null; // reset dungeon při smrti
           saveGame();
           switchBGM('defeat');
           $('resultIcon').textContent = '💀';
           $('resultTitle').textContent = 'Padl jsi';
-          $('resultMsg').textContent = `${mb.loc.name} — Místnost ${mb.progress+1}`;
-          $('resultBtn').innerHTML = `<button class="btn btn-primary" onclick="game.enterLocation(${locId})">🔄 Znovu</button><button class="btn btn-secondary" onclick="game.showScreen('map')">🌍 Mapa</button>`;
+          $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">' + mb.loc.name + '</span></div><div class="result-stat"><span class="result-stat-icon">📍</span><span class="result-stat-val">Místnost ' + (mb.progress+1) + '</span></div></div><div class="result-tap">👆 klepni pro návrat</div>';
+          $('resultBtn').innerHTML = '';
+          $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
     } else if (mb.isBoss) {
       // Boss defeated
       if (steps && currentChoice) currentChoice.completed = true;
@@ -5158,6 +5160,7 @@
       state.bossesDefeated[locId] = true;
       state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 10) * getXpModifier(mb));
       state.locationProgress[locId] = 0;
+      state.dungeonSteps = null; // reset dungeon po bossovi
       applyLevelUp();
       const r = mb.loc.reward;
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
