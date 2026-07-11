@@ -1601,11 +1601,8 @@
           const lockedStep = si > curProgress && !completed;
           const isActive = si === curProgress && !completed;
           const chosen = step.choices[step.chosenIdx];
-          let sIcon, sStyle, sText;
-          if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Hotovo'; }
-          else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Zamčeno'; }
-          else if (isActive) {
-            // Zobrazit možnosti
+          if (isActive) {
+            // Aktivní krok — zobrazit možnosti výběru
             const choiceHtml = step.choices.map((ch, ci) => {
               const extra = ch.eliteAffix ? ` (${ch.eliteAffix.icon})` : '';
               return `<div class="dungeon-choice" onclick="game.chooseDungeonPath(${i}, ${si}, ${ci})" style="border-color:${theme.border};background:${theme.bg}88">
@@ -1613,19 +1610,22 @@
                 <span class="dungeon-choice-label">${ch.label}${extra}</span>
               </div>`;
             }).join('');
-            sIcon = '🎲';
-            sStyle = '';
-            sText = `<div class="dungeon-choices">${choiceHtml}</div>`;
+            stepHtml += `<div class="map-floor-card floor-active" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66);flex-direction:column;align-items:stretch;padding:8px">
+              <div style="font-size:12px;font-weight:bold;margin-bottom:4px;color:${theme.border}">🎲 Vyber si:</div>
+              <div class="dungeon-choices">${choiceHtml}</div>
+            </div>`;
           } else {
-            sIcon = chosen ? chosen.icon : '?';
-            sStyle = '';
-            sText = chosen ? chosen.label : '';
+            // Hotový nebo zamčený krok
+            let sIcon, sStyle, sText;
+            if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Hotovo'; }
+            else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Zamčeno'; }
+            else { sIcon = chosen ? chosen.icon : '?'; sStyle = ''; sText = chosen ? chosen.label : ''; }
+            stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
+              <span class="floor-card-icon"${sStyle ? ` style="${sStyle}"` : ''}>${sIcon}</span>
+              <span class="floor-card-num">Krok ${si+1}</span>
+              <span class="floor-card-text">${sText}</span>
+            </div>`;
           }
-          stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
-            <span class="floor-card-icon"${sStyle ? ` style="${sStyle}"` : ''}>${sIcon}</span>
-            <span class="floor-card-num">Krok ${si+1}</span>
-            <span class="floor-card-text">${sText}</span>
-          </div>`;
         });
       }
       return `<div class="map-location-wrap">
@@ -1654,17 +1654,11 @@
     // Uložit volbu
     step.chosenIdx = choiceIdx;
     step.completed = true;
-    state.locationProgress[locId] = stepIdx + 1;
+    state.locationProgress[locId] = stepIdx; // zůstat na aktuálním kroku pro startLocation
 
-    // Pokud je to boss nebo reward, rovnou spustit
-    if (choice.isBoss || choice.isReward) {
-      cleanupTimers();
-      startLocation(locId);
-    } else {
-      // Jinak spustit souboj
-      cleanupTimers();
-      startLocation(locId);
-    }
+    // Spustit souboj/efekt
+    cleanupTimers();
+    startLocation(locId);
   }
 
   function enterLocation(locId) {
