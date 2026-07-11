@@ -1121,20 +1121,20 @@
 
   // ===== ROOM TYPES =====
   const ROOM_TYPES = {
-    ENEMY: 'enemy',        // Běžný nepřítel — 50%
-    ELITE: 'elite',        // Elitní nepřítel — 15%
-    FOUNTAIN: 'fountain',  // Léčivý pramen — 10%
-    MERCHANT: 'merchant',  // Obchodník — 10%
-    CHEST: 'chest',        // Truhlice — 10%
-    TRAP: 'trap',          // Past — 5%
+    ENEMY: 'enemy',        // Běžný nepřítel
+    ELITE: 'elite',        // Elitní nepřítel
+    FOUNTAIN: 'fountain',  // Léčivý pramen
+    MERCHANT: 'merchant',  // Obchodník
+    CHEST: 'chest',        // Truhlice
+    MYSTERY: 'mystery',    // Náhodná (hráč neví co)
   };
   const ROOM_POOL = [
     { type: ROOM_TYPES.ENEMY, weight:50, icon:'💀', label:'Nepřítel' },
     { type: ROOM_TYPES.ELITE, weight:15, icon:'💀💀', label:'Elita' },
-    { type: ROOM_TYPES.FOUNTAIN, weight:10, icon:'🩸', label:'Pramen' },
-    { type: ROOM_TYPES.MERCHANT, weight:10, icon:'🛒', label:'Obchod' },
-    { type: ROOM_TYPES.CHEST, weight:10, icon:'💰', label:'Truhlice' },
-    { type: ROOM_TYPES.TRAP, weight:5, icon:'⚠️', label:'Past' },
+    { type: ROOM_TYPES.FOUNTAIN, weight:12, icon:'🩸', label:'Pramen' },
+    { type: ROOM_TYPES.MERCHANT, weight:12, icon:'🛒', label:'Obchod' },
+    { type: ROOM_TYPES.CHEST, weight:6, icon:'💰', label:'Truhlice' },
+    { type: ROOM_TYPES.MYSTERY, weight:5, icon:'❓', label:'???' },
   ];
 
   // ===== ELITE AFFIXY =====
@@ -1655,6 +1655,19 @@
     step.chosenIdx = choiceIdx;
     step.completed = true;
     state.locationProgress[locId] = stepIdx; // zůstat na aktuálním kroku pro startLocation
+
+    // MYSTERY — náhodně odhalit, co to vlastně je
+    if (choice.type === ROOM_TYPES.MYSTERY) {
+      // Vybrat náhodný typ místnosti (kromě MYSTERY)
+      const mysteryPool = ROOM_POOL.filter(p => p.type !== ROOM_TYPES.MYSTERY);
+      const revealed = mysteryPool[rand(0, mysteryPool.length - 1)];
+      choice.type = revealed.type;
+      choice.icon = revealed.icon;
+      choice.label = '❓ ' + revealed.label;
+      if (revealed.type === ROOM_TYPES.ELITE) {
+        choice.eliteAffix = ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
+      }
+    }
 
     // Spustit souboj/efekt
     cleanupTimers();
@@ -4899,7 +4912,8 @@
     // Preferovat nejvyšší možný tier
     const maxTier = candidates.length > 0 ? Math.max(...candidates.map(c => c.tier)) : 1;
     const pool = candidates.filter(c => c.tier === maxTier);
-    const baseItem = pool.length > 0 ? pool[rand(0, pool.length - 1)] : ITEMS[0];
+    const baseItem = pool.length > 0 ? pool[rand(0, pool.length - 1)] : null;
+    if (!baseItem) return null; // žádný vhodný item pro tento typ/tier
 
     // 3. Unique — najít unikát pro tento base item
     if (quality === 'unique') {
@@ -4956,6 +4970,7 @@
     if (bossDrop) {
       // Boss: zaručený item s vyšším tierem + goldy
       const item = generateLootItem(floor, true);
+      if (!item) return { type:'gold', gold: 10 + floor * 3 };
       const gold = 5 + floor * 3 + rand(0, 5);
       return { type:'boss', item, gold };
     }
@@ -4967,6 +4982,7 @@
     } else {
       // Item reward
       const item = generateLootItem(floor);
+      if (!item) return { type:'gold', gold: 3 + floor * 2 };
       return { type:'item', item };
     }
   }
@@ -4994,15 +5010,19 @@
       state.hero.hp = mb.playerHp;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
-      // Loot roll
-      const loot = rollLoot(locId, mb.progress);
+      // Loot roll — 2-3 itemy na kill
+      const numLoot = 2 + rand(0, 1);
       state._floorLootDrops = state._floorLootDrops || [];
-      state._floorLootDrops.push(loot);
-      if (loot.type === 'item' || loot.type === 'boss') {
-        state.hero.inventory.push(loot.item.id);
-      }
-      if (loot.type === 'gold' || loot.type === 'boss') {
-        state.hero.gold = (state.hero.gold || 0) + (loot.gold || 0);
+      for (let li = 0; li < numLoot; li++) {
+        const loot = rollLoot(locId, mb.progress, false);
+        if (!loot) continue;
+        state._floorLootDrops.push(loot);
+        if (loot.type === 'item' || loot.type === 'boss') {
+          if (loot.item) state.hero.inventory.push(loot.item.id);
+        }
+        if (loot.type === 'gold' || loot.type === 'boss') {
+          state.hero.gold = (state.hero.gold || 0) + (loot.gold || 0);
+        }
       }
       saveGame();
       sfxSuccess();
@@ -5089,20 +5109,20 @@
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
       // Boss loot
       const bossLoot = rollLoot(locId, mb.progress, true);
-      if (bossLoot.type === 'boss') {
+      if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
         state.hero.inventory.push(bossLoot.item.id);
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
       }
       sfxBossDefeat();
       $('resultIcon').textContent = '🏆';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
-      const bossGoldTotal = (r.gold || 0) + bossLoot.gold;
+      const bossGoldTotal = (r.gold || 0) + (bossLoot ? bossLoot.gold || 0 : 0);
       $('resultMsg').innerHTML = '<div class="result-stats">'
                 + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+'+bossGoldTotal+'</span></div>'
                 + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">'+((mb.floorMistakes||0)+(mb.mistakes||0))+'</span><span class="result-stat-sub">chyb</span></div>'
                 + '</div>';
       let lootListHtml = '';
-      if (bossLoot.type === 'boss') {
+      if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
         const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
         lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(bossLoot.item,24)}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
       } else {
