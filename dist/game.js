@@ -562,6 +562,7 @@
     { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
     { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
     // === BRNĚNÍ ===
+    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, bonusMana:0, defense:0, cost:0, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:0 },
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
     { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
     { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'/assets/items/armor_scale.png', tier:3 },
@@ -2018,11 +2019,7 @@
       }
     }
 
-    // Zpracovat útoky (nejdřív, aby se ring nevykreslil jako zelený v přechodovém framu)
-    if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
-      mb._enemyAttackProcessed = true;
-      onAutoEnemyAttack();
-    }
+    // Zpracovat útoky — hráč první, aby mohl zabít bosse dřív, než nepřítel stihne zabít jeho
     if (mb._playerSwingReady && !mb._playerAttackProcessed) {
       mb._playerAttackProcessed = true;
       onAutoPlayerAttack();
@@ -2030,6 +2027,10 @@
     if (mb._offhandSwingReady && !mb._offhandAttackProcessed) {
       mb._offhandAttackProcessed = true;
       onAutoOffhandAttack();
+    }
+    if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
+      mb._enemyAttackProcessed = true;
+      onAutoEnemyAttack();
     }
 
     // Update timer ring vizuál (až po zpracování útoků, aby nedošlo k zelenému probliku)
@@ -5811,21 +5812,6 @@
     const shield = ITEM_MAP[h.equip.shield];
     const r1 = ITEM_MAP[h.equip.ring1];
     const amulet = ITEM_MAP[h.equip.amulet];
-    const hw = $('heroSlotWeaponIcon'); if (hw) hw.innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(w, 0);
-    const hws = $('heroSlotWeapon'); if (hws) { hws.classList.toggle('empty', h.equip.weapon === 'fists'); setSlotBorder('heroSlotWeapon', w); }
-    const ha = $('heroSlotArmorIcon'); if (ha) ha.innerHTML = h.equip.armor === 'rags' ? renderItemIcon({iconImg:'/assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(a, 0);
-    const has = $('heroSlotArmor'); if (has) { has.classList.toggle('empty', h.equip.armor === 'rags'); setSlotBorder('heroSlotArmor', a); }
-    const hh = $('heroSlotHelmetIcon'); if (hh) hh.innerHTML = helm ? renderItemIcon(helm, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
-    const hhs = $('heroSlotHelmet'); if (hhs) { hhs.classList.toggle('empty', !helm); setSlotBorder('heroSlotHelmet', helm); }
-    const hs = $('heroSlotShieldIcon'); if (hs) hs.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 0);
-    const hss = $('heroSlotShield'); if (hss) { hss.classList.toggle('empty', !shield); setSlotBorder('heroSlotShield', shield); }
-    const offhand = ITEM_MAP[h.equip.shield];
-    const ho = $('heroSlotShieldIcon'); if (ho) ho.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'/assets/items/weapon_hunting_knife.png',tier:1}, 0);
-    const hos = $('heroSlotShield'); if (hos) { hos.classList.toggle('empty', !offhand); setSlotBorder('heroSlotShield', offhand); }
-    const hr1 = $('heroSlotRing1Icon'); if (hr1) hr1.innerHTML = r1 ? renderItemIcon(r1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
-    const hr1s = $('heroSlotRing1'); if (hr1s) { hr1s.classList.toggle('empty', !r1); setSlotBorder('heroSlotRing1', r1); }
-    const ham = $('heroSlotAmuletIcon'); if (ham) ham.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'/assets/items/amulet_bone.png',tier:1}, 0);
-    const hams = $('heroSlotAmulet'); if (hams) { hams.classList.toggle('empty', !amulet); setSlotBorder('heroSlotAmulet', amulet); }
   }
 
   function renameHero() {
@@ -5996,8 +5982,8 @@
     $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     setSlotBorder('invSlotWeapon', weapon);
-    $('invSlotArmorIcon').innerHTML = h.equip.armor === 'rags' ? renderItemIcon({iconImg:'/assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
-    $('invSlotArmor').classList.toggle('empty', h.equip.armor === 'rags');
+    $('invSlotArmorIcon').innerHTML = !h.equip.armor ? renderItemIcon({iconImg:'/assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
+    $('invSlotArmor').classList.toggle('empty', !h.equip.armor);
     setSlotBorder('invSlotArmor', armor);
     const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); setSlotBorder('invSlotHelmet', helmet); }
@@ -6100,20 +6086,21 @@
       $('invCompareStats').innerHTML = eStats;
       comparePanel.classList.remove('hidden');
     }
-    // Tap-to-equip: jediná delegace místo per-slot handlerů (zabraňuje kumulaci listenerů)
-    let _selectedInvIdx = null;
-    let _selectedSlot = null;
+    // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
     const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotAmulet:'amulet' };
     function clearSelection() {
-      _selectedInvIdx = null;
-      _selectedSlot = null;
+      window._invSelectedIdx = null;
+      window._invSelectedSlot = null;
       document.querySelectorAll('.inv-grid-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
     }
+    // Delegace handler je nastaven dříve v init() — tady jen clearujeme
     const invScreen = $('inventoryScreen');
     if (invScreen._invDelegationHandler) {
       invScreen.removeEventListener('click', invScreen._invDelegationHandler);
     }
     invScreen._invDelegationHandler = function(e) {
+      const h = state.hero;
+      const inv = h.inventory || [];
       // Equip slot klik
       const slotEl = e.target.closest('.inv-equip-slot');
       if (slotEl) {
@@ -6122,19 +6109,19 @@
         const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
         const itemId = h.equip[slot];
         const item = itemId ? ITEM_MAP[itemId] : null;
-        if (_selectedInvIdx !== null) {
-          equipItemToSlot(_selectedInvIdx, slot);
+        if (window._invSelectedIdx !== null) {
+          equipItemToSlot(window._invSelectedIdx, slot);
           clearSelection();
           return;
         }
         if (!itemId || itemId === defaults[slot]) return;
-        if (_selectedSlot === slot) {
+        if (window._invSelectedSlot === slot) {
           unequipSlot(slot);
           clearSelection();
           return;
         }
         clearSelection();
-        _selectedSlot = slot;
+        window._invSelectedSlot = slot;
         slotEl.classList.add('selected');
         showItemInfo(item);
         return;
@@ -6143,8 +6130,8 @@
       const cell = e.target.closest('.inv-grid-cell');
       if (cell) {
         if (cell.classList.contains('empty')) {
-          if (_selectedSlot) {
-            unequipSlot(_selectedSlot);
+          if (window._invSelectedSlot) {
+            unequipSlot(window._invSelectedSlot);
             clearSelection();
           }
           return;
@@ -6153,13 +6140,13 @@
         const itemId = inv[idx];
         const item = itemId ? ITEM_MAP[itemId] : null;
         if (!item) return;
-        if (_selectedSlot) {
-          equipItemToSlot(idx, _selectedSlot);
+        if (window._invSelectedSlot) {
+          equipItemToSlot(idx, window._invSelectedSlot);
           clearSelection();
           return;
         }
         clearSelection();
-        _selectedInvIdx = idx;
+        window._invSelectedIdx = idx;
         cell.classList.add('selected');
         showItemInfo(item);
         return;
@@ -6249,7 +6236,7 @@
         h.equip.weapon = itemId;
       }
     } else if (item.type === 'armor') {
-      if (h.equip.armor !== 'rags') h.inventory.push(h.equip.armor);
+      if (h.equip.armor) h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
     } else if (item.type === 'helmet') {
       if (h.equip.helmet) h.inventory.push(h.equip.helmet);
