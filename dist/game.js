@@ -5008,8 +5008,8 @@
       sfxSuccess();
 
       // Zjistit, jestli je další místnost boss
-      const nextRoom = rooms ? rooms[p] : null;
-      const isNextBoss = nextRoom && nextRoom.isBoss;
+      const nextStep = steps ? steps[p] : null;
+      const isNextBoss = nextStep && nextStep.choices[nextStep.chosenIdx] && nextStep.choices[nextStep.chosenIdx].isBoss;
 
       mapBattleState.ended = true;
       cleanupTimers();
@@ -5569,7 +5569,9 @@
     const h = state.hero;
     const prevLevel = h.level;
     let leveled = false;
+    let safety = 0;
     while (true) {
+      if (safety++ > 100) break; // bezpečnostní pojistka proti nekonečné smyčce
       const xpNeeded = h.level * 80;
       if (h.xp < xpNeeded) break;
       h.xp -= xpNeeded;
