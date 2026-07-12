@@ -6490,6 +6490,15 @@
     if (state.hero.mana === undefined) state.hero.mana = 50;
     if (state.hero.maxMana === undefined) state.hero.maxMana = 50;
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
+    // Dopočítat chybějící atributové body podle levelu (5/level, level 1 = 0)
+    const expectedAttrPoints = (state.hero.level - 1) * 5;
+    if (state.hero.attrPoints < expectedAttrPoints) {
+      state.hero.attrPoints = expectedAttrPoints;
+    }
+    // Vždy aktualizovat maxHp/maxMana podle aktuálního levelu a itemů
+    state.hero.maxHp = getHeroMaxHp();
+    state.hero.maxMana = getHeroMaxMana();
+    if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
     if (state.heroClass === undefined) state.heroClass = null;
     // Migrace: staré savy (bez resource polí) musí projít class selectem
     if (state.heroClass && state.rage === undefined && state.energy === undefined) {
