@@ -545,51 +545,51 @@
     // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
     // === ZBRANĚ — magické (staff) ===
-    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'/assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
-    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'/assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
-    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'/assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
-    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'/assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
-    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'/assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
+    { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:5, bonusHp:0, bonusMana:10, cost:15, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
+    { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:8, bonusHp:0, bonusMana:15, cost:25, icon:'🪄', iconImg:'assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
+    { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:10, bonusHp:0, bonusMana:20, cost:30, icon:'🪄', iconImg:'assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
+    { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:13, bonusHp:0, bonusMana:25, cost:45, icon:'🪄', iconImg:'assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
+    { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:16, bonusHp:0, bonusMana:30, cost:55, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
     // === ZBRANĚ — fyzické (blade) ===
-    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'/assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
-    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'/assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
-    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'/assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
-    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'/assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'/assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000 },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'/assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100 },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'/assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000 },
-    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'/assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'/assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'/assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
+    { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:6, bonusHp:0, cost:20, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
+    { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000 },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100 },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000 },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
     // === BRNĚNÍ ===
-    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, bonusMana:0, defense:0, cost:0, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:0 },
-    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'/assets/items/armor_leather.png', tier:1 },
-    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'/assets/items/armor_chainmail.png', tier:2 },
-    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'/assets/items/armor_scale.png', tier:3 },
-    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:30, cost:110, icon:'👘', iconImg:'/assets/items/armor_plate.png', tier:4 },
-    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:35, cost:160, icon:'👘', iconImg:'/assets/items/armor_dragon_scale.png', tier:5 },
+    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, bonusMana:0, defense:0, cost:0, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:0 },
+    { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1 },
+    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:2 },
+    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:3 },
+    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:30, cost:110, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:4 },
+    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:35, cost:160, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:5 },
     // === HELMY ===
-    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, defense:8, cost:15, icon:'🎭', iconImg:'/assets/items/helmet_linen_hood.png', tier:1 },
-    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:11, cost:30, icon:'⛑️', iconImg:'/assets/items/helmet_iron_helm.png', tier:2 },
-    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, defense:14, cost:60, icon:'⛑️', iconImg:'/assets/items/helmet_steel_helm.png', tier:3 },
-    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, defense:20, cost:140, icon:'👑', iconImg:'/assets/items/helmet_crown.png', tier:5 },
+    { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, defense:8, cost:15, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:1 },
+    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:11, cost:30, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:2 },
+    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, defense:14, cost:60, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:3 },
+    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, defense:20, cost:140, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:5 },
     // === ŠTÍTY ===
-    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'/assets/items/shield_wooden.png', tier:1 },
-    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:9, cost:30, icon:'🛡️', iconImg:'/assets/items/shield_leather.png', tier:2 },
-    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:12, cost:55, icon:'🛡️', iconImg:'/assets/items/shield_iron.png', tier:3 },
-    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:15, cost:85, icon:'🛡️', iconImg:'/assets/items/shield_steel.png', tier:4 },
-    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:18, cost:150, icon:'🛡️', iconImg:'/assets/items/shield_paladin.png', tier:5 },
+    { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:1 },
+    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:9, cost:30, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:2 },
+    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:12, cost:55, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:3 },
+    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:15, cost:85, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:4 },
+    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:18, cost:150, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:5 },
     // === PRSTENY ===
-    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:2, bonusHp:0, cost:15, icon:'💍', iconImg:'/assets/items/ring_copper.png', tier:1 },
-    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:4, bonusHp:10, cost:55, icon:'💍', iconImg:'/assets/items/ring_silver.png', tier:3 },
-    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:6, bonusHp:20, cost:100, icon:'💍', iconImg:'/assets/items/ring_gold.png', tier:4 },
-    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:9, bonusHp:30, cost:180, icon:'💍', iconImg:'/assets/items/ring_gem.png', tier:5 },
+    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:2, bonusHp:0, cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
+    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:4, bonusHp:10, cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
+    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:6, bonusHp:20, cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
+    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:9, bonusHp:30, cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
     // === AMULETY ===
-    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', baseDmg:1, bonusHp:5, cost:20, icon:'📿', iconImg:'/assets/items/amulet_bone.png', tier:1 },
-    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', baseDmg:3, bonusHp:12, cost:60, icon:'📿', iconImg:'/assets/items/amulet_silver.png', tier:3 },
-    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', baseDmg:5, bonusHp:22, cost:110, icon:'📿', iconImg:'/assets/items/amulet_gold.png', tier:4 },
-    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'/assets/items/amulet_ruby.png', tier:5 },
-    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'/assets/items/amulet_arcane.png', tier:6 },
+    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', baseDmg:1, bonusHp:5, cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
+    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', baseDmg:3, bonusHp:12, cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
+    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', baseDmg:5, bonusHp:22, cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
+    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
+    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
   ];
 
   // ===== AFFIX DATABÁZE (prefixy + suffixy) =====
@@ -663,179 +663,179 @@
     // === STAFF (Mage) ===
     { id:'unique_dagger', name:'Hůlka počátků', baseId:'dagger',
       affixIds:['arcane','ofMana'], minLevel:1, tier:2,
-      iconImg:'/assets/items/staff_wooden.png', icon:'🪄',
+      iconImg:'assets/items/staff_wooden.png', icon:'🪄',
       uniqueProp:{ type:'freeCast', value:10, desc:'10% šance sešle kouzlo zdarma' } },
     { id:'unique_shortsword', name:'Planoucí hůlka', baseId:'shortsword',
       affixIds:['fiery','ofPower'], minLevel:2, tier:3,
-      iconImg:'/assets/items/staff_fire.png', icon:'🪄',
+      iconImg:'assets/items/staff_fire.png', icon:'🪄',
       uniqueProp:{ type:'skillDmgBonus', value:15, desc:'+15% fire skill damage' } },
     { id:'unique_sword', name:'Mrazivá hůl', baseId:'sword',
       affixIds:['icy','ofWisdom'], minLevel:2, tier:3,
-      iconImg:'/assets/items/staff_ice.png', icon:'🪄',
+      iconImg:'assets/items/staff_ice.png', icon:'🪄',
       uniqueProp:{ type:'skillDmgBonus', value:15, desc:'+15% ice skill damage' } },
     { id:'unique_battleAxe', name:'Bouřná hůl', baseId:'battleAxe',
       affixIds:['keen','ofSpeed'], minLevel:3, tier:4,
-      iconImg:'/assets/items/staff_lightning.png', icon:'🪄',
+      iconImg:'assets/items/staff_lightning.png', icon:'🪄',
       uniqueProp:{ type:'castSpeed', value:10, desc:'+10% cast speed' } },
     { id:'unique_spear', name:'Hvězdná hůl', baseId:'spear',
       affixIds:['arcane','ofCritical'], minLevel:3, tier:4,
-      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      iconImg:'assets/items/staff_archmage.png', icon:'🪄',
       uniqueProp:{ type:'magicCrit', value:5, desc:'+5% magic crit chance' } },
     { id:'unique_flameSword', name:'Plamená hůl', baseId:'flameSword',
       affixIds:['fiery','ofPower'], minLevel:4, tier:5,
-      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      iconImg:'assets/items/staff_archmage.png', icon:'🪄',
       uniqueProp:{ type:'doubleFireCrit', value:20, desc:'20% šance při critu zdvojnásobí fire dmg' } },
     { id:'unique_longsword', name:'Měsíční hůl', baseId:'longsword',
       affixIds:['mystic','ofMana'], minLevel:4, tier:5,
-      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      iconImg:'assets/items/staff_archmage.png', icon:'🪄',
       uniqueProp:{ type:'manaRegenFlat', value:2, desc:'+2 mana/sec regen' } },
     { id:'unique_archStaff', name:'Arcimágova hůl', baseId:'archStaff',
       affixIds:['skillful','ofWisdom'], minLevel:5, tier:6,
-      iconImg:'/assets/items/staff_archmage.png', icon:'🪄',
+      iconImg:'assets/items/staff_archmage.png', icon:'🪄',
       uniqueProp:{ type:'skillDmgBonus', value:20, desc:'+20% skill damage' } },
 
     // === BLADE (Barbar + Assassin) ===
     { id:'unique_ironSword', name:'Železný meč', baseId:'ironSword',
       affixIds:['strong','ofPower'], minLevel:1, tier:2,
-      iconImg:'/assets/items/weapon_iron_sword.png', icon:'⚔️',
+      iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
       uniqueProp:{ type:'defenseBonus', value:5, desc:'+5 defense při držení' } },
     { id:'unique_huntingKnife', name:'Lovecký nůž', baseId:'huntingKnife',
       affixIds:['keen','ofAccuracy'], minLevel:1, tier:2,
-      iconImg:'/assets/items/weapon_hunting_knife.png', icon:'🗡️',
+      iconImg:'assets/items/weapon_hunting_knife.png', icon:'🗡️',
       uniqueProp:{ type:'critDmgBonus', value:10, desc:'+10% crit damage' } },
     { id:'unique_flame_sword', name:'Plamenný meč', baseId:'broadSword',
       affixIds:['fiery','ofCritical'], minLevel:2, tier:3,
-      iconImg:'/assets/items/weapon_broad_sword.png', icon:'⚔️',
+      iconImg:'assets/items/weapon_broad_sword.png', icon:'⚔️',
       uniqueProp:{ type:'fireProc', value:15, desc:'15% šance přidá fire dmg' } },
     { id:'unique_sabre', name:'Šavle větru', baseId:'sabre',
       affixIds:['keen','ofSpeed'], minLevel:2, tier:3,
-      iconImg:'/assets/items/weapon_sabre.png', icon:'🗡️',
+      iconImg:'assets/items/weapon_sabre.png', icon:'🗡️',
       uniqueProp:{ type:'attackSpeed', value:10, desc:'+10% attack speed' } },
     { id:'unique_battleAxePhys', name:'Bojová sekera', baseId:'battleAxePhys',
       affixIds:['strong','ofStrength'], minLevel:3, tier:4,
-      iconImg:'/assets/items/weapon_battle_axe.png', icon:'🪓',
+      iconImg:'assets/items/weapon_battle_axe.png', icon:'🪓',
       uniqueProp:{ type:'doubleHit', value:20, desc:'20% šance na double hit' } },
     { id:'unique_claymore', name:'Obouruční meč', baseId:'claymore',
       affixIds:['sharp','ofCritical'], minLevel:4, tier:5,
-      iconImg:'/assets/items/weapon_claymore.png', icon:'⚔️',
+      iconImg:'assets/items/weapon_claymore.png', icon:'⚔️',
       uniqueProp:{ type:'doubleDmg', value:10, desc:'10% šance na double damage' } },
     { id:'unique_warAxe', name:'Válečná sekera', baseId:'warAxe',
       affixIds:['bloody','ofStrength'], minLevel:4, tier:5,
-      iconImg:'/assets/items/weapon_war_axe.png', icon:'🪓',
+      iconImg:'assets/items/weapon_war_axe.png', icon:'🪓',
       uniqueProp:{ type:'lifestealBonus', value:20, desc:'+20% lifesteal' } },
     { id:'unique_greatSword', name:'Velký meč', baseId:'greatSword',
       affixIds:['sharp','ofStrength'], minLevel:5, tier:6,
-      iconImg:'/assets/items/weapon_great_sword.png', icon:'⚔️',
+      iconImg:'assets/items/weapon_great_sword.png', icon:'⚔️',
       uniqueProp:{ type:'baseDmgBonus', value:15, desc:'+15% base damage' } },
     { id:'unique_greatAxe', name:'Dračí sekera', baseId:'greatAxe',
       affixIds:['fiery','ofPower'], minLevel:5, tier:6,
-      iconImg:'/assets/items/weapon_war_hammer.png', icon:'🪓',
+      iconImg:'assets/items/weapon_war_hammer.png', icon:'🪓',
       uniqueProp:{ type:'fireProcDmg', value:50, desc:'10% šance způsobí 50% base dmg jako fire' } },
     { id:'unique_giantHammer', name:'Obří kladivo', baseId:'giantHammer',
       affixIds:['strong','ofEndurance'], minLevel:6, tier:7,
-      iconImg:'/assets/items/weapon_giant_hammer.png', icon:'🔨',
+      iconImg:'assets/items/weapon_giant_hammer.png', icon:'🔨',
       uniqueProp:{ type:'stunProc', value:15, desc:'15% šance omráčí na 1s' } },
 
     // === ARMOR ===
     { id:'unique_leather', name:'Lněný hábit', baseId:'leather',
       affixIds:['arcane','ofMana'], minLevel:1, tier:2,
-      iconImg:'/assets/items/armor_leather.png', icon:'👘',
+      iconImg:'assets/items/armor_leather.png', icon:'👘',
       uniqueProp:{ type:'skillDmgBonus', value:5, desc:'+5% skill damage' } },
     { id:'unique_chainmail', name:'Kožený hábit', baseId:'chainmail',
       affixIds:['keen','ofLife'], minLevel:2, tier:3,
-      iconImg:'/assets/items/armor_chainmail.png', icon:'👘',
+      iconImg:'assets/items/armor_chainmail.png', icon:'👘',
       uniqueProp:{ type:'dodgeBonus', value:5, desc:'+5% dodge chance' } },
     { id:'unique_bulletproof', name:'Neprůstřelná kůže', baseId:'scale',
       affixIds:['sturdy','ofLife'], minLevel:3, tier:4,
-      iconImg:'/assets/items/armor_scale.png', icon:'👘',
+      iconImg:'assets/items/armor_scale.png', icon:'👘',
       uniqueProp:{ type:'dmgReduce', value:50, desc:'5% šance sníží incoming dmg o 50%' } },
     { id:'unique_fullPlate', name:'Kroužkový hábit', baseId:'fullPlate',
       affixIds:['sturdy','ofEndurance'], minLevel:4, tier:5,
-      iconImg:'/assets/items/armor_plate.png', icon:'👘',
+      iconImg:'assets/items/armor_plate.png', icon:'👘',
       uniqueProp:{ type:'defenseMult', value:10, desc:'+10% k defense (multiplikativně)' } },
     { id:'unique_dragonScale', name:'Dračí hábit', baseId:'dragonScale',
       affixIds:['vital','ofLife'], minLevel:5, tier:6,
-      iconImg:'/assets/items/armor_dragon_scale.png', icon:'👘',
+      iconImg:'assets/items/armor_dragon_scale.png', icon:'👘',
       uniqueProp:{ type:'dmgReflect', value:20, desc:'10% šance odrazí 20% dmg zpět' } },
 
     // === HELMET ===
     { id:'unique_linenHood', name:'Lněná kápě', baseId:'linenHood',
       affixIds:['mystic','ofWisdom'], minLevel:1, tier:2,
-      iconImg:'/assets/items/helmet_linen_hood.png', icon:'🎭',
+      iconImg:'assets/items/helmet_linen_hood.png', icon:'🎭',
       uniqueProp:{ type:'hitRatingBonus', value:5, desc:'+5 hit rating' } },
     { id:'unique_ironHelm', name:'Železná helma', baseId:'ironHelm',
       affixIds:['sturdy','ofStrength'], minLevel:2, tier:3,
-      iconImg:'/assets/items/helmet_iron_helm.png', icon:'⛑️',
+      iconImg:'assets/items/helmet_iron_helm.png', icon:'⛑️',
       uniqueProp:{ type:'stunResist', value:5, desc:'+5% stun resistance' } },
     { id:'unique_crown_wisdom', name:'Koruna moudrosti', baseId:'steelHelm',
       affixIds:['mystic','ofMana'], minLevel:3, tier:4,
-      iconImg:'/assets/items/helmet_steel_helm.png', icon:'⛑️',
+      iconImg:'assets/items/helmet_steel_helm.png', icon:'⛑️',
       uniqueProp:{ type:'bonusTalent', value:1, desc:'+1 k náhodnému talentu' } },
     { id:'unique_crown', name:'Arcimágova koruna', baseId:'crown',
       affixIds:['skillful','ofWisdom'], minLevel:5, tier:6,
-      iconImg:'/assets/items/helmet_crown.png', icon:'👑',
+      iconImg:'assets/items/helmet_crown.png', icon:'👑',
       uniqueProp:{ type:'skillDmgBonus', value:10, desc:'+10% skill damage' } },
 
     // === SHIELD ===
     { id:'unique_woodenShield', name:'Dřevěný štít', baseId:'woodenShield',
       affixIds:['sturdy','ofProtection'], minLevel:1, tier:2,
-      iconImg:'/assets/items/shield_wooden.png', icon:'🛡️',
+      iconImg:'assets/items/shield_wooden.png', icon:'🛡️',
       uniqueProp:{ type:'blockBonus', value:5, desc:'+5% block chance' } },
     { id:'unique_leatherShield', name:'Kožený štít', baseId:'leatherShield',
       affixIds:['vital','ofLife'], minLevel:2, tier:3,
-      iconImg:'/assets/items/shield_leather.png', icon:'🛡️',
+      iconImg:'assets/items/shield_leather.png', icon:'🛡️',
       uniqueProp:{ type:'dodgeBonus', value:3, desc:'+3% dodge chance' } },
     { id:'unique_shield_endurance', name:'Štít odolnosti', baseId:'ironShield',
       affixIds:['sturdy','ofLife'], minLevel:3, tier:4,
-      iconImg:'/assets/items/shield_iron.png', icon:'🛡️',
+      iconImg:'assets/items/shield_iron.png', icon:'🛡️',
       uniqueProp:{ type:'fullBlock', value:10, desc:'10% šance při bloku absorbuje 100% dmg' } },
     { id:'unique_steelShield', name:'Ocelový štít', baseId:'steelShield',
       affixIds:['sturdy','ofEndurance'], minLevel:4, tier:5,
-      iconImg:'/assets/items/shield_steel.png', icon:'🛡️',
+      iconImg:'assets/items/shield_steel.png', icon:'🛡️',
       uniqueProp:{ type:'blockReflect', value:30, desc:'10% šance při bloku odrazí 30% dmg' } },
     { id:'unique_paladinShield', name:'Paladinův štít', baseId:'paladinShield',
       affixIds:['vital','ofStrength'], minLevel:5, tier:6,
-      iconImg:'/assets/items/shield_paladin.png', icon:'🛡️',
+      iconImg:'assets/items/shield_paladin.png', icon:'🛡️',
       uniqueProp:{ type:'spellBlock', value:15, desc:'15% šance zablokuje kouzlo' } },
 
     // === RING ===
     { id:'unique_copperRing', name:'Měděný prsten', baseId:'copperRing',
       affixIds:['arcane','ofMana'], minLevel:1, tier:2,
-      iconImg:'/assets/items/ring_copper.png', icon:'💍',
+      iconImg:'assets/items/ring_copper.png', icon:'💍',
       uniqueProp:{ type:'manaRegenFlat', value:1, desc:'+1 mana/sec regen' } },
     { id:'unique_ring_blood', name:'Prsten krve', baseId:'silverRing',
       affixIds:['bloody','ofPower'], minLevel:3, tier:4,
-      iconImg:'/assets/items/ring_silver.png', icon:'💍',
+      iconImg:'assets/items/ring_silver.png', icon:'💍',
       uniqueProp:{ type:'killHeal', value:10, desc:'10% šance při killu obnoví 10% HP' } },
     { id:'unique_goldRing', name:'Zlatý prsten', baseId:'goldRing',
       affixIds:['sharp','ofCritical'], minLevel:4, tier:5,
-      iconImg:'/assets/items/ring_gold.png', icon:'💍',
+      iconImg:'assets/items/ring_gold.png', icon:'💍',
       uniqueProp:{ type:'critDmgBonus', value:10, desc:'+10% crit damage' } },
     { id:'unique_gemRing', name:'Drahokamový prsten', baseId:'gemRing',
       affixIds:['mystic','ofWisdom'], minLevel:5, tier:6,
-      iconImg:'/assets/items/ring_gem.png', icon:'💍',
+      iconImg:'assets/items/ring_gem.png', icon:'💍',
       uniqueProp:{ type:'skillDmgBonus', value:5, desc:'+5% skill damage' } },
 
     // === AMULET ===
     { id:'unique_boneAmulet', name:'Kostěný amulet', baseId:'boneAmulet',
       affixIds:['vital','ofLife'], minLevel:1, tier:2,
-      iconImg:'/assets/items/amulet_bone.png', icon:'📿',
+      iconImg:'assets/items/amulet_bone.png', icon:'📿',
       uniqueProp:{ type:'hpBonus', value:5, desc:'+5% HP' } },
     { id:'unique_amulet_power', name:'Amulet moci', baseId:'silverAmulet',
       affixIds:['sharp','ofStrength'], minLevel:3, tier:4,
-      iconImg:'/assets/items/amulet_silver.png', icon:'📿',
+      iconImg:'assets/items/amulet_silver.png', icon:'📿',
       uniqueProp:{ type:'baseDmgBonus', value:5, desc:'+5% base damage' } },
     { id:'unique_goldAmulet', name:'Zlatý amulet', baseId:'goldAmulet',
       affixIds:['arcane','ofMana'], minLevel:4, tier:5,
-      iconImg:'/assets/items/amulet_gold.png', icon:'📿',
+      iconImg:'assets/items/amulet_gold.png', icon:'📿',
       uniqueProp:{ type:'manaBonus', value:5, desc:'+5% mana' } },
     { id:'unique_rubyAmulet', name:'Rubínový amulet', baseId:'rubyAmulet',
       affixIds:['fiery','ofCritical'], minLevel:5, tier:6,
-      iconImg:'/assets/items/amulet_ruby.png', icon:'📿',
+      iconImg:'assets/items/amulet_ruby.png', icon:'📿',
       uniqueProp:{ type:'fireProcDmg', value:30, desc:'10% šance způsobí 30% base dmg jako fire' } },
     { id:'unique_arcaneAmulet', name:'Arcánní amulet', baseId:'arcaneAmulet',
       affixIds:['skillful','ofWisdom'], minLevel:6, tier:7,
-      iconImg:'/assets/items/amulet_arcane.png', icon:'📿',
+      iconImg:'assets/items/amulet_arcane.png', icon:'📿',
       uniqueProp:{ type:'skillDmgBonus', value:10, desc:'+10% skill damage' } },
   ];
 
@@ -2796,7 +2796,7 @@
       if (canUseFinal) btnClass += ' active';
       if (isQueued) btnClass += ' queued';
       html += `<button class="${btnClass}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
-        <img class="spell-icon-img" src="/assets/spells/${spell.id}.png" alt="${spell.name}">
+        <img class="spell-icon-img" src="assets/spells/${spell.id}.png" alt="${spell.name}">
         <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
         ${onCooldown ? `<span class="spell-cd-num">${cdRemaining}</span>` : ''}
         ${gcdActive ? `<div class="spell-gcd-overlay" style="background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) ${gcdDeg}deg, transparent ${gcdDeg}deg, transparent 360deg)"></div>` : ''}
@@ -2817,7 +2817,7 @@
       const remaining = Math.ceil(d.ticks / 60);
       const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
       html += `<div class="debuff-icon" title="${d.name || spellId}">
-        ${hasImg ? `<img class="buff-icon-img" src="/assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
         <span class="debuff-icon-timer">${remaining}s</span>
       </div>`;
     });
@@ -2836,7 +2836,7 @@
       const remaining = Math.ceil(b.ticks / 60);
       const hasImg = spellId === 'bloodrage' || spellId === 'battleShout';
       html += `<div class="buff-icon" title="${b.name || spellId}">
-        ${hasImg ? `<img class="buff-icon-img" src="/assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
         <span class="buff-icon-timer">${remaining}s</span>
       </div>`;
     });
@@ -5723,7 +5723,7 @@
       const cdText = spell.cooldown > 0 ? `${spell.cooldown}s` : '—';
       const gcdText = spell.gcd > 0 ? `${spell.gcd}s` : '—';
       html += `<div class="spellbook-card">
-        <div class="spellbook-icon"><img src="/assets/spells/${spell.id}.png" alt="${spell.name}"></div>
+        <div class="spellbook-icon"><img src="assets/spells/${spell.id}.png" alt="${spell.name}"></div>
         <div class="spellbook-info">
           <div class="spellbook-name">${spell.name}</div>
           <div class="spellbook-desc">${spell.desc}</div>
@@ -6204,22 +6204,22 @@
     const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const amulet = ITEM_MAP[h.equip.amulet];
-    $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'/assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
+    $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     setSlotBorder('invSlotWeapon', weapon);
-    $('invSlotArmorIcon').innerHTML = !h.equip.armor ? renderItemIcon({iconImg:'/assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
+    $('invSlotArmorIcon').innerHTML = !h.equip.armor ? renderItemIcon({iconImg:'assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
     $('invSlotArmor').classList.toggle('empty', !h.equip.armor);
     setSlotBorder('invSlotArmor', armor);
-    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'/assets/items/helmet_linen_hood.png',tier:1}, 0);
+    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'assets/items/helmet_linen_hood.png',tier:1}, 0);
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); setSlotBorder('invSlotHelmet', helmet); }
-    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'/assets/items/shield_wooden.png',tier:1}, 0);
+    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'assets/items/shield_wooden.png',tier:1}, 0);
     const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); setSlotBorder('invSlotShield', shield); }
     const offhand = ITEM_MAP[h.equip.shield];
-    const oEl = $('invSlotShieldIcon'); if (oEl) oEl.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'/assets/items/weapon_hunting_knife.png',tier:1}, 0);
+    const oEl = $('invSlotShieldIcon'); if (oEl) oEl.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'assets/items/weapon_hunting_knife.png',tier:1}, 0);
     const oS = $('invSlotShield'); if (oS) { oS.classList.toggle('empty', !offhand); setSlotBorder('invSlotShield', offhand); }
-    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'/assets/items/ring_copper.png',tier:1}, 0);
+    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); setSlotBorder('invSlotRing1', ring1); }
-    const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'/assets/items/amulet_bone.png',tier:1}, 0);
+    const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'assets/items/amulet_bone.png',tier:1}, 0);
     const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
