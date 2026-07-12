@@ -1742,14 +1742,17 @@
 
     // Reset HP při vstupu do dungeonu (progress === 0)
     if (progress === 0) {
+      state.hero.maxHp = getHeroMaxHp();
       state.hero.hp = state.hero.maxHp;
       state._floorLootDrops = [];
     }
 
     // Fountain — heal, žádný boj
     if (isFountain) {
-      const healAmt = Math.round(state.hero.maxHp * 0.4);
-      state.hero.hp = Math.min(state.hero.maxHp, state.hero.hp + healAmt);
+      const currentMaxHp = getHeroMaxHp();
+      state.hero.maxHp = currentMaxHp;
+      const healAmt = Math.round(currentMaxHp * 0.4);
+      state.hero.hp = Math.min(currentMaxHp, state.hero.hp + healAmt);
       state.hero.mana = getHeroMaxMana();
       state.locationProgress[locId] = progress + 1;
       saveGame();
@@ -1796,18 +1799,20 @@
       showScreen('shop');
       return;
     }
-    const playerMaxHp = state.hero.maxHp || 100;
+    const playerMaxHp = getHeroMaxHp();
+    state.hero.maxHp = playerMaxHp;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
-    // HP škáluje s dungeonem a obtížností
-    const diffMult = DIFFICULTY_MULT[locId] || 1.0;
+    // HP škáluje s dungeonem a progresem — StS styl
     const diffMultOverall = diff.mult;
-    const monsterHp = Math.round((20 + locId * 60) * diffMult * diffMultOverall + 5 + 3 * progress) * 5;
-    const bossHp = Math.round((400 + locId * 400) * diffMult * diffMultOverall + 150 + 200);
+    const monsterBaseHp = [120, 250, 400, 600, 850];
+    const monsterHpPerStep = [8, 12, 16, 20, 25];
+    const monsterHp = Math.round((monsterBaseHp[locId] + monsterHpPerStep[locId] * progress) * diffMultOverall);
 
     // Elitní HP bonus
     const isElite = chosen.type === ROOM_TYPES.ELITE;
-    const eliteHpMult = isElite ? 2.0 : 1.0;
-    const baseHp = isBoss ? bossHp : Math.round(monsterHp * eliteHpMult);
+    const eliteHpMult = isElite ? 1.75 : 1.0;
+    const bossHpMultBase = 4.0;
+    const baseHp = isBoss ? Math.round(monsterHp * bossHpMultBase) : Math.round(monsterHp * eliteHpMult);
 
     // Sada monster pro tuto místnost
     if (!state._floorMonsters || state._floorMonsters.length === 0) {
@@ -2258,10 +2263,11 @@
       return;
     }
 
-    // Výpočet damage — stejný jako v onMapHit
-    const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.progress * 4);
-    const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
-    let bossDmg = Math.round(baseBossDmg * diffMult * (0.8 + Math.random() * 0.4));
+    // Výpočet damage — StS styl, konzistentní s HP scalingem
+    const monsterBaseDmg = [8, 14, 20, 28, 36];
+    const monsterDmgPerStep = [1, 1.5, 2, 2.5, 3];
+    const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
+    let bossDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * (0.8 + Math.random() * 0.4));
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
     let isCrit = false;
