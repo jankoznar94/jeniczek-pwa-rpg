@@ -1168,11 +1168,22 @@
     const pool = MONSTER_DB[theme] || MONSTER_DB[0];
     const result = [];
     const poolSize = pool.length;
-    // 1 silné monstrum na patro
-    let idx;
-    do {
-      idx = Math.floor(Math.random() * poolSize);
-    } while (result.length > 0 && result[result.length - 1].idx === idx);
+    // Rotace monster — každé monstrum z bestiáře se musí objevit, než se začnou opakovat
+    state._monsterRotation = state._monsterRotation || {};
+    state._monsterRotation[theme] = state._monsterRotation[theme] || { idx: 0, shuffled: null };
+    const rot = state._monsterRotation[theme];
+    // Pokud ještě nemáme zamíchané pořadí nebo jsme vyčerpali všechna, vytvoř nové
+    if (!rot.shuffled || rot.idx >= poolSize) {
+      rot.shuffled = [...Array(poolSize).keys()];
+      // Zamíchat (Fisher-Yates)
+      for (let i = rot.shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [rot.shuffled[i], rot.shuffled[j]] = [rot.shuffled[j], rot.shuffled[i]];
+      }
+      rot.idx = 0;
+    }
+    const idx = rot.shuffled[rot.idx];
+    rot.idx++;
     result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
     return result;
   }
@@ -1192,7 +1203,7 @@
       boss:{name:'Troll',face:'assets/monsters/troll_test_small.png',hp:10,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE},
       reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0} },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:10, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
-      boss:{name:'Djinn',face:'assets/monsters/desert_djinn.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
+      boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
     { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:11, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
       boss:{name:'Ledový obr',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
@@ -1592,6 +1603,9 @@
       const loc = LOCATIONS[idx];
       if (loc) {
         const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
+        // Resetovat rotaci monster pro nový dungeon
+        state._monsterRotation = state._monsterRotation || {};
+        state._monsterRotation[loc.theme] = { idx: 0, shuffled: null };
         state.dungeonSteps = generateDungeonChoices(loc, diff);
       }
     }
@@ -1707,6 +1721,9 @@
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
     state.dungeonSteps = generateDungeonChoices(loc, diff);
     state.locationProgress[locId] = 0;
+    // Resetovat rotaci monster pro nový dungeon run
+    state._monsterRotation = state._monsterRotation || {};
+    state._monsterRotation[loc.theme] = { idx: 0, shuffled: null };
     _expandedDungeon = locId;
     renderMap();
   }
