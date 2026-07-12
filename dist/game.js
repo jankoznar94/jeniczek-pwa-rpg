@@ -6151,13 +6151,20 @@
           clearSelection();
           return;
         }
-        // Pokud slot obsahuje reálný item → sundej ho rovnou
-        if (itemId && itemId !== defaults[slot]) {
+        // Slot je prázdný nebo default → nic
+        if (!itemId || itemId === defaults[slot]) return;
+        // Druhý klik na stejný slot → sundej
+        if (window._invSelectedSlot === slot) {
           unequipSlot(slot);
           clearSelection();
           return;
         }
-        // Prázdný slot, nic nevybráno → nic
+        // První klik → zobraz info a zvýrazni
+        clearSelection();
+        window._invSelectedSlot = slot;
+        slotEl.classList.add('selected');
+        const item = ITEM_MAP[itemId];
+        if (item) showItemInfo(item);
         return;
       }
       // Grid cell klik
