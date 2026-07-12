@@ -1188,19 +1188,19 @@
     { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
   ];
   const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:4, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
       boss:{name:'Troll',face:'assets/monsters/troll_test_small.png',hp:10,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE},
       reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0} },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:4, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:10, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
       boss:{name:'Djinn',face:'assets/monsters/desert_djinn.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:5, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
+    { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:11, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
       boss:{name:'Ledový obr',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
       reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0} },
-    { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:5, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
+    { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:11, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
       boss:{name:'Lich',face:'assets/monsters/lich.png',hp:22,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5} },
-    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:5, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
+    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:12, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
       boss:{name:'Lávový drak',face:'assets/monsters/lava_dragon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
   ];
@@ -1229,12 +1229,14 @@
       const numChoices = 2 + (Math.random() < 0.4 ? 1 : 0); // 2-3 možnosti
       const choices = [];
       const usedTypes = new Set();
+      // Obchod až od 3. kroku (index 2)
+      const pool = step < 2 ? ROOM_POOL.filter(r => r.type !== ROOM_TYPES.MERCHANT) : ROOM_POOL;
 
       for (let c = 0; c < numChoices; c++) {
         let picked;
         let attempts = 0;
         do {
-          picked = pickWeightedFromPool(ROOM_POOL);
+          picked = pickWeightedFromPool(pool);
           attempts++;
         } while (usedTypes.has(picked.type) && attempts < 20);
         usedTypes.add(picked.type);
