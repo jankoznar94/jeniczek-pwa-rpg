@@ -1490,8 +1490,8 @@
     state.hero.attrVit = cls.attrBonus.vit;
     state.hero.attrDex = cls.attrBonus.dex;
     state.hero.attrInt = cls.attrBonus.int;
-    // První talent point zdarma
-    state.talentPoints = 1;
+    // První talent point až na lvl 2 — tady žádný
+    state.talentPoints = 0;
     // Startovní zbraň podle classy
     const startWeapons = {
       barbarian: 'ironSword',  // Železný meč
@@ -6728,6 +6728,12 @@
     if (state.hero.attrPoints < expectedAttrPoints) {
       state.hero.attrPoints = expectedAttrPoints;
       saveGame(); // uložit, aby body přetrvaly refresh
+    }
+    // Dopočítat chybějící talent pointy (1/level od lvl 2)
+    const expectedTalentPoints = Math.max(0, state.hero.level - 1);
+    if ((state.talentPoints || 0) < expectedTalentPoints) {
+      state.talentPoints = expectedTalentPoints;
+      saveGame();
     }
     // Vždy aktualizovat maxHp/maxMana podle aktuálního levelu a itemů
     state.hero.maxHp = getHeroMaxHp();
