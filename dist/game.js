@@ -2927,9 +2927,9 @@
     } else if (spellId === 'battleShout') {
       // +15% dmg na 60s
       state.battleShoutDmgPct = 15;
-      state.battleShoutTimer = 3600; // 60s
-      // Buff ikona hráče
-      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      state.battleShoutTimer = 1800; // 30s
+      playSFX(battleShoutSfx);
+      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
