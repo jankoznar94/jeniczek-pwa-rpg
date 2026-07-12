@@ -1867,10 +1867,8 @@
     const bossHpMultBase = 4.0;
     const baseHp = isBoss ? Math.round(monsterHp * bossHpMultBase) : Math.round(monsterHp * eliteHpMult);
 
-    // Sada monster pro tuto místnost
-    if (!state._floorMonsters || state._floorMonsters.length === 0) {
-      state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, progress);
-    }
+    // Sada monster pro tuto místnost — vždy nové monstrum
+    state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, progress);
     const floorMonsters = state._floorMonsters;
     // Zaznamenat setkání s monstry do bestiáře
     if (!isBoss && !isReward) {
@@ -6729,6 +6727,7 @@
     const expectedAttrPoints = (state.hero.level - 1) * 5;
     if (state.hero.attrPoints < expectedAttrPoints) {
       state.hero.attrPoints = expectedAttrPoints;
+      saveGame(); // uložit, aby body přetrvaly refresh
     }
     // Vždy aktualizovat maxHp/maxMana podle aktuálního levelu a itemů
     state.hero.maxHp = getHeroMaxHp();
