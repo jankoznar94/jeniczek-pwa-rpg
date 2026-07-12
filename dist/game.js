@@ -1053,6 +1053,20 @@
   };
   const ATTACK_TYPES = { MELEE: 'melee', CASTER: 'caster' };
 
+  // ===== ENEMY SPELLS =====
+  const ENEMY_SPELLS = {
+    poison_bolt: { name:'Jedovatý výboj', icon:'☠️', castTime:1500, manaCost:10, type:MONSTER_TYPES.POISON, minManaPct:0.2,
+      desc:'DoT na hráče (3 ticky)' },
+    drain_life: { name:'Vysátí života', icon:'🩸', castTime:1200, manaCost:8, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.15,
+      desc:'Poškození + léčení nepřítele' },
+    mana_drain: { name:'Vysátí many', icon:'💧', castTime:1000, manaCost:5, type:MONSTER_TYPES.MANASTEALER, minManaPct:0.1,
+      desc:'Poškození + vysátí many' },
+    empower: { name:'Posílení', icon:'📈', castTime:1500, manaCost:12, type:MONSTER_TYPES.IMPROVER, minManaPct:0.25,
+      desc:'+50% damage na 3 útoky' },
+    shadow_bolt: { name:'Stínový výboj', icon:'🎯', castTime:1300, manaCost:8, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.15,
+      desc:'Vysoká šance na krit' },
+  };
+
   // ===== MONSTER DB =====
   // Každé monstrum má fixní face, name, type a attackType — nikdy se nemění
   const MONSTER_DB = [
@@ -1168,22 +1182,27 @@
     const pool = MONSTER_DB[theme] || MONSTER_DB[0];
     const result = [];
     const poolSize = pool.length;
-    // Rotace monster — každé monstrum z bestiáře se musí objevit, než se začnou opakovat
-    state._monsterRotation = state._monsterRotation || {};
-    state._monsterRotation[theme] = state._monsterRotation[theme] || { idx: 0, shuffled: null };
-    const rot = state._monsterRotation[theme];
-    // Pokud ještě nemáme zamíchané pořadí nebo jsme vyčerpali všechna, vytvoř nové
-    if (!rot.shuffled || rot.idx >= poolSize) {
-      rot.shuffled = [...Array(poolSize).keys()];
-      // Zamíchat (Fisher-Yates)
-      for (let i = rot.shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [rot.shuffled[i], rot.shuffled[j]] = [rot.shuffled[j], rot.shuffled[i]];
-      }
-      rot.idx = 0;
+    // Vážený náhodný výběr — nedávno viděná monstra mají menší šanci
+    state._monsterLastSeen = state._monsterLastSeen || {};
+    state._monsterLastSeen[theme] = state._monsterLastSeen[theme] || {};
+    const seen = state._monsterLastSeen[theme];
+    // Spočítat váhy: 0 = neviděno/nedávno → max váha, čím dřív viděno → nižší
+    let weights = pool.map((m, i) => {
+      const lastSeen = seen[i];
+      if (lastSeen === undefined) return 10; // nikdy neviděno = nejvyšší šance
+      const floorsAgo = floor - lastSeen;
+      return Math.max(1, 10 - floorsAgo * 2); // každé patro = -2, min 1
+    });
+    const totalWeight = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * totalWeight;
+    let idx = 0;
+    for (let i = 0; i < poolSize; i++) {
+      r -= weights[i];
+      if (r <= 0) { idx = i; break; }
     }
-    const idx = rot.shuffled[rot.idx];
-    rot.idx++;
+    // Uložit, kdy bylo toto monstrum viděno
+    seen[idx] = floor;
+    state._monsterLastSeen[theme] = seen;
     result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
     return result;
   }
@@ -1604,8 +1623,8 @@
       if (loc) {
         const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
         // Resetovat rotaci monster pro nový dungeon
-        state._monsterRotation = state._monsterRotation || {};
-        state._monsterRotation[loc.theme] = { idx: 0, shuffled: null };
+        state._monsterLastSeen = state._monsterLastSeen || {};
+        state._monsterLastSeen[loc.theme] = {};
         state.dungeonSteps = generateDungeonChoices(loc, diff);
       }
     }
@@ -1722,8 +1741,8 @@
     state.dungeonSteps = generateDungeonChoices(loc, diff);
     state.locationProgress[locId] = 0;
     // Resetovat rotaci monster pro nový dungeon run
-    state._monsterRotation = state._monsterRotation || {};
-    state._monsterRotation[loc.theme] = { idx: 0, shuffled: null };
+    state._monsterLastSeen = state._monsterLastSeen || {};
+    state._monsterLastSeen[loc.theme] = {};
     _expandedDungeon = locId;
     renderMap();
   }
@@ -1930,9 +1949,19 @@
       _enemyStunMax: 0,
       _heroicStrikeQueued: false,
       debuffs: {},
+      // Caster fields
+      enemyMana: 0, maxEnemyMana: 0,
+      _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null,
+      _enemyCastProcessed: false,
     };
 
     showScreen('mapBattle');
+    // Inicializace many pro caster monstra
+    if (mapBattleState.monsterAttackType === ATTACK_TYPES.CASTER) {
+      const baseMana = 30 + mapBattleState.locId * 10 + mapBattleState.progress * 3;
+      mapBattleState.maxEnemyMana = baseMana;
+      mapBattleState.enemyMana = Math.round(baseMana * 0.5);
+    }
     // Spustit stamina regen (3/s)
     if (mapBattleState._staminaInterval) clearInterval(mapBattleState._staminaInterval);
     mapBattleState._staminaInterval = setInterval(() => {
@@ -1941,6 +1970,10 @@
       if (mb.stamina < mb.maxStamina) {
         mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.15); // 1.5/s = 0.15 per 100ms
         updateMapBattleUI();
+      }
+      // Mana regen pro caster monstra
+      if (mb.monsterAttackType === ATTACK_TYPES.CASTER && mb.enemyMana < mb.maxEnemyMana) {
+        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 1); // 10/s = 1 per 100ms
       }
     }, 100);
     // Skrýt starou šipku z předchozího boje ihned
@@ -1988,6 +2021,16 @@
     const base = 2500;
     const progressMult = Math.pow(0.95, progress);
     return Math.max(800, Math.round(base * progressMult / diffMult));
+  }
+
+  function pickEnemySpell(mb) {
+    // Vybere kouzlo podle typu monstra — náhodný výběr z kompatibilních
+    const mType = mb.monsterType;
+    if (!mType) return null;
+    const candidates = Object.keys(ENEMY_SPELLS).filter(id => ENEMY_SPELLS[id].type === mType);
+    if (candidates.length === 0) return null;
+    const id = candidates[Math.floor(Math.random() * candidates.length)];
+    return { id, ...ENEMY_SPELLS[id] };
   }
 
   function startAutoCombat() {
@@ -2048,13 +2091,48 @@
       }
     }
 
-    // Nepřítelův swing — pokud není omráčený
+    // Nepřítelův swing / cast — pokud není omráčený
     if (!mb._enemySwingReady && !mb._enemyStunned) {
-      const enemyElapsed = now - mb._enemySwingStart;
-      mb._enemySwingPct = Math.min(enemyElapsed / mb.enemySwingMs, 1);
-      if (enemyElapsed >= mb.enemySwingMs) {
-        mb._enemySwingReady = true;
-        mb._enemyAttackProcessed = false;
+      if (mb._enemyCasting) {
+        // Probíhá castování — aktualizovat cast bar
+        const castElapsed = now - mb._enemyCastStart;
+        mb._enemySwingPct = Math.min(castElapsed / mb._enemyCastTime, 1);
+        if (castElapsed >= mb._enemyCastTime) {
+          // Cast dokončen
+          mb._enemyCasting = false;
+          mb._enemySwingReady = true;
+          mb._enemyAttackProcessed = false;
+          mb._enemyCastProcessed = false;
+        }
+      } else {
+        // Normální swing timer
+        const enemyElapsed = now - mb._enemySwingStart;
+        mb._enemySwingPct = Math.min(enemyElapsed / mb.enemySwingMs, 1);
+        if (enemyElapsed >= mb.enemySwingMs) {
+          // Rozhodovací moment — caster může začít castovat kouzlo
+          if (mb.monsterAttackType === ATTACK_TYPES.CASTER && !mb.isBoss) {
+            const spell = pickEnemySpell(mb);
+            if (spell && mb.enemyMana >= spell.manaCost) {
+              // Začít castovat
+              mb._enemyCasting = true;
+              mb._enemyCastStart = now;
+              mb._enemyCastTime = spell.castTime;
+              mb._enemyCastSpell = spell.id;
+              mb.enemyMana -= spell.manaCost;
+              // Reset normálního swing timeru — čekáme na cast
+              mb._enemySwingStart = now;
+              updateMapBattleUI();
+            } else {
+              // Málo many — slabý melee útok
+              mb._enemySwingReady = true;
+              mb._enemyAttackProcessed = false;
+            }
+          } else {
+            // Melee monstrum — normální swing
+            mb._enemySwingReady = true;
+            mb._enemyAttackProcessed = false;
+          }
+        }
       }
     }
 
@@ -2279,6 +2357,115 @@
     const mb = mapBattleState;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
+    // Caster spell — zpracovat kouzlo místo melee útoku
+    if (mb._enemyCastSpell) {
+      const spellId = mb._enemyCastSpell;
+      mb._enemyCastSpell = null;
+      mb._enemyCastProcessed = true;
+      mb._enemySwingStart = performance.now();
+      mb._enemySwingReady = false;
+      mb._enemySwingPct = 0;
+
+      const spell = ENEMY_SPELLS[spellId];
+      if (!spell) { updateMapBattleUI(); return; }
+
+      // Evasion (assassin)
+      if (state._dodgeBuffTimer > 0 && Math.random() < 0.5) {
+        playSFX(dodgeSfx);
+        const dmgText = $('mbPlayerDamageText');
+        if (dmgText) {
+          dmgText.textContent = '💨 Dodge!';
+          dmgText.style.color = '#f1c40f';
+          dmgText.classList.remove('hidden');
+          setTimeout(() => dmgText.classList.add('hidden'), 500);
+        }
+        updateMapBattleUI();
+        return;
+      }
+
+      let amount = 0;
+      let spellIcon = spell.icon || '🔮';
+      let spellText = spell.name;
+
+      // Výpočet base damage pro kouzla
+      const monsterBaseDmg = [8, 14, 20, 28, 36];
+      const monsterDmgPerStep = [1, 1.5, 2, 2.5, 3];
+      const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
+      let baseDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * 0.8);
+
+      if (spellId === 'poison_bolt') {
+        amount = Math.round(baseDmg * 0.5);
+        mb.playerDot = amount;
+        mb.playerDotTicksLeft = 3;
+        spellText = '☠️ Jedovatý výboj!';
+      } else if (spellId === 'drain_life') {
+        amount = Math.round(baseDmg * 0.7);
+        const healAmt = Math.round(amount * 0.6);
+        mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
+        spellText = `🩸 Vysátí: -${amount} +${healAmt}`;
+      } else if (spellId === 'mana_drain') {
+        amount = Math.round(baseDmg * 0.4);
+        const manaDrain = Math.round(amount * 0.8);
+        state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaDrain);
+        spellText = `💧 Vysátí: -${amount} ⚡-${manaDrain} many`;
+      } else if (spellId === 'empower') {
+        amount = 0; // žádné přímé poškození
+        mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
+        spellText = '📈 Posílení!';
+      } else if (spellId === 'shadow_bolt') {
+        amount = Math.round(baseDmg * 1.2);
+        if (Math.random() < 0.5) {
+          amount = Math.round(amount * 2.0);
+          spellText = `🎯 Stínový výboj! KRIT! -${amount}`;
+        } else {
+          spellText = `🎯 Stínový výboj! -${amount}`;
+        }
+      }
+
+      // 🛡️ Defense
+      if (amount > 0) {
+        const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
+        const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
+        const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
+        const totalDefense = armorDef + helmetDef + shieldDef;
+        if (totalDefense > 0) {
+          amount = Math.round(amount * 100 / (100 + totalDefense));
+        }
+        // Block
+        const shieldItem = ITEM_MAP[state.hero.equip.shield];
+        if (shieldItem && shieldItem.blockChance > 0 && Math.random() * 100 < shieldItem.blockChance) {
+          amount = 0;
+          spellText = spellIcon + ' 🛡️ BLOCK!';
+          playSFX(blockSfx);
+        }
+        if (amount > 0) {
+          mb.playerHp -= amount;
+          if (state.heroClass === 'barbarian') {
+            state.rage = Math.min(state.maxRage, (state.rage || 0) + Math.round(3 * state.rageMultiplier));
+          }
+        }
+      }
+
+      // Damage text
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = spellText;
+        dmgText.style.color = '#9b59b6';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 1200);
+      }
+      // Červený záblesk
+      const arena = $('mbArena');
+      if (arena && amount > 0) {
+        arena.style.transition = 'background-color 0.1s';
+        arena.style.backgroundColor = 'rgba(155,89,182,0.35)';
+        setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 100);
+      }
+      playSFX(getHurtSfx());
+      updateMapBattleUI();
+      return;
+    }
+
     // Evasion (assassin) — 50% šance na dodge
     if (state._dodgeBuffTimer > 0 && Math.random() < 0.5) {
       playSFX(dodgeSfx);
@@ -2476,6 +2663,30 @@
       }
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
+    // Enemy mana bar (caster)
+    const manaBar = $('mbEnemyManaBar');
+    const manaFill = $('mbEnemyManaFill');
+    if (manaBar && manaFill) {
+      if (mb.monsterAttackType === ATTACK_TYPES.CASTER && !mb.isBoss && mb.maxEnemyMana > 0) {
+        manaBar.classList.remove('hidden');
+        const mpPct = Math.round((mb.enemyMana / mb.maxEnemyMana) * 100);
+        manaFill.style.width = mpPct + '%';
+      } else {
+        manaBar.classList.add('hidden');
+      }
+    }
+    // Enemy cast bar
+    const castBar = $('mbEnemyCastBar');
+    const castFill = $('mbEnemyCastFill');
+    if (castBar && castFill) {
+      if (mb._enemyCasting && mb._enemyCastTime > 0) {
+        castBar.classList.remove('hidden');
+        const castPct = Math.min(1, (performance.now() - mb._enemyCastStart) / mb._enemyCastTime);
+        castFill.style.width = Math.round(castPct * 100) + '%';
+      } else {
+        castBar.classList.add('hidden');
+      }
+    }
     // D4 heat indicator
     const heatEl = $('mbHeatIndicator');
     if (heatEl) {
