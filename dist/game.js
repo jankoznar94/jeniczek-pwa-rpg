@@ -1804,7 +1804,7 @@
       $('resultTitle').textContent = 'Obchodník';
       $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">Nakup a prodávej</span></div></div>';
       $('resultLootList').innerHTML = '';
-      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'shop\');">🛒 Otevřít obchod</button>';
+      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="event.stopPropagation();game.showScreen(\'shop\');">🛒 Otevřít obchod</button>';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
       showScreen('result');
       return;
