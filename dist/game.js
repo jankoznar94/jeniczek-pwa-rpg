@@ -1226,11 +1226,15 @@
     const steps = [];
 
     for (let step = 0; step < stepCount; step++) {
-      const numChoices = 2 + (Math.random() < 0.4 ? 1 : 0); // 2-3 možnosti
+      // První krok: jen 2 možnosti, bez pramene a obchodu
+      const isFirstStep = step === 0;
+      const numChoices = isFirstStep ? 2 : (2 + (Math.random() < 0.4 ? 1 : 0));
       const choices = [];
       const usedTypes = new Set();
-      // Obchod až od 3. kroku (index 2)
-      const pool = step < 2 ? ROOM_POOL.filter(r => r.type !== ROOM_TYPES.MERCHANT) : ROOM_POOL;
+      // Obchod až od 3. kroku, pramen až od 2. kroku
+      let pool = ROOM_POOL;
+      if (step < 2) pool = pool.filter(r => r.type !== ROOM_TYPES.MERCHANT);
+      if (isFirstStep) pool = pool.filter(r => r.type !== ROOM_TYPES.FOUNTAIN);
 
       for (let c = 0; c < numChoices; c++) {
         let picked;
