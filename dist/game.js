@@ -1065,6 +1065,8 @@
       desc:'+50% damage na 3 útoky' },
     shadow_bolt: { name:'Stínový výboj', icon:'🎯', castTime:1300, manaCost:8, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.15,
       desc:'Vysoká šance na krit' },
+    heal: { name:'Léčení', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+      desc:'Léčí nepřítele o 30% HP' },
   };
 
   // ===== MONSTER DB =====
@@ -2065,6 +2067,18 @@
 
     // Spustit rAF loop
     updateEnemyHpBar(mb);
+    // Caster monstra začnou prvním tahem kouzlem (ne melee)
+    if (mb.monsterAttackType === ATTACK_TYPES.CASTER && !mb.isBoss) {
+      const spell = pickEnemySpell(mb);
+      if (spell && mb.enemyMana >= spell.manaCost) {
+        mb._enemyCasting = true;
+        mb._enemyCastStart = performance.now();
+        mb._enemyCastTime = spell.castTime;
+        mb._enemyCastSpell = spell.id;
+        mb.enemyMana -= spell.manaCost;
+        mb._enemySwingStart = performance.now();
+      }
+    }
     autoCombatLoop();
   }
 
@@ -2432,13 +2446,28 @@
         amount = Math.round(baseDmg * 0.5);
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 300, maxTicks: 300 };
         spellText = '☠️ Jedovatý výboj!';
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
         const healAmt = Math.round(amount * 0.6);
         mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
-        spellText = `🩸 Vysátí: -${amount} +${healAmt}`;
+        // Damage text (červeně u hráče)
+        const dmgText = $('mbPlayerDamageText');
+        if (dmgText) {
+          dmgText.textContent = `🩸 -${amount}`;
+          dmgText.style.color = '#e74c3c';
+          dmgText.classList.remove('hidden');
+          setTimeout(() => dmgText.classList.add('hidden'), 1200);
+        }
+        // Heal text (zeleně u nepřítele)
+        const healText = $('mbHealText');
+        if (healText) {
+          healText.textContent = `+${healAmt}`;
+          healText.classList.remove('hidden');
+          setTimeout(() => healText.classList.add('hidden'), 1200);
+        }
+        spellText = ''; // už jsme zobrazili zvlášť
       } else if (spellId === 'mana_drain') {
         amount = Math.round(baseDmg * 0.4);
         const manaDrain = Math.round(amount * 0.8);
@@ -2447,7 +2476,7 @@
       } else if (spellId === 'empower') {
         amount = 0; // žádné přímé poškození
         mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
-        _enemyBuffs['empower'] = { icon: '📈', name: 'Posílení', ticks: 180, maxTicks: 180 };
+        _enemyBuffs['empower'] = { icon: '📈', name: 'Posílení', ticks: 600, maxTicks: 600 };
         spellText = '📈 Posílení!';
       } else if (spellId === 'shadow_bolt') {
         amount = Math.round(baseDmg * 1.2);
@@ -2457,6 +2486,17 @@
         } else {
           spellText = `🎯 Stínový výboj! -${amount}`;
         }
+      } else if (spellId === 'heal') {
+        amount = 0;
+        const healAmt = Math.round(mb.maxBossHp * 0.3);
+        mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
+        const healText = $('mbHealText');
+        if (healText) {
+          healText.textContent = `💚 +${healAmt}`;
+          healText.classList.remove('hidden');
+          setTimeout(() => healText.classList.add('hidden'), 1200);
+        }
+        spellText = '';
       }
 
       // 🛡️ Defense
@@ -2581,6 +2621,13 @@
     // Life steal / mana steal
     if (!blocked && lifeStealAmt > 0) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
+      // Heal text (zeleně u nepřítele)
+      const healText = $('mbHealText');
+      if (healText) {
+        healText.textContent = `+${lifeStealAmt}`;
+        healText.classList.remove('hidden');
+        setTimeout(() => healText.classList.add('hidden'), 1200);
+      }
     }
     if (!blocked && manaStealAmt > 0) {
       state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);

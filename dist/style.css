@@ -243,6 +243,9 @@ body.no-scroll { overflow: hidden; }
 .boss-fight-player .damage-text { position:absolute;top:-60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:28px;font-weight:bold;animation:fadeDown 0.6s ease-out; white-space:nowrap; }
 #mbDamageText.damage-text { position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#f1c40f;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:15; text-shadow:0 0 25px rgba(241,196,15,0.8), 0 0 50px rgba(241,196,15,0.4); }
 #mbPlayerDamageText.damage-text { position:absolute;bottom:60px;left:50%;transform:translateX(-50%);color:#e74c3c;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:35; text-shadow:0 0 20px rgba(200,40,40,0.6); }
+/* Heal text — zelený, u cíle léčení */
+#mbHealText.heal-text { position:absolute;top:10px;left:50%;transform:translateX(-50%);color:#2ecc71;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:15; text-shadow:0 0 25px rgba(46,204,113,0.8); }
+#mbPlayerHealText.heal-text { position:absolute;bottom:60px;left:50%;transform:translateX(-50%);color:#2ecc71;font-size:48px;font-weight:bold;animation:fadeInOut 0.8s ease-out forwards; white-space:nowrap; z-index:35; text-shadow:0 0 20px rgba(46,204,113,0.6); }
 @keyframes fadeUp { 0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeDown { 0%{opacity:0;transform:translateX(-50%) translateY(-10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)} }
 @keyframes fadeInOut { 0%{opacity:0} 20%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
