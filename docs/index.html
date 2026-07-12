@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+  <title>Dungeon Recall</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css?v=121">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+</head>
+<body>
+
+<nav class="nav-bar">
+  <a href="#" data-screen="map" class="active"><img src="assets/menu-icons/mapa.png" alt="Mapa" class="nav-icon"></a>
+  <a href="#" data-screen="hero"><img src="assets/monsters/hero.png" alt="Hrdina" class="nav-icon" id="navHeroIcon"></a>
+  <a href="#" data-screen="talents"><img src="assets/menu-icons/talenty.png" alt="Talenty" class="nav-icon"></a>
+  <a href="#" data-screen="inventory"><img src="assets/menu-icons/inventar.png" alt="Inventář" class="nav-icon"></a>
+  <a href="#" data-screen="bestiary"><img src="assets/menu-icons/bestiar.png" alt="Bestiář" class="nav-icon"></a>
+  <a href="#" id="musicToggle"><img src="assets/menu-icons/music.png" alt="Hudba" class="nav-icon"></a>
+  <a href="#" id="testToggle"><img src="assets/menu-icons/testmode.png" alt="Test" class="nav-icon"></a>
+  <a href="#" id="clearSave" style="color:#e94560;font-size:16px;font-weight:bold">🗑️</a>
+  <a href="#" data-screen="spellbook" style="color:#f1c40f;font-size:18px;font-weight:bold">📖</a>
+  <a href="#" data-screen="items" style="color:#888;font-size:18px;font-weight:bold">📦</a>
+</nav>
+
+<!-- ===== CLASS SELECT ===== -->
+<div id="classSelectScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title" style="text-align:center;font-size:20px">⚔️ Vyber si povolání</div>
+    <div class="card-subtitle" style="text-align:center">Každé povolání má vlastní zdroj energie, talentové stromy a omezení na zbraně.</div>
+  </div>
+  <div class="class-cards">
+    <div class="class-card" onclick="game.selectClass('barbarian')">
+      <div class="class-card-icon"><img src="assets/monsters/hero_barbarian_m.png" alt="Barbar" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #e74c3c;box-shadow:0 0 10px rgba(231,76,60,0.3);"></div>
+      <div class="class-card-name">Barbar</div>
+      <div class="class-card-resource">💢 Rage (0–100)</div>
+      <div class="class-card-desc">Hromadí vztek za utržené a udělené poškození. Dvouruční zbraně, sekery, štíty. Vysoká síla a výdrž.</div>
+      <div class="class-card-weapons">⚔️ Obouručák · 1R+štít · 2×1R</div>
+    </div>
+    <div class="class-card" onclick="game.selectClass('assassin')">
+      <div class="class-card-icon"><img src="assets/monsters/hero_rogue_m.png" alt="Assassin" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #4a7dff;box-shadow:0 0 10px rgba(74,125,255,0.3);"></div>
+      <div class="class-card-name">Assassin</div>
+      <div class="class-card-resource">⚡ Energy (100, regeneruje)</div>
+      <div class="class-card-desc">Rychlé, přesné útoky. Energy se samovolně doplňuje. Dýky a jednoruční meče. Vysoká obratnost.</div>
+      <div class="class-card-weapons">🗡️ Dýky · ⚔️ Jednoruční meče</div>
+    </div>
+    <div class="class-card" onclick="game.selectClass('mage')">
+      <div class="class-card-icon"><img src="assets/monsters/hero_mage_m.png" alt="Kouzelník" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #9b59b6;box-shadow:0 0 10px rgba(155,89,182,0.3);"></div>
+      <div class="class-card-name">Kouzelník</div>
+      <div class="class-card-resource">💧 Mana (škáluje s INT + gear)</div>
+      <div class="class-card-desc">Mocná kouzla na dálku. Hůlky a magické artefakty. Vysoký intelekt, nízká obrana.</div>
+      <div class="class-card-weapons">🪄 1R hůlka + artefakt · 2R hůl</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAP ===== -->
+<div id="mapScreen" class="container hidden">
+  <div class="map-scroll" id="mapScroll">
+    <!-- Dynamically generated -->
+  </div>
+</div>
+
+<!-- ===== MAP BATTLE (swipe fight) ===== -->
+<div id="mapBattleScreen" class="container hidden">
+  <div class="card">
+    <div class="battle-header">
+      <div class="battle-header-row">
+        <span class="battle-enemy-name" id="mbEnemyName">Nestvůra</span>
+        <span class="battle-location" id="mbLocation">Lokace 1</span>
+      </div>
+    </div>
+    <div class="flex-between" style="margin-top:4px">
+      <span id="mbEnemyHp" class="hidden">❤️ 0/0</span>
+    </div>
+    <div class="arena-wrapper">
+    <div class="boss-fight-arena" id="mbArena">
+      <span class="damage-text hidden" id="mbDamageText"></span>
+      <span class="damage-text hidden" id="mbPlayerDamageText"></span>
+      <svg id="mbArrow" class="boss-attack-arrow hidden" viewBox="0 0 16 16" width="120" height="120"><path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <div class="attack-timer-ring" id="mbTimerRing">
+        <svg viewBox="0 0 260 260" width="260" height="260" style="transform:rotate(-90deg)">
+          <circle cx="130" cy="130" r="110" stroke="#f1c40f" stroke-width="12" fill="none" stroke-dasharray="691" stroke-dashoffset="691" class="timer-circle" id="mbPlayerTimerCircle"/>
+          <circle cx="130" cy="130" r="120" stroke="#f1c40f" stroke-width="8" fill="none" stroke-dasharray="754" stroke-dashoffset="754" class="timer-circle" id="mbOffhandTimerCircle" style="opacity:0.5"/>
+          <circle cx="130" cy="130" r="95" stroke="#333" stroke-width="8" fill="none" class="enemy-timer-bg" id="mbEnemyTimerBg"/>
+          <circle cx="130" cy="130" r="95" stroke="#e74c3c" stroke-width="8" fill="none" stroke-dasharray="597" stroke-dashoffset="597" class="enemy-timer-circle" id="mbEnemyTimerCircle"/>
+        </svg>
+        <span class="action-info-icon hidden" id="mbActionInfo"></span>
+      </div>
+      <div class="monster-in-ring" id="mbFigure">👹</div>
+      <div class="monster-ring-overlay"></div>
+      <div class="enemy-hp-bar" id="mbEnemyHpBar">
+        <div class="enemy-hp-fill" id="mbEnemyHpFill"></div>
+        <div class="enemy-hp-seg-overlay">
+          <div class="enemy-hp-segment" data-seg="0"></div>
+          <div class="enemy-hp-segment" data-seg="1"></div>
+          <div class="enemy-hp-segment" data-seg="2"></div>
+          <div class="enemy-hp-segment" data-seg="3"></div>
+          <div class="enemy-hp-segment" data-seg="4"></div>
+        </div>
+      </div>
+      <div class="hp-ring-label" id="mbHpLabel">0/0</div>
+      <div class="arena-class-spells" id="mbClassSpells"></div>
+      <div class="arena-heat-indicator hidden" id="mbHeatIndicator"><span>🔥</span><span class="heat-num">0/10</span></div>
+      <div class="arena-pause-btn" id="mbPauseBtn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+          <line x1="7" y1="5" x2="7" y2="19"/>
+          <line x1="17" y1="5" x2="17" y2="19"/>
+        </svg>
+      </div>
+      <div class="seq-progress" id="mbSeqProgress"></div>
+      <div class="rapid-tap-area rapid-tap-left hidden" id="mbTapLeft"><span class="rapid-tap-dot"></span></div>
+      <div class="rapid-tap-area rapid-tap-right hidden" id="mbTapRight"><span class="rapid-tap-dot"></span></div>
+      <div class="rapid-target hidden" id="mbRapidTarget"></div>
+      <div class="mb-combo-indicator hidden" id="mbComboIndicator"></div>
+    </div>
+    <div class="debuff-overlay" id="mbDebuffs"></div>
+    <div class="enemy-mana-bar hidden" id="mbEnemyManaBar">
+      <div class="enemy-mana-fill" id="mbEnemyManaFill"></div>
+    </div>
+    <div class="enemy-cast-bar hidden" id="mbEnemyCastBar">
+      <div class="enemy-cast-fill" id="mbEnemyCastFill"></div>
+    </div>
+    <div class="buff-overlay" id="mbBuffs"></div>
+    </div>
+    <div class="mb-spells" id="mbSpells"></div>
+    <div class="mb-hp-mana-bars">
+      <div class="mb-hp-bar" id="mbPlayerArenaHp">
+        <div class="mb-hp-bar-fill" id="mbPlayerArenaHpFill" style="width:100%"></div>
+        <span>100/100</span>
+      </div>
+      <div class="mb-rage-bar hidden" id="mbPlayerArenaRage">
+        <div class="mb-rage-bar-fill" id="mbPlayerArenaRageFill" style="width:0%"></div>
+        <span>💢 0/100</span>
+      </div>
+      <div class="mb-energy-bar hidden" id="mbPlayerArenaEnergy">
+        <div class="mb-energy-bar-fill" id="mbPlayerArenaEnergyFill" style="width:100%"></div>
+        <span>⚡ 100/100</span>
+      </div>
+      <div class="mb-stamina-bar hidden" id="mbPlayerArenaStamina">
+        <div class="mb-stamina-bar-fill" id="mbPlayerArenaStaminaFill" style="width:100%"></div>
+        <span>100/100</span>
+      </div>
+      <div class="mb-xp-bar-wrap" id="mbXpBarWrap" style="display:none">
+        <span style="font-size:11px;color:#8888aa" id="mbLevelLabel">Lv.1</span>
+        <div class="mb-xp-bar-bg"><div class="mb-xp-bar-fill" id="mbXpBarFill" style="width:0%"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TALENTS ===== -->
+<div id="talentsScreen" class="container hidden">
+  <div class="card">
+    <div class="flex-between">
+      <span class="card-title"><img src="assets/menu-icons/talenty.png" class="page-icon" alt=""> Talent Tree</span>
+      <span id="talentsPts" style="color:#f1c40f;font-weight:bold">Body: 0</span>
+    </div>
+    <div class="card-subtitle">Za každý level získáš 1 talent bod. <strong>Jedna škola</strong> může být aktivní najednou.</div>
+  </div>
+  <div class="talent-schools" id="talentSchools"></div>
+  <div class="card" style="margin-top:8px">
+    <button class="btn btn-secondary" onclick="game.resetTalents()" id="resetTalentsBtn">🔄 Resetovat talenty (50💰)</button>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<div id="heroScreen" class="container hidden">
+  <div class="card">
+    <div class="hero-header">
+      <div class="hero-portrait-lg">
+        <div class="hero-portrait-lg-frame"><img src="assets/monsters/hero.png" alt="" class="hero-portrait-lg-img" id="heroPortraitImg"/></div>
+        <button class="btn-change-face" onclick="game.showFaceSelect()" title="Změnit vzhled">🔄</button>
+      </div>
+      <div class="hero-header-info">
+        <div class="hero-name-row">
+          <span class="hero-name" id="heroName">Dobrodruh</span>
+          <button class="btn-rename" onclick="game.renameHero()" title="Přejmenovat">✏️</button>
+          <span class="hero-level" id="heroLevel">Lv.1</span>
+        </div>
+        <div class="hero-subtitle">💀 <span id="heroDeaths">0</span> · 🏆 <span id="heroWins">0</span></div>
+        <div class="hero-stats-grid">
+          <div class="hero-stat"><span class="hero-stat-icon">❤️</span><span id="heroHp">100</span>/<span id="heroMaxHp">100</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">⚔️</span><span id="heroDmg">12</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">💰</span><span id="heroGold">0</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">🗡️</span>Krit <span id="heroCrit">—</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">🛡️</span>Blok <span id="heroBlock">0%</span></div>
+          <div class="hero-stat"><span class="hero-stat-icon">🛡️</span>Def <span id="heroDefense">0</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-xp-wrap">
+      <div class="flex-between">
+        <span class="hero-xp-label">XP</span>
+        <span class="hero-xp-value" id="heroXpLabel">0/80</span>
+      </div>
+      <div class="mb-xp-bar-bg" style="height:6px">
+        <div class="mb-xp-bar-fill" id="heroXpBar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">💪 Atributy <span class="hero-attr-pts">(body: <span id="heroAttrPts">0</span>)</span></div>
+    <div class="hero-attr-row">
+      <span>💪 Síla: <span id="heroAttrStr">0</span></span>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpStr" onclick="game.upgradeAttr('str')">⬆️</button>
+    </div>
+    <div class="hero-attr-row">
+      <span>❤️ Vitalita: <span id="heroAttrVit">0</span></span>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpVit" onclick="game.upgradeAttr('vit')">⬆️</button>
+    </div>
+    <div class="hero-attr-row">
+      <span>🎯 Obratnost: <span id="heroAttrDex">0</span></span>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpDex" onclick="game.upgradeAttr('dex')">⬆️</button>
+    </div>
+    <div class="hero-attr-row">
+      <span>🧠 Intelekt: <span id="heroAttrInt">0</span></span>
+      <button class="btn btn-primary hero-attr-btn" id="heroUpInt" onclick="game.upgradeAttr('int')">⬆️</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">🎓 Aktivní škola</div>
+    <div id="activeSchoolInfo" class="card-subtitle">Žádná — přidej talentové body v 🎓 Talent Tree</div>
+  </div>
+  </div>
+</div>
+
+<!-- ===== FACE SELECT OVERLAY ===== -->
+<div id="faceSelectOverlay" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;box-sizing:border-box">
+  <div style="color:#f1c40f;font-size:18px;font-weight:bold;margin-bottom:12px">Vyber vzhled hrdiny</div>
+  <div id="faceSelectGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:320px;width:100%"></div>
+  <button class="btn btn-secondary" style="margin-top:16px;padding:8px 24px" onclick="game.closeFaceSelect()">Zavřít</button>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div id="resultScreen" class="hidden">
+  <div class="result-screen container">
+    <div class="result-icon" id="resultIcon">💀</div>
+    <div class="result-title" id="resultTitle">Konec</div>
+    <div class="result-sub" id="resultMsg"></div>
+    <div class="result-loot-scroll" id="resultLootList"></div>
+    <div id="resultBtn" class="mt-10"></div>
+  </div>
+</div>
+
+<!-- ===== SHOP ===== -->
+<div id="shopScreen" class="container hidden">
+  <div class="card">
+    <div class="flex-between">
+      <span class="card-title"><img src="assets/menu-icons/obchod.png" class="page-icon" alt=""> Obchod</span>
+      <span id="shopGold">💰 0 zlatých</span>
+    </div>
+    <div class="card-subtitle">Nakup a prodávej výbavu</div>
+  </div>
+  <div class="shop-tabs">
+    <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Koupit</button>
+    <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Prodat</button>
+  </div>
+  <div id="shopList"></div>
+</div>
+
+<!-- ===== INVENTORY ===== -->
+<div id="inventoryScreen" class="container hidden">
+  <!-- Equipment sloty -->
+  <div class="inv-equip-panel">
+    <div class="inv-equip-slot" id="invSlotHelmet">
+      <div class="inv-slot-icon" id="invSlotHelmetIcon">⛑️</div>
+    </div>
+    <div class="inv-equip-slot" id="invSlotArmor">
+      <div class="inv-slot-icon" id="invSlotArmorIcon">🛡️</div>
+    </div>
+    <div class="inv-equip-slot" id="invSlotWeapon">
+      <div class="inv-slot-icon" id="invSlotWeaponIcon">⚔️</div>
+    </div>
+    <div class="inv-equip-slot" id="invSlotShield">
+      <div class="inv-slot-icon" id="invSlotShieldIcon">🛡️</div>
+    </div>
+  </div>
+  <div class="inv-equip-panel" style="margin-top:0">
+    <div class="inv-equip-slot" id="invSlotRing1">
+      <div class="inv-slot-icon" id="invSlotRing1Icon">💍</div>
+    </div>
+    <div class="inv-equip-slot" id="invSlotAmulet">
+      <div class="inv-slot-icon" id="invSlotAmuletIcon">📿</div>
+    </div>
+  </div>
+  <!-- Grid batohu (scrollovatelný) -->
+  <div class="inv-grid-wrap" id="invGridWrap">
+    <div class="inv-grid" id="invGrid"></div>
+  </div>
+  <!-- Info panel předmětu -->
+  <div class="inv-info-panel hidden" id="invInfoPanel">
+    <div class="inv-info-icon" id="invInfoIcon"></div>
+    <div class="inv-info-details">
+      <div class="inv-info-name" id="invInfoName"></div>
+      <div class="inv-info-stats" id="invInfoStats"></div>
+    </div>
+  </div>
+  <!-- Srovnávací panel — nasazený předmět -->
+  <div class="inv-info-panel inv-compare-panel hidden" id="invComparePanel">
+    <div class="inv-info-icon" id="invCompareIcon"></div>
+    <div class="inv-info-details">
+      <div class="inv-info-name" id="invCompareName"></div>
+      <div class="inv-info-stats" id="invCompareStats"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BESTIARY ===== -->
+<div id="bestiaryScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title"><img src="assets/menu-icons/bestiar.png" class="page-icon" alt=""> Bestiář</div>
+    <div class="card-subtitle">Všechna monstra, jejich typy a způsob útoku.</div>
+  </div>
+  <div class="bestiary-grid" id="bestiaryGrid"></div>
+</div>
+
+<!-- ===== SPELLBOOK ===== -->
+<div id="spellbookScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title">📖 Kniha kouzel</div>
+    <div class="card-subtitle" id="spellbookSubtitle">Přehled kouzel pro vybranou classu.</div>
+  </div>
+  <div id="spellbookList"></div>
+</div>
+
+<!-- ===== ITEMS REFERENCE ===== -->
+<div id="itemsScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title">📦 Přehled předmětů</div>
+    <div class="card-subtitle">Base itemy, affixy a unique předměty.</div>
+  </div>
+  <div id="itemsContent"></div>
+</div>
+
+<!-- ===== PAUSE COUNTDOWN OVERLAY ===== -->
+<div id="pauseOverlay" class="pause-overlay hidden">
+  <div class="countdown-number" id="pauseCountdownNumber">3</div>
+</div>
+
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-content">
+    <img src="icon-192.png" alt="Dungeon Recall" class="splash-icon">
+    <div class="splash-title">Dungeon Recall</div>
+  </div>
+</div>
+
+<!-- ===== SCRIPT ===== -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').then(reg => {
+    reg.addEventListener('updatefound', () => {
+      const newSW = reg.installing;
+      newSW.addEventListener('statechange', () => {
+        if (newSW.state === 'installed' && navigator.serviceWorker.controller) {
+          window.location.reload();
+        }
+      });
+    });
+  });
+}
+</script>
+<script src="game.js?v=121"></script>
+</body>
+</html>
