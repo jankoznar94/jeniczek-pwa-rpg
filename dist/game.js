@@ -2001,8 +2001,6 @@
     // Aktualizovat buff/debuff UI každou smyčku (nezávisle na swing timeru)
     renderBuffs();
     renderDebuffs();
-    // Aktualizovat UI spell tlačítek (cooldown čísla, GCD sweep)
-    renderClassSpells();
     // Aktualizovat resource bary a combo indikátor každou smyčku
     updateResourceBars();
 
