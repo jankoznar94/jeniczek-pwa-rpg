@@ -2584,7 +2584,7 @@
       } else if (t === MONSTER_TYPES.MANASTEALER) {
         manaStealAmt += Math.round(bossDmg * 0.5);
       } else if (t === MONSTER_TYPES.POISON) {
-        const poisonDmg = Math.max(1, Math.round(baseBossDmg * 0.2));
+        const poisonDmg = Math.max(1, Math.round(bossDmg * 0.2));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
       }
@@ -4775,7 +4775,7 @@
       } else if (t === MONSTER_TYPES.MANASTEALER) {
         manaStealAmt += Math.round(bossDmg * 0.5);
       } else if (t === MONSTER_TYPES.POISON) {
-        const poisonDmg = Math.max(1, Math.round(baseBossDmg * 0.2));
+        const poisonDmg = Math.max(1, Math.round(bossDmg * 0.2));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
       }
