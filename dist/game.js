@@ -1958,7 +1958,7 @@
     if (mapBattleState.monsterAttackType === ATTACK_TYPES.CASTER) {
       const baseMana = 30 + mapBattleState.locId * 10 + mapBattleState.progress * 3;
       mapBattleState.maxEnemyMana = baseMana;
-      mapBattleState.enemyMana = Math.round(baseMana * 0.5);
+      mapBattleState.enemyMana = baseMana;
     }
     // Spustit stamina regen (3/s)
     if (mapBattleState._staminaInterval) clearInterval(mapBattleState._staminaInterval);
@@ -2025,7 +2025,11 @@
     // Vybere kouzlo podle typu monstra — náhodný výběr z kompatibilních
     const mType = mb.monsterType;
     if (!mType) return null;
-    const candidates = Object.keys(ENEMY_SPELLS).filter(id => ENEMY_SPELLS[id].type === mType);
+    let candidates = Object.keys(ENEMY_SPELLS).filter(id => ENEMY_SPELLS[id].type === mType);
+    // Nevybírat empower, pokud už monstrum má aktivní buff
+    if (mb._improverStacks > 0) {
+      candidates = candidates.filter(id => id !== 'empower');
+    }
     if (candidates.length === 0) return null;
     const id = candidates[Math.floor(Math.random() * candidates.length)];
     return { id, ...ENEMY_SPELLS[id] };
