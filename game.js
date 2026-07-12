@@ -2206,6 +2206,8 @@
         if (d.ticks <= 0) delete _sessionDebuffs[spellId];
       }
     });
+    // Player DoT tick (jed z monster)
+    doPlayerDotTick(mb);
     // Buff tick (session persistent)
     Object.keys(_sessionBuffs).forEach(spellId => {
       const b = _sessionBuffs[spellId];
