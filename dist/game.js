@@ -1322,6 +1322,13 @@
     baseMiss = clamp(baseMiss, 0, 40);
     baseDodge = clamp(baseDodge, 0, 40);
 
+    // Dual-wield penalty: +19% miss (jako WoW TBC)
+    const cls = CLASSES[state.heroClass];
+    const isDualWield = cls && cls.dualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
+    if (isDualWield) {
+      baseMiss += 19;
+    }
+
     // HitRating ze všech equip slotů: 1 bod = -0.5% miss
     const eq = state.hero.equip;
     let totalHit = 0;
