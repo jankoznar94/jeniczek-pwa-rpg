@@ -1412,6 +1412,8 @@
   let _sessionSpellCooldowns = {};
   let _sessionDebuffs = {};
   let _sessionBuffs = {};
+  let _enemyBuffs = {}; // buffy na nepříteli (empower apod.)
+  let _playerDebuffs = {}; // debuffy na hráči (jed apod.)
   let trainingState = {};
   let minigameState = {};
   let _activeIntervals = [];
@@ -1751,6 +1753,8 @@
     // Kompletní reset session stavu při vstupu do souboje
     _sessionDebuffs = {};
     _sessionBuffs = {};
+    _enemyBuffs = {};
+    _playerDebuffs = {};
     _sessionSpellCooldowns = {};
     state.comboPoints = 0;
     state.energy = state.maxEnergy || 100;
@@ -2030,6 +2034,10 @@
     if (mb._improverStacks > 0) {
       candidates = candidates.filter(id => id !== 'empower');
     }
+    // Nevybírat poison_bolt, pokud už hráč má aktivní jed
+    if (mb.playerDotTicksLeft > 0) {
+      candidates = candidates.filter(id => id !== 'poison_bolt');
+    }
     if (candidates.length === 0) return null;
     const id = candidates[Math.floor(Math.random() * candidates.length)];
     return { id, ...ENEMY_SPELLS[id] };
@@ -2195,6 +2203,25 @@
         }
       }
     });
+    // Enemy buffs tick
+    Object.keys(_enemyBuffs).forEach(spellId => {
+      const b = _enemyBuffs[spellId];
+      if (b && b.ticks > 0) {
+        b.ticks--;
+        if (b.ticks <= 0) {
+          delete _enemyBuffs[spellId];
+          if (b.onExpire) b.onExpire();
+        }
+      }
+    });
+    // Player debuffs tick
+    Object.keys(_playerDebuffs).forEach(spellId => {
+      const d = _playerDebuffs[spellId];
+      if (d && d.ticks > 0) {
+        d.ticks--;
+        if (d.ticks <= 0) delete _playerDebuffs[spellId];
+      }
+    });
     // Battle shout
     if (state.battleShoutTimer > 0) {
       state.battleShoutTimer--;
@@ -2272,7 +2299,7 @@
         offhandCircle.style.opacity = '0';
       }
     }
-    // Nepřítelův ring (malý, červený / šedý při stunu)
+    // Nepřítelův ring (malý, červený / modrý při castu / šedý při stunu)
     const enemyCircle = document.getElementById('mbEnemyTimerCircle');
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
@@ -2284,6 +2311,12 @@
         enemyCircle.style.strokeDasharray = '597';
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#666';
+      } else if (mb._enemyCasting) {
+        // Castování — světle modrý ring
+        const castPct = mb._enemyCastTime > 0 ? Math.min(1, (performance.now() - mb._enemyCastStart) / mb._enemyCastTime) : 0;
+        const offset = Math.round(597 * (1 - castPct));
+        enemyCircle.style.strokeDashoffset = offset;
+        enemyCircle.style.stroke = '#3498db';
       } else if (mb._enemySwingReady) {
         enemyCircle.style.strokeDashoffset = '0';
         enemyCircle.style.stroke = '#e74c3c';
@@ -2399,6 +2432,7 @@
         amount = Math.round(baseDmg * 0.5);
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
         spellText = '☠️ Jedovatý výboj!';
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
@@ -2413,6 +2447,7 @@
       } else if (spellId === 'empower') {
         amount = 0; // žádné přímé poškození
         mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
+        _enemyBuffs['empower'] = { icon: '📈', name: 'Posílení', ticks: 180, maxTicks: 180 };
         spellText = '📈 Posílení!';
       } else if (spellId === 'shadow_bolt') {
         amount = Math.round(baseDmg * 1.2);
@@ -2809,38 +2844,76 @@
     const container = document.getElementById('mbDebuffs');
     if (!container) return;
     const debuffKeys = Object.keys(_sessionDebuffs);
-    if (debuffKeys.length === 0) { container.innerHTML = ''; return; }
-    let html = '';
-    debuffKeys.forEach(spellId => {
-      const d = _sessionDebuffs[spellId];
-      if (!d) return;
-      const remaining = Math.ceil(d.ticks / 60);
-      const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
-      html += `<div class="debuff-icon" title="${d.name || spellId}">
-        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
-        <span class="debuff-icon-timer">${remaining}s</span>
-      </div>`;
-    });
-    container.innerHTML = html;
+    if (debuffKeys.length === 0) { container.innerHTML = ''; } else {
+      let html = '';
+      debuffKeys.forEach(spellId => {
+        const d = _sessionDebuffs[spellId];
+        if (!d) return;
+        const remaining = Math.ceil(d.ticks / 60);
+        const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
+        html += `<div class="debuff-icon" title="${d.name || spellId}">
+          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
+          <span class="debuff-icon-timer">${remaining}s</span>
+        </div>`;
+      });
+      container.innerHTML = html;
+    }
+    // Enemy buffs (vlevo, pod debuffy)
+    const enemyBuffContainer = document.getElementById('mbEnemyBuffs');
+    if (enemyBuffContainer) {
+      const ebKeys = Object.keys(_enemyBuffs);
+      if (ebKeys.length === 0) { enemyBuffContainer.innerHTML = ''; } else {
+        let html = '';
+        ebKeys.forEach(spellId => {
+          const b = _enemyBuffs[spellId];
+          if (!b) return;
+          const remaining = Math.ceil(b.ticks / 60);
+          html += `<div class="debuff-icon" title="${b.name || spellId}">
+            <span class="debuff-icon-emoji">${b.icon || '📈'}</span>
+            <span class="debuff-icon-timer">${remaining}s</span>
+          </div>`;
+        });
+        enemyBuffContainer.innerHTML = html;
+      }
+    }
   }
 
   function renderBuffs() {
     const container = document.getElementById('mbBuffs');
     if (!container) return;
     const buffKeys = Object.keys(_sessionBuffs);
-    if (buffKeys.length === 0) { container.innerHTML = ''; return; }
-    let html = '';
-    buffKeys.forEach(spellId => {
-      const b = _sessionBuffs[spellId];
-      if (!b) return;
-      const remaining = Math.ceil(b.ticks / 60);
-      const hasImg = spellId === 'bloodrage' || spellId === 'battleShout';
-      html += `<div class="buff-icon" title="${b.name || spellId}">
-        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
-        <span class="buff-icon-timer">${remaining}s</span>
-      </div>`;
-    });
-    container.innerHTML = html;
+    if (buffKeys.length === 0) { container.innerHTML = ''; } else {
+      let html = '';
+      buffKeys.forEach(spellId => {
+        const b = _sessionBuffs[spellId];
+        if (!b) return;
+        const remaining = Math.ceil(b.ticks / 60);
+        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout';
+        html += `<div class="buff-icon" title="${b.name || spellId}">
+          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
+          <span class="buff-icon-timer">${remaining}s</span>
+        </div>`;
+      });
+      container.innerHTML = html;
+    }
+    // Player debuffs (vpravo, pod buffy)
+    const playerDebuffContainer = document.getElementById('mbPlayerDebuffs');
+    if (playerDebuffContainer) {
+      const pdKeys = Object.keys(_playerDebuffs);
+      if (pdKeys.length === 0) { playerDebuffContainer.innerHTML = ''; } else {
+        let html = '';
+        pdKeys.forEach(spellId => {
+          const d = _playerDebuffs[spellId];
+          if (!d) return;
+          const remaining = Math.ceil(d.ticks / 60);
+          html += `<div class="buff-icon" title="${d.name || spellId}">
+            <span class="buff-icon-emoji">${d.icon || '☠️'}</span>
+            <span class="buff-icon-timer">${remaining}s</span>
+          </div>`;
+        });
+        playerDebuffContainer.innerHTML = html;
+      }
+    }
   }
 
   function castClassSpell(spellId) {
