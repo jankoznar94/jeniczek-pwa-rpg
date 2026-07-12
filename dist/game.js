@@ -5865,6 +5865,10 @@
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else stats = `❤️+${item.bonusHp} HP`;
+        // Affix názvy
+        if (item.affixes && item.affixes.length) {
+          stats += '<br><span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span>';
+        }
         const sellPrice = Math.round(item.cost * 0.5);
         return `<div class="shop-item">
           <div class="shop-item-header">
@@ -6010,6 +6014,10 @@
       const r = RARITY[item.rarity] || RARITY.common;
       $('invInfoName').style.color = r.color;
       let stats = `<span style="color:${r.color};font-size:11px">${r.name}</span><br>`;
+      // Zobrazit názvy affixů
+      if (item.affixes && item.affixes.length) {
+        stats += '<span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span><br>';
+      }
       if (item.type === 'weapon') {
         stats += `⚔️ +${item.baseDmg} poškození`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
@@ -6021,6 +6029,18 @@
       else if (item.type === 'amulet') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
       else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
+      // Affix staty — zobrazit všechny nenulové
+      const affixStats = [];
+      if (item.fireDmg) affixStats.push(`🔥 +${item.fireDmg} ohnivé dmg`);
+      if (item.iceDmg) affixStats.push(`❄️ +${item.iceDmg} ledové dmg`);
+      if (item.poisonDmg) affixStats.push(`☠️ +${item.poisonDmg} jedové dmg`);
+      if (item.lifesteal) affixStats.push(`🩸 +${item.lifesteal}% lifesteal`);
+      if (item.hitRating) affixStats.push(`🎯 +${item.hitRating} hit rating`);
+      if (item.skillDmg) affixStats.push(`✨ +${item.skillDmg}% skill dmg`);
+      if (item.manaRegen) affixStats.push(`💧 +${item.manaRegen} many/tick`);
+      if (item.bonusMana) affixStats.push(`💧 +${item.bonusMana} many`);
+      if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡ ${item.swingMs}ms swing`);
+      if (affixStats.length) stats += '<br>' + affixStats.join(' · ');
       if (item.attrs) {
         const attrStr = Object.keys(item.attrs).map(k => {
           const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
@@ -6048,6 +6068,10 @@
       const er = RARITY[equipped.rarity] || RARITY.common;
       $('invCompareName').style.color = er.color;
       let eStats = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
+      // Zobrazit názvy affixů
+      if (equipped.affixes && equipped.affixes.length) {
+        eStats += '<span style="font-size:10px;color:#aaa">' + equipped.affixes.map(a => a.name).join(' · ') + '</span><br>';
+      }
       if (equipped.type === 'weapon') {
         eStats += `⚔️ +${equipped.baseDmg} poškození`;
         if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% krit (×2.0)`;
@@ -6059,6 +6083,18 @@
       else if (equipped.type === 'amulet') eStats += `⚔️ +${equipped.baseDmg||0} dmg · ❤️ +${equipped.bonusHp||0} HP`;
       if (equipped.weaponType === 'staff') eStats += ' 🪄 magická';
       else if (equipped.weaponType === 'blade') eStats += ' ⚔️ fyzická';
+      // Affix staty — zobrazit všechny nenulové
+      const eAffixStats = [];
+      if (equipped.fireDmg) eAffixStats.push(`🔥 +${equipped.fireDmg} ohnivé dmg`);
+      if (equipped.iceDmg) eAffixStats.push(`❄️ +${equipped.iceDmg} ledové dmg`);
+      if (equipped.poisonDmg) eAffixStats.push(`☠️ +${equipped.poisonDmg} jedové dmg`);
+      if (equipped.lifesteal) eAffixStats.push(`🩸 +${equipped.lifesteal}% lifesteal`);
+      if (equipped.hitRating) eAffixStats.push(`🎯 +${equipped.hitRating} hit rating`);
+      if (equipped.skillDmg) eAffixStats.push(`✨ +${equipped.skillDmg}% skill dmg`);
+      if (equipped.manaRegen) eAffixStats.push(`💧 +${equipped.manaRegen} many/tick`);
+      if (equipped.bonusMana) eAffixStats.push(`💧 +${equipped.bonusMana} many`);
+      if (equipped.swingMs && equipped.swingMs < 0) eAffixStats.push(`⚡ ${equipped.swingMs}ms swing`);
+      if (eAffixStats.length) eStats += '<br>' + eAffixStats.join(' · ');
       if (equipped.attrs) {
         const attrStr = Object.keys(equipped.attrs).map(k => {
           const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
