@@ -6138,50 +6138,39 @@
     invScreen._invDelegationHandler = function(e) {
       const h = state.hero;
       const inv = h.inventory || [];
+      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
       // Equip slot klik
       const slotEl = e.target.closest('.inv-equip-slot');
       if (slotEl) {
         const slot = slotMap[slotEl.id];
         if (!slot) return;
-        const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, amulet:null };
         const itemId = h.equip[slot];
-        const item = itemId ? ITEM_MAP[itemId] : null;
+        // Pokud je vybraný item v batohu → equipni ho do slotu
         if (window._invSelectedIdx !== null) {
           equipItemToSlot(window._invSelectedIdx, slot);
           clearSelection();
           return;
         }
-        if (!itemId || itemId === defaults[slot]) return;
-        if (window._invSelectedSlot === slot) {
+        // Pokud slot obsahuje reálný item → sundej ho rovnou
+        if (itemId && itemId !== defaults[slot]) {
           unequipSlot(slot);
           clearSelection();
           return;
         }
-        clearSelection();
-        window._invSelectedSlot = slot;
-        slotEl.classList.add('selected');
-        showItemInfo(item);
+        // Prázdný slot, nic nevybráno → nic
         return;
       }
       // Grid cell klik
       const cell = e.target.closest('.inv-grid-cell');
       if (cell) {
         if (cell.classList.contains('empty')) {
-          if (window._invSelectedSlot) {
-            unequipSlot(window._invSelectedSlot);
-            clearSelection();
-          }
+          clearSelection();
           return;
         }
         const idx = parseInt(cell.dataset.idx);
         const itemId = inv[idx];
         const item = itemId ? ITEM_MAP[itemId] : null;
         if (!item) return;
-        if (window._invSelectedSlot) {
-          equipItemToSlot(idx, window._invSelectedSlot);
-          clearSelection();
-          return;
-        }
         clearSelection();
         window._invSelectedIdx = idx;
         cell.classList.add('selected');
