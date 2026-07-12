@@ -977,7 +977,7 @@ body.no-scroll { overflow: hidden; }
 .result-loot .result-stat { border:1px solid #888; }
 .result-grade { font-size:28px;margin:8px 0;letter-spacing:4px; }
 .result-tap { font-size:11px;color:#555;margin-top:4px;animation:resultTapPulse 2s ease-in-out infinite; }
-.result-loot-scroll { max-height:140px;overflow-y:auto;margin:6px auto;padding:4px 0;width:90%;border-top:1px solid #2a2a2a;border-bottom:1px solid #2a2a2a; }
+.result-loot-scroll { max-height:140px;overflow-y:auto;margin:6px auto;padding:4px 0;width:90%; }
 .result-loot-scroll::-webkit-scrollbar { width:4px; }
 .result-loot-scroll::-webkit-scrollbar-track { background:#1a1a1a; }
 .result-loot-scroll::-webkit-scrollbar-thumb { background:#4a4a4a;border-radius:2px; }
