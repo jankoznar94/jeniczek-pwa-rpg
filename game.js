@@ -2759,18 +2759,6 @@
         manaBar.classList.add('hidden');
       }
     }
-    // Enemy cast bar
-    const castBar = $('mbEnemyCastBar');
-    const castFill = $('mbEnemyCastFill');
-    if (castBar && castFill) {
-      if (mb._enemyCasting && mb._enemyCastTime > 0) {
-        castBar.classList.remove('hidden');
-        const castPct = Math.min(1, (performance.now() - mb._enemyCastStart) / mb._enemyCastTime);
-        castFill.style.width = Math.round(castPct * 100) + '%';
-      } else {
-        castBar.classList.add('hidden');
-      }
-    }
     // D4 heat indicator
     const heatEl = $('mbHeatIndicator');
     if (heatEl) {
@@ -5413,17 +5401,8 @@
       });
       state._floorLootDrops = [];
       $('resultIcon').textContent = '🎉';
-      $('resultTitle').textContent = currentChoice && currentChoice.eliteAffix ? '💀💀 Elita poražena!' : 'Místnost ' + (mb.progress+1) + ' dobyta!';
-      const roomXp = Math.round((mb.loc.xpReward + mb.progress * 2) * 5 * getXpModifier(mb));
-      const mistakes = (mb.floorMistakes || 0) + (mb.mistakes || 0);
-      const hpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
-      $('resultMsg').innerHTML = '<div class="result-stats">'
-                + '<div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + roomXp + ' XP</span></div>'
-                + '<div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">' + mb.playerHp + '/' + mb.maxPlayerHp + '</span><span class="result-stat-sub">(' + hpPct + '%)</span></div>'
-                + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + totalLootGold + '</span></div>'
-                + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">' + mistakes + '</span><span class="result-stat-sub">chyb</span></div>'
-                + '<div class="result-tap">👆 klepni pro návrat</div>'
-                + '</div>';
+      $('resultTitle').textContent = 'Vítězství!';
+      $('resultMsg').innerHTML = '';
       // Loot list
       let lootListHtml = '';
       if (lootItems.length > 0) {
@@ -5435,11 +5414,11 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
-      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
-                $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
-                showScreen('result');
-                switchBGM('win');
-                return;
+      $('resultBtn').innerHTML = '';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      showScreen('result');
+      switchBGM('win');
+      return;
     }
 
     mapBattleState.ended = true;
@@ -5469,9 +5448,10 @@
           saveGame();
           switchBGM('defeat');
           $('resultIcon').textContent = '💀';
-          $('resultTitle').textContent = 'Padl jsi';
-          $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">📖</span><span class="result-stat-val">+' + consXp + ' XP</span></div><div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + consGold + '</span></div></div><div class="result-tap">👆 klepni pro návrat</div>';
-          $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
+          $('resultTitle').textContent = 'Prohra';
+          $('resultMsg').innerHTML = '';
+          $('resultLootList').innerHTML = '';
+          $('resultBtn').innerHTML = '';
           $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
     } else if (mb.isBoss) {
       // Boss defeated
@@ -5494,11 +5474,7 @@
       sfxBossDefeat();
       $('resultIcon').textContent = '🏆';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
-      const bossGoldTotal = (r.gold || 0) + (bossLoot ? bossLoot.gold || 0 : 0);
-      $('resultMsg').innerHTML = '<div class="result-stats">'
-                + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+'+bossGoldTotal+'</span></div>'
-                + '<div class="result-stat"><span class="result-stat-icon">❌</span><span class="result-stat-val">'+((mb.floorMistakes||0)+(mb.mistakes||0))+'</span><span class="result-stat-sub">chyb</span></div>'
-                + '</div>';
+      $('resultMsg').innerHTML = '';
       let lootListHtml = '';
       if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
         const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
@@ -5507,8 +5483,7 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
-      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
-      $('resultMsg').innerHTML += '<div class="result-tap">👆 klepni pro návrat</div>';
+      $('resultBtn').innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
       saveGame();
     } else if (mb.isReward) {
