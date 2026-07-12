@@ -1796,11 +1796,17 @@
       return;
     }
 
-    // Merchant — otevřít shop
+    // Merchant — otevřít shop a po návratu na mapu
     if (isMerchantChoice) {
       state.locationProgress[locId] = progress + 1;
       saveGame();
-      showScreen('shop');
+      $('resultIcon').textContent = '🛒';
+      $('resultTitle').textContent = 'Obchodník';
+      $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">Nakup a prodávej</span></div></div>';
+      $('resultLootList').innerHTML = '';
+      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'shop\');">🛒 Otevřít obchod</button>';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      showScreen('result');
       return;
     }
     const playerMaxHp = getHeroMaxHp();
@@ -2481,43 +2487,8 @@
   }
 
   function updateSpellButtons() {
-    const fireBtn = $('mbSpellFireBtn');
-    const healBtn = $('mbSpellHealBtn');
-    const freezeBtn = $('mbSpellFreezeBtn');
-    const physBtn = $('mbSpellPhysBtn');
-    // Vsechna schovat (default)
-    [fireBtn, healBtn, freezeBtn, physBtn].forEach(b => { if (b) { b.classList.add('hidden'); b.classList.remove('active', 'used'); } });
-    // Class spells (barbar rage kouzla) — vždy, nezávisle na škole
+    // Class spells — jen investovaná kouzla
     renderClassSpells();
-    const cls = getClassSkillTree();
-    if (!cls) return;
-    const spellId = getBestSpellId(state.heroClass);
-    if (!spellId) return;
-    const lv = getSpellLv(spellId);
-    // Najít správné tlačítko podle classy
-    const classBtnMap = {
-      barbarian: { heroicStrike: fireBtn, battleShout: healBtn, thunderClap: freezeBtn, bloodrage: physBtn, doubleSwing: fireBtn, whirlwind: freezeBtn },
-      assassin: { shadowStrike: fireBtn, poisonBlade: healBtn, evasion: freezeBtn, bladeFury: physBtn, smokeScreen: healBtn, deathMark: fireBtn, shadowDance: freezeBtn },
-      mage: { firebolt: fireBtn, icebolt: freezeBtn, regrowth: healBtn, fireball: fireBtn, frostbolt: freezeBtn, naturesBoon: healBtn, blizzard: freezeBtn, fireblast: fireBtn, revitalize: healBtn },
-    };
-    const btnMap = classBtnMap[state.heroClass] || {};
-    const btn = btnMap[spellId] || fireBtn;
-    if (!btn) return;
-    btn.classList.remove('hidden');
-    const spellIcons = { heroicStrike:'💢', battleShout:'📯', thunderClap:'🌩️', bloodrage:'🩸', doubleSwing:'⚔️', whirlwind:'🌀',
-      shadowStrike:'💢', poisonBlade:'☠️', evasion:'💨', bladeFury:'⚡', smokeScreen:'🌫️', deathMark:'🎯', shadowDance:'🌙',
-      firebolt:'🔥', icebolt:'❄️', regrowth:'💚', fireball:'💥', frostbolt:'🧊', naturesBoon:'🌿', blizzard:'🌨️', fireblast:'🌋', revitalize:'✨' };
-    const spellIcon = spellIcons[spellId] || '⚔️';
-    btn.innerHTML = spellIcon;
-    // Mana cost podle classy
-    const manaCosts = { heroicStrike:8, battleShout:10, thunderClap:12, bloodrage:15, doubleSwing:18, whirlwind:25,
-      shadowStrike:8, poisonBlade:10, evasion:8, bladeFury:12, smokeScreen:10, deathMark:15, shadowDance:18,
-      firebolt:10, icebolt:10, regrowth:15, fireball:25, frostbolt:20, naturesBoon:25, blizzard:30, fireblast:35, revitalize:40 };
-    const cost = (manaCosts[spellId] || 15) + lv * 2;
-    const hasMana = (state.hero.mana || 0) >= cost;
-    if (hasMana) {
-      btn.classList.add('active');
-    }
   }
 
   function updateActionButtons() {
@@ -2562,8 +2533,14 @@
     if (!container) return;
     const cls = CLASSES[state.heroClass];
     if (!cls || !cls.spells) { container.innerHTML = ''; return; }
+    // Jen investovaná kouzla (kde je alespoň 1 bod v talentu)
+    const investedSpells = cls.spells.filter(spell => {
+      const key = state.heroClass + '_' + spell.id;
+      return getTalentLv(key) > 0;
+    });
+    if (investedSpells.length === 0) { container.innerHTML = ''; return; }
     let html = '';
-    cls.spells.forEach(spell => {
+    investedSpells.forEach(spell => {
       const onGcd = state._gcdTimer > 0;
       const clsDef = CLASSES[state.heroClass];
       const resourceKey = clsDef.resource === 'energy' ? 'energy' : 'rage';
@@ -2898,46 +2875,6 @@
     };
     setupTap('mbTapLeft');
     setupTap('mbTapRight');
-    // Arena spell tlacitka (Fireball/Heal)
-    const spellFireBtn = $('mbSpellFireBtn');
-    if (spellFireBtn) {
-      const fireHandler = (e) => {
-        e.stopPropagation();
-        const best = getBestSpellId(state.heroClass);
-        if (best) onMapAttackSpell(best);
-      };
-      spellFireBtn.addEventListener('pointerdown', fireHandler);
-      handlers.push(['pointerdown', fireHandler]);
-    }
-    const spellHealBtn = $('mbSpellHealBtn');
-    if (spellHealBtn) {
-      const healHandler = (e) => {
-        e.stopPropagation();
-        onMapAttackSpell('heal');
-      };
-      spellHealBtn.addEventListener('pointerdown', healHandler);
-      handlers.push(['pointerdown', healHandler]);
-    }
-    const spellFreezeBtn = $('mbSpellFreezeBtn');
-    if (spellFreezeBtn) {
-      const freezeHandler = (e) => {
-        e.stopPropagation();
-        const best = getBestSpellId(state.heroClass);
-        if (best) onMapAttackSpell(best);
-      };
-      spellFreezeBtn.addEventListener('pointerdown', freezeHandler);
-      handlers.push(['pointerdown', freezeHandler]);
-    }
-    const spellPhysBtn = $('mbSpellPhysBtn');
-    if (spellPhysBtn) {
-      const physHandler = (e) => {
-        e.stopPropagation();
-        const best = getBestSpellId(state.heroClass);
-        if (best) onMapAttackSpell(best);
-      };
-      spellPhysBtn.addEventListener('pointerdown', physHandler);
-      handlers.push(['pointerdown', physHandler]);
-    }
   }
 
   function getFloorTimerMultiplier(floor, locId) {
@@ -5989,7 +5926,7 @@
     h.gold += sellPrice;
     saveGame();
     showMessage(`💰 Prodáno ${item.icon} ${item.name} za ${sellPrice}💰`);
-    renderInventory();
+    renderShop();
   }
 
   function sellSlotItem(itemId, slot) {
