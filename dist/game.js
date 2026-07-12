@@ -5892,28 +5892,65 @@
   }
 
   // ===== SHOP =====
+  let _shopTab = 'buy';
+
+  function switchShopTab(tab) {
+    _shopTab = tab;
+    document.querySelectorAll('.shop-tab').forEach(t => t.classList.toggle('active', t.dataset.shopTab === tab));
+    renderShop();
+  }
+
   function renderShop() {
     const h = state.hero;
     $('shopGold').textContent = `💰 ${h.gold} zlatých`;
-    $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0 && i.tier === 1).map(item => {
-      const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.amulet === item.id;
-      const canBuy = h.gold >= item.cost && !owned;
-      let stats = '';
-      if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
-      else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
-      else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
-      else stats = `❤️+${item.bonusHp} HP`;
-      return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
-        <div class="shop-item-header">
-          <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
-          <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
-        </div>
-        <div class="shop-item-actions">
-          <span class="price">💰 ${item.cost}</span>
-          ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Koupit</button>`}
-        </div>
-      </div>`;
-    }).join('');
+    if (_shopTab === 'sell') {
+      const equipSet = new Set(Object.values(h.equip).filter(Boolean));
+      const sellable = h.inventory.filter(id => !equipSet.has(id));
+      if (sellable.length === 0) {
+        $('shopList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nemáš nic na prodej</div>';
+        return;
+      }
+      $('shopList').innerHTML = sellable.map(itemId => {
+        const item = ITEM_MAP[itemId];
+        if (!item) return '';
+        let stats = '';
+        if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
+        else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else stats = `❤️+${item.bonusHp} HP`;
+        const sellPrice = Math.round(item.cost * 0.5);
+        return `<div class="shop-item">
+          <div class="shop-item-header">
+            <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
+            <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
+          </div>
+          <div class="shop-item-actions">
+            <span class="price">💰 ${sellPrice}</span>
+            <button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${item.id}')">Prodat</button>
+          </div>
+        </div>`;
+      }).join('');
+    } else {
+      $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0 && i.tier === 1).map(item => {
+        const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.amulet === item.id;
+        const canBuy = h.gold >= item.cost && !owned;
+        let stats = '';
+        if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
+        else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else stats = `❤️+${item.bonusHp} HP`;
+        return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
+          <div class="shop-item-header">
+            <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
+            <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
+          </div>
+          <div class="shop-item-actions">
+            <span class="price">💰 ${item.cost}</span>
+            ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Koupit</button>`}
+          </div>
+        </div>`;
+      }).join('');
+    }
   }
 
   function buyItem(itemId) {
@@ -6604,6 +6641,7 @@
   window.game = {
     showScreen, enterLocation, toggleDungeon, chooseDungeonPath,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
+    switchShopTab,
     onMapRapidTap,
     investTalent, resetTalents,
     toggleMapPause,
