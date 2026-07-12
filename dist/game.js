@@ -3804,9 +3804,13 @@
     return false;
   }
 
-  // Player DoT tick — jed z monster, tickuje po každém timeru
+  // Player DoT tick — jed z monster, tickuje 1×/s
+  let _lastPlayerDotTick = 0;
   function doPlayerDotTick(mb) {
     if (mb.playerDot <= 0 || mb.playerDotTicksLeft <= 0) return false;
+    const now = performance.now();
+    if (now - _lastPlayerDotTick < 1000) return false;
+    _lastPlayerDotTick = now;
     mb.playerHp -= mb.playerDot;
     mb.playerDotTicksLeft--;
     const playerFig = $('mbPlayerFigure');
