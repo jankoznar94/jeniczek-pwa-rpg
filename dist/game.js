@@ -2743,7 +2743,7 @@
       if (state.heroClass === 'barbarian') {
         rageBar.classList.remove('hidden');
         const span = rageBar.querySelector('span');
-        if (span) span.textContent = `💢 ${state.rage || 0}/${state.maxRage || 100}`;
+        if (span) span.textContent = `${state.rage || 0}/${state.maxRage || 100}`;
         const fill = $('mbPlayerArenaRageFill');
         if (fill) fill.style.width = Math.max(0, Math.round(((state.rage || 0) / (state.maxRage || 100)) * 100)) + '%';
       } else {
@@ -5408,7 +5408,7 @@
         else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
       });
       state._floorLootDrops = [];
-      $('resultIcon').textContent = '🎉';
+      $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
       $('resultTitle').textContent = 'Vítězství!';
       $('resultMsg').innerHTML = '';
       // Loot list
@@ -5455,7 +5455,7 @@
           state.dungeonSteps = null; // reset dungeon při smrti
           saveGame();
           switchBGM('defeat');
-          $('resultIcon').textContent = '💀';
+          $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Prohra">';
           $('resultTitle').textContent = 'Prohra';
           $('resultMsg').innerHTML = '';
           $('resultLootList').innerHTML = '';
@@ -5480,7 +5480,7 @@
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
       }
       sfxBossDefeat();
-      $('resultIcon').textContent = '🏆';
+      $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítěz">';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
       $('resultMsg').innerHTML = '';
       let lootListHtml = '';
