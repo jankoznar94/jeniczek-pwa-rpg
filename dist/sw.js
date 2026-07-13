@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v121';
-const ASSET_CACHE = 'boss-slayer-assets-v7';
+const ASSET_CACHE = 'boss-slayer-assets-v8';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=121', '/game.js?v=121', '/manifest.json'];
 
@@ -69,7 +69,11 @@ const ASSET_FILES = [
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
   '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png',
-  '/assets/result_win.png', '/assets/result_defeat.png'
+  '/assets/result_win.png', '/assets/result_defeat.png',
+  '/assets/items/belt_cloth.png', '/assets/items/belt_leather.png',
+  '/assets/items/belt_iron.png', '/assets/items/belt_steel.png',
+  '/assets/items/belt_mithril.png', '/assets/items/potion_healing.png',
+  '/assets/items/potion_mana.png'
 ];
 
 self.addEventListener('install', e => {
