@@ -6297,6 +6297,7 @@
         if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
         else stats = `❤️+${item.bonusHp} HP`;
         // Affix názvy
         if (item.affixes && item.affixes.length) {
@@ -6322,6 +6323,7 @@
         if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
         else stats = `❤️+${item.bonusHp} HP`;
         return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
           <div class="shop-item-header">
