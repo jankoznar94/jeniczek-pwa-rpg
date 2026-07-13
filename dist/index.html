@@ -127,6 +127,7 @@
     <div class="player-debuff-overlay" id="mbPlayerDebuffs"></div>
     </div>
     <div class="mb-spells" id="mbSpells"></div>
+    <div class="mb-potion-buttons" id="mbPotionButtons"></div>
     <div class="mb-hp-mana-bars">
       <div class="mb-hp-bar" id="mbPlayerArenaHp">
         <div class="mb-hp-bar-fill" id="mbPlayerArenaHpFill" style="width:100%"></div>
@@ -264,14 +265,13 @@
 
 <!-- ===== INVENTORY ===== -->
 <div id="inventoryScreen" class="container hidden">
-  <!-- Equipment sloty — layout jako na těle -->
+  <!-- Equipment sloty — D2-like layout -->
   <div class="inv-equip-panel">
-    <div class="inv-equip-slot inv-slot-small" id="invSlotAmulet">
-      <div class="inv-slot-icon" id="invSlotAmuletIcon">📿</div>
-    </div>
     <div class="inv-equip-slot inv-slot-square" id="invSlotHelmet">
       <div class="inv-slot-icon" id="invSlotHelmetIcon">⛑️</div>
     </div>
+  </div>
+  <div class="inv-equip-panel">
     <div class="inv-equip-slot inv-slot-tall" id="invSlotWeapon">
       <div class="inv-slot-icon" id="invSlotWeaponIcon">⚔️</div>
     </div>
@@ -281,13 +281,25 @@
     <div class="inv-equip-slot inv-slot-tall" id="invSlotShield">
       <div class="inv-slot-icon" id="invSlotShieldIcon">🛡️</div>
     </div>
+  </div>
+  <div class="inv-equip-panel">
+    <div class="inv-equip-slot inv-slot-small" id="invSlotAmulet">
+      <div class="inv-slot-icon" id="invSlotAmuletIcon">📿</div>
+    </div>
+  </div>
+  <div class="inv-equip-panel">
     <div class="inv-equip-slot inv-slot-small" id="invSlotRing1">
       <div class="inv-slot-icon" id="invSlotRing1Icon">💍</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-belt" id="invSlotBelt">
+      <div class="inv-slot-icon" id="invSlotBeltIcon">🎗️</div>
     </div>
     <div class="inv-equip-slot inv-slot-small" id="invSlotRing2">
       <div class="inv-slot-icon" id="invSlotRing2Icon">💍</div>
     </div>
   </div>
+  <!-- Potion sloty (dynamicky podle beltSlots) -->
+  <div class="inv-potion-slots" id="invPotionSlots"></div>
   <!-- Grid batohu (scrollovatelný) -->
   <div class="inv-grid-wrap" id="invGridWrap">
     <div class="inv-grid" id="invGrid"></div>
