@@ -766,7 +766,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Debuff overlay — vlevo v aréně, vertikálně odshora dolů */
 .debuff-overlay {
-  position:absolute;top:10px;left:60px;z-index:29;
+  position:absolute;top:10px;left:70px;z-index:29;
   display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
@@ -790,7 +790,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Player debuff overlay — vpravo v aréně, pod buffy, červený border */
 .player-debuff-overlay {
-  position:absolute;bottom:60px;right:60px;z-index:29;
+  position:absolute;bottom:60px;right:70px;z-index:29;
   display:flex;flex-direction:column-reverse;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
