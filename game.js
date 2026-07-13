@@ -2004,9 +2004,9 @@
         mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.15); // 1.5/s = 0.15 per 100ms
         updateMapBattleUI();
       }
-      // Mana regen pro caster monstra — 10/s = 1.0 per 100ms tick
+      // Mana regen pro caster monstra — zanedbatelná (0.5/s = 0.05 per 100ms tick)
       if (mb.monsterAttackType === ATTACK_TYPES.CASTER && mb.enemyMana < mb.maxEnemyMana) {
-        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 1);
+        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.05);
         updateMapBattleUI();
       }
       // (přesunuto z tickBuffs pro plynulý UI update)
