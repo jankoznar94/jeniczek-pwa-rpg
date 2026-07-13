@@ -1523,6 +1523,7 @@
       state.hero.equip.weapon = startWpn;
     }
     saveGame();
+    document.querySelector('.nav-bar').classList.remove('hidden');
     showScreen('map');
     renderMap();
   }
@@ -1530,6 +1531,18 @@
   // ===== SCREENS =====
   const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen' };
   function showScreen(name) {
+    // Guard: bez vybrané classy nejde nikam kromě classSelect
+    if (name !== 'classSelect' && !state.heroClass) {
+      Object.values(SCREEN_IDS).forEach(id => {
+        const el = $(id);
+        if (!el) return;
+        el.classList.add('hidden');
+        el.classList.remove('active');
+      });
+      const cs = $(SCREEN_IDS.classSelect);
+      if (cs) { cs.classList.remove('hidden'); cs.classList.add('active'); }
+      return;
+    }
     cleanupTimers();
     
     // Když opouštíme map battle (bez výsledku), okamžitě ho ukončit

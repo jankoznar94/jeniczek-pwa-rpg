@@ -915,7 +915,7 @@ body.no-scroll { overflow: hidden; }
 .guide-icon { font-size:36px;line-height:1; }
 .guide-text { display:flex;flex-direction:column;align-items:flex-start;gap:2px;font-size:16px; }
 .guide-new { font-size:20px;color:#ffe066; }
-.map-scroll { display:flex;flex-direction:column;gap:8px; }
+.map-scroll { display:flex;flex-direction:column;gap:8px;padding-top:20px;padding-bottom:8px; }
 .map-location {
   display:flex;align-items:center;gap:14px;padding:12px 14px;
   border:1.5px solid;border-radius:10px;
