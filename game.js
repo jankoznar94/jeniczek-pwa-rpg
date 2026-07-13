@@ -2481,7 +2481,7 @@
         amount = Math.round(baseDmg * 0.3);
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 300, maxTicks: 300 };
         spellText = '☠️ Jedovatý výboj!';
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
@@ -3895,10 +3895,7 @@
     _lastPlayerDotTick = now;
     mb.playerHp -= mb.playerDot;
     mb.playerDotTicksLeft--;
-    // Po posledním ticku smazat vizuální debuff
-    if (mb.playerDotTicksLeft <= 0) {
-      delete _playerDebuffs['poison_bolt'];
-    }
+    // Vizuální debuff necháme vypršet přirozeně přes tickBuffs
     const playerFig = $('mbPlayerFigure');
     if (playerFig) {
       playerFig.style.transition = 'filter 0.2s';
