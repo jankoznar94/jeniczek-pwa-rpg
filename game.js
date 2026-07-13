@@ -1874,17 +1874,11 @@
       return;
     }
 
-    // Merchant — otevřít shop a po návratu na mapu
+    // Merchant — rovnou otevřít shop
     if (isMerchantChoice) {
       state.locationProgress[locId] = progress + 1;
       saveGame();
-      $('resultIcon').textContent = '🛒';
-      $('resultTitle').textContent = 'Obchodník';
-      $('resultMsg').innerHTML = '<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">Nakup a prodávej</span></div></div>';
-      $('resultLootList').innerHTML = '';
-      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="event.stopPropagation();game.showScreen(\'shop\');">🛒 Otevřít obchod</button>';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
-      showScreen('result');
+      showScreen('shop');
       return;
     }
     const playerMaxHp = getHeroMaxHp();
