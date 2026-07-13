@@ -2833,23 +2833,23 @@
     if (!container) return;
     const h = state.hero;
     const belt = ITEM_MAP[h.equip.belt];
-    if (!belt) { container.innerHTML = ''; container.classList.add('hidden'); return; }
+    if (!belt) { container.innerHTML = ''; return; }
     const bpSlots = h.equip.beltPotionSlots || [];
-    const hasAny = bpSlots.some(id => id);
-    if (!hasAny) { container.innerHTML = ''; container.classList.add('hidden'); return; }
-    container.classList.remove('hidden');
-    let html = '';
-    bpSlots.forEach((potId, i) => {
-      if (!potId) { html += `<div class="mb-potion-btn" style="opacity:0.2;border-style:dashed"></div>`; return; }
-      const pot = ITEM_MAP[potId];
-      if (!pot) { html += `<div class="mb-potion-btn" style="opacity:0.2;border-style:dashed"></div>`; return; }
+    container.innerHTML = bpSlots.map((potId, i) => {
+      const pot = potId ? ITEM_MAP[potId] : null;
       const keyHint = i < 9 ? (i + 1) : '';
-      html += `<div class="mb-potion-btn" data-potion-idx="${i}" onclick="game.usePotion(${i})" title="${pot.name} (${pot.subtype === 'heal' ? '+' + pot.effectValue + ' HP' : '+' + pot.effectValue + ' many'})">
-        ${renderItemIcon(pot, 0)}
-        ${keyHint ? `<span class="potion-key-hint">${keyHint}</span>` : ''}
-      </div>`;
-    });
-    container.innerHTML = html;
+      if (pot) {
+        return `<div class="mb-potion-btn" data-potion-idx="${i}" onclick="game.usePotion(${i})" title="${pot.name} (${pot.subtype === 'heal' ? '+' + pot.effectValue + ' HP' : '+' + pot.effectValue + ' many'})">
+          ${renderItemIcon(pot, 0)}
+          ${keyHint ? `<span class="potion-key-hint">${keyHint}</span>` : ''}
+        </div>`;
+      } else {
+        // Prázdný slot — placeholder s healing potion ikonou
+        return `<div class="mb-potion-btn" style="opacity:0.25;border-style:dashed;cursor:default;pointer-events:none">
+          <img src="assets/items/potion_healing.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">
+        </div>`;
+      }
+    }).join('');
   }
 
   function usePotion(potionIdx) {

@@ -589,13 +589,14 @@ body.no-scroll { overflow: hidden; }
 .inv-potion-slot .inv-slot-icon img { width:100%; height:100%; object-fit:cover; display:block; }
 .inv-potion-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#000; }
 .inv-potion-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); }
-
-/* Potion tlačítka v aréně */
+.mb-hp-mana-bars {
+  display:flex;flex-direction:row;gap:8px;margin:6px 12px 12px 12px;align-items:stretch;
+}
 .mb-potion-buttons {
-  display:flex; gap:6px; justify-content:center; margin:4px 0; flex-wrap:wrap;
+  display:flex; flex-direction:column; gap:4px; flex-shrink:0;
 }
 .mb-potion-btn {
-  width:44px; height:44px; border:2px solid #4a4a4a; border-radius:6px;
+  width:36px; height:36px; border:2px solid #4a4a4a; border-radius:6px;
   background:#2a2a2a; cursor:pointer; display:flex; align-items:center;
   justify-content:center; transition:0.2s; position:relative;
 }
@@ -603,6 +604,9 @@ body.no-scroll { overflow: hidden; }
 .mb-potion-btn img { width:100%; height:100%; object-fit:cover; display:block; border-radius:4px; }
 .mb-potion-btn .potion-key-hint {
   position:absolute; bottom:1px; right:2px; font-size:8px; color:#888; background:rgba(0,0,0,0.6); padding:0 2px; border-radius:2px;
+}
+.mb-bars-column {
+  display:flex;flex-direction:column;gap:3px;flex:1;
 }
 
 /* Akce na equipment slotu (sundat/prodat) */
