@@ -555,12 +555,12 @@
     { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:5, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
     { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
     { id:'sabre', name:'Šavle', type:'weapon', baseDmg:9, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000 },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100 },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000 },
-    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300 },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:14, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000, twoHand:true },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:18, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100, twoHand:true },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:20, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000, twoHand:true },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:25, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200, twoHand:true },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300, twoHand:true },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400, twoHand:true },
     // === BRNĚNÍ ===
     { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, bonusMana:0, defense:0, cost:0, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:0 },
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1 },
@@ -5672,6 +5672,7 @@
       if (i.critChance) other.push(`Crit ${i.critChance}%`);
       if (i.blockChance) other.push(`Block ${i.blockChance}%`);
       if (i.weaponType) other.push(i.weaponType);
+      if (i.twoHand) other.push('2H');
       return `<tr style="border-bottom:1px solid #1a1a3a">
         <td style="padding:4px 6px">${renderIcon(i)}</td>
         <td style="padding:4px 6px"><strong>${i.name}</strong></td>
@@ -6294,7 +6295,10 @@
         const item = ITEM_MAP[itemId];
         if (!item) return '';
         let stats = '';
-        if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
+        if (item.type === 'weapon') {
+          const handLabel = item.twoHand ? ' <span style="color:#e94560;font-weight:bold">[2H]</span>' : ' <span style="color:#4a7dff;font-weight:bold">[1H]</span>';
+          stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
+        }
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
@@ -6320,7 +6324,10 @@
         const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id || h.equip.amulet === item.id || h.equip.belt === item.id;
         const canBuy = h.gold >= item.cost && !owned;
         let stats = '';
-        if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
+        if (item.type === 'weapon') {
+          const handLabel = item.twoHand ? ' <span style="color:#e94560;font-weight:bold">[2H]</span>' : ' <span style="color:#4a7dff;font-weight:bold">[1H]</span>';
+          stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
+        }
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
@@ -6481,7 +6488,8 @@
         stats += '<span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span><br>';
       }
       if (item.type === 'weapon') {
-        stats += `⚔️ +${item.baseDmg} poškození`;
+        const handLabel = item.twoHand ? ' <span style="color:#e94560;font-weight:bold">[2H]</span>' : ' <span style="color:#4a7dff;font-weight:bold">[1H]</span>';
+        stats += `⚔️ +${item.baseDmg} poškození${handLabel}`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
       }
       else if (item.type === 'armor') stats += `❤️ +${item.bonusHp} HP · 🛡️ +${item.defense||0} Defense`;
