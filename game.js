@@ -5452,7 +5452,7 @@
       state.locationProgress[locId] = p;
       const monsterGold = (1 + rand(0, 2)) * 5;
       const xpMod = getXpModifier(mb);
-      const xpGain = Math.round((mb.loc.xpReward + mb.progress * 2) * 5 * xpMod);
+      const xpGain = Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * xpMod);
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
@@ -5527,7 +5527,7 @@
     if (!won) {
           state.deaths = (state.deaths || 0) + 1;
           // Útěcha i za prohru — 20% XP a pár goldů
-          const consXp = Math.max(5, Math.round((mb.loc.xpReward + mb.progress * 2) * 5 * 0.2));
+          const consXp = Math.max(3, Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * 0.2));
           const consGold = 1 + rand(0, 2);
           state.hero.xp = (state.hero.xp || 0) + consXp;
           state.hero.gold = (state.hero.gold || 0) + consGold;
@@ -5550,7 +5550,7 @@
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
       state.bossesDefeated[locId] = true;
-      state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 10) * getXpModifier(mb));
+      state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 6) * getXpModifier(mb));
       state.locationProgress[locId] = 0;
       state.dungeonSteps = null; // reset dungeon po bossovi
       applyLevelUp();
