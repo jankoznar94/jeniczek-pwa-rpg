@@ -1673,7 +1673,7 @@
       const completed = state.bossesDefeated[i];
       const curProgress = state.locationProgress[i] || 0;
       const expanded = _expandedDungeon === i;
-      const theme = DUNGEON_THEMES[i] || DUNGEON_THEMES[0];
+      const theme = DUNGEON_THEMES[loc.theme] || DUNGEON_THEMES[0];
       const steps = state.dungeonSteps;
       let badgeHtml;
       if (completed) {
