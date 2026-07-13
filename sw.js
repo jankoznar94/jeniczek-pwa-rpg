@@ -68,7 +68,8 @@ const ASSET_FILES = [
   '/assets/sfx/hurt4.mp3',
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
-  '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png'
+  '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png',
+  '/assets/result_win.png', '/assets/result_defeat.png'
 ];
 
 self.addEventListener('install', e => {
