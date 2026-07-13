@@ -1044,7 +1044,7 @@
     const tintStyle = affix ? `box-shadow:inset 0 0 0 100px ${affix.tint}33,` : '';
     if (item.iconImg) {
       if (size === 0) {
-        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000;${tintStyle}${border}">`;
+        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:cover;background:#111;${tintStyle}${border}">`;
       }
       return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${tintStyle}${border}">`;
     }
