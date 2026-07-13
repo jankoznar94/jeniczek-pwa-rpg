@@ -556,7 +556,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Belt slot — stejná výška jako prsteny */
 .inv-slot-belt {
-  width:75px; height:48px;
+  width:75px; height:52px;
 }
 /* Potion slot — menší, čtvercový */
 .inv-potion-slots {
