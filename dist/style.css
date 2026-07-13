@@ -530,7 +530,7 @@ body.no-scroll { overflow: hidden; }
   max-width:280px;
 }
 .inv-equip-slot {
-  background:#111; border:2px solid #4a4a4a;
+  background:#000; border:2px solid #4a4a4a;
   border-radius:8px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; cursor:pointer; transition:0.2s;
   position:relative; overflow:hidden; padding:0;
