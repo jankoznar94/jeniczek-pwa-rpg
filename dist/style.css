@@ -1017,9 +1017,9 @@ body.no-scroll { overflow: hidden; }
   background:#000;
 }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:64px; }
-.result-icon-img { width:80px;height:80px;object-fit:contain;display:block; }
-.result-title { font-size:22px; font-weight:bold; margin:8px 0; }
-.result-sub { font-size:13px; color:#888888; }
+.result-icon-img { width:auto;height:auto;max-width:90vw;max-height:50vh;object-fit:contain;display:block; }
+.result-title { font-size:28px; font-weight:bold; margin:12px 0; }
+.result-sub { font-size:16px; color:#888888; }
 .result-stats { display:flex;flex-direction:column;gap:8px;align-items:center;margin:16px 0; }
 .result-stat { display:flex;align-items:center;gap:8px;font-size:15px;background:#1a1a1a;padding:6px 14px;border-radius:8px;min-width:160px;justify-content:center; }
 .result-stat-icon { font-size:20px; }
