@@ -6121,24 +6121,15 @@
     $('heroLevel').textContent = `Lv.${h.level}`;
     $('heroDeaths').textContent = state.deaths;
     $('heroWins').textContent = state.wins;
-    $('heroHp').textContent = h.hp || h.maxHp;
-    $('heroMaxHp').textContent = h.maxHp;
-    $('heroDmg').textContent = getHeroDmg();
-    $('heroGold').textContent = h.gold;
-    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    const critChance = weapon.critChance || 0;
-    $('heroCrit').textContent = critChance > 0 ? `${critChance}% (×2.0)` : `0%`;
-    // Block chance ze štítu
-    const shieldItem = ITEM_MAP[h.equip.shield];
-    const blockChance = shieldItem ? (shieldItem.blockChance || 0) : 0;
-    $('heroBlock').textContent = `${blockChance}%`;
-    // Celková Defense
-    const armorDef = (ITEM_MAP[h.equip.armor] || ITEM_MAP['rags']).defense || 0;
-    const helmetDef = ITEM_MAP[h.equip.helmet]?.defense || 0;
-    const shieldDef = ITEM_MAP[h.equip.shield]?.defense || 0;
-    const totalDef = armorDef + helmetDef + shieldDef;
-    const defPct = Math.round(100 - 10000 / (100 + totalDef));
-    $('heroDefense').textContent = `${totalDef} (${defPct}%)`;
+    // Class label
+    const classNames = { barbarian:'⚔️ Barbar', assassin:'🗡️ Assassin', mage:'🔮 Kouzelník' };
+    $('heroClassLabel').textContent = classNames[state.heroClass] || '⚔️ Dobrodruh';
+    // XP bar
+    const xpNeeded = h.level * 80;
+    const xpPct = Math.min((h.xp / xpNeeded) * 100, 100);
+    $('heroXpLabel').textContent = `${h.xp}/${xpNeeded}`;
+    $('heroXpBar').style.width = xpPct + '%';
+    // Portrét
     const faceFile = h.face || 'hero';
     const portraitImg = $('heroPortraitImg');
     if (portraitImg) portraitImg.src = `assets/monsters/${faceFile}.png`;
@@ -6146,50 +6137,49 @@
     if (mbPortraitImg) mbPortraitImg.src = `assets/monsters/${faceFile}.png`;
     const navHeroIcon = $('navHeroIcon');
     if (navHeroIcon) navHeroIcon.src = `assets/monsters/${faceFile}.png`;
-    // Aktivni skola
+    // Detail grid
+    const dmg = getHeroDmg();
+    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
+    const critChance = weapon.critChance || 0;
+    const shieldItem = ITEM_MAP[h.equip.shield];
+    const blockChance = shieldItem ? (shieldItem.blockChance || 0) : 0;
+    const armorDef = (ITEM_MAP[h.equip.armor] || ITEM_MAP['rags']).defense || 0;
+    const helmetDef = ITEM_MAP[h.equip.helmet]?.defense || 0;
+    const shieldDef = ITEM_MAP[h.equip.shield]?.defense || 0;
+    const totalDef = armorDef + helmetDef + shieldDef;
+    const defPct = Math.round(100 - 10000 / (100 + totalDef));
+    const dex = (h.attrDex || 0) + (getEquipAttrs().dex || 0);
+    const dodgePct = Math.min(50, Math.round(dex * 0.5));
+    const hitChance = Math.min(95, 80 + Math.round(dex * 0.3));
+    $('heroDetailDmg').textContent = dmg;
+    $('heroDetailDef').textContent = `${totalDef} (${defPct}%)`;
+    $('heroDetailCrit').textContent = critChance > 0 ? `${critChance}% (×2.0)` : `0%`;
+    $('heroDetailBlock').textContent = `${blockChance}%`;
+    $('heroDetailDodge').textContent = `${dodgePct}%`;
+    $('heroDetailHit').textContent = `${hitChance}%`;
+    $('heroDetailHp').textContent = `${h.hp || h.maxHp}/${h.maxHp}`;
+    $('heroDetailMana').textContent = `${h.mana || h.maxMana}/${h.maxMana}`;
+    // Atributy
+    const pts = h.attrPoints || 0;
+    $('heroAttrStr').textContent = (h.attrStr||0) + (getEquipAttrs().str > 0 ? ` (+${getEquipAttrs().str})` : '');
+    $('heroAttrVit').textContent = (h.attrVit||0) + (getEquipAttrs().vit > 0 ? ` (+${getEquipAttrs().vit})` : '');
+    $('heroAttrDex').textContent = (h.attrDex||0) + (getEquipAttrs().dex > 0 ? ` (+${getEquipAttrs().dex})` : '');
+    $('heroAttrInt').textContent = (h.attrInt||0) + (getEquipAttrs().int > 0 ? ` (+${getEquipAttrs().int})` : '');
+    $('heroAttrPts').textContent = pts;
+    ['Str','Vit','Dex','Int'].forEach(a => {
+      const btn = $(`heroUp${a}`);
+      if (btn) {
+        btn.textContent = `⬆️` + (pts > 0 ? '' : ` 🔒`);
+        btn.style.opacity = pts > 0 ? '1' : '0.3';
+      }
+    });
+    // Aktivní škola
     const schoolInfo = $('activeSchoolInfo');
     if (schoolInfo) {
+      const active = state.activeSchool ? (getClassSkillTree().schools || []).find(s => s.id === state.activeSchool) : null;
+      const schoolLv = active ? (state.talentLevels[active.id] || 0) : 0;
       schoolInfo.textContent = active ? `${active.icon} ${active.name} — Lv.${schoolLv}/5` : 'Žádná — přidej talentové body v 🎓 Talent Tree';
     }
-    // XP bar
-    const xpNeeded = h.level * 80;
-    const xpPct = Math.min((h.xp / xpNeeded) * 100, 100);
-    $('heroXpLabel').textContent = `${h.xp}/${xpNeeded}`;
-    $('heroXpBar').style.width = xpPct + '%';
-
-    // Atributy
-    const strCost = ATTR_COST[Math.min(h.attrStr||0, ATTR_COST.length-1)] || 999;
-    const vitCost = ATTR_COST[Math.min(h.attrVit||0, ATTR_COST.length-1)] || 999;
-    const dexCost = ATTR_COST[Math.min(h.attrDex||0, ATTR_COST.length-1)] || 999;
-    const intCost = ATTR_COST[Math.min(h.attrInt||0, ATTR_COST.length-1)] || 999;
-    const pts = h.attrPoints || 0;
-    $('heroAttrStr').textContent = (h.attrStr||0) + (getEquipAttrs().str > 0 ? ` (+${getEquipAttrs().str} z itemů)` : '');
-    $('heroAttrVit').textContent = (h.attrVit||0) + (getEquipAttrs().vit > 0 ? ` (+${getEquipAttrs().vit} z itemů)` : '');
-    $('heroAttrDex').textContent = (h.attrDex||0) + (getEquipAttrs().dex > 0 ? ` (+${getEquipAttrs().dex} z itemů)` : '');
-    $('heroAttrInt').textContent = (h.attrInt||0) + (getEquipAttrs().int > 0 ? ` (+${getEquipAttrs().int} z itemů)` : '');
-    $('heroAttrPts').textContent = pts;
-    const strBtn = $('heroUpStr');
-    const vitBtn = $('heroUpVit');
-    const dexBtn = $('heroUpDex');
-    const intBtn = $('heroUpInt');
-    if (strBtn) strBtn.textContent = `⬆️ Síla` + (pts > 0 ? '' : ` 🔒`);
-    if (strBtn) strBtn.style.opacity = pts > 0 ? '1' : '0.3';
-    if (vitBtn) vitBtn.textContent = `⬆️ Vitalita` + (pts > 0 ? '' : ` 🔒`);
-    if (vitBtn) vitBtn.style.opacity = pts > 0 ? '1' : '0.3';
-    if (dexBtn) dexBtn.textContent = `⬆️ Obratnost` + (pts > 0 ? '' : ` 🔒`);
-    if (dexBtn) dexBtn.style.opacity = pts > 0 ? '1' : '0.3';
-    if (intBtn) intBtn.textContent = `⬆️ Intelekt` + (pts > 0 ? '' : ` 🔒`);
-    if (intBtn) intBtn.style.opacity = pts > 0 ? '1' : '0.3';
-
-    const weaponNames = { fists:'✊ Pěsti', dagger:'🪄 Dřevěná hůlka', shortsword:'🪄 Ohnivá hůlka', sword:'🪄 Ledová hůl', battleAxe:'🪄 Blesková hůl', spear:'🪄 Hvězdná hůl', flameSword:'🪄 Plamená hůl', longsword:'🪄 Měsíční hůl', warHammer:'⚔️ Temný meč', greatAxe:'🪓 Dračí sekera', excalibur:'⚔️ Arcimágův meč' };
-    const armorNames = { rags:'👘 Hadry', leather:'👘 Lněný hábit', chainmail:'👘 Kožený hábit', scale:'👘 Šupinový hábit', plate:'👘 Vyšívaný hábit', fullPlate:'👘 Kroužkový hábit', dragonScale:'👘 Dračí hábit', adamantPlate:'👘 Arcimágův hábit' };
-    // Hero screen equipment sloty
-    const w = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    const a = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
-    const helm = ITEM_MAP[h.equip.helmet];
-    const shield = ITEM_MAP[h.equip.shield];
-    const r1 = ITEM_MAP[h.equip.ring1];
-    const amulet = ITEM_MAP[h.equip.amulet];
   }
 
   function renameHero() {
