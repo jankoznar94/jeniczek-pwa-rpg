@@ -590,6 +590,15 @@
     { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', baseDmg:5, bonusHp:22, cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
     { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
     { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
+    // === BELTY ===
+    { id:'clothBelt', name:'Lněný opasek', type:'belt', baseDmg:0, bonusHp:0, beltSlots:1, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
+    { id:'leatherBelt', name:'Kožený opasek', type:'belt', baseDmg:0, bonusHp:5, beltSlots:2, cost:25, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:2 },
+    { id:'ironBelt', name:'Železný opasek', type:'belt', baseDmg:0, bonusHp:10, beltSlots:3, cost:50, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:3 },
+    { id:'steelBelt', name:'Ocelový opasek', type:'belt', baseDmg:0, bonusHp:15, beltSlots:4, cost:90, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:4 },
+    { id:'mithrilBelt', name:'Mithrilový opasek', type:'belt', baseDmg:0, bonusHp:25, beltSlots:5, cost:160, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:5 },
+    // === POTIONY (consumable) ===
+    { id:'healingPotion', name:'Léčivý lektvar', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
+    { id:'manaPotion', name:'Mana lektvar', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
   ];
 
   // ===== AFFIX DATABÁZE (prefixy + suffixy) =====
@@ -1455,7 +1464,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[]},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
       dungeonSteps: null, // pole kroků pro aktuální dungeon run (každý krok = 2-3 možnosti)
@@ -1476,7 +1485,14 @@
     return s;
   }
   function loadSave() { try { const s = JSON.parse(localStorage.getItem(SAVE_KEY)); if (s && s.talentLevels) { // Obnovit loot itemy do ITEM_MAP
-    if (s.lootItems) Object.keys(s.lootItems).forEach(k => { ITEM_MAP[k] = s.lootItems[k]; }); return s; } } catch {} return defaultState(); }
+    if (s.lootItems) Object.keys(s.lootItems).forEach(k => { ITEM_MAP[k] = s.lootItems[k]; });
+    // Migrace: přidat nové sloty, pokud chybí
+    if (s.hero && s.hero.equip) {
+      if (!s.hero.equip.ring2) s.hero.equip.ring2 = null;
+      if (!s.hero.equip.belt) s.hero.equip.belt = null;
+      if (!s.hero.equip.beltPotionSlots) s.hero.equip.beltPotionSlots = [];
+    }
+    return s; } } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
 
@@ -2793,6 +2809,57 @@
     renderBuffs();
 
     updateSpellButtons();
+    renderPotionButtons();
+  }
+
+  function renderPotionButtons() {
+    const container = $('mbPotionButtons');
+    if (!container) return;
+    const h = state.hero;
+    const belt = ITEM_MAP[h.equip.belt];
+    if (!belt) { container.innerHTML = ''; container.classList.add('hidden'); return; }
+    const bpSlots = h.equip.beltPotionSlots || [];
+    const hasAny = bpSlots.some(id => id);
+    if (!hasAny) { container.innerHTML = ''; container.classList.add('hidden'); return; }
+    container.classList.remove('hidden');
+    let html = '';
+    bpSlots.forEach((potId, i) => {
+      if (!potId) { html += `<div class="mb-potion-btn" style="opacity:0.2;border-style:dashed"></div>`; return; }
+      const pot = ITEM_MAP[potId];
+      if (!pot) { html += `<div class="mb-potion-btn" style="opacity:0.2;border-style:dashed"></div>`; return; }
+      const keyHint = i < 9 ? (i + 1) : '';
+      html += `<div class="mb-potion-btn" data-potion-idx="${i}" onclick="game.usePotion(${i})" title="${pot.name} (${pot.subtype === 'heal' ? '+' + pot.effectValue + ' HP' : '+' + pot.effectValue + ' many'})">
+        ${renderItemIcon(pot, 0)}
+        ${keyHint ? `<span class="potion-key-hint">${keyHint}</span>` : ''}
+      </div>`;
+    });
+    container.innerHTML = html;
+  }
+
+  function usePotion(potionIdx) {
+    const h = state.hero;
+    const bpSlots = h.equip.beltPotionSlots || [];
+    const potId = bpSlots[potionIdx];
+    if (!potId) return;
+    const pot = ITEM_MAP[potId];
+    if (!pot || pot.type !== 'consumable') return;
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+    if (pot.subtype === 'heal') {
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + pot.effectValue);
+      showMessage(`❤️ +${pot.effectValue} HP`);
+    } else if (pot.subtype === 'mana') {
+      const cls = CLASSES[state.heroClass];
+      if (cls && cls.resource === 'mana') {
+        state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + pot.effectValue);
+      }
+      showMessage(`💧 +${pot.effectValue} many`);
+    }
+    // Potion zmizí ze slotu
+    bpSlots[potionIdx] = null;
+    h.equip.beltPotionSlots = bpSlots;
+    saveGame();
+    updateMapBattleUI();
   }
 
   function updateSpellButtons() {
@@ -5975,7 +6042,7 @@
   }
   function getEquipAttrs() {
     const h = state.hero;
-    const slots = ['weapon','armor','helmet','shield','ring1','amulet'];
+    const slots = ['weapon','armor','helmet','shield','ring1','ring2','amulet','belt'];
     const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
     const total = { str:0, vit:0, dex:0, int:0 };
     slots.forEach(slot => {
@@ -5994,8 +6061,9 @@
     const h = state.hero;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
-    const ringDmg = (ring1 && ring1.type === 'ring' ? (ring1.baseDmg||0) : 0) + (amulet && amulet.type === 'amulet' ? (amulet.baseDmg||0) : 0);
+    const ringDmg = (ring1 && ring1.type === 'ring' ? (ring1.baseDmg||0) : 0) + (ring2 && ring2.type === 'ring' ? (ring2.baseDmg||0) : 0) + (amulet && amulet.type === 'amulet' ? (amulet.baseDmg||0) : 0);
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 5 + Math.floor(h.level * 2) + weapon.baseDmg + ringDmg + ((h.attrStr||0) + eqAttrs.str) * 1);
   }
@@ -6005,8 +6073,10 @@
     const helmet = ITEM_MAP[h.equip.helmet];
     const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
-    const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (amulet ? amulet.bonusHp||0 : 0);
+    const belt = ITEM_MAP[h.equip.belt];
+    const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0) + (amulet ? amulet.bonusHp||0 : 0) + (belt ? belt.bonusHp||0 : 0);
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + ((h.attrVit||0) + eqAttrs.vit) * 10);
   }
@@ -6017,8 +6087,10 @@
     const helmet = ITEM_MAP[h.equip.helmet];
     const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
+    const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
-    const bonus = (weapon.bonusMana||0) + (armor.bonusMana||0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0);
+    const belt = ITEM_MAP[h.equip.belt];
+    const bonus = (weapon.bonusMana||0) + (armor.bonusMana||0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0);
     return Math.max(10, 50 + ((h.attrInt||0) + getEquipAttrs().int) * 10 + bonus);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
@@ -6223,7 +6295,7 @@
       }).join('');
     } else {
       $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0 && i.tier === 1).map(item => {
-        const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.amulet === item.id;
+        const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id || h.equip.amulet === item.id || h.equip.belt === item.id;
         const canBuy = h.gold >= item.cost && !owned;
         let stats = '';
         if (item.type === 'weapon') stats = `⚔️+${item.baseDmg} dmg`;
@@ -6279,6 +6351,12 @@
     if (!item) return;
     // Získat gold
     h.equip[slot] = defaults[slot];
+    // Při prodeji beltu vrátit potiony
+    if (slot === 'belt') {
+      const bpSlots = h.equip.beltPotionSlots || [];
+      bpSlots.forEach(potId => { if (potId) h.inventory.push(potId); });
+      h.equip.beltPotionSlots = [];
+    }
     h.gold += sellPrice;
     h.baseDmg = getHeroDmg();
     h.maxHp = getHeroMaxHp();
@@ -6308,6 +6386,7 @@
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
+    const belt = ITEM_MAP[h.equip.belt];
     $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     setSlotBorder('invSlotWeapon', weapon);
@@ -6327,6 +6406,23 @@
     const r2S = $('invSlotRing2'); if (r2S) { r2S.classList.toggle('empty', !ring2); setSlotBorder('invSlotRing2', ring2); }
     const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'assets/items/amulet_bone.png',tier:1}, 0);
     const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
+    const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 0);
+    const bS = $('invSlotBelt'); if (bS) { bS.classList.toggle('empty', !belt); setSlotBorder('invSlotBelt', belt); }
+    // Potion sloty podle beltSlots
+    const potionSlots = $('invPotionSlots');
+    if (potionSlots) {
+      const beltSlots = belt ? (belt.beltSlots || 0) : 0;
+      const bpSlots = h.equip.beltPotionSlots || [];
+      let phtml = '';
+      for (let i = 0; i < beltSlots; i++) {
+        const potId = bpSlots[i];
+        const potItem = potId ? ITEM_MAP[potId] : null;
+        phtml += `<div class="inv-potion-slot ${potItem ? '' : 'empty'}" data-potion-idx="${i}">
+          <div class="inv-slot-icon">${potItem ? renderItemIcon(potItem, 0) : '🧪'}</div>
+        </div>`;
+      }
+      potionSlots.innerHTML = phtml;
+    }
     // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
     const inv = h.inventory || [];
@@ -6370,6 +6466,8 @@
       else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok · ❤️ +${item.bonusHp||0} HP · 🛡️ +${item.defense||0} Defense`;
       else if (item.type === 'ring') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
       else if (item.type === 'amulet') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
+      else if (item.type === 'belt') stats += `🎗️ ${item.beltSlots||0} slotů na potiony · ❤️ +${item.bonusHp||0} HP`;
+      else if (item.type === 'consumable') stats += `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
       else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
       // Affix staty — zobrazit všechny nenulové
@@ -6398,10 +6496,10 @@
       // Srovnávací panel — nasazený předmět stejného slotu
       const comparePanel = $('invComparePanel');
       if (!comparePanel) return;
-      const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', amulet:'amulet' };
+      const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet' };
       const equipSlot = slotMap[item.type];
       if (!equipSlot) { comparePanel.classList.add('hidden'); return; }
-      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
+      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null };
       const equippedId = state.hero.equip[equipSlot];
       if (!equippedId || equippedId === defaults[equipSlot]) { comparePanel.classList.add('hidden'); return; }
       const equipped = ITEM_MAP[equippedId];
@@ -6450,7 +6548,7 @@
       comparePanel.classList.remove('hidden');
     }
     // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
-    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet' };
+    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet', invSlotBelt:'belt' };
     function clearSelection() {
       window._invSelectedIdx = null;
       window._invSelectedSlot = null;
@@ -6464,7 +6562,7 @@
     invScreen._invDelegationHandler = function(e) {
       const h = state.hero;
       const inv = h.inventory || [];
-      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, ring2:null, amulet:null };
+      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, ring2:null, amulet:null, belt:null };
       // Equip slot klik
       const slotEl = e.target.closest('.inv-equip-slot');
       if (slotEl) {
@@ -6510,6 +6608,42 @@
         showItemInfo(item);
         return;
       }
+      // Potion slot klik — vložit/sundat potion
+      const potSlot = e.target.closest('.inv-potion-slot');
+      if (potSlot) {
+        const potIdx = parseInt(potSlot.dataset.potionIdx);
+        const bpSlots = h.equip.beltPotionSlots || [];
+        // Pokud je vybraný item v batohu a je to consumable → vlož
+        if (window._invSelectedIdx !== null) {
+          const selItemId = inv[window._invSelectedIdx];
+          const selItem = selItemId ? ITEM_MAP[selItemId] : null;
+          if (selItem && selItem.type === 'consumable') {
+            // Odebrat z batohu
+            h.inventory.splice(window._invSelectedIdx, 1);
+            // Pokud už v tom slotu něco je, vrátit do batohu
+            if (bpSlots[potIdx]) h.inventory.push(bpSlots[potIdx]);
+            bpSlots[potIdx] = selItemId;
+            h.equip.beltPotionSlots = bpSlots;
+            saveGame();
+            renderInventory();
+            return;
+          }
+          clearSelection();
+          return;
+        }
+        // Klik na obsazený potion slot → sundat do batohu
+        const potId = bpSlots[potIdx];
+        if (potId) {
+          if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+          bpSlots[potIdx] = null;
+          h.equip.beltPotionSlots = bpSlots;
+          h.inventory.push(potId);
+          saveGame();
+          renderInventory();
+          return;
+        }
+        return;
+      }
       // Klik mimo — schovat panely
       const panel = $('invInfoPanel');
       if (panel) panel.classList.add('hidden');
@@ -6521,7 +6655,7 @@
 
   function unequipSlot(slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null };
     const current = h.equip[slot];
     if (!current || current === defaults[slot]) return;
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
@@ -6542,7 +6676,7 @@
     const item = ITEM_MAP[itemId];
     if (!item) return;
     // Zjistit správný slot podle typu itemu
-    const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', amulet:'amulet' };
+    const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet' };
     let correctSlot = typeToSlot[item.type];
     if (!correctSlot) return;
     // Ring může jít do ring1 nebo ring2
@@ -6617,9 +6751,23 @@
     } else if (item.type === 'ring') {
       if (!h.equip.ring1) {
         h.equip.ring1 = itemId;
+      } else if (!h.equip.ring2) {
+        h.equip.ring2 = itemId;
       } else {
         h.inventory.push(h.equip.ring1);
         h.equip.ring1 = itemId;
+      }
+    } else if (item.type === 'belt') {
+      if (h.equip.belt) h.inventory.push(h.equip.belt);
+      h.equip.belt = itemId;
+      // Inicializovat potion sloty podle beltSlots
+      const beltItem = ITEM_MAP[itemId];
+      const slots = beltItem ? (beltItem.beltSlots || 0) : 0;
+      h.equip.beltPotionSlots = h.equip.beltPotionSlots || [];
+      while (h.equip.beltPotionSlots.length < slots) h.equip.beltPotionSlots.push(null);
+      while (h.equip.beltPotionSlots.length > slots) {
+        const removed = h.equip.beltPotionSlots.pop();
+        if (removed) h.inventory.push(removed);
       }
     } else if (item.type === 'amulet') {
       if (h.equip.amulet) h.inventory.push(h.equip.amulet);
@@ -6656,7 +6804,15 @@
       h.equip.shield = defaults.shield;
     } else if (item.type === 'ring') {
       if (h.equip.ring1 === itemId) h.equip.ring1 = defaults.ring1;
+      else if (h.equip.ring2 === itemId) h.equip.ring2 = defaults.ring2;
       else return;
+    } else if (item.type === 'belt') {
+      if (h.equip.belt !== itemId) return;
+      // Při sundání beltu vrátit potiony do inventáře
+      const bpSlots = h.equip.beltPotionSlots || [];
+      bpSlots.forEach(potId => { if (potId) h.inventory.push(potId); });
+      h.equip.beltPotionSlots = [];
+      h.equip.belt = defaults.belt;
     } else if (item.type === 'amulet') {
       if (h.equip.amulet === itemId) h.equip.amulet = defaults.amulet;
       else return;
@@ -6993,7 +7149,8 @@
     renameHero,
     showFaceSelect, closeFaceSelect, selectFace,
     selectClass,
-    castClassSpell
+    castClassSpell,
+    usePotion
   };
   init();
 })();
