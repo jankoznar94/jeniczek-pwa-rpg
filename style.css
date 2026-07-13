@@ -545,8 +545,8 @@ body.no-scroll { overflow: hidden; }
 .inv-slot-tall { width:75px; height:110px; }
 .inv-slot-small { width:48px; height:48px; }
 /* Grid positions */
-#invSlotHelmet { grid-column:2; grid-row:1; }
-#invSlotAmulet { grid-column:3; grid-row:1; justify-self:start; margin-left:-10px; }
+#invSlotHelmet { grid-column:1; grid-row:1; justify-self:end; }
+#invSlotAmulet { grid-column:2; grid-row:1; }
 #invSlotWeapon { grid-column:1; grid-row:2; justify-self:end; }
 #invSlotArmor { grid-column:2; grid-row:2; }
 #invSlotShield { grid-column:3; grid-row:2; justify-self:start; }
