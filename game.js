@@ -6387,26 +6387,26 @@
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
-    $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
+    $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'assets/items/weapon_iron_sword.png',tier:1}, 32) : renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     setSlotBorder('invSlotWeapon', weapon);
-    $('invSlotArmorIcon').innerHTML = !h.equip.armor ? renderItemIcon({iconImg:'assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
+    $('invSlotArmorIcon').innerHTML = !h.equip.armor ? renderItemIcon({iconImg:'assets/items/armor_leather.png',tier:1}, 32) : renderItemIcon(armor, 0);
     $('invSlotArmor').classList.toggle('empty', !h.equip.armor);
     setSlotBorder('invSlotArmor', armor);
-    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'assets/items/helmet_linen_hood.png',tier:1}, 0);
+    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'assets/items/helmet_linen_hood.png',tier:1}, 32);
     const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); setSlotBorder('invSlotHelmet', helmet); }
-    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'assets/items/shield_wooden.png',tier:1}, 0);
+    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'assets/items/shield_wooden.png',tier:1}, 32);
     const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); setSlotBorder('invSlotShield', shield); }
     const offhand = ITEM_MAP[h.equip.shield];
-    const oEl = $('invSlotShieldIcon'); if (oEl) oEl.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'assets/items/weapon_hunting_knife.png',tier:1}, 0);
+    const oEl = $('invSlotShieldIcon'); if (oEl) oEl.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'assets/items/weapon_hunting_knife.png',tier:1}, 32);
     const oS = $('invSlotShield'); if (oS) { oS.classList.toggle('empty', !offhand); setSlotBorder('invSlotShield', offhand); }
-    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
+    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 24);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); setSlotBorder('invSlotRing1', ring1); }
-    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
+    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 24);
     const r2S = $('invSlotRing2'); if (r2S) { r2S.classList.toggle('empty', !ring2); setSlotBorder('invSlotRing2', ring2); }
-    const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'assets/items/amulet_bone.png',tier:1}, 0);
+    const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'assets/items/amulet_bone.png',tier:1}, 24);
     const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
-    const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 0);
+    const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 24);
     const bS = $('invSlotBelt'); if (bS) { bS.classList.toggle('empty', !belt); setSlotBorder('invSlotBelt', belt); }
     // Potion sloty podle beltSlots
     const potionSlots = $('invPotionSlots');
