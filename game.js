@@ -2004,8 +2004,12 @@
         mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.15); // 1.5/s = 0.15 per 100ms
         updateMapBattleUI();
       }
-      // Mana regen pro caster monstra — plynule v tickBuffs
-      // (přesunuto do tickBuffs pro plynulou regeneraci)
+      // Mana regen pro caster monstra — 10/s = 1.0 per 100ms tick
+      if (mb.monsterAttackType === ATTACK_TYPES.CASTER && mb.enemyMana < mb.maxEnemyMana) {
+        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 1);
+        updateMapBattleUI();
+      }
+      // (přesunuto z tickBuffs pro plynulý UI update)
     }, 100);
     // Skrýt starou šipku z předchozího boje ihned
     const arrowReset = $('mbArrow');
@@ -2235,10 +2239,8 @@
     });
     // Player DoT tick (jed z monster)
     doPlayerDotTick(mb);
-    // Mana regen pro caster monstra (10/s plynule)
-    if (mb.monsterAttackType === ATTACK_TYPES.CASTER && mb.enemyMana < mb.maxEnemyMana) {
-      mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.16);
-    }
+    // Mana regen pro caster monstra (10/s plynule — v stamina intervalu)
+    // (přesunuto do stamina intervalu 100ms pro plynulý UI update)
     // Buff tick (session persistent)
     Object.keys(_sessionBuffs).forEach(spellId => {
       const b = _sessionBuffs[spellId];
