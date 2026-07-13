@@ -2071,6 +2071,10 @@
     if (_playerDebuffs['poison_bolt']) {
       candidates = candidates.filter(id => id !== 'poison_bolt');
     }
+    // Nevybírat heal, pokud má nepřítel plné HP (>= 90%)
+    if (mb.bossHp / mb.maxBossHp >= 0.9) {
+      candidates = candidates.filter(id => id !== 'heal');
+    }
     if (candidates.length === 0) return null;
     const id = candidates[Math.floor(Math.random() * candidates.length)];
     return { id, ...ENEMY_SPELLS[id] };
