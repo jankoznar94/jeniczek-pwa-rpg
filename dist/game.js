@@ -1524,6 +1524,7 @@
     }
     saveGame();
     document.querySelector('.nav-bar').classList.remove('hidden');
+    updateTalentBadge();
     showScreen('map');
     renderMap();
   }
@@ -1571,8 +1572,8 @@
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
     if (name === 'map') renderMap();
-    else if (name === 'talents') renderTalents();
-    else if (name === 'hero') renderHero();
+    else if (name === 'talents') { renderTalents(); updateTalentBadge(); }
+    else if (name === 'hero') { renderHero(); updateTalentBadge(); }
     else if (name === 'shop') renderShop();
     else if (name === 'inventory') renderInventory();
     else if (name === 'spellbook') renderSpellbook();
@@ -6012,6 +6013,7 @@
         state.talentLevels[key] = lv + 1;
         state.talentPoints = pts - 1;
         saveGame();
+        updateTalentBadge();
         renderTalents();
       }
       function resetTalents() {
@@ -6023,6 +6025,7 @@
         state.hero.gold -= cost;
         state.talentPoints = (state.talentPoints || 0) + total;
         saveGame();
+        updateTalentBadge();
         renderTalents();
         renderHero();
         showMessage('🔄 Talenty resetovány! Získal jsi zpět ' + total + ' bodů.');
@@ -6054,7 +6057,19 @@
       saveGame();
       showLevelUpOverlay(prevLevel);
     }
+    updateTalentBadge();
     return leveled;
+  }
+  function updateTalentBadge() {
+    const badge = $('talentBadge');
+    if (!badge) return;
+    const pts = state.talentPoints || 0;
+    if (pts > 0) {
+      badge.textContent = pts;
+      badge.classList.add('visible');
+    } else {
+      badge.classList.remove('visible');
+    }
   }
   function getEquipAttrs() {
     const h = state.hero;
@@ -6962,6 +6977,7 @@
           } else {
             showScreen('map');
             renderMap();
+            updateTalentBadge();
           }
         }, 600);
       }, 2500);
@@ -6972,6 +6988,7 @@
       } else {
         showScreen('map');
         renderMap();
+        updateTalentBadge();
       }
     }
 
