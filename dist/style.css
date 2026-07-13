@@ -542,7 +542,7 @@ body.no-scroll { overflow: hidden; }
 .inv-equip-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); }
 /* Slot sizes */
 .inv-slot-square { width:75px; height:75px; }
-.inv-slot-tall { width:75px; height:90px; }
+.inv-slot-tall { width:75px; height:110px; }
 .inv-slot-small { width:48px; height:48px; }
 /* Grid positions */
 #invSlotHelmet { grid-column:2; grid-row:1; }
@@ -554,9 +554,9 @@ body.no-scroll { overflow: hidden; }
 #invSlotBelt { grid-column:2; grid-row:4; }
 #invSlotRing2 { grid-column:3; grid-row:4; justify-self:start; }
 
-/* Belt slot — ležatý obdélník, stejně široký jako armor, poměr ~1:4 */
+/* Belt slot — stejná výška jako prsteny */
 .inv-slot-belt {
-  width:75px; height:20px;
+  width:75px; height:48px;
 }
 /* Potion slot — menší, čtvercový */
 .inv-potion-slots {
