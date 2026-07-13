@@ -2075,6 +2075,8 @@
     if (mb.bossHp / mb.maxBossHp >= 0.9) {
       candidates = candidates.filter(id => id !== 'heal');
     }
+    // Vyřadit kouzla, na která nemá nepřítel manu
+    candidates = candidates.filter(id => mb.enemyMana >= ENEMY_SPELLS[id].manaCost);
     if (candidates.length === 0) return null;
     const id = candidates[Math.floor(Math.random() * candidates.length)];
     return { id, ...ENEMY_SPELLS[id] };
