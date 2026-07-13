@@ -2067,8 +2067,8 @@
     if (mb._improverStacks > 0) {
       candidates = candidates.filter(id => id !== 'empower');
     }
-    // Nevybírat poison_bolt, pokud už hráč má aktivní jed
-    if (mb.playerDotTicksLeft > 0) {
+    // Nevybírat poison_bolt, pokud už hráč má aktivní jed (podle vizuálního debuffu)
+    if (_playerDebuffs['poison_bolt']) {
       candidates = candidates.filter(id => id !== 'poison_bolt');
     }
     if (candidates.length === 0) return null;
@@ -2478,10 +2478,10 @@
       let baseDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * 0.8);
 
       if (spellId === 'poison_bolt') {
-        amount = Math.round(baseDmg * 0.5);
+        amount = Math.round(baseDmg * 0.3);
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 300, maxTicks: 300 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
         spellText = '☠️ Jedovatý výboj!';
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
@@ -3895,6 +3895,10 @@
     _lastPlayerDotTick = now;
     mb.playerHp -= mb.playerDot;
     mb.playerDotTicksLeft--;
+    // Po posledním ticku smazat vizuální debuff
+    if (mb.playerDotTicksLeft <= 0) {
+      delete _playerDebuffs['poison_bolt'];
+    }
     const playerFig = $('mbPlayerFigure');
     if (playerFig) {
       playerFig.style.transition = 'filter 0.2s';
