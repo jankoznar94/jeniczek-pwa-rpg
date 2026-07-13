@@ -5323,9 +5323,9 @@
   function getRarity(bossDrop) {
     const r = Math.random();
     if (bossDrop) {
-      if (r < 0.10) return 'epic';
-      if (r < 0.25) return 'rare';
-      if (r < 0.55) return 'uncommon';
+      if (r < 0.15) return 'epic';
+      if (r < 0.40) return 'rare';
+      if (r < 0.70) return 'uncommon';
       return 'common';
     } else {
       if (r < 0.01) return 'epic';
@@ -6296,7 +6296,7 @@
         if (!item) return '';
         let stats = '';
         if (item.type === 'weapon') {
-          const handLabel = item.twoHand ? ' <span style="color:#e94560;font-weight:bold">[2H]</span>' : ' <span style="color:#4a7dff;font-weight:bold">[1H]</span>';
+          const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
           stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
         }
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
@@ -6325,7 +6325,7 @@
         const canBuy = h.gold >= item.cost && !owned;
         let stats = '';
         if (item.type === 'weapon') {
-          const handLabel = item.twoHand ? ' <span style="color:#e94560;font-weight:bold">[2H]</span>' : ' <span style="color:#4a7dff;font-weight:bold">[1H]</span>';
+          const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
           stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
         }
         else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
@@ -6488,7 +6488,7 @@
         stats += '<span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span><br>';
       }
       if (item.type === 'weapon') {
-        const handLabel = item.twoHand ? ' <span style="color:#e94560;font-weight:bold">[2H]</span>' : ' <span style="color:#4a7dff;font-weight:bold">[1H]</span>';
+        const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
         stats += `⚔️ +${item.baseDmg} poškození${handLabel}`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
       }
