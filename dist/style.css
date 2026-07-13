@@ -526,11 +526,11 @@ body.no-scroll { overflow: hidden; }
 .inv-equip-panel {
   display:grid; gap:6px; margin:12px auto; justify-content:center;
   grid-template-columns:repeat(3, auto);
-  grid-template-rows:auto auto auto;
+  grid-template-rows:auto auto auto auto;
   max-width:280px;
 }
 .inv-equip-slot {
-  background:#000; border:2px solid #4a4a4a;
+  background:#111; border:2px solid #4a4a4a;
   border-radius:8px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; cursor:pointer; transition:0.2s;
   position:relative; overflow:hidden; padding:0;
@@ -538,13 +538,13 @@ body.no-scroll { overflow: hidden; }
 .inv-equip-slot:hover { border-color:#aaa; background:#333; }
 .inv-equip-slot .inv-slot-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 .inv-equip-slot .inv-slot-icon img { width:100%; height:100%; object-fit:cover; display:block; }
-.inv-equip-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#000; }
+.inv-equip-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#111; }
 .inv-equip-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); }
 /* Slot sizes */
 .inv-slot-square { width:75px; height:75px; }
 .inv-slot-tall { width:75px; height:110px; }
 .inv-slot-small { width:48px; height:48px; }
-/* Grid positions */
+/* Grid positions — jeden grid pro vsechny sloty */
 #invSlotHelmet { grid-column:1; grid-row:1; justify-self:end; }
 #invSlotAmulet { grid-column:2; grid-row:1; }
 #invSlotWeapon { grid-column:1; grid-row:2; justify-self:end; }
