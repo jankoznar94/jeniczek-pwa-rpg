@@ -6359,13 +6359,7 @@
   }
 
   function setSlotBorder(slotId, item) {
-    const el = $(slotId);
-    if (!el) return;
-    if (item && item.rarity) {
-      el.style.border = `2px solid ${RARITY[item.rarity].border}`;
-    } else {
-      el.style.border = '';
-    }
+    // Slot border se ridi CSS tridou — barevny border podle kvality je zbytecny
   }
   // ===== INVENTORY =====
   function renderInventory() {
