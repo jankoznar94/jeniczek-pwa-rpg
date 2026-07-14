@@ -211,123 +211,51 @@
     renderBestiary();
   }
   let _currentBattleBgmIdx = 0;
-  let _mapPaused = false;
-  function setPauseIcon(btn, paused) {
-    btn.innerHTML = paused
-      ? '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>'
-      : '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><line x1="7" y1="5" x2="7" y2="19"/><line x1="17" y1="5" x2="17" y2="19"/></svg>';
+  // ===== SURRENDER =====
+  function showSurrenderModal() {
+    const modal = document.getElementById('surrenderModal');
+    if (modal) modal.classList.remove('hidden');
   }
-  function toggleMapPause() {
+  function cancelSurrender() {
+    const modal = document.getElementById('surrenderModal');
+    if (modal) modal.classList.add('hidden');
+  }
+  function confirmSurrender() {
+    const modal = document.getElementById('surrenderModal');
+    if (modal) modal.classList.add('hidden');
     const mb = mapBattleState;
-    if (!mb || !mb.loc) return;
-    // GUARD: zabránit reentrancy (prevence double-event z jednoho kliku)
-    if (mb._pauseToggling) return;
-    mb._pauseToggling = true;
-    const btn = document.getElementById('mbPauseBtn');
-    const overlay = document.getElementById('pauseOverlay');
-    const numEl = document.getElementById('pauseCountdownNumber');
-    if (!_mapPaused) {
-      // Pauznout
-      _mapPaused = true;
-      setPauseIcon(btn, true);
-      // Zastavit timery
-      if (mb._sequenceTimer) { clearTimeout(mb._sequenceTimer); mb._sequenceTimer = null; }
-      if (mb._attackWindowTimer) { clearTimeout(mb._attackWindowTimer); mb._attackWindowTimer = null; }
-      if (mb._ringTimer) { clearTimeout(mb._ringTimer); mb._ringTimer = null; }
-      if (mb._freezeTimer) { clearTimeout(mb._freezeTimer); mb._freezeTimer = null; }
-      if (mb._bonusRaf) { cancelAnimationFrame(mb._bonusRaf); mb._bonusRaf = null; }
-      // Uložit elapsed čas pro rAF loop
-      const circle = document.querySelector('.timer-circle');
-      if (circle) {
-        const style = getComputedStyle(circle);
-        const dashoffset = parseFloat(style.strokeDashoffset) || 691;
-        const pct = 1 - dashoffset / 691;
-        mb._pausedRemainingTime = Math.max(0, mb._currentWindowTime * (1 - pct));
-      } else {
-        mb._pausedRemainingTime = mb._currentWindowTime || 0;
-      }
-      mb._pauseToggling = false;
-    } else {
-      // GUARD: pokud už countdown běží, nezačínat znovu
-      if (minigameState.pauseCountdown) { mb._pauseToggling = false; return; }
-      // Odpočet 3 vteřin
-      overlay.classList.remove('hidden');
-      let count = 3;
-      numEl.textContent = count;
-      mb._pauseToggling = false;
-      minigameState.pauseCountdown = setInterval(() => {
-        count--;
-        if (count <= 0) {
-          clearInterval(minigameState.pauseCountdown);
-          minigameState.pauseCountdown = null;
-          overlay.classList.add('hidden');
-          _mapPaused = false;
-          setPauseIcon(btn, false);
-          // Restartovat rAF loop s upraveným startTime
-          const remainingMs = mb._pausedRemainingTime || mb._currentWindowTime || 0;
-          if (mb._currentWindowTime && remainingMs > 0) {
-            const elapsed = mb._currentWindowTime - remainingMs;
-            const attackStartTime = performance.now() - elapsed;
-            const winTime = mb._currentWindowTime;
-            const circle = document.querySelector('.timer-circle');
-            if (circle) {
-              (function frame() {
-                if (mapBattleState.ended) return;
-                const now = performance.now();
-                const rawElapsed = now - attackStartTime;
-                
-                // D5 timer freeze
-                let isFrozen = false;
-                if (mb.locId === 4 && mb._freezeIntervals && mb._freezeIntervals.length > 0) {
-                  for (let fi = 0; fi < mb._freezeIntervals.length; fi++) {
-                    const fz = mb._freezeIntervals[fi];
-                    if (rawElapsed >= fz.startMs && rawElapsed < fz.startMs + fz.duration) {
-                      isFrozen = true;
-                      mb._freezeUntil = fz.startMs + fz.duration;
-                      break;
-                    }
-                  }
-                  if (!isFrozen) mb._freezeUntil = null;
-                }
-                
-                let totalFrozen = 0;
-                if (mb.locId === 4 && mb._freezeIntervals) {
-                  for (let fi = 0; fi < mb._freezeIntervals.length; fi++) {
-                    const fz = mb._freezeIntervals[fi];
-                    if (rawElapsed >= fz.startMs + fz.duration) totalFrozen += fz.duration;
-                    else if (rawElapsed > fz.startMs) totalFrozen += rawElapsed - fz.startMs;
-                  }
-                }
-                
-                const effectiveElapsed = rawElapsed - totalFrozen;
-                const pct = Math.min(effectiveElapsed / winTime, 1);
-                mb._bonusActive = (effectiveElapsed >= mb._bonusStartMs && effectiveElapsed < mb._bonusStartMs + mb._bonusMs);
-                if (circle) {
-                  circle.style.opacity = '1';
-                  if (isFrozen) {
-                    circle.style.stroke = '#4fc3f7';
-                  } else {
-                    circle.style.strokeDashoffset = Math.round(691 * (1 - pct));
-                  }
-                }
-                if (effectiveElapsed < winTime) {
-                  mb._bonusRaf = requestAnimationFrame(frame);
-                } else {
-                  mb._bonusActive = false;
-                  mb._bonusRaf = null;
-                }
-              })();
-            }
-            mb._sequenceTimer = setTimeout(() => {
-              if (mapBattleState.ended) return;
-              onMapHit();
-            }, remainingMs);
-          }
-        } else {
-          numEl.textContent = count;
-        }
-      }, 1000);
+    if (!mb || !mb.loc || mb.ended) return;
+    // Ukončit boj jako prohru
+    mb.ended = true;
+    cleanupTimers();
+    const arena = $('mbArena');
+    if (arena && arena._mbHandlers) {
+      arena._mbHandlers.forEach(h => {
+        if (h[0] === 'keydown') window.removeEventListener(h[0], h[1]);
+        else arena.removeEventListener(h[0], h[1]);
+      });
+      arena._mbHandlers = null;
     }
+    const locId = mb.locId;
+    state.deaths = (state.deaths || 0) + 1;
+    const consXp = Math.max(3, Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * 0.2));
+    const consGold = 1 + rand(0, 2);
+    state.hero.xp = (state.hero.xp || 0) + consXp;
+    state.hero.gold = (state.hero.gold || 0) + consGold;
+    applyLevelUp();
+    state.locationProgress[locId] = 0;
+    state._floorLootDrops = [];
+    state.hero.hp = state.hero.maxHp;
+    state.dungeonSteps = null;
+    saveGame();
+    switchBGM('defeat');
+    $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Vzdal ses">';
+    $('resultTitle').textContent = 'Vzdal ses';
+    $('resultMsg').innerHTML = '';
+    $('resultLootList').innerHTML = '';
+    $('resultBtn').innerHTML = '';
+    $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+    showScreen('result');
   }
   let _forceNewBattleBgm = false;
   function switchBGM(mode) {
@@ -1569,6 +1497,15 @@
     document.querySelectorAll('.nav-bar a[data-screen]').forEach(a => {
       a.classList.toggle('active', a.dataset.screen === name);
     });
+    // Schovat/ukázat nav-bar podle screenu
+    const navBar = document.querySelector('.nav-bar');
+    if (navBar) {
+      if (name === 'mapBattle' || name === 'result') {
+        navBar.classList.add('hidden');
+      } else {
+        navBar.classList.remove('hidden');
+      }
+    }
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
     if (name === 'map') renderMap();
@@ -7079,9 +7016,9 @@
       saveGame();
       showScreen('classSelect');
     });
-    document.getElementById('mbPauseBtn').addEventListener('click', (e) => {
+    document.getElementById('mbSurrenderBtn').addEventListener('click', (e) => {
       e.stopPropagation();
-      toggleMapPause();
+      showSurrenderModal();
     });
 
     // Spustit BGM při první user interakci
@@ -7175,7 +7112,7 @@
     switchShopTab,
     onMapRapidTap,
     investTalent, resetTalents,
-    toggleMapPause,
+    showSurrenderModal, cancelSurrender, confirmSurrender,
     renderBestiary,
     renderSpellbook,
     renderItemsReference,

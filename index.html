@@ -106,12 +106,7 @@
       <div class="hp-ring-label" id="mbHpLabel">0/0</div>
       <div class="arena-class-spells" id="mbClassSpells"></div>
       <div class="arena-heat-indicator hidden" id="mbHeatIndicator"><span>🔥</span><span class="heat-num">0/10</span></div>
-      <div class="arena-pause-btn" id="mbPauseBtn">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
-          <line x1="7" y1="5" x2="7" y2="19"/>
-          <line x1="17" y1="5" x2="17" y2="19"/>
-        </svg>
-      </div>
+      <div class="arena-surrender-btn" id="mbSurrenderBtn">🏳️</div>
       <div class="seq-progress" id="mbSeqProgress"></div>
       <div class="rapid-tap-area rapid-tap-left hidden" id="mbTapLeft"><span class="rapid-tap-dot"></span></div>
       <div class="rapid-tap-area rapid-tap-right hidden" id="mbTapRight"><span class="rapid-tap-dot"></span></div>
@@ -360,6 +355,18 @@
 <!-- ===== PAUSE COUNTDOWN OVERLAY ===== -->
 <div id="pauseOverlay" class="pause-overlay hidden">
   <div class="countdown-number" id="pauseCountdownNumber">3</div>
+</div>
+
+<!-- ===== SURRENDER MODAL ===== -->
+<div id="surrenderModal" class="surrender-modal hidden">
+  <div class="surrender-modal-content">
+    <div class="surrender-modal-title">🏳️ Vzdát se?</div>
+    <div class="surrender-modal-text">Opravdu se chceš vzdát a opustit souboj? Postup v dungeonu bude ztracen.</div>
+    <div class="surrender-modal-buttons">
+      <button class="btn btn-secondary" onclick="game.cancelSurrender()">Ne, zpět</button>
+      <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Vzdát se</button>
+    </div>
+  </div>
 </div>
 
 <!-- ===== SPLASH SCREEN ===== -->

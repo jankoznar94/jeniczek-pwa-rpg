@@ -54,6 +54,7 @@ body.no-scroll { overflow: hidden; }
 }
 .btn-primary { background: #4a7dff; color: #fff; }
 .btn-secondary { background: #3a3a5a; color: #e0e0e0; }
+.btn-danger { background: #e94560; color: #fff; }
 
 /* Cards */
 .card {
@@ -373,16 +374,15 @@ body.no-scroll { overflow: hidden; }
   width:100%;height:100%;object-fit:contain;border-radius:50%;
 }
 .boss-hint { text-align:center;font-size:11px;color:#888888;margin:2px 0;min-height:0; }
-.arena-pause-btn {
+.arena-surrender-btn {
   position:absolute; top:4px; right:4px; z-index:50;
   width:40px; height:40px; border-radius:50%;
   background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.2);
   display:flex; align-items:center; justify-content:center;
   cursor:pointer; touch-action:manipulation;
-  transition:0.2s; color:#ccc;
+  transition:0.2s; color:#e94560; font-size:20px;
 }
-.arena-pause-btn svg { display:block; }
-.arena-pause-btn:active { background:rgba(255,255,255,0.15); transform:scale(1.1); }
+.arena-surrender-btn:active { background:rgba(233,69,96,0.2); transform:scale(1.1); }
 /* Seq progress — svisle vlevo */
 .seq-progress {
   position:absolute;left:16px;top:50%;transform:translateY(-50%);
@@ -1029,6 +1029,23 @@ body.no-scroll { overflow: hidden; }
 .pause-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:transparent; display:flex; align-items:center; justify-content:center; z-index:201; pointer-events:none; }
 .countdown-number { font-size:100px; font-weight:bold; color:#fff; text-shadow:0 0 40px rgba(74,127,255,0.8); animation:countPulse 0.6s ease-in-out infinite alternate; }
 @keyframes countPulse { from{transform:scale(0.8);opacity:0.6} to{transform:scale(1.1);opacity:1} }
+
+/* Surrender modal */
+.surrender-modal {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.7); display:flex;
+  align-items:center; justify-content:center;
+  z-index:300;
+}
+.surrender-modal-content {
+  background:#1a1a1a; border:1px solid #333; border-radius:12px;
+  padding:24px; max-width:300px; width:90%;
+  text-align:center;
+}
+.surrender-modal-title { font-size:20px; font-weight:bold; margin-bottom:12px; }
+.surrender-modal-text { font-size:14px; color:#888; margin-bottom:20px; line-height:1.4; }
+.surrender-modal-buttons { display:flex; gap:10px; justify-content:center; }
+.surrender-modal-buttons .btn { flex:1; }
 
 /* Result */
 .result-screen {
