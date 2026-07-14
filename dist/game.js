@@ -1807,7 +1807,7 @@
           state.hero.inventory.push(freeItem.id);
           ITEM_MAP[freeItem.id] = freeItem;
           const rr = RARITY[freeItem.rarity] || RARITY.common;
-          lootHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(freeItem,24)}</span><span class="loot-scroll-name" style="color:${rr.color}">${freeItem.name}</span></div>`;
+          lootHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(freeItem,32)}</span><span class="loot-scroll-name" style="color:${rr.color}">${freeItem.name}</span></div>`;
         }
       }
       saveGame();
@@ -5446,7 +5446,7 @@
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
           const r = RARITY[item.rarity] || RARITY.common;
-          lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,24)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
+          lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,32)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
         });
       } else {
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
@@ -5516,7 +5516,7 @@
       let lootListHtml = '';
       if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
         const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
-        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(bossLoot.item,24)}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
+        lootListHtml = `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(bossLoot.item,32)}</span><span class="loot-scroll-name" style="color:${rr.color}">${bossLoot.item.name}</span></div>`;
       } else {
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
