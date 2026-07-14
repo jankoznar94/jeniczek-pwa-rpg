@@ -2434,14 +2434,6 @@
         amount = Math.round(baseDmg * 0.7);
         const healAmt = Math.round(amount * 0.6);
         mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
-        // Damage text (červeně u hráče)
-        const dmgText = $('mbPlayerDamageText');
-        if (dmgText) {
-          dmgText.textContent = `🩸 -${amount}`;
-          dmgText.style.color = '#e74c3c';
-          dmgText.classList.remove('hidden');
-          setTimeout(() => dmgText.classList.add('hidden'), 1200);
-        }
         // Heal text (zeleně u nepřítele)
         const healText = $('mbHealText');
         if (healText) {
@@ -2449,12 +2441,12 @@
           healText.classList.remove('hidden');
           setTimeout(() => healText.classList.add('hidden'), 1200);
         }
-        spellText = ''; // už jsme zobrazili zvlášť
+        spellText = `🩸 Vysátí života! -${amount}`;
       } else if (spellId === 'mana_drain') {
         amount = Math.round(baseDmg * 0.4);
         const manaDrain = Math.round(amount * 0.8);
         state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaDrain);
-        spellText = `💧 Vysátí: -${amount} ⚡-${manaDrain} many`;
+        spellText = `💧 Vysátí many! -${amount}`;
       } else if (spellId === 'empower') {
         amount = 0; // žádné přímé poškození
         mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
