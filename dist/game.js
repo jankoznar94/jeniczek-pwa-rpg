@@ -1588,8 +1588,7 @@
   let _expandedDungeon = -1;
   function toggleDungeon(idx) {
     _expandedDungeon = _expandedDungeon === idx ? -1 : idx;
-    // Při prvním rozbalení vygenerovat dungeon steps, pokud neexistují
-    if (_expandedDungeon >= 0 && (!state.dungeonSteps || state.dungeonSteps.length === 0)) {
+    if (_expandedDungeon >= 0) {
       const loc = LOCATIONS[idx];
       if (loc) {
         const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
