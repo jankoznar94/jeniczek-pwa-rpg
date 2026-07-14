@@ -678,16 +678,14 @@ body.no-scroll { overflow: hidden; }
 .inv-info-panel .inv-info-name { font-size:15px; font-weight:bold; color:#eee; margin-bottom:4px; }
 .inv-info-panel .inv-info-stats { font-size:12px; color:#aaa; line-height:1.6; }
 .inv-compare-panel {
-  border-color: #4a7dff;
-  background: #14142a;
+  border-color: #666;
+  background: #1a1a1a;
   margin-top: 4px;
+  border-width: 2px;
 }
-.inv-compare-panel .inv-info-name::before {
-  content: "⚔️ Nasazeno: ";
-  font-size: 11px;
-  color: #4a7dff;
-  font-weight: normal;
-}
+.inv-compare-panel .inv-info-name::before { content:'🟢 '; }
+.inv-shop-back { padding:12px; text-align:center; }
+.inv-shop-back .btn { width:100%; max-width:280px; }
 
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; margin:0 12px; }
