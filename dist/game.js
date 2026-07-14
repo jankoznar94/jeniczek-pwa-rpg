@@ -6509,15 +6509,55 @@
         const ring2Id = state.hero.equip.ring2;
         const ring1 = ring1Id ? ITEM_MAP[ring1Id] : null;
         const ring2 = ring2Id ? ITEM_MAP[ring2Id] : null;
-        // Zobrazit oba nasazené prsteny (pokud existují)
+        // Zobrazit oba nasazené prsteny (pokud existují) se staty
         let bothHtml = '';
         if (ring1) {
           const er1 = RARITY[ring1.rarity] || RARITY.common;
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring1, 36)}</div><div class="inv-compare-ring-name" style="color:${er1.color}">${ring1.name}</div></div>`;
+          let s1 = `<span style="color:${er1.color};font-size:11px">${er1.name}</span><br>`;
+          if (ring1.affixes && ring1.affixes.length) s1 += '<span style="font-size:10px;color:#aaa">' + ring1.affixes.map(a => a.name).join(' · ') + '</span><br>';
+          s1 += `⚔️ +${ring1.baseDmg||0} dmg · ❤️ +${ring1.bonusHp||0} HP`;
+          const a1 = [];
+          if (ring1.fireDmg) a1.push(`🔥 +${ring1.fireDmg} ohnivé dmg`);
+          if (ring1.iceDmg) a1.push(`❄️ +${ring1.iceDmg} ledové dmg`);
+          if (ring1.poisonDmg) a1.push(`☠️ +${ring1.poisonDmg} jedové dmg`);
+          if (ring1.lifesteal) a1.push(`🩸 +${ring1.lifesteal}% lifesteal`);
+          if (ring1.hitRating) a1.push(`🎯 +${ring1.hitRating} hit rating`);
+          if (ring1.skillDmg) a1.push(`✨ +${ring1.skillDmg}% skill dmg`);
+          if (ring1.manaRegen) a1.push(`💧 +${ring1.manaRegen} many/tick`);
+          if (ring1.bonusMana) a1.push(`💧 +${ring1.bonusMana} many`);
+          if (ring1.swingMs && ring1.swingMs < 0) a1.push(`⚡ ${ring1.swingMs}ms swing`);
+          if (ring1.defense) a1.push(`🛡️ +${ring1.defense}`);
+          if (ring1.critChance) a1.push(`🎯 ${ring1.critChance}%`);
+          if (a1.length) s1 += '<br><span style="font-size:10px;color:#ccc">' + a1.join(' · ') + '</span>';
+          if (ring1.attrs) {
+            const attrStr = Object.keys(ring1.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${ring1.attrs[k]}`; }).join(' · ');
+            s1 += '<br>' + attrStr;
+          }
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring1, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" style="color:${er1.color}">${ring1.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s1}</div></div></div>`;
         }
         if (ring2) {
           const er2 = RARITY[ring2.rarity] || RARITY.common;
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring2, 36)}</div><div class="inv-compare-ring-name" style="color:${er2.color}">${ring2.name}</div></div>`;
+          let s2 = `<span style="color:${er2.color};font-size:11px">${er2.name}</span><br>`;
+          if (ring2.affixes && ring2.affixes.length) s2 += '<span style="font-size:10px;color:#aaa">' + ring2.affixes.map(a => a.name).join(' · ') + '</span><br>';
+          s2 += `⚔️ +${ring2.baseDmg||0} dmg · ❤️ +${ring2.bonusHp||0} HP`;
+          const a2 = [];
+          if (ring2.fireDmg) a2.push(`🔥 +${ring2.fireDmg} ohnivé dmg`);
+          if (ring2.iceDmg) a2.push(`❄️ +${ring2.iceDmg} ledové dmg`);
+          if (ring2.poisonDmg) a2.push(`☠️ +${ring2.poisonDmg} jedové dmg`);
+          if (ring2.lifesteal) a2.push(`🩸 +${ring2.lifesteal}% lifesteal`);
+          if (ring2.hitRating) a2.push(`🎯 +${ring2.hitRating} hit rating`);
+          if (ring2.skillDmg) a2.push(`✨ +${ring2.skillDmg}% skill dmg`);
+          if (ring2.manaRegen) a2.push(`💧 +${ring2.manaRegen} many/tick`);
+          if (ring2.bonusMana) a2.push(`💧 +${ring2.bonusMana} many`);
+          if (ring2.swingMs && ring2.swingMs < 0) a2.push(`⚡ ${ring2.swingMs}ms swing`);
+          if (ring2.defense) a2.push(`🛡️ +${ring2.defense}`);
+          if (ring2.critChance) a2.push(`🎯 ${ring2.critChance}%`);
+          if (a2.length) s2 += '<br><span style="font-size:10px;color:#ccc">' + a2.join(' · ') + '</span>';
+          if (ring2.attrs) {
+            const attrStr = Object.keys(ring2.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${ring2.attrs[k]}`; }).join(' · ');
+            s2 += '<br>' + attrStr;
+          }
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring2, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" style="color:${er2.color}">${ring2.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s2}</div></div></div>`;
         }
         if (bothHtml) {
           $('invCompareIcon').innerHTML = '';

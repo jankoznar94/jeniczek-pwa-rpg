@@ -679,8 +679,9 @@ body.no-scroll { overflow: hidden; }
   border-width: 2px;
 }
 .inv-compare-panel .inv-info-name::before { content:'🟢 '; }
-.inv-compare-ring { display:flex; align-items:center; gap:8px; padding:4px 0; }
+.inv-compare-ring { display:flex; align-items:flex-start; gap:8px; padding:4px 0; }
 .inv-compare-ring-icon { flex-shrink:0; }
+.inv-compare-ring-stats { flex:1; min-width:0; }
 .inv-compare-ring-name { font-size:13px; }
 .inv-shop-back { padding:12px; text-align:center; }
 .inv-shop-back .btn { width:100%; max-width:280px; }
