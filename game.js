@@ -1516,7 +1516,7 @@
     }
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
-    if (name === 'map') renderMap();
+    if (name === 'map') { _expandedDungeon = -1; renderMap(); }
     else if (name === 'talents') { renderTalents(); updateTalentBadge(); }
     else if (name === 'hero') { renderHero(); updateTalentBadge(); }
     else if (name === 'shop') renderShop();
