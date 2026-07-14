@@ -1771,6 +1771,8 @@
     if (isFountain) {
       const currentMaxHp = getHeroMaxHp();
       state.hero.maxHp = currentMaxHp;
+      // Omezit hp na aktuální max (když hráč ztratil +HP z vybavení)
+      state.hero.hp = Math.min(state.hero.hp, currentMaxHp);
       const healAmt = Math.round(currentMaxHp * 0.4);
       state.hero.hp = Math.min(currentMaxHp, state.hero.hp + healAmt);
       state.hero.mana = getHeroMaxMana();
