@@ -6684,7 +6684,7 @@
     h.inventory.splice(invIdx, 1);
     if (item.type === 'weapon') {
       // Obouruční zbraň (blade tier 4+) vyhodí štít i offhand zpět do batohu
-      const isTwoHanded = item.weaponType === 'blade' && item.tier >= 4;
+      const isTwoHanded = item.twoHand === true;
       if (isTwoHanded) {
         if (h.equip.shield) { h.inventory.push(h.equip.shield); h.equip.shield = null; }
       }
@@ -6709,7 +6709,7 @@
     } else if (item.type === 'shield') {
       // Štít nejde s obouruční zbraní — vyhodit zbraň zpět
       const curWeapon = ITEM_MAP[h.equip.weapon];
-      const isTwoHanded = curWeapon && curWeapon.weaponType === 'blade' && curWeapon.tier >= 4;
+      const isTwoHanded = curWeapon && curWeapon.twoHand === true;
       if (isTwoHanded) {
         h.inventory.push(h.equip.weapon);
         h.equip.weapon = 'fists';
