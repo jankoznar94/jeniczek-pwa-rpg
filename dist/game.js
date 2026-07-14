@@ -6244,6 +6244,21 @@
         if (item.affixes && item.affixes.length) {
           stats += '<br><span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span>';
         }
+        // Affix staty
+        const affixStats = [];
+        if (item.fireDmg) affixStats.push(`🔥+${item.fireDmg}`);
+        if (item.iceDmg) affixStats.push(`❄️+${item.iceDmg}`);
+        if (item.poisonDmg) affixStats.push(`☠️+${item.poisonDmg}`);
+        if (item.lifesteal) affixStats.push(`🩸+${item.lifesteal}%`);
+        if (item.hitRating) affixStats.push(`🎯+${item.hitRating}`);
+        if (item.skillDmg) affixStats.push(`✨+${item.skillDmg}%`);
+        if (item.manaRegen) affixStats.push(`💧+${item.manaRegen}/t`);
+        if (item.bonusMana) affixStats.push(`💧+${item.bonusMana}`);
+        if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡${item.swingMs}ms`);
+        if (item.defense) affixStats.push(`🛡️+${item.defense}`);
+        if (item.blockChance) affixStats.push(`🛡️${item.blockChance}%`);
+        if (item.critChance) affixStats.push(`🎯${item.critChance}%`);
+        if (affixStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + affixStats.join(' · ') + '</span>';
         const sellPrice = Math.round(item.cost * 0.5);
         return `<div class="shop-item">
           <div class="shop-item-header">
@@ -6269,6 +6284,15 @@
         else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
         else stats = `❤️+${item.bonusHp} HP`;
+        // Extra staty pro base itemy
+        const extraStats = [];
+        if (item.defense) extraStats.push(`🛡️+${item.defense}`);
+        if (item.blockChance) extraStats.push(`🛡️${item.blockChance}%`);
+        if (item.critChance) extraStats.push(`🎯${item.critChance}%`);
+        if (item.bonusMana) extraStats.push(`💧+${item.bonusMana}`);
+        if (item.beltSlots) extraStats.push(`🎗️${item.beltSlots} slotů`);
+        if (item.swingMs) extraStats.push(`⚡${item.swingMs}ms`);
+        if (extraStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + extraStats.join(' · ') + '</span>';
         return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
           <div class="shop-item-header">
             <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
@@ -6411,6 +6435,12 @@
       }
     }
     grid.innerHTML = html;
+    // Tlačítko zpět do obchodu — viditelné jen když jsme přišli ze shopu
+    const shopBack = $('invShopBack');
+    if (shopBack) {
+      const shopScreen = $('shopScreen');
+      shopBack.classList.toggle('hidden', !shopScreen || shopScreen.classList.contains('hidden'));
+    }
     // Info panel — zobrazit při kliknutí na item
     function showItemInfo(item) {
       const panel = $('invInfoPanel');

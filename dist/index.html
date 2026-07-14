@@ -268,6 +268,7 @@
   <div class="shop-tabs">
     <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Koupit</button>
     <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Prodat</button>
+    <button class="shop-tab" onclick="game.showScreen('inventory'); game.renderInventory()">🎒 Inventář</button>
   </div>
   <div id="shopList"></div>
 </div>
@@ -322,6 +323,9 @@
       <div class="inv-info-name" id="invCompareName"></div>
       <div class="inv-info-stats" id="invCompareStats"></div>
     </div>
+  </div>
+  <div class="inv-shop-back hidden" id="invShopBack">
+    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
   </div>
 </div>
 

@@ -682,12 +682,9 @@ body.no-scroll { overflow: hidden; }
   background: #14142a;
   margin-top: 4px;
 }
-.inv-compare-panel .inv-info-name::before {
-  content: "⚔️ Nasazeno: ";
-  font-size: 11px;
-  color: #4a7dff;
-  font-weight: normal;
-}
+.inv-compare-panel .inv-info-name::before { content:'🟢 '; }
+.inv-shop-back { padding:12px; text-align:center; }
+.inv-shop-back .btn { width:100%; max-width:280px; }
 
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; margin:0 12px; }
