@@ -6499,6 +6499,33 @@
       const equipSlot = slotMap[item.type];
       if (!equipSlot) { comparePanel.classList.add('hidden'); return; }
       const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null };
+      // Speciální případ: prsten — zkontrolovat oba sloty
+      if (item.type === 'ring') {
+        const ring1Id = state.hero.equip.ring1;
+        const ring2Id = state.hero.equip.ring2;
+        const ring1 = ring1Id ? ITEM_MAP[ring1Id] : null;
+        const ring2 = ring2Id ? ITEM_MAP[ring2Id] : null;
+        // Zobrazit oba nasazené prsteny (pokud existují)
+        let bothHtml = '';
+        if (ring1) {
+          const er1 = RARITY[ring1.rarity] || RARITY.common;
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring1, 36)}</div><div class="inv-compare-ring-name" style="color:${er1.color}">${ring1.name}</div></div>`;
+        }
+        if (ring2) {
+          const er2 = RARITY[ring2.rarity] || RARITY.common;
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring2, 36)}</div><div class="inv-compare-ring-name" style="color:${er2.color}">${ring2.name}</div></div>`;
+        }
+        if (bothHtml) {
+          $('invCompareIcon').innerHTML = '';
+          $('invCompareName').textContent = 'Nasazené prsteny';
+          $('invCompareName').style.color = '#aaa';
+          $('invCompareStats').innerHTML = bothHtml;
+          comparePanel.classList.remove('hidden');
+        } else {
+          comparePanel.classList.add('hidden');
+        }
+        return;
+      }
       const equippedId = state.hero.equip[equipSlot];
       if (!equippedId || equippedId === defaults[equipSlot]) { comparePanel.classList.add('hidden'); return; }
       const equipped = ITEM_MAP[equippedId];
