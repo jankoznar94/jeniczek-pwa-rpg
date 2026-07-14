@@ -1802,7 +1802,7 @@
       state.locationProgress[locId] = progress + 1;
       let lootHtml = `<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${chestGold} gold</span></div>`;
       if (Math.random() < 0.4) {
-        const freeItem = generateLootItem(progress, false);
+        const freeItem = generateLootItem(locId, progress, false);
         if (freeItem) {
           state.hero.inventory.push(freeItem.id);
           ITEM_MAP[freeItem.id] = freeItem;
@@ -5273,9 +5273,20 @@
     }
   }
 
-  function generateLootItem(floor, bossDrop) {
-    const baseTier = Math.min(6, Math.ceil(floor / 2));
-    const tier = bossDrop ? Math.min(7, baseTier + rand(1, 2)) : baseTier;
+  function generateLootItem(locId, floor, bossDrop) {
+    // Tier podle dungeonu: D1=1, D2=1-2, D3=1-3, D4=1-4, D5=1-5
+    // Vyšší tier = vyšší šance (váha = tier)
+    const dungeonMaxTier = locId + 1;
+    const weights = [];
+    for (let t = 1; t <= dungeonMaxTier; t++) weights.push(t);
+    const totalWeight = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * totalWeight;
+    let tier = 1;
+    for (let t = 0; t < weights.length; t++) {
+      r -= weights[t];
+      if (r <= 0) { tier = t + 1; break; }
+    }
+    if (bossDrop) tier = Math.min(7, tier + rand(1, 2));
     const monsterLevel = floor * 2 + (bossDrop ? 5 : 0);
 
     // 0. Roll quality (fixní šance, nezávislé na levelu)
@@ -5356,7 +5367,7 @@
     const h = state.hero;
     if (bossDrop) {
       // Boss: zaručený item s vyšším tierem + goldy
-      const item = generateLootItem(floor, true);
+      const item = generateLootItem(locId, floor, true);
       if (!item) return { type:'gold', gold: 10 + floor * 3 };
       const gold = 5 + floor * 3 + rand(0, 5);
       return { type:'boss', item, gold };
@@ -5368,7 +5379,7 @@
       return { type:'gold', gold };
     } else {
       // Item reward
-      const item = generateLootItem(floor);
+      const item = generateLootItem(locId, floor);
       if (!item) return { type:'gold', gold: 3 + floor * 2 };
       return { type:'item', item };
     }
@@ -5524,7 +5535,7 @@
       state.hero.gold = (state.hero.gold || 0) + rewardGold;
       // Možnost itemu zdarma
       if (Math.random() < 0.3) {
-        const freeItem = generateLootItem(mb.progress);
+        const freeItem = generateLootItem(locId, mb.progress);
         state.hero.inventory.push(freeItem.id);
         ITEM_MAP[freeItem.id] = freeItem;
       }
