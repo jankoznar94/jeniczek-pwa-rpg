@@ -210,9 +210,6 @@ body.no-scroll { overflow: hidden; }
   touch-action:none;
   transition:box-shadow 0.25s ease-out;
 }
-.arena-wrapper {
-  position:relative;
-}
 /* Battle header — jméno příšery + lokace */
 .battle-header {
   padding: 6px 12px;
