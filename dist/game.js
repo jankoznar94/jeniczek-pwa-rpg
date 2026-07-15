@@ -6376,8 +6376,12 @@
     if (item && item.rarity) {
       const r = RARITY[item.rarity] || RARITY.common;
       el.style.borderColor = r.border;
+    } else if (item) {
+      // item exists but no rarity (fists, rags) — neutral gray
+      el.style.borderColor = '#4a4a4a';
     } else {
-      el.style.borderColor = '';
+      // empty slot — darker dashed gray
+      el.style.borderColor = '#3a3a3a';
     }
   }
   // ===== INVENTORY =====
