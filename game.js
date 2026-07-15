@@ -6869,23 +6869,14 @@
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     h.inventory.splice(invIdx, 1);
     if (item.type === 'weapon') {
-      // Obouruční zbraň (blade tier 4+) vyhodí štít i offhand zpět do batohu
+      // Obouruční zbraň vyhodí štít i offhand zpět do batohu
       const isTwoHanded = item.twoHand === true;
       if (isTwoHanded) {
         if (h.equip.shield) { h.inventory.push(h.equip.shield); h.equip.shield = null; }
       }
-      // Dual wield: pokud už má zbraň a classa povoluje dual wield, dát do shield slotu
-      const cls = CLASSES[state.heroClass];
-      const canDualWield = cls && cls.dualWield;
-      if (h.equip.weapon !== 'fists' && canDualWield && !isTwoHanded) {
-        // Přesunout současnou zbraň do shield slotu (nebo nahradit)
-        if (h.equip.shield) h.inventory.push(h.equip.shield);
-        h.equip.shield = h.equip.weapon;
-        h.equip.weapon = itemId;
-      } else {
-        if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
-        h.equip.weapon = itemId;
-      }
+      // Prostě vyměnit main hand — offhand zůstává jak je
+      if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
+      h.equip.weapon = itemId;
     } else if (item.type === 'armor') {
       if (h.equip.armor) h.inventory.push(h.equip.armor);
       h.equip.armor = itemId;
