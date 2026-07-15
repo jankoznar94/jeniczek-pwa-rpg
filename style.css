@@ -550,7 +550,7 @@ body.no-scroll { overflow: hidden; }
 .inv-equip-slot:hover { border-color:#aaa; background:#333; }
 .inv-equip-slot .inv-slot-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 .inv-equip-slot .inv-slot-icon img { width:100%; height:100%; object-fit:cover; display:block; }
-.inv-equip-slot.empty { border-color:#3a3a3a; border-style:dashed; background:#111; }
+.inv-equip-slot.empty { border-style:dashed; background:#111; }
 .inv-equip-slot.empty .inv-slot-icon { opacity:0.25; filter:grayscale(1); }
 /* Slot sizes */
 .inv-slot-square { width:75px; height:75px; }
