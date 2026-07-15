@@ -6370,7 +6370,14 @@
   }
 
   function setSlotBorder(slotId, item) {
-    // Slot border se ridi CSS tridou — barevny border podle kvality je zbytecny
+    const el = $(slotId);
+    if (!el) return;
+    if (item && item.rarity) {
+      const r = RARITY[item.rarity] || RARITY.common;
+      el.style.borderColor = r.border;
+    } else {
+      el.style.borderColor = '';
+    }
   }
   // ===== INVENTORY =====
   function renderInventory() {
@@ -6494,6 +6501,10 @@
       }
       if (item.cost) stats += ` · 💰 ${item.cost}`;
       $('invInfoStats').innerHTML = stats;
+      panel.style.borderColor = r.border;
+      // Srovnávací panel — border podle rarity vybraného itemu
+      const cp = $('invComparePanel');
+      if (cp) cp.style.borderColor = r.border;
       panel.classList.remove('hidden');
 
       // Srovnávací panel — nasazený předmět stejného slotu
