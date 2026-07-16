@@ -514,16 +514,16 @@
     { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:15, cost:85, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:4 },
     { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:18, cost:150, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:5 },
     // === PRSTENY ===
-    { id:'copperRing', name:'Měděný prsten', type:'ring', baseDmg:2, bonusHp:0, cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
-    { id:'silverRing', name:'Stříbrný prsten', type:'ring', baseDmg:4, bonusHp:10, cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
-    { id:'goldRing', name:'Zlatý prsten', type:'ring', baseDmg:6, bonusHp:20, cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
-    { id:'gemRing', name:'Drahokamový prsten', type:'ring', baseDmg:9, bonusHp:30, cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
+    { id:'copperRing', name:'Měděný prsten', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
+    { id:'silverRing', name:'Stříbrný prsten', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
+    { id:'goldRing', name:'Zlatý prsten', type:'ring', cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
+    { id:'gemRing', name:'Drahokamový prsten', type:'ring', cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
     // === AMULETY ===
-    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', baseDmg:1, bonusHp:5, cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
-    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', baseDmg:3, bonusHp:12, cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
-    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', baseDmg:5, bonusHp:22, cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
-    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', baseDmg:7, bonusHp:35, cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
-    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', baseDmg:11, bonusHp:45, cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
+    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
+    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
+    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
+    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
+    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
     // === BELTY ===
     { id:'clothBelt', name:'Lněný opasek', type:'belt', baseDmg:0, bonusHp:0, beltSlots:1, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
     { id:'leatherBelt', name:'Kožený opasek', type:'belt', baseDmg:0, bonusHp:5, beltSlots:2, cost:25, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:2 },
@@ -6050,7 +6050,7 @@
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
-    const ringDmg = (ring1 && ring1.type === 'ring' ? (ring1.baseDmg||0) : 0) + (ring2 && ring2.type === 'ring' ? (ring2.baseDmg||0) : 0) + (amulet && amulet.type === 'amulet' ? (amulet.baseDmg||0) : 0);
+    const ringDmg = 0; // prsteny a amulety nemají baseDmg, jen affixy
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 5 + Math.floor(h.level * 2) + weapon.baseDmg + ringDmg + ((h.attrStr||0) + eqAttrs.str) * 1);
   }
@@ -6254,8 +6254,8 @@
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
           stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
         }
-        else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
-        else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else if (item.type === 'ring') stats = '';
+        else if (item.type === 'amulet') stats = '';
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
         else stats = `❤️+${item.bonusHp} HP`;
         // Affix názvy
@@ -6298,8 +6298,8 @@
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
           stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
         }
-        else if (item.type === 'ring') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
-        else if (item.type === 'amulet') stats = `⚔️+${item.baseDmg||0} ❤️+${item.bonusHp||0}`;
+        else if (item.type === 'ring') stats = '';
+        else if (item.type === 'amulet') stats = '';
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
         else stats = `❤️+${item.bonusHp} HP`;
         // Extra staty pro base itemy
@@ -6447,7 +6447,7 @@
       if (itemId) {
         const item = ITEM_MAP[itemId];
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
-        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : item.type === 'amulet' ? `⚔️${item.baseDmg||0} ❤️${item.bonusHp||0}` : `❤️${item.bonusHp}`;
+        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? '' : item.type === 'amulet' ? '' : `❤️${item.bonusHp}`;
         const r = RARITY[item.rarity] || RARITY.common;
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="border-color:${r.border}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
@@ -6484,8 +6484,8 @@
       else if (item.type === 'armor') stats += `❤️ +${item.bonusHp} HP · 🛡️ +${item.defense||0} Defense`;
       else if (item.type === 'helmet') stats += `❤️ +${item.bonusHp} HP · 🛡️ +${item.defense||0} Defense`;
       else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok · ❤️ +${item.bonusHp||0} HP · 🛡️ +${item.defense||0} Defense`;
-      else if (item.type === 'ring') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
-      else if (item.type === 'amulet') stats += `⚔️ +${item.baseDmg||0} dmg · ❤️ +${item.bonusHp||0} HP`;
+      else if (item.type === 'ring') stats += ``;
+      else if (item.type === 'amulet') stats += ``;
       else if (item.type === 'belt') stats += `🎗️ ${item.beltSlots||0} slotů na potiony · ❤️ +${item.bonusHp||0} HP`;
       else if (item.type === 'consumable') stats += `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
@@ -6536,7 +6536,7 @@
           const er1 = RARITY[ring1.rarity] || RARITY.common;
           let s1 = `<span style="color:${er1.color};font-size:11px">${er1.name}</span><br>`;
           if (ring1.affixes && ring1.affixes.length) s1 += '<span style="font-size:10px;color:#aaa">' + ring1.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s1 += `⚔️ +${ring1.baseDmg||0} dmg · ❤️ +${ring1.bonusHp||0} HP`;
+          s1 += ``; // prsteny nemají base staty, jen affixy
           const a1 = [];
           if (ring1.fireDmg) a1.push(`🔥 +${ring1.fireDmg} ohnivé dmg`);
           if (ring1.iceDmg) a1.push(`❄️ +${ring1.iceDmg} ledové dmg`);
@@ -6560,7 +6560,7 @@
           const er2 = RARITY[ring2.rarity] || RARITY.common;
           let s2 = `<span style="color:${er2.color};font-size:11px">${er2.name}</span><br>`;
           if (ring2.affixes && ring2.affixes.length) s2 += '<span style="font-size:10px;color:#aaa">' + ring2.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s2 += `⚔️ +${ring2.baseDmg||0} dmg · ❤️ +${ring2.bonusHp||0} HP`;
+          s2 += ``; // prsteny nemají base staty, jen affixy
           const a2 = [];
           if (ring2.fireDmg) a2.push(`🔥 +${ring2.fireDmg} ohnivé dmg`);
           if (ring2.iceDmg) a2.push(`❄️ +${ring2.iceDmg} ledové dmg`);
@@ -6679,8 +6679,8 @@
       else if (equipped.type === 'armor') eStats += `❤️ +${equipped.bonusHp} HP · 🛡️ +${equipped.defense||0} Defense`;
       else if (equipped.type === 'helmet') eStats += `❤️ +${equipped.bonusHp} HP · 🛡️ +${equipped.defense||0} Defense`;
       else if (equipped.type === 'shield') eStats += `🛡️ ${equipped.blockChance||0}% blok · ❤️ +${equipped.bonusHp||0} HP · 🛡️ +${equipped.defense||0} Defense`;
-      else if (equipped.type === 'ring') eStats += `⚔️ +${equipped.baseDmg||0} dmg · ❤️ +${equipped.bonusHp||0} HP`;
-      else if (equipped.type === 'amulet') eStats += `⚔️ +${equipped.baseDmg||0} dmg · ❤️ +${equipped.bonusHp||0} HP`;
+      else if (equipped.type === 'ring') eStats += ``;
+      else if (equipped.type === 'amulet') eStats += ``;
       if (equipped.weaponType === 'staff') eStats += ' 🪄 magická';
       else if (equipped.weaponType === 'blade') eStats += ' ⚔️ fyzická';
       // Affix staty — zobrazit všechny nenulové
