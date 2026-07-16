@@ -5288,7 +5288,7 @@
       if (r <= 0) { tier = t + 1; break; }
     }
     if (bossDrop) tier = Math.min(7, tier + rand(1, 2));
-    const monsterLevel = floor * 2 + (bossDrop ? 5 : 0);
+    const monsterLevel = 5 + floor * 2 + (bossDrop ? 5 : 0);
 
     // 0. Roll quality (fixní šance, nezávislé na levelu)
     const quality = rollQuality();
