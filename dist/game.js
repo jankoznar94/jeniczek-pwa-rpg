@@ -19,7 +19,7 @@
       primaryAttr:'str',
       talentSchool:'physical',
       baseHp:120, baseDmg:14, baseMana:0,
-      attrBonus:{str:3, vit:2, dex:0, int:0},
+      attrBonus:{str:20, vit:25, dex:15, int:10},
       spells: [
         { id:'heroicStrike', name:'Heroic Strike', icon:'⚡', cost:20, cooldown:0, gcd:0.5, desc:'150% dmg při příštím swingu' },
         { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + zpomalení nepřítele 10% na 10s' },
@@ -41,7 +41,7 @@
       primaryAttr:'dex',
       talentSchool:'physical',
       baseHp:80, baseDmg:10, baseMana:0,
-      attrBonus:{str:0, vit:1, dex:3, int:0},
+      attrBonus:{str:15, vit:20, dex:25, int:10},
       spells: [
         { id:'sinisterStrike', name:'Sinister Strike', icon:'🗡️', cost:40, cooldown:0, gcd:0.5, desc:'150% dmg + 1 combo point' },
         { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'Poškození dle combo pointů (1:150%–5:350%)' },
@@ -62,7 +62,7 @@
       primaryAttr:'int',
       talentSchool:'fire',
       baseHp:60, baseDmg:6, baseMana:100,
-      attrBonus:{str:0, vit:0, dex:0, int:5}
+      attrBonus:{str:15, vit:15, dex:15, int:25}
     }
   };
 
