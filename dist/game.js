@@ -5303,6 +5303,11 @@
     else if (typeRoll < 0.85) { type = 'ring'; subtype = null; }
     else { type = 'amulet'; subtype = null; }
 
+    // Common itemy jen pro zbroj a zbraně (jako Diablo 2)
+    if (quality === 'common' && (type === 'ring' || type === 'amulet')) {
+      quality = 'uncommon';
+    }
+
     // 2. Najít base item z ITEMS podle typu a tieru
     const candidates = ITEMS.filter(i => {
       if (type === 'weapon') return i.type === 'weapon' && i.weaponType === subtype && i.tier <= tier;
