@@ -1834,8 +1834,8 @@
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
     // HP škáluje s dungeonem a progresem — StS styl
     const diffMultOverall = diff.mult;
-    const monsterBaseHp = [120, 250, 400, 600, 850];
-    const monsterHpPerStep = [8, 12, 16, 20, 25];
+    const monsterBaseHp = [300, 600, 1000, 1500, 2100];
+    const monsterHpPerStep = [20, 30, 40, 50, 60];
     const monsterHp = Math.round((monsterBaseHp[locId] + monsterHpPerStep[locId] * progress) * diffMultOverall);
 
     // Elitní HP bonus
@@ -2420,8 +2420,8 @@
       let spellText = spell.name;
 
       // Výpočet base damage pro kouzla
-      const monsterBaseDmg = [8, 14, 20, 28, 36];
-      const monsterDmgPerStep = [1, 1.5, 2, 2.5, 3];
+      const monsterBaseDmg = [20, 35, 50, 70, 90];
+      const monsterDmgPerStep = [2.5, 4, 5, 6, 8];
       const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
       let baseDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * 0.8);
 
@@ -2535,8 +2535,8 @@
     }
 
     // Výpočet damage — StS styl, konzistentní s HP scalingem
-    const monsterBaseDmg = [8, 14, 20, 28, 36];
-    const monsterDmgPerStep = [1, 1.5, 2, 2.5, 3];
+    const monsterBaseDmg = [20, 35, 50, 70, 90];
+    const monsterDmgPerStep = [2.5, 4, 5, 6, 8];
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
     let bossDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * (0.8 + Math.random() * 0.4));
     const mType = mb.monsterType;
