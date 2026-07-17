@@ -6110,26 +6110,26 @@
           </div>
           <div class="talent-school-desc">${cls.desc}</div>
           <div class="talent-tree">
-            <div class="talent-tree-content" style="grid-template-columns:repeat(${colCount}, auto);grid-template-rows:auto repeat(${gridRows}, auto);">
-              ${/* Hlavička sloupců — prázdná */''}
-              ${gridRows > 0 ? '' : ''}
+            <div class="talent-tree-content">
               ${grid.map((row, ri) => {
                 const rowUnlocked = tierUnlocked[ri];
-                return row.map((t, ci) => {
-                  if (!t) return `<div style="width:100px;height:96px"></div>`;
-                  const key = t._key;
-                  const lv = getSkillLv(key);
-                  const realLv = getTalentLv(key);
-                  const maxed = realLv >= t.maxLv;
-                  const unlocked = isSkillUnlocked(t) && rowUnlocked;
-                  const selected = _selectedTalentKey === key;
-                  return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
-                    <div class="talent-btn-icon">${t.icon}</div>
-                    <div class="talent-btn-name">${t.name}</div>
-                    <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
-                    <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
-                  </div>`;
-                }).join('');
+                return `<div class="talent-tier-row">
+                  ${row.map((t, ci) => {
+                    if (!t) return `<div style="width:100px;height:96px"></div>`;
+                    const key = t._key;
+                    const lv = getSkillLv(key);
+                    const realLv = getTalentLv(key);
+                    const maxed = realLv >= t.maxLv;
+                    const unlocked = isSkillUnlocked(t) && rowUnlocked;
+                    const selected = _selectedTalentKey === key;
+                    return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
+                      <div class="talent-btn-icon">${t.icon}</div>
+                      <div class="talent-btn-name">${t.name}</div>
+                      <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
+                      <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
+                    </div>`;
+                  }).join('')}
+                </div>`;
               }).join('')}
             </div>
           </div>
