@@ -876,11 +876,13 @@ body.no-scroll { overflow: hidden; }
 .talent-school-desc { font-size:13px; color:#888888; margin-bottom:6px; }
 .talent-school.collapsed .talent-school-desc { margin-bottom:0; }
 .talent-school.collapsed { padding-bottom:8px; }
-.talent-tree-content { display:grid; gap:4px; align-items:start; justify-content:center; }
-.talent-tier { padding:0; background:transparent; border:none; position:relative; display:contents; }
+.talent-tree { display:block; margin-top:8px; }
+.talent-tree-content { display:flex; flex-direction:column; gap:8px; align-items:center; }
+.talent-tier-row { display:flex; gap:6px; justify-content:center; }
+.talent-tier { display:none; }
 .talent-tier.tier-locked { opacity:0.4; filter:grayscale(0.5); }
 .talent-tier-label { display:none; }
-.talent-tier-skills { display:contents; }
+.talent-tier-skills { display:none; }
 .talent-btn {
   width:100px; height:96px;
   border:2px solid #2a2a2a; border-radius:8px; padding:6px 4px;
