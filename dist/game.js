@@ -497,23 +497,44 @@
     { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:28, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300, twoHand:true },
     { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:32, bonusHp:20, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400, twoHand:true },
     // === BRNĚNÍ ===
-    { id:'rags', name:'Hadry', type:'armor', baseDmg:0, bonusHp:0, bonusMana:0, defense:0, cost:0, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:0 },
+    // Normal (tier 1-3)
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, bonusHp:15, bonusMana:5, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1 },
-    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:20, cost:35, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:2 },
-    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:25, cost:60, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:3 },
-    { id:'fullPlate', name:'Kroužkový hábit', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:30, cost:110, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:4 },
-    { id:'dragonScale', name:'Dračí hábit', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:35, cost:160, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:5 },
+    { id:'chainmail', name:'Kožený hábit', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:28, cost:35, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:2 },
+    { id:'scale', name:'Šupinový hábit', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:44, cost:60, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:3 },
+    // Nightmare (tier 3-5)
+    { id:'leather_nm', name:'Kůže zlověka', type:'armor', baseDmg:0, bonusHp:35, bonusMana:10, defense:67, cost:80, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:3 },
+    { id:'chainmail_nm', name:'Řetězová kůže', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:82, cost:110, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:4 },
+    { id:'scale_nm', name:'Šupinová kůže', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:105, cost:160, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:5 },
+    // Hell (tier 5-7)
+    { id:'leather_hell', name:'Ďábelská kůže', type:'armor', baseDmg:0, bonusHp:60, bonusMana:15, defense:130, cost:140, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:5 },
+    { id:'chainmail_hell', name:'Démonická kůže', type:'armor', baseDmg:0, bonusHp:105, bonusMana:25, defense:160, cost:200, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:6 },
+    { id:'scale_hell', name:'Plamenná kůže', type:'armor', baseDmg:0, bonusHp:140, bonusMana:35, defense:200, cost:280, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:7 },
     // === HELMY ===
+    // Normal
     { id:'linenHood', name:'Lněná kápě', type:'helmet', baseDmg:0, bonusHp:10, defense:8, cost:15, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:1 },
-    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:11, cost:30, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:2 },
-    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, defense:14, cost:60, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:3 },
-    { id:'crown', name:'Arcimágova koruna', type:'helmet', baseDmg:0, bonusHp:90, defense:20, cost:140, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:5 },
+    { id:'ironHelm', name:'Železná helma', type:'helmet', baseDmg:0, bonusHp:25, defense:15, cost:30, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:2 },
+    { id:'steelHelm', name:'Ocelová helma', type:'helmet', baseDmg:0, bonusHp:50, defense:23, cost:60, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:3 },
+    // Nightmare
+    { id:'linenHood_nm', name:'Kápě stínů', type:'helmet', baseDmg:0, bonusHp:25, defense:35, cost:50, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:3 },
+    { id:'ironHelm_nm', name:'Temná helma', type:'helmet', baseDmg:0, bonusHp:50, defense:43, cost:80, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:4 },
+    { id:'steelHelm_nm', name:'Krvavá helma', type:'helmet', baseDmg:0, bonusHp:90, defense:55, cost:130, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:5 },
+    // Hell
+    { id:'linenHood_hell', name:'Kápě zmaru', type:'helmet', baseDmg:0, bonusHp:50, defense:68, cost:100, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:5 },
+    { id:'ironHelm_hell', name:'Pekelná helma', type:'helmet', baseDmg:0, bonusHp:90, defense:85, cost:170, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:6 },
+    { id:'steelHelm_hell', name:'Zhoubná helma', type:'helmet', baseDmg:0, bonusHp:140, defense:105, cost:250, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:7 },
     // === ŠTÍTY ===
+    // Normal
     { id:'woodenShield', name:'Dřevěný štít', type:'shield', baseDmg:0, bonusHp:5, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:1 },
-    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:9, cost:30, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:2 },
-    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:12, cost:55, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:3 },
-    { id:'steelShield', name:'Ocelový štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:15, cost:85, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:4 },
-    { id:'paladinShield', name:'Paladinův štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:18, cost:150, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:5 },
+    { id:'leatherShield', name:'Kožený štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:11, cost:30, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:2 },
+    { id:'ironShield', name:'Železný štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:18, cost:55, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:3 },
+    // Nightmare
+    { id:'woodenShield_nm', name:'Kostěný štít', type:'shield', baseDmg:0, bonusHp:10, blockChance:25, defense:27, cost:50, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:3 },
+    { id:'leatherShield_nm', name:'Štít z kůže', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:33, cost:80, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:4 },
+    { id:'ironShield_nm', name:'Kovaný štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:42, cost:130, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:5 },
+    // Hell
+    { id:'woodenShield_hell', name:'Ďábelský štít', type:'shield', baseDmg:0, bonusHp:15, blockChance:30, defense:52, cost:100, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:5 },
+    { id:'leatherShield_hell', name:'Démonický štít', type:'shield', baseDmg:0, bonusHp:20, blockChance:35, defense:65, cost:170, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:6 },
+    { id:'ironShield_hell', name:'Pekelný štít', type:'shield', baseDmg:0, bonusHp:30, blockChance:40, defense:80, cost:250, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:7 },
     // === PRSTENY ===
     { id:'copperRing', name:'Měděný prsten', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
     { id:'silverRing', name:'Stříbrný prsten', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
@@ -689,11 +710,11 @@
       affixIds:['fortified','ofFortification'], minLevel:3, tier:4,
       iconImg:'assets/items/armor_scale.png', icon:'👘',
       uniqueProp:{ type:'dmgReduce', value:50, desc:'5% šance sníží incoming dmg o 50%' } },
-    { id:'unique_fullPlate', name:'Kroužkový hábit', baseId:'fullPlate',
+    { id:'unique_fullPlate', name:'Kroužkový hábit', baseId:'scale_nm',
       affixIds:['fortified','ofEndurance'], minLevel:4, tier:5,
       iconImg:'assets/items/armor_plate.png', icon:'👘',
       uniqueProp:{ type:'defenseMult', value:10, desc:'+10% k defense (multiplikativně)' } },
-    { id:'unique_dragonScale', name:'Dračí hábit', baseId:'dragonScale',
+    { id:'unique_dragonScale', name:'Dračí hábit', baseId:'scale_hell',
       affixIds:['fortified','ofFortification'], minLevel:5, tier:6,
       iconImg:'assets/items/armor_dragon_scale.png', icon:'👘',
       uniqueProp:{ type:'dmgReflect', value:20, desc:'10% šance odrazí 20% dmg zpět' } },
@@ -707,11 +728,11 @@
       affixIds:['fortified','ofStrength'], minLevel:2, tier:3,
       iconImg:'assets/items/helmet_iron_helm.png', icon:'⛑️',
       uniqueProp:{ type:'stunResist', value:5, desc:'+5% stun resistance' } },
-    { id:'unique_crown_wisdom', name:'Koruna moudrosti', baseId:'steelHelm',
+    { id:'unique_crown_wisdom', name:'Koruna moudrosti', baseId:'steelHelm_nm',
       affixIds:['mystic','ofManaSteal'], minLevel:3, tier:4,
       iconImg:'assets/items/helmet_steel_helm.png', icon:'⛑️',
       uniqueProp:{ type:'bonusTalent', value:1, desc:'+1 k náhodnému talentu' } },
-    { id:'unique_crown', name:'Arcimágova koruna', baseId:'crown',
+    { id:'unique_crown', name:'Arcimágova koruna', baseId:'steelHelm_hell',
       affixIds:['skillful','ofWisdom'], minLevel:5, tier:6,
       iconImg:'assets/items/helmet_crown.png', icon:'👑',
       uniqueProp:{ type:'skillDmgBonus', value:10, desc:'+10% skill damage' } },
@@ -725,15 +746,15 @@
       affixIds:['fortified','ofFortification'], minLevel:2, tier:3,
       iconImg:'assets/items/shield_leather.png', icon:'🛡️',
       uniqueProp:{ type:'dodgeBonus', value:3, desc:'+3% dodge chance' } },
-    { id:'unique_shield_endurance', name:'Štít odolnosti', baseId:'ironShield',
+    { id:'unique_shield_endurance', name:'Štít odolnosti', baseId:'ironShield_nm',
       affixIds:['fortified','ofFortification'], minLevel:3, tier:4,
       iconImg:'assets/items/shield_iron.png', icon:'🛡️',
       uniqueProp:{ type:'fullBlock', value:10, desc:'10% šance při bloku absorbuje 100% dmg' } },
-    { id:'unique_steelShield', name:'Ocelový štít', baseId:'steelShield',
+    { id:'unique_steelShield', name:'Ocelový štít', baseId:'ironShield_hell',
       affixIds:['fortified','ofEndurance'], minLevel:4, tier:5,
       iconImg:'assets/items/shield_steel.png', icon:'🛡️',
       uniqueProp:{ type:'blockReflect', value:30, desc:'10% šance při bloku odrazí 30% dmg' } },
-    { id:'unique_paladinShield', name:'Paladinův štít', baseId:'paladinShield',
+    { id:'unique_paladinShield', name:'Paladinův štít', baseId:'ironShield_hell',
       affixIds:['fortified','ofStrength'], minLevel:5, tier:6,
       iconImg:'assets/items/shield_paladin.png', icon:'🛡️',
       uniqueProp:{ type:'spellBlock', value:15, desc:'15% šance zablokuje kouzlo' } },
@@ -6165,28 +6186,28 @@
   }
   function getHeroMaxHp() {
     const h = state.hero;
-    const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const armor = ITEM_MAP[h.equip.armor];
     const helmet = ITEM_MAP[h.equip.helmet];
     const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
-    const bonus = armor.bonusHp + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0) + (amulet ? amulet.bonusHp||0 : 0) + (belt ? belt.bonusHp||0 : 0);
+    const bonus = (armor ? armor.bonusHp||0 : 0) + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0) + (amulet ? amulet.bonusHp||0 : 0) + (belt ? belt.bonusHp||0 : 0);
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 100 + Math.floor(h.level * 10) + bonus + ((h.attrVit||0) + eqAttrs.vit) * 10);
   }
   function getHeroMaxMana() {
     const h = state.hero;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const armor = ITEM_MAP[h.equip.armor];
     const helmet = ITEM_MAP[h.equip.helmet];
     const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
-    const bonus = (weapon.bonusMana||0) + (armor.bonusMana||0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0);
+    const bonus = (weapon.bonusMana||0) + (armor ? armor.bonusMana||0 : 0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0);
     return Math.max(10, 50 + ((h.attrInt||0) + getEquipAttrs().int) * 10 + bonus);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
@@ -6220,7 +6241,7 @@
     const critChance = weapon.critChance || 0;
     const shieldItem = ITEM_MAP[h.equip.shield];
     const blockChance = shieldItem ? (shieldItem.blockChance || 0) : 0;
-    const armorDef = (ITEM_MAP[h.equip.armor] || ITEM_MAP['rags']).defense || 0;
+    const armorDef = (ITEM_MAP[h.equip.armor] ? ITEM_MAP[h.equip.armor].defense || 0 : 0);
     const helmetDef = ITEM_MAP[h.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[h.equip.shield]?.defense || 0;
     const totalDef = armorDef + helmetDef + shieldDef;
@@ -6506,7 +6527,7 @@
     const h = state.hero;
     // Equipment sloty — 6 slotů
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    const armor = ITEM_MAP[h.equip.armor] || ITEM_MAP['rags'];
+    const armor = ITEM_MAP[h.equip.armor];
     const helmet = ITEM_MAP[h.equip.helmet];
     const shield = ITEM_MAP[h.equip.shield];
     const ring1 = ITEM_MAP[h.equip.ring1];
