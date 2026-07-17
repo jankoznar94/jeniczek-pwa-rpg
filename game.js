@@ -5882,6 +5882,7 @@
   }
 
   // ===== TALENTS (SKILL TREE) =====
+  let _selectedTalentKey = null;
   function getTierPoints(classId, tierIdx) {
     const cls = CLASS_SKILLS[classId];
     if (!cls || !cls.tiers[tierIdx]) return 0;
@@ -5907,6 +5908,53 @@
       }
     }
     return null;
+  }
+  function showTalentInfo(key) {
+    const t = SKILL_MAP[key];
+    const panel = $('skillInfoPanel');
+    if (!panel || !t) { if (panel) panel.classList.add('hidden'); return; }
+    const cls = getClassSkillTree();
+    if (!cls) { panel.classList.add('hidden'); return; }
+    const lv = getTalentLv(key);
+    const maxed = lv >= t.maxLv;
+    const heroLv = state.hero.level;
+    const ti = t._tierIdx;
+    const tierUnlocked = ti === 0 || (ti === 1 && heroLv >= 6) || (ti === 2 && heroLv >= 12);
+    const unlocked = isSkillUnlocked(t) && tierUnlocked;
+    const pts = state.talentPoints || 0;
+    const canInvest = pts > 0 && !maxed && unlocked;
+    $('skillInfoIcon').innerHTML = `<span style="font-size:40px">${t.icon}</span>`;
+    $('skillInfoName').textContent = t.name;
+    $('skillInfoName').style.color = lv > 0 ? '#f1c40f' : unlocked ? '#eee' : '#666';
+    let stats = `<span style="font-size:11px;color:${lv > 0 ? '#f1c40f' : '#888'}">${lv > 0 ? 'Naučeno' : unlocked ? 'Dostupné' : '🔒 Zamčeno'}</span><br>`;
+    stats += `<span style="font-size:13px;color:#ccc">Úroveň ${lv}/${t.maxLv}</span><br>`;
+    stats += `<span style="font-size:12px;color:#aaa">${t.desc(Math.max(lv,1))}</span><br>`;
+    // Požadavky
+    const reqs = [];
+    if (t.requires) {
+      const reqSkill = SKILL_MAP[t.requires];
+      if (reqSkill) {
+        const reqLv = getTalentLv(t.requires);
+        reqs.push(`Vyžaduje: ${reqSkill.name} (${reqLv}/${t.requiresLv})`);
+      }
+    }
+    if (ti === 1) reqs.push(`Vyžaduje úroveň postavy: 6`);
+    if (ti === 2) reqs.push(`Vyžaduje úroveň postavy: 12`);
+    if (reqs.length) stats += `<span style="font-size:10px;color:#888">${reqs.join(' · ')}</span>`;
+    $('skillInfoStats').innerHTML = stats;
+    // Tlačítko investovat
+    let actions = '';
+    if (canInvest) {
+      actions = `<button class="btn btn-primary" onclick="game.investTalent('${key}')">➕ Investovat bod</button>`;
+    } else if (maxed) {
+      actions = `<span style="color:#2ecc71;font-size:12px">✅ Maximální úroveň</span>`;
+    } else if (!unlocked) {
+      actions = `<span style="color:#666;font-size:12px">🔒 Nesplňuješ požadavky</span>`;
+    } else if (pts <= 0) {
+      actions = `<span style="color:#888;font-size:12px">Nemáš volné talent body</span>`;
+    }
+    $('skillInfoActions').innerHTML = actions;
+    panel.classList.remove('hidden');
   }
   function renderTalents() {
         const pts = state.talentPoints || 0;
@@ -5942,9 +5990,9 @@
                       const key = cls.id + '_' + t.k;
                       const lv = getTalentLv(key);
                       const maxed = lv >= t.maxLv;
-                      const canInvest = pts > 0 && !maxed && isSkillUnlocked(t) && tierUnlocked;
                       const unlocked = isSkillUnlocked(t) && tierUnlocked;
-                      return `<div class="talent-btn ${lv>0?'owned':''} ${canInvest?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''}" onclick="${canInvest?`game.investTalent('${key}')`:''}">
+                      const selected = _selectedTalentKey === key;
+                      return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
                         <div class="talent-btn-icon">${t.icon}</div>
                         <div class="talent-btn-name">${t.name}</div>
                         <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
@@ -5957,6 +6005,16 @@
             </div>
           </div>
         </div>`;
+        // Zobrazit info panel pro vybraný skill
+        if (_selectedTalentKey) {
+          showTalentInfo(_selectedTalentKey);
+        } else {
+          $('skillInfoPanel').classList.add('hidden');
+        }
+      }
+      function selectTalent(key) {
+        _selectedTalentKey = key;
+        renderTalents();
       }
       function investTalent(key) {
         const pts = state.talentPoints || 0;
@@ -5969,6 +6027,7 @@
         state.talentPoints = pts - 1;
         saveGame();
         updateTalentBadge();
+        _selectedTalentKey = key;
         renderTalents();
       }
       function resetTalents() {
@@ -7292,7 +7351,7 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
-    investTalent, resetTalents,
+    investTalent, resetTalents, selectTalent,
     showSurrenderModal, cancelSurrender, confirmSurrender,
     openInventoryFromShop,
     renderBestiary,
