@@ -327,18 +327,18 @@
       id:'barbarian', name:'Barbar', icon:'🪓', desc:'Silné fyzické útoky a bojová kouzla.',
       tiers: [
         { choices: [
-          { k:'heroicStrike', name:'Heroic Strike', icon:'💢', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
-          { k:'battleShout', name:'Battle Shout', icon:'📯', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
-          { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', maxLv:5, desc:lv=>`${50+lv*30}% dmg + zpomalí 20% na ${1+lv}s` },
+          { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
+          { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
+          { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + zpomalí 20% na ${1+lv}s` },
         ]},
         { choices: [
-          { k:'bloodrage', name:'Bloodrage', icon:'🩸', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
-          { k:'doubleSwing', name:'Double Swing', icon:'⚔️', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
-          { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
+          { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
+          { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
+          { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
         ]},
         { choices: [
           { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
-          { k:'skillShout', name:'Skill Shout', icon:'📣', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} dočasná úroveň všech skillů na 30s` },
+          { k:'skillShout', name:'Skill Shout', icon:'📣', iconImg:'skill_shout.png', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} dočasná úroveň všech skillů na 30s` },
         ]}
       ]
     },
@@ -6123,7 +6123,7 @@
                     const unlocked = isSkillUnlocked(t) && rowUnlocked;
                     const selected = _selectedTalentKey === key;
                     return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
-                      <div class="talent-btn-icon">${t.icon}</div>
+                      <div class="talent-btn-icon">${t.iconImg ? `<img src="assets/spells/${t.iconImg}" style="width:28px;height:28px;object-fit:contain">` : t.icon}</div>
                       <div class="talent-btn-name">${t.name}</div>
                       <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
                       <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
