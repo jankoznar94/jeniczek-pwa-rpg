@@ -557,7 +557,13 @@
     { id:'sharp', name:'Bystrý', type:'prefix', group:7, minIlvl:10, weight:6,
       types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
     { id:'bloody', name:'Krvavý', type:'prefix', group:8, minIlvl:12, weight:5,
-      types:['weapon'], stats:{ lifesteal:[2,5] }, tint:'#e94560' },
+      types:['weapon','ring','amulet'], stats:{ lifesteal:[2,5] }, tint:'#e94560' },
+    { id:'manaSteal', name:'Manažroutský', type:'prefix', group:14, minIlvl:10, weight:5,
+      types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
+    { id:'fortified', name:'Zpevněný', type:'prefix', group:15, minIlvl:8, weight:8,
+      types:['armor','shield','helmet'], stats:{ enhancedDefense:[10,30] }, tint:'#888' },
+    { id:'deadly', name:'Smrtící', type:'prefix', group:16, minIlvl:8, weight:8,
+      types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
     { id:'mystic', name:'Záhadný', type:'prefix', group:9, minIlvl:8, weight:6,
       types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
     { id:'dexterous', name:'Hbitý', type:'prefix', group:10, minIlvl:8, weight:6,
@@ -597,6 +603,12 @@
       types:['ring','amulet','weapon'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     { id:'ofVenom', name:'Jed', type:'suffix', group:114, minIlvl:12, weight:4,
       types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
+    { id:'ofManaSteal', name:'Many', type:'suffix', group:115, minIlvl:10, weight:5,
+      types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
+    { id:'ofFortification', name:'Opevnění', type:'suffix', group:116, minIlvl:8, weight:8,
+      types:['armor','shield','helmet'], stats:{ enhancedDefense:[10,30] }, tint:'#888' },
+    { id:'ofSlaughter', name:'Porážky', type:'suffix', group:117, minIlvl:8, weight:8,
+      types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
   ];
 
   // ===== UNIQUE ITEMY (fixní sady affixů) =====
@@ -882,6 +894,9 @@
       fireDmg: 0,
       iceDmg: 0,
       lifesteal: 0,
+      manaSteal: 0,
+      enhancedDefense: 0,
+      enhancedDmg: 0,
       str: 0,
       vit: 0,
       int: 0,
@@ -902,6 +917,14 @@
         }
       });
     });
+
+    // Procentuální bonusy: enhancedDefense a enhancedDmg se aplikují na base staty
+    if (lootItem.enhancedDefense > 0 && lootItem.defense > 0) {
+      lootItem.defense = Math.round(lootItem.defense * (1 + lootItem.enhancedDefense / 100));
+    }
+    if (lootItem.enhancedDmg > 0 && lootItem.baseDmg > 0) {
+      lootItem.baseDmg = Math.round(lootItem.baseDmg * (1 + lootItem.enhancedDmg / 100));
+    }
 
     // Level requirement
     const maxAffixIlvl = chosenAffixes.length > 0
@@ -943,7 +966,8 @@
       critChance: baseItem.critChance || 0,
       hitRating: baseItem.hitRating || 0,
       swingMs: baseItem.swingMs || 0,
-      fireDmg: 0, iceDmg: 0, lifesteal: 0,
+      fireDmg: 0, iceDmg: 0, lifesteal: 0, manaSteal: 0,
+      enhancedDefense: 0, enhancedDmg: 0,
       str: 0, vit: 0, int: 0, dex: 0,
       skillDmg: 0, manaRegen: 0, poisonDmg: 0,
     };
@@ -955,6 +979,14 @@
         else item[stat] += val;
       });
     });
+
+    // Procentuální bonusy pro unikáty
+    if (item.enhancedDefense > 0 && item.defense > 0) {
+      item.defense = Math.round(item.defense * (1 + item.enhancedDefense / 100));
+    }
+    if (item.enhancedDmg > 0 && item.baseDmg > 0) {
+      item.baseDmg = Math.round(item.baseDmg * (1 + item.enhancedDmg / 100));
+    }
 
     return item;
   }
@@ -5048,6 +5080,20 @@
     playSFX(isCrit ? getCritSfx() : getHitSfx());
     
     mb.bossHp -= dmg;
+    
+    // 🩸 Life steal a 💜 Mana steal z equipu (procentuálně z uděleného dmg)
+    const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet]].filter(Boolean);
+    const totalLifeSteal = eqItems.reduce((sum, it) => sum + (it.lifesteal || 0), 0);
+    const totalManaSteal = eqItems.reduce((sum, it) => sum + (it.manaSteal || 0), 0);
+    if (totalLifeSteal > 0) {
+      const healAmt = Math.max(1, Math.round(dmg * totalLifeSteal / 100));
+      state.hero.hp = Math.min(state.hero.maxHp, (state.hero.hp || 0) + healAmt);
+    }
+    if (totalManaSteal > 0) {
+      const manaAmt = Math.max(1, Math.round(dmg * totalManaSteal / 100));
+      state.hero.mana = Math.min(state.hero.maxMana, (state.hero.mana || 0) + manaAmt);
+    }
+    
     const dmgText = $('mbDamageText');
     if (dmgText) {
       dmgText.textContent = `-${dmg}`;
@@ -6326,11 +6372,14 @@
         if (item.iceDmg) affixStats.push(`❄️+${item.iceDmg}`);
         if (item.poisonDmg) affixStats.push(`☠️+${item.poisonDmg}`);
         if (item.lifesteal) affixStats.push(`🩸+${item.lifesteal}%`);
+        if (item.manaSteal) affixStats.push(`💜+${item.manaSteal}%`);
         if (item.hitRating) affixStats.push(`🎯+${item.hitRating}`);
         if (item.skillDmg) affixStats.push(`✨+${item.skillDmg}%`);
         if (item.manaRegen) affixStats.push(`💧+${item.manaRegen}/t`);
         if (item.bonusMana) affixStats.push(`💧+${item.bonusMana}`);
         if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡${item.swingMs}ms`);
+        if (item.enhancedDefense) affixStats.push(`🛡️+${item.enhancedDefense}% obrana`);
+        if (item.enhancedDmg) affixStats.push(`⚔️+${item.enhancedDmg}% dmg`);
         if (item.defense) affixStats.push(`🛡️+${item.defense}`);
         if (item.blockChance) affixStats.push(`🛡️${item.blockChance}%`);
         if (item.critChance) affixStats.push(`🎯${item.critChance}%`);
@@ -6554,11 +6603,14 @@
       if (item.iceDmg) affixStats.push(`❄️ +${item.iceDmg} ledové dmg`);
       if (item.poisonDmg) affixStats.push(`☠️ +${item.poisonDmg} jedové dmg`);
       if (item.lifesteal) affixStats.push(`🩸 +${item.lifesteal}% lifesteal`);
+      if (item.manaSteal) affixStats.push(`💜 +${item.manaSteal}% many/útok`);
       if (item.hitRating) affixStats.push(`🎯 +${item.hitRating} hit rating`);
       if (item.skillDmg) affixStats.push(`✨ +${item.skillDmg}% skill dmg`);
       if (item.manaRegen) affixStats.push(`💧 +${item.manaRegen} many/tick`);
       if (item.bonusMana) affixStats.push(`💧 +${item.bonusMana} many`);
       if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡ ${item.swingMs}ms swing`);
+      if (item.enhancedDefense) affixStats.push(`🛡️ +${item.enhancedDefense}% obrana`);
+      if (item.enhancedDmg) affixStats.push(`⚔️ +${item.enhancedDmg}% poškození`);
       if (affixStats.length) stats += '<br>' + affixStats.join(' · ');
       if (item.attrs) {
         const attrStr = Object.keys(item.attrs).map(k => {
@@ -6600,10 +6652,13 @@
           if (ring1.iceDmg) a1.push(`❄️ +${ring1.iceDmg} ledové dmg`);
           if (ring1.poisonDmg) a1.push(`☠️ +${ring1.poisonDmg} jedové dmg`);
           if (ring1.lifesteal) a1.push(`🩸 +${ring1.lifesteal}% lifesteal`);
+          if (ring1.manaSteal) a1.push(`💜 +${ring1.manaSteal}% many/útok`);
           if (ring1.hitRating) a1.push(`🎯 +${ring1.hitRating} hit rating`);
           if (ring1.skillDmg) a1.push(`✨ +${ring1.skillDmg}% skill dmg`);
           if (ring1.manaRegen) a1.push(`💧 +${ring1.manaRegen} many/tick`);
           if (ring1.bonusMana) a1.push(`💧 +${ring1.bonusMana} many`);
+          if (ring1.enhancedDefense) a1.push(`🛡️ +${ring1.enhancedDefense}% obrana`);
+          if (ring1.enhancedDmg) a1.push(`⚔️ +${ring1.enhancedDmg}% poškození`);
           if (ring1.swingMs && ring1.swingMs < 0) a1.push(`⚡ ${ring1.swingMs}ms swing`);
           if (ring1.defense) a1.push(`🛡️ +${ring1.defense}`);
           if (ring1.critChance) a1.push(`🎯 ${ring1.critChance}%`);
@@ -6624,10 +6679,13 @@
           if (ring2.iceDmg) a2.push(`❄️ +${ring2.iceDmg} ledové dmg`);
           if (ring2.poisonDmg) a2.push(`☠️ +${ring2.poisonDmg} jedové dmg`);
           if (ring2.lifesteal) a2.push(`🩸 +${ring2.lifesteal}% lifesteal`);
+          if (ring2.manaSteal) a2.push(`💜 +${ring2.manaSteal}% many/útok`);
           if (ring2.hitRating) a2.push(`🎯 +${ring2.hitRating} hit rating`);
           if (ring2.skillDmg) a2.push(`✨ +${ring2.skillDmg}% skill dmg`);
           if (ring2.manaRegen) a2.push(`💧 +${ring2.manaRegen} many/tick`);
           if (ring2.bonusMana) a2.push(`💧 +${ring2.bonusMana} many`);
+          if (ring2.enhancedDefense) a2.push(`🛡️ +${ring2.enhancedDefense}% obrana`);
+          if (ring2.enhancedDmg) a2.push(`⚔️ +${ring2.enhancedDmg}% poškození`);
           if (ring2.swingMs && ring2.swingMs < 0) a2.push(`⚡ ${ring2.swingMs}ms swing`);
           if (ring2.defense) a2.push(`🛡️ +${ring2.defense}`);
           if (ring2.critChance) a2.push(`🎯 ${ring2.critChance}%`);
@@ -6747,11 +6805,14 @@
       if (equipped.iceDmg) eAffixStats.push(`❄️ +${equipped.iceDmg} ledové dmg`);
       if (equipped.poisonDmg) eAffixStats.push(`☠️ +${equipped.poisonDmg} jedové dmg`);
       if (equipped.lifesteal) eAffixStats.push(`🩸 +${equipped.lifesteal}% lifesteal`);
+      if (equipped.manaSteal) eAffixStats.push(`💜 +${equipped.manaSteal}% many/útok`);
       if (equipped.hitRating) eAffixStats.push(`🎯 +${equipped.hitRating} hit rating`);
       if (equipped.skillDmg) eAffixStats.push(`✨ +${equipped.skillDmg}% skill dmg`);
       if (equipped.manaRegen) eAffixStats.push(`💧 +${equipped.manaRegen} many/tick`);
       if (equipped.bonusMana) eAffixStats.push(`💧 +${equipped.bonusMana} many`);
       if (equipped.swingMs && equipped.swingMs < 0) eAffixStats.push(`⚡ ${equipped.swingMs}ms swing`);
+      if (equipped.enhancedDefense) eAffixStats.push(`🛡️ +${equipped.enhancedDefense}% obrana`);
+      if (equipped.enhancedDmg) eAffixStats.push(`⚔️ +${equipped.enhancedDmg}% poškození`);
       if (eAffixStats.length) eStats += '<br>' + eAffixStats.join(' · ');
       if (equipped.attrs) {
         const attrStr = Object.keys(equipped.attrs).map(k => {
