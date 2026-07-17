@@ -2508,7 +2508,7 @@
         let totalDefense = armorDef + helmetDef + shieldDef;
         if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
         if (totalDefense > 0) {
-          amount = Math.round(amount * 100 / (100 + totalDefense));
+          amount = Math.round(amount * (1 - totalDefense / (totalDefense + 300)));
         }
         // Block
         const shieldItem = ITEM_MAP[state.hero.equip.shield];
@@ -2598,7 +2598,7 @@
     let totalDefense = armorDef + helmetDef + shieldDef;
     if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
     if (totalDefense > 0) {
-      bossDmg = Math.round(bossDmg * 100 / (100 + totalDefense));
+      bossDmg = Math.round(bossDmg * (1 - totalDefense / (totalDefense + 300)));
     }
     let amount = bossDmg;
 
@@ -4853,7 +4853,7 @@
     let totalDefense = armorDef + helmetDef + shieldDef;
     if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
     if (totalDefense > 0) {
-      bossDmg = Math.round(bossDmg * 100 / (100 + totalDefense));
+      bossDmg = Math.round(bossDmg * (1 - totalDefense / (totalDefense + 300)));
     }
     let amount = bossDmg;
 
