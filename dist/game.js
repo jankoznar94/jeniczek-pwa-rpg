@@ -110,6 +110,7 @@
   const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
   const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 1.0; return a; })();
   const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 1.0; return a; })();
+  const lightningSpellSfx = (() => { const a = new Audio('lightning_spell.mp3'); a.volume = 1.0; return a; })();
   // Zvuky zranění hráče — 4 náhodné
   const hurtSfx = [
     (() => { const a = new Audio('assets/sfx/hurt1.mp3'); a.volume = 1.0; return a; })(),
@@ -371,6 +372,7 @@
         { choices: [
           { k:'fireball', name:'Fireball', icon:'💥', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
           { k:'frostbolt', name:'Frostbolt', icon:'🧊', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
+          { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${60+lv*30}% dmg bleskem` },
           { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
         ]},
         { choices: [
@@ -431,6 +433,7 @@
       if (spellId === 'regrowth') return getSkillLv('mage_regrowth');
       if (spellId === 'fireball') return getSkillLv('mage_fireball');
       if (spellId === 'frostbolt') return getSkillLv('mage_frostbolt');
+      if (spellId === 'thunderBolt') return getSkillLv('mage_thunderBolt');
       if (spellId === 'naturesBoon') return getSkillLv('mage_naturesBoon');
       if (spellId === 'blizzard') return getSkillLv('mage_blizzard');
       if (spellId === 'fireblast') return getSkillLv('mage_fireblast');
@@ -450,6 +453,7 @@
     if (schoolId === 'fire') return r.fire || 1.0;
     if (schoolId === 'ice') return r.ice || 1.0;
     if (schoolId === 'nature') return r.nature || 1.0;
+    if (schoolId === 'lightning') return r.lightning || 1.0;
     return 1.0;
   }
   function getSpellLv(spellId) {
@@ -4589,6 +4593,46 @@
     }, 350);
   }
 
+  function spawnLightningProjectile() {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const startX = rect.width / 2;
+    const startY = rect.height - 80;
+    const targetX = rect.width / 2;
+    const targetY = 80;
+    // Žlutá blesková koule
+    const ball = document.createElement('div');
+    const size = 28;
+    ball.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;z-index:30;pointer-events:none;left:${startX - size/2}px;top:${startY - size/2}px;background:radial-gradient(circle,#fff 10%,#ffeb3b 50%,#f57f17 90%);box-shadow:0 0 20px rgba(255,235,59,0.8),0 0 40px rgba(245,127,23,0.4);transition:left 0.15s ease-in,top 0.15s ease-in;`;
+    arena.appendChild(ball);
+    void ball.offsetHeight;
+    ball.style.left = (targetX - size/2) + 'px';
+    ball.style.top = (targetY - size/2) + 'px';
+    // Jiskřivá exploze po dopadu
+    setTimeout(() => {
+      if (ball.parentNode) ball.remove();
+      playSFX(lightningSpellSfx);
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        const pSize = 2 + Math.random() * 6;
+        const angle = Math.random() * 2 * Math.PI;
+        const dist = 10 + Math.random() * 60;
+        const colors = ['#ffeb3b','#fff','#f57f17','#ffd54f'];
+        const color = colors[i % colors.length];
+        p.style.cssText = `position:absolute;width:${pSize}px;height:${pSize}px;border-radius:50%;z-index:31;pointer-events:none;left:${targetX - pSize/2}px;top:${targetY - pSize/2}px;background:${color};box-shadow:0 0 ${5+Math.random()*8}px ${color};opacity:1;`;
+        arena.appendChild(p);
+        requestAnimationFrame(() => {
+          p.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
+          p.style.left = (targetX + Math.cos(angle) * dist - pSize/2) + 'px';
+          p.style.top = (targetY + Math.sin(angle) * dist - pSize/2) + 'px';
+          p.style.opacity = '0';
+        });
+        setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
+      }
+    }, 300);
+  }
+
   function spawnDodgeEffect(arena, dir) {
     // Oblak/částice fouknuté od středu arény směrem úhybu — rychlejší a dál
     const rect = arena.getBoundingClientRect();
@@ -5227,6 +5271,17 @@
       const circle = document.querySelector('.timer-circle');
       if (circle) circle.style.stroke = '#4fc3f7';
       spawnFreezeParticles();
+    } else if (spellId === 'thunderBolt') {
+      const pct = 60 + lv * 30; // 90% @ lv1, 120% @ lv2, ... 210% @ lv5
+      const resistMult = getSchoolResistMult('lightning');
+      let dmg = Math.round(baseDmg * pct / 100 * resistMult);
+      mb.bossHp -= dmg;
+      effectMsg = `⚡ Thunder Bolt! ${dmg} poškození bleskem!`;
+      spawnLightningProjectile();
+      const bossFig = $('mbFigure');
+      if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(2) hue-rotate(60deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
+      const circle = document.querySelector('.timer-circle');
+      if (circle) circle.style.stroke = '#ffeb3b';
     } else if (spellId === 'icebolt') {
       // icebolt už není samostatné kouzlo — je to pasivní upgrade frostboltu
       // Pokud se sem dostaneme (starý save), chová se jako frostbolt
