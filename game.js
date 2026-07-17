@@ -334,6 +334,7 @@
         { choices: [
           { k:'bloodrage', name:'Bloodrage', icon:'🩸', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
           { k:'doubleSwing', name:'Double Swing', icon:'⚔️', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
+          { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
         ]},
         { choices: [
           { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
@@ -411,6 +412,7 @@
       if (spellId === 'bloodrage') return getSkillLv('barbarian_bloodrage');
       if (spellId === 'doubleSwing') return getSkillLv('barbarian_doubleSwing');
       if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
+      if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -1427,6 +1429,8 @@
       _speedBoostPct:0, // Speed boost procento
       battleShoutTimer:0, // Battle shout zbývající čas (ticky)
       battleShoutDmgPct:0, // % bonus dmg z battle shout
+      defensiveShoutTimer:0, // Defensive shout zbývající čas (ticky)
+      defensiveShoutArmorPct:0, // % bonus armor z defensive shout
       thunderClapTimer:0, // Zbývající čas thunder clapu (ticky)
       thunderClapSlowPct:0, // % zpomalení nepřítele
       _gcdTimer:0 // Global cooldown (ticky)
@@ -1759,6 +1763,8 @@
     state._bloodrageTimer = 0;
     state.battleShoutTimer = 0;
     state.battleShoutDmgPct = 0;
+    state.defensiveShoutTimer = 0;
+    state.defensiveShoutArmorPct = 0;
     state.thunderClapTimer = 0;
     state.thunderClapSlowPct = 0;
     const loc = LOCATIONS[locId];
@@ -2239,6 +2245,11 @@
       state.battleShoutTimer--;
       if (state.battleShoutTimer <= 0) state.battleShoutDmgPct = 0;
     }
+    // Defensive shout
+    if (state.defensiveShoutTimer > 0) {
+      state.defensiveShoutTimer--;
+      if (state.defensiveShoutTimer <= 0) state.defensiveShoutArmorPct = 0;
+    }
     // Thunder clap slow
     if (state.thunderClapTimer > 0) {
       state.thunderClapTimer--;
@@ -2494,7 +2505,8 @@
         const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
         const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
         const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
-        const totalDefense = armorDef + helmetDef + shieldDef;
+        let totalDefense = armorDef + helmetDef + shieldDef;
+        if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
         if (totalDefense > 0) {
           amount = Math.round(amount * 100 / (100 + totalDefense));
         }
@@ -2583,7 +2595,8 @@
     const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
-    const totalDefense = armorDef + helmetDef + shieldDef;
+    let totalDefense = armorDef + helmetDef + shieldDef;
+    if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
     if (totalDefense > 0) {
       bossDmg = Math.round(bossDmg * 100 / (100 + totalDefense));
     }
@@ -2964,7 +2977,7 @@
         const b = _sessionBuffs[spellId];
         if (!b) return;
         const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout';
+        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout' || spellId === 'defensiveShout';
         html += `<div class="buff-icon" title="${b.name || spellId}">
           ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
           <span class="buff-icon-timer">${remaining}s</span>
@@ -3083,6 +3096,13 @@
       state.battleShoutTimer = 1800; // 30s
       playSFX(battleShoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
+    } else if (spellId === 'defensiveShout') {
+      const lv = getSpellLv('defensiveShout');
+      const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
+      state.defensiveShoutArmorPct = armorPct;
+      state.defensiveShoutTimer = 1800; // 30s
+      playSFX(battleShoutSfx);
+      _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -4830,7 +4850,8 @@
     const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
-    const totalDefense = armorDef + helmetDef + shieldDef;
+    let totalDefense = armorDef + helmetDef + shieldDef;
+    if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
     if (totalDefense > 0) {
       bossDmg = Math.round(bossDmg * 100 / (100 + totalDefense));
     }
