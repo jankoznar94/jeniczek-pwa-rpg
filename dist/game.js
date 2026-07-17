@@ -338,6 +338,7 @@
         ]},
         { choices: [
           { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
+          { k:'skillShout', name:'Skill Shout', icon:'📣', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} dočasná úroveň všech skillů na 30s` },
         ]}
       ]
     },
@@ -401,7 +402,7 @@
     return CLASS_SKILLS[state.heroClass] || null;
   }
   function getSkillLv(skillKey) {
-    return state.talentLevels[skillKey] || 0;
+    return (state.talentLevels[skillKey] || 0) + (state.skillShoutBonus || 0);
   }
   function getSpellLv(spellId) {
     const cls = state.heroClass;
@@ -413,6 +414,7 @@
       if (spellId === 'doubleSwing') return getSkillLv('barbarian_doubleSwing');
       if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
       if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
+      if (spellId === 'skillShout') return getSkillLv('barbarian_skillShout');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -1454,6 +1456,8 @@
       defensiveShoutArmorPct:0, // % bonus armor z defensive shout
       thunderClapTimer:0, // Zbývající čas thunder clapu (ticky)
       thunderClapSlowPct:0, // % zpomalení nepřítele
+      skillShoutTimer:0, // Skill shout zbývající čas (ticky)
+      skillShoutBonus:0, // Dočasné +lv ke všem skillům
       _gcdTimer:0 // Global cooldown (ticky)
     };
     return s;
@@ -1786,6 +1790,8 @@
     state.battleShoutDmgPct = 0;
     state.defensiveShoutTimer = 0;
     state.defensiveShoutArmorPct = 0;
+    state.skillShoutTimer = 0;
+    state.skillShoutBonus = 0;
     state.thunderClapTimer = 0;
     state.thunderClapSlowPct = 0;
     const loc = LOCATIONS[locId];
@@ -2270,6 +2276,11 @@
     if (state.defensiveShoutTimer > 0) {
       state.defensiveShoutTimer--;
       if (state.defensiveShoutTimer <= 0) state.defensiveShoutArmorPct = 0;
+    }
+    // Skill shout
+    if (state.skillShoutTimer > 0) {
+      state.skillShoutTimer--;
+      if (state.skillShoutTimer <= 0) state.skillShoutBonus = 0;
     }
     // Thunder clap slow
     if (state.thunderClapTimer > 0) {
@@ -2998,7 +3009,7 @@
         const b = _sessionBuffs[spellId];
         if (!b) return;
         const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout' || spellId === 'defensiveShout';
+        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout' || spellId === 'defensiveShout' || spellId === 'skillShout';
         html += `<div class="buff-icon" title="${b.name || spellId}">
           ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
           <span class="buff-icon-timer">${remaining}s</span>
@@ -3124,6 +3135,12 @@
       state.defensiveShoutTimer = 1800; // 30s
       playSFX(battleShoutSfx);
       _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
+    } else if (spellId === 'skillShout') {
+      const lv = getSpellLv('skillShout');
+      state.skillShoutBonus = lv;
+      state.skillShoutTimer = 1800; // 30s
+      playSFX(battleShoutSfx);
+      _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -5966,7 +5983,7 @@
   }
   function isSkillUnlocked(t) {
     if (!t.requires) return true;
-    return getTalentLv(t.requires) >= t.requiresLv;
+    return getSkillLv(t.requires) >= t.requiresLv;
   }
   function getBestSpellId(classId) {
     const cls = CLASS_SKILLS[classId];
@@ -5987,8 +6004,9 @@
     if (!panel || !t) { if (panel) panel.classList.add('hidden'); return; }
     const cls = getClassSkillTree();
     if (!cls) { panel.classList.add('hidden'); return; }
-    const lv = getTalentLv(key);
-    const maxed = lv >= t.maxLv;
+    const lv = getSkillLv(key);
+    const realLv = getTalentLv(key);
+    const maxed = realLv >= t.maxLv;
     const heroLv = state.hero.level;
     const ti = t._tierIdx;
     const tierUnlocked = ti === 0 || (ti === 1 && heroLv >= 6) || (ti === 2 && heroLv >= 12);
@@ -5999,7 +6017,7 @@
     $('skillInfoName').textContent = t.name;
     $('skillInfoName').style.color = lv > 0 ? '#f1c40f' : unlocked ? '#eee' : '#666';
     let stats = `<span style="font-size:11px;color:${lv > 0 ? '#f1c40f' : '#888'}">${lv > 0 ? 'Naučeno' : unlocked ? 'Dostupné' : '🔒 Zamčeno'}</span><br>`;
-    stats += `<span style="font-size:13px;color:#ccc">Úroveň ${lv}/${t.maxLv}</span><br>`;
+    stats += `<span style="font-size:13px;color:#ccc">Úroveň ${lv}/${t.maxLv}${state.skillShoutBonus > 0 ? ` (${realLv} investováno)` : ''}</span><br>`;
     stats += `<span style="font-size:12px;color:#aaa">${t.desc(Math.max(lv,1))}</span><br>`;
     // Požadavky
     const reqs = [];
@@ -6043,6 +6061,48 @@
           $('talentSchools').innerHTML = '<div style="text-align:center;color:#888;padding:20px">Nejdřív si vyber classu</div>';
           return;
         }
+        // Přiřadit každému skillu sloupec podle jeho root skillu z tier 1
+        function getRootKey(t) {
+          if (!t.requires) return t.k;
+          const parent = SKILL_MAP[t.requires];
+          if (!parent) return t.k;
+          return getRootKey(parent);
+        }
+        // Všechny skilly všech tierů
+        const allSkills = [];
+        cls.tiers.forEach((tier, ti) => {
+          tier.choices.forEach(t => {
+            const key = cls.id + '_' + t.k;
+            t._key = key;
+            t._tierIdx = ti;
+            allSkills.push(t);
+          });
+        });
+        // Root skilly z tier 1 určují pořadí sloupců
+        const tier1Skills = cls.tiers[0].choices;
+        const columnOrder = {};
+        tier1Skills.forEach((t, idx) => { columnOrder[t.k] = idx; });
+        // Pro každý skill najít root a column
+        const colCount = tier1Skills.length;
+        const gridRows = cls.tiers.length;
+        // Sestavit grid: rows × cols, každá buňka = skill nebo prázdná
+        const grid = [];
+        for (let r = 0; r < gridRows; r++) {
+          grid[r] = [];
+          for (let c = 0; c < colCount; c++) {
+            grid[r][c] = null;
+          }
+        }
+        allSkills.forEach(t => {
+          const root = getRootKey(t);
+          const col = columnOrder[root] !== undefined ? columnOrder[root] : 0;
+          const row = t._tierIdx;
+          grid[row][col] = t;
+        });
+        // Tier label
+        const tierLabels = ['Tier 1', 'Tier 2', 'Tier 3'];
+        const heroLv = state.hero.level;
+        const tierUnlocked = [true, heroLv >= 6, heroLv >= 12];
         $('talentSchools').innerHTML = `<div class="talent-school active ${cls.id}">
           <div class="talent-school-header">
             <span class="talent-school-icon">${cls.icon}</span>
@@ -6050,29 +6110,26 @@
           </div>
           <div class="talent-school-desc">${cls.desc}</div>
           <div class="talent-tree">
-            <div class="talent-tree-content">
-              ${cls.tiers.map((tier, ti) => {
-                const tierPoints = getTierPoints(cls.id, ti);
-                const heroLv = state.hero.level;
-                const tierUnlocked = ti === 0 || (ti === 1 && heroLv >= 6) || (ti === 2 && heroLv >= 12);
-                return `<div class="talent-tier ${tierUnlocked ? '' : 'tier-locked'}">
-                  <div class="talent-tier-label">Tier ${ti+1} ${!tierUnlocked ? '🔒' : ''}</div>
-                  <div class="talent-tier-skills">
-                    ${tier.choices.map(t => {
-                      const key = cls.id + '_' + t.k;
-                      const lv = getTalentLv(key);
-                      const maxed = lv >= t.maxLv;
-                      const unlocked = isSkillUnlocked(t) && tierUnlocked;
-                      const selected = _selectedTalentKey === key;
-                      return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
-                        <div class="talent-btn-icon">${t.icon}</div>
-                        <div class="talent-btn-name">${t.name}</div>
-                        <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
-                        <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
-                      </div>`;
-                    }).join('')}
-                  </div>
-                </div>`;
+            <div class="talent-tree-content" style="grid-template-columns:repeat(${colCount}, auto);grid-template-rows:auto repeat(${gridRows}, auto);">
+              ${/* Hlavička sloupců — prázdná */''}
+              ${gridRows > 0 ? '' : ''}
+              ${grid.map((row, ri) => {
+                const rowUnlocked = tierUnlocked[ri];
+                return row.map((t, ci) => {
+                  if (!t) return `<div style="width:100px;height:96px"></div>`;
+                  const key = t._key;
+                  const lv = getSkillLv(key);
+                  const realLv = getTalentLv(key);
+                  const maxed = realLv >= t.maxLv;
+                  const unlocked = isSkillUnlocked(t) && rowUnlocked;
+                  const selected = _selectedTalentKey === key;
+                  return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
+                    <div class="talent-btn-icon">${t.icon}</div>
+                    <div class="talent-btn-name">${t.name}</div>
+                    <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
+                    <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
+                  </div>`;
+                }).join('');
               }).join('')}
             </div>
           </div>
@@ -6093,9 +6150,9 @@
         if (pts <= 0) return;
         const t = SKILL_MAP[key];
         if (!t) return;
-        const lv = getTalentLv(key);
-        if (lv >= t.maxLv) return;
-        state.talentLevels[key] = lv + 1;
+        const realLv = getTalentLv(key);
+        if (realLv >= t.maxLv) return;
+        state.talentLevels[key] = realLv + 1;
         state.talentPoints = pts - 1;
         saveGame();
         updateTalentBadge();

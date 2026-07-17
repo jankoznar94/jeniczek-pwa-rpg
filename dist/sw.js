@@ -68,7 +68,7 @@ const ASSET_FILES = [
   '/assets/sfx/hurt4.mp3',
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
-  '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png', '/assets/spells/defensive_shout.png',
+  '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png', '/assets/spells/defensive_shout.png', '/assets/spells/skill_shout.png',
   '/assets/result_win.png', '/assets/result_defeat.png',
   '/assets/items/belt_cloth.png', '/assets/items/belt_leather.png',
   '/assets/items/belt_iron.png', '/assets/items/belt_steel.png',
