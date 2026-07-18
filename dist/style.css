@@ -877,6 +877,11 @@ body.no-scroll { overflow: hidden; }
 .talent-school.collapsed .talent-school-desc { margin-bottom:0; }
 .talent-school.collapsed { padding-bottom:8px; }
 .talent-tree { display:block; margin-top:8px; }
+.diff-selector { display:flex; gap:6px; margin-bottom:10px; justify-content:center; }
+.diff-btn { padding:6px 14px; border:1px solid #333; border-radius:6px; background:#111; color:#888; cursor:pointer; font-size:13px; transition:0.15s; }
+.diff-btn.active { border-color:#f1c40f; color:#f1c40f; background:#1a1a1a; }
+.diff-btn.locked { opacity:0.4; cursor:default; }
+.diff-btn:not(.locked):hover { border-color:#666; }
 .talent-tree-tabs { display:flex; gap:4px; margin-bottom:8px; justify-content:center; }
 .tree-tab { padding:6px 12px; border:1px solid #333; border-radius:6px; background:#111; color:#aaa; cursor:pointer; font-size:13px; transition:0.15s; }
 .tree-tab.active { border-color:#f1c40f; color:#f1c40f; background:#1a1a1a; }
