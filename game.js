@@ -373,33 +373,33 @@
         attacks: { name:'Útoky', icon:'⚔️',
           tiers: [
             { choices: [
-              { k:'shadowStrike', name:'Shadow Strike', icon:'💢', maxLv:5, desc:lv=>`${100+lv*50}% dmg, +${5+lv*5}% crit chance` },
+              { k:'shadowStrike', name:'Shadow Strike', icon:'💢', iconImg:'shadowStrike.png', maxLv:5, desc:lv=>`${100+lv*50}% dmg, +${5+lv*5}% crit chance` },
             ]},
             { choices: [
-              { k:'bladeFury', name:'Blade Fury', icon:'⚡', maxLv:5, requires:'assassin_shadowStrike', requiresLv:1, desc:lv=>`${80+lv*30}% dmg, +${5+lv*3}% attack speed na 3s` },
+              { k:'bladeFury', name:'Blade Fury', icon:'⚡', iconImg:'bladeFury.png', maxLv:5, requires:'assassin_shadowStrike', requiresLv:1, desc:lv=>`${80+lv*30}% dmg, +${5+lv*3}% attack speed na 3s` },
             ]},
             { choices: [
-              { k:'deathMark', name:'Death Mark', icon:'🎯', maxLv:5, requires:'assassin_bladeFury', requiresLv:1, desc:lv=>`+${10+lv*5}% crit chance na 5s` },
+              { k:'deathMark', name:'Death Mark', icon:'🎯', iconImg:'deathMark.png', maxLv:5, requires:'assassin_bladeFury', requiresLv:1, desc:lv=>`+${10+lv*5}% crit chance na 5s` },
             ]}
           ]
         },
         shadows: { name:'Stíny', icon:'🌑',
           tiers: [
             { choices: [
-              { k:'poisonBlade', name:'Poison Blade', icon:'☠️', maxLv:5, desc:lv=>`${50+lv*20}% dmg + jed ${10+lv*5}%/tick na 3s` },
+              { k:'poisonBlade', name:'Poison Blade', icon:'☠️', iconImg:'poisonBlade.png', maxLv:5, desc:lv=>`${50+lv*20}% dmg + jed ${10+lv*5}%/tick na 3s` },
             ]},
             { choices: [
-              { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Sníží hitrate nepřítele o ${10+lv*5}% na 3s` },
+              { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', iconImg:'smokeScreen.png', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Sníží hitrate nepřítele o ${10+lv*5}% na 3s` },
             ]},
             { choices: [
-              { k:'shadowDance', name:'Shadow Dance', icon:'🌙', maxLv:5, requires:'assassin_smokeScreen', requiresLv:1, desc:lv=>`+${1+lv} combo point každý útok na 5s` },
+              { k:'shadowDance', name:'Shadow Dance', icon:'🌙', iconImg:'shadowDance.png', maxLv:5, requires:'assassin_smokeScreen', requiresLv:1, desc:lv=>`+${1+lv} combo point každý útok na 5s` },
             ]}
           ]
         },
         agility: { name:'Obratnost', icon:'💨',
           tiers: [
             { choices: [
-              { k:'evasion', name:'Evasion', icon:'💨', maxLv:5, desc:lv=>`+${10+lv*5}% dodge na 3s` },
+              { k:'evasion', name:'Evasion', icon:'💨', iconImg:'evasion.png', maxLv:5, desc:lv=>`+${10+lv*5}% dodge na 3s` },
             ]}
           ]
         }
@@ -411,39 +411,39 @@
         fire: { name:'Oheň', icon:'🔥',
           tiers: [
             { choices: [
-              { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:5, desc:lv=>`${75+lv*35}% dmg ohněm` },
+              { k:'firebolt', name:'Firebolt', icon:'🔥', iconImg:'firebolt.png', maxLv:5, desc:lv=>`${75+lv*35}% dmg ohněm` },
             ]},
             { choices: [
-              { k:'fireball', name:'Fireball', icon:'💥', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
+              { k:'fireball', name:'Fireball', icon:'💥', iconImg:'fireball.png', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
             ]},
             { choices: [
-              { k:'fireblast', name:'Fireblast', icon:'🌋', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${150+lv*50}% dmg ohněm` },
+              { k:'fireblast', name:'Fireblast', icon:'🌋', iconImg:'fireblast.png', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${150+lv*50}% dmg ohněm` },
             ]}
           ]
         },
         ice: { name:'Led', icon:'❄️',
           tiers: [
             { choices: [
-              { k:'icebolt', name:'Icebolt', icon:'❄️', maxLv:5, desc:lv=>`${75+lv*35}% dmg ledem, zpomalí 25% na 2s` },
+              { k:'icebolt', name:'Icebolt', icon:'❄️', iconImg:'icebolt.png', maxLv:5, desc:lv=>`${75+lv*35}% dmg ledem, zpomalí 25% na 2s` },
             ]},
             { choices: [
-              { k:'frostbolt', name:'Frostbolt', icon:'🧊', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
+              { k:'frostbolt', name:'Frostbolt', icon:'🧊', iconImg:'frostbolt.png', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
             ]},
             { choices: [
-              { k:'blizzard', name:'Blizzard', icon:'🌨️', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${50+lv*25}% dmg ledem, zmrazení na ${1+lv} útoky` },
+              { k:'blizzard', name:'Blizzard', icon:'🌨️', iconImg:'blizzard.png', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${50+lv*25}% dmg ledem, zmrazení na ${1+lv} útoky` },
             ]}
           ]
         },
         nature: { name:'Příroda', icon:'🌿',
           tiers: [
             { choices: [
-              { k:'regrowth', name:'Regrowth', icon:'💚', maxLv:5, desc:lv=>`Léčí ${10+lv*8} HP/tick na 3s` },
+              { k:'regrowth', name:'Regrowth', icon:'💚', iconImg:'regrowth.png', maxLv:5, desc:lv=>`Léčí ${10+lv*8} HP/tick na 3s` },
             ]},
             { choices: [
-              { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
+              { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', iconImg:'naturesBoon.png', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
             ]},
             { choices: [
-              { k:'revitalize', name:'Revitalize', icon:'✨', maxLv:5, requires:'mage_naturesBoon', requiresLv:1, desc:lv=>`Léčí ${30+lv*20}% max HP + ${5+lv*3}% dmg buff na 5s` },
+              { k:'revitalize', name:'Revitalize', icon:'✨', iconImg:'revitalize.png', maxLv:5, requires:'mage_naturesBoon', requiresLv:1, desc:lv=>`Léčí ${30+lv*20}% max HP + ${5+lv*3}% dmg buff na 5s` },
             ]}
           ]
         }
@@ -1517,7 +1517,7 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[]},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], bossesDefeated:[false,false,false,false,false], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
+      locationProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
       dungeonSteps: null, // pole kroků pro aktuální dungeon run (každý krok = 2-3 možnosti)
       rage:0, maxRage:100, // Barbar resource
@@ -1731,14 +1731,33 @@
     }
     renderMap();
   }
+  function setDifficulty(di) {
+    state.difficulty = di;
+    _expandedDungeon = -1;
+    state.dungeonSteps = null;
+    saveGame();
+    renderMap();
+  }
   function renderMap() {
     const h = state.hero;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
 
-    $('mapScroll').innerHTML = LOCATIONS.map((loc, i) => {
-      const prevDone = i === 0 || state.bossesDefeated[i-1];
+    // Difficulty selector
+    const allNormalDone = state.bossesDefeated[0] && state.bossesDefeated[0].every(Boolean);
+    const allNightmareDone = state.bossesDefeated[1] && state.bossesDefeated[1].every(Boolean);
+    const diffBtns = DIFFICULTIES.map((d, di) => {
+      const isActive = state.difficulty === di;
+      let locked = false;
+      if (di === 1 && !allNormalDone) locked = true;
+      if (di === 2 && !allNightmareDone) locked = true;
+      return `<button class="diff-btn ${isActive?'active':''} ${locked?'locked':''}" onclick="${locked?'':`game.setDifficulty(${di})`}">${locked?'🔒 ':''}${d.name}</button>`;
+    }).join('');
+
+    $('mapScroll').innerHTML = `<div class="diff-selector">${diffBtns}</div>` + LOCATIONS.map((loc, i) => {
+      const diffIdx = state.difficulty || 0;
+      const prevDone = i === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i-1]);
       const unlocked = i === 0 || prevDone;
-      const completed = state.bossesDefeated[i];
+      const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
       const curProgress = state.locationProgress[i] || 0;
       const expanded = _expandedDungeon === i;
       const theme = DUNGEON_THEMES[loc.theme] || DUNGEON_THEMES[0];
@@ -1835,7 +1854,7 @@
   function enterLocation(locId) {
     const loc = LOCATIONS[locId];
     if (!loc) return;
-    if (locId > 0 && !state.bossesDefeated[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
+    if (locId > 0 && !state.bossesDefeated[state.difficulty]?.[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
 
     // Reset dungeon steps při novém vstupu
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
@@ -5728,7 +5747,8 @@
       if (steps && currentChoice) currentChoice.completed = true;
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
-      state.bossesDefeated[locId] = true;
+      state.bossesDefeated[state.difficulty] = state.bossesDefeated[state.difficulty] || [false,false,false,false,false];
+      state.bossesDefeated[state.difficulty][locId] = true;
       state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 6) * getXpModifier(mb));
       state.locationProgress[locId] = 0;
       state.dungeonSteps = null; // reset dungeon po bossovi
@@ -7458,7 +7478,7 @@
     // Deduplikace a prefetch
     [...new Set(allMonsterFaces)].forEach(src => { const img = new Image(); img.src = src; });
 
-    if (!state.bossesDefeated || state.bossesDefeated.length < LOCATIONS.length) state.bossesDefeated = Array(LOCATIONS.length).fill(false);
+    if (!state.bossesDefeated || !Array.isArray(state.bossesDefeated) || state.bossesDefeated.length < 3 || !Array.isArray(state.bossesDefeated[0])) state.bossesDefeated = [[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]];
     if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
     if (!state.floorProgress || state.floorProgress.length < LOCATIONS.length) state.floorProgress = Array(LOCATIONS.length).fill(0);
     if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, mana:50, maxMana:50, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:null}, attrStr:0, attrVit:0, attrPoints:0 };
@@ -7619,7 +7639,7 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
-    investTalent, resetTalents, selectTalent, selectTree,
+    investTalent, resetTalents, selectTalent, selectTree, setDifficulty,
     showSurrenderModal, cancelSurrender, confirmSurrender,
     openInventoryFromShop,
     renderBestiary,
