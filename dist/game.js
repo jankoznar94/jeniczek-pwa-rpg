@@ -361,6 +361,7 @@
             ]},
             { choices: [
               { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${3+(lv-1)*0.5}s` },
+              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + přeruší kouzlení` },
             ]}
           ]
         }
@@ -488,6 +489,7 @@
       if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
       if (spellId === 'skillShout') return getSkillLv('barbarian_skillShout');
       if (spellId === 'thunderBolt') return getSkillLv('barbarian_thunderBolt');
+      if (spellId === 'shieldBash') return getSkillLv('barbarian_shieldBash');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -2050,7 +2052,7 @@
       debuffs: {},
       // Caster fields
       enemyMana: 0, maxEnemyMana: 0,
-      _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null,
+      _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
       _enemyCastProcessed: false,
     };
 
@@ -2178,7 +2180,7 @@
         mb._enemyCastStart = performance.now();
         mb._enemyCastTime = spell.castTime;
         mb._enemyCastSpell = spell.id;
-        mb.enemyMana -= spell.manaCost;
+        mb._enemyCastManaCost = spell.manaCost; // Mana se strhne až po dokončení castu
         mb._enemySwingStart = performance.now();
       }
     }
@@ -2225,7 +2227,8 @@
         const castElapsed = now - mb._enemyCastStart;
         mb._enemySwingPct = Math.min(castElapsed / mb._enemyCastTime, 1);
         if (castElapsed >= mb._enemyCastTime) {
-          // Cast dokončen
+          // Cast dokončen — strhnout manu
+          mb.enemyMana -= mb._enemyCastManaCost || 0;
           mb._enemyCasting = false;
           mb._enemySwingReady = true;
           mb._enemyAttackProcessed = false;
@@ -2245,7 +2248,7 @@
               mb._enemyCastStart = now;
               mb._enemyCastTime = spell.castTime;
               mb._enemyCastSpell = spell.id;
-              mb.enemyMana -= spell.manaCost;
+              mb._enemyCastManaCost = spell.manaCost; // Mana se strhne až po dokončení castu
               // Reset normálního swing timeru — čekáme na cast
               mb._enemySwingStart = now;
               updateMapBattleUI();
@@ -3085,7 +3088,7 @@
         const b = _sessionBuffs[spellId];
         if (!b) return;
         const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout' || spellId === 'defensiveShout' || spellId === 'skillShout';
+        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout' || spellId === 'defensiveShout' || spellId === 'skillShout' || spellId === 'shieldBash';
         html += `<div class="buff-icon" title="${b.name || spellId}">
           ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
           <span class="buff-icon-timer">${remaining}s</span>
@@ -3197,6 +3200,35 @@
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `⚡ -${dmg}`;
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'shieldBash') {
+      // Shield Bash — pouze se štítem
+      const shield = ITEM_MAP[state.hero.equip.shield];
+      if (!shield || shield.type !== 'shield') {
+        showMessage('🛡️ Potřebuješ štít!');
+        return;
+      }
+      const lv = getSpellLv('shieldBash');
+      const pct = 60 + lv * 20; // 80% @ lv1, 100% @ lv2, ... 160% @ lv5
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
+      mb.bossHp -= dmg;
+      // Interrupt — přeruší castování nepřítele
+      if (mb._enemyCasting) {
+        mb._enemyCasting = false;
+        mb._enemyCastSpell = null;
+        mb._enemySwingStart = performance.now();
+        _sessionDebuffs['shieldBash'] = { icon: '🛡️', name: 'Interrupt', ticks: 30, maxTicks: 30 };
+      }
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
+      const dmgText = $('mbDamageText');
+      if (dmgText) {
+        dmgText.textContent = `🛡️ -${dmg}`;
         dmgText.classList.remove('hidden');
         setTimeout(() => dmgText.classList.add('hidden'), 500);
       }
@@ -6127,7 +6159,7 @@
     const unlocked = isSkillUnlocked(t) && tierUnlocked;
     const pts = state.talentPoints || 0;
     const canInvest = pts > 0 && !maxed && unlocked;
-    $('skillInfoIcon').innerHTML = `<span style="font-size:40px">${t.icon}</span>`;
+    $('skillInfoIcon').innerHTML = t.iconImg ? `<img src="assets/spells/${t.iconImg}" style="width:64px;height:64px;object-fit:contain">` : `<span style="font-size:40px">${t.icon}</span>`;
     $('skillInfoName').textContent = t.name;
     $('skillInfoName').style.color = lv > 0 ? '#f1c40f' : unlocked ? '#eee' : '#666';
     let stats = `<span style="font-size:11px;color:${lv > 0 ? '#f1c40f' : '#888'}">${lv > 0 ? 'Naučeno' : unlocked ? 'Dostupné' : '🔒 Zamčeno'}</span><br>`;
