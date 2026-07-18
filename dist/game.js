@@ -333,8 +333,7 @@
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
             ]},
             { choices: [
-              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
-              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
+              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
             ]},
             { choices: [
               { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
@@ -347,6 +346,7 @@
               { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
             ]},
             { choices: [
+              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
               { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
             ]},
             { choices: [
@@ -7587,7 +7587,7 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
-    investTalent, resetTalents, selectTalent,
+    investTalent, resetTalents, selectTalent, selectTree,
     showSurrenderModal, cancelSurrender, confirmSurrender,
     openInventoryFromShop,
     renderBestiary,
