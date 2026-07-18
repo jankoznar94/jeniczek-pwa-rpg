@@ -336,7 +336,7 @@
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
             ]},
             { choices: [
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
             ]}
           ]
         },
