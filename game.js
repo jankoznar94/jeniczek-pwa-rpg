@@ -335,6 +335,7 @@
         { choices: [
           { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
           { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
+          { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${1+lv}s` },
           { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
         ]},
         { choices: [
@@ -372,7 +373,6 @@
         { choices: [
           { k:'fireball', name:'Fireball', icon:'💥', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
           { k:'frostbolt', name:'Frostbolt', icon:'🧊', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
-          { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${60+lv*30}% dmg bleskem` },
           { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
         ]},
         { choices: [
@@ -417,6 +417,7 @@
       if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
       if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
       if (spellId === 'skillShout') return getSkillLv('barbarian_skillShout');
+      if (spellId === 'thunderBolt') return getSkillLv('barbarian_thunderBolt');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -433,7 +434,6 @@
       if (spellId === 'regrowth') return getSkillLv('mage_regrowth');
       if (spellId === 'fireball') return getSkillLv('mage_fireball');
       if (spellId === 'frostbolt') return getSkillLv('mage_frostbolt');
-      if (spellId === 'thunderBolt') return getSkillLv('mage_thunderBolt');
       if (spellId === 'naturesBoon') return getSkillLv('mage_naturesBoon');
       if (spellId === 'blizzard') return getSkillLv('mage_blizzard');
       if (spellId === 'fireblast') return getSkillLv('mage_fireblast');
@@ -3105,19 +3105,21 @@
         setTimeout(() => dmgText.classList.add('hidden'), 500);
       }
     } else if (spellId === 'thunderBolt') {
-      // 120% dmg + omráčení 5s
+      const lv = getSpellLv('thunderBolt');
+      const pct = 80 + lv * 20; // 100% @ lv1, 120% @ lv2, ... 180% @ lv5
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
       const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const dmg = Math.max(1, Math.round(baseDmg * 1.2));
+      const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
       mb.bossHp -= dmg;
-      // Omráčení
+      // Omráčení — 1+lv sekund
+      const stunTicks = (1 + lv) * 60;
       mb._enemyStunned = true;
-      mb._enemyStunTimer = 300; // 5s
-      mb._enemyStunMax = 300;
+      mb._enemyStunTimer = stunTicks;
+      mb._enemyStunMax = stunTicks;
       mb._enemySwingReady = false;
       // Debuff ikona nad příšerou
-      _sessionDebuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: 300, maxTicks: 300 };
+      _sessionDebuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: stunTicks, maxTicks: stunTicks };
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
@@ -5271,17 +5273,6 @@
       const circle = document.querySelector('.timer-circle');
       if (circle) circle.style.stroke = '#4fc3f7';
       spawnFreezeParticles();
-    } else if (spellId === 'thunderBolt') {
-      const pct = 60 + lv * 30; // 90% @ lv1, 120% @ lv2, ... 210% @ lv5
-      const resistMult = getSchoolResistMult('lightning');
-      let dmg = Math.round(baseDmg * pct / 100 * resistMult);
-      mb.bossHp -= dmg;
-      effectMsg = `⚡ Thunder Bolt! ${dmg} poškození bleskem!`;
-      spawnLightningProjectile();
-      const bossFig = $('mbFigure');
-      if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(2) hue-rotate(60deg) saturate(2)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
-      const circle = document.querySelector('.timer-circle');
-      if (circle) circle.style.stroke = '#ffeb3b';
     } else if (spellId === 'icebolt') {
       // icebolt už není samostatné kouzlo — je to pasivní upgrade frostboltu
       // Pokud se sem dostaneme (starý save), chová se jako frostbolt
