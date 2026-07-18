@@ -335,7 +335,7 @@
         { choices: [
           { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
           { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
-          { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${1+lv}s` },
+          { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${3+(lv-1)*0.5}s` },
           { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
         ]},
         { choices: [
@@ -3112,8 +3112,8 @@
       const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
       const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
       mb.bossHp -= dmg;
-      // Omráčení — 1+lv sekund
-      const stunTicks = (1 + lv) * 60;
+      // Omráčení — 3s + 0.5s/lv
+      const stunTicks = Math.round((3 + (lv - 1) * 0.5) * 60);
       mb._enemyStunned = true;
       mb._enemyStunTimer = stunTicks;
       mb._enemyStunMax = stunTicks;
