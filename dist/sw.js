@@ -1,7 +1,7 @@
-const CODE_CACHE = 'boss-slayer-code-v121';
-const ASSET_CACHE = 'boss-slayer-assets-v8';
+const CODE_CACHE = 'boss-slayer-code-v122';
+const ASSET_CACHE = 'boss-slayer-assets-v9';
 
-const CODE_FILES = ['/', '/index.html', '/style.css?v=121', '/game.js?v=121', '/manifest.json'];
+const CODE_FILES = ['/', '/index.html', '/style.css?v=122', '/game.js?v=122', '/manifest.json'];
 
 const ASSET_FILES = [
   '/icon-192.png', '/icon-512.png',
@@ -75,6 +75,7 @@ const ASSET_FILES = [
   '/assets/spells/firebolt.png', '/assets/spells/fireball.png', '/assets/spells/fireblast.png',
   '/assets/spells/icebolt.png', '/assets/spells/frostbolt.png', '/assets/spells/blizzard.png',
   '/assets/spells/regrowth.png', '/assets/spells/naturesBoon.png', '/assets/spells/revitalize.png',
+  '/assets/spells/whirlwind.png',
   '/assets/result_win.png', '/assets/result_defeat.png',
   '/assets/items/belt_cloth.png', '/assets/items/belt_leather.png',
   '/assets/items/belt_iron.png', '/assets/items/belt_steel.png',
