@@ -326,61 +326,127 @@
   const CLASS_SKILLS = {
     barbarian: {
       id:'barbarian', name:'Barbar', icon:'🪓', desc:'Silné fyzické útoky a bojová kouzla.',
-      tiers: [
-        { choices: [
-          { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
-          { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
-          { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + zpomalí 20% na ${1+lv}s` },
-        ]},
-        { choices: [
-          { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
-          { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
-          { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${3+(lv-1)*0.5}s` },
-          { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
-        ]},
-        { choices: [
-          { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
-          { k:'skillShout', name:'Skill Shout', icon:'📣', iconImg:'skill_shout.png', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} dočasná úroveň všech skillů na 30s` },
-        ]}
-      ]
+      trees: {
+        attacks: { name:'Útoky', icon:'⚔️',
+          tiers: [
+            { choices: [
+              { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
+            ]},
+            { choices: [
+              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
+              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
+            ]},
+            { choices: [
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
+            ]}
+          ]
+        },
+        shouts: { name:'Pokřiky', icon:'📯',
+          tiers: [
+            { choices: [
+              { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
+            ]},
+            { choices: [
+              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
+            ]},
+            { choices: [
+              { k:'skillShout', name:'Skill Shout', icon:'📣', iconImg:'skill_shout.png', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} dočasná úroveň všech skillů na 30s` },
+            ]}
+          ]
+        },
+        control: { name:'Kontrola', icon:'⚡',
+          tiers: [
+            { choices: [
+              { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + zpomalí 20% na ${1+lv}s` },
+            ]},
+            { choices: [
+              { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${3+(lv-1)*0.5}s` },
+            ]}
+          ]
+        }
+      }
     },
     assassin: {
       id:'assassin', name:'Assassin', icon:'🗡️', desc:'Rychlé útoky, kritické zásahy a stíny.',
-      tiers: [
-        { choices: [
-          { k:'shadowStrike', name:'Shadow Strike', icon:'💢', maxLv:5, desc:lv=>`${100+lv*50}% dmg, +${5+lv*5}% crit chance` },
-          { k:'poisonBlade', name:'Poison Blade', icon:'☠️', maxLv:5, desc:lv=>`${50+lv*20}% dmg + jed ${10+lv*5}%/tick na 3s` },
-          { k:'evasion', name:'Evasion', icon:'💨', maxLv:5, desc:lv=>`+${10+lv*5}% dodge na 3s` },
-        ]},
-        { choices: [
-          { k:'bladeFury', name:'Blade Fury', icon:'⚡', maxLv:5, requires:'assassin_shadowStrike', requiresLv:1, desc:lv=>`${80+lv*30}% dmg, +${5+lv*3}% attack speed na 3s` },
-          { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Sníží hitrate nepřítele o ${10+lv*5}% na 3s` },
-        ]},
-        { choices: [
-          { k:'deathMark', name:'Death Mark', icon:'🎯', maxLv:5, requires:'assassin_bladeFury', requiresLv:1, desc:lv=>`+${10+lv*5}% crit chance na 5s` },
-          { k:'shadowDance', name:'Shadow Dance', icon:'🌙', maxLv:5, requires:'assassin_smokeScreen', requiresLv:1, desc:lv=>`+${1+lv} combo point každý útok na 5s` },
-        ]}
-      ]
+      trees: {
+        attacks: { name:'Útoky', icon:'⚔️',
+          tiers: [
+            { choices: [
+              { k:'shadowStrike', name:'Shadow Strike', icon:'💢', maxLv:5, desc:lv=>`${100+lv*50}% dmg, +${5+lv*5}% crit chance` },
+            ]},
+            { choices: [
+              { k:'bladeFury', name:'Blade Fury', icon:'⚡', maxLv:5, requires:'assassin_shadowStrike', requiresLv:1, desc:lv=>`${80+lv*30}% dmg, +${5+lv*3}% attack speed na 3s` },
+            ]},
+            { choices: [
+              { k:'deathMark', name:'Death Mark', icon:'🎯', maxLv:5, requires:'assassin_bladeFury', requiresLv:1, desc:lv=>`+${10+lv*5}% crit chance na 5s` },
+            ]}
+          ]
+        },
+        shadows: { name:'Stíny', icon:'🌑',
+          tiers: [
+            { choices: [
+              { k:'poisonBlade', name:'Poison Blade', icon:'☠️', maxLv:5, desc:lv=>`${50+lv*20}% dmg + jed ${10+lv*5}%/tick na 3s` },
+            ]},
+            { choices: [
+              { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Sníží hitrate nepřítele o ${10+lv*5}% na 3s` },
+            ]},
+            { choices: [
+              { k:'shadowDance', name:'Shadow Dance', icon:'🌙', maxLv:5, requires:'assassin_smokeScreen', requiresLv:1, desc:lv=>`+${1+lv} combo point každý útok na 5s` },
+            ]}
+          ]
+        },
+        agility: { name:'Obratnost', icon:'💨',
+          tiers: [
+            { choices: [
+              { k:'evasion', name:'Evasion', icon:'💨', maxLv:5, desc:lv=>`+${10+lv*5}% dodge na 3s` },
+            ]}
+          ]
+        }
+      }
     },
     mage: {
       id:'mage', name:'Mage', icon:'🔮', desc:'Mocná kouzla ohně, ledu a přírody.',
-      tiers: [
-        { choices: [
-          { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:5, desc:lv=>`${75+lv*35}% dmg ohněm` },
-          { k:'icebolt', name:'Icebolt', icon:'❄️', maxLv:5, desc:lv=>`${75+lv*35}% dmg ledem, zpomalí 25% na 2s` },
-          { k:'regrowth', name:'Regrowth', icon:'💚', maxLv:5, desc:lv=>`Léčí ${10+lv*8} HP/tick na 3s` },
-        ]},
-        { choices: [
-          { k:'fireball', name:'Fireball', icon:'💥', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
-          { k:'frostbolt', name:'Frostbolt', icon:'🧊', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
-          { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
-        ]},
-        { choices: [
-          { k:'blizzard', name:'Blizzard', icon:'🌨️', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${50+lv*25}% dmg ledem, zmrazení na ${1+lv} útoky` },
-          { k:'fireblast', name:'Fireblast', icon:'🌋', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${150+lv*50}% dmg ohněm` },
-          { k:'revitalize', name:'Revitalize', icon:'✨', maxLv:5, requires:'mage_naturesBoon', requiresLv:1, desc:lv=>`Léčí ${30+lv*20}% max HP + ${5+lv*3}% dmg buff na 5s` },
-        ]}
-      ]
+      trees: {
+        fire: { name:'Oheň', icon:'🔥',
+          tiers: [
+            { choices: [
+              { k:'firebolt', name:'Firebolt', icon:'🔥', maxLv:5, desc:lv=>`${75+lv*35}% dmg ohněm` },
+            ]},
+            { choices: [
+              { k:'fireball', name:'Fireball', icon:'💥', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
+            ]},
+            { choices: [
+              { k:'fireblast', name:'Fireblast', icon:'🌋', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${150+lv*50}% dmg ohněm` },
+            ]}
+          ]
+        },
+        ice: { name:'Led', icon:'❄️',
+          tiers: [
+            { choices: [
+              { k:'icebolt', name:'Icebolt', icon:'❄️', maxLv:5, desc:lv=>`${75+lv*35}% dmg ledem, zpomalí 25% na 2s` },
+            ]},
+            { choices: [
+              { k:'frostbolt', name:'Frostbolt', icon:'🧊', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
+            ]},
+            { choices: [
+              { k:'blizzard', name:'Blizzard', icon:'🌨️', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${50+lv*25}% dmg ledem, zmrazení na ${1+lv} útoky` },
+            ]}
+          ]
+        },
+        nature: { name:'Příroda', icon:'🌿',
+          tiers: [
+            { choices: [
+              { k:'regrowth', name:'Regrowth', icon:'💚', maxLv:5, desc:lv=>`Léčí ${10+lv*8} HP/tick na 3s` },
+            ]},
+            { choices: [
+              { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
+            ]},
+            { choices: [
+              { k:'revitalize', name:'Revitalize', icon:'✨', maxLv:5, requires:'mage_naturesBoon', requiresLv:1, desc:lv=>`Léčí ${30+lv*20}% max HP + ${5+lv*3}% dmg buff na 5s` },
+            ]}
+          ]
+        }
+      }
     }
   };
 
@@ -388,12 +454,16 @@
   const SKILL_MAP = {};
   Object.keys(CLASS_SKILLS).forEach(classId => {
     const cls = CLASS_SKILLS[classId];
-    cls.tiers.forEach((tier, ti) => {
-      tier.choices.forEach(t => {
-        const key = classId + '_' + t.k;
-        SKILL_MAP[key] = t;
-        t._classId = classId;
-        t._tierIdx = ti;
+    Object.keys(cls.trees).forEach(treeId => {
+      const tree = cls.trees[treeId];
+      tree.tiers.forEach((tier, ti) => {
+        tier.choices.forEach(t => {
+          const key = classId + '_' + t.k;
+          SKILL_MAP[key] = t;
+          t._classId = classId;
+          t._tierIdx = ti;
+          t._treeId = treeId;
+        });
       });
     });
   });
@@ -1435,9 +1505,12 @@
     const talentLevels = {};
     Object.keys(CLASS_SKILLS).forEach(classId => {
       const cls = CLASS_SKILLS[classId];
-      cls.tiers.forEach(tier => {
-        tier.choices.forEach(t => {
-          talentLevels[classId + '_' + t.k] = 0;
+      Object.keys(cls.trees).forEach(treeId => {
+        const tree = cls.trees[treeId];
+        tree.tiers.forEach(tier => {
+          tier.choices.forEach(t => {
+            talentLevels[classId + '_' + t.k] = 0;
+          });
         });
       });
     });
@@ -6002,12 +6075,18 @@
 
   // ===== TALENTS (SKILL TREE) =====
   let _selectedTalentKey = null;
+  let _selectedTreeId = null; // aktuálně zobrazený strom
   function getTierPoints(classId, tierIdx) {
     const cls = CLASS_SKILLS[classId];
-    if (!cls || !cls.tiers[tierIdx]) return 0;
+    if (!cls) return 0;
     let total = 0;
-    cls.tiers[tierIdx].choices.forEach(t => {
-      total += getTalentLv(classId + '_' + t.k);
+    Object.keys(cls.trees).forEach(treeId => {
+      const tree = cls.trees[treeId];
+      if (tree.tiers[tierIdx]) {
+        tree.tiers[tierIdx].choices.forEach(t => {
+          total += getTalentLv(classId + '_' + t.k);
+        });
+      }
     });
     return total;
   }
@@ -6018,12 +6097,17 @@
   function getBestSpellId(classId) {
     const cls = CLASS_SKILLS[classId];
     if (!cls) return null;
-    // Projít všechny tiers a vrátit první odemčené kouzlo (od nejvyššího tieru)
-    for (let ti = cls.tiers.length - 1; ti >= 0; ti--) {
-      const tier = cls.tiers[ti];
-      for (const t of tier.choices) {
-        const key = classId + '_' + t.k;
-        if (getTalentLv(key) > 0) return t.k;
+    // Projít všechny stromy a tiers a vrátit první odemčené kouzlo (od nejvyššího tieru)
+    for (let ti = 2; ti >= 0; ti--) {
+      const treeIds = Object.keys(cls.trees);
+      for (const treeId of treeIds) {
+        const tree = cls.trees[treeId];
+        if (tree.tiers[ti]) {
+          for (const t of tree.tiers[ti].choices) {
+            const key = classId + '_' + t.k;
+            if (getTalentLv(key) > 0) return t.k;
+          }
+        }
       }
     }
     return null;
@@ -6091,85 +6175,63 @@
           $('talentSchools').innerHTML = '<div style="text-align:center;color:#888;padding:20px">Nejdřív si vyber classu</div>';
           return;
         }
-        // Přiřadit každému skillu sloupec podle jeho root skillu z tier 1
-        function getRootKey(t) {
-          if (!t.requires) return t.k;
-          const parent = SKILL_MAP[t.requires];
-          if (!parent) return t.k;
-          return getRootKey(parent);
+        // Pokud není vybraný strom, vybrat první
+        const treeIds = Object.keys(cls.trees);
+        if (!_selectedTreeId || !cls.trees[_selectedTreeId]) {
+          _selectedTreeId = treeIds[0];
         }
-        // Všechny skilly všech tierů
-        const allSkills = [];
-        cls.tiers.forEach((tier, ti) => {
-          tier.choices.forEach(t => {
-            const key = cls.id + '_' + t.k;
-            t._key = key;
-            t._tierIdx = ti;
-            allSkills.push(t);
-          });
-        });
-        // Root skilly z tier 1 určují pořadí sloupců
-        const tier1Skills = cls.tiers[0].choices;
-        const columnOrder = {};
-        tier1Skills.forEach((t, idx) => { columnOrder[t.k] = idx; });
-        // Pro každý skill najít root a column
-        const colCount = tier1Skills.length;
-        const gridRows = cls.tiers.length;
-        // Sestavit grid: rows × cols, každá buňka = skill nebo prázdná
-        const grid = [];
-        for (let r = 0; r < gridRows; r++) {
-          grid[r] = [];
-          for (let c = 0; c < colCount; c++) {
-            grid[r][c] = null;
-          }
-        }
-        allSkills.forEach(t => {
-          const root = getRootKey(t);
-          const col = columnOrder[root] !== undefined ? columnOrder[root] : 0;
-          const row = t._tierIdx;
-          grid[row][col] = t;
-        });
-        // Tier label
-        const tierLabels = ['Tier 1', 'Tier 2', 'Tier 3'];
         const heroLv = state.hero.level;
         const tierUnlocked = [true, heroLv >= 6, heroLv >= 12];
+        // Tlačítka stromů
+        const treeTabs = treeIds.map(treeId => {
+          const tree = cls.trees[treeId];
+          const isActive = _selectedTreeId === treeId;
+          return `<button class="tree-tab ${isActive?'active':''}" onclick="game.selectTree('${treeId}')">${tree.icon} ${tree.name}</button>`;
+        }).join('');
+        // Vybraný strom
+        const tree = cls.trees[_selectedTreeId];
+        // Sestavit grid pro aktuální strom
+        const gridRows = tree.tiers.length;
+        const grid = tree.tiers.map((tier, ri) => {
+          const rowUnlocked = tierUnlocked[ri];
+          return `<div class="talent-tier-row">
+            ${tier.choices.map(t => {
+              const key = cls.id + '_' + t.k;
+              const lv = getSkillLv(key);
+              const realLv = getTalentLv(key);
+              const maxed = realLv >= t.maxLv;
+              const unlocked = isSkillUnlocked(t) && rowUnlocked;
+              const selected = _selectedTalentKey === key;
+              return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
+                <div class="talent-btn-icon">${t.iconImg ? `<img src="assets/spells/${t.iconImg}" style="width:48px;height:48px;object-fit:contain">` : `<span style="font-size:32px">${t.icon}</span>`}</div>
+                <div class="talent-btn-name">${t.name}</div>
+                <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
+                <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
+              </div>`;
+            }).join('')}
+          </div>`;
+        }).join('');
         $('talentSchools').innerHTML = `<div class="talent-school active ${cls.id}">
           <div class="talent-school-header">
             <span class="talent-school-icon">${cls.icon}</span>
             <span class="talent-school-name">${cls.name}</span>
           </div>
           <div class="talent-school-desc">${cls.desc}</div>
+          <div class="talent-tree-tabs">${treeTabs}</div>
           <div class="talent-tree">
-            <div class="talent-tree-content">
-              ${grid.map((row, ri) => {
-                const rowUnlocked = tierUnlocked[ri];
-                return `<div class="talent-tier-row">
-                  ${row.map((t, ci) => {
-                    if (!t) return `<div style="width:100px;height:96px"></div>`;
-                    const key = t._key;
-                    const lv = getSkillLv(key);
-                    const realLv = getTalentLv(key);
-                    const maxed = realLv >= t.maxLv;
-                    const unlocked = isSkillUnlocked(t) && rowUnlocked;
-                    const selected = _selectedTalentKey === key;
-                    return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
-                      <div class="talent-btn-icon">${t.iconImg ? `<img src="assets/spells/${t.iconImg}" style="width:28px;height:28px;object-fit:contain">` : t.icon}</div>
-                      <div class="talent-btn-name">${t.name}</div>
-                      <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
-                      <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
-                    </div>`;
-                  }).join('')}
-                </div>`;
-              }).join('')}
-            </div>
+            <div class="talent-tree-content">${grid}</div>
           </div>
         </div>`;
-        // Zobrazit info panel pro vybraný skill
         if (_selectedTalentKey) {
           showTalentInfo(_selectedTalentKey);
         } else {
           $('skillInfoPanel').classList.add('hidden');
         }
+      }
+      function selectTree(treeId) {
+        _selectedTreeId = treeId;
+        _selectedTalentKey = null;
+        renderTalents();
       }
       function selectTalent(key) {
         _selectedTalentKey = key;
