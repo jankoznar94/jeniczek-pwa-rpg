@@ -574,7 +574,7 @@
     { id:'icy', name:'Ledový', type:'prefix', group:1, minIlvl:8, weight:8,
       types:['weapon'], stats:{ iceDmg:[3,8] }, tint:'#4a7dff' },
     { id:'keen', name:'Obratný', type:'prefix', group:6, minIlvl:8, weight:7,
-      types:['weapon','ring'], stats:{ hitRating:[3,8] }, tint:'#f1c40f' },
+      types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
     { id:'sharp', name:'Bystrý', type:'prefix', group:7, minIlvl:10, weight:6,
       types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
     { id:'bloody', name:'Krvavý', type:'prefix', group:8, minIlvl:12, weight:5,
@@ -597,7 +597,7 @@
       types:['weapon','ring','amulet'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     // === SUFFIXY ===
     { id:'ofAccuracy', name:'Přesnosti', type:'suffix', group:105, minIlvl:10, weight:7,
-      types:['weapon','ring'], stats:{ hitRating:[3,8] }, tint:'#f1c40f' },
+      types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
     { id:'ofSpeed', name:'Rychlosti', type:'suffix', group:106, minIlvl:12, weight:5,
       types:['weapon'], stats:{ swingMs:[-200,-100] }, tint:'#1abc9c' },
     { id:'ofCritical', name:'Kritičnosti', type:'suffix', group:107, minIlvl:12, weight:6,
@@ -729,7 +729,7 @@
     { id:'unique_linenHood', name:'Lněná kápě', baseId:'linenHood',
       affixIds:['mystic','ofWisdom'], minLevel:1, tier:2,
       iconImg:'assets/items/helmet_linen_hood.png', icon:'🎭',
-      uniqueProp:{ type:'hitRatingBonus', value:5, desc:'+5 hit rating' } },
+      uniqueProp:{ type:'attackRatingBonus', value:10, desc:'+10 attack rating' } },
     { id:'unique_ironHelm', name:'Železná helma', baseId:'ironHelm',
       affixIds:['fortified','ofStrength'], minLevel:2, tier:3,
       iconImg:'assets/items/helmet_iron_helm.png', icon:'⛑️',
@@ -901,7 +901,7 @@
       bonusMana: baseItem.bonusMana || 0,
       defense: baseItem.defense || 0,
       critChance: baseItem.critChance || 0,
-      hitRating: baseItem.hitRating || 0,
+      attackRating: baseItem.attackRating || 0,
       swingMs: baseItem.swingMs || 0,
       // Affix staty (přičtou se)
       fireDmg: 0,
@@ -977,7 +977,7 @@
       bonusMana: baseItem.bonusMana || 0,
       defense: baseItem.defense || 0,
       critChance: baseItem.critChance || 0,
-      hitRating: baseItem.hitRating || 0,
+      attackRating: baseItem.attackRating || 0,
       swingMs: baseItem.swingMs || 0,
       fireDmg: 0, iceDmg: 0, lifesteal: 0, manaSteal: 0,
       enhancedDefense: 0, enhancedDmg: 0,
@@ -1209,19 +1209,19 @@
   const LOCATIONS = [
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
       boss:{name:'Troll',face:'assets/monsters/troll_test_small.png',hp:10,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE},
-      reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0} },
+      reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10 },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:10, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
       boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
-      reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+      reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:20 },
     { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:11, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
       boss:{name:'Ledový obr',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
-      reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0} },
+      reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:35 },
     { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:11, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
       boss:{name:'Lich',face:'assets/monsters/lich.png',hp:22,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
-      reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5} },
+      reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5}, monsterDefense:55 },
     { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:12, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
       boss:{name:'Lávový drak',face:'assets/monsters/lava_dragon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER},
-      reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75} },
+      reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75}, monsterDefense:80 },
   ];
 
   // Skoková obtížnost — násobitel HP a damage podle dungeonu
@@ -1331,40 +1331,39 @@
   }
 
   function getPlayerAttackTable(mb) {
-    // Vrací { missChance, dodgeChance } pro hráčův útok
-    const diff = getLevelDiff(mb);
-    // Base: 5% miss, 5% dodge proti stejně silnému
-    // Každý +1 level hráče = -2% k oběma (hráč je lepší)
-    // Každý -1 level hráče = +2% k oběma (monstrum je lepší)
-    let baseMiss = 5 - diff * 2;
-    let baseDodge = 5 - diff * 2;
-    baseMiss = clamp(baseMiss, 0, 40);
-    baseDodge = clamp(baseDodge, 0, 40);
+    // D2 formule: Chance to Hit = 200% × AR / (AR + DR) × Alvl / (Alvl + Dlvl)
+    const monsterLv = getMonsterLevel(mb);
+    const heroLv = state.hero.level || 1;
 
-    // Dual-wield penalty: +19% miss (jako WoW TBC)
-    const cls = CLASSES[state.heroClass];
-    const isDualWield = cls && cls.dualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
-    if (isDualWield) {
-      baseMiss += 19;
+    // Attack Rating hráče — podle primárního atributu classy
+    const h = state.hero;
+    const eqAttrs = getEquipAttrs();
+    let baseAR = 0;
+    if (state.heroClass === 'barbarian') {
+      baseAR = ((h.attrStr || 0) + eqAttrs.str) * 2 + ((h.attrDex || 0) + eqAttrs.dex) * 1;
+    } else if (state.heroClass === 'assassin') {
+      baseAR = ((h.attrDex || 0) + eqAttrs.dex) * 3 + ((h.attrStr || 0) + eqAttrs.str) * 1;
+    } else {
+      baseAR = ((h.attrInt || 0) + eqAttrs.int) * 1 + ((h.attrDex || 0) + eqAttrs.dex) * 2;
     }
-
-    // HitRating ze všech equip slotů: 1 bod = -0.5% miss
+    // +AR z equipu (attackRating affix)
     const eq = state.hero.equip;
-    let totalHit = 0;
+    let totalAR = 0;
     Object.keys(eq).forEach(slot => {
       const item = ITEM_MAP[eq[slot]];
-      if (item) totalHit += item.hitRating || 0;
+      if (item) totalAR += item.attackRating || 0;
     });
-    // ExpertiseRating ze všech equip slotů: 1 bod = -0.25% dodge
-    let totalExp = 0;
-    Object.keys(eq).forEach(slot => {
-      const item = ITEM_MAP[eq[slot]];
-      if (item) totalExp += item.expertiseRating || 0;
-    });
+    const ar = Math.max(1, baseAR + totalAR);
 
-    const missChance = Math.max(0, baseMiss - totalHit * 0.5);
-    const dodgeChance = Math.max(0, baseDodge - totalExp * 0.25);
-    return { missChance, dodgeChance };
+    // Defense monstra
+    const monsterDef = mb.loc?.monsterDefense || 0;
+    const dr = Math.max(1, monsterDef);
+
+    // D2 formule
+    let chance = 200 * ar / (ar + dr) * heroLv / (heroLv + monsterLv);
+    chance = clamp(chance, 5, 95);
+
+    return { hitChance: chance };
   }
 
   function getPlayerDodgeChance(mb) {
@@ -5112,32 +5111,17 @@
 
   function dealPlayerDamage(mb, mult) {
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-    // 🎲 ATTACK TABLE — Miss / Dodge check (pouze pro fyzické útoky, ne pro kouzla)
+    // 🎲 ATTACK TABLE — D2 formule (pouze pro fyzické útoky, ne pro kouzla)
     const isPhysical = weapon.weaponType !== 'staff';
     if (isPhysical) {
       const at = getPlayerAttackTable(mb);
       const roll = Math.random() * 100;
-      if (roll < at.missChance) {
+      if (roll >= at.hitChance) {
         // MISS!
         const dmgText = $('mbDamageText');
         if (dmgText) {
           dmgText.textContent = 'MISS!';
           dmgText.style.color = '#888';
-          dmgText.classList.remove('hidden');
-          setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
-        }
-        playSFX(dodgeSfx);
-        // V auto-combatu se swing už resetoval v onAutoPlayerAttack/onAutoOffhandAttack
-        // Ve swipe režimu potřebujeme advanceSequence
-        if (!mb._combatLoop) advanceSequence();
-        return;
-      }
-      if (roll < at.missChance + at.dodgeChance) {
-        // DODGE!
-        const dmgText = $('mbDamageText');
-        if (dmgText) {
-          dmgText.textContent = 'DODGE!';
-          dmgText.style.color = '#f39c12';
           dmgText.classList.remove('hidden');
           setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
         }
@@ -5484,7 +5468,7 @@
     // 5. HitRating a ExpertiseRating podle rarity
     if (item.rarity !== 'common') {
       const hitChance = item.rarity === 'uncommon' ? 0.3 : 0.6;
-      if (Math.random() < hitChance) item.hitRating = (item.hitRating || 0) + 1 + rand(0, Math.ceil(tier * 0.5));
+      if (Math.random() < hitChance) item.attackRating = (item.attackRating || 0) + 1 + rand(0, Math.ceil(tier * 0.5));
       const expChance = item.rarity === 'uncommon' ? 0.2 : 0.5;
       if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil(tier * 0.4));
     }
@@ -6502,7 +6486,7 @@
         if (item.poisonDmg) affixStats.push(`☠️+${item.poisonDmg}`);
         if (item.lifesteal) affixStats.push(`🩸+${item.lifesteal}%`);
         if (item.manaSteal) affixStats.push(`💜+${item.manaSteal}%`);
-        if (item.hitRating) affixStats.push(`🎯+${item.hitRating}`);
+        if (item.attackRating) affixStats.push(`🎯+${item.attackRating}`);
         if (item.skillDmg) affixStats.push(`✨+${item.skillDmg}%`);
         if (item.manaRegen) affixStats.push(`💧+${item.manaRegen}/t`);
         if (item.bonusMana) affixStats.push(`💧+${item.bonusMana}`);
@@ -6733,7 +6717,7 @@
       if (item.poisonDmg) affixStats.push(`☠️ +${item.poisonDmg} jedové dmg`);
       if (item.lifesteal) affixStats.push(`🩸 +${item.lifesteal}% lifesteal`);
       if (item.manaSteal) affixStats.push(`💜 +${item.manaSteal}% many/útok`);
-      if (item.hitRating) affixStats.push(`🎯 +${item.hitRating} hit rating`);
+      if (item.attackRating) affixStats.push(`🎯 +${item.attackRating} hit rating`);
       if (item.skillDmg) affixStats.push(`✨ +${item.skillDmg}% skill dmg`);
       if (item.manaRegen) affixStats.push(`💧 +${item.manaRegen} many/tick`);
       if (item.bonusMana) affixStats.push(`💧 +${item.bonusMana} many`);
@@ -6782,7 +6766,7 @@
           if (ring1.poisonDmg) a1.push(`☠️ +${ring1.poisonDmg} jedové dmg`);
           if (ring1.lifesteal) a1.push(`🩸 +${ring1.lifesteal}% lifesteal`);
           if (ring1.manaSteal) a1.push(`💜 +${ring1.manaSteal}% many/útok`);
-          if (ring1.hitRating) a1.push(`🎯 +${ring1.hitRating} hit rating`);
+          if (ring1.attackRating) a1.push(`🎯 +${ring1.attackRating} hit rating`);
           if (ring1.skillDmg) a1.push(`✨ +${ring1.skillDmg}% skill dmg`);
           if (ring1.manaRegen) a1.push(`💧 +${ring1.manaRegen} many/tick`);
           if (ring1.bonusMana) a1.push(`💧 +${ring1.bonusMana} many`);
@@ -6809,7 +6793,7 @@
           if (ring2.poisonDmg) a2.push(`☠️ +${ring2.poisonDmg} jedové dmg`);
           if (ring2.lifesteal) a2.push(`🩸 +${ring2.lifesteal}% lifesteal`);
           if (ring2.manaSteal) a2.push(`💜 +${ring2.manaSteal}% many/útok`);
-          if (ring2.hitRating) a2.push(`🎯 +${ring2.hitRating} hit rating`);
+          if (ring2.attackRating) a2.push(`🎯 +${ring2.attackRating} hit rating`);
           if (ring2.skillDmg) a2.push(`✨ +${ring2.skillDmg}% skill dmg`);
           if (ring2.manaRegen) a2.push(`💧 +${ring2.manaRegen} many/tick`);
           if (ring2.bonusMana) a2.push(`💧 +${ring2.bonusMana} many`);
@@ -6856,7 +6840,7 @@
           if (mh.iceDmg) a.push(`❄️ +${mh.iceDmg} ledové dmg`);
           if (mh.poisonDmg) a.push(`☠️ +${mh.poisonDmg} jedové dmg`);
           if (mh.lifesteal) a.push(`🩸 +${mh.lifesteal}% lifesteal`);
-          if (mh.hitRating) a.push(`🎯 +${mh.hitRating} hit rating`);
+          if (mh.attackRating) a.push(`🎯 +${mh.attackRating} hit rating`);
           if (mh.skillDmg) a.push(`✨ +${mh.skillDmg}% skill dmg`);
           if (mh.manaRegen) a.push(`💧 +${mh.manaRegen} many/tick`);
           if (mh.bonusMana) a.push(`💧 +${mh.bonusMana} many`);
@@ -6881,7 +6865,7 @@
           if (oh.iceDmg) a.push(`❄️ +${oh.iceDmg} ledové dmg`);
           if (oh.poisonDmg) a.push(`☠️ +${oh.poisonDmg} jedové dmg`);
           if (oh.lifesteal) a.push(`🩸 +${oh.lifesteal}% lifesteal`);
-          if (oh.hitRating) a.push(`🎯 +${oh.hitRating} hit rating`);
+          if (oh.attackRating) a.push(`🎯 +${oh.attackRating} hit rating`);
           if (oh.skillDmg) a.push(`✨ +${oh.skillDmg}% skill dmg`);
           if (oh.manaRegen) a.push(`💧 +${oh.manaRegen} many/tick`);
           if (oh.bonusMana) a.push(`💧 +${oh.bonusMana} many`);
@@ -6935,7 +6919,7 @@
       if (equipped.poisonDmg) eAffixStats.push(`☠️ +${equipped.poisonDmg} jedové dmg`);
       if (equipped.lifesteal) eAffixStats.push(`🩸 +${equipped.lifesteal}% lifesteal`);
       if (equipped.manaSteal) eAffixStats.push(`💜 +${equipped.manaSteal}% many/útok`);
-      if (equipped.hitRating) eAffixStats.push(`🎯 +${equipped.hitRating} hit rating`);
+      if (equipped.attackRating) eAffixStats.push(`🎯 +${equipped.attackRating} hit rating`);
       if (equipped.skillDmg) eAffixStats.push(`✨ +${equipped.skillDmg}% skill dmg`);
       if (equipped.manaRegen) eAffixStats.push(`💧 +${equipped.manaRegen} many/tick`);
       if (equipped.bonusMana) eAffixStats.push(`💧 +${equipped.bonusMana} many`);
