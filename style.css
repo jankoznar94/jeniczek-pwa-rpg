@@ -881,7 +881,7 @@ body.no-scroll { overflow: hidden; }
 .tree-tab { padding:6px 12px; border:1px solid #333; border-radius:6px; background:#111; color:#aaa; cursor:pointer; font-size:13px; transition:0.15s; }
 .tree-tab.active { border-color:#f1c40f; color:#f1c40f; background:#1a1a1a; }
 .tree-tab:hover { border-color:#666; }
-.talent-tree-content { display:flex; flex-direction:column; gap:10px; align-items:center; }
+.talent-tree-content { display:flex; flex-direction:column; gap:16px; align-items:center; }
 .talent-tier-row { display:flex; gap:10px; justify-content:center; }
 .talent-tier { display:none; }
 .talent-tier.tier-locked { opacity:0.4; filter:grayscale(0.5); }
