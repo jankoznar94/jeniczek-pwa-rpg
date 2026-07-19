@@ -1891,7 +1891,8 @@
     state.comboPoints = 0;
     state.energy = state.maxEnergy || 100;
     state.rage = 0;
-    state.mana = state.maxMana || 100;
+    state.maxMana = getHeroMaxMana();
+    state.mana = state.maxMana;
     state._dodgeBuffTimer = 0;
     state._speedBoostTimer = 0;
     state._speedBoostPct = 0;
@@ -4362,15 +4363,22 @@
     proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;z-index:20;pointer-events:none;image-rendering:pixelated;`;
     proj.style.left = (startX - half) + 'px';
     proj.style.top = (startY - half) + 'px';
-    // Rotace během letu
-    proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out, transform ${duration}ms linear`;
+    // Rotace jen pro základní útoky (bez spellId), kouzla letí rovně
+    const isSpell = spellId !== undefined && spellId !== null;
+    if (!isSpell) {
+      proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out, transform ${duration}ms linear`;
+    } else {
+      proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out`;
+    }
     arena.appendChild(proj);
 
     // Spustit animaci letu
     void proj.offsetHeight;
     proj.style.left = (endX - half) + 'px';
     proj.style.top = (endY - half) + 'px';
-    proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
+    if (!isSpell) {
+      proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
+    }
 
     // Po dopadu: impact na canvasu
     const canvas = $('mbProjectileCanvas');
