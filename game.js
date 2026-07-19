@@ -3445,7 +3445,7 @@
       const finalDmg = Math.max(1, Math.round(dmg * resist));
       mb.bossHp -= finalDmg;
       // Projektil
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, schoolId);
       const dmgEl = $('mbDamageText');
       if (dmgEl) {
         dmgEl.textContent = `${school} -${finalDmg}`;
@@ -4303,7 +4303,7 @@
     return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
   }
 
-  function spawnProjectileEffect(dir, targetIsPlayer, isCrit, attackType) {
+  function spawnProjectileEffect(dir, targetIsPlayer, isCrit, attackType, schoolId) {
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
@@ -4335,18 +4335,17 @@
     const schoolColor = getSchoolColors(targetIsPlayer);
     const rgb = schoolColor.rgb;
 
-    // Vybrat PNG projektil podle school
-    const a = state.activeSchool;
+    // Vybrat PNG projektil podle schoolId
     let projImg = 'arcane.png';
     if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
       projImg = 'shadow.png'; // nepřátelský caster = shadow
     } else if (!targetIsPlayer) {
-      // Hráčův projektil — podle active school
-      if (a === 'fire') projImg = 'fireball.png';
-      else if (a === 'ice') projImg = 'frostbolt.png';
-      else if (a === 'lightning') projImg = 'lightning.png';
-      else if (a === 'nature') projImg = 'nature.png';
-      else if (a === 'physical') projImg = 'lightning.png';
+      // Hráčův projektil — podle schoolId parametru
+      if (schoolId === 'fire') projImg = 'fireball.png';
+      else if (schoolId === 'ice') projImg = 'frostbolt.png';
+      else if (schoolId === 'lightning') projImg = 'lightning.png';
+      else if (schoolId === 'nature') projImg = 'nature.png';
+      else if (schoolId === 'physical') projImg = 'lightning.png';
     }
 
     const size = isCrit ? 48 : 36;
