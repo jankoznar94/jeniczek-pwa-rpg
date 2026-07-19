@@ -4336,93 +4336,314 @@
     const schoolColor = getSchoolColors(targetIsPlayer);
     const rgb = schoolColor.rgb;
 
-    // Vybrat PNG projektil podle spellId
-    let projImg = 'arcane.png';
-    if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
-      projImg = 'shadow.png'; // nepřátelský caster = shadow
-    } else if (!targetIsPlayer) {
-      // Hráčův projektil — podle spellId
-      if (spellId === 'firebolt') projImg = 'firebolt.png';
-      else if (spellId === 'fireball') projImg = 'fireball.png';
-      else if (spellId === 'fireblast') projImg = 'fireblast.png';
-      else if (spellId === 'icebolt') projImg = 'icebolt.png';
-      else if (spellId === 'frostbolt') projImg = 'frostbolt.png';
-      else if (spellId === 'blizzard') projImg = 'blizzard.png';
-      else if (spellId === 'lightningBolt') projImg = 'lightningBolt.png';
-      else if (spellId === 'chainLightning') projImg = 'chainLightning.png';
-      else if (spellId === 'thunderStorm') projImg = 'thunderStorm.png';
-    }
-
-    const size = isCrit ? 48 : 36;
-    const half = size / 2;
+    const isSpell = spellId !== undefined && spellId !== null;
     const duration = 200; // ms letu
 
-    // --- PNG projektil (CSS animovaný) ---
-    const proj = document.createElement('img');
-    proj.src = `assets/projectiles/${projImg}`;
-    proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;z-index:20;pointer-events:none;image-rendering:pixelated;`;
-    proj.style.left = (startX - half) + 'px';
-    proj.style.top = (startY - half) + 'px';
-    // Rotace jen pro základní útoky (bez spellId), kouzla letí rovně
-    const isSpell = spellId !== undefined && spellId !== null;
     if (!isSpell) {
+      // Základní útok — PNG projektil s rotací (stávající kód)
+      let projImg = 'arcane.png';
+      if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
+        projImg = 'shadow.png';
+      }
+      const size = isCrit ? 48 : 36;
+      const half = size / 2;
+      const proj = document.createElement('img');
+      proj.src = `assets/projectiles/${projImg}`;
+      proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;z-index:20;pointer-events:none;image-rendering:pixelated;`;
+      proj.style.left = (startX - half) + 'px';
+      proj.style.top = (startY - half) + 'px';
       proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out, transform ${duration}ms linear`;
-    } else {
-      proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out`;
-    }
-    arena.appendChild(proj);
-
-    // Spustit animaci letu
-    void proj.offsetHeight;
-    proj.style.left = (endX - half) + 'px';
-    proj.style.top = (endY - half) + 'px';
-    if (!isSpell) {
+      arena.appendChild(proj);
+      void proj.offsetHeight;
+      proj.style.left = (endX - half) + 'px';
+      proj.style.top = (endY - half) + 'px';
       proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
+      setTimeout(() => {
+        if (proj.parentNode) proj.remove();
+      }, duration);
+      return;
     }
 
-    // Po dopadu: impact na canvasu
+    // === KOUZLA — čistý canvas projektil ===
     const canvas = $('mbProjectileCanvas');
-    let ctx = null;
-    if (canvas) {
-      canvas.width = rect.width;
-      canvas.height = rect.height;
-      ctx = canvas.getContext('2d');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+
+    const angle = Math.atan2(endY - startY, endX - startX);
+    const dist = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+    const speed = dist / duration; // px/ms
+    const startTime = performance.now();
+
+    // Trail history
+    const trail = [];
+    const trailLen = 6;
+
+    function drawProjectile(x, y, progress) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      const s = isCrit ? 1.4 : 1.0;
+
+      if (spellId === 'firebolt') {
+        // Špičatý ohnivý šíp
+        ctx.beginPath();
+        ctx.moveTo(18 * s, 0);
+        ctx.lineTo(-10 * s, -6 * s);
+        ctx.lineTo(-6 * s, 0);
+        ctx.lineTo(-10 * s, 6 * s);
+        ctx.closePath();
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 18 * s);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, '#f39c12');
+        grad.addColorStop(0.7, '#e74c3c');
+        grad.addColorStop(1, 'rgba(200,50,0,0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
+        // Glow
+        ctx.shadowColor = '#f39c12';
+        ctx.shadowBlur = 12 * s;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+      } else if (spellId === 'fireball') {
+        // Ohnivá koule
+        const r = 14 * s;
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.2, '#f1c40f');
+        grad.addColorStop(0.5, '#e67e22');
+        grad.addColorStop(0.8, '#e74c3c');
+        grad.addColorStop(1, 'rgba(200,50,0,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.shadowColor = '#e74c3c';
+        ctx.shadowBlur = 15 * s;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+      } else if (spellId === 'fireblast') {
+        // Výbuch — kruh s paprsky
+        const r = 16 * s;
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.2, '#f1c40f');
+        grad.addColorStop(0.5, '#e74c3c');
+        grad.addColorStop(1, 'rgba(200,50,0,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.shadowColor = '#e74c3c';
+        ctx.shadowBlur = 18 * s;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Paprsky
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * Math.PI * 2 + progress * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(a) * r * 1.3, Math.sin(a) * r * 1.3);
+          ctx.strokeStyle = `rgba(241,196,15,${0.3 + Math.sin(progress * 3 + i) * 0.2})`;
+          ctx.lineWidth = 2 * s;
+          ctx.stroke();
+        }
+
+      } else if (spellId === 'icebolt') {
+        // Špičatý ledový šíp
+        ctx.beginPath();
+        ctx.moveTo(18 * s, 0);
+        ctx.lineTo(-10 * s, -6 * s);
+        ctx.lineTo(-6 * s, 0);
+        ctx.lineTo(-10 * s, 6 * s);
+        ctx.closePath();
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 18 * s);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, '#85c1e9');
+        grad.addColorStop(0.7, '#3498db');
+        grad.addColorStop(1, 'rgba(50,100,200,0)');
+        ctx.fillStyle = grad;
+        ctx.shadowColor = '#5dade2';
+        ctx.shadowBlur = 10 * s;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+      } else if (spellId === 'frostbolt') {
+        // Ledový střep — kosočtverec
+        ctx.beginPath();
+        ctx.moveTo(16 * s, 0);
+        ctx.lineTo(0, -10 * s);
+        ctx.lineTo(-16 * s, 0);
+        ctx.lineTo(0, 10 * s);
+        ctx.closePath();
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 16 * s);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, '#aed6f1');
+        grad.addColorStop(0.7, '#5dade2');
+        grad.addColorStop(1, 'rgba(50,100,200,0)');
+        ctx.fillStyle = grad;
+        ctx.shadowColor = '#5dade2';
+        ctx.shadowBlur = 12 * s;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+      } else if (spellId === 'blizzard') {
+        // Více ledových krystalů
+        for (let i = 0; i < 5; i++) {
+          const ox = Math.sin(progress * 2 + i * 1.3) * 8 * s;
+          const oy = Math.cos(progress * 1.7 + i * 0.9) * 6 * s - 4 * s;
+          const sz = 3 + Math.sin(progress + i) * 2;
+          ctx.beginPath();
+          ctx.moveTo(ox + sz, oy);
+          ctx.lineTo(ox, oy - sz);
+          ctx.lineTo(ox - sz, oy);
+          ctx.lineTo(ox, oy + sz);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(174,214,241,${0.5 + Math.sin(progress * 2 + i) * 0.3})`;
+          ctx.shadowColor = '#5dade2';
+          ctx.shadowBlur = 6 * s;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+
+      } else if (spellId === 'lightningBolt') {
+        // Jeden blesk — zig-zag
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        let lx = 0, ly = 0;
+        const segs = 6;
+        for (let i = 0; i < segs; i++) {
+          const t = (i + 1) / segs;
+          lx = 20 * s * t;
+          ly = (Math.random() - 0.5) * 12 * s * (1 - t * 0.5);
+          ctx.lineTo(lx, ly);
+        }
+        ctx.strokeStyle = '#a855f7';
+        ctx.lineWidth = 3 * s;
+        ctx.shadowColor = '#a855f7';
+        ctx.shadowBlur = 10 * s;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+      } else if (spellId === 'chainLightning') {
+        // Rozvětvené blesky
+        for (let b = 0; b < 3; b++) {
+          ctx.beginPath();
+          ctx.moveTo(0, 0);
+          const offX = (b - 1) * 6 * s;
+          const offY = (b - 1) * 4 * s;
+          for (let i = 0; i < 5; i++) {
+            const t = (i + 1) / 5;
+            const lx = 18 * s * t + offX * (1 - t);
+            const ly = offY * (1 - t) + (Math.random() - 0.5) * 10 * s * (1 - t * 0.5);
+            ctx.lineTo(lx, ly);
+          }
+          ctx.strokeStyle = `rgba(168,85,247,${0.5 + b * 0.2})`;
+          ctx.lineWidth = (2 - b * 0.5) * s;
+          ctx.shadowColor = '#a855f7';
+          ctx.shadowBlur = 8 * s;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+
+      } else if (spellId === 'thunderStorm') {
+        // Bouřkový mrak s blesky
+        // Mrak
+        ctx.beginPath();
+        ctx.arc(0, -2 * s, 12 * s, 0, Math.PI * 2);
+        ctx.arc(-8 * s, 0, 10 * s, 0, Math.PI * 2);
+        ctx.arc(8 * s, 0, 10 * s, 0, Math.PI * 2);
+        ctx.fillStyle = '#2c3e50';
+        ctx.fill();
+        // Blesky z mraku
+        for (let b = 0; b < 3; b++) {
+          ctx.beginPath();
+          const bx = (b - 1) * 7 * s;
+          ctx.moveTo(bx, 4 * s);
+          for (let i = 0; i < 4; i++) {
+            const t = (i + 1) / 4;
+            const lx = bx + (Math.random() - 0.5) * 6 * s * (1 - t * 0.5);
+            const ly = 4 * s + 14 * s * t;
+            ctx.lineTo(lx, ly);
+          }
+          ctx.strokeStyle = `rgba(168,85,247,${0.6 + Math.sin(progress * 5 + b) * 0.3})`;
+          ctx.lineWidth = 2 * s;
+          ctx.shadowColor = '#a855f7';
+          ctx.shadowBlur = 8 * s;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+        }
+      }
+
+      ctx.restore();
     }
-    setTimeout(() => {
-      if (proj.parentNode) proj.remove();
-      if (ctx) {
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const ease = 1 - Math.pow(1 - progress, 2); // ease-out quad
+      const x = startX + (endX - startX) * ease;
+      const y = startY + (endY - startY) * ease;
+
+      // Trail
+      trail.push({ x, y });
+      if (trail.length > trailLen) trail.shift();
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Kreslit trail
+      for (let i = 0; i < trail.length - 1; i++) {
+        const t = trail[i];
+        const alpha = (i / trail.length) * 0.3;
+        const r = 4 + (i / trail.length) * 4;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${rgb},${alpha})`;
+        ctx.fill();
+      }
+
+      // Kreslit projektil
+      drawProjectile(x, y, progress);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        // Impact
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         const pCount = isCrit ? 20 : 10;
         const particles = [];
         for (let i = 0; i < pCount; i++) {
-          const angle = Math.random() * 2 * Math.PI;
-          const dist = 20 + Math.random() * (isCrit ? 50 : 30);
+          const a = Math.random() * 2 * Math.PI;
+          const dist2 = 20 + Math.random() * (isCrit ? 50 : 30);
           const pSize = 3 + Math.random() * (isCrit ? 8 : 5);
-          const speed = 0.3 + Math.random() * 0.3;
+          const speed2 = 0.3 + Math.random() * 0.3;
           particles.push({
             x: endX, y: endY,
-            tx: endX + Math.cos(angle) * dist,
-            ty: endY + Math.sin(angle) * dist,
+            tx: endX + Math.cos(a) * dist2,
+            ty: endY + Math.sin(a) * dist2,
             size: pSize,
             alpha: 0.8 + Math.random() * 0.2,
-            speed: speed
+            speed: speed2
           });
         }
-        let startTime = null;
-        function animateImpact(ts) {
-          if (!startTime) startTime = ts;
-          const elapsed = (ts - startTime) / 1000;
+        let impactStart = null;
+        function animateImpact(ts2) {
+          if (!impactStart) impactStart = ts2;
+          const elapsed2 = (ts2 - impactStart) / 1000;
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           let allDone = true;
           for (const p of particles) {
-            const t = Math.min(elapsed / p.speed, 1);
-            const ease = 1 - Math.pow(1 - t, 3);
-            const px = p.x + (p.tx - p.x) * ease;
-            const py = p.y + (p.ty - p.y) * ease;
-            const alpha = p.alpha * (1 - ease);
+            const t = Math.min(elapsed2 / p.speed, 1);
+            const ease2 = 1 - Math.pow(1 - t, 3);
+            const px = p.x + (p.tx - p.x) * ease2;
+            const py = p.y + (p.ty - p.y) * ease2;
+            const alpha = p.alpha * (1 - ease2);
             if (alpha > 0.01) {
               allDone = false;
               ctx.beginPath();
-              ctx.arc(px, py, p.size * (1 - ease * 0.5), 0, Math.PI * 2);
+              ctx.arc(px, py, p.size * (1 - ease2 * 0.5), 0, Math.PI * 2);
               ctx.fillStyle = `rgba(${rgb},${alpha})`;
               ctx.fill();
             }
@@ -4432,7 +4653,9 @@
         }
         requestAnimationFrame(animateImpact);
       }
-    }, duration);
+    }
+
+    requestAnimationFrame(animate);
   }
 
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
