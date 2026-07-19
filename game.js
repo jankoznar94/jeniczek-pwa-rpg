@@ -4386,194 +4386,432 @@
       ctx.rotate(angle);
 
       const s = isCrit ? 1.4 : 1.0;
+      const flicker = 0.85 + Math.sin(progress * 30) * 0.15; // plápolání
 
       if (spellId === 'firebolt') {
-        // Špičatý ohnivý šíp
+        // Ohnivý šíp s plápolajícími plameny
+        const len = 20 * s;
+        const w = 7 * s;
+        // Hlavní tělo šípu
         ctx.beginPath();
-        ctx.moveTo(18 * s, 0);
-        ctx.lineTo(-10 * s, -6 * s);
-        ctx.lineTo(-6 * s, 0);
-        ctx.lineTo(-10 * s, 6 * s);
+        ctx.moveTo(len, 0);
+        ctx.lineTo(-len * 0.4, -w);
+        ctx.lineTo(-len * 0.2, 0);
+        ctx.lineTo(-len * 0.4, w);
         ctx.closePath();
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 18 * s);
-        grad.addColorStop(0, '#fff');
-        grad.addColorStop(0.3, '#f39c12');
-        grad.addColorStop(0.7, '#e74c3c');
-        grad.addColorStop(1, 'rgba(200,50,0,0)');
-        ctx.fillStyle = grad;
-        ctx.fill();
-        // Glow
-        ctx.shadowColor = '#f39c12';
-        ctx.shadowBlur = 12 * s;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-      } else if (spellId === 'fireball') {
-        // Ohnivá koule
-        const r = 14 * s;
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, len);
         grad.addColorStop(0, '#fff');
         grad.addColorStop(0.2, '#f1c40f');
         grad.addColorStop(0.5, '#e67e22');
         grad.addColorStop(0.8, '#e74c3c');
         grad.addColorStop(1, 'rgba(200,50,0,0)');
-        ctx.beginPath();
-        ctx.arc(0, 0, r, 0, Math.PI * 2);
         ctx.fillStyle = grad;
-        ctx.shadowColor = '#e74c3c';
-        ctx.shadowBlur = 15 * s;
+        ctx.shadowColor = '#f39c12';
+        ctx.shadowBlur = 15 * s * flicker;
         ctx.fill();
         ctx.shadowBlur = 0;
+        // Plamínky po stranách
+        for (let i = 0; i < 4; i++) {
+          const side = (i % 2 === 0 ? 1 : -1);
+          const px = -len * 0.2 + (i * 0.15) * len;
+          const py = side * (w + 2 + Math.sin(progress * 15 + i * 2) * 3) * s;
+          const fs = 3 + Math.sin(progress * 10 + i) * 1.5;
+          ctx.beginPath();
+          ctx.arc(px, py, fs * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(241,196,15,${0.4 + Math.sin(progress * 12 + i) * 0.2})`;
+          ctx.fill();
+        }
+        // Jiskry
+        for (let i = 0; i < 3; i++) {
+          const sparkX = -len * 0.3 + Math.sin(progress * 20 + i * 3) * len * 0.2;
+          const sparkY = Math.sin(progress * 25 + i * 4) * w * 1.5;
+          ctx.beginPath();
+          ctx.arc(sparkX, sparkY, 1.5 * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,200,100,${0.3 + Math.sin(progress * 20 + i) * 0.2})`;
+          ctx.fill();
+        }
 
-      } else if (spellId === 'fireblast') {
-        // Výbuch — kruh s paprsky
-        const r = 16 * s;
+      } else if (spellId === 'fireball') {
+        // Ohnivá koule s vířícími plameny
+        const r = 14 * s;
+        // Vnější záře
+        const glowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2);
+        glowGrad.addColorStop(0, 'rgba(231,76,60,0.3)');
+        glowGrad.addColorStop(0.5, 'rgba(231,76,60,0.1)');
+        glowGrad.addColorStop(1, 'rgba(231,76,60,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 2, 0, Math.PI * 2);
+        ctx.fillStyle = glowGrad;
+        ctx.fill();
+        // Hlavní koule
         const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
         grad.addColorStop(0, '#fff');
-        grad.addColorStop(0.2, '#f1c40f');
-        grad.addColorStop(0.5, '#e74c3c');
+        grad.addColorStop(0.15, '#f1c40f');
+        grad.addColorStop(0.4, '#e67e22');
+        grad.addColorStop(0.7, '#e74c3c');
         grad.addColorStop(1, 'rgba(200,50,0,0)');
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
         ctx.fillStyle = grad;
         ctx.shadowColor = '#e74c3c';
-        ctx.shadowBlur = 18 * s;
+        ctx.shadowBlur = 20 * s * flicker;
         ctx.fill();
         ctx.shadowBlur = 0;
-        // Paprsky
-        for (let i = 0; i < 8; i++) {
-          const a = (i / 8) * Math.PI * 2 + progress * 0.5;
+        // Vířící plameny na povrchu
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2 + progress * 2;
+          const dist = r * 0.6 + Math.sin(progress * 8 + i * 2) * r * 0.3;
+          const px = Math.cos(a) * dist;
+          const py = Math.sin(a) * dist;
+          const fs = 3 + Math.sin(progress * 10 + i) * 2;
           ctx.beginPath();
-          ctx.moveTo(0, 0);
-          ctx.lineTo(Math.cos(a) * r * 1.3, Math.sin(a) * r * 1.3);
-          ctx.strokeStyle = `rgba(241,196,15,${0.3 + Math.sin(progress * 3 + i) * 0.2})`;
-          ctx.lineWidth = 2 * s;
-          ctx.stroke();
+          ctx.arc(px, py, fs * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(241,196,15,${0.3 + Math.sin(progress * 8 + i) * 0.2})`;
+          ctx.fill();
+        }
+        // Odlétající jiskry
+        for (let i = 0; i < 4; i++) {
+          const a = (i / 4) * Math.PI * 2 + progress * 3;
+          const dist = r + 2 + Math.sin(progress * 12 + i) * 4;
+          const px = Math.cos(a) * dist;
+          const py = Math.sin(a) * dist;
+          ctx.beginPath();
+          ctx.arc(px, py, 1.5 * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,200,100,${0.2 + Math.sin(progress * 15 + i) * 0.15})`;
+          ctx.fill();
+        }
+
+      } else if (spellId === 'fireblast') {
+        // Výbuch — rotující hvězda s paprsky a jiskrami
+        const r = 16 * s;
+        // Vnější záře
+        const glowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2.5);
+        glowGrad.addColorStop(0, 'rgba(231,76,60,0.2)');
+        glowGrad.addColorStop(0.5, 'rgba(231,76,60,0.05)');
+        glowGrad.addColorStop(1, 'rgba(231,76,60,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = glowGrad;
+        ctx.fill();
+        // Hlavní koule
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.15, '#f1c40f');
+        grad.addColorStop(0.4, '#e74c3c');
+        grad.addColorStop(0.7, '#c0392b');
+        grad.addColorStop(1, 'rgba(150,30,0,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.shadowColor = '#e74c3c';
+        ctx.shadowBlur = 22 * s * flicker;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Rotující paprsky (2 sady)
+        for (let set = 0; set < 2; set++) {
+          const count = 6;
+          const offset = set * Math.PI / count + progress * (set === 0 ? 1 : -0.7);
+          for (let i = 0; i < count; i++) {
+            const a = (i / count) * Math.PI * 2 + offset;
+            const len = r * (1.2 + Math.sin(progress * 5 + i + set) * 0.3);
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(Math.cos(a) * len, Math.sin(a) * len);
+            ctx.strokeStyle = `rgba(241,196,15,${0.2 + Math.sin(progress * 6 + i + set) * 0.15})`;
+            ctx.lineWidth = (2 - set * 0.5) * s;
+            ctx.stroke();
+          }
+        }
+        // Jiskry rozlétající se
+        for (let i = 0; i < 6; i++) {
+          const a = (i / 6) * Math.PI * 2 + progress * 4;
+          const dist = r * 0.8 + Math.sin(progress * 10 + i) * r * 0.4;
+          const px = Math.cos(a) * dist;
+          const py = Math.sin(a) * dist;
+          ctx.beginPath();
+          ctx.arc(px, py, 2 * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,200,50,${0.3 + Math.sin(progress * 12 + i) * 0.2})`;
+          ctx.fill();
         }
 
       } else if (spellId === 'icebolt') {
-        // Špičatý ledový šíp
+        // Ledový šíp s mrazivým oparem
+        const len = 20 * s;
+        const w = 7 * s;
+        // Hlavní tělo
         ctx.beginPath();
-        ctx.moveTo(18 * s, 0);
-        ctx.lineTo(-10 * s, -6 * s);
-        ctx.lineTo(-6 * s, 0);
-        ctx.lineTo(-10 * s, 6 * s);
+        ctx.moveTo(len, 0);
+        ctx.lineTo(-len * 0.4, -w);
+        ctx.lineTo(-len * 0.2, 0);
+        ctx.lineTo(-len * 0.4, w);
         ctx.closePath();
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 18 * s);
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, len);
         grad.addColorStop(0, '#fff');
-        grad.addColorStop(0.3, '#85c1e9');
-        grad.addColorStop(0.7, '#3498db');
-        grad.addColorStop(1, 'rgba(50,100,200,0)');
-        ctx.fillStyle = grad;
-        ctx.shadowColor = '#5dade2';
-        ctx.shadowBlur = 10 * s;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-
-      } else if (spellId === 'frostbolt') {
-        // Ledový střep — kosočtverec
-        ctx.beginPath();
-        ctx.moveTo(16 * s, 0);
-        ctx.lineTo(0, -10 * s);
-        ctx.lineTo(-16 * s, 0);
-        ctx.lineTo(0, 10 * s);
-        ctx.closePath();
-        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, 16 * s);
-        grad.addColorStop(0, '#fff');
-        grad.addColorStop(0.3, '#aed6f1');
-        grad.addColorStop(0.7, '#5dade2');
+        grad.addColorStop(0.2, '#aed6f1');
+        grad.addColorStop(0.5, '#5dade2');
+        grad.addColorStop(0.8, '#3498db');
         grad.addColorStop(1, 'rgba(50,100,200,0)');
         ctx.fillStyle = grad;
         ctx.shadowColor = '#5dade2';
         ctx.shadowBlur = 12 * s;
         ctx.fill();
         ctx.shadowBlur = 0;
+        // Mráz po stranách
+        for (let i = 0; i < 4; i++) {
+          const side = (i % 2 === 0 ? 1 : -1);
+          const px = -len * 0.2 + (i * 0.15) * len;
+          const py = side * (w + 1 + Math.sin(progress * 12 + i * 2) * 2) * s;
+          const fs = 2 + Math.sin(progress * 8 + i) * 1;
+          ctx.beginPath();
+          ctx.arc(px, py, fs * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(174,214,241,${0.3 + Math.sin(progress * 10 + i) * 0.15})`;
+          ctx.fill();
+        }
+        // Ledové krystalky
+        for (let i = 0; i < 3; i++) {
+          const cx = -len * 0.3 + Math.sin(progress * 15 + i * 3) * len * 0.15;
+          const cy = Math.sin(progress * 20 + i * 4) * w * 1.2;
+          const sz = 1.5 + Math.sin(progress * 10 + i) * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(cx + sz, cy);
+          ctx.lineTo(cx, cy - sz);
+          ctx.lineTo(cx - sz, cy);
+          ctx.lineTo(cx, cy + sz);
+          ctx.closePath();
+          ctx.fillStyle = `rgba(255,255,255,${0.4 + Math.sin(progress * 12 + i) * 0.2})`;
+          ctx.fill();
+        }
+
+      } else if (spellId === 'frostbolt') {
+        // Ledový krystal s rotujícími prstenci
+        const r = 14 * s;
+        // Vnější mráz
+        const frostGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2);
+        frostGrad.addColorStop(0, 'rgba(93,173,226,0.2)');
+        frostGrad.addColorStop(0.5, 'rgba(93,173,226,0.05)');
+        frostGrad.addColorStop(1, 'rgba(93,173,226,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 2, 0, Math.PI * 2);
+        ctx.fillStyle = frostGrad;
+        ctx.fill();
+        // Hlavní krystal (kosočtverec)
+        ctx.beginPath();
+        ctx.moveTo(r * 1.2, 0);
+        ctx.lineTo(0, -r * 0.8);
+        ctx.lineTo(-r * 1.2, 0);
+        ctx.lineTo(0, r * 0.8);
+        ctx.closePath();
+        const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 1.2);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.3, '#aed6f1');
+        grad.addColorStop(0.6, '#5dade2');
+        grad.addColorStop(1, 'rgba(50,100,200,0)');
+        ctx.fillStyle = grad;
+        ctx.shadowColor = '#5dade2';
+        ctx.shadowBlur = 14 * s;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        // Rotující ledové prstence
+        for (let ring = 0; ring < 2; ring++) {
+          ctx.beginPath();
+          const rr = r * (0.7 + ring * 0.3);
+          ctx.arc(0, 0, rr, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(174,214,241,${0.15 + Math.sin(progress * 4 + ring) * 0.1})`;
+          ctx.lineWidth = 1.5 * s;
+          ctx.setLineDash([4 * s, 4 * s]);
+          ctx.lineDashOffset = -progress * 30 * (ring === 0 ? 1 : -1);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+        // Vnitřní krystal
+        ctx.beginPath();
+        ctx.moveTo(r * 0.5, 0);
+        ctx.lineTo(0, -r * 0.35);
+        ctx.lineTo(-r * 0.5, 0);
+        ctx.lineTo(0, r * 0.35);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.fill();
 
       } else if (spellId === 'blizzard') {
-        // Více ledových krystalů
-        for (let i = 0; i < 5; i++) {
-          const ox = Math.sin(progress * 2 + i * 1.3) * 8 * s;
-          const oy = Math.cos(progress * 1.7 + i * 0.9) * 6 * s - 4 * s;
-          const sz = 3 + Math.sin(progress + i) * 2;
+        // Vír ledových krystalů a sněhu
+        for (let i = 0; i < 7; i++) {
+          const ox = Math.sin(progress * 3 + i * 1.1) * 10 * s;
+          const oy = Math.cos(progress * 2.5 + i * 0.8) * 8 * s - 3 * s;
+          const sz = 2 + Math.sin(progress * 4 + i * 1.5) * 2;
+          const alpha = 0.3 + Math.sin(progress * 3 + i * 1.2) * 0.25;
+          // Krystal (hvězdička)
           ctx.beginPath();
-          ctx.moveTo(ox + sz, oy);
-          ctx.lineTo(ox, oy - sz);
-          ctx.lineTo(ox - sz, oy);
-          ctx.lineTo(ox, oy + sz);
+          for (let p = 0; p < 6; p++) {
+            const pa = (p / 6) * Math.PI * 2 + progress * 0.5 + i;
+            const px = ox + Math.cos(pa) * sz;
+            const py = oy + Math.sin(pa) * sz;
+            if (p === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
           ctx.closePath();
-          ctx.fillStyle = `rgba(174,214,241,${0.5 + Math.sin(progress * 2 + i) * 0.3})`;
+          ctx.fillStyle = `rgba(174,214,241,${alpha})`;
           ctx.shadowColor = '#5dade2';
-          ctx.shadowBlur = 6 * s;
+          ctx.shadowBlur = 4 * s;
           ctx.fill();
           ctx.shadowBlur = 0;
+          // Sněhové vločky (malé tečky)
+          for (let j = 0; j < 3; j++) {
+            const sx = ox + Math.sin(progress * 5 + i * 2 + j * 1.7) * 5 * s;
+            const sy = oy + Math.cos(progress * 4 + i * 1.3 + j * 2.1) * 4 * s;
+            ctx.beginPath();
+            ctx.arc(sx, sy, 1 * s, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,255,255,${alpha * 0.5})`;
+            ctx.fill();
+          }
         }
 
       } else if (spellId === 'lightningBolt') {
-        // Jeden blesk — zig-zag
+        // Blesk s elektrickými výboji
+        // Hlavní blesk
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        let lx = 0, ly = 0;
-        const segs = 6;
+        const segs = 8;
         for (let i = 0; i < segs; i++) {
           const t = (i + 1) / segs;
-          lx = 20 * s * t;
-          ly = (Math.random() - 0.5) * 12 * s * (1 - t * 0.5);
+          const lx = 22 * s * t;
+          const ly = (Math.sin(i * 1.5 + progress * 2) * 6 + (Math.random() - 0.5) * 4) * s * (1 - t * 0.3);
           ctx.lineTo(lx, ly);
         }
         ctx.strokeStyle = '#a855f7';
-        ctx.lineWidth = 3 * s;
+        ctx.lineWidth = 3.5 * s;
         ctx.shadowColor = '#a855f7';
-        ctx.shadowBlur = 10 * s;
+        ctx.shadowBlur = 15 * s * flicker;
         ctx.stroke();
         ctx.shadowBlur = 0;
+        // Vedlejší výboje
+        for (let b = 0; b < 4; b++) {
+          const startT = 0.2 + b * 0.15;
+          const bx = 22 * s * startT;
+          const by = (Math.sin(startT * 8 + progress * 2) * 6) * s;
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          for (let i = 0; i < 4; i++) {
+            const t = (i + 1) / 4;
+            const ex = bx + (Math.random() - 0.5) * 8 * s * t;
+            const ey = by + (Math.random() - 0.5) * 8 * s * t - 4 * s * t;
+            ctx.lineTo(ex, ey);
+          }
+          ctx.strokeStyle = `rgba(168,85,247,${0.3 + Math.sin(progress * 8 + b) * 0.2})`;
+          ctx.lineWidth = 1.5 * s;
+          ctx.stroke();
+        }
+        // Jiskry
+        for (let i = 0; i < 5; i++) {
+          const t = 0.1 + Math.random() * 0.8;
+          const sx = 22 * s * t;
+          const sy = (Math.sin(t * 8 + progress * 2) * 6) * s;
+          const offX = (Math.random() - 0.5) * 6 * s;
+          const offY = (Math.random() - 0.5) * 6 * s;
+          ctx.beginPath();
+          ctx.arc(sx + offX, sy + offY, 1.5 * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(200,150,255,${0.3 + Math.random() * 0.3})`;
+          ctx.fill();
+        }
 
       } else if (spellId === 'chainLightning') {
-        // Rozvětvené blesky
+        // Rozvětvené blesky s elektrickou aurou
+        // Aura
+        const auraGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 20 * s);
+        auraGrad.addColorStop(0, 'rgba(168,85,247,0.1)');
+        auraGrad.addColorStop(1, 'rgba(168,85,247,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, 20 * s, 0, Math.PI * 2);
+        ctx.fillStyle = auraGrad;
+        ctx.fill();
+        // 3 hlavní větve
         for (let b = 0; b < 3; b++) {
           ctx.beginPath();
           ctx.moveTo(0, 0);
-          const offX = (b - 1) * 6 * s;
-          const offY = (b - 1) * 4 * s;
-          for (let i = 0; i < 5; i++) {
-            const t = (i + 1) / 5;
-            const lx = 18 * s * t + offX * (1 - t);
-            const ly = offY * (1 - t) + (Math.random() - 0.5) * 10 * s * (1 - t * 0.5);
+          const offX = (b - 1) * 7 * s;
+          const offY = (b - 1) * 5 * s;
+          for (let i = 0; i < 6; i++) {
+            const t = (i + 1) / 6;
+            const lx = 20 * s * t + offX * (1 - t);
+            const ly = offY * (1 - t) + (Math.sin(i * 2 + progress * 3 + b) * 5 + (Math.random() - 0.5) * 3) * s * (1 - t * 0.3);
             ctx.lineTo(lx, ly);
           }
-          ctx.strokeStyle = `rgba(168,85,247,${0.5 + b * 0.2})`;
-          ctx.lineWidth = (2 - b * 0.5) * s;
+          ctx.strokeStyle = `rgba(168,85,247,${0.4 + b * 0.2})`;
+          ctx.lineWidth = (2.5 - b * 0.5) * s;
           ctx.shadowColor = '#a855f7';
-          ctx.shadowBlur = 8 * s;
+          ctx.shadowBlur = 10 * s;
           ctx.stroke();
           ctx.shadowBlur = 0;
+          // Sub-větve
+          for (let sub = 0; sub < 2; sub++) {
+            const st = 0.3 + sub * 0.3;
+            const sbx = 20 * s * st + offX * (1 - st);
+            const sby = offY * (1 - st) + Math.sin(st * 6 + progress * 2 + b) * 5 * s;
+            ctx.beginPath();
+            ctx.moveTo(sbx, sby);
+            for (let i = 0; i < 3; i++) {
+              const t = (i + 1) / 3;
+              ctx.lineTo(sbx + (Math.random() - 0.5) * 6 * s * t, sby + (Math.random() - 0.5) * 6 * s * t - 5 * s * t);
+            }
+            ctx.strokeStyle = `rgba(168,85,247,${0.2 + sub * 0.1})`;
+            ctx.lineWidth = 1 * s;
+            ctx.stroke();
+          }
         }
 
       } else if (spellId === 'thunderStorm') {
-        // Bouřkový mrak s blesky
+        // Bouřkový mrak s blesky a deštěm
         // Mrak
         ctx.beginPath();
-        ctx.arc(0, -2 * s, 12 * s, 0, Math.PI * 2);
-        ctx.arc(-8 * s, 0, 10 * s, 0, Math.PI * 2);
-        ctx.arc(8 * s, 0, 10 * s, 0, Math.PI * 2);
-        ctx.fillStyle = '#2c3e50';
+        ctx.arc(0, -3 * s, 13 * s, 0, Math.PI * 2);
+        ctx.arc(-9 * s, 0, 11 * s, 0, Math.PI * 2);
+        ctx.arc(9 * s, 0, 11 * s, 0, Math.PI * 2);
+        ctx.arc(-4 * s, 3 * s, 9 * s, 0, Math.PI * 2);
+        ctx.arc(4 * s, 3 * s, 9 * s, 0, Math.PI * 2);
+        const cloudGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 15 * s);
+        cloudGrad.addColorStop(0, '#4a4a5a');
+        cloudGrad.addColorStop(0.5, '#2c3e50');
+        cloudGrad.addColorStop(1, '#1a1a2e');
+        ctx.fillStyle = cloudGrad;
         ctx.fill();
-        // Blesky z mraku
+        // Záře v mraku
+        const glowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, 8 * s);
+        glowGrad.addColorStop(0, `rgba(168,85,247,${0.15 + Math.sin(progress * 6) * 0.1})`);
+        glowGrad.addColorStop(1, 'rgba(168,85,247,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, 8 * s, 0, Math.PI * 2);
+        ctx.fillStyle = glowGrad;
+        ctx.fill();
+        // Blesky z mraku (3)
         for (let b = 0; b < 3; b++) {
+          const bx = (b - 1) * 8 * s;
+          const flash = 0.5 + Math.sin(progress * 7 + b * 2) * 0.4;
           ctx.beginPath();
-          const bx = (b - 1) * 7 * s;
-          ctx.moveTo(bx, 4 * s);
-          for (let i = 0; i < 4; i++) {
-            const t = (i + 1) / 4;
-            const lx = bx + (Math.random() - 0.5) * 6 * s * (1 - t * 0.5);
-            const ly = 4 * s + 14 * s * t;
+          ctx.moveTo(bx, 5 * s);
+          for (let i = 0; i < 5; i++) {
+            const t = (i + 1) / 5;
+            const lx = bx + (Math.sin(i * 2 + progress * 4 + b) * 4 + (Math.random() - 0.5) * 2) * s * (1 - t * 0.3);
+            const ly = 5 * s + 16 * s * t;
             ctx.lineTo(lx, ly);
           }
-          ctx.strokeStyle = `rgba(168,85,247,${0.6 + Math.sin(progress * 5 + b) * 0.3})`;
-          ctx.lineWidth = 2 * s;
+          ctx.strokeStyle = `rgba(168,85,247,${flash})`;
+          ctx.lineWidth = (2.5 - b * 0.3) * s;
           ctx.shadowColor = '#a855f7';
-          ctx.shadowBlur = 8 * s;
+          ctx.shadowBlur = 12 * s * flash;
           ctx.stroke();
           ctx.shadowBlur = 0;
+        }
+        // Kapky deště
+        for (let i = 0; i < 8; i++) {
+          const dx = (Math.random() - 0.5) * 24 * s;
+          const dy = (Math.random() * 0.5 + 0.2) * 20 * s;
+          const drip = (progress * 2 + i * 0.3) % 1;
+          const rx = dx + Math.sin(drip * Math.PI * 2) * 2 * s;
+          const ry = dy + drip * 8 * s;
+          ctx.beginPath();
+          ctx.arc(rx, ry, 1 * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(100,150,255,${0.2 * (1 - drip)})`;
+          ctx.fill();
         }
       }
 
