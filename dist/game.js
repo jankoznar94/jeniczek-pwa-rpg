@@ -62,7 +62,18 @@
       primaryAttr:'int',
       talentSchool:'fire',
       baseHp:60, baseDmg:6, baseMana:100,
-      attrBonus:{str:15, vit:15, dex:15, int:25}
+      attrBonus:{str:15, vit:15, dex:15, int:25},
+      spells: [
+        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:10, cooldown:0, gcd:0.5, desc:'75-110% dmg ohněm' },
+        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:10, cooldown:0, gcd:0.5, desc:'75-110% dmg ledem, zpomalí 25% na 2s' },
+        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:10, cooldown:0, gcd:0.5, desc:'80-120% dmg bleskem' },
+        { id:'fireball', name:'Fireball', icon:'💥', cost:20, cooldown:8, gcd:0.5, desc:'100-150% dmg ohněm + DoT' },
+        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:20, cooldown:8, gcd:0.5, desc:'100-150% dmg ledem, zmrazení' },
+        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:20, cooldown:8, gcd:0.5, desc:'100-150% dmg bleskem, skáče' },
+        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:35, cooldown:15, gcd:0.5, desc:'150-200% dmg ohněm' },
+        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:35, cooldown:15, gcd:0.5, desc:'50-75% dmg ledem/tick' },
+        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:35, cooldown:15, gcd:0.5, desc:'40-60% dmg bleskem/tick' }
+      ]
     }
   };
 
@@ -406,7 +417,7 @@
       }
     },
     mage: {
-      id:'mage', name:'Mage', icon:'🔮', desc:'Mocná kouzla ohně, ledu a přírody.',
+      id:'mage', name:'Mage', icon:'🔮', desc:'Mocná kouzla ohně, ledu a blesků.',
       trees: {
         fire: { name:'Oheň', icon:'🔥',
           tiers: [
@@ -434,16 +445,16 @@
             ]}
           ]
         },
-        nature: { name:'Příroda', icon:'🌿',
+        lightning: { name:'Blesky', icon:'⚡',
           tiers: [
             { choices: [
-              { k:'regrowth', name:'Regrowth', icon:'💚', iconImg:'regrowth.png', maxLv:5, desc:lv=>`Léčí ${10+lv*8} HP/tick na 3s` },
+              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightning.png', maxLv:5, desc:lv=>`${80+lv*40}% dmg bleskem` },
             ]},
             { choices: [
-              { k:'naturesBoon', name:"Nature's Boon", icon:'🌿', iconImg:'naturesBoon.png', maxLv:5, requires:'mage_regrowth', requiresLv:1, desc:lv=>`Léčí ${15+lv*12} HP/tick na 3s` },
+              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'lightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg bleskem, skáče na ${1+Math.floor(lv/2)} další cíl` },
             ]},
             { choices: [
-              { k:'revitalize', name:'Revitalize', icon:'✨', iconImg:'revitalize.png', maxLv:5, requires:'mage_naturesBoon', requiresLv:1, desc:lv=>`Léčí ${30+lv*20}% max HP + ${5+lv*3}% dmg buff na 5s` },
+              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'lightning.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${40+lv*20}% dmg bleskem/tick na 3s` },
             ]}
           ]
         }
@@ -503,13 +514,13 @@
     if (cls === 'mage') {
       if (spellId === 'firebolt') return getSkillLv('mage_firebolt');
       if (spellId === 'icebolt') return getSkillLv('mage_icebolt');
-      if (spellId === 'regrowth') return getSkillLv('mage_regrowth');
       if (spellId === 'fireball') return getSkillLv('mage_fireball');
       if (spellId === 'frostbolt') return getSkillLv('mage_frostbolt');
-      if (spellId === 'naturesBoon') return getSkillLv('mage_naturesBoon');
       if (spellId === 'blizzard') return getSkillLv('mage_blizzard');
       if (spellId === 'fireblast') return getSkillLv('mage_fireblast');
-      if (spellId === 'revitalize') return getSkillLv('mage_revitalize');
+      if (spellId === 'lightningBolt') return getSkillLv('mage_lightningBolt');
+      if (spellId === 'chainLightning') return getSkillLv('mage_chainLightning');
+      if (spellId === 'thunderStorm') return getSkillLv('mage_thunderStorm');
     }
     return 0;
   }
@@ -535,6 +546,9 @@
     if (spellId === 'blizzard') return getTalentLv('ice_blizzard');
     if (spellId === 'icebolt') return getTalentLv('ice_icebolt');
     if (spellId === 'frostbolt') return getTalentLv('ice_frostbolt');
+    if (spellId === 'lightningBolt') return getTalentLv('lightning_lightningBolt');
+    if (spellId === 'chainLightning') return getTalentLv('lightning_chainLightning');
+    if (spellId === 'thunderStorm') return getTalentLv('lightning_thunderStorm');
     if (spellId === 'strongStrike') return getTalentLv('physical_strongStrike');
     if (spellId === 'slash') return getTalentLv('physical_slash');
     if (spellId === 'whirlwind') return getTalentLv('physical_whirlwind');
@@ -2398,6 +2412,15 @@
         state.energy = Math.min(state.maxEnergy || 100, (state.energy || 0) + regen);
       }
     }
+    // Mana regen (mage) — 2/tick + INT bonus
+    if (state.heroClass === 'mage') {
+      const cls = CLASSES.mage;
+      const intBonus = (state.hero.attrInt || 0) * 0.5;
+      const regen = (cls.resourceRegen || 0) / 60 + intBonus / 60;
+      if (regen > 0 && (state.mana || 0) < (state.maxMana || 100)) {
+        state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + regen);
+      }
+    }
     // Dodge buff (Evasion)
     if (state._dodgeBuffTimer > 0) {
       state._dodgeBuffTimer--;
@@ -3014,6 +3037,19 @@
         comboEl.classList.add('hidden');
       }
     }
+    // Mana bar (mage)
+    const manaBar = $('mbPlayerArenaMana');
+    if (manaBar) {
+      if (state.heroClass === 'mage') {
+        manaBar.classList.remove('hidden');
+        const span = manaBar.querySelector('span');
+        if (span) span.textContent = `💧 ${Math.round(state.mana || 0)}/${state.maxMana || 100}`;
+        const fill = $('mbPlayerArenaManaFill');
+        if (fill) fill.style.width = Math.max(0, Math.round(((state.mana || 0) / (state.maxMana || 100)) * 100)) + '%';
+      } else {
+        manaBar.classList.add('hidden');
+      }
+    }
   }
 
   // ===== CLASS SPELLS (Barbar) =====
@@ -3145,8 +3181,11 @@
 
     // GCD check
     if (state._gcdTimer > 0) return;
-    // Resource check (rage nebo energy)
-    const resourceKey = cls.resource === 'energy' ? 'energy' : 'rage';
+    // Resource check (rage, energy nebo mana)
+    let resourceKey;
+    if (cls.resource === 'energy') resourceKey = 'energy';
+    else if (cls.resource === 'mana') resourceKey = 'mana';
+    else resourceKey = 'rage';
     if ((state[resourceKey] || 0) < spell.cost) return;
     // Per-spell cooldown check
     if (_sessionSpellCooldowns[spellId] > 0) return;
@@ -4224,6 +4263,7 @@
     const hasPassive = a && getTierPoints(a, 0) > 0;
     if (hasPassive && a === 'fire') return { c1:'#f39c12', c2:'#e67e22', rgb:'230,126,34' };
     if (hasPassive && a === 'ice') return { c1:'#5dade2', c2:'#3498db', rgb:'52,152,219' };
+    if (hasPassive && a === 'lightning') return { c1:'#a855f7', c2:'#7c3aed', rgb:'168,85,247' };
     if (hasPassive && a === 'nature') return { c1:'#58d68d', c2:'#2ecc71', rgb:'46,204,113' };
     if (hasPassive && a === 'physical') return { c1:'#b0b0c8', c2:'#8888aa', rgb:'180,180,200' };
     return { c1:'#bbb', c2:'#aaa', rgb:'187,187,187' };
@@ -4267,8 +4307,10 @@
     if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
       projImg = 'shadow.png'; // nepřátelský caster = shadow
     } else if (!targetIsPlayer) {
+      // Hráčův projektil — podle active school
       if (a === 'fire') projImg = 'fireball.png';
       else if (a === 'ice') projImg = 'frostbolt.png';
+      else if (a === 'lightning') projImg = 'lightning.png';
       else if (a === 'nature') projImg = 'nature.png';
       else if (a === 'physical') projImg = 'lightning.png';
     }
@@ -4287,7 +4329,13 @@
     proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out, transform ${duration}ms linear`;
     arena.appendChild(proj);
 
-    // --- Canvas trail ---
+    // Spustit animaci letu
+    void proj.offsetHeight;
+    proj.style.left = (endX - half) + 'px';
+    proj.style.top = (endY - half) + 'px';
+    proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
+
+    // Po dopadu: impact na canvasu
     const canvas = $('mbProjectileCanvas');
     let ctx = null;
     if (canvas) {
@@ -4295,46 +4343,8 @@
       canvas.height = rect.height;
       ctx = canvas.getContext('2d');
     }
-
-    // Trail: kreslíme postupně během letu
-    const trailSteps = 8;
-    const trailPositions = [];
-    const dx = (endX - startX) / trailSteps;
-    const dy = (endY - startY) / trailSteps;
-    for (let i = 0; i <= trailSteps; i++) {
-      trailPositions.push({ x: startX + dx * i, y: startY + dy * i });
-    }
-
-    let trailIdx = 0;
-    const trailInterval = setInterval(() => {
-      if (!ctx || trailIdx >= trailPositions.length) { clearInterval(trailInterval); return; }
-      const p = trailPositions[trailIdx];
-      // Kruhový trail s klesající opacitou
-      for (let j = 0; j < 3; j++) {
-        const t = j / 3;
-        const alpha = 0.5 - t * 0.4;
-        const r = (size/2) * (1 - t * 0.5);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${rgb},${alpha})`;
-        ctx.fill();
-      }
-      trailIdx++;
-    }, duration / trailSteps);
-
-    // Spustit animaci letu
-    void proj.offsetHeight;
-    proj.style.left = (endX - half) + 'px';
-    proj.style.top = (endY - half) + 'px';
-    proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
-
-    // Po dopadu: impact + cleanup
     setTimeout(() => {
-      clearInterval(trailInterval);
       if (proj.parentNode) proj.remove();
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Impact částice na canvasu
       if (ctx) {
         const pCount = isCrit ? 20 : 10;
         const particles = [];
