@@ -3421,6 +3421,37 @@
         dmgText.classList.remove('hidden');
         setTimeout(() => dmgText.classList.add('hidden'), 500);
       }
+    } else if (spellId === 'firebolt' || spellId === 'icebolt' || spellId === 'lightningBolt' ||
+               spellId === 'fireball' || spellId === 'frostbolt' || spellId === 'chainLightning' ||
+               spellId === 'fireblast' || spellId === 'blizzard' || spellId === 'thunderStorm') {
+      // Mágova kouzla — damage podle school a levelu
+      const lv = getSpellLv(spellId);
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrInt||0) + eqAttrs.int) * 2;
+      let pct, school, schoolId;
+      if (spellId === 'firebolt') { pct = 75 + lv * 35; school = '🔥'; schoolId = 'fire'; }
+      else if (spellId === 'icebolt') { pct = 75 + lv * 35; school = '❄️'; schoolId = 'ice'; }
+      else if (spellId === 'lightningBolt') { pct = 80 + lv * 40; school = '⚡'; schoolId = 'lightning'; }
+      else if (spellId === 'fireball') { pct = 100 + lv * 50; school = '💥'; schoolId = 'fire'; }
+      else if (spellId === 'frostbolt') { pct = 100 + lv * 50; school = '🧊'; schoolId = 'ice'; }
+      else if (spellId === 'chainLightning') { pct = 100 + lv * 50; school = '⚡'; schoolId = 'lightning'; }
+      else if (spellId === 'fireblast') { pct = 150 + lv * 50; school = '🌋'; schoolId = 'fire'; }
+      else if (spellId === 'blizzard') { pct = 50 + lv * 25; school = '🌨️'; schoolId = 'ice'; }
+      else { pct = 40 + lv * 20; school = '🌩️'; schoolId = 'lightning'; } // thunderStorm
+      const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
+      // Aplikovat resist
+      const resist = getSchoolResistMult(schoolId);
+      const finalDmg = Math.max(1, Math.round(dmg * resist));
+      mb.bossHp -= finalDmg;
+      // Projektil
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
+      const dmgEl = $('mbDamageText');
+      if (dmgEl) {
+        dmgEl.textContent = `${school} -${finalDmg}`;
+        dmgEl.classList.remove('hidden');
+        setTimeout(() => dmgEl.classList.add('hidden'), 500);
+      }
     }
 
     updateMapBattleUI();
