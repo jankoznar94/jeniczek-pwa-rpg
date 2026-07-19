@@ -4233,9 +4233,9 @@
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
+    const aRect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
-    const aRect = arena.getBoundingClientRect();
 
     // Start: od hráče (dole) nebo od bosse (nahoře)
     let startEl = targetIsPlayer ? $('mbFigure') : $('mbPlayerFigure');
@@ -4259,56 +4259,125 @@
     }
 
     const schoolColor = getSchoolColors(targetIsPlayer);
-    const color1 = schoolColor.c1;
-    const color2 = schoolColor.c2;
     const rgb = schoolColor.rgb;
 
-    const size = isCrit ? 32 : 22;
-    const half = size / 2;
-    const proj = document.createElement('div');
-    // Caster projektil (magický) vs melee (fyzický)
+    // Vybrat PNG projektil podle school
+    const a = state.activeSchool;
+    let projImg = 'arcane.png';
     if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
-      // Magická koule — fialová/modrá záře
-      proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,#a855f7,#6366f1);box-shadow:0 0 ${isCrit ? 20:10}px rgba(168,85,247,${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
-    } else {
-      proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:radial-gradient(circle,${color1},${color2});box-shadow:0 0 ${isCrit ? 20:10}px rgba(${rgb},${isCrit ? 1:0.8});z-index:20;pointer-events:none;`;
+      projImg = 'shadow.png'; // nepřátelský caster = shadow
+    } else if (!targetIsPlayer) {
+      if (a === 'fire') projImg = 'fireball.png';
+      else if (a === 'ice') projImg = 'frostbolt.png';
+      else if (a === 'nature') projImg = 'nature.png';
+      else if (a === 'physical') projImg = 'lightning.png';
     }
+
+    const size = isCrit ? 48 : 36;
+    const half = size / 2;
+    const duration = 200; // ms letu
+
+    // --- PNG projektil (CSS animovaný) ---
+    const proj = document.createElement('img');
+    proj.src = `assets/projectiles/${projImg}`;
+    proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;z-index:20;pointer-events:none;image-rendering:pixelated;`;
     proj.style.left = (startX - half) + 'px';
     proj.style.top = (startY - half) + 'px';
+    // Rotace během letu
+    proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out, transform ${duration}ms linear`;
     arena.appendChild(proj);
 
-    // Force reflow — prohlížeč si zapamatuje počáteční pozici
-    void proj.offsetHeight;
+    // --- Canvas trail ---
+    const canvas = $('mbProjectileCanvas');
+    let ctx = null;
+    if (canvas) {
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      ctx = canvas.getContext('2d');
+    }
 
-    proj.style.transition = `left 0.2s ease-out, top 0.2s ease-out`;
+    // Trail: kreslíme postupně během letu
+    const trailSteps = 8;
+    const trailPositions = [];
+    const dx = (endX - startX) / trailSteps;
+    const dy = (endY - startY) / trailSteps;
+    for (let i = 0; i <= trailSteps; i++) {
+      trailPositions.push({ x: startX + dx * i, y: startY + dy * i });
+    }
+
+    let trailIdx = 0;
+    const trailInterval = setInterval(() => {
+      if (!ctx || trailIdx >= trailPositions.length) { clearInterval(trailInterval); return; }
+      const p = trailPositions[trailIdx];
+      // Kruhový trail s klesající opacitou
+      for (let j = 0; j < 3; j++) {
+        const t = j / 3;
+        const alpha = 0.5 - t * 0.4;
+        const r = (size/2) * (1 - t * 0.5);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${rgb},${alpha})`;
+        ctx.fill();
+      }
+      trailIdx++;
+    }, duration / trailSteps);
+
+    // Spustit animaci letu
+    void proj.offsetHeight;
     proj.style.left = (endX - half) + 'px';
     proj.style.top = (endY - half) + 'px';
+    proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
 
-    // Po dopadu: mlha + částice
+    // Po dopadu: impact + cleanup
     setTimeout(() => {
+      clearInterval(trailInterval);
       if (proj.parentNode) proj.remove();
-      spawnImpactParticles(arena, endX, endY, rgb, isCrit);
-      const pCount = isCrit ? 12 : 5;
-      const pDist = isCrit ? 40 : 30;
-      const pMaxSize = isCrit ? 10 : 5;
-      for (let i = 0; i < pCount; i++) {
-        const p = document.createElement('div');
-        const size2 = 3 + Math.random() * pMaxSize;
-        const angle = Math.random() * 2 * Math.PI;
-        const dist = 15 + Math.random() * pDist;
-        p.style.cssText = `position:absolute;width:${size2}px;height:${size2}px;border-radius:50%;background:${[color2,color1,'rgba(255,255,255,0.6)'][i%3]};z-index:21;pointer-events:none;opacity:1;`;
-        p.style.left = (endX - size2/2) + 'px';
-        p.style.top = (endY - size2/2) + 'px';
-        arena.appendChild(p);
-        requestAnimationFrame(() => {
-          p.style.transition = `left 0.3s ease-out, top 0.3s ease-out, opacity 0.3s ease-out`;
-          p.style.left = (endX + Math.cos(angle) * dist - size2/2) + 'px';
-          p.style.top = (endY + Math.sin(angle) * dist - size2/2) + 'px';
-          p.style.opacity = '0';
-        });
-        setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
+      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Impact částice na canvasu
+      if (ctx) {
+        const pCount = isCrit ? 20 : 10;
+        const particles = [];
+        for (let i = 0; i < pCount; i++) {
+          const angle = Math.random() * 2 * Math.PI;
+          const dist = 20 + Math.random() * (isCrit ? 50 : 30);
+          const pSize = 3 + Math.random() * (isCrit ? 8 : 5);
+          const speed = 0.3 + Math.random() * 0.3;
+          particles.push({
+            x: endX, y: endY,
+            tx: endX + Math.cos(angle) * dist,
+            ty: endY + Math.sin(angle) * dist,
+            size: pSize,
+            alpha: 0.8 + Math.random() * 0.2,
+            speed: speed
+          });
+        }
+        let startTime = null;
+        function animateImpact(ts) {
+          if (!startTime) startTime = ts;
+          const elapsed = (ts - startTime) / 1000;
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          let allDone = true;
+          for (const p of particles) {
+            const t = Math.min(elapsed / p.speed, 1);
+            const ease = 1 - Math.pow(1 - t, 3);
+            const px = p.x + (p.tx - p.x) * ease;
+            const py = p.y + (p.ty - p.y) * ease;
+            const alpha = p.alpha * (1 - ease);
+            if (alpha > 0.01) {
+              allDone = false;
+              ctx.beginPath();
+              ctx.arc(px, py, p.size * (1 - ease * 0.5), 0, Math.PI * 2);
+              ctx.fillStyle = `rgba(${rgb},${alpha})`;
+              ctx.fill();
+            }
+          }
+          if (!allDone) requestAnimationFrame(animateImpact);
+          else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        requestAnimationFrame(animateImpact);
       }
-    }, 200);
+    }, duration);
   }
 
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
