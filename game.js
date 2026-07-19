@@ -3043,7 +3043,7 @@
       if (state.heroClass === 'mage') {
         manaBar.classList.remove('hidden');
         const span = manaBar.querySelector('span');
-        if (span) span.textContent = `💧 ${Math.round(state.mana || 0)}/${state.maxMana || 100}`;
+        if (span) span.textContent = `${Math.round(state.mana || 0)}/${state.maxMana || 100}`;
         const fill = $('mbPlayerArenaManaFill');
         if (fill) fill.style.width = Math.max(0, Math.round(((state.mana || 0) / (state.maxMana || 100)) * 100)) + '%';
       } else {
