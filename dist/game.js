@@ -64,15 +64,15 @@
       baseHp:60, baseDmg:6, baseMana:100,
       attrBonus:{str:15, vit:15, dex:15, int:25},
       spells: [
-        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:10, cooldown:0, gcd:0.5, desc:'75-110% dmg ohněm' },
-        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:10, cooldown:0, gcd:0.5, desc:'75-110% dmg ledem, zpomalí 25% na 2s' },
-        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:10, cooldown:0, gcd:0.5, desc:'80-120% dmg bleskem' },
-        { id:'fireball', name:'Fireball', icon:'💥', cost:20, cooldown:8, gcd:0.5, desc:'100-150% dmg ohněm + DoT' },
-        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:20, cooldown:8, gcd:0.5, desc:'100-150% dmg ledem, zmrazení' },
-        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:20, cooldown:8, gcd:0.5, desc:'100-150% dmg bleskem, skáče' },
-        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:35, cooldown:15, gcd:0.5, desc:'150-200% dmg ohněm' },
-        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:35, cooldown:15, gcd:0.5, desc:'50-75% dmg ledem/tick' },
-        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:35, cooldown:15, gcd:0.5, desc:'40-60% dmg bleskem/tick' }
+        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'75-110% dmg ohněm' },
+        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'75-110% dmg ledem, zpomalí 25% na 2s' },
+        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'80-120% dmg bleskem' },
+        { id:'fireball', name:'Fireball', icon:'💥', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'100-150% dmg ohněm + DoT' },
+        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'100-150% dmg ledem, zmrazení' },
+        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'100-150% dmg bleskem, skáče' },
+        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'150-200% dmg ohněm' },
+        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'50-75% dmg ledem/tick' },
+        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'40-60% dmg bleskem/tick' }
       ]
     }
   };
@@ -2089,6 +2089,8 @@
       enemyMana: 0, maxEnemyMana: 0,
       _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
       _enemyCastProcessed: false,
+      // Player cast fields
+      _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
     };
 
     showScreen('mapBattle');
@@ -2235,8 +2237,23 @@
     // Aktualizovat resource bary a combo indikátor každou smyčku
     updateResourceBars();
 
-    // Hráčův swing
-    if (!mb._playerSwingReady) {
+    // Hráčův swing / cast
+    if (mb._playerCasting) {
+      // Probíhá castování
+      const castElapsed = now - mb._playerCastStart;
+      mb._playerSwingPct = Math.min(castElapsed / mb._playerCastTime, 1);
+      if (castElapsed >= mb._playerCastTime) {
+        // Cast dokončen — provést efekt kouzla
+        mb._playerCasting = false;
+        const spellId = mb._playerCastSpell;
+        mb._playerCastSpell = null;
+        executePlayerSpell(spellId);
+        // Resetovat swing timer po castu
+        mb._playerSwingStart = now;
+        mb._playerSwingReady = false;
+        mb._playerAttackProcessed = false;
+      }
+    } else if (!mb._playerSwingReady) {
       const playerElapsed = now - mb._playerSwingStart;
       mb._playerSwingPct = Math.min(playerElapsed / mb.playerSwingMs, 1);
       if (playerElapsed >= mb.playerSwingMs) {
@@ -2414,11 +2431,10 @@
         state.energy = Math.min(state.maxEnergy || 100, (state.energy || 0) + regen);
       }
     }
-    // Mana regen (mage) — 2/tick + INT bonus
+    // Mana regen (mage) — zanedbatelná, 0.2/s + 0.1 per 10 INT
     if (state.heroClass === 'mage') {
-      const cls = CLASSES.mage;
-      const intBonus = (state.hero.attrInt || 0) * 0.5;
-      const regen = (cls.resourceRegen || 0) / 60 + intBonus / 60;
+      const intBonus = (state.hero.attrInt || 0) * 0.01;
+      const regen = 0.2 / 60 + intBonus / 60;
       if (regen > 0 && (state.mana || 0) < (state.maxMana || 100)) {
         state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + regen);
       }
@@ -2454,6 +2470,10 @@
       if (mb._playerSwingReady) {
         playerCircle.style.strokeDashoffset = '0';
         playerCircle.style.stroke = '#2ecc71'; // zelená = připraven
+      } else if (mb._playerCasting) {
+        const offset = Math.round(691 * (1 - mb._playerSwingPct));
+        playerCircle.style.strokeDashoffset = offset;
+        playerCircle.style.stroke = '#a855f7'; // fialová = castování
       } else {
         const offset = Math.round(691 * (1 - mb._playerSwingPct));
         playerCircle.style.strokeDashoffset = offset;
@@ -3203,6 +3223,20 @@
       _sessionSpellCooldowns[spellId] = Math.round(spell.cooldown * 60);
     }
 
+    // Pokud má kouzlo castTime, začít castovat (jako WoW TBC)
+    if (spell.castTime && spell.castTime > 0) {
+      mb._playerCasting = true;
+      mb._playerCastStart = performance.now();
+      mb._playerCastTime = spell.castTime * 1000; // převod s → ms
+      mb._playerCastSpell = spellId;
+      // Resetovat swing timer — cast ho nahrazuje
+      mb._playerSwingStart = performance.now();
+      mb._playerSwingReady = false;
+      mb._playerAttackProcessed = false;
+      updateMapBattleUI();
+      return;
+    }
+
     // Efekty kouzel
     if (spellId === 'heroicStrike') {
       mb._heroicStrikeQueued = true;
@@ -3422,7 +3456,16 @@
         dmgText.classList.remove('hidden');
         setTimeout(() => dmgText.classList.add('hidden'), 500);
       }
-    } else if (spellId === 'firebolt' || spellId === 'icebolt' || spellId === 'lightningBolt' ||
+    }
+
+    updateMapBattleUI();
+    saveGame();
+  }
+
+  function executePlayerSpell(spellId) {
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+    if (spellId === 'firebolt' || spellId === 'icebolt' || spellId === 'lightningBolt' ||
                spellId === 'fireball' || spellId === 'frostbolt' || spellId === 'chainLightning' ||
                spellId === 'fireblast' || spellId === 'blizzard' || spellId === 'thunderStorm') {
       // Mágova kouzla — damage podle school a levelu
@@ -3454,7 +3497,6 @@
         setTimeout(() => dmgEl.classList.add('hidden'), 500);
       }
     }
-
     updateMapBattleUI();
     saveGame();
   }
