@@ -1891,6 +1891,7 @@
     state.comboPoints = 0;
     state.energy = state.maxEnergy || 100;
     state.rage = 0;
+    state.mana = state.maxMana || 100;
     state._dodgeBuffTimer = 0;
     state._speedBoostTimer = 0;
     state._speedBoostPct = 0;
@@ -3068,8 +3069,10 @@
     investedSpells.forEach(spell => {
       const onGcd = state._gcdTimer > 0;
       const clsDef = CLASSES[state.heroClass];
-      const resourceKey = clsDef.resource === 'energy' ? 'energy' : 'rage';
-      const maxResource = clsDef.resource === 'energy' ? (state.maxEnergy || 100) : (state.maxRage || 100);
+      let resourceKey, maxResource;
+      if (clsDef.resource === 'energy') { resourceKey = 'energy'; maxResource = state.maxEnergy || 100; }
+      else if (clsDef.resource === 'mana') { resourceKey = 'mana'; maxResource = state.maxMana || 100; }
+      else { resourceKey = 'rage'; maxResource = state.maxRage || 100; }
       const hasResource = (state[resourceKey] || 0) >= spell.cost;
       const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
       const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
