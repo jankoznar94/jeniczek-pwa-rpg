@@ -3086,16 +3086,7 @@
       spellId = mb._enemyCastSpell;
     }
     if (spellId) {
-      // Mapování spellId → icon
-      const spellIcons = {
-        firebolt:'🔥', icebolt:'❄️', lightningBolt:'⚡',
-        fireball:'💥', frostbolt:'🧊', chainLightning:'⚡',
-        fireblast:'🌋', blizzard:'🌨️', thunderStorm:'🌩️',
-        poison_bolt:'☠️', drain_life:'🩸', mana_drain:'💧',
-        empower:'📈', shadow_bolt:'🎯', heal:'💚'
-      };
-      const icon = spellIcons[spellId] || '🔮';
-      el.textContent = icon;
+      el.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:64px;height:64px;object-fit:contain">`;
       el.classList.remove('hidden');
     } else {
       el.classList.add('hidden');
