@@ -653,58 +653,58 @@
   // stats: { statName: [min, max] }, tint: barva overlay
   const AFFIXES = [
     // === PREFIXY ===
-    { id:'fiery', name:'Ohnivý', type:'prefix', group:1, minIlvl:5, weight:8,
+    { id:'fiery', name:'Ohnivý', type:'prefix', group:1, minIlvl:1, weight:8,
       types:['weapon'], stats:{ fireDmg:[3,8] }, tint:'#e94560' },
-    { id:'icy', name:'Ledový', type:'prefix', group:1, minIlvl:8, weight:8,
+    { id:'icy', name:'Ledový', type:'prefix', group:1, minIlvl:5, weight:8,
       types:['weapon'], stats:{ iceDmg:[3,8] }, tint:'#4a7dff' },
-    { id:'keen', name:'Obratný', type:'prefix', group:6, minIlvl:8, weight:7,
+    { id:'keen', name:'Obratný', type:'prefix', group:6, minIlvl:1, weight:7,
       types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
-    { id:'sharp', name:'Bystrý', type:'prefix', group:7, minIlvl:10, weight:6,
+    { id:'sharp', name:'Bystrý', type:'prefix', group:7, minIlvl:5, weight:6,
       types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
-    { id:'bloody', name:'Krvavý', type:'prefix', group:8, minIlvl:12, weight:5,
+    { id:'bloody', name:'Krvavý', type:'prefix', group:8, minIlvl:10, weight:5,
       types:['weapon','ring','amulet'], stats:{ lifesteal:[2,5] }, tint:'#e94560' },
-    { id:'manaSteal', name:'Manažroutský', type:'prefix', group:14, minIlvl:10, weight:5,
+    { id:'manaSteal', name:'Manažroutský', type:'prefix', group:14, minIlvl:8, weight:5,
       types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
-    { id:'fortified', name:'Zpevněný', type:'prefix', group:15, minIlvl:8, weight:8,
+    { id:'fortified', name:'Zpevněný', type:'prefix', group:15, minIlvl:1, weight:8,
       types:['armor','shield','helmet'], stats:{ enhancedDefense:[10,30] }, tint:'#888' },
-    { id:'deadly', name:'Smrtící', type:'prefix', group:16, minIlvl:8, weight:8,
+    { id:'deadly', name:'Smrtící', type:'prefix', group:16, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
-    { id:'mystic', name:'Záhadný', type:'prefix', group:9, minIlvl:8, weight:6,
+    { id:'mystic', name:'Záhadný', type:'prefix', group:9, minIlvl:1, weight:6,
       types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
-    { id:'dexterous', name:'Hbitý', type:'prefix', group:10, minIlvl:8, weight:6,
+    { id:'dexterous', name:'Hbitý', type:'prefix', group:10, minIlvl:1, weight:6,
       types:['weapon','ring','amulet'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
-    { id:'poisoned', name:'Jedovatý', type:'prefix', group:11, minIlvl:10, weight:5,
+    { id:'poisoned', name:'Jedovatý', type:'prefix', group:11, minIlvl:8, weight:5,
       types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
-    { id:'manaRegen', name:'Obnovující', type:'prefix', group:12, minIlvl:8, weight:6,
+    { id:'manaRegen', name:'Obnovující', type:'prefix', group:12, minIlvl:1, weight:6,
       types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
-    { id:'skillful', name:'Dovedný', type:'prefix', group:13, minIlvl:10, weight:5,
+    { id:'skillful', name:'Dovedný', type:'prefix', group:13, minIlvl:8, weight:5,
       types:['weapon','ring','amulet'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     // === SUFFIXY ===
-    { id:'ofAccuracy', name:'Přesnosti', type:'suffix', group:105, minIlvl:10, weight:7,
+    { id:'ofAccuracy', name:'Přesnosti', type:'suffix', group:105, minIlvl:5, weight:7,
       types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
-    { id:'ofSpeed', name:'Rychlosti', type:'suffix', group:106, minIlvl:12, weight:5,
+    { id:'ofSpeed', name:'Rychlosti', type:'suffix', group:106, minIlvl:10, weight:5,
       types:['weapon'], stats:{ swingMs:[-200,-100] }, tint:'#1abc9c' },
-    { id:'ofCritical', name:'Kritičnosti', type:'suffix', group:107, minIlvl:12, weight:6,
+    { id:'ofCritical', name:'Kritičnosti', type:'suffix', group:107, minIlvl:8, weight:6,
       types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
-    { id:'ofWisdom', name:'Moudrosti', type:'suffix', group:108, minIlvl:10, weight:6,
+    { id:'ofWisdom', name:'Moudrosti', type:'suffix', group:108, minIlvl:1, weight:6,
       types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
-    { id:'ofStrength', name:'Síly', type:'suffix', group:109, minIlvl:10, weight:6,
+    { id:'ofStrength', name:'Síly', type:'suffix', group:109, minIlvl:1, weight:6,
       types:['ring','amulet','armor'], stats:{ str:[2,6] }, tint:'#e94560' },
-    { id:'ofEndurance', name:'Odolnosti', type:'suffix', group:110, minIlvl:10, weight:6,
+    { id:'ofEndurance', name:'Odolnosti', type:'suffix', group:110, minIlvl:1, weight:6,
       types:['ring','amulet','armor'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
-    { id:'ofDexterity', name:'Obratnosti', type:'suffix', group:111, minIlvl:10, weight:6,
+    { id:'ofDexterity', name:'Obratnosti', type:'suffix', group:111, minIlvl:1, weight:6,
       types:['ring','amulet','weapon'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
-    { id:'ofManaRegen', name:'Regenerace', type:'suffix', group:112, minIlvl:10, weight:5,
+    { id:'ofManaRegen', name:'Regenerace', type:'suffix', group:112, minIlvl:1, weight:5,
       types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
-    { id:'ofSkill', name:'Dovednosti', type:'suffix', group:113, minIlvl:12, weight:5,
+    { id:'ofSkill', name:'Dovednosti', type:'suffix', group:113, minIlvl:10, weight:5,
       types:['ring','amulet','weapon'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
-    { id:'ofVenom', name:'Jed', type:'suffix', group:114, minIlvl:12, weight:4,
+    { id:'ofVenom', name:'Jed', type:'suffix', group:114, minIlvl:10, weight:4,
       types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
-    { id:'ofManaSteal', name:'Many', type:'suffix', group:115, minIlvl:10, weight:5,
+    { id:'ofManaSteal', name:'Many', type:'suffix', group:115, minIlvl:8, weight:5,
       types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
-    { id:'ofFortification', name:'Opevnění', type:'suffix', group:116, minIlvl:8, weight:8,
+    { id:'ofFortification', name:'Opevnění', type:'suffix', group:116, minIlvl:1, weight:8,
       types:['armor','shield','helmet'], stats:{ enhancedDefense:[10,30] }, tint:'#888' },
-    { id:'ofSlaughter', name:'Porážky', type:'suffix', group:117, minIlvl:8, weight:8,
+    { id:'ofSlaughter', name:'Porážky', type:'suffix', group:117, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
   ];
 
@@ -970,14 +970,6 @@
         const pool = (i % 2 === 0) ? prefixes : suffixes;
         const a = pickAffix(pool);
         if (a) { chosenAffixes.push(a); usedGroups.add(a.group); }
-      }
-      // Rare musí mít aspoň 1 affix — jinak spadnout na magic
-      if (chosenAffixes.length === 0) {
-        quality = 'magic';
-        const p = pickAffix(prefixes);
-        if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
-        const s = pickAffix(suffixes);
-        if (s) { chosenAffixes.push(s); usedGroups.add(s.group); }
       }
     }
 
