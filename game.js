@@ -2517,7 +2517,13 @@
       mb._enemySlowTimer--;
       if (mb._enemySlowTimer <= 0) {
         mb._enemySlowPct = 0;
-        mb.enemySwingMs = getEnemySwingTime(mb); // přepočítat bez slow
+        // Přepočítat bez slow — zachovat % průběh
+        const now = performance.now();
+        const oldMs = mb.enemySwingMs;
+        const elapsed = now - mb._enemySwingStart;
+        const progress = Math.min(elapsed / oldMs, 1);
+        mb.enemySwingMs = getEnemySwingTime(mb);
+        mb._enemySwingStart = now - progress * mb.enemySwingMs;
       }
     }
   }
@@ -3662,8 +3668,13 @@
         mb._enemySlowPct = slowPct;
         mb._enemySlowTimer = slowTicks;
         mb._enemySlowMax = slowTicks;
-        // Přepočítat enemy swing timer se zpomalením
+        // Přepočítat enemy swing timer se zpomalením — zachovat % průběh
+        const now = performance.now();
+        const oldMs = mb.enemySwingMs;
+        const elapsed = now - mb._enemySwingStart;
+        const progress = Math.min(elapsed / oldMs, 1);
         mb.enemySwingMs = getEnemySwingTime(mb);
+        mb._enemySwingStart = now - progress * mb.enemySwingMs;
         _sessionDebuffs['slow_' + spellId] = { icon: '❄️', name: `Zpomalení ${slowPct}%`, ticks: slowTicks, maxTicks: slowTicks };
       }
       // Projektil
