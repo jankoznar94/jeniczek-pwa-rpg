@@ -448,13 +448,13 @@
         lightning: { name:'Blesky', icon:'⚡',
           tiers: [
             { choices: [
-              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightning.png', maxLv:5, desc:lv=>`${80+lv*40}% dmg bleskem` },
+              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightningBolt.png', maxLv:5, desc:lv=>`${80+lv*40}% dmg bleskem` },
             ]},
             { choices: [
-              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'lightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg bleskem, skáče na ${1+Math.floor(lv/2)} další cíl` },
+              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'chainLightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg bleskem, skáče na ${1+Math.floor(lv/2)} další cíl` },
             ]},
             { choices: [
-              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'lightning.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${40+lv*20}% dmg bleskem/tick na 3s` },
+              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'thunderStorm.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${40+lv*20}% dmg bleskem/tick na 3s` },
             ]}
           ]
         }
