@@ -1523,9 +1523,14 @@
 
   function cleanupTimers() {
     document.body.classList.remove('battle-active');
-    // Schovat timer ring
-    const circle = document.querySelector('.timer-circle');
-    if (circle) { circle.style.opacity = '0'; circle.style.animation = 'none'; }
+    // Schovat a zešednout všechny timer kruhy
+    ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.opacity = '0.15'; el.style.animation = 'none'; el.style.strokeDashoffset = '0'; }
+    });
+    // Schovat i timer ring wrapper
+    const ring = document.getElementById('mbTimerRing');
+    if (ring) ring.style.opacity = '0.3';
     _activeIntervals.forEach(id => { try { clearInterval(id); } catch {} }); _activeIntervals = [];
     if (minigameState.timerInterval) { clearInterval(minigameState.timerInterval); minigameState.timerInterval = null; }
     if (minigameState.countdownInterval) { clearInterval(minigameState.countdownInterval); minigameState.countdownInterval = null; }
