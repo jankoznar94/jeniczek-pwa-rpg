@@ -52,8 +52,8 @@
     },
     mage: {
       id:'mage', name:'Kouzelník', icon:'🪄',
-      resource:'mana', resourceName:'💧 Mana', maxResource:100, startResource:100,
-      resourceRegen:2, // 2/tick + INT bonus
+      resource:'mana', resourceName:'💧 Mana', maxResource:30, startResource:30,
+      resourceRegen:1, // 1/tick + INT bonus
       desc:'Mana škáluje s INT a gearem. Mocná kouzla na dálku.',
       allowedWeapons:['staff','fists'],
       allowedShield:false,
@@ -7085,6 +7085,8 @@
   }
   function getHeroMaxMana() {
     const h = state.hero;
+    const cls = CLASSES[state.heroClass];
+    const baseMana = cls ? cls.baseMana : 50;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const armor = ITEM_MAP[h.equip.armor];
     const helmet = ITEM_MAP[h.equip.helmet];
@@ -7094,7 +7096,7 @@
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
     const bonus = (weapon.bonusMana||0) + (armor ? armor.bonusMana||0 : 0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0);
-    return Math.max(10, 50 + ((h.attrInt||0) + getEquipAttrs().int) * 10 + bonus);
+    return Math.max(10, baseMana + ((h.attrInt||0) + getEquipAttrs().int) * 5 + bonus);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
