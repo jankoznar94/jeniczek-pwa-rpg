@@ -377,6 +377,19 @@ body.no-scroll { overflow: hidden; }
   from { transform:translate(-50%,-50%) scale(0.8); opacity:0.7; }
   to   { transform:translate(-50%,-50%) scale(1.1); opacity:1.0; }
 }
+#mbArena .victory-skull {
+  position:absolute;top:50%;left:50%;z-index:12;pointer-events:auto;cursor:pointer;
+  width:80px;height:80px;
+  transform:translate(-50%,-50%);
+  font-size:64px;
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 0 20px rgba(200,50,50,0.8));
+  animation:skullPulse 0.6s ease-in-out infinite alternate;
+}
+@keyframes skullPulse {
+  from { transform:translate(-50%,-50%) scale(0.9); opacity:0.8; }
+  to   { transform:translate(-50%,-50%) scale(1.15); opacity:1.0; }
+}
 #mbArena .monster-ring-frame {
   width:180px;height:180px;border-radius:50%;border:none;
   overflow:hidden;display:flex;align-items:center;justify-content:center;
