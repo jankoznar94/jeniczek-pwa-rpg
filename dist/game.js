@@ -966,6 +966,11 @@
     const candidates = AFFIXES.filter(a =>
       a.minIlvl <= ilvl && a.types.includes(baseItem.type));
 
+    // Pokud nejsou žádné affixy pro tento typ itemu, degradovat na normal
+    if (candidates.length === 0) {
+      quality = 'normal';
+    }
+
     // Rozdělit na prefixy a suffixy
     const prefixes = candidates.filter(a => a.type === 'prefix');
     const suffixes = candidates.filter(a => a.type === 'suffix');
