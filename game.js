@@ -1523,14 +1523,6 @@
 
   function cleanupTimers() {
     document.body.classList.remove('battle-active');
-    // Ztmavit všechny timer kruhy
-    ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) { el.style.opacity = '0.08'; el.style.animation = 'none'; el.style.strokeDashoffset = '0'; }
-    });
-    // Ztmavit i timer ring wrapper
-    const ring = document.getElementById('mbTimerRing');
-    if (ring) ring.style.opacity = '0.15';
     _activeIntervals.forEach(id => { try { clearInterval(id); } catch {} }); _activeIntervals = [];
     if (minigameState.timerInterval) { clearInterval(minigameState.timerInterval); minigameState.timerInterval = null; }
     if (minigameState.countdownInterval) { clearInterval(minigameState.countdownInterval); minigameState.countdownInterval = null; }
@@ -2133,6 +2125,15 @@
     };
 
     showScreen('mapBattle');
+    // Resetovat death vizuály z předchozího boje
+    const skull = $('mbVictorySkull');
+    if (skull) skull.classList.add('hidden');
+    ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.opacity = ''; el.style.animation = ''; el.style.strokeDashoffset = ''; }
+    });
+    const ring = document.getElementById('mbTimerRing');
+    if (ring) ring.style.opacity = '';
     // Inicializace many pro caster monstra
     if (mapBattleState.monsterAttackType === ATTACK_TYPES.CASTER) {
       const baseMana = 30 + mapBattleState.locId * 10 + mapBattleState.progress * 3;
@@ -2626,6 +2627,7 @@
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
       cleanupTimers();
+      dimTimers();
       const arena = $('mbArena');
       if (arena) {
         arena.style.transition = 'background 0.15s';
@@ -2649,6 +2651,7 @@
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
       cleanupTimers();
+      dimTimers();
       const arena = $('mbArena');
       if (arena) {
         arena.style.transition = 'background 0.15s';
@@ -3625,6 +3628,7 @@
       if (mb.bossHp <= 0 && !mb._pendingKill) {
         mb._pendingKill = true;
         cleanupTimers();
+        dimTimers();
         const arena = $('mbArena');
         if (arena) {
           arena.style.transition = 'background 0.15s';
@@ -5279,11 +5283,25 @@
     const skull = $('mbVictorySkull');
     if (!skull) { if (onClick) onClick(); return; }
     skull.classList.remove('hidden');
-    skull.onclick = function() {
+    // Kliknutí kamkoliv na arénu
+    const arena = $('mbArena');
+    function onAnyClick() {
       skull.classList.add('hidden');
       skull.onclick = null;
+      if (arena) arena.onclick = null;
       if (onClick) onClick();
-    };
+    }
+    skull.onclick = onAnyClick;
+    if (arena) arena.onclick = onAnyClick;
+  }
+
+  function dimTimers() {
+    ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.opacity = '0.08'; el.style.animation = 'none'; el.style.strokeDashoffset = '0'; }
+    });
+    const ring = document.getElementById('mbTimerRing');
+    if (ring) ring.style.opacity = '0.15';
   }
 
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
@@ -6271,6 +6289,7 @@
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
       cleanupTimers();
+      dimTimers();
       // Červený záblesk arény
       const arena = $('mbArena');
       if (arena) {
