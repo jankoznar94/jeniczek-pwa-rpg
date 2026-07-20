@@ -3668,7 +3668,7 @@
       }
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
-      playSFX(sfxHit());
+      sfxHit();
       const dmgEl = $('mbDamageText');
       if (dmgEl) {
         dmgEl.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:40px;height:40px;vertical-align:middle;filter:drop-shadow(0 0 6px rgba(255,255,255,0.6))"> -${finalDmg}`;
