@@ -3504,6 +3504,8 @@
       const resist = getSchoolResistMult(schoolId);
       const finalDmg = Math.max(1, Math.round(dmg * resist));
       mb.bossHp -= finalDmg;
+      // Smrtelná rána — kouzlo musí zabít stejně jako melee
+      if (mb.bossHp <= 0) { endMapBattle(true); return; }
       // Ledová kouzla — zpomalení nepřítele
       if (schoolId === 'ice') {
         const slowPct = spellId === 'frostbolt' ? 50 : 25; // frostbolt 50%, icebolt 25%
