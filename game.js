@@ -5171,7 +5171,6 @@
     const aRect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
-    // Pozice bosse
     const bossFig = $('mbFigure');
     let bx = cx, by = 0;
     if (bossFig) {
@@ -5179,22 +5178,14 @@
       bx = br.left + br.width/2 - aRect.left;
       by = br.top + br.height/2 - aRect.top;
     }
-    // Boss figure — fade out
-    if (bossFig) {
-      bossFig.style.transition = 'opacity 0.3s, transform 0.3s';
-      bossFig.style.opacity = '0';
-      bossFig.style.transform = 'scale(0.5)';
-      setTimeout(() => { bossFig.style.display = 'none'; }, 350);
-    }
-    // Exploze částic
-    const rgb = '200,50,50';
+    // Exploze částic — jediný efekt, žádné skrývání figure
     const count = 20;
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
       const size = 4 + Math.random() * 12;
       const angle = Math.random() * 2 * Math.PI;
       const dist = 20 + Math.random() * 60;
-      const colors = [`rgba(${rgb},0.8)`, 'rgba(255,100,50,0.7)', 'rgba(255,200,50,0.6)'];
+      const colors = ['rgba(200,50,50,0.8)', 'rgba(255,100,50,0.7)', 'rgba(255,200,50,0.6)'];
       p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${colors[i%3]};z-index:19;pointer-events:none;`;
       p.style.left = (bx - size/2) + 'px';
       p.style.top = (by - size/2) + 'px';
