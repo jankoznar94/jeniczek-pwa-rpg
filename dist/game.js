@@ -64,15 +64,15 @@
       baseHp:60, baseDmg:6, baseMana:100,
       attrBonus:{str:15, vit:15, dex:15, int:25},
       spells: [
-        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'75-110% dmg ohněm' },
-        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'75-110% dmg ledem, zpomalí 25% na 2s' },
-        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'80-120% dmg bleskem' },
-        { id:'fireball', name:'Fireball', icon:'💥', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'100-150% dmg ohněm + DoT' },
-        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'100-150% dmg ledem, zmrazení' },
-        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'100-150% dmg bleskem, skáče' },
-        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'150-200% dmg ohněm' },
-        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'50-75% dmg ledem/tick' },
-        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'40-60% dmg bleskem/tick' }
+        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Oheň: střední dmg, střední rozptyl' },
+        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Led: nízký dmg, malý rozptyl, zpomalí 25%' },
+        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Blesk: vysoký max dmg, velký rozptyl' },
+        { id:'fireball', name:'Fireball', icon:'💥', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Oheň: střední dmg, střední rozptyl + DoT' },
+        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Led: nízký dmg, malý rozptyl, zmrazení' },
+        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Blesk: vysoký max dmg, velký rozptyl, skáče' },
+        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Oheň: střední dmg, střední rozptyl' },
+        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Led: nízký dmg/tick, malý rozptyl' },
+        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Blesk: vysoký max dmg/tick, velký rozptyl' }
       ]
     }
   };
@@ -422,39 +422,39 @@
         fire: { name:'Oheň', icon:'🔥',
           tiers: [
             { choices: [
-              { k:'firebolt', name:'Firebolt', icon:'🔥', iconImg:'firebolt.png', maxLv:5, desc:lv=>`${75+lv*35}% dmg ohněm` },
+              { k:'firebolt', name:'Firebolt', icon:'🔥', iconImg:'firebolt.png', maxLv:5, desc:lv=>`${10+lv*5}-${16+lv*8} dmg ohněm` },
             ]},
             { choices: [
-              { k:'fireball', name:'Fireball', icon:'💥', iconImg:'fireball.png', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
+              { k:'fireball', name:'Fireball', icon:'💥', iconImg:'fireball.png', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${18+lv*8}-${28+lv*12} dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
             ]},
             { choices: [
-              { k:'fireblast', name:'Fireblast', icon:'🌋', iconImg:'fireblast.png', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${150+lv*50}% dmg ohněm` },
+              { k:'fireblast', name:'Fireblast', icon:'🌋', iconImg:'fireblast.png', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${30+lv*12}-${45+lv*18} dmg ohněm` },
             ]}
           ]
         },
         ice: { name:'Led', icon:'❄️',
           tiers: [
             { choices: [
-              { k:'icebolt', name:'Icebolt', icon:'❄️', iconImg:'icebolt.png', maxLv:5, desc:lv=>`${75+lv*35}% dmg ledem, zpomalí 25% na 2s` },
+              { k:'icebolt', name:'Icebolt', icon:'❄️', iconImg:'icebolt.png', maxLv:5, desc:lv=>`${8+lv*4}-${10+lv*5} dmg ledem, zpomalí 25% na 2s` },
             ]},
             { choices: [
-              { k:'frostbolt', name:'Frostbolt', icon:'🧊', iconImg:'frostbolt.png', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg ledem, zmrazení na ${1+lv}s` },
+              { k:'frostbolt', name:'Frostbolt', icon:'🧊', iconImg:'frostbolt.png', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${14+lv*6}-${18+lv*8} dmg ledem, zmrazení na ${1+lv}s` },
             ]},
             { choices: [
-              { k:'blizzard', name:'Blizzard', icon:'🌨️', iconImg:'blizzard.png', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${50+lv*25}% dmg ledem, zmrazení na ${1+lv} útoky` },
+              { k:'blizzard', name:'Blizzard', icon:'🌨️', iconImg:'blizzard.png', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${6+lv*3}-${8+lv*4} dmg ledem/tick, zmrazení na ${1+lv} útoky` },
             ]}
           ]
         },
         lightning: { name:'Blesky', icon:'⚡',
           tiers: [
             { choices: [
-              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightningBolt.png', maxLv:5, desc:lv=>`${80+lv*40}% dmg bleskem` },
+              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightningBolt.png', maxLv:5, desc:lv=>`${6+lv*3}-${28+lv*14} dmg bleskem` },
             ]},
             { choices: [
-              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'chainLightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${100+lv*50}% dmg bleskem, skáče na ${1+Math.floor(lv/2)} další cíl` },
+              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'chainLightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${10+lv*5}-${45+lv*20} dmg bleskem, skáče na ${1+Math.floor(lv/2)} další cíl` },
             ]},
             { choices: [
-              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'thunderStorm.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${40+lv*20}% dmg bleskem/tick na 3s` },
+              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'thunderStorm.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${4+lv*2}-${20+lv*10} dmg bleskem/tick na 3s` },
             ]}
           ]
         }
@@ -3487,19 +3487,27 @@
       const lv = getSpellLv(spellId);
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
-      // Kouzla používají INT místo STR a mají vyšší base (aby se vyplatila oproti auto-attaku)
-      const baseDmg = 20 + Math.floor(state.hero.level * 5) + (weapon.baseDmg || 0) * 1.5 + ((state.hero.attrInt||0) + eqAttrs.int) * 3;
-      let pct, school, schoolId;
-      if (spellId === 'firebolt') { pct = 75 + lv * 35; school = '🔥'; schoolId = 'fire'; }
-      else if (spellId === 'icebolt') { pct = 75 + lv * 35; school = '❄️'; schoolId = 'ice'; }
-      else if (spellId === 'lightningBolt') { pct = 80 + lv * 40; school = '⚡'; schoolId = 'lightning'; }
-      else if (spellId === 'fireball') { pct = 100 + lv * 50; school = '💥'; schoolId = 'fire'; }
-      else if (spellId === 'frostbolt') { pct = 100 + lv * 50; school = '🧊'; schoolId = 'ice'; }
-      else if (spellId === 'chainLightning') { pct = 100 + lv * 50; school = '⚡'; schoolId = 'lightning'; }
-      else if (spellId === 'fireblast') { pct = 150 + lv * 50; school = '🌋'; schoolId = 'fire'; }
-      else if (spellId === 'blizzard') { pct = 50 + lv * 25; school = '🌨️'; schoolId = 'ice'; }
-      else { pct = 40 + lv * 20; school = '🌩️'; schoolId = 'lightning'; } // thunderStorm
-      const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
+      const intBonus = (state.hero.attrInt||0) + eqAttrs.int;
+      // Každé kouzlo má vlastní base dmg a rozptyl (D2 styl — jako weapon dmg)
+      let baseMin, baseMax, school, schoolId;
+      // Led: nízké dmg, malý rozptyl
+      if (spellId === 'icebolt') { baseMin = 8 + lv * 4; baseMax = 10 + lv * 5; school = '❄️'; schoolId = 'ice'; }
+      else if (spellId === 'frostbolt') { baseMin = 14 + lv * 6; baseMax = 18 + lv * 8; school = '🧊'; schoolId = 'ice'; }
+      else if (spellId === 'blizzard') { baseMin = 6 + lv * 3; baseMax = 8 + lv * 4; school = '🌨️'; schoolId = 'ice'; }
+      // Oheň: střední dmg, střední rozptyl
+      else if (spellId === 'firebolt') { baseMin = 10 + lv * 5; baseMax = 16 + lv * 8; school = '🔥'; schoolId = 'fire'; }
+      else if (spellId === 'fireball') { baseMin = 18 + lv * 8; baseMax = 28 + lv * 12; school = '💥'; schoolId = 'fire'; }
+      else if (spellId === 'fireblast') { baseMin = 30 + lv * 12; baseMax = 45 + lv * 18; school = '🌋'; schoolId = 'fire'; }
+      // Blesk: nejvyšší max dmg, obrovský rozptyl
+      else if (spellId === 'lightningBolt') { baseMin = 6 + lv * 3; baseMax = 28 + lv * 14; school = '⚡'; schoolId = 'lightning'; }
+      else if (spellId === 'chainLightning') { baseMin = 10 + lv * 5; baseMax = 45 + lv * 20; school = '⚡'; schoolId = 'lightning'; }
+      else { baseMin = 4 + lv * 2; baseMax = 20 + lv * 10; school = '🌩️'; schoolId = 'lightning'; } // thunderStorm
+      // Base dmg = náhodný roll v rozsahu + INT bonus (všichni stejný)
+      const rolledDmg = baseMin + Math.floor(Math.random() * (baseMax - baseMin + 1));
+      const baseDmg = rolledDmg + Math.floor(intBonus * 2);
+      // Procentuální bonus ze zbraně (malý — 10-20% weapon baseDmg)
+      const weaponBonus = Math.round((weapon.baseDmg || 0) * (0.1 + Math.random() * 0.1));
+      const dmg = Math.max(1, baseDmg + weaponBonus);
       // Aplikovat resist
       const resist = getSchoolResistMult(schoolId);
       let finalDmg = Math.max(1, Math.round(dmg * resist));
