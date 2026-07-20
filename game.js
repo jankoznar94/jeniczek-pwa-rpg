@@ -56,7 +56,7 @@
       resourceRegen:1, // 1/tick + INT bonus
       desc:'Mana škáluje s INT a gearem. Mocná kouzla na dálku.',
       allowedWeapons:['staff','fists'],
-      allowedShield:false,
+      allowedShield:true,
       allowedOffhand:true, // artefakt
       dualWield:false,
       primaryAttr:'int',
