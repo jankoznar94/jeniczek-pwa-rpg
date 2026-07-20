@@ -6160,7 +6160,7 @@
     const monsterLevel = 5 + floor * 2 + (bossDrop ? 5 : 0);
 
     // 0. Roll quality (fixní šance, nezávislé na levelu)
-    const quality = rollQuality();
+    let quality = rollQuality();
 
     // 1. Vybrat typ a base item z ITEMS podle floor/tieru
     const typeRoll = Math.random();
