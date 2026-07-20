@@ -4430,6 +4430,8 @@
       proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
       setTimeout(() => {
         if (proj.parentNode) proj.remove();
+        // Impact exploze pro základní útok
+        spawnBasicImpact(endX, endY, isCrit, schoolColor.rgb);
       }, duration);
       return;
     }
@@ -4964,6 +4966,30 @@
     }
 
     requestAnimationFrame(animate);
+  }
+
+  function spawnBasicImpact(x, y, isCrit, rgbStr) {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const color = `rgba(${rgbStr},0.5)`;
+    const count = isCrit ? 12 : 6;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      const size = 3 + Math.random() * (isCrit ? 8 : 5);
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 10 + Math.random() * (isCrit ? 30 : 20);
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};z-index:19;pointer-events:none;opacity:0.7;`;
+      p.style.left = (x - size/2) + 'px';
+      p.style.top = (y - size/2) + 'px';
+      arena.appendChild(p);
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      p.style.transition = `transform 250ms ease-out, opacity 250ms ease-out`;
+      void p.offsetHeight;
+      p.style.transform = `translate(${dx}px, ${dy}px)`;
+      p.style.opacity = '0';
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 300);
+    }
   }
 
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
