@@ -969,11 +969,20 @@
     }
 
     if (quality === 'magic') {
-      // Magic: 1-2 affixy (max 1 prefix + 1 suffix)
-      const p = pickAffix(prefixes);
-      if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
-      const s = pickAffix(suffixes);
-      if (s) { chosenAffixes.push(s); usedGroups.add(s.group); }
+      // Magic: 1-2 affixy (D2 styl — každý roll samostatně)
+      if (Math.random() < 0.75) {
+        const p = pickAffix(prefixes);
+        if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
+      }
+      if (Math.random() < 0.75) {
+        const s = pickAffix(suffixes);
+        if (s) { chosenAffixes.push(s); usedGroups.add(s.group); }
+      }
+      // Fallback: aspoň 1 affix vždy
+      if (chosenAffixes.length === 0) {
+        const p = pickAffix(prefixes);
+        if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
+      }
     } else if (quality === 'rare') {
       // Rare: 3 affixy (střídavě prefix/suffix)
       for (let i = 0; i < 3; i++) {
@@ -2592,13 +2601,31 @@
 
     updateMapBattleUI();
 
-    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    if (mb.bossHp <= 0 && !mb._pendingKill) {
+      mb._pendingKill = true;
+      setTimeout(() => {
+        if (!mapBattleState.ended) {
+          spawnDeathEffect(mb);
+          setTimeout(() => endMapBattle(true), 400);
+        }
+      }, 500);
+      return;
+    }
   }
 
   function onAutoOffhandAttack() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
-    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    if (mb.bossHp <= 0 && !mb._pendingKill) {
+      mb._pendingKill = true;
+      setTimeout(() => {
+        if (!mapBattleState.ended) {
+          spawnDeathEffect(mb);
+          setTimeout(() => endMapBattle(true), 400);
+        }
+      }, 500);
+      return;
+    }
     // Reset offhand swingu PŘED útokem
     mb._offhandSwingStart = performance.now();
     mb._offhandSwingReady = false;
@@ -3528,7 +3555,16 @@
       }
       mb.bossHp -= finalDmg;
       // Smrtelná rána — kouzlo musí zabít stejně jako melee
-      if (mb.bossHp <= 0) { endMapBattle(true); return; }
+      if (mb.bossHp <= 0 && !mb._pendingKill) {
+        mb._pendingKill = true;
+        setTimeout(() => {
+          if (!mapBattleState.ended) {
+            spawnDeathEffect(mb);
+            setTimeout(() => endMapBattle(true), 400);
+          }
+        }, 500);
+        return;
+      }
       // Ledová kouzla — zpomalení nepřítele
       if (schoolId === 'ice') {
         const slowPct = spellId === 'frostbolt' ? 50 : 25; // frostbolt 50%, icebolt 25%
@@ -5128,6 +5164,51 @@
     }
   }
 
+  function spawnDeathEffect(mb) {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const aRect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    // Pozice bosse
+    const bossFig = $('mbFigure');
+    let bx = cx, by = 0;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    // Boss figure — fade out
+    if (bossFig) {
+      bossFig.style.transition = 'opacity 0.3s, transform 0.3s';
+      bossFig.style.opacity = '0';
+      bossFig.style.transform = 'scale(0.5)';
+      setTimeout(() => { bossFig.style.display = 'none'; }, 350);
+    }
+    // Exploze částic
+    const rgb = '200,50,50';
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      const size = 4 + Math.random() * 12;
+      const angle = Math.random() * 2 * Math.PI;
+      const dist = 20 + Math.random() * 60;
+      const colors = [`rgba(${rgb},0.8)`, 'rgba(255,100,50,0.7)', 'rgba(255,200,50,0.6)'];
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${colors[i%3]};z-index:19;pointer-events:none;`;
+      p.style.left = (bx - size/2) + 'px';
+      p.style.top = (by - size/2) + 'px';
+      arena.appendChild(p);
+      const dx = Math.cos(angle) * dist;
+      const dy = Math.sin(angle) * dist;
+      p.style.transition = `transform 400ms ease-out, opacity 400ms ease-out`;
+      void p.offsetHeight;
+      p.style.transform = `translate(${dx}px, ${dy}px)`;
+      p.style.opacity = '0';
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 450);
+    }
+  }
+
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
     // Mlha při nárazu — rozmazané kroužky rozlétající se všemi směry
     const color = `rgba(${rgbStr},0.35)`;
@@ -6094,7 +6175,19 @@
     playSFX(isCrit ? getCritSfx() : getHitSfx());
     
     mb.bossHp -= dmg;
-    
+
+    // Smrtelný zásah — počkat na projektil a death animaci
+    if (mb.bossHp <= 0 && !mb._pendingKill) {
+      mb._pendingKill = true;
+      setTimeout(() => {
+        if (!mapBattleState.ended) {
+          spawnDeathEffect(mb);
+          setTimeout(() => endMapBattle(true), 400);
+        }
+      }, 500);
+      return;
+    }
+
     // 🩸 Life steal a 💜 Mana steal z equipu (procentuálně z uděleného dmg)
     const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet]].filter(Boolean);
     const totalLifeSteal = eqItems.reduce((sum, it) => sum + (it.lifesteal || 0), 0);
