@@ -7433,8 +7433,6 @@
     const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'assets/items/shield_wooden.png',tier:1}, 0);
     const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); setSlotBorder('invSlotShield', shield); }
     const offhand = ITEM_MAP[h.equip.shield];
-    const oEl = $('invSlotShieldIcon'); if (oEl) oEl.innerHTML = offhand ? renderItemIcon(offhand, 0) : renderItemIcon({iconImg:'assets/items/weapon_hunting_knife.png',tier:1}, 0);
-    const oS = $('invSlotShield'); if (oS) { oS.classList.toggle('empty', !offhand); setSlotBorder('invSlotShield', offhand); }
     const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
     const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); setSlotBorder('invSlotRing1', ring1); }
     const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
@@ -7875,8 +7873,8 @@
     if (item.type === 'ring' && (targetSlot === 'ring1' || targetSlot === 'ring2')) {
       correctSlot = targetSlot;
     }
-    // Shield slot může přijmout: shield, weapon (dual wield), nebo cokoliv jako artefakt
-    if (targetSlot === 'shield' && (item.type === 'weapon' || item.type === 'shield' || item.type === 'offhand')) {
+    // Shield slot může přijmout: shield, nebo cokoliv jako artefakt (ne zbraně pro dual wield)
+    if (targetSlot === 'shield' && (item.type === 'shield' || item.type === 'offhand')) {
       correctSlot = 'shield';
     }
     // Pokud target slot neodpovídá, nedělat nic
@@ -7907,6 +7905,12 @@
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     h.inventory.splice(invIdx, 1);
     if (item.type === 'weapon') {
+      // Kontrola, zda classa smí používat tento typ zbraně
+      const cls = CLASSES[state.heroClass];
+      if (cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) {
+        h.inventory.splice(invIdx, 0, itemId); // vrátit zpět
+        return;
+      }
       // Obouruční zbraň vyhodí štít i offhand zpět do batohu
       const isTwoHanded = item.twoHand === true;
       if (isTwoHanded) {
@@ -7922,6 +7926,12 @@
       if (h.equip.helmet) h.inventory.push(h.equip.helmet);
       h.equip.helmet = itemId;
     } else if (item.type === 'shield') {
+      // Kontrola, zda classa smí používat štít
+      const cls = CLASSES[state.heroClass];
+      if (cls && cls.allowedShield === false) {
+        h.inventory.splice(invIdx, 0, itemId); // vrátit zpět
+        return;
+      }
       // Štít nejde s obouruční zbraní — vyhodit zbraň zpět
       const curWeapon = ITEM_MAP[h.equip.weapon];
       const isTwoHanded = curWeapon && curWeapon.twoHand === true;
