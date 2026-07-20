@@ -6866,6 +6866,10 @@
     let stats = `<span style="font-size:11px;color:${lv > 0 ? '#f1c40f' : '#888'}">${lv > 0 ? 'Naučeno' : unlocked ? 'Dostupné' : '🔒 Zamčeno'}</span><br>`;
     stats += `<span style="font-size:13px;color:#ccc">Úroveň ${lv}/${t.maxLv}${state.skillShoutBonus > 0 ? ` (${realLv} investováno)` : ''}</span><br>`;
     stats += `<span style="font-size:12px;color:#aaa">${t.desc(Math.max(lv,1))}</span><br>`;
+    // Náhled na další úroveň
+    if (!maxed && lv > 0) {
+      stats += `<span style="font-size:11px;color:#4a7dff;margin-top:4px;display:inline-block">▶ Další úroveň (${lv+1}): ${t.desc(lv+1)}</span><br>`;
+    }
     // Požadavky
     const reqs = [];
     if (t.requires) {
