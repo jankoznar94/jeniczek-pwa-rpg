@@ -4430,7 +4430,7 @@
     const rgb = schoolColor.rgb;
 
     const isSpell = spellId !== undefined && spellId !== null;
-    const duration = 200; // ms letu
+    const duration = 240; // ms letu
 
     if (!isSpell) {
       // Základní útok — canvas projektil (místo PNG)
