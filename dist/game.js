@@ -2269,7 +2269,7 @@
   }
 
   function autoCombatLoop() {
-    if (mapBattleState.ended) return;
+    if (mapBattleState.ended || mapBattleState._pendingKill) return;
     const mb = mapBattleState;
     const now = performance.now();
 
@@ -2516,6 +2516,8 @@
   }
 
   function updateSwingRings(mb) {
+    // Pokud bitva skončila, neaktualizovat — cleanupTimers už obstaral zešednutí
+    if (mb.ended || mb._pendingKill) return;
     // Hráčův ring (velký, žlutý)
     const playerCircle = document.getElementById('mbPlayerTimerCircle');
     if (playerCircle) {
