@@ -3627,6 +3627,8 @@
       // Smrtelná rána — kouzlo musí zabít stejně jako melee
       if (mb.bossHp <= 0 && !mb._pendingKill) {
         mb._pendingKill = true;
+        spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
+        updateMapBattleUI();
         cleanupTimers();
         dimTimers();
         const arena = $('mbArena');
@@ -6289,6 +6291,7 @@
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
       spawnProjectileEffect(null, false, isCrit);
+      updateMapBattleUI();
       cleanupTimers();
       dimTimers();
       // Červený záblesk arény
