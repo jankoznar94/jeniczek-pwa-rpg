@@ -2262,6 +2262,8 @@
     renderDebuffs();
     // Aktualizovat resource bary a combo indikátor každou smyčku
     updateResourceBars();
+    // Ikona castovaného kouzla
+    updateCastSpellIcon(mb);
 
     // Hráčův swing / cast
     if (mb._playerCasting) {
@@ -3026,6 +3028,8 @@
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
     else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
     else { fig.textContent = emoji; }
+    // Ikona castovaného kouzla na nepříteli
+    updateCastSpellIcon(mb);
     // (hint necháme pro bonus info — nastaví se až v onMapAttack)
 
     // Debuff ikony nad příšerou
@@ -3035,6 +3039,33 @@
 
     updateSpellButtons();
     renderPotionButtons();
+  }
+
+  function updateCastSpellIcon(mb) {
+    const el = $('mbCastSpellIcon');
+    if (!el) return;
+    // Zjistit, jestli něco castí — hráč nebo nepřítel
+    let spellId = null;
+    if (mb._playerCasting && mb._playerCastSpell) {
+      spellId = mb._playerCastSpell;
+    } else if (mb._enemyCasting && mb._enemyCastSpell) {
+      spellId = mb._enemyCastSpell;
+    }
+    if (spellId) {
+      // Mapování spellId → icon
+      const spellIcons = {
+        firebolt:'🔥', icebolt:'❄️', lightningBolt:'⚡',
+        fireball:'💥', frostbolt:'🧊', chainLightning:'⚡',
+        fireblast:'🌋', blizzard:'🌨️', thunderStorm:'🌩️',
+        poison_bolt:'☠️', drain_life:'🩸', mana_drain:'💧',
+        empower:'📈', shadow_bolt:'🎯', heal:'💚'
+      };
+      const icon = spellIcons[spellId] || '🔮';
+      el.textContent = icon;
+      el.classList.remove('hidden');
+    } else {
+      el.classList.add('hidden');
+    }
   }
 
   function renderPotionButtons() {
@@ -6148,9 +6179,9 @@
 
   function dealPlayerDamage(mb, mult) {
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const isStaff = weapon.weaponType === 'staff';
     // 🎲 ATTACK TABLE — D2 formule (pouze pro fyzické útoky, ne pro kouzla)
-    const isPhysical = weapon.weaponType !== 'staff';
-    if (isPhysical) {
+    if (!isStaff) {
       const at = getPlayerAttackTable(mb);
       const roll = Math.random() * 100;
       if (roll >= at.hitChance) {
@@ -6167,12 +6198,26 @@
         return;
       }
     }
-    // HIT — normální damage (pro fyzické i kouzla)
-    const baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 1) + weapon.baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.5);
+    // HIT — normální damage
+    let baseDmg;
+    if (isStaff) {
+      // Mágův základní útok — magický, INT-based, ignoruje armor, ale podléhá resistům
+      const eqAttrs = getEquipAttrs();
+      const intBonus = (state.hero.attrInt||0) + eqAttrs.int;
+      baseDmg = 2 + Math.floor(state.hero.level * 1) + weapon.baseDmg + Math.floor(intBonus * 0.5);
+    } else {
+      baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 1) + weapon.baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.5);
+    }
     let dmg = Math.round(baseDmg * mult);
     // Rozptyl ±1 — každá rána je jiná
     dmg += Math.floor(Math.random() * 3) - 1; // -1, 0, +1
     dmg = Math.max(1, dmg);
+    // Aplikovat magic resist pro staff útok
+    if (isStaff) {
+      const schoolId = state.activeSchool || 'fire';
+      const resist = getSchoolResistMult(schoolId);
+      dmg = Math.max(1, Math.round(dmg * resist));
+    }
     // D4/D5 — přehřívání: každý úspěšný útok zvyšuje heat
     if (mb.locId === 3 || mb.locId === 4) {
       mb._heatLevel = Math.min((mb._heatLevel || 0) + 1, 10);
