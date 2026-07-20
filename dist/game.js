@@ -4433,29 +4433,105 @@
     const duration = 200; // ms letu
 
     if (!isSpell) {
-      // Základní útok — PNG projektil s rotací (stávající kód)
-      let projImg = 'arcane.png';
-      if (targetIsPlayer && attackType === ATTACK_TYPES.CASTER) {
-        projImg = 'shadow.png';
+      // Základní útok — canvas projektil (místo PNG)
+      const canvas = $('mbProjectileCanvas');
+      if (!canvas) return;
+      canvas.width = rect.width;
+      canvas.height = rect.height;
+      const ctx = canvas.getContext('2d');
+
+      const angle = Math.atan2(endY - startY, endX - startX);
+      const dist = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
+      const startTime = performance.now();
+
+      // Barva podle školy nebo výchozí fialová
+      let rgb = schoolColor.rgb;
+      if (rgb === '187,187,187' || rgb === '180,180,200') rgb = '168,85,247';
+
+      // Trail
+      const trail = [];
+      const trailLen = 6;
+
+      function drawBasicProjectile(x, y, progress) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angle);
+
+        const s = isCrit ? 1.4 : 1.0;
+        const flicker = 0.85 + Math.sin(progress * 30) * 0.15;
+        const r = 10 * s;
+
+        // Vnější záře
+        const glowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2.5);
+        glowGrad.addColorStop(0, `rgba(${rgb},0.25)`);
+        glowGrad.addColorStop(0.5, `rgba(${rgb},0.1)`);
+        glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath();
+        ctx.arc(0, 0, r * 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = glowGrad;
+        ctx.fill();
+
+        // Hlavní koule
+        const grad = ctx.createRadialGradient(-r*0.3, -r*0.3, 0, 0, 0, r);
+        grad.addColorStop(0, '#fff');
+        grad.addColorStop(0.2, `rgba(${rgb},0.9)`);
+        grad.addColorStop(0.6, `rgba(${rgb},0.7)`);
+        grad.addColorStop(1, `rgba(${rgb},0)`);
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.shadowColor = `rgba(${rgb},0.6)`;
+        ctx.shadowBlur = 15 * s * flicker;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Jiskřící tečky na povrchu
+        for (let i = 0; i < 3; i++) {
+          const sx = Math.sin(progress * 15 + i * 2) * r * 0.5;
+          const sy = Math.cos(progress * 12 + i * 3) * r * 0.5;
+          ctx.beginPath();
+          ctx.arc(sx, sy, 1.5 * s, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255,255,255,${0.3 + Math.sin(progress * 20 + i) * 0.15})`;
+          ctx.fill();
+        }
+
+        ctx.restore();
       }
-      const size = isCrit ? 48 : 36;
-      const half = size / 2;
-      const proj = document.createElement('img');
-      proj.src = `assets/projectiles/${projImg}`;
-      proj.style.cssText = `position:absolute;width:${size}px;height:${size}px;z-index:20;pointer-events:none;image-rendering:pixelated;`;
-      proj.style.left = (startX - half) + 'px';
-      proj.style.top = (startY - half) + 'px';
-      proj.style.transition = `left ${duration}ms ease-out, top ${duration}ms ease-out, transform ${duration}ms linear`;
-      arena.appendChild(proj);
-      void proj.offsetHeight;
-      proj.style.left = (endX - half) + 'px';
-      proj.style.top = (endY - half) + 'px';
-      proj.style.transform = `rotate(${360 * (isCrit ? 3 : 2)}deg)`;
-      setTimeout(() => {
-        if (proj.parentNode) proj.remove();
-        // Impact exploze pro základní útok
-        spawnBasicImpact(endX, endY, isCrit, schoolColor.rgb);
-      }, duration);
+
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 2);
+        const x = startX + (endX - startX) * ease;
+        const y = startY + (endY - startY) * ease;
+
+        trail.push({ x, y });
+        if (trail.length > trailLen) trail.shift();
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Trail
+        for (let i = 0; i < trail.length - 1; i++) {
+          const t = trail[i];
+          const alpha = (i / trail.length) * 0.3;
+          const tr = 4 + (i / trail.length) * 4;
+          ctx.beginPath();
+          ctx.arc(t.x, t.y, tr, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(${rgb},${alpha})`;
+          ctx.fill();
+        }
+
+        drawBasicProjectile(x, y, progress);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          spawnBasicImpact(endX, endY, isCrit, rgb);
+        }
+      }
+
+      requestAnimationFrame(animate);
       return;
     }
 
