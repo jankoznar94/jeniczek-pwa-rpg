@@ -2517,6 +2517,7 @@
       mb._enemySlowTimer--;
       if (mb._enemySlowTimer <= 0) {
         mb._enemySlowPct = 0;
+        mb.enemySwingMs = getEnemySwingTime(mb); // přepočítat bez slow
       }
     }
   }
@@ -2579,6 +2580,11 @@
       } else if (mb._enemySwingReady) {
         enemyCircle.style.strokeDashoffset = '0';
         enemyCircle.style.stroke = '#e74c3c';
+      } else if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
+        // Zpomalení — modrý ring (jiný odstín než cast)
+        const offset = Math.round(597 * (1 - mb._enemySwingPct));
+        enemyCircle.style.strokeDashoffset = offset;
+        enemyCircle.style.stroke = '#3b82f6';
       } else {
         const offset = Math.round(597 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
@@ -3659,13 +3665,15 @@
         mb._enemySlowPct = slowPct;
         mb._enemySlowTimer = slowTicks;
         mb._enemySlowMax = slowTicks;
+        // Přepočítat enemy swing timer se zpomalením
+        mb.enemySwingMs = getEnemySwingTime(mb);
         _sessionDebuffs['slow_' + spellId] = { icon: '❄️', name: `Zpomalení ${slowPct}%`, ticks: slowTicks, maxTicks: slowTicks };
       }
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
       const dmgEl = $('mbDamageText');
       if (dmgEl) {
-        dmgEl.textContent = `${school} -${finalDmg}`;
+        dmgEl.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:28px;height:28px;vertical-align:middle"> -${finalDmg}`;
         dmgEl.classList.remove('hidden');
         setTimeout(() => dmgEl.classList.add('hidden'), 500);
       }
