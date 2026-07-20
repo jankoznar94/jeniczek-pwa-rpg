@@ -2130,10 +2130,10 @@
     if (skull) skull.classList.add('hidden');
     ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) { el.style.opacity = ''; el.style.animation = ''; el.style.strokeDashoffset = ''; }
+      if (el) { el.style.opacity = '1'; el.style.animation = ''; el.style.strokeDashoffset = ''; }
     });
     const ring = document.getElementById('mbTimerRing');
-    if (ring) ring.style.opacity = '';
+    if (ring) ring.style.opacity = '1';
     // Inicializace many pro caster monstra
     if (mapBattleState.monsterAttackType === ATTACK_TYPES.CASTER) {
       const baseMana = 30 + mapBattleState.locId * 10 + mapBattleState.progress * 3;
