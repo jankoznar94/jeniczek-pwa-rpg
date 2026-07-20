@@ -2748,10 +2748,10 @@
         }
         spellText = `🩸 Vysátí života! -${amount}`;
       } else if (spellId === 'mana_drain') {
-        amount = Math.round(baseDmg * 0.4);
+        amount = Math.round(baseDmg * 0.6);
         const manaDrain = Math.round(amount * 0.8);
         state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaDrain);
-        spellText = `💧 Vysátí many! -${amount}`;
+        spellText = `💧 Vysátí many! -${amount} HP, -${manaDrain} many`;
       } else if (spellId === 'empower') {
         amount = 0; // žádné přímé poškození
         mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
@@ -3610,11 +3610,11 @@
       else if (spellId === 'lightningBolt') { baseMin = 6 + lv * 3; baseMax = 28 + lv * 14; school = '⚡'; schoolId = 'lightning'; }
       else if (spellId === 'chainLightning') { baseMin = 10 + lv * 5; baseMax = 45 + lv * 20; school = '⚡'; schoolId = 'lightning'; }
       else { baseMin = 4 + lv * 2; baseMax = 20 + lv * 10; school = '🌩️'; schoolId = 'lightning'; } // thunderStorm
-      // Base dmg = náhodný roll v rozsahu + INT bonus (všichni stejný)
+      // Base dmg = náhodný roll v rozsahu + INT bonus
       const rolledDmg = baseMin + Math.floor(Math.random() * (baseMax - baseMin + 1));
-      const baseDmg = rolledDmg + Math.floor(intBonus * 2);
-      // Procentuální bonus ze zbraně (malý — 10-20% weapon baseDmg)
-      const weaponBonus = Math.round((weapon.baseDmg || 0) * (0.1 + Math.random() * 0.1));
+      const baseDmg = rolledDmg + Math.floor(intBonus * 1);
+      // Procentuální bonus ze zbraně (malý — 5-10% weapon baseDmg)
+      const weaponBonus = Math.round((weapon.baseDmg || 0) * (0.05 + Math.random() * 0.05));
       const dmg = Math.max(1, baseDmg + weaponBonus);
       // Aplikovat resist
       const resist = getSchoolResistMult(schoolId);
@@ -3668,6 +3668,7 @@
       }
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
+      playSFX(sfxHit());
       const dmgEl = $('mbDamageText');
       if (dmgEl) {
         dmgEl.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:40px;height:40px;vertical-align:middle;filter:drop-shadow(0 0 6px rgba(255,255,255,0.6))"> -${finalDmg}`;
@@ -6265,9 +6266,9 @@
       // Mágův základní útok — magický, INT-based, ignoruje armor, ale podléhá resistům
       const eqAttrs = getEquipAttrs();
       const intBonus = (state.hero.attrInt||0) + eqAttrs.int;
-      baseDmg = 2 + Math.floor(state.hero.level * 1) + weapon.baseDmg + Math.floor(intBonus * 0.5);
+      baseDmg = 2 + Math.floor(state.hero.level * 0.8) + weapon.baseDmg + Math.floor(intBonus * 0.3);
     } else {
-      baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 1) + weapon.baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.5);
+      baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + weapon.baseDmg + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.3);
     }
     let dmg = Math.round(baseDmg * mult);
     // Rozptyl ±1 — každá rána je jiná
@@ -6582,10 +6583,10 @@
     const typeRoll = Math.random();
     let type, subtype;
     if (typeRoll < 0.25) { type = 'weapon'; subtype = Math.random() < 0.5 ? 'staff' : 'blade'; }
-    else if (typeRoll < 0.45) { type = 'armor'; subtype = null; }
-    else if (typeRoll < 0.65) { type = 'helmet'; subtype = null; }
-    else if (typeRoll < 0.75) { type = 'shield'; subtype = null; }
-    else if (typeRoll < 0.85) { type = 'ring'; subtype = null; }
+    else if (typeRoll < 0.50) { type = 'armor'; subtype = null; }
+    else if (typeRoll < 0.70) { type = 'helmet'; subtype = null; }
+    else if (typeRoll < 0.85) { type = 'shield'; subtype = null; }
+    else if (typeRoll < 0.92) { type = 'ring'; subtype = null; }
     else { type = 'amulet'; subtype = null; }
 
     // Common itemy jen pro zbroj a zbraně (jako Diablo 2)
