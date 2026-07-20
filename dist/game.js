@@ -4994,24 +4994,48 @@
   function spawnBasicImpact(x, y, isCrit, rgbStr) {
     const arena = $('mbArena');
     if (!arena) return;
-    const color = `rgba(${rgbStr},0.5)`;
-    const count = isCrit ? 12 : 6;
+    // Pokud je rgbStr šedá (výchozí), použít arcánní fialovou pro kouzelníka
+    if (rgbStr === '187,187,187' || rgbStr === '180,180,200') {
+      rgbStr = '168,85,247';
+    }
+    const color = `rgba(${rgbStr},0.7)`;
+    const brightColor = `rgba(${rgbStr},0.9)`;
+    const whiteColor = 'rgba(255,255,255,0.6)';
+    const count = isCrit ? 16 : 10;
+    const maxSize = isCrit ? 14 : 9;
+    const maxDist = isCrit ? 50 : 30;
+
+    // Centrální záblesk
+    const flash = document.createElement('div');
+    const flashSize = isCrit ? 30 : 20;
+    flash.style.cssText = `position:absolute;width:${flashSize}px;height:${flashSize}px;border-radius:50%;background:radial-gradient(circle, ${whiteColor}, ${color} 40%, transparent 70%);z-index:19;pointer-events:none;`;
+    flash.style.left = (x - flashSize/2) + 'px';
+    flash.style.top = (y - flashSize/2) + 'px';
+    arena.appendChild(flash);
+    flash.style.transition = `transform 200ms ease-out, opacity 200ms ease-out`;
+    void flash.offsetHeight;
+    flash.style.transform = 'scale(2.5)';
+    flash.style.opacity = '0';
+    setTimeout(() => { if (flash.parentNode) flash.remove(); }, 250);
+
+    // Rozlétající se částice
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
-      const size = 3 + Math.random() * (isCrit ? 8 : 5);
+      const size = 3 + Math.random() * maxSize;
       const angle = Math.random() * 2 * Math.PI;
-      const dist = 10 + Math.random() * (isCrit ? 30 : 20);
-      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${color};z-index:19;pointer-events:none;opacity:0.7;`;
+      const dist = 8 + Math.random() * maxDist;
+      const isBright = Math.random() < 0.3;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${isBright ? brightColor : color};z-index:19;pointer-events:none;opacity:${isCrit ? 0.9 : 0.7};`;
       p.style.left = (x - size/2) + 'px';
       p.style.top = (y - size/2) + 'px';
       arena.appendChild(p);
       const dx = Math.cos(angle) * dist;
       const dy = Math.sin(angle) * dist;
-      p.style.transition = `transform 250ms ease-out, opacity 250ms ease-out`;
+      p.style.transition = `transform 300ms ease-out, opacity 300ms ease-out`;
       void p.offsetHeight;
       p.style.transform = `translate(${dx}px, ${dy}px)`;
       p.style.opacity = '0';
-      setTimeout(() => { if (p.parentNode) p.remove(); }, 300);
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
     }
   }
 
