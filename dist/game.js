@@ -2083,6 +2083,9 @@
       _enemyStunned: false,
       _enemyStunTimer: 0,
       _enemyStunMax: 0,
+      _enemySlowPct: 0,
+      _enemySlowTimer: 0,
+      _enemySlowMax: 0,
       _heroicStrikeQueued: false,
       debuffs: {},
       // Caster fields
@@ -2160,7 +2163,12 @@
     // Base 2500ms, s každou místností -5%, dungeon násobitel
     const base = 2500;
     const progressMult = Math.pow(0.95, progress);
-    return Math.max(800, Math.round(base * progressMult / diffMult));
+    let swingMs = Math.max(800, Math.round(base * progressMult / diffMult));
+    // Aplikovat zpomalení z ledových kouzel
+    if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
+      swingMs = Math.round(swingMs / (1 - mb._enemySlowPct / 100));
+    }
+    return swingMs;
   }
 
   function pickEnemySpell(mb) {
@@ -2460,6 +2468,13 @@
         mb._enemySwingStart = performance.now(); // restart timeru po omráčení
       }
     }
+    // Enemy slow tick
+    if (mb._enemySlowTimer > 0) {
+      mb._enemySlowTimer--;
+      if (mb._enemySlowTimer <= 0) {
+        mb._enemySlowPct = 0;
+      }
+    }
   }
 
   function updateSwingRings(mb) {
@@ -2473,7 +2488,7 @@
       } else if (mb._playerCasting) {
         const offset = Math.round(691 * (1 - mb._playerSwingPct));
         playerCircle.style.strokeDashoffset = offset;
-        playerCircle.style.stroke = '#a855f7'; // fialová = castování
+        playerCircle.style.stroke = '#60a5fa'; // světle modrá = castování
       } else {
         const offset = Math.round(691 * (1 - mb._playerSwingPct));
         playerCircle.style.strokeDashoffset = offset;
@@ -3472,7 +3487,8 @@
       const lv = getSpellLv(spellId);
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
-      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrInt||0) + eqAttrs.int) * 2;
+      // Kouzla používají INT místo STR a mají vyšší base (aby se vyplatila oproti auto-attaku)
+      const baseDmg = 20 + Math.floor(state.hero.level * 5) + (weapon.baseDmg || 0) * 1.5 + ((state.hero.attrInt||0) + eqAttrs.int) * 3;
       let pct, school, schoolId;
       if (spellId === 'firebolt') { pct = 75 + lv * 35; school = '🔥'; schoolId = 'fire'; }
       else if (spellId === 'icebolt') { pct = 75 + lv * 35; school = '❄️'; schoolId = 'ice'; }
@@ -3488,6 +3504,16 @@
       const resist = getSchoolResistMult(schoolId);
       const finalDmg = Math.max(1, Math.round(dmg * resist));
       mb.bossHp -= finalDmg;
+      // Ledová kouzla — zpomalení nepřítele
+      if (schoolId === 'ice') {
+        const slowPct = spellId === 'frostbolt' ? 50 : 25; // frostbolt 50%, icebolt 25%
+        const slowDuration = spellId === 'frostbolt' ? 3 : 2; // sekundy
+        const slowTicks = Math.round(slowDuration * 60);
+        mb._enemySlowPct = slowPct;
+        mb._enemySlowTimer = slowTicks;
+        mb._enemySlowMax = slowTicks;
+        _sessionDebuffs['slow_' + spellId] = { icon: '❄️', name: `Zpomalení ${slowPct}%`, ticks: slowTicks, maxTicks: slowTicks };
+      }
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
       const dmgEl = $('mbDamageText');
