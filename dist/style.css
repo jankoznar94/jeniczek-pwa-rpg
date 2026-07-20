@@ -364,6 +364,19 @@ body.no-scroll { overflow: hidden; }
   border-radius:50%;
   background:linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.6) 30%, transparent 30%, transparent 100%);
 }
+#mbArena .cast-spell-icon {
+  position:absolute;top:50%;left:50%;z-index:10;pointer-events:none;
+  width:64px;height:64px;
+  transform:translate(-50%,-50%);
+  font-size:48px;
+  display:flex;align-items:center;justify-content:center;
+  filter:drop-shadow(0 0 12px rgba(255,255,255,0.6));
+  animation:castPulse 0.5s ease-in-out infinite alternate;
+}
+@keyframes castPulse {
+  from { transform:translate(-50%,-50%) scale(0.8); opacity:0.7; }
+  to   { transform:translate(-50%,-50%) scale(1.1); opacity:1.0; }
+}
 #mbArena .monster-ring-frame {
   width:180px;height:180px;border-radius:50%;border:none;
   overflow:hidden;display:flex;align-items:center;justify-content:center;
