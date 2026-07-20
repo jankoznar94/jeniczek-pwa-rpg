@@ -3502,7 +3502,13 @@
       const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
       // Aplikovat resist
       const resist = getSchoolResistMult(schoolId);
-      const finalDmg = Math.max(1, Math.round(dmg * resist));
+      let finalDmg = Math.max(1, Math.round(dmg * resist));
+      // Aplikovat skillDmg z equipu (prsteny, amulet, zbraň)
+      const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet]].filter(Boolean);
+      const totalSkillDmg = eqItems.reduce((sum, it) => sum + (it.skillDmg || 0), 0);
+      if (totalSkillDmg > 0) {
+        finalDmg = Math.max(1, Math.round(finalDmg * (1 + totalSkillDmg / 100)));
+      }
       mb.bossHp -= finalDmg;
       // Smrtelná rána — kouzlo musí zabít stejně jako melee
       if (mb.bossHp <= 0) { endMapBattle(true); return; }
