@@ -4998,44 +4998,57 @@
     if (rgbStr === '187,187,187' || rgbStr === '180,180,200') {
       rgbStr = '168,85,247';
     }
-    const color = `rgba(${rgbStr},0.7)`;
-    const brightColor = `rgba(${rgbStr},0.9)`;
-    const whiteColor = 'rgba(255,255,255,0.6)';
-    const count = isCrit ? 16 : 10;
-    const maxSize = isCrit ? 14 : 9;
-    const maxDist = isCrit ? 50 : 30;
+    const color = `rgba(${rgbStr},0.8)`;
+    const brightColor = `rgba(${rgbStr},1.0)`;
+    const whiteColor = 'rgba(255,255,255,0.8)';
+    const count = isCrit ? 24 : 16;
+    const maxSize = isCrit ? 18 : 12;
+    const maxDist = isCrit ? 70 : 45;
 
-    // Centrální záblesk
+    // Velký centrální záblesk
     const flash = document.createElement('div');
-    const flashSize = isCrit ? 30 : 20;
-    flash.style.cssText = `position:absolute;width:${flashSize}px;height:${flashSize}px;border-radius:50%;background:radial-gradient(circle, ${whiteColor}, ${color} 40%, transparent 70%);z-index:19;pointer-events:none;`;
+    const flashSize = isCrit ? 50 : 36;
+    flash.style.cssText = `position:absolute;width:${flashSize}px;height:${flashSize}px;border-radius:50%;background:radial-gradient(circle, ${whiteColor}, ${brightColor} 30%, ${color} 50%, transparent 75%);z-index:19;pointer-events:none;`;
     flash.style.left = (x - flashSize/2) + 'px';
     flash.style.top = (y - flashSize/2) + 'px';
     arena.appendChild(flash);
-    flash.style.transition = `transform 200ms ease-out, opacity 200ms ease-out`;
+    flash.style.transition = `transform 300ms ease-out, opacity 300ms ease-out`;
     void flash.offsetHeight;
-    flash.style.transform = 'scale(2.5)';
+    flash.style.transform = 'scale(3)';
     flash.style.opacity = '0';
-    setTimeout(() => { if (flash.parentNode) flash.remove(); }, 250);
+    setTimeout(() => { if (flash.parentNode) flash.remove(); }, 350);
 
-    // Rozlétající se částice
+    // Druhý menší záblesk — vnější prstenec
+    const ring = document.createElement('div');
+    const ringSize = isCrit ? 70 : 50;
+    ring.style.cssText = `position:absolute;width:${ringSize}px;height:${ringSize}px;border-radius:50%;border:3px solid ${brightColor};z-index:19;pointer-events:none;opacity:0.6;`;
+    ring.style.left = (x - ringSize/2) + 'px';
+    ring.style.top = (y - ringSize/2) + 'px';
+    arena.appendChild(ring);
+    ring.style.transition = `transform 400ms ease-out, opacity 400ms ease-out`;
+    void ring.offsetHeight;
+    ring.style.transform = 'scale(2)';
+    ring.style.opacity = '0';
+    setTimeout(() => { if (ring.parentNode) ring.remove(); }, 450);
+
+    // Rozlétající se částice — větší a dál
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
-      const size = 3 + Math.random() * maxSize;
+      const size = 4 + Math.random() * maxSize;
       const angle = Math.random() * 2 * Math.PI;
-      const dist = 8 + Math.random() * maxDist;
-      const isBright = Math.random() < 0.3;
-      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${isBright ? brightColor : color};z-index:19;pointer-events:none;opacity:${isCrit ? 0.9 : 0.7};`;
+      const dist = 10 + Math.random() * maxDist;
+      const isBright = Math.random() < 0.4;
+      p.style.cssText = `position:absolute;width:${size}px;height:${size}px;border-radius:50%;background:${isBright ? brightColor : color};z-index:19;pointer-events:none;opacity:${isCrit ? 1.0 : 0.8};`;
       p.style.left = (x - size/2) + 'px';
       p.style.top = (y - size/2) + 'px';
       arena.appendChild(p);
       const dx = Math.cos(angle) * dist;
       const dy = Math.sin(angle) * dist;
-      p.style.transition = `transform 300ms ease-out, opacity 300ms ease-out`;
+      p.style.transition = `transform 400ms ease-out, opacity 400ms ease-out`;
       void p.offsetHeight;
       p.style.transform = `translate(${dx}px, ${dy}px)`;
       p.style.opacity = '0';
-      setTimeout(() => { if (p.parentNode) p.remove(); }, 350);
+      setTimeout(() => { if (p.parentNode) p.remove(); }, 450);
     }
   }
 
