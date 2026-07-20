@@ -4683,7 +4683,7 @@
       ctx.translate(x, y);
       ctx.rotate(angle);
 
-      const s = isCrit ? 1.8 : 1.4;
+      const s = isCrit ? 2.2 : 1.8;
       const flicker = 0.85 + Math.sin(progress * 30) * 0.15; // plápolání
 
       if (spellId === 'firebolt') {
