@@ -7570,6 +7570,10 @@
       if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡ ${item.swingMs}ms swing`);
       if (item.enhancedDefense) affixStats.push(`🛡️ +${item.enhancedDefense}% obrana`);
       if (item.enhancedDmg) affixStats.push(`⚔️ +${item.enhancedDmg}% poškození`);
+      if (item.str) affixStats.push(`💪 +${item.str} Síla`);
+      if (item.vit) affixStats.push(`❤️ +${item.vit} Vitalita`);
+      if (item.int) affixStats.push(`🧠 +${item.int} Intelekt`);
+      if (item.dex) affixStats.push(`🎯 +${item.dex} Obratnost`);
       if (affixStats.length) stats += '<br>' + affixStats.join(' · ');
       if (item.attrs) {
         const attrStr = Object.keys(item.attrs).map(k => {
