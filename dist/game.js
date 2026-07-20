@@ -531,13 +531,24 @@
   // ===== RESIST MULT =====
   function getSchoolResistMult(schoolId) {
     const mb = mapBattleState;
-    if (!mb || !mb.loc || !mb.loc.resists) return 1.0;
-    const r = mb.loc.resists;
-    if (schoolId === 'fire') return r.fire || 1.0;
-    if (schoolId === 'ice') return r.ice || 1.0;
-    if (schoolId === 'nature') return r.nature || 1.0;
-    if (schoolId === 'lightning') return r.lightning || 1.0;
-    return 1.0;
+    if (!mb) return 1.0;
+    // Použít resisty konkrétního monstra (per-monster), ne lokace
+    const r = mb.monsterResists;
+    if (!r) return 1.0;
+    let base = 1.0;
+    if (schoolId === 'fire') base = r.fire || 1.0;
+    else if (schoolId === 'ice') base = r.ice || 1.0;
+    else if (schoolId === 'nature') base = r.nature || 1.0;
+    else if (schoolId === 'lightning') base = r.lightning || 1.0;
+    // Aplikovat násobitel obtížnosti — na Normal se nic nemění,
+    // na Nightmare/Hell se resisty zesilují (slabé míň slabé, silné víc silné)
+    const diff = DIFFICULTIES[state.difficulty];
+    const resistMult = diff ? diff.resistMult : 1.0;
+    if (resistMult !== 1.0) {
+      if (base < 1.0) base = 1 - (1 - base) / resistMult;
+      else if (base > 1.0) base = 1 + (base - 1) * resistMult;
+    }
+    return base;
   }
   function getSpellLv(spellId) {
     if (spellId === 'fireball') return getTalentLv('fire_fireball');
@@ -1163,68 +1174,68 @@
   // ===== MONSTER DB =====
   // Každé monstrum má fixní face, name, type a attackType — nikdy se nemění
   const MONSTER_DB = [
-    // Theme 0 — Les
+    // Theme 0 — Les (vyvážené, mírný nature bonus)
     [
-      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/lesni_rarach.png',name:'Lesní rarach',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0}},
+      {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.2, ice:1.0, nature:0.8, lightning:1.0}},
+      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0}},
+      {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0}},
+      {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:8, resists:{fire:1.0, ice:1.0, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:5, resists:{fire:1.0, ice:1.0, nature:0.7, lightning:1.0}},
+      {face:'assets/monsters/lesni_rarach.png',name:'Lesní rarach',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:10, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0}},
+      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:8, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0}},
     ],
-    // Theme 1 — Poušť
+    // Theme 1 — Poušť (slabí na led, odolní ohni)
     [
-      {face:'assets/monsters/desert_scorpion.png',name:'Štír',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/desert_worm.png',name:'Pouštní červ',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/desert_centaur.png',name:'Kentaur',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/desert_nomad.png',name:'Nomád',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/desert_djinn.png',name:'Djinn',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/desert_mummy.png',name:'Mumie',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/desert_beetle.png',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/desert_cobra.png',name:'Kobra',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/desert_scorpion.png',name:'Štír',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE, defense:16, resists:{fire:0.8, ice:1.3, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_worm.png',name:'Pouštní červ',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:14, resists:{fire:0.8, ice:1.2, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_centaur.png',name:'Kentaur',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:15, resists:{fire:0.9, ice:1.2, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_nomad.png',name:'Nomád',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER, defense:8, resists:{fire:0.8, ice:1.3, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_djinn.png',name:'Djinn',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER, defense:6, resists:{fire:0.7, ice:1.4, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_mummy.png',name:'Mumie',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:10, resists:{fire:0.9, ice:1.2, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_beetle.png',name:'Brouk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:22, resists:{fire:0.8, ice:1.2, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/desert_cobra.png',name:'Kobra',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:7, resists:{fire:0.9, ice:1.3, nature:1.0, lightning:1.0}},
     ],
-    // Theme 2 — Nemrtvá země
+    // Theme 2 — Nemrtvá země (odolní ohni, slabí na nature)
     [
-      {face:'assets/monsters/skeleton.png',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/zombie.png',name:'Zombie',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/lich.png',name:'Lich',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/bone_dragon.png',name:'Kostěný drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/death_knight.png',name:'Nemrtvý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/raven.png',name:'Havran',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/ghost.png',name:'Přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/lucifer.png',name:'Upír',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
+      {face:'assets/monsters/skeleton.png',name:'Kostlivec',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:14, resists:{fire:0.7, ice:1.0, nature:1.3, lightning:1.0}},
+      {face:'assets/monsters/zombie.png',name:'Zombie',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:0.6, ice:1.0, nature:1.4, lightning:1.0}},
+      {face:'assets/monsters/lich.png',name:'Lich',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER, defense:5, resists:{fire:0.5, ice:1.0, nature:1.5, lightning:1.0}},
+      {face:'assets/monsters/bone_dragon.png',name:'Kostěný drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER, defense:10, resists:{fire:0.6, ice:1.0, nature:1.4, lightning:1.0}},
+      {face:'assets/monsters/death_knight.png',name:'Nemrtvý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:0.7, ice:1.0, nature:1.3, lightning:1.0}},
+      {face:'assets/monsters/raven.png',name:'Havran',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:4, resists:{fire:0.8, ice:1.0, nature:1.2, lightning:1.0}},
+      {face:'assets/monsters/ghost.png',name:'Přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:3, resists:{fire:0.5, ice:1.0, nature:1.5, lightning:1.0}},
+      {face:'assets/monsters/lucifer.png',name:'Upír',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER, defense:8, resists:{fire:0.6, ice:1.0, nature:1.4, lightning:1.0}},
     ],
-    // Theme 3 — Výspy
+    // Theme 3 — Výspy (odolní ohni, slabí na led)
     [
-      {face:'assets/monsters/kerberos.png',name:'Kerberos',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/hellhound.png',name:'Pekelný pes',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/imp.png',name:'Ďáblík',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/fire_ghost.png',name:'Ohnivý přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/succubus.png',name:'Succuba',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/lava_dragon.png',name:'Lávový drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/hell_smith.png',name:'Pekelný kovář',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/hell_knight.png',name:'Pekelný rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/kerberos.png',name:'Kerberos',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:0.7, ice:1.3, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/hellhound.png',name:'Pekelný pes',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:14, resists:{fire:0.6, ice:1.4, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/imp.png',name:'Ďáblík',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:10, resists:{fire:0.7, ice:1.3, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/fire_ghost.png',name:'Ohnivý přízrak',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:4, resists:{fire:0.4, ice:1.5, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/succubus.png',name:'Succuba',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.CASTER, defense:6, resists:{fire:0.6, ice:1.4, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/lava_dragon.png',name:'Lávový drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER, defense:12, resists:{fire:0.5, ice:1.5, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/hell_smith.png',name:'Pekelný kovář',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:25, resists:{fire:0.7, ice:1.3, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/hell_knight.png',name:'Pekelný rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:22, resists:{fire:0.7, ice:1.3, nature:1.0, lightning:1.0}},
     ],
-    // Theme 4 — Štíty
+    // Theme 4 — Štíty (odolní ledu, slabí ohni)
     [
-      {face:'assets/monsters/ice_troll.png',name:'Ledový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/frost_giant.png',name:'Ledový obr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/polar_bear.png',name:'Lední medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/snow_wolf.png',name:'Sněžný vlk',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/ice_dragon.png',name:'Ledový drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER},
-      {face:'assets/monsters/snow_golem.png',name:'Sněžný golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/frozen_knight.png',name:'Zmrzlý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE},
-      {face:'assets/monsters/ice_lizard.png',name:'Ledový ještěr',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE},
+      {face:'assets/monsters/ice_troll.png',name:'Ledový troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:16, resists:{fire:1.3, ice:0.7, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/frost_giant.png',name:'Ledový obr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:24, resists:{fire:1.4, ice:0.6, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/polar_bear.png',name:'Lední medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.3, ice:0.7, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/snow_wolf.png',name:'Sněžný vlk',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:10, resists:{fire:1.2, ice:0.8, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/ice_dragon.png',name:'Ledový drak',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.CASTER, defense:14, resists:{fire:1.5, ice:0.5, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/snow_golem.png',name:'Sněžný golem',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:28, resists:{fire:1.4, ice:0.6, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/frozen_knight.png',name:'Zmrzlý rytíř',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.3, ice:0.7, nature:1.0, lightning:1.0}},
+      {face:'assets/monsters/ice_lizard.png',name:'Ledový ještěr',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:1.2, ice:0.8, nature:1.0, lightning:1.0}},
     ],
   ];
 
   // ===== DIFFICULTY =====
   const DIFFICULTIES = [
-    { id:'normal', name:'Normal', monsterLvMin:1, monsterLvMax:10, itemTierMin:1, itemTierMax:3, mult:1.0 },
-    { id:'nightmare', name:'Nightmare', monsterLvMin:10, monsterLvMax:20, itemTierMin:3, itemTierMax:5, mult:1.8 },
-    { id:'hell', name:'Hell', monsterLvMin:20, monsterLvMax:30, itemTierMin:5, itemTierMax:7, mult:3.0 },
+    { id:'normal', name:'Normal', monsterLvMin:1, monsterLvMax:10, itemTierMin:1, itemTierMax:3, mult:1.0, resistMult:1.0 },
+    { id:'nightmare', name:'Nightmare', monsterLvMin:10, monsterLvMax:20, itemTierMin:3, itemTierMax:5, mult:1.8, resistMult:1.5 },
+    { id:'hell', name:'Hell', monsterLvMin:20, monsterLvMax:30, itemTierMin:5, itemTierMax:7, mult:3.0, resistMult:2.0 },
   ];
 
   // ===== ROOM TYPES =====
@@ -1296,7 +1307,7 @@
     // Uložit, kdy bylo toto monstrum viděno
     seen[idx] = floor;
     state._monsterLastSeen[theme] = seen;
-    result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme});
+    result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme, defense: pool[idx].defense || 0, resists: pool[idx].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}});
     return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
@@ -1459,8 +1470,8 @@
     });
     const ar = Math.max(1, baseAR + totalAR);
 
-    // Defense monstra
-    const monsterDef = mb.loc?.monsterDefense || 0;
+    // Defense monstra (per-monster, ne lokace)
+    const monsterDef = mb.monsterDefense || 0;
     const dr = Math.max(1, monsterDef);
 
     // D2 formule
@@ -2073,6 +2084,8 @@
       currentMonsterName: isBoss ? loc.boss.name : (isReward ? '' : floorMonsters[0].name),
       monsterType: isBoss ? null : (isReward ? null : (floorMonsters[0].type || null)),
       monsterAttackType: isBoss ? (loc.boss.attackType || ATTACK_TYPES.MELEE) : (isReward ? ATTACK_TYPES.MELEE : (floorMonsters[0].attackType || ATTACK_TYPES.MELEE)),
+      monsterDefense: isBoss ? (loc.monsterDefense || 0) : (isReward ? 0 : (floorMonsters[0].defense || 0)),
+      monsterResists: isBoss ? (loc.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}) : (isReward ? {fire:1.0, ice:1.0, nature:1.0, lightning:1.0} : (floorMonsters[0].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0})),
       bossTypes: isBoss ? (loc.boss.types || []) : [],
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
