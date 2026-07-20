@@ -2603,12 +2603,20 @@
 
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
+      cleanupTimers();
+      const arena = $('mbArena');
+      if (arena) {
+        arena.style.transition = 'background 0.15s';
+        arena.style.background = 'rgba(200,0,0,0.3)';
+        setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+        setTimeout(() => { arena.style.background = ''; }, 250);
+      }
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          setTimeout(() => endMapBattle(true), 400);
+          setTimeout(() => endMapBattle(true), 300);
         }
-      }, 500);
+      }, 300);
       return;
     }
   }
@@ -2618,12 +2626,20 @@
     const mb = mapBattleState;
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
+      cleanupTimers();
+      const arena = $('mbArena');
+      if (arena) {
+        arena.style.transition = 'background 0.15s';
+        arena.style.background = 'rgba(200,0,0,0.3)';
+        setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+        setTimeout(() => { arena.style.background = ''; }, 250);
+      }
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          setTimeout(() => endMapBattle(true), 400);
+          setTimeout(() => endMapBattle(true), 300);
         }
-      }, 500);
+      }, 300);
       return;
     }
     // Reset offhand swingu PŘED útokem
@@ -3557,12 +3573,20 @@
       // Smrtelná rána — kouzlo musí zabít stejně jako melee
       if (mb.bossHp <= 0 && !mb._pendingKill) {
         mb._pendingKill = true;
+        cleanupTimers();
+        const arena = $('mbArena');
+        if (arena) {
+          arena.style.transition = 'background 0.15s';
+          arena.style.background = 'rgba(200,0,0,0.3)';
+          setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+          setTimeout(() => { arena.style.background = ''; }, 250);
+        }
         setTimeout(() => {
           if (!mapBattleState.ended) {
             spawnDeathEffect(mb);
-            setTimeout(() => endMapBattle(true), 400);
+            setTimeout(() => endMapBattle(true), 300);
           }
-        }, 500);
+        }, 300);
         return;
       }
       // Ledová kouzla — zpomalení nepřítele
@@ -4493,9 +4517,9 @@
         ctx.translate(x, y);
         ctx.rotate(angle);
 
-        const s = isCrit ? 1.4 : 1.0;
+        const s = isCrit ? 1.6 : 1.2;
         const flicker = 0.85 + Math.sin(progress * 30) * 0.15;
-        const r = 10 * s;
+        const r = 18 * s;
 
         // Vnější záře
         const glowGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 2.5);
@@ -5110,16 +5134,16 @@
     if (rgbStr === '187,187,187' || rgbStr === '180,180,200') {
       rgbStr = '168,85,247';
     }
-    const color = `rgba(${rgbStr},0.8)`;
+    const color = `rgba(${rgbStr},0.9)`;
     const brightColor = `rgba(${rgbStr},1.0)`;
-    const whiteColor = 'rgba(255,255,255,0.8)';
-    const count = isCrit ? 24 : 16;
-    const maxSize = isCrit ? 18 : 12;
-    const maxDist = isCrit ? 70 : 45;
+    const whiteColor = 'rgba(255,255,255,0.9)';
+    const count = isCrit ? 36 : 24;
+    const maxSize = isCrit ? 26 : 18;
+    const maxDist = isCrit ? 90 : 60;
 
     // Velký centrální záblesk
     const flash = document.createElement('div');
-    const flashSize = isCrit ? 50 : 36;
+    const flashSize = isCrit ? 70 : 50;
     flash.style.cssText = `position:absolute;width:${flashSize}px;height:${flashSize}px;border-radius:50%;background:radial-gradient(circle, ${whiteColor}, ${brightColor} 30%, ${color} 50%, transparent 75%);z-index:19;pointer-events:none;`;
     flash.style.left = (x - flashSize/2) + 'px';
     flash.style.top = (y - flashSize/2) + 'px';
@@ -5132,7 +5156,7 @@
 
     // Druhý menší záblesk — vnější prstenec
     const ring = document.createElement('div');
-    const ringSize = isCrit ? 70 : 50;
+    const ringSize = isCrit ? 100 : 70;
     ring.style.cssText = `position:absolute;width:${ringSize}px;height:${ringSize}px;border-radius:50%;border:3px solid ${brightColor};z-index:19;pointer-events:none;opacity:0.6;`;
     ring.style.left = (x - ringSize/2) + 'px';
     ring.style.top = (y - ringSize/2) + 'px';
@@ -6167,15 +6191,24 @@
     
     mb.bossHp -= dmg;
 
-    // Smrtelný zásah — počkat na projektil a death animaci
+    // Smrtelný zásah — okamžitě zastavit timery, červený záblesk, pak death exploze
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
+      cleanupTimers();
+      // Červený záblesk arény
+      const arena = $('mbArena');
+      if (arena) {
+        arena.style.transition = 'background 0.15s';
+        arena.style.background = 'rgba(200,0,0,0.3)';
+        setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+        setTimeout(() => { arena.style.background = ''; }, 250);
+      }
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          setTimeout(() => endMapBattle(true), 400);
+          setTimeout(() => endMapBattle(true), 300);
         }
-      }, 500);
+      }, 300);
       return;
     }
 
