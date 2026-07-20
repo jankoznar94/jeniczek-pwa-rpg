@@ -7608,6 +7608,10 @@
         if (item.defense) affixStats.push(`🛡️+${item.defense}`);
         if (item.blockChance) affixStats.push(`🛡️${item.blockChance}%`);
         if (item.critChance) affixStats.push(`🎯${item.critChance}%`);
+        if (item.str) affixStats.push(`💪+${item.str}`);
+        if (item.vit) affixStats.push(`❤️+${item.vit}`);
+        if (item.int) affixStats.push(`🧠+${item.int}`);
+        if (item.dex) affixStats.push(`🎯+${item.dex}`);
         if (affixStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + affixStats.join(' · ') + '</span>';
         const sellPrice = Math.round(item.cost * 0.5);
         return `<div class="shop-item">
