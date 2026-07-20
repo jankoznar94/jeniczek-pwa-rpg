@@ -1523,14 +1523,14 @@
 
   function cleanupTimers() {
     document.body.classList.remove('battle-active');
-    // Schovat a zešednout všechny timer kruhy
+    // Ztmavit všechny timer kruhy
     ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) { el.style.opacity = '0.15'; el.style.animation = 'none'; el.style.strokeDashoffset = '0'; }
+      if (el) { el.style.opacity = '0.08'; el.style.animation = 'none'; el.style.strokeDashoffset = '0'; }
     });
-    // Schovat i timer ring wrapper
+    // Ztmavit i timer ring wrapper
     const ring = document.getElementById('mbTimerRing');
-    if (ring) ring.style.opacity = '0.3';
+    if (ring) ring.style.opacity = '0.15';
     _activeIntervals.forEach(id => { try { clearInterval(id); } catch {} }); _activeIntervals = [];
     if (minigameState.timerInterval) { clearInterval(minigameState.timerInterval); minigameState.timerInterval = null; }
     if (minigameState.countdownInterval) { clearInterval(minigameState.countdownInterval); minigameState.countdownInterval = null; }
@@ -2636,7 +2636,7 @@
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          setTimeout(() => endMapBattle(true), 300);
+          showVictorySkull(function() { endMapBattle(true); });
         }
       }, 300);
       return;
@@ -2659,7 +2659,7 @@
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          setTimeout(() => endMapBattle(true), 300);
+          showVictorySkull(function() { endMapBattle(true); });
         }
       }, 300);
       return;
@@ -3635,7 +3635,7 @@
         setTimeout(() => {
           if (!mapBattleState.ended) {
             spawnDeathEffect(mb);
-            setTimeout(() => endMapBattle(true), 300);
+            showVictorySkull(function() { endMapBattle(true); });
           }
         }, 300);
         return;
@@ -5275,6 +5275,17 @@
     }
   }
 
+  function showVictorySkull(onClick) {
+    const skull = $('mbVictorySkull');
+    if (!skull) { if (onClick) onClick(); return; }
+    skull.classList.remove('hidden');
+    skull.onclick = function() {
+      skull.classList.add('hidden');
+      skull.onclick = null;
+      if (onClick) onClick();
+    };
+  }
+
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
     // Mlha při nárazu — rozmazané kroužky rozlétající se všemi směry
     const color = `rgba(${rgbStr},0.35)`;
@@ -6271,7 +6282,7 @@
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          setTimeout(() => endMapBattle(true), 300);
+          showVictorySkull(function() { endMapBattle(true); });
         }
       }, 300);
       return;
