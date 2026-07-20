@@ -6199,8 +6199,8 @@
     else { type = 'amulet'; subtype = null; }
 
     // Common itemy jen pro zbroj a zbraně (jako Diablo 2)
-    if (quality === 'common' && (type === 'ring' || type === 'amulet')) {
-      quality = 'uncommon';
+    if (quality === 'normal' && (type === 'ring' || type === 'amulet')) {
+      quality = 'magic';
     }
 
     // 2. Najít base item z ITEMS podle typu a tieru
