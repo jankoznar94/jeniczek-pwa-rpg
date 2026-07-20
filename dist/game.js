@@ -909,9 +909,10 @@
 
   function getQualityColor(item) {
     if (item.unique) return QUALITY_COLORS.unique;
-    const n = (item.affixes || []).length;
-    if (n >= 3) return QUALITY_COLORS.rare;
-    if (n >= 1) return QUALITY_COLORS.magic;
+    // Použít quality/rarity místo počítání affixů — rare bez affixů je pořád rare
+    const q = item.quality || item.rarity;
+    if (q === 'rare') return QUALITY_COLORS.rare;
+    if (q === 'magic') return QUALITY_COLORS.magic;
     return QUALITY_COLORS.normal;
   }
 
@@ -969,6 +970,14 @@
         const pool = (i % 2 === 0) ? prefixes : suffixes;
         const a = pickAffix(pool);
         if (a) { chosenAffixes.push(a); usedGroups.add(a.group); }
+      }
+      // Rare musí mít aspoň 1 affix — jinak spadnout na magic
+      if (chosenAffixes.length === 0) {
+        quality = 'magic';
+        const p = pickAffix(prefixes);
+        if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
+        const s = pickAffix(suffixes);
+        if (s) { chosenAffixes.push(s); usedGroups.add(s.group); }
       }
     }
 
@@ -7478,7 +7487,7 @@
       if (itemId) {
         const item = ITEM_MAP[itemId];
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
-        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? '' : item.type === 'amulet' ? '' : `❤️${item.bonusHp}`;
+        const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' ? '' : item.type === 'amulet' ? '' : item.bonusHp ? `❤️${item.bonusHp}` : '';
         const r = RARITY[item.rarity] || RARITY.common;
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="border-color:${r.border}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
@@ -7512,12 +7521,12 @@
         stats += `⚔️ +${item.baseDmg} poškození${handLabel}`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
       }
-      else if (item.type === 'armor') stats += `❤️ +${item.bonusHp} HP · 🛡️ +${item.defense||0} Defense`;
-      else if (item.type === 'helmet') stats += `❤️ +${item.bonusHp} HP · 🛡️ +${item.defense||0} Defense`;
-      else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok · ❤️ +${item.bonusHp||0} HP · 🛡️ +${item.defense||0} Defense`;
+      else if (item.type === 'armor') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
+      else if (item.type === 'helmet') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
+      else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok` + (item.bonusHp ? ` · ❤️ +${item.bonusHp} HP` : '') + ` · 🛡️ +${item.defense||0} Defense`;
       else if (item.type === 'ring') stats += ``;
       else if (item.type === 'amulet') stats += ``;
-      else if (item.type === 'belt') stats += `🎗️ ${item.beltSlots||0} slotů na potiony · ❤️ +${item.bonusHp||0} HP`;
+      else if (item.type === 'belt') stats += `🎗️ ${item.beltSlots||0} slotů na potiony` + (item.bonusHp ? ` · ❤️ +${item.bonusHp} HP` : '');
       else if (item.type === 'consumable') stats += `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
       if (item.weaponType === 'staff') stats += ' 🪄 magická';
       else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
