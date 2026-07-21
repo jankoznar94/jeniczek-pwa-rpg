@@ -157,6 +157,7 @@
   const shopSfx = (() => { const a = new Audio('assets/sfx/shop.mp3'); a.volume = 1.0; return a; })();
   const equipSfx = (() => { const a = new Audio('assets/sfx/equip.mp3'); a.volume = 1.0; return a; })();
   const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 1.0; return a; })();
+  const levelupSfx = (() => { const a = new Audio('assets/sfx/levelup.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -8206,6 +8207,7 @@
         if (realLv >= t.maxLv) return;
         state.talentLevels[key] = realLv + 1;
         state.talentPoints = pts - 1;
+        playSFX(levelupSfx);
         saveGame();
         updateTalentBadge();
         _selectedTalentKey = key;
@@ -8446,6 +8448,7 @@
     const h = state.hero;
     if ((h.attrPoints||0) <= 0) { showMessage('❌ Nemáš žádné atributové body!'); return; }
     h.attrPoints--;
+    playSFX(levelupSfx);
     if (attr === 'str') {
       h.attrStr = (h.attrStr||0) + 1;
       h.baseDmg = getHeroDmg();
