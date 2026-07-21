@@ -6306,7 +6306,10 @@
     
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
-    
+
+    // Canvas projektil pro každý melee útok
+    spawnProjectileEffect(null, false, isCrit);
+
     mb.bossHp -= dmg;
 
     // Smrtelný zásah — okamžitě zastavit timery, červený záblesk, pak death exploze
