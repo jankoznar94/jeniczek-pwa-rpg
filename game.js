@@ -7790,6 +7790,9 @@
   }
   // ===== INVENTORY =====
   function renderInventory() {
+    // Reset scroll pozice batohu při každém otevření
+    const gridWrap = $('invGridWrap');
+    if (gridWrap) gridWrap.scrollTop = 0;
     const h = state.hero;
     // Equipment sloty — 6 slotů
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
