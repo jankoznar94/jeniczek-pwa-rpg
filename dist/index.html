@@ -286,6 +286,9 @@
     <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Prodat</button>
     <button class="shop-tab" onclick="game.openInventoryFromShop()">🎒 Inventář</button>
   </div>
+  <div class="shop-back-map">
+    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Zpět na bojiště</button>
+  </div>
   <div id="shopList"></div>
 </div>
 
@@ -318,6 +321,10 @@
       <div class="inv-slot-icon" id="invSlotRing2Icon">💍</div>
     </div>
   </div>
+  <!-- Tlačítko zpět do obchodu — nahoře, hned pod equip panelem -->
+  <div class="inv-shop-back hidden" id="invShopBack">
+    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
+  </div>
   <!-- Potion sloty (dynamicky podle beltSlots) -->
   <div class="inv-potion-slots" id="invPotionSlots"></div>
   <!-- Grid batohu (scrollovatelný) -->
@@ -339,9 +346,6 @@
       <div class="inv-info-name" id="invCompareName"></div>
       <div class="inv-info-stats" id="invCompareStats"></div>
     </div>
-  </div>
-  <div class="inv-shop-back hidden" id="invShopBack">
-    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
   </div>
 </div>
 
