@@ -117,6 +117,8 @@
   const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 1.0; return a; })();
   const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 1.0; return a; })();
   const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
+  const meleeHitSfx2 = (() => { const a = new Audio('assets/sfx/melee_hit2.mp3'); a.volume = 1.0; return a; })();
+  const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2];
   const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
   const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
   const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
@@ -134,7 +136,8 @@
     const wt = getWeaponType();
     if (wt === 'fists') return fistHitSfx;
     if (wt === 'blunt') return bluntHitSfx;
-    return wt === 'staff' ? hitSfx : meleeHitSfx;
+    if (wt === 'staff') return hitSfx;
+    return meleeHitSfxPool[Math.floor(Math.random() * meleeHitSfxPool.length)];
   }
   function getCritSfx() {
     const wt = getWeaponType();
@@ -152,6 +155,7 @@
   const bluntCritSfx = (() => { const a = new Audio('assets/sfx/blunt_crit.mp3'); a.volume = 1.0; return a; })();
   const shoutSfx = (() => { const a = new Audio('assets/sfx/shout.mp3'); a.volume = 1.0; return a; })();
   const shopSfx = (() => { const a = new Audio('assets/sfx/shop.mp3'); a.volume = 1.0; return a; })();
+  const equipSfx = (() => { const a = new Audio('assets/sfx/equip.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -9131,6 +9135,7 @@
       h.baseDmg = getHeroDmg();
       h.maxHp = getHeroMaxHp();
       h.hp = h.maxHp;
+      playSFX(equipSfx);
       saveGame();
       renderInventory();
       renderHero();
@@ -9215,6 +9220,7 @@
     h.hp = h.maxHp;
     h.maxMana = getHeroMaxMana();
     h.mana = h.maxMana;
+    playSFX(equipSfx);
     saveGame();
     showMessage(`🎽 Oblékl jsi ${item.icon} ${item.name}!`);
     renderInventory();
@@ -9260,6 +9266,7 @@
     h.hp = h.maxHp;
     h.maxMana = getHeroMaxMana();
     h.mana = h.maxMana;
+    playSFX(equipSfx);
     saveGame();
     showMessage(`📦 Sundal jsi ${item.icon} ${item.name} do inventáře!`);
     renderInventory();
