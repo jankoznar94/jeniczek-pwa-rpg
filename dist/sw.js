@@ -65,7 +65,7 @@ const ASSET_FILES = [
   '/assets/menu-icons/navod.png', '/assets/menu-icons/bestiar.png',
   '/assets/menu-icons/music.png', '/assets/menu-icons/testmode.png',
   '/assets/sfx/hurt1.mp3', '/assets/sfx/hurt2.mp3', '/assets/sfx/hurt3.mp3',
-  '/assets/sfx/hurt4.mp3',
+  '/assets/sfx/shout.mp3',
   '/assets/sfx/fire_spell.mp3', '/assets/sfx/ice_spell.mp3', '/assets/sfx/lightning_spell.mp3',
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
