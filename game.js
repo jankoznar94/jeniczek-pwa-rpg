@@ -5334,7 +5334,9 @@
       bx = br.left + br.width/2 - aRect.left;
       by = br.top + br.height/2 - aRect.top;
     }
-    const canvas = $('mbProjectileCanvas');
+    const isOffhand = angleOffset !== 0;
+    const canvasId = isOffhand ? 'mbProjectileCanvasOffhand' : 'mbProjectileCanvas';
+    const canvas = $(canvasId);
     if (!canvas) return;
     canvas.width = rect.width;
     canvas.height = rect.height;
