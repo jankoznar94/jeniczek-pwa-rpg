@@ -160,6 +160,7 @@
   const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 1.0; return a; })();
   const levelupSfx = (() => { const a = new Audio('assets/sfx/levelup.mp3'); a.volume = 1.0; return a; })();
   const clickSfx = (() => { const a = new Audio('assets/sfx/click.mp3'); a.volume = 1.0; return a; })();
+  const whirlwindSfx = (() => { const a = new Audio('assets/sfx/whirlwind.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -3575,6 +3576,7 @@
       const offDmg = offhandWeapon ? baseDmg + offhandWeapon.baseDmg : 0;
       const totalDmg = Math.max(1, Math.round((mainDmg + offDmg) * 1.5));
       mb.bossHp -= totalDmg;
+      playSFX(whirlwindSfx);
       // Animace
       spawnWhirlwindAnim(mb);
       const dmgText2 = $('mbDamageText');
