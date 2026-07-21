@@ -275,15 +275,16 @@
 
 <!-- ===== SHOP ===== -->
 <div id="shopScreen" class="container hidden">
+  <!-- Tlačítko zpět na bojiště — úplně nahoře -->
+  <div class="shop-back-map">
+    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Zpět na bojiště</button>
+  </div>
   <div class="card">
     <div class="flex-between">
       <span class="card-title"><img src="assets/menu-icons/obchod.png" class="page-icon" alt=""> Obchod</span>
       <span id="shopGold">💰 0 zlatých</span>
     </div>
     <div class="card-subtitle">Nakup a prodávej výbavu</div>
-  </div>
-  <div class="shop-back-map">
-    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Zpět na bojiště</button>
   </div>
   <div class="shop-tabs">
     <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Koupit</button>
