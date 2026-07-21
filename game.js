@@ -3486,9 +3486,11 @@
       state.battleShoutTimer = 3600; // 60s
       playSFX(battleShoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      console.log('BATTLE SHOUT: dmgPct=' + dmgPct + ' timer=' + state.battleShoutTimer + ' buffs keys=' + Object.keys(_sessionBuffs).join(','));
+      // Vykreslit buff HNED
+      renderBuffs();
       // Animace
       spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
-      renderBuffs();
       const dmgText = $('mbPlayerDamageText');
       if (dmgText) {
         dmgText.textContent = `📯 Battle Shout +${dmgPct}% dmg`;
@@ -5802,7 +5804,7 @@
     const rect = arena.getBoundingClientRect();
     const cx = rect.width / 2;
     const cy = rect.height / 2;
-    const canvas = $('mbProjectileCanvas');
+    const canvas = $('mbProjectileCanvasOffhand');
     if (!canvas) return;
     canvas.width = rect.width;
     canvas.height = rect.height;
@@ -5875,7 +5877,7 @@
       by = br.top + br.height/2 - aRect.top;
       size = Math.max(br.width, br.height) * 0.5;
     }
-    const canvas = $('mbProjectileCanvas');
+    const canvas = $('mbProjectileCanvasOffhand');
     if (!canvas) return;
     canvas.width = rect.width;
     canvas.height = rect.height;
