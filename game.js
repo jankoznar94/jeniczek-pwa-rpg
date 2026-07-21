@@ -3488,6 +3488,7 @@
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
       // Animace
       spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
+      renderBuffs();
       const dmgText = $('mbPlayerDamageText');
       if (dmgText) {
         dmgText.textContent = `📯 Battle Shout +${dmgPct}% dmg`;
@@ -3512,27 +3513,27 @@
       _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
-      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const offhandWeapon = (mb.offhandSwingMs > 0 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
+      if (!offhandWeapon) {
+        showMessage('⚔️ Potřebuješ dvě zbraně!');
+        return;
+      }
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
       const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
       const mainDmg = baseDmg + weapon.baseDmg;
-      const offDmg = offhandWeapon ? baseDmg + offhandWeapon.baseDmg : 0;
+      const offDmg = baseDmg + offhandWeapon.baseDmg;
       const totalDmg = Math.max(1, Math.round((mainDmg + offDmg) * 1.5));
       mb.bossHp -= totalDmg;
       // Reset obou swing timerů
       mb._playerSwingStart = performance.now();
       mb._playerSwingReady = false;
       mb._playerSwingPct = 0;
-      if (mb.offhandSwingMs > 0) {
-        mb._offhandSwingStart = performance.now();
-        mb._offhandSwingReady = false;
-        mb._offhandSwingPct = 0;
-      }
-      // Animace
+      mb._offhandSwingStart = performance.now();
+      mb._offhandSwingReady = false;
+      mb._offhandSwingPct = 0;
+      // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
-      // Projektil
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `⚔️ -${totalDmg}`;
@@ -5684,7 +5685,7 @@
   // ===== SPELL ANIMATIONS =====
 
   function spawnHeroicStrikeAnim(mb) {
-    // Heroic Strike — zvětšená, sytě žlutá main hand animace
+    // Heroic Strike — agresivní, výrazné žluté seknutí s velkým glow
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     const arena = $('mbArena');
     if (!arena) return;
@@ -5704,33 +5705,49 @@
     const ctx = canvas.getContext('2d');
     const wt = weapon.weaponType || 'fists';
     const angle = Math.random() * Math.PI * 0.6;
-    const len = 200;
+    const len = 240;
     const startX = bx - Math.cos(angle) * len * 0.5;
     const startY = by - Math.sin(angle) * len * 0.5;
     const endX = bx + Math.cos(angle) * len * 0.5;
     const endY = by + Math.sin(angle) * len * 0.5;
     const midX = bx + Math.cos(angle) * len * 0.1;
     const midY = by + Math.sin(angle) * len * 0.1;
-    const perpX = -Math.sin(angle) * len * 0.2;
-    const perpY = Math.cos(angle) * len * 0.2;
+    const perpX = -Math.sin(angle) * len * 0.25;
+    const perpY = Math.cos(angle) * len * 0.25;
     const cpX = midX + perpX;
     const cpY = midY + perpY;
     const approxLen = len * 1.3;
     const startTime = performance.now();
-    const duration = 300;
+    const duration = 350;
 
     function animate(ts) {
       const elapsed = ts - startTime;
       const progress = Math.min(elapsed / duration, 1);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const drawProgress = Math.min(progress * 1.5, 1);
-      const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+      const fadeProgress = Math.max(0, (progress - 0.4) / 0.6);
       const alpha = 1 - fadeProgress;
+      // Vnější záře
+      ctx.save();
+      ctx.shadowColor = 'rgba(255,200,0,0.9)';
+      ctx.shadowBlur = 40;
+      ctx.strokeStyle = 'rgba(255,200,0,0.3)';
+      ctx.lineWidth = 14;
+      ctx.lineCap = 'round';
+      ctx.globalAlpha = alpha * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+      ctx.setLineDash([approxLen, approxLen]);
+      ctx.lineDashOffset = approxLen * (1 - drawProgress);
+      ctx.stroke();
+      ctx.restore();
+      // Hlavní čára
       ctx.save();
       ctx.shadowColor = 'rgba(255,215,0,0.8)';
-      ctx.shadowBlur = 20;
+      ctx.shadowBlur = 25;
       ctx.strokeStyle = '#ffd700';
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 8;
       ctx.lineCap = 'round';
       ctx.globalAlpha = alpha;
       ctx.beginPath();
@@ -5844,19 +5861,19 @@
   }
 
   function spawnThunderClapAnim(mb) {
-    // Světle modrá pavučina (blunt) přes obrázek nepřítele
+    // Nepravidelná pavučina jako rozbité sklo — pokaždé jiná
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
     const bossFig = $('mbFigure');
     let bx = rect.width / 2, by = rect.height / 2;
-    let size = 120;
+    let size = 80;
     if (bossFig) {
       const br = bossFig.getBoundingClientRect();
       const aRect = arena.getBoundingClientRect();
       bx = br.left + br.width/2 - aRect.left;
       by = br.top + br.height/2 - aRect.top;
-      size = Math.max(br.width, br.height) * 0.8;
+      size = Math.max(br.width, br.height) * 0.5;
     }
     const canvas = $('mbProjectileCanvas');
     if (!canvas) return;
@@ -5866,31 +5883,75 @@
     const startTime = performance.now();
     const duration = 300;
 
+    // Vygenerovat nepravidelnou pavučinu — náhodné praskliny
+    const crackCount = 6 + Math.floor(Math.random() * 5); // 6-10 prasklin
+    const cracks = [];
+    for (let i = 0; i < crackCount; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const l = (20 + Math.random() * size) * (0.5 + Math.random() * 0.5);
+      const points = [{x: bx, y: by}];
+      const segs = 1 + Math.floor(Math.random() * 3);
+      let cx = bx, cy = by;
+      let dir = a;
+      for (let j = 0; j < segs; j++) {
+        const segLen = l * (0.3 + Math.random() * 0.4) / segs;
+        dir += (Math.random() - 0.5) * 0.8;
+        cx += Math.cos(dir) * segLen;
+        cy += Math.sin(dir) * segLen;
+        points.push({x: cx, y: cy});
+      }
+      cracks.push(points);
+    }
+    // Pár spojovacích čar mezi prasklinami
+    const crossCount = 2 + Math.floor(Math.random() * 3);
+    const crossLines = [];
+    for (let i = 0; i < crossCount; i++) {
+      const a1 = Math.random() * Math.PI * 2;
+      const a2 = a1 + 0.3 + Math.random() * 0.8;
+      const r1 = (10 + Math.random() * size * 0.4);
+      const r2 = (10 + Math.random() * size * 0.4);
+      crossLines.push({
+        x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
+        x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
+      });
+    }
+
     function animate(ts) {
       const elapsed = ts - startTime;
       const progress = Math.min(elapsed / duration, 1);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const alpha = 1 - progress;
+      const drawProgress = Math.min(progress * 1.5, 1);
+      const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+      const alpha = 1 - fadeProgress;
       ctx.save();
       ctx.strokeStyle = '#5dade2';
       ctx.shadowColor = 'rgba(93,173,226,0.6)';
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = 8;
       ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
       ctx.globalAlpha = alpha;
-      // Pavučina — křížové čáry
-      for (let i = 0; i < 8; i++) {
-        const a = (i / 8) * Math.PI * 2;
+      // Kreslit praskliny postupně
+      const totalSegments = cracks.reduce((sum, c) => sum + c.length - 1, 0) + crossLines.length;
+      const drawnSegments = Math.floor(drawProgress * totalSegments);
+      let segIdx = 0;
+      cracks.forEach(points => {
+        for (let j = 0; j < points.length - 1; j++) {
+          if (segIdx >= drawnSegments) break;
+          ctx.beginPath();
+          ctx.moveTo(points[j].x, points[j].y);
+          ctx.lineTo(points[j+1].x, points[j+1].y);
+          ctx.stroke();
+          segIdx++;
+        }
+      });
+      crossLines.forEach(cl => {
+        if (segIdx >= drawnSegments) return;
         ctx.beginPath();
-        ctx.moveTo(bx, by);
-        ctx.lineTo(bx + Math.cos(a) * size, by + Math.sin(a) * size);
+        ctx.moveTo(cl.x1, cl.y1);
+        ctx.lineTo(cl.x2, cl.y2);
         ctx.stroke();
-      }
-      // Soustředné kruhy
-      for (let r = 1; r <= 3; r++) {
-        ctx.beginPath();
-        ctx.arc(bx, by, size * r / 3, 0, Math.PI * 2);
-        ctx.stroke();
-      }
+        segIdx++;
+      });
       ctx.restore();
       if (progress < 1) requestAnimationFrame(animate);
       else ctx.clearRect(0, 0, canvas.width, canvas.height);
