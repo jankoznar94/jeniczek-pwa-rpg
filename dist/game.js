@@ -7853,7 +7853,7 @@
         const r = RARITY[item.rarity] || RARITY.common;
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="border-color:${r.border}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
-          <div class="cell-name" style="color:${r.color}">${item.name}</div>
+          <div class="cell-name">${item.name}</div>
         </div>`;
       } else {
         html += '<div class="inv-grid-cell empty"></div>';
@@ -7872,7 +7872,6 @@
       $('invInfoIcon').innerHTML = renderItemIcon(item, 48);
       $('invInfoName').textContent = item.name;
       const r = RARITY[item.rarity] || RARITY.common;
-      $('invInfoName').style.color = r.color;
       let stats = `<span style="color:${r.color};font-size:11px">${r.name}</span><br>`;
       // Zobrazit názvy affixů
       if (item.affixes && item.affixes.length) {
@@ -7966,7 +7965,7 @@
             const attrStr = Object.keys(ring1.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${ring1.attrs[k]}`; }).join(' · ');
             s1 += '<br>' + attrStr;
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring1, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" style="color:${er1.color}">${ring1.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s1}</div></div></div>`;
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring1, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${ring1.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s1}</div></div></div>`;
         }
         if (ring2) {
           const er2 = RARITY[ring2.rarity] || RARITY.common;
@@ -7993,7 +7992,7 @@
             const attrStr = Object.keys(ring2.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${ring2.attrs[k]}`; }).join(' · ');
             s2 += '<br>' + attrStr;
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring2, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" style="color:${er2.color}">${ring2.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s2}</div></div></div>`;
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring2, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${ring2.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s2}</div></div></div>`;
         }
         if (bothHtml) {
           $('invCompareIcon').innerHTML = '';
@@ -8036,7 +8035,7 @@
             const attrStr = Object.keys(mh.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${mh.attrs[k]}`; }).join(' · ');
             s += '<br>' + attrStr;
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(mh, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" style="color:${er.color}">${mh.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s}</div></div></div>`;
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(mh, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${mh.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s}</div></div></div>`;
         }
         if (oh) {
           const er = RARITY[oh.rarity] || RARITY.common;
@@ -8061,7 +8060,7 @@
             const attrStr = Object.keys(oh.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${oh.attrs[k]}`; }).join(' · ');
             s += '<br>' + attrStr;
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(oh, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" style="color:${er.color}">${oh.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s}</div></div></div>`;
+          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(oh, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${oh.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s}</div></div></div>`;
         }
         if (bothHtml) {
           $('invCompareIcon').innerHTML = '';
@@ -8081,7 +8080,6 @@
       $('invCompareIcon').innerHTML = renderItemIcon(equipped, 48);
       $('invCompareName').textContent = equipped.name;
       const er = RARITY[equipped.rarity] || RARITY.common;
-      $('invCompareName').style.color = er.color;
       let eStats = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
       // Zobrazit názvy affixů
       if (equipped.affixes && equipped.affixes.length) {
