@@ -12,7 +12,7 @@
       resource:'rage', resourceName:'💢 Rage', maxResource:100, startResource:0,
       resourceRegen:0,
       desc:'Hromadí vztek za utržené a udělené poškození.',
-      allowedWeapons:['blade','fists','blunt','dagger'],
+      allowedWeapons:['blade','fists','blunt','dagger','axe','claws'],
       allowedShield:true,
       allowedOffhand:true,
       dualWield:true,
@@ -582,7 +582,7 @@
   const ITEMS = [
     // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:1, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
-    { id:'claws', name:'Drápy', type:'weapon', baseDmg:2, bonusHp:0, critChance:20, cost:25, icon:'🦅', iconImg:'', weaponType:'claws', tier:1, swingMs:1300 },
+    { id:'claws', name:'Drápy', type:'weapon', baseDmg:2, bonusHp:0, critChance:20, cost:25, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:1, swingMs:1300 },
     { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:2, cost:15, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
     { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:3, cost:25, icon:'🪄', iconImg:'assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:4, cost:30, icon:'🪄', iconImg:'assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
@@ -592,12 +592,15 @@
     { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:2, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'dagger', tier:1, swingMs:1400 },
     { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:4, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
     { id:'sabre', name:'Šavle', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'dagger', tier:2, swingMs:1500 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:5, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'blunt', tier:3, swingMs:2000, twoHand:true },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:5, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:3, swingMs:2000, twoHand:true },
     { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:7, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100, twoHand:true },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'blunt', tier:4, swingMs:2000, twoHand:true },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:4, swingMs:2000, twoHand:true },
     { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200, twoHand:true },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:11, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blunt', tier:5, swingMs:2300, twoHand:true },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:11, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'axe', tier:5, swingMs:2300, twoHand:true },
     { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:12, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:6, swingMs:2400, twoHand:true },
+    { id:'warHammer', name:'Válečné kladivo', type:'weapon', baseDmg:6, bonusHp:0, critChance:5, cost:60, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:3, swingMs:2000 },
+    { id:'ironClaws', name:'Železné drápy', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:35, icon:'🦅', iconImg:'assets/items/claws_iron.png', weaponType:'claws', tier:2, swingMs:1300 },
+    { id:'steelClaws', name:'Ocelové drápy', type:'weapon', baseDmg:5, bonusHp:0, critChance:25, cost:60, icon:'🦅', iconImg:'assets/items/claws_steel.png', weaponType:'claws', tier:3, swingMs:1200 },
     // === BRNĚNÍ ===
     // Normal (tier 1-3)
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1 },
@@ -5377,6 +5380,38 @@
       }
       requestAnimationFrame(animate);
 
+    } else if (weaponType === 'axe') {
+      // Sekera — kratší, tlustší, rovnější čára, objeví se najednou
+      const angle = Math.random() * Math.PI * 2;
+      const len = 120 * s;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const fadeProgress = Math.max(0, (progress - 0.2) / 0.8);
+        const alpha = 1 - fadeProgress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 10 * s;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = isCrit ? 6 * s : 5 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        ctx.stroke();
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
     } else if (weaponType === 'dagger') {
       // Dýka — kratší seknutí, podobný styl
       const angle = Math.random() * Math.PI * 2;
@@ -7248,7 +7283,8 @@
     }
 
     // Nože / dýky (blade, tier 1-2, krátké zbraně)
-    const knives = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.id === 'huntingKnife' || i.id === 'sabre'));
+    // Nože a šavle (dagger)
+    const knives = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'dagger');
     if (knives.length > 0) {
       html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🗡️ Nože a šavle (jednoruční)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
@@ -7267,8 +7303,8 @@
       html += `</table></div>`;
     }
 
-    // Sekery (blade, jméno obsahuje "Sekera" nebo "Axe")
-    const axes = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.name.includes('Sekera') || i.id === 'battleAxePhys' || i.id === 'warAxe' || i.id === 'greatAxe'));
+    // Sekery (axe)
+    const axes = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'axe');
     if (axes.length > 0) {
       html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪓 Sekery (obouruční)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
@@ -7277,13 +7313,23 @@
       html += `</table></div>`;
     }
 
-    // Kladiva (blade, jméno obsahuje "Kladivo" nebo "Hammer")
-    const hammers = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade' && (i.name.includes('Kladivo') || i.id === 'giantHammer'));
+    // Kladiva (blunt)
+    const hammers = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blunt');
     if (hammers.length > 0) {
       html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🔨 Kladiva (obouruční)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
         <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
       hammers.forEach(i => { html += renderItemRow(i); });
+      html += `</table></div>`;
+    }
+
+    // Drápy (claws)
+    const claws = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'claws');
+    if (claws.length > 0) {
+      html += `<div style=\"margin:6px 0 2px;font-size:12px;color:#8888aa\">🦅 Drápy (jednoruční)</div>`;
+      html += `<div style=\"overflow-x:auto;max-width:100%\"><table style=\"width:100%;border-collapse:collapse;font-size:12px;margin-top:2px\">
+        <tr style=\"background:#12122a;color:#8888aa\"><th style=\"padding:4px 6px\"></th><th style=\"padding:4px 6px;text-align:left\">Jméno</th><th style=\"padding:4px 6px\">Tier</th><th style=\"padding:4px 6px\">DMG</th><th style=\"padding:4px 6px\">HP</th><th style=\"padding:4px 6px\">Mana</th><th style=\"padding:4px 6px\">Def</th><th style=\"padding:4px 6px\">Rychlost</th><th style=\"padding:4px 6px\">Ostatní</th></tr>`;
+      claws.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
 
