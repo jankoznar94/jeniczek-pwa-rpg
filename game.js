@@ -2638,6 +2638,8 @@
     if (mb._heroicStrikeQueued) {
       dmgMult = 1.5;
       mb._heroicStrikeQueued = false;
+      // Heroic Strike — vlastní animace, normální spawnMeleeImpact se nevolá
+      mb._skipMeleeImpact = true;
       spawnHeroicStrikeAnim(mb);
     }
 
@@ -3396,8 +3398,6 @@
       _sessionDebuffs['thunderClap'] = { icon: '🌊', name: 'Zpomalení', ticks: 600, maxTicks: 600 };
       // Animace
       spawnThunderClapAnim(mb);
-      // Projektil
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `🌊 -${dmg}`;
@@ -5850,11 +5850,13 @@
     const rect = arena.getBoundingClientRect();
     const bossFig = $('mbFigure');
     let bx = rect.width / 2, by = rect.height / 2;
+    let size = 120;
     if (bossFig) {
       const br = bossFig.getBoundingClientRect();
       const aRect = arena.getBoundingClientRect();
       bx = br.left + br.width/2 - aRect.left;
       by = br.top + br.height/2 - aRect.top;
+      size = Math.max(br.width, br.height) * 0.8;
     }
     const canvas = $('mbProjectileCanvas');
     if (!canvas) return;
@@ -5863,7 +5865,6 @@
     const ctx = canvas.getContext('2d');
     const startTime = performance.now();
     const duration = 300;
-    const size = 120;
 
     function animate(ts) {
       const elapsed = ts - startTime;
@@ -7053,7 +7054,10 @@
 
     // Melee impact efekt na místě bosse
     const angleOff = isOffhand ? Math.PI : 0;
-    spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff);
+    if (!mb._skipMeleeImpact) {
+      spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff);
+    }
+    mb._skipMeleeImpact = false;
 
     mb.bossHp -= dmg;
 
