@@ -2339,11 +2339,10 @@
         const castElapsed = now - mb._enemyCastStart;
         mb._enemySwingPct = Math.min(castElapsed / mb._enemyCastTime, 1);
         if (castElapsed >= mb._enemyCastTime) {
-          // Cast dokončen — strhnout manu, resetovat swing timer (žádný melee útok po castu)
+          // Cast dokončen — strhnout manu, provést kouzlo v onAutoEnemyAttack
           mb.enemyMana -= mb._enemyCastManaCost || 0;
           mb._enemyCasting = false;
-          mb._enemySwingStart = performance.now();
-          mb._enemySwingReady = false;
+          mb._enemySwingReady = true;
           mb._enemyAttackProcessed = false;
           mb._enemyCastProcessed = false;
         }
