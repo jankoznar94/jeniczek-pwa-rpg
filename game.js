@@ -5303,6 +5303,106 @@
     }
   }
 
+  function spawnMeleeImpact(mb, isCrit, weaponType) {
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const aRect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const bossFig = $('mbFigure');
+    let bx = cx, by = 0;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    const canvas = $('mbProjectileCanvas');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const s = isCrit ? 1.5 : 1.0;
+    const startTime = performance.now();
+    const duration = 200;
+
+    // Barva podle classy
+    const classColors = { barbarian:'230,126,34', assassin:'46,204,113', mage:'168,85,247' };
+    const rgb = classColors[state.heroClass] || '168,85,247';
+
+    if (weaponType === 'staff') {
+      // Staff — magický impact (DOM elementy, ne canvas)
+      spawnBasicImpact(bx, by, isCrit, rgb);
+      return;
+    }
+
+    if (weaponType === 'blade' || weaponType === 'fists') {
+      // Seknutí (blade) nebo tupý úder (fists/hammer)
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (weaponType === 'blade') {
+          // Diagonální seknutí — čára z levého horního do pravého dolního rohu
+          const len = 40 * s;
+          const alpha = 1 - progress;
+          const x1 = bx - len * 0.5;
+          const y1 = by - len * 0.5;
+          const x2 = bx + len * 0.5;
+          const y2 = by + len * 0.5;
+          ctx.save();
+          ctx.shadowColor = `rgba(${rgb},0.6)`;
+          ctx.shadowBlur = 10 * s;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.strokeStyle = `rgba(${rgb},${alpha})`;
+          ctx.lineWidth = 3 * s;
+          ctx.lineCap = 'round';
+          ctx.stroke();
+          // Druhá čára (kratší, opačný směr) pro seknutí
+          ctx.beginPath();
+          ctx.moveTo(x1 + 5, y1 - 5);
+          ctx.lineTo(x2 - 5, y2 + 5);
+          ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.5})`;
+          ctx.lineWidth = 1.5 * s;
+          ctx.stroke();
+          ctx.restore();
+        } else {
+          // Tupý úder — expandující kruh
+          const r = 10 + progress * 30 * s;
+          const alpha = 1 - progress;
+          ctx.save();
+          ctx.shadowColor = `rgba(${rgb},0.4)`;
+          ctx.shadowBlur = 8 * s;
+          ctx.beginPath();
+          ctx.arc(bx, by, r, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(${rgb},${alpha})`;
+          ctx.lineWidth = 3 * s;
+          ctx.stroke();
+          // Vnitřní záblesk
+          const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+          grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.6})`);
+          grad.addColorStop(0.3, `rgba(${rgb},${alpha * 0.3})`);
+          grad.addColorStop(1, `rgba(${rgb},0)`);
+          ctx.beginPath();
+          ctx.arc(bx, by, r, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+          ctx.restore();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+      }
+      requestAnimationFrame(animate);
+    }
+  }
+
   function showVictorySkull(onClick) {
     const skull = $('mbVictorySkull');
     if (!skull) { if (onClick) onClick(); return; }
@@ -6307,8 +6407,8 @@
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
 
-    // Canvas projektil pro každý melee útok
-    spawnProjectileEffect(null, false, isCrit);
+    // Melee impact efekt na místě bosse
+    spawnMeleeImpact(mb, isCrit, weapon.weaponType);
 
     mb.bossHp -= dmg;
 
