@@ -5589,7 +5589,7 @@
 
     } else if (weaponType === 'claws') {
       // Drápy — tři rovnoběžné sečné rány
-      const angle = Math.random() * Math.PI * 2;
+      const angle = angleOffset + Math.random() * Math.PI * 0.6;
       const len = 120 * s;
       const spacing = 20 * s;
       // Kolmý vektor pro posun
@@ -8054,7 +8054,7 @@
         const sellPrice = Math.round(item.cost * 0.5);
         return `<div class="shop-item">
           <div class="shop-item-header">
-            <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
+            <div class="shop-item-name">${renderItemIcon(item,64)}<span style="color:${getQualityColor(item)}">${item.name}</span></div>
             <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
           </div>
           <div class="shop-item-actions">
@@ -8087,7 +8087,7 @@
         if (extraStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + extraStats.join(' · ') + '</span>';
         return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
           <div class="shop-item-header">
-            <div class="shop-item-name">${renderItemIcon(item,64)}${item.name}</div>
+            <div class="shop-item-name">${renderItemIcon(item,64)}<span style="color:${getQualityColor(item)}">${item.name}</span></div>
             <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
           </div>
           <div class="shop-item-actions">
