@@ -6717,11 +6717,14 @@
       state.hero.mana = Math.min(state.hero.maxMana, (state.hero.mana || 0) + manaAmt);
     }
     
-    const dmgText = $('mbDamageText');
+    const dmgTextId = isOffhand ? 'mbOffhandDamageText' : 'mbDamageText';
+    const dmgText = $(dmgTextId);
     if (dmgText) {
-      dmgText.textContent = `-${dmg}`;
+      dmgText.textContent = isCrit ? `💥 -${dmg}` : `-${dmg}`;
+      dmgText.style.color = isCrit ? '#ff4444' : '';
+      dmgText.style.fontSize = isCrit ? '28px' : '';
       dmgText.classList.remove('hidden');
-      setTimeout(() => dmgText.classList.add('hidden'), 800);
+      setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; dmgText.style.fontSize = ''; }, 800);
     }
     const bossFig = $('mbFigure');
     if (bossFig) {
@@ -6730,7 +6733,6 @@
       setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100);
     }
     // Canvas melee impact — seknutí nebo tupý úder
-    spawnMeleeImpact(mb, isCrit, weapon.weaponType);
     updateMapBattleUI();
   }
 
