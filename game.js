@@ -3334,6 +3334,8 @@
 
     // GCD check
     if (state._gcdTimer > 0) return;
+    // Už kouzlíš — blokovat nové kouzlo
+    if (mb._playerCasting) return;
     // Resource check (rage, energy nebo mana)
     let resourceKey;
     if (cls.resource === 'energy') resourceKey = 'energy';
