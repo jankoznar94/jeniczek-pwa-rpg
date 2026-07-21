@@ -3497,7 +3497,6 @@
       const dmgPct = 5 + lv * 5;
       state.battleShoutDmgPct = dmgPct;
       state.battleShoutTimer = 3600; // 60s
-      playSFX(battleShoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
       console.log('BATTLE SHOUT: dmgPct=' + dmgPct + ' timer=' + state.battleShoutTimer + ' buffs keys=' + Object.keys(_sessionBuffs).join(','));
       // Vykreslit buff HNED
@@ -3516,7 +3515,6 @@
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
       state.defensiveShoutArmorPct = armorPct;
       state.defensiveShoutTimer = 1800; // 30s
-      playSFX(battleShoutSfx);
       _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
       // Animace
       spawnShoutRings(mb, '#5dade2', 'rgba(93,173,226,0.6)');
@@ -3524,7 +3522,6 @@
       const lv = getSpellLv('skillShout');
       state.skillShoutBonus = lv;
       state.skillShoutTimer = 1800; // 30s
-      playSFX(battleShoutSfx);
       _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
