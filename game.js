@@ -6652,6 +6652,28 @@
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
 
+    // ❄️ Ledové poškození ze zbraně — lehký chill efekt
+    if (weapon.iceDmg > 0) {
+      mb._enemySlowPct = 15; // 15% zpomalení
+      mb._enemySlowTimer = 180; // 3s
+      mb._enemySlowMax = 180;
+      // Přepočítat enemy swing timer se zpomalením
+      const now = performance.now();
+      const oldMs = mb.enemySwingMs;
+      const elapsed = now - mb._enemySwingStart;
+      const progress = Math.min(elapsed / oldMs, 1);
+      mb.enemySwingMs = getEnemySwingTime(mb);
+      mb._enemySwingStart = now - progress * mb.enemySwingMs;
+      _sessionDebuffs['slow_weapon_ice'] = { icon: '❄️', name: 'Chill 15%', ticks: 180, maxTicks: 180 };
+      // Modrý záblesk
+      const arena = $('mbArena');
+      if (arena) {
+        arena.style.transition = 'background-color 0.15s';
+        arena.style.backgroundColor = 'rgba(74,125,255,0.2)';
+        setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 150);
+      }
+    }
+
     // Melee impact efekt na místě bosse
     const angleOff = isOffhand ? Math.PI : 0;
     spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff);
