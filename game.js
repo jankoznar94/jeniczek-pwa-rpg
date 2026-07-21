@@ -2667,6 +2667,8 @@
     const mb = mapBattleState;
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
+      spawnProjectileEffect(null, false, false);
+      updateMapBattleUI();
       cleanupTimers();
       dimTimers();
       const arena = $('mbArena');
