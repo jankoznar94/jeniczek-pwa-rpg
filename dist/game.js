@@ -3514,8 +3514,8 @@
       const dmg = Math.max(1, Math.round(baseDmg * 1.5));
       mb.bossHp -= dmg;
       state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
-      // Projektil podle zbraně
-      spawnWeaponProjectile(false);
+      // Canvas melee impact
+      spawnMeleeImpact(mb, false, getWeaponType());
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `🗡️ -${dmg}`;
@@ -3533,8 +3533,8 @@
       const dmg = Math.max(1, Math.round(baseDmg * mult));
       mb.bossHp -= dmg;
       state.comboPoints = 0; // spotřebovat combo pointy
-      // Projektil podle zbraně
-      spawnWeaponProjectile(false);
+      // Canvas melee impact
+      spawnMeleeImpact(mb, false, getWeaponType());
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `💥 -${dmg}`;
@@ -5345,7 +5345,7 @@
 
         if (weaponType === 'blade') {
           // Diagonální seknutí — čára z levého horního do pravého dolního rohu
-          const len = 40 * s;
+          const len = 80 * s;
           const alpha = 1 - progress;
           const x1 = bx - len * 0.5;
           const y1 = by - len * 0.5;
@@ -5353,33 +5353,33 @@
           const y2 = by + len * 0.5;
           ctx.save();
           ctx.shadowColor = `rgba(${rgb},0.6)`;
-          ctx.shadowBlur = 10 * s;
+          ctx.shadowBlur = 15 * s;
           ctx.beginPath();
           ctx.moveTo(x1, y1);
           ctx.lineTo(x2, y2);
           ctx.strokeStyle = `rgba(${rgb},${alpha})`;
-          ctx.lineWidth = 3 * s;
+          ctx.lineWidth = 6 * s;
           ctx.lineCap = 'round';
           ctx.stroke();
           // Druhá čára (kratší, opačný směr) pro seknutí
           ctx.beginPath();
-          ctx.moveTo(x1 + 5, y1 - 5);
-          ctx.lineTo(x2 - 5, y2 + 5);
+          ctx.moveTo(x1 + 10, y1 - 10);
+          ctx.lineTo(x2 - 10, y2 + 10);
           ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.5})`;
-          ctx.lineWidth = 1.5 * s;
+          ctx.lineWidth = 3 * s;
           ctx.stroke();
           ctx.restore();
         } else {
           // Tupý úder — expandující kruh
-          const r = 10 + progress * 30 * s;
+          const r = 10 + progress * 60 * s;
           const alpha = 1 - progress;
           ctx.save();
           ctx.shadowColor = `rgba(${rgb},0.4)`;
-          ctx.shadowBlur = 8 * s;
+          ctx.shadowBlur = 12 * s;
           ctx.beginPath();
           ctx.arc(bx, by, r, 0, Math.PI * 2);
           ctx.strokeStyle = `rgba(${rgb},${alpha})`;
-          ctx.lineWidth = 3 * s;
+          ctx.lineWidth = 6 * s;
           ctx.stroke();
           // Vnitřní záblesk
           const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
@@ -6460,15 +6460,8 @@
       bossFig.style.filter = 'brightness(2) saturate(1.5)';
       setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100);
     }
-    // Projektil podle zbraně — vždy normální vizuál (žádný crit efekt)
-    const wType = getWeaponType();
-    if (wType === 'blade') {
-      spawnSlashEffect(false, mb._lastSwipeDir);
-    } else if (wType === 'fists') {
-      spawnFistEffect(false);
-    } else {
-      spawnProjectileEffect(null, false, false);
-    }
+    // Canvas melee impact — seknutí nebo tupý úder
+    spawnMeleeImpact(mb, isCrit, weapon.weaponType);
     updateMapBattleUI();
   }
 
@@ -6587,7 +6580,7 @@
       let dmg = Math.round(baseDmg * pct / 100);
       mb.bossHp -= dmg;
       effectMsg = `⚡ Seknutí! ${dmg} poškození!`;
-      spawnSlashEffect();
+      spawnMeleeImpact(mb, false, 'blade');
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2.5) saturate(1.8)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
@@ -6596,7 +6589,7 @@
     } else if (spellId === 'whirlwind') {
       mb._blizzardFreeAttacks = 3;
       effectMsg = `🌀 Vichřice! 3 útoky po sobě!`;
-      spawnSlashEffect();
+      spawnMeleeImpact(mb, false, 'blade');
       setTimeout(() => {
         const bossFig = $('mbFigure');
         if (bossFig) { bossFig.style.transition = 'filter 0.15s'; bossFig.style.filter = 'brightness(2) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 100); }
