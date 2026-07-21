@@ -72,6 +72,7 @@ const ASSET_FILES = [
   '/assets/sfx/potion.mp3',
   '/assets/sfx/levelup.mp3',
   '/assets/sfx/lightning_spell2.mp3',
+  '/assets/sfx/click.mp3',
   '/assets/sfx/fire_spell.mp3', '/assets/sfx/ice_spell.mp3', '/assets/sfx/lightning_spell.mp3',
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',

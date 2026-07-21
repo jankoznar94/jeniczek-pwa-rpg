@@ -159,6 +159,7 @@
   const equipSfx = (() => { const a = new Audio('assets/sfx/equip.mp3'); a.volume = 1.0; return a; })();
   const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 1.0; return a; })();
   const levelupSfx = (() => { const a = new Audio('assets/sfx/levelup.mp3'); a.volume = 1.0; return a; })();
+  const clickSfx = (() => { const a = new Audio('assets/sfx/click.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -9400,6 +9401,15 @@
     // Nav-bar schovat hned na začátku — splash ho překrývá, ale po fade by prosvítal
     const navBar = document.querySelector('.nav-bar');
     if (navBar) navBar.classList.add('hidden');
+
+    // Globální click SFX pro tlačítka (vyjma arénových spell/potion tlačítek)
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      // Přeskočit tlačítka v aréně (mají vlastní SFX)
+      if (btn.closest('.mb-spells') || btn.closest('.mb-potion-buttons') || btn.closest('.arena-surrender-btn')) return;
+      playSFX(clickSfx);
+    });
 
     // Splash screen — fade in, 2.5s, fade out, pak teprve zobrazit UI
     const splash = document.getElementById('splashScreen');
