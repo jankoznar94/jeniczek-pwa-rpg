@@ -5338,7 +5338,7 @@
       // Barva: crit = červená, normálně = bílá
       const mainColor = isCrit ? '#e74c3c' : '#fff';
       const glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
-      const len = 140 * s;
+      const len = 180 * s;
       const midX = bx + Math.cos(angle) * len * 0.1;
       const midY = by + Math.sin(angle) * len * 0.1;
       // Kolmý posun pro zahnutí
@@ -5370,7 +5370,7 @@
         ctx.moveTo(startX, startY);
         ctx.quadraticCurveTo(cpX, cpY, endX, endY);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineWidth = isCrit ? 4 * s : 3 * s;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         ctx.setLineDash([approxLen, approxLen]);
