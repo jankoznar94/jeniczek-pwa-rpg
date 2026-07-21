@@ -12,7 +12,7 @@
       resource:'rage', resourceName:'💢 Rage', maxResource:100, startResource:0,
       resourceRegen:0,
       desc:'Hromadí vztek za utržené a udělené poškození.',
-      allowedWeapons:['blade','fists'],
+      allowedWeapons:['blade','fists','blunt','dagger'],
       allowedShield:true,
       allowedOffhand:true,
       dualWield:true,
@@ -34,7 +34,7 @@
       resource:'energy', resourceName:'⚡ Energy', maxResource:100, startResource:100,
       resourceRegen:10, // 10/s
       desc:'Energy se samovolně doplňuje. Rychlé přesné útoky.',
-      allowedWeapons:['blade','fists'],
+      allowedWeapons:['blade','fists','dagger','claws'],
       allowedShield:false,
       allowedOffhand:false,
       dualWield:true,
@@ -582,21 +582,22 @@
   const ITEMS = [
     // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:1, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
+    { id:'claws', name:'Drápy', type:'weapon', baseDmg:2, bonusHp:0, critChance:20, cost:25, icon:'🦅', iconImg:'', weaponType:'claws', tier:1, swingMs:1300 },
     { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:2, cost:15, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
     { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:3, cost:25, icon:'🪄', iconImg:'assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:4, cost:30, icon:'🪄', iconImg:'assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:5, cost:45, icon:'🪄', iconImg:'assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
     { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:6, cost:55, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
     { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:2, bonusHp:0, cost:20, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
-    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:2, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'blade', tier:1, swingMs:1400 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:2, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'dagger', tier:1, swingMs:1400 },
     { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:4, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
-    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'blade', tier:2, swingMs:1500 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:5, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'blade', tier:3, swingMs:2000, twoHand:true },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'dagger', tier:2, swingMs:1500 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:5, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'blunt', tier:3, swingMs:2000, twoHand:true },
     { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:7, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100, twoHand:true },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'blade', tier:4, swingMs:2000, twoHand:true },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'blunt', tier:4, swingMs:2000, twoHand:true },
     { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200, twoHand:true },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:11, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blade', tier:5, swingMs:2300, twoHand:true },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:12, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blade', tier:6, swingMs:2400, twoHand:true },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:11, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'blunt', tier:5, swingMs:2300, twoHand:true },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:12, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:6, swingMs:2400, twoHand:true },
     // === BRNĚNÍ ===
     // Normal (tier 1-3)
     { id:'leather', name:'Lněný hábit', type:'armor', baseDmg:0, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1 },
@@ -5331,17 +5332,15 @@
       return;
     }
 
-    // Náhodný úhel seknutí/tupého úderu
-    const angle = Math.random() * Math.PI * 2;
+    const mainColor = isCrit ? '#e74c3c' : '#fff';
+    const glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
 
     if (weaponType === 'blade') {
-      // Barva: crit = červená, normálně = bílá
-      const mainColor = isCrit ? '#e74c3c' : '#fff';
-      const glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
+      // Meč — dlouhé jednolité seknutí
+      const angle = Math.random() * Math.PI * 2;
       const len = 180 * s;
       const midX = bx + Math.cos(angle) * len * 0.1;
       const midY = by + Math.sin(angle) * len * 0.1;
-      // Kolmý posun pro zahnutí
       const perpX = -Math.sin(angle) * len * 0.2;
       const perpY = Math.cos(angle) * len * 0.2;
       const cpX = midX + perpX;
@@ -5350,19 +5349,15 @@
       const startY = by - Math.sin(angle) * len * 0.5;
       const endX = bx + Math.cos(angle) * len * 0.5;
       const endY = by + Math.sin(angle) * len * 0.5;
-
-      // Odhad délky křivky pro dash offset
       const approxLen = len * 1.3;
 
       function animate(ts) {
         const elapsed = ts - startTime;
         const progress = Math.min(elapsed / duration, 1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        const drawProgress = Math.min(progress * 1.5, 1); // nákres v první polovině
-        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7); // fade v druhé polovině
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
         const alpha = 1 - fadeProgress;
-
         ctx.save();
         ctx.shadowColor = glowColor;
         ctx.shadowBlur = 12 * s;
@@ -5377,28 +5372,61 @@
         ctx.lineDashOffset = approxLen * (1 - drawProgress);
         ctx.stroke();
         ctx.restore();
-
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       requestAnimationFrame(animate);
 
-    } else {
-      // Tupý úder (fists) — expandující kruh
-      const mainColor = isCrit ? '#e74c3c' : '#fff';
-      const glowColor = isCrit ? 'rgba(231,76,60,0.5)' : 'rgba(255,255,255,0.4)';
+    } else if (weaponType === 'dagger') {
+      // Dýka — kratší seknutí, podobný styl
+      const angle = Math.random() * Math.PI * 2;
+      const len = 100 * s;
+      const midX = bx + Math.cos(angle) * len * 0.1;
+      const midY = by + Math.sin(angle) * len * 0.1;
+      const perpX = -Math.sin(angle) * len * 0.15;
+      const perpY = Math.cos(angle) * len * 0.15;
+      const cpX = midX + perpX;
+      const cpY = midY + perpY;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+      const approxLen = len * 1.2;
 
       function animate(ts) {
         const elapsed = ts - startTime;
         const progress = Math.min(elapsed / duration, 1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        const alpha = 1 - fadeProgress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 8 * s;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        ctx.setLineDash([approxLen, approxLen]);
+        ctx.lineDashOffset = approxLen * (1 - drawProgress);
+        ctx.stroke();
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
 
+    } else if (weaponType === 'fists') {
+      // Pěst — expandující kruh
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         const r = 10 + progress * 60 * s;
         const alpha = 1 - progress;
-
         ctx.save();
         ctx.shadowColor = glowColor;
         ctx.shadowBlur = 12 * s;
@@ -5408,7 +5436,6 @@
         ctx.lineWidth = 6 * s;
         ctx.globalAlpha = alpha;
         ctx.stroke();
-        // Vnitřní záblesk
         const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
         grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.6})`);
         grad.addColorStop(0.3, `rgba(255,255,255,${alpha * 0.2})`);
@@ -5418,12 +5445,153 @@
         ctx.fillStyle = grad;
         ctx.fill();
         ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
 
-        if (progress < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+    } else if (weaponType === 'blunt') {
+      // Tupá zbraň — pavučina/prasklina jako rozbité sklo
+      // Náhodný počet čar (5-9) vycházejících ze středu
+      const lineCount = 5 + Math.floor(Math.random() * 5);
+      const lines = [];
+      for (let i = 0; i < lineCount; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const l = (40 + Math.random() * 80) * s;
+        // Každá čára má 1-2 zlomy (nepravidelnost)
+        const segments = [];
+        let cx2 = bx, cy2 = by;
+        const segCount = 1 + Math.floor(Math.random() * 2);
+        for (let j = 0; j < segCount; j++) {
+          const frac = (j + 1) / (segCount + 1);
+          const dx = Math.cos(a + (Math.random() - 0.5) * 0.6) * l * frac;
+          const dy = Math.sin(a + (Math.random() - 0.5) * 0.6) * l * frac;
+          segments.push({ x: bx + dx, y: by + dy });
         }
+        // Konec
+        const endAngle = a + (Math.random() - 0.5) * 0.4;
+        segments.push({ x: bx + Math.cos(endAngle) * l, y: by + Math.sin(endAngle) * l });
+        lines.push(segments);
+      }
+      // Pár náhodných spojovacích čar (pavučina mezi prasklinami)
+      const crossLines = [];
+      const crossCount = 2 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < crossCount; i++) {
+        const a1 = Math.random() * Math.PI * 2;
+        const a2 = a1 + 0.3 + Math.random() * 0.8;
+        const r1 = (20 + Math.random() * 50) * s;
+        const r2 = (20 + Math.random() * 50) * s;
+        crossLines.push({
+          x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
+          x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
+        });
+      }
+
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        const alpha = 1 - fadeProgress;
+
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 6 * s;
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+
+        // Kreslit praskliny postupně
+        const totalSegments = lines.reduce((sum, l) => sum + l.length, 0) + crossLines.length;
+        const drawnSegments = Math.floor(drawProgress * totalSegments);
+        let segIdx = 0;
+
+        lines.forEach(segments => {
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          let drawn = 0;
+          for (const seg of segments) {
+            if (segIdx >= drawnSegments) break;
+            ctx.lineTo(seg.x, seg.y);
+            segIdx++;
+            drawn++;
+          }
+          if (drawn > 0) ctx.stroke();
+        });
+
+        // Spojovací čáry
+        crossLines.forEach(cl => {
+          if (segIdx >= drawnSegments) return;
+          ctx.beginPath();
+          ctx.moveTo(cl.x1, cl.y1);
+          ctx.lineTo(cl.x2, cl.y2);
+          ctx.stroke();
+          segIdx++;
+        });
+
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
+    } else if (weaponType === 'claws') {
+      // Drápy — tři rovnoběžné sečné rány
+      const angle = Math.random() * Math.PI * 2;
+      const len = 120 * s;
+      const spacing = 20 * s;
+      // Kolmý vektor pro posun
+      const perpX = -Math.sin(angle) * spacing;
+      const perpY = Math.cos(angle) * spacing;
+      const midX = bx + Math.cos(angle) * len * 0.1;
+      const midY = by + Math.sin(angle) * len * 0.1;
+      const curveX = -Math.sin(angle) * len * 0.2;
+      const curveY = Math.cos(angle) * len * 0.2;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+      const approxLen = len * 1.3;
+
+      // Tři rány s posunem
+      const slashes = [
+        { sx: startX - perpX, sy: startY - perpY, cpX: midX - perpX + curveX, cpY: midY - perpY + curveY, ex: endX - perpX, ey: endY - perpY },
+        { sx: startX, sy: startY, cpX: midX + curveX, cpY: midY + curveY, ex: endX, ey: endY },
+        { sx: startX + perpX, sy: startY + perpY, cpX: midX + perpX + curveX, cpY: midY + perpY + curveY, ex: endX + perpX, ey: endY + perpY }
+      ];
+
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        const alpha = 1 - fadeProgress;
+
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 8 * s;
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+
+        slashes.forEach((sl, idx) => {
+          const offset = idx * 0.05; // mírné zpoždění mezi ranami
+          const slProgress = Math.max(0, Math.min((drawProgress - offset) / (1 - offset), 1));
+          ctx.beginPath();
+          ctx.moveTo(sl.sx, sl.sy);
+          ctx.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
+          ctx.setLineDash([approxLen, approxLen]);
+          ctx.lineDashOffset = approxLen * (1 - slProgress);
+          ctx.stroke();
+        });
+
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       requestAnimationFrame(animate);
     }
