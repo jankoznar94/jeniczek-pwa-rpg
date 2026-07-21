@@ -5322,76 +5322,102 @@
     canvas.width = rect.width;
     canvas.height = rect.height;
     const ctx = canvas.getContext('2d');
-    const s = isCrit ? 1.5 : 1.0;
+    const s = isCrit ? 1.8 : 1.0;
+    const duration = isCrit ? 300 : 200;
     const startTime = performance.now();
-    const duration = 200;
-
-    // Barva podle classy
-    const classColors = { barbarian:'230,126,34', assassin:'46,204,113', mage:'168,85,247' };
-    const rgb = classColors[state.heroClass] || '168,85,247';
 
     if (weaponType === 'staff') {
-      // Staff — magický impact (DOM elementy, ne canvas)
-      spawnBasicImpact(bx, by, isCrit, rgb);
+      spawnBasicImpact(bx, by, isCrit, '168,85,247');
       return;
     }
 
-    if (weaponType === 'blade' || weaponType === 'fists') {
-      // Seknutí (blade) nebo tupý úder (fists/hammer)
+    // Náhodný úhel seknutí/tupého úderu
+    const angle = Math.random() * Math.PI * 2;
+
+    if (weaponType === 'blade') {
+      // Barva: crit = červená, normálně = bílá
+      const mainColor = isCrit ? '#e74c3c' : '#fff';
+      const glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
+      const len = 80 * s;
+      const midX = bx + Math.cos(angle) * len * 0.1;
+      const midY = by + Math.sin(angle) * len * 0.1;
+      // Kolmý posun pro zahnutí
+      const perpX = -Math.sin(angle) * len * 0.25;
+      const perpY = Math.cos(angle) * len * 0.25;
+      const cpX = midX + perpX;
+      const cpY = midY + perpY;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+
+      // Odhad délky křivky pro dash offset
+      const approxLen = len * 1.3;
+
       function animate(ts) {
         const elapsed = ts - startTime;
         const progress = Math.min(elapsed / duration, 1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (weaponType === 'blade') {
-          // Diagonální seknutí — čára z levého horního do pravého dolního rohu
-          const len = 80 * s;
-          const alpha = 1 - progress;
-          const x1 = bx - len * 0.5;
-          const y1 = by - len * 0.5;
-          const x2 = bx + len * 0.5;
-          const y2 = by + len * 0.5;
-          ctx.save();
-          ctx.shadowColor = `rgba(${rgb},0.6)`;
-          ctx.shadowBlur = 15 * s;
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.strokeStyle = `rgba(${rgb},${alpha})`;
-          ctx.lineWidth = 6 * s;
-          ctx.lineCap = 'round';
-          ctx.stroke();
-          // Druhá čára (kratší, opačný směr) pro seknutí
-          ctx.beginPath();
-          ctx.moveTo(x1 + 10, y1 - 10);
-          ctx.lineTo(x2 - 10, y2 + 10);
-          ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.5})`;
-          ctx.lineWidth = 3 * s;
-          ctx.stroke();
-          ctx.restore();
+        const drawProgress = Math.min(progress * 1.5, 1); // nákres v první polovině
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7); // fade v druhé polovině
+        const alpha = 1 - fadeProgress;
+
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 12 * s;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 6 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        ctx.setLineDash([approxLen, approxLen]);
+        ctx.lineDashOffset = approxLen * (1 - drawProgress);
+        ctx.stroke();
+        ctx.restore();
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
         } else {
-          // Tupý úder — expandující kruh
-          const r = 10 + progress * 60 * s;
-          const alpha = 1 - progress;
-          ctx.save();
-          ctx.shadowColor = `rgba(${rgb},0.4)`;
-          ctx.shadowBlur = 12 * s;
-          ctx.beginPath();
-          ctx.arc(bx, by, r, 0, Math.PI * 2);
-          ctx.strokeStyle = `rgba(${rgb},${alpha})`;
-          ctx.lineWidth = 6 * s;
-          ctx.stroke();
-          // Vnitřní záblesk
-          const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
-          grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.6})`);
-          grad.addColorStop(0.3, `rgba(${rgb},${alpha * 0.3})`);
-          grad.addColorStop(1, `rgba(${rgb},0)`);
-          ctx.beginPath();
-          ctx.arc(bx, by, r, 0, Math.PI * 2);
-          ctx.fillStyle = grad;
-          ctx.fill();
-          ctx.restore();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
+      }
+      requestAnimationFrame(animate);
+
+    } else {
+      // Tupý úder (fists) — expandující kruh
+      const mainColor = isCrit ? '#e74c3c' : '#fff';
+      const glowColor = isCrit ? 'rgba(231,76,60,0.5)' : 'rgba(255,255,255,0.4)';
+
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const r = 10 + progress * 60 * s;
+        const alpha = 1 - progress;
+
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 12 * s;
+        ctx.beginPath();
+        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 6 * s;
+        ctx.globalAlpha = alpha;
+        ctx.stroke();
+        // Vnitřní záblesk
+        const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+        grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.6})`);
+        grad.addColorStop(0.3, `rgba(255,255,255,${alpha * 0.2})`);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.beginPath();
+        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
 
         if (progress < 1) {
           requestAnimationFrame(animate);
