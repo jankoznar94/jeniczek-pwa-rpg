@@ -2699,7 +2699,7 @@
     mb._offhandSwingReady = false;
     mb._offhandSwingPct = 0;
     // Offhand útok — 50% damage hlavní zbraně
-    dealPlayerDamage(mb, 0.5);
+    dealPlayerDamage(mb, 0.5, true);
     updateMapBattleUI();
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
@@ -5321,7 +5321,7 @@
     }
   }
 
-  function spawnMeleeImpact(mb, isCrit, weaponType) {
+  function spawnMeleeImpact(mb, isCrit, weaponType, angleOffset = 0) {
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
@@ -5354,7 +5354,7 @@
 
     if (weaponType === 'blade') {
       // Meč — dlouhé jednolité seknutí
-      const angle = Math.random() * Math.PI * 2;
+      const angle = angleOffset + Math.random() * Math.PI * 0.6;
       const len = 180 * s;
       const midX = bx + Math.cos(angle) * len * 0.1;
       const midY = by + Math.sin(angle) * len * 0.1;
@@ -5396,7 +5396,7 @@
 
     } else if (weaponType === 'axe') {
       // Sekera — kratší, tlustší, rovnější čára, objeví se najednou
-      const angle = Math.random() * Math.PI * 2;
+      const angle = angleOffset + Math.random() * Math.PI * 0.6;
       const len = 120 * s;
       const startX = bx - Math.cos(angle) * len * 0.5;
       const startY = by - Math.sin(angle) * len * 0.5;
@@ -5428,7 +5428,7 @@
 
     } else if (weaponType === 'dagger') {
       // Dýka — kratší seknutí, podobný styl
-      const angle = Math.random() * Math.PI * 2;
+      const angle = angleOffset + Math.random() * Math.PI * 0.6;
       const len = 100 * s;
       const midX = bx + Math.cos(angle) * len * 0.1;
       const midY = by + Math.sin(angle) * len * 0.1;
@@ -6593,8 +6593,10 @@
     }
   }
 
-  function dealPlayerDamage(mb, mult) {
-    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+  function dealPlayerDamage(mb, mult, isOffhand = false) {
+    const weapon = isOffhand
+      ? (ITEM_MAP[state.hero.equip.shield] || ITEM_MAP['fists'])
+      : (ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists']);
     const isStaff = weapon.weaponType === 'staff';
     // 🎲 ATTACK TABLE — D2 formule (pouze pro fyzické útoky, ne pro kouzla)
     if (!isStaff) {
@@ -6651,7 +6653,8 @@
     playSFX(isCrit ? getCritSfx() : getHitSfx());
 
     // Melee impact efekt na místě bosse
-    spawnMeleeImpact(mb, isCrit, weapon.weaponType);
+    const angleOff = isOffhand ? Math.PI : 0;
+    spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff);
 
     mb.bossHp -= dmg;
 
