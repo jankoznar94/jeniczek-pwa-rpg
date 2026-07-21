@@ -134,17 +134,22 @@
   function getHitSfx() {
     const wt = getWeaponType();
     if (wt === 'fists') return fistHitSfx;
+    if (wt === 'blunt') return bluntHitSfx;
     return wt === 'staff' ? hitSfx : meleeHitSfx;
   }
   function getCritSfx() {
     const wt = getWeaponType();
     if (wt === 'fists') return fistCritSfx;
+    if (wt === 'blunt') return bluntHitSfx;
     return wt === 'staff' ? critSfx : meleeCritSfx;
   }
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
   const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 1.0; return a; })();
   const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 1.0; return a; })();
   const strongStrikeSfx = (() => { const a = new Audio('strong_strike.mp3'); a.volume = 1.0; return a; })();
+  const thunderClapSfx = (() => { const a = new Audio('assets/sfx/thunder_clap.mp3'); a.volume = 1.0; return a; })();
+  const thunderBoltSfx = (() => { const a = new Audio('assets/sfx/thunder_bolt.mp3'); a.volume = 1.0; return a; })();
+  const bluntHitSfx = (() => { const a = new Audio('assets/sfx/blunt_hit.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -732,6 +737,11 @@
       types:['armor','shield','helmet'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
     { id:'ofSlaughter', name:'Porážky', type:'suffix', group:117, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
+    // === RYCHLOST ÚTOKU A KOUZLENÍ ===
+    { id:'swift', name:'Rychlý', type:'prefix', group:18, minIlvl:8, weight:5,
+      types:['weapon'], stats:{ swingMs:[-300,-150] }, tint:'#1abc9c' },
+    { id:'ofCasting', name:'Kouzlení', type:'suffix', group:120, minIlvl:10, weight:5,
+      types:['weapon','ring','amulet'], stats:{ castSpeed:[10,25] }, tint:'#9b59b6' },
   ];
 
   // ===== UNIQUE ITEMY (fixní sady affixů) =====
@@ -3398,6 +3408,7 @@
       _sessionDebuffs['thunderClap'] = { icon: '🌊', name: 'Zpomalení', ticks: 600, maxTicks: 600 };
       // Animace
       spawnThunderClapAnim(mb);
+      playSFX(thunderClapSfx);
       const dmgText = $('mbDamageText');
       if (dmgText) {
         dmgText.textContent = `🌊 -${dmg}`;
@@ -3439,6 +3450,7 @@
       _sessionDebuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: stunTicks, maxTicks: stunTicks };
       // Animace
       spawnThunderBoltAnim(mb);
+      playSFX(thunderBoltSfx);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
@@ -8250,7 +8262,7 @@
     const h = state.hero;
     const slots = ['weapon','armor','helmet','shield','ring1','ring2','amulet','belt'];
     const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
-    const total = { str:0, vit:0, dex:0, int:0 };
+    const total = { str:0, vit:0, dex:0, int:0, castSpeed:0 };
     slots.forEach(slot => {
       const itemId = h.equip[slot];
       if (!itemId || itemId === defaults[slot]) return;
