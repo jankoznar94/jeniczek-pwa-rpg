@@ -8595,9 +8595,16 @@
     if (item.type === 'ring' && (targetSlot === 'ring1' || targetSlot === 'ring2')) {
       correctSlot = targetSlot;
     }
-    // Shield slot může přijmout: shield, nebo cokoliv jako artefakt (ne zbraně pro dual wield)
-    if (targetSlot === 'shield' && (item.type === 'shield' || item.type === 'offhand')) {
-      correctSlot = 'shield';
+    // Shield slot může přijmout: shield, offhand, nebo zbraň (pro dual wield)
+    if (targetSlot === 'shield') {
+      if (item.type === 'shield' || item.type === 'offhand') {
+        correctSlot = 'shield';
+      } else if (item.type === 'weapon') {
+        const cls = CLASSES[state.heroClass];
+        if (cls && cls.dualWield) {
+          correctSlot = 'shield';
+        }
+      }
     }
     // Pokud target slot neodpovídá, nedělat nic
     if (targetSlot !== correctSlot) return;
