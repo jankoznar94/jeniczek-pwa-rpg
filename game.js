@@ -156,6 +156,7 @@
   const shoutSfx = (() => { const a = new Audio('assets/sfx/shout.mp3'); a.volume = 1.0; return a; })();
   const shopSfx = (() => { const a = new Audio('assets/sfx/shop.mp3'); a.volume = 1.0; return a; })();
   const equipSfx = (() => { const a = new Audio('assets/sfx/equip.mp3'); a.volume = 1.0; return a; })();
+  const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -3159,6 +3160,7 @@
     if (!potId) return;
     const pot = ITEM_MAP[potId];
     if (!pot || pot.type !== 'consumable') return;
+    playSFX(potionSfx);
     const mb = mapBattleState;
     if (!mb || mb.ended) return;
     if (pot.subtype === 'heal') {
