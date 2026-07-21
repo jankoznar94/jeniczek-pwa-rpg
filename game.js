@@ -4569,14 +4569,15 @@
       endY = targetIsPlayer ? rect.height + 20 : -20;
     }
 
-    const schoolColor = getSchoolColors(targetIsPlayer);
-    const rgb = schoolColor.rgb;
-
     const isSpell = spellId !== undefined && spellId !== null;
     const duration = 240; // ms letu
 
     if (!isSpell) {
       // Základní útok — canvas projektil (místo PNG)
+      // Barva podle classy, ne podle activeSchool
+      const classColors = { barbarian:'230,126,34', assassin:'46,204,113', mage:'168,85,247' };
+      const rgb = classColors[state.heroClass] || '168,85,247';
+      const schoolColor = { rgb: rgb };
       const canvas = $('mbProjectileCanvas');
       if (!canvas) return;
       canvas.width = rect.width;
@@ -4586,10 +4587,6 @@
       const angle = Math.atan2(endY - startY, endX - startX);
       const dist = Math.sqrt((endX - startX) ** 2 + (endY - startY) ** 2);
       const startTime = performance.now();
-
-      // Barva podle školy nebo výchozí fialová
-      let rgb = schoolColor.rgb;
-      if (rgb === '187,187,187' || rgb === '180,180,200') rgb = '168,85,247';
 
       // Trail
       const trail = [];
