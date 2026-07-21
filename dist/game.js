@@ -151,6 +151,7 @@
   const bluntHitSfx = (() => { const a = new Audio('assets/sfx/blunt_hit.mp3'); a.volume = 1.0; return a; })();
   const bluntCritSfx = (() => { const a = new Audio('assets/sfx/blunt_crit.mp3'); a.volume = 1.0; return a; })();
   const shoutSfx = (() => { const a = new Audio('assets/sfx/shout.mp3'); a.volume = 1.0; return a; })();
+  const shopSfx = (() => { const a = new Audio('assets/sfx/shop.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -8574,6 +8575,7 @@
     if (h.inventory.includes(itemId)) { showMessage('❌ Už to máš!'); return; }
     h.gold -= item.cost;
     h.inventory.push(itemId);
+    playSFX(shopSfx);
     saveGame();
     showMessage(`✅ Koupil jsi ${item.icon} ${item.name}!`);
     renderShop();
@@ -8588,6 +8590,7 @@
     const sellPrice = Math.round(item.cost * 0.5);
     h.inventory.splice(idx, 1);
     h.gold += sellPrice;
+    playSFX(shopSfx);
     saveGame();
     showMessage(`💰 Prodáno ${item.icon} ${item.name} za ${sellPrice}💰`);
     renderShop();
