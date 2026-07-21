@@ -26,7 +26,8 @@
         { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% zisk Rage na 10s' },
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + omráčení 5s' },
         { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg na 30s' },
-        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg oběma zbraněmi + reset swing timerů' }
+        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg oběma zbraněmi + reset swing timerů' },
+        { id:'whirlwind', name:'Whirlwind', icon:'🌀', cost:50, cooldown:12, gcd:0.5, desc:'3× rychlé útoky oběma zbraněmi' }
       ]
     },
     assassin: {
@@ -2637,6 +2638,7 @@
     if (mb._heroicStrikeQueued) {
       dmgMult = 1.5;
       mb._heroicStrikeQueued = false;
+      spawnHeroicStrikeAnim(mb);
     }
 
     // Battle shout bonus
@@ -3392,6 +3394,8 @@
       state.thunderClapSlowPct = 10;
       // Debuff ikona nad příšerou
       _sessionDebuffs['thunderClap'] = { icon: '🌊', name: 'Zpomalení', ticks: 600, maxTicks: 600 };
+      // Animace
+      spawnThunderClapAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
@@ -3408,6 +3412,8 @@
       state._bloodrageTimer = 600; // 10s
       // Buff ikona hráče
       _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
+      // Animace
+      spawnBloodrageAnim(mb);
       const dmgText = $('mbPlayerDamageText');
       if (dmgText) {
         dmgText.textContent = `🩸 -${hpCost} HP`;
@@ -3431,6 +3437,8 @@
       mb._enemySwingReady = false;
       // Debuff ikona nad příšerou
       _sessionDebuffs['thunderBolt'] = { icon: '⚡', name: 'Omráčení', ticks: stunTicks, maxTicks: stunTicks };
+      // Animace
+      spawnThunderBoltAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
@@ -3460,6 +3468,8 @@
         mb._enemySwingStart = performance.now();
         _sessionDebuffs['shieldBash'] = { icon: '🛡️', name: 'Interrupt', ticks: 30, maxTicks: 30 };
       }
+      // Animace
+      spawnShieldBashAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
       const dmgText = $('mbDamageText');
@@ -3476,6 +3486,8 @@
       state.battleShoutTimer = 3600; // 60s
       playSFX(battleShoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      // Animace
+      spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
       const dmgText = $('mbPlayerDamageText');
       if (dmgText) {
         dmgText.textContent = `📯 Battle Shout +${dmgPct}% dmg`;
@@ -3490,6 +3502,8 @@
       state.defensiveShoutTimer = 1800; // 30s
       playSFX(battleShoutSfx);
       _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
+      // Animace
+      spawnShoutRings(mb, '#5dade2', 'rgba(93,173,226,0.6)');
     } else if (spellId === 'skillShout') {
       const lv = getSpellLv('skillShout');
       state.skillShoutBonus = lv;
@@ -3515,6 +3529,8 @@
         mb._offhandSwingReady = false;
         mb._offhandSwingPct = 0;
       }
+      // Animace
+      spawnDoubleSwingAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       const dmgText = $('mbDamageText');
@@ -3522,6 +3538,24 @@
         dmgText.textContent = `⚔️ -${totalDmg}`;
         dmgText.classList.remove('hidden');
         setTimeout(() => dmgText.classList.add('hidden'), 500);
+      }
+    } else if (spellId === 'whirlwind') {
+      // Whirlwind — 3× rychlé útoky
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const offhandWeapon = (mb.offhandSwingMs > 0 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
+      const eqAttrs = getEquipAttrs();
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const mainDmg = baseDmg + weapon.baseDmg;
+      const offDmg = offhandWeapon ? baseDmg + offhandWeapon.baseDmg : 0;
+      const totalDmg = Math.max(1, Math.round((mainDmg + offDmg) * 1.5));
+      mb.bossHp -= totalDmg;
+      // Animace
+      spawnWhirlwindAnim(mb);
+      const dmgText2 = $('mbDamageText');
+      if (dmgText2) {
+        dmgText2.textContent = `🌀 -${totalDmg}`;
+        dmgText2.classList.remove('hidden');
+        setTimeout(() => dmgText2.classList.add('hidden'), 500);
       }
     } else if (spellId === 'sinisterStrike') {
       // 150% dmg + 1 combo point
@@ -5645,6 +5679,348 @@
       }
       requestAnimationFrame(animate);
     }
+  }
+
+  // ===== SPELL ANIMATIONS =====
+
+  function spawnHeroicStrikeAnim(mb) {
+    // Heroic Strike — zvětšená, sytě žlutá main hand animace
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const bossFig = $('mbFigure');
+    let bx = rect.width / 2, by = rect.height / 2;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      const aRect = arena.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    const canvas = $('mbProjectileCanvas');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const wt = weapon.weaponType || 'fists';
+    const angle = Math.random() * Math.PI * 0.6;
+    const len = 200;
+    const startX = bx - Math.cos(angle) * len * 0.5;
+    const startY = by - Math.sin(angle) * len * 0.5;
+    const endX = bx + Math.cos(angle) * len * 0.5;
+    const endY = by + Math.sin(angle) * len * 0.5;
+    const midX = bx + Math.cos(angle) * len * 0.1;
+    const midY = by + Math.sin(angle) * len * 0.1;
+    const perpX = -Math.sin(angle) * len * 0.2;
+    const perpY = Math.cos(angle) * len * 0.2;
+    const cpX = midX + perpX;
+    const cpY = midY + perpY;
+    const approxLen = len * 1.3;
+    const startTime = performance.now();
+    const duration = 300;
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const drawProgress = Math.min(progress * 1.5, 1);
+      const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+      const alpha = 1 - fadeProgress;
+      ctx.save();
+      ctx.shadowColor = 'rgba(255,215,0,0.8)';
+      ctx.shadowBlur = 20;
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 6;
+      ctx.lineCap = 'round';
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+      ctx.setLineDash([approxLen, approxLen]);
+      ctx.lineDashOffset = approxLen * (1 - drawProgress);
+      ctx.stroke();
+      ctx.restore();
+      if (progress < 1) requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function spawnDoubleSwingAnim(mb) {
+    // Double Swing — obě zbraně zároveň
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const offhandWeapon = (state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
+    spawnMeleeImpact(mb, false, weapon.weaponType || 'fists', 0);
+    if (offhandWeapon) {
+      spawnMeleeImpact(mb, false, offhandWeapon.weaponType, Math.PI);
+    }
+  }
+
+  function spawnWhirlwindAnim(mb) {
+    // Whirlwind — 3× rychlé útoky za sebou, střídavě MH/OH
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const hasOffhand = state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
+    const offhandWeapon = hasOffhand ? ITEM_MAP[state.hero.equip.shield] : null;
+    const wt = weapon.weaponType || 'fists';
+    const owt = offhandWeapon ? offhandWeapon.weaponType : null;
+    const sequence = hasOffhand
+      ? [0, Math.PI, 0, Math.PI, 0, Math.PI]
+      : [0, 0, 0];
+    let idx = 0;
+    function nextHit() {
+      if (idx >= sequence.length) return;
+      const angleOff = sequence[idx];
+      const wType = angleOff === 0 ? wt : owt;
+      spawnMeleeImpact(mb, false, wType, angleOff);
+      idx++;
+      setTimeout(nextHit, 100);
+    }
+    nextHit();
+  }
+
+  function spawnShoutRings(mb, color, glowColor) {
+    // Několik červených/modrých zvětšujících se kruhů od středu
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const canvas = $('mbProjectileCanvas');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const startTime = performance.now();
+    const duration = 600;
+    const numRings = 4;
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < numRings; i++) {
+        const ringDelay = i * 0.12;
+        const ringProgress = Math.max(0, Math.min((progress - ringDelay) / (1 - ringDelay), 1));
+        if (ringProgress <= 0) continue;
+        const radius = 20 + ringProgress * 180;
+        const alpha = (1 - ringProgress) * 0.6;
+        ctx.save();
+        ctx.strokeStyle = color;
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 15;
+        ctx.lineWidth = 3;
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+      if (progress < 1) requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function spawnBloodrageAnim(mb) {
+    // Velký rudý kruh kolem swing timerů, pulzuje a zmizí
+    const ring = $('mbTimerRing');
+    if (!ring) return;
+    const origBorder = ring.style.border || '';
+    const origShadow = ring.style.boxShadow || '';
+    ring.style.border = '3px solid #e74c3c';
+    ring.style.boxShadow = '0 0 30px rgba(231,76,60,0.6), inset 0 0 30px rgba(231,76,60,0.3)';
+    let pulseCount = 0;
+    const pulseInterval = setInterval(() => {
+      pulseCount++;
+      ring.style.boxShadow = pulseCount % 2 === 0
+        ? '0 0 30px rgba(231,76,60,0.6), inset 0 0 30px rgba(231,76,60,0.3)'
+        : '0 0 50px rgba(231,76,60,0.9), inset 0 0 50px rgba(231,76,60,0.5)';
+      if (pulseCount >= 6) {
+        clearInterval(pulseInterval);
+        ring.style.border = origBorder;
+        ring.style.boxShadow = origShadow;
+      }
+    }, 150);
+  }
+
+  function spawnThunderClapAnim(mb) {
+    // Světle modrá pavučina (blunt) přes obrázek nepřítele
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const bossFig = $('mbFigure');
+    let bx = rect.width / 2, by = rect.height / 2;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      const aRect = arena.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    const canvas = $('mbProjectileCanvas');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const startTime = performance.now();
+    const duration = 300;
+    const size = 120;
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const alpha = 1 - progress;
+      ctx.save();
+      ctx.strokeStyle = '#5dade2';
+      ctx.shadowColor = 'rgba(93,173,226,0.6)';
+      ctx.shadowBlur = 10;
+      ctx.lineWidth = 2;
+      ctx.globalAlpha = alpha;
+      // Pavučina — křížové čáry
+      for (let i = 0; i < 8; i++) {
+        const a = (i / 8) * Math.PI * 2;
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(bx + Math.cos(a) * size, by + Math.sin(a) * size);
+        ctx.stroke();
+      }
+      // Soustředné kruhy
+      for (let r = 1; r <= 3; r++) {
+        ctx.beginPath();
+        ctx.arc(bx, by, size * r / 3, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+      if (progress < 1) requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function spawnThunderBoltAnim(mb) {
+    // Modrošedý projektil + modrá točící se spirála na impact
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const bossFig = $('mbFigure');
+    let bx = rect.width / 2, by = rect.height / 2;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      const aRect = arena.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    const canvas = $('mbProjectileCanvas');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const startTime = performance.now();
+    const flyDuration = 300;
+    const spiralDuration = 500;
+    const totalDuration = flyDuration + spiralDuration;
+    const startX = rect.width * 0.1;
+    const startY = rect.height * 0.3;
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / totalDuration, 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (progress < flyDuration / totalDuration) {
+        // Fáze 1: projektil letí
+        const flyPct = progress * totalDuration / flyDuration;
+        const x = startX + (bx - startX) * flyPct;
+        const y = startY + (by - startY) * flyPct;
+        ctx.save();
+        ctx.shadowColor = 'rgba(93,173,226,0.8)';
+        ctx.shadowBlur = 15;
+        ctx.fillStyle = '#5dade2';
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      } else {
+        // Fáze 2: spirála na impact
+        const spiralPct = (progress * totalDuration - flyDuration) / spiralDuration;
+        const alpha = 1 - spiralPct;
+        ctx.save();
+        ctx.strokeStyle = '#5dade2';
+        ctx.shadowColor = 'rgba(93,173,226,0.6)';
+        ctx.shadowBlur = 10;
+        ctx.lineWidth = 2;
+        ctx.globalAlpha = alpha;
+        ctx.beginPath();
+        for (let t = 0; t < Math.PI * 4 * (1 - spiralPct); t += 0.1) {
+          const r = 5 + t * 3;
+          const sx = bx + Math.cos(t) * r;
+          const sy = by + Math.sin(t) * r;
+          if (t === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        }
+        ctx.stroke();
+        ctx.restore();
+      }
+      if (progress < 1) requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(animate);
+  }
+
+  function spawnShieldBashAnim(mb) {
+    // Velký šedý průhledný štít, letí shora dolů, zmenšuje se
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const bossFig = $('mbFigure');
+    let bx = rect.width / 2, by = rect.height / 2;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      const aRect = arena.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    const canvas = $('mbProjectileCanvas');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const startTime = performance.now();
+    const duration = 400;
+    const startSize = rect.width * 1.2;
+    const endSize = Math.min(rect.width, rect.height) * 0.5;
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const size = startSize + (endSize - startSize) * progress;
+      const alpha = (1 - progress) * 0.5;
+      const yOff = -rect.height * 0.3 + progress * rect.height * 0.5;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = '#888';
+      ctx.shadowColor = 'rgba(136,136,136,0.4)';
+      ctx.shadowBlur = 10;
+      // Tvar štítu — obdélník se zaoblenými rohy + trojúhelník dole
+      const s = size / 2;
+      const sx = bx;
+      const sy = by + yOff;
+      ctx.beginPath();
+      ctx.moveTo(sx - s * 0.6, sy - s * 0.8);
+      ctx.lineTo(sx + s * 0.6, sy - s * 0.8);
+      ctx.lineTo(sx + s * 0.6, sy + s * 0.2);
+      ctx.lineTo(sx, sy + s * 0.8);
+      ctx.lineTo(sx - s * 0.6, sy + s * 0.2);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = '#aaa';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.restore();
+      if (progress < 1) requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(animate);
   }
 
   function showVictorySkull(onClick) {
