@@ -8091,9 +8091,9 @@
         eStats += `⚔️ +${equipped.baseDmg} poškození`;
         if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% krit (×2.0)`;
       }
-      else if (equipped.type === 'armor') eStats += `❤️ +${equipped.bonusHp} HP · 🛡️ +${equipped.defense||0} Defense`;
-      else if (equipped.type === 'helmet') eStats += `❤️ +${equipped.bonusHp} HP · 🛡️ +${equipped.defense||0} Defense`;
-      else if (equipped.type === 'shield') eStats += `🛡️ ${equipped.blockChance||0}% blok · ❤️ +${equipped.bonusHp||0} HP · 🛡️ +${equipped.defense||0} Defense`;
+      else if (equipped.type === 'armor') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
+      else if (equipped.type === 'helmet') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
+      else if (equipped.type === 'shield') eStats += `🛡️ ${equipped.blockChance||0}% blok` + (equipped.bonusHp ? ` · ❤️ +${equipped.bonusHp} HP` : '') + ` · 🛡️ +${equipped.defense||0} Defense`;
       else if (equipped.type === 'ring') eStats += ``;
       else if (equipped.type === 'amulet') eStats += ``;
       if (equipped.weaponType === 'staff') eStats += ' 🪄 magická';
@@ -8112,6 +8112,10 @@
       if (equipped.swingMs && equipped.swingMs < 0) eAffixStats.push(`⚡ ${equipped.swingMs}ms swing`);
       if (equipped.enhancedDefense) eAffixStats.push(`🛡️ +${equipped.enhancedDefense}% obrana`);
       if (equipped.enhancedDmg) eAffixStats.push(`⚔️ +${equipped.enhancedDmg}% poškození`);
+      if (equipped.str) eAffixStats.push(`💪 +${equipped.str} Síla`);
+      if (equipped.vit) eAffixStats.push(`❤️ +${equipped.vit} Vitalita`);
+      if (equipped.int) eAffixStats.push(`🧠 +${equipped.int} Intelekt`);
+      if (equipped.dex) eAffixStats.push(`🎯 +${equipped.dex} Obratnost`);
       if (eAffixStats.length) eStats += '<br>' + eAffixStats.join(' · ');
       if (equipped.attrs) {
         const attrStr = Object.keys(equipped.attrs).map(k => {
