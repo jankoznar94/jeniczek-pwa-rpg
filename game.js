@@ -8184,7 +8184,12 @@
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' || item.type === 'amulet' ? (item.skillDmg ? `✨+${item.skillDmg}%` : item.manaRegen ? `💧+${item.manaRegen}` : item.str ? `💪+${item.str}` : item.int ? `🧠+${item.int}` : item.vit ? `❤️+${item.vit}` : item.dex ? `🎯+${item.dex}` : item.lifesteal ? `🩸+${item.lifesteal}%` : '') : item.bonusHp ? `❤️${item.bonusHp}` : '';
         const r = RARITY[item.rarity] || RARITY.common;
-        html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="border-color:${r.border}">
+        const cls = CLASSES[state.heroClass];
+        let canEquip = true;
+        if (item.type === 'weapon' && cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) canEquip = false;
+        if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
+        const cellStyle = canEquip ? `border-color:${r.border}` : `border-color:#e74c3c;opacity:0.35`;
+        html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
           <div class="cell-name">${item.name}</div>
         </div>`;
