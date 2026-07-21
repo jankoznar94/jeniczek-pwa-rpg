@@ -568,8 +568,8 @@ body.no-scroll { overflow: hidden; }
 .shop-tab { flex:1; padding:10px; border:1px solid #2a2a2a; background:#1a1a1a; color:#ccc; border-radius:8px; font-size:14px; cursor:pointer; text-align:center; transition:all 0.2s; }
 .shop-tab.active { background:#2a2a2a; border-color:#4a7dff; color:#fff; font-weight:bold; }
 .shop-tab:hover:not(.active) { background:#222; }
-.shop-back-map { margin:4px 0 8px; text-align:center; }
-.shop-back-map .btn { width:100%; max-width:280px; }
+.shop-back-map { margin:4px 0 8px; }
+.shop-back-map .btn { width:100%; }
 .inv-item { background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;margin:8px 0; }
 .inv-item .inv-item-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
 .inv-item .inv-item-name { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:bold; }
@@ -725,8 +725,8 @@ body.no-scroll { overflow: hidden; }
 .inv-compare-ring-icon { flex-shrink:0; }
 .inv-compare-ring-stats { flex:1; min-width:0; }
 .inv-compare-ring-name { font-size:13px; }
-.inv-shop-back { padding:12px; text-align:center; }
-.inv-shop-back .btn { width:100%; max-width:280px; }
+.inv-shop-back { padding:12px; }
+.inv-shop-back .btn { width:100%; }
 
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; margin:0 12px; }
