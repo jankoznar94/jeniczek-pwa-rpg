@@ -123,12 +123,11 @@
   const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 1.0; return a; })();
   const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 1.0; return a; })();
   const lightningSpellSfx = (() => { const a = new Audio('lightning_spell.mp3'); a.volume = 1.0; return a; })();
-  // Zvuky zranění hráče — 4 náhodné
+  // Zvuky zranění hráče — 3 náhodné
   const hurtSfx = [
     (() => { const a = new Audio('assets/sfx/hurt1.mp3'); a.volume = 1.0; return a; })(),
     (() => { const a = new Audio('assets/sfx/hurt2.mp3'); a.volume = 1.0; return a; })(),
     (() => { const a = new Audio('assets/sfx/hurt3.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/hurt4.mp3'); a.volume = 1.0; return a; })(),
   ];
   function getHurtSfx() { return hurtSfx[Math.floor(Math.random() * hurtSfx.length)]; }
   function getHitSfx() {
@@ -151,6 +150,7 @@
   const thunderBoltSfx = (() => { const a = new Audio('assets/sfx/thunder_bolt.mp3'); a.volume = 1.0; return a; })();
   const bluntHitSfx = (() => { const a = new Audio('assets/sfx/blunt_hit.mp3'); a.volume = 1.0; return a; })();
   const bluntCritSfx = (() => { const a = new Audio('assets/sfx/blunt_crit.mp3'); a.volume = 1.0; return a; })();
+  const shoutSfx = (() => { const a = new Audio('assets/sfx/shout.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -3497,6 +3497,7 @@
       const dmgPct = 5 + lv * 5;
       state.battleShoutDmgPct = dmgPct;
       state.battleShoutTimer = 3600; // 60s
+      playSFX(shoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
       console.log('BATTLE SHOUT: dmgPct=' + dmgPct + ' timer=' + state.battleShoutTimer + ' buffs keys=' + Object.keys(_sessionBuffs).join(','));
       // Vykreslit buff HNED
@@ -3515,6 +3516,7 @@
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
       state.defensiveShoutArmorPct = armorPct;
       state.defensiveShoutTimer = 1800; // 30s
+      playSFX(shoutSfx);
       _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
       // Animace
       spawnShoutRings(mb, '#5dade2', 'rgba(93,173,226,0.6)');
@@ -3522,6 +3524,7 @@
       const lv = getSpellLv('skillShout');
       state.skillShoutBonus = lv;
       state.skillShoutTimer = 1800; // 30s
+      playSFX(shoutSfx);
       _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
