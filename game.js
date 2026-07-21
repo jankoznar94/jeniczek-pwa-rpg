@@ -6684,6 +6684,7 @@
     // Smrtelný zásah — okamžitě zastavit timery, červený záblesk, pak death exploze
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
+      switchBGM('win');
       updateMapBattleUI();
       cleanupTimers();
       dimTimers();
