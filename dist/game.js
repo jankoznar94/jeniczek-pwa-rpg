@@ -2339,10 +2339,11 @@
         const castElapsed = now - mb._enemyCastStart;
         mb._enemySwingPct = Math.min(castElapsed / mb._enemyCastTime, 1);
         if (castElapsed >= mb._enemyCastTime) {
-          // Cast dokončen — strhnout manu
+          // Cast dokončen — strhnout manu, resetovat swing timer (žádný melee útok po castu)
           mb.enemyMana -= mb._enemyCastManaCost || 0;
           mb._enemyCasting = false;
-          mb._enemySwingReady = true;
+          mb._enemySwingStart = performance.now();
+          mb._enemySwingReady = false;
           mb._enemyAttackProcessed = false;
           mb._enemyCastProcessed = false;
         }
@@ -3469,11 +3470,20 @@
         setTimeout(() => dmgText.classList.add('hidden'), 500);
       }
     } else if (spellId === 'battleShout') {
-      // +15% dmg na 60s
-      state.battleShoutDmgPct = 15;
-      state.battleShoutTimer = 1800; // 30s
+      // +5+lv*5% dmg na 60s (dle talentu)
+      const lv = getSpellLv('battleShout');
+      const dmgPct = 5 + lv * 5;
+      state.battleShoutDmgPct = dmgPct;
+      state.battleShoutTimer = 3600; // 60s
       playSFX(battleShoutSfx);
-      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      const dmgText = $('mbPlayerDamageText');
+      if (dmgText) {
+        dmgText.textContent = `📯 Battle Shout +${dmgPct}% dmg`;
+        dmgText.style.color = '#f39c12';
+        dmgText.classList.remove('hidden');
+        setTimeout(() => dmgText.classList.add('hidden'), 1000);
+      }
     } else if (spellId === 'defensiveShout') {
       const lv = getSpellLv('defensiveShout');
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
