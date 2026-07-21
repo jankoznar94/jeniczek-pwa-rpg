@@ -583,22 +583,22 @@
   const ITEMS = [
     // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmg:1, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1500 },
-    { id:'claws', name:'Drápy', type:'weapon', baseDmg:2, bonusHp:0, critChance:20, cost:25, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:1, swingMs:1300 },
+    { id:'claws', name:'Drápy', type:'weapon', baseDmg:2, bonusHp:0, critChance:20, cost:25, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:1, swingMs:1400 },
     { id:'dagger', name:'Dřevěná hůlka', type:'weapon', baseDmg:2, cost:15, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:1800 },
     { id:'shortsword', name:'Ohnivá hůlka', type:'weapon', baseDmg:3, cost:25, icon:'🪄', iconImg:'assets/items/staff_fire.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'sword', name:'Ledová hůl', type:'weapon', baseDmg:4, cost:30, icon:'🪄', iconImg:'assets/items/staff_ice.png', weaponType:'staff', tier:2, swingMs:1700 },
     { id:'battleAxe', name:'Blesková hůl', type:'weapon', baseDmg:5, cost:45, icon:'🪄', iconImg:'assets/items/staff_lightning.png', weaponType:'staff', tier:3, swingMs:1600 },
     { id:'spear', name:'Hvězdná hůl', type:'weapon', baseDmg:6, cost:55, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:1600 },
     { id:'ironSword', name:'Železný meč', type:'weapon', baseDmg:2, bonusHp:0, cost:20, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:1900 },
-    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:2, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'dagger', tier:1, swingMs:1400 },
+    { id:'huntingKnife', name:'Lovecký nůž', type:'weapon', baseDmg:2, bonusHp:0, critChance:15, cost:15, icon:'🗡️', iconImg:'assets/items/weapon_hunting_knife.png', weaponType:'dagger', tier:1, swingMs:1600 },
     { id:'broadSword', name:'Široký meč', type:'weapon', baseDmg:4, bonusHp:0, critChance:10, cost:35, icon:'⚔️', iconImg:'assets/items/weapon_broad_sword.png', weaponType:'blade', tier:2, swingMs:1800 },
-    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'dagger', tier:2, swingMs:1500 },
-    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:5, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:3, swingMs:2000, twoHand:true },
-    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:7, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2100, twoHand:true },
-    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:4, swingMs:2000, twoHand:true },
-    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2200, twoHand:true },
-    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:11, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'axe', tier:5, swingMs:2300, twoHand:true },
-    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:12, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:6, swingMs:2400, twoHand:true },
+    { id:'sabre', name:'Šavle', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:30, icon:'🗡️', iconImg:'assets/items/weapon_sabre.png', weaponType:'dagger', tier:2, swingMs:1700 },
+    { id:'battleAxePhys', name:'Bojová sekera', type:'weapon', baseDmg:5, bonusHp:0, critChance:10, cost:50, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:3, swingMs:2700, twoHand:true },
+    { id:'claymore', name:'Obouruční meč', type:'weapon', baseDmg:7, bonusHp:0, critChance:15, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2800, twoHand:true },
+    { id:'warAxe', name:'Válečná sekera', type:'weapon', baseDmg:8, bonusHp:0, critChance:15, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:4, swingMs:2700, twoHand:true },
+    { id:'greatSword', name:'Velký meč', type:'weapon', baseDmg:10, bonusHp:0, critChance:20, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_great_sword.png', weaponType:'blade', tier:5, swingMs:2900, twoHand:true },
+    { id:'greatAxe', name:'Dračí sekera', type:'weapon', baseDmg:11, bonusHp:0, critChance:15, cost:150, icon:'🪓', iconImg:'assets/items/weapon_war_hammer.png', weaponType:'axe', tier:5, swingMs:3000, twoHand:true },
+    { id:'giantHammer', name:'Obří kladivo', type:'weapon', baseDmg:12, critChance:10, cost:200, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:6, swingMs:3000, twoHand:true },
     { id:'warHammer', name:'Válečné kladivo', type:'weapon', baseDmg:6, bonusHp:0, critChance:5, cost:60, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:3, swingMs:2000 },
     { id:'ironClaws', name:'Železné drápy', type:'weapon', baseDmg:3, bonusHp:0, critChance:20, cost:35, icon:'🦅', iconImg:'assets/items/claws_iron.png', weaponType:'claws', tier:2, swingMs:1300 },
     { id:'steelClaws', name:'Ocelové drápy', type:'weapon', baseDmg:5, bonusHp:0, critChance:25, cost:60, icon:'🦅', iconImg:'assets/items/claws_steel.png', weaponType:'claws', tier:3, swingMs:1200 },
@@ -3309,7 +3309,7 @@
         const b = _sessionBuffs[spellId];
         if (!b) return;
         const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = spellId === 'bloodrage' || spellId === 'battleShout' || spellId === 'defensiveShout' || spellId === 'skillShout' || spellId === 'shieldBash';
+        const hasImg = spellId === 'bloodrage' || spellId === 'defensiveShout' || spellId === 'skillShout' || spellId === 'shieldBash';
         html += `<div class="buff-icon" title="${b.name || spellId}">
           ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
           <span class="buff-icon-timer">${remaining}s</span>
