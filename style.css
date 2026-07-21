@@ -824,12 +824,12 @@ body.no-scroll { overflow: hidden; }
   display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
-.enemy-buff-overlay .debuff-icon { border-color:#2ecc71; }
-.enemy-buff-overlay .debuff-icon-timer { color:#2ecc71; }
+.enemy-buff-overlay .buff-icon { border-color:#2ecc71; }
+.enemy-buff-overlay .buff-icon-timer { color:#2ecc71; }
 
-/* Player debuff overlay — vpravo v aréně, pod buffy, červený border */
+/* Player debuff overlay — vpravo v aréně, na stejné úrovni jako buffy */
 .player-debuff-overlay {
-  position:absolute;bottom:60px;right:70px;z-index:29;
+  position:absolute;bottom:10px;right:70px;z-index:29;
   display:flex;flex-direction:column-reverse;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }

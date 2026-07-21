@@ -3283,9 +3283,9 @@
         if (!d) return;
         const remaining = Math.ceil(d.ticks / 60);
         const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
-        html += `<div class="debuff-icon" title="${d.name || spellId}">
-          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
-          <span class="debuff-icon-timer">${remaining}s</span>
+        html += `<div class="buff-icon" title="${d.name || spellId}">
+          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="buff-icon-emoji">${d.icon}</span>`}
+          <span class="buff-icon-timer">${remaining}s</span>
         </div>`;
       });
       container.innerHTML = html;
@@ -3300,9 +3300,9 @@
           const b = _enemyBuffs[spellId];
           if (!b) return;
           const remaining = Math.ceil(b.ticks / 60);
-          html += `<div class="debuff-icon" title="${b.name || spellId}">
-            <span class="debuff-icon-emoji">${b.icon || '📈'}</span>
-            <span class="debuff-icon-timer">${remaining}s</span>
+          html += `<div class="buff-icon" title="${b.name || spellId}">
+            <span class="buff-icon-emoji">${b.icon || '📈'}</span>
+            <span class="buff-icon-timer">${remaining}s</span>
           </div>`;
         });
         enemyBuffContainer.innerHTML = html;
@@ -3320,7 +3320,7 @@
         const b = _sessionBuffs[spellId];
         if (!b) return;
         const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = spellId === 'bloodrage' || spellId === 'defensiveShout' || spellId === 'skillShout' || spellId === 'shieldBash';
+        const hasImg = spellId === 'bloodrage' || spellId === 'defensiveShout' || spellId === 'skillShout' || spellId === 'shieldBash' || spellId === 'battleShout';
         html += `<div class="buff-icon" title="${b.name || spellId}">
           ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
           <span class="buff-icon-timer">${remaining}s</span>
