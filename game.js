@@ -118,7 +118,8 @@
   const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 1.0; return a; })();
   const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
   const meleeHitSfx2 = (() => { const a = new Audio('assets/sfx/melee_hit2.mp3'); a.volume = 1.0; return a; })();
-  const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2];
+  const enemyHitSfx = (() => { const a = new Audio('assets/sfx/enemy_hit.mp3'); a.volume = 1.0; return a; })();
+  const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2, enemyHitSfx];
   const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
   const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
   const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
