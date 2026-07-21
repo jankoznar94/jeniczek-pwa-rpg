@@ -7649,7 +7649,7 @@
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
-        else stats = `❤️+${item.bonusHp} HP`;
+        else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
         // Affix názvy
         if (item.affixes && item.affixes.length) {
           stats += '<br><span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span>';
@@ -7700,7 +7700,7 @@
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
         else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
-        else stats = `❤️+${item.bonusHp} HP`;
+        else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
         // Extra staty pro base itemy
         const extraStats = [];
         if (item.defense) extraStats.push(`🛡️+${item.defense}`);
