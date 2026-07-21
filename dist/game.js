@@ -3487,6 +3487,10 @@
       playSFX(battleShoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
       console.log('BATTLE SHOUT: dmgPct=' + dmgPct + ' timer=' + state.battleShoutTimer + ' buffs keys=' + Object.keys(_sessionBuffs).join(','));
+      // Resetovat swing timer — buff se aplikuje ihned, ne až po swingu
+      mb._playerSwingStart = performance.now();
+      mb._playerSwingReady = false;
+      mb._playerAttackProcessed = false;
       // Vykreslit buff HNED
       renderBuffs();
       // Animace
@@ -5863,98 +5867,106 @@
   }
 
   function spawnThunderClapAnim(mb) {
-    // Nepravidelná pavučina jako rozbité sklo — pokaždé jiná
+    // Výrazný bleskový efekt — bílý záblesk + tlusté modré praskliny přes celou arénu
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
-    const bossFig = $('mbFigure');
-    let bx = rect.width / 2, by = rect.height / 2;
-    let size = 80;
-    if (bossFig) {
-      const br = bossFig.getBoundingClientRect();
-      const aRect = arena.getBoundingClientRect();
-      bx = br.left + br.width/2 - aRect.left;
-      by = br.top + br.height/2 - aRect.top;
-      size = Math.max(br.width, br.height) * 0.5;
-    }
     const canvas = $('mbProjectileCanvasOffhand');
     if (!canvas) return;
     canvas.width = rect.width;
     canvas.height = rect.height;
     const ctx = canvas.getContext('2d');
     const startTime = performance.now();
-    const duration = 300;
+    const duration = 400;
 
-    // Vygenerovat nepravidelnou pavučinu — náhodné praskliny
-    const crackCount = 6 + Math.floor(Math.random() * 5); // 6-10 prasklin
+    // Střed arény
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const maxR = Math.max(rect.width, rect.height) * 0.6;
+
+    // Generovat praskliny — silné, dlouhé, od středu
+    const crackCount = 8 + Math.floor(Math.random() * 5); // 8-12
     const cracks = [];
     for (let i = 0; i < crackCount; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const l = (20 + Math.random() * size) * (0.5 + Math.random() * 0.5);
-      const points = [{x: bx, y: by}];
-      const segs = 1 + Math.floor(Math.random() * 3);
-      let cx = bx, cy = by;
+      const a = (i / crackCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+      const l = maxR * (0.4 + Math.random() * 0.6);
+      const points = [{x: cx, y: cy}];
+      const segs = 2 + Math.floor(Math.random() * 3);
+      let px = cx, py = cy;
       let dir = a;
       for (let j = 0; j < segs; j++) {
-        const segLen = l * (0.3 + Math.random() * 0.4) / segs;
-        dir += (Math.random() - 0.5) * 0.8;
-        cx += Math.cos(dir) * segLen;
-        cy += Math.sin(dir) * segLen;
-        points.push({x: cx, y: cy});
+        const segLen = l * (0.2 + Math.random() * 0.4) / segs;
+        dir += (Math.random() - 0.5) * 0.6;
+        px += Math.cos(dir) * segLen;
+        py += Math.sin(dir) * segLen;
+        points.push({x: px, y: py});
       }
       cracks.push(points);
-    }
-    // Pár spojovacích čar mezi prasklinami
-    const crossCount = 2 + Math.floor(Math.random() * 3);
-    const crossLines = [];
-    for (let i = 0; i < crossCount; i++) {
-      const a1 = Math.random() * Math.PI * 2;
-      const a2 = a1 + 0.3 + Math.random() * 0.8;
-      const r1 = (10 + Math.random() * size * 0.4);
-      const r2 = (10 + Math.random() * size * 0.4);
-      crossLines.push({
-        x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
-        x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
-      });
     }
 
     function animate(ts) {
       const elapsed = ts - startTime;
       const progress = Math.min(elapsed / duration, 1);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const drawProgress = Math.min(progress * 1.5, 1);
-      const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+
+      // Fáze 1: bílý záblesk (0-20%)
+      if (progress < 0.2) {
+        const flashAlpha = (1 - progress / 0.2) * 0.5;
+        ctx.save();
+        ctx.fillStyle = `rgba(255,255,255,${flashAlpha})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
+
+      // Fáze 2: praskliny (10-100%)
+      const crackProgress = Math.max(0, Math.min((progress - 0.1) / 0.6, 1));
+      const fadeProgress = Math.max(0, (progress - 0.5) / 0.5);
       const alpha = 1 - fadeProgress;
-      ctx.save();
-      ctx.strokeStyle = '#5dade2';
-      ctx.shadowColor = 'rgba(93,173,226,0.6)';
-      ctx.shadowBlur = 8;
-      ctx.lineWidth = 2;
-      ctx.lineCap = 'round';
-      ctx.globalAlpha = alpha;
-      // Kreslit praskliny postupně
-      const totalSegments = cracks.reduce((sum, c) => sum + c.length - 1, 0) + crossLines.length;
-      const drawnSegments = Math.floor(drawProgress * totalSegments);
-      let segIdx = 0;
-      cracks.forEach(points => {
-        for (let j = 0; j < points.length - 1; j++) {
-          if (segIdx >= drawnSegments) break;
-          ctx.beginPath();
-          ctx.moveTo(points[j].x, points[j].y);
-          ctx.lineTo(points[j+1].x, points[j+1].y);
-          ctx.stroke();
-          segIdx++;
-        }
-      });
-      crossLines.forEach(cl => {
-        if (segIdx >= drawnSegments) return;
-        ctx.beginPath();
-        ctx.moveTo(cl.x1, cl.y1);
-        ctx.lineTo(cl.x2, cl.y2);
-        ctx.stroke();
-        segIdx++;
-      });
-      ctx.restore();
+
+      if (crackProgress > 0) {
+        ctx.save();
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.globalAlpha = alpha;
+
+        // Vnější záře (tlustá, rozmazaná)
+        ctx.shadowColor = 'rgba(93,173,226,0.8)';
+        ctx.shadowBlur = 20;
+        ctx.strokeStyle = 'rgba(93,173,226,0.4)';
+        ctx.lineWidth = 8;
+        const totalSegments = cracks.reduce((sum, c) => sum + c.length - 1, 0);
+        const drawnSegments = Math.floor(crackProgress * totalSegments);
+        let segIdx = 0;
+        cracks.forEach(points => {
+          for (let j = 0; j < points.length - 1; j++) {
+            if (segIdx >= drawnSegments) break;
+            ctx.beginPath();
+            ctx.moveTo(points[j].x, points[j].y);
+            ctx.lineTo(points[j+1].x, points[j+1].y);
+            ctx.stroke();
+            segIdx++;
+          }
+        });
+
+        // Hlavní čáry (tenčí, světlejší, nahoře)
+        ctx.shadowBlur = 10;
+        ctx.strokeStyle = '#a8d8ff';
+        ctx.lineWidth = 3;
+        segIdx = 0;
+        cracks.forEach(points => {
+          for (let j = 0; j < points.length - 1; j++) {
+            if (segIdx >= drawnSegments) break;
+            ctx.beginPath();
+            ctx.moveTo(points[j].x, points[j].y);
+            ctx.lineTo(points[j+1].x, points[j+1].y);
+            ctx.stroke();
+            segIdx++;
+          }
+        });
+
+        ctx.restore();
+      }
+
       if (progress < 1) requestAnimationFrame(animate);
       else ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
