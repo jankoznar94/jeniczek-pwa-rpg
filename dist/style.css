@@ -836,10 +836,10 @@ body.no-scroll { overflow: hidden; }
 .player-debuff-overlay .buff-icon { border-color:#e94560; }
 .player-debuff-overlay .buff-icon-timer { color:#e94560; }
 
-/* Buff overlay — vpravo v aréně, vertikálně odspodu nahoru */
+/* Buff overlay — vpravo nahoře v aréně, pod sebou */
 .buff-overlay {
-  position:absolute;bottom:60px;right:10px;z-index:30;
-  display:flex;flex-direction:column-reverse;align-items:center;gap:4px;pointer-events:none;
+  position:absolute;top:10px;right:10px;z-index:30;
+  display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
 .buff-icon {
