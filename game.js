@@ -119,7 +119,7 @@
   const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
   const meleeHitSfx2 = (() => { const a = new Audio('assets/sfx/melee_hit2.mp3'); a.volume = 1.0; return a; })();
   const enemyHitSfx = (() => { const a = new Audio('assets/sfx/enemy_hit.mp3'); a.volume = 1.0; return a; })();
-  const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2, enemyHitSfx];
+  const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2];
   const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
   const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
   const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
@@ -7130,6 +7130,7 @@
     
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
+    playSFX(enemyHitSfx);
 
     // ❄️ Ledové poškození ze zbraně — lehký chill efekt
     if (weapon.iceDmg > 0) {
