@@ -125,6 +125,7 @@
   const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 1.0; return a; })();
   const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 1.0; return a; })();
   const lightningSpellSfx = (() => { const a = new Audio('lightning_spell.mp3'); a.volume = 1.0; return a; })();
+  const lightningSpellSfx2 = (() => { const a = new Audio('assets/sfx/lightning_spell2.mp3'); a.volume = 1.0; return a; })();
   // Zvuky zranění hráče — 3 náhodné
   const hurtSfx = [
     (() => { const a = new Audio('assets/sfx/hurt1.mp3'); a.volume = 1.0; return a; })(),
@@ -3754,6 +3755,10 @@
         mb.enemySwingMs = getEnemySwingTime(mb);
         mb._enemySwingStart = now - progress * mb.enemySwingMs;
         _sessionDebuffs['slow_' + spellId] = { icon: '❄️', name: `Zpomalení ${slowPct}%`, ticks: slowTicks, maxTicks: slowTicks };
+      }
+      // Elektrická kouzla — vlastní SFX
+      if (schoolId === 'lightning') {
+        playSFX(lightningSpellSfx2);
       }
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
