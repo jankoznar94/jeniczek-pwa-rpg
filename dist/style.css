@@ -806,17 +806,17 @@ body.no-scroll { overflow: hidden; }
 /* Debuff overlay — vlevo v aréně, vertikálně odshora dolů */
 .debuff-overlay {
   position:absolute;top:10px;left:70px;z-index:29;
-  display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;
   width:auto;
 }
 .debuff-icon {
   display:flex;flex-direction:column;align-items:center;
-  background:rgba(0,0,0,0.7);border:1px solid #e94560;border-radius:6px;
-  padding:2px 4px;min-width:32px;
+  background:rgba(0,0,0,0.7);border:2px solid #e94560;border-radius:8px;
+  padding:3px 6px;min-width:44px;
 }
-.debuff-icon-emoji { font-size:16px;line-height:1.2; }
-.debuff-icon-timer { font-size:10px;color:#e94560;font-weight:bold;line-height:1; }
-.buff-icon-img { width:40px;height:40px;object-fit:cover;border-radius:3px;display:block; }
+.debuff-icon-emoji { font-size:22px;line-height:1.2; }
+.debuff-icon-timer { font-size:13px;color:#e94560;font-weight:bold;line-height:1; }
+.buff-icon-img { width:48px;height:48px;object-fit:cover;border-radius:4px;display:block; }
 
 /* Enemy buff overlay — vlevo v aréně, pod debuffy, zelený border */
 .enemy-buff-overlay {
@@ -836,19 +836,19 @@ body.no-scroll { overflow: hidden; }
 .player-debuff-overlay .buff-icon { border-color:#e94560; }
 .player-debuff-overlay .buff-icon-timer { color:#e94560; }
 
-/* Buff overlay — vpravo nahoře v aréně, pod sebou */
+/* Buff overlay — vpravo dole v aréně, nad forfeit tlačítkem */
 .buff-overlay {
-  position:absolute;top:10px;right:10px;z-index:30;
-  display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
+  position:absolute;bottom:10px;right:10px;z-index:60;
+  display:flex;flex-direction:column-reverse;align-items:center;gap:6px;pointer-events:none;
   width:auto;
 }
 .buff-icon {
   display:flex;flex-direction:column;align-items:center;
-  background:rgba(0,0,0,0.7);border:1px solid #2ecc71;border-radius:6px;
-  padding:2px 4px;min-width:32px;
+  background:rgba(0,0,0,0.7);border:2px solid #2ecc71;border-radius:8px;
+  padding:3px 6px;min-width:44px;
 }
-.buff-icon-emoji { font-size:16px;line-height:1.2; }
-.buff-icon-timer { font-size:10px;color:#2ecc71;font-weight:bold;line-height:1; }
+.buff-icon-emoji { font-size:22px;line-height:1.2; }
+.buff-icon-timer { font-size:13px;color:#2ecc71;font-weight:bold;line-height:1; }
 
 /* Rapid Tap — dve plosky s puntikem a tenkym borderem */
 .rapid-tap-area {
