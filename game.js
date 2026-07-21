@@ -3487,10 +3487,6 @@
       playSFX(battleShoutSfx);
       _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 3600, maxTicks: 3600, onExpire: function() { state.battleShoutDmgPct = 0; } };
       console.log('BATTLE SHOUT: dmgPct=' + dmgPct + ' timer=' + state.battleShoutTimer + ' buffs keys=' + Object.keys(_sessionBuffs).join(','));
-      // Resetovat swing timer — buff se aplikuje ihned, ne až po swingu
-      mb._playerSwingStart = performance.now();
-      mb._playerSwingReady = false;
-      mb._playerAttackProcessed = false;
       // Vykreslit buff HNED
       renderBuffs();
       // Animace
