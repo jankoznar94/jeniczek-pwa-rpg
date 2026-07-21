@@ -5885,7 +5885,7 @@
     const maxR = Math.max(rect.width, rect.height) * 0.6;
 
     // Generovat praskliny — silné, dlouhé, od středu
-    const crackCount = 8 + Math.floor(Math.random() * 5); // 8-12
+    const crackCount = 4 + Math.floor(Math.random() * 3); // 4-6
     const cracks = [];
     for (let i = 0; i < crackCount; i++) {
       const a = (i / crackCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
