@@ -1606,6 +1606,9 @@
     const cls = CLASSES[classId];
     if (!cls) return;
     state.heroClass = classId;
+    // Auto-set portrait podle classy
+    const classFaces = { barbarian:'hero_barbarian_m', assassin:'hero_rogue_m', mage:'hero_mage_m' };
+    state.hero.face = classFaces[classId] || 'hero';
     state.hero.hp = cls.baseHp;
     state.hero.maxHp = cls.baseHp;
     state.hero.mana = cls.baseMana;
@@ -1630,6 +1633,7 @@
     saveGame();
     document.querySelector('.nav-bar').classList.remove('hidden');
     updateTalentBadge();
+    renderHero();
     showScreen('map');
     renderMap();
   }
@@ -1679,7 +1683,7 @@
     // Schovat/ukázat nav-bar podle screenu
     const navBar = document.querySelector('.nav-bar');
     if (navBar) {
-      if (name === 'mapBattle' || name === 'result') {
+      if (name === 'classSelect' || name === 'mapBattle' || name === 'result') {
         navBar.classList.add('hidden');
       } else {
         navBar.classList.remove('hidden');
@@ -8870,6 +8874,10 @@
     state = loadSave();
     initUniqueItems();
 
+    // Nav-bar schovat hned na začátku — splash ho překrývá, ale po fade by prosvítal
+    const navBar = document.querySelector('.nav-bar');
+    if (navBar) navBar.classList.add('hidden');
+
     // Splash screen — fade in, 2.5s, fade out, pak teprve zobrazit UI
     const splash = document.getElementById('splashScreen');
     if (splash) {
@@ -8942,6 +8950,11 @@
     // Migrace: staré savy (bez resource polí) musí projít class selectem
     if (state.heroClass && state.rage === undefined && state.energy === undefined) {
       state.heroClass = null;
+    }
+    // Migrace: staré savy bez portrétu — nastavit podle classy
+    if (state.heroClass && (!state.hero.face || state.hero.face === 'hero')) {
+      const classFaces = { barbarian:'hero_barbarian_m', assassin:'hero_rogue_m', mage:'hero_mage_m' };
+      state.hero.face = classFaces[state.heroClass] || 'hero';
     }
 
     // Nav-bar handlery musí být zaregistrované vždy, i když hráč ještě nevybral classu
