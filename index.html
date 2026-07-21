@@ -281,13 +281,13 @@
     </div>
     <div class="card-subtitle">Nakup a prodávej výbavu</div>
   </div>
+  <div class="shop-back-map">
+    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Zpět na bojiště</button>
+  </div>
   <div class="shop-tabs">
     <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Koupit</button>
     <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Prodat</button>
     <button class="shop-tab" onclick="game.openInventoryFromShop()">🎒 Inventář</button>
-  </div>
-  <div class="shop-back-map">
-    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Zpět na bojiště</button>
   </div>
   <div id="shopList"></div>
 </div>
@@ -321,7 +321,7 @@
       <div class="inv-slot-icon" id="invSlotRing2Icon">💍</div>
     </div>
   </div>
-  <!-- Tlačítko zpět do obchodu — nahoře, hned pod equip panelem -->
+  <!-- Tlačítko zpět do obchodu — úplně nahoře, hned pod equip panelem -->
   <div class="inv-shop-back hidden" id="invShopBack">
     <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
   </div>
