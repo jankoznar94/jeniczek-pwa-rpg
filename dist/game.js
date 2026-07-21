@@ -7130,7 +7130,8 @@
     
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
-    playSFX(enemyHitSfx);
+    // Občasný zásahový zvuk (30% šance)
+    if (Math.random() < 0.3) playSFX(enemyHitSfx);
 
     // ❄️ Ledové poškození ze zbraně — lehký chill efekt
     if (weapon.iceDmg > 0) {
