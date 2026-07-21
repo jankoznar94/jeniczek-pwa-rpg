@@ -294,6 +294,10 @@
 
 <!-- ===== INVENTORY ===== -->
 <div id="inventoryScreen" class="container hidden">
+  <!-- Tlačítko zpět do obchodu — úplně nahoře -->
+  <div class="inv-shop-back hidden" id="invShopBack">
+    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
+  </div>
   <!-- Equipment sloty — jeden grid -->
   <div class="inv-equip-panel">
     <div class="inv-equip-slot inv-slot-square" id="invSlotHelmet">
@@ -320,10 +324,6 @@
     <div class="inv-equip-slot inv-slot-small" id="invSlotRing2">
       <div class="inv-slot-icon" id="invSlotRing2Icon">💍</div>
     </div>
-  </div>
-  <!-- Tlačítko zpět do obchodu — úplně nahoře, hned pod equip panelem -->
-  <div class="inv-shop-back hidden" id="invShopBack">
-    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
   </div>
   <!-- Potion sloty (dynamicky podle beltSlots) -->
   <div class="inv-potion-slots" id="invPotionSlots"></div>
