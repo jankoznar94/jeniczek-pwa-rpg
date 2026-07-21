@@ -717,11 +717,9 @@ body.no-scroll { overflow: hidden; }
 .inv-info-panel .inv-info-stats { font-size:12px; color:#aaa; line-height:1.6; }
 .inv-compare-panel {
   border-color: #666;
-  background: #1a1a1a;
-  margin-top: 4px;
-  border-width: 2px;
+  background: #1e1e1e;
+  margin-top: 8px;
 }
-.inv-compare-panel .inv-info-name::before { content:'🟢 '; }
 .inv-compare-ring { display:flex; align-items:flex-start; gap:8px; padding:4px 0; }
 .inv-compare-ring-icon { flex-shrink:0; }
 .inv-compare-ring-stats { flex:1; min-width:0; }
