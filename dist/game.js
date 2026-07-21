@@ -140,7 +140,7 @@
   function getCritSfx() {
     const wt = getWeaponType();
     if (wt === 'fists') return fistCritSfx;
-    if (wt === 'blunt') return bluntHitSfx;
+    if (wt === 'blunt') return bluntCritSfx;
     return wt === 'staff' ? critSfx : meleeCritSfx;
   }
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
@@ -150,6 +150,7 @@
   const thunderClapSfx = (() => { const a = new Audio('assets/sfx/thunder_clap.mp3'); a.volume = 1.0; return a; })();
   const thunderBoltSfx = (() => { const a = new Audio('assets/sfx/thunder_bolt.mp3'); a.volume = 1.0; return a; })();
   const bluntHitSfx = (() => { const a = new Audio('assets/sfx/blunt_hit.mp3'); a.volume = 1.0; return a; })();
+  const bluntCritSfx = (() => { const a = new Audio('assets/sfx/blunt_crit.mp3'); a.volume = 1.0; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
