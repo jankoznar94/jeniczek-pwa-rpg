@@ -1513,15 +1513,13 @@
     const steps = [];
 
     for (let step = 0; step < stepCount; step++) {
-      // První krok: jen 2 možnosti, bez pramene a obchodu
+      // Mezi checkpointy jen bojové místnosti — fountain a merchant jen na checkpointech
       const isFirstStep = step === 0;
       const numChoices = isFirstStep ? 2 : (2 + (Math.random() < 0.4 ? 1 : 0));
       const choices = [];
       const usedTypes = new Set();
-      // Obchod až od 3. kroku, pramen až od 2. kroku
-      let pool = ROOM_POOL;
-      if (step < 2) pool = pool.filter(r => r.type !== ROOM_TYPES.MERCHANT);
-      if (isFirstStep) pool = pool.filter(r => r.type !== ROOM_TYPES.FOUNTAIN);
+      // Jen bojové místnosti: enemy, elite, chest, mystery
+      let pool = ROOM_POOL.filter(r => r.type === ROOM_TYPES.ENEMY || r.type === ROOM_TYPES.ELITE || r.type === ROOM_TYPES.CHEST || r.type === ROOM_TYPES.MYSTERY);
 
       for (let c = 0; c < numChoices; c++) {
         let picked;
@@ -2033,8 +2031,8 @@
 
     // MYSTERY — náhodně odhalit, co to vlastně je
     if (choice.type === ROOM_TYPES.MYSTERY) {
-      // Vybrat náhodný typ místnosti (kromě MYSTERY)
-      const mysteryPool = ROOM_POOL.filter(p => p.type !== ROOM_TYPES.MYSTERY);
+      // Vybrat náhodný typ místnosti (kromě MYSTERY) — jen bojové
+      const mysteryPool = ROOM_POOL.filter(p => p.type !== ROOM_TYPES.MYSTERY && p.type !== ROOM_TYPES.FOUNTAIN && p.type !== ROOM_TYPES.MERCHANT);
       const revealed = mysteryPool[rand(0, mysteryPool.length - 1)];
       choice.type = revealed.type;
       choice.icon = revealed.icon;
