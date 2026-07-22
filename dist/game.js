@@ -2231,10 +2231,10 @@
     const playerMaxHp = getHeroMaxHp();
     state.hero.maxHp = playerMaxHp;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
-    // HP škáluje s dungeonem a progresem — StS styl
+    // HP škáluje s dungeonem a progresem
     const diffMultOverall = diff.mult;
-    const monsterBaseHp = [60, 120, 200, 300, 420];
-    const monsterHpPerStep = [4, 6, 8, 10, 12];
+    const monsterBaseHp = [80, 160, 280, 420, 600];
+    const monsterHpPerStep = [8, 12, 16, 20, 24];
     const monsterHp = Math.round((monsterBaseHp[locId] + monsterHpPerStep[locId] * progress) * diffMultOverall);
 
     // Elitní HP bonus
@@ -2406,13 +2406,14 @@
   }
 
   function getEnemySwingTime(mb) {
-    // Nepřítelův swing — závisí na dungeonu a progresu
-    const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
+    // Nepřítelův swing — závisí na obtížnosti a progresu
+    const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
+    const diffMult = diff.mult;
     const progress = mb.progress || 0;
-    // Base 2500ms, s každou místností -5%, dungeon násobitel
-    const base = 2500;
-    const progressMult = Math.pow(0.95, progress);
-    let swingMs = Math.max(800, Math.round(base * progressMult / diffMult));
+    // Base 2000ms, s každou místností -30ms (lineární), dungeon násobitel
+    const base = 2000;
+    const progressReduction = progress * 30;
+    let swingMs = Math.max(800, Math.round((base - progressReduction) / diffMult));
     // Aplikovat zpomalení z ledových kouzel
     if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
       swingMs = Math.round(swingMs / (1 - mb._enemySlowPct / 100));
@@ -7124,7 +7125,8 @@
     }
 
     const baseBossDmg = Math.max(8, 8 + mb.locId * 8 + mb.progress * 4);
-    const diffMult = DIFFICULTY_MULT[mb.locId] || 1.0;
+    const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
+    const diffMult = diff.mult;
     let bossDmg = Math.round(baseBossDmg * diffMult * (0.8 + Math.random() * 0.4));
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
