@@ -8744,7 +8744,10 @@
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
           const dmgMin = item.baseDmgMin || 1;
           const dmgMax = item.baseDmgMax || 1;
-          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel}`;
+          const swingSec = (item.swingMs || 2200) / 1000;
+          const avgDmg = (dmgMin + dmgMax) / 2;
+          const dps = Math.round(avgDmg / swingSec * 10) / 10;
+          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel} · ⏱ ${dps} DPS`;
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
@@ -8798,7 +8801,10 @@
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
           const dmgMin = item.baseDmgMin || 1;
           const dmgMax = item.baseDmgMax || 1;
-          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel}`;
+          const swingSec = (item.swingMs || 2200) / 1000;
+          const avgDmg = (dmgMin + dmgMax) / 2;
+          const dps = Math.round(avgDmg / swingSec * 10) / 10;
+          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel} · ⏱ ${dps} DPS`;
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
@@ -8989,7 +8995,10 @@
         const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
         const dmgMin = item.baseDmgMin || 1;
         const dmgMax = item.baseDmgMax || 1;
-        stats += `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel}`;
+        const swingSec = (item.swingMs || 2200) / 1000;
+        const avgDmg = (dmgMin + dmgMax) / 2;
+        const dps = Math.round(avgDmg / swingSec * 10) / 10;
+        stats += `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel} · ⏱ ${dps} DPS`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
       }
       else if (item.type === 'armor') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
@@ -9126,7 +9135,7 @@
           const er = RARITY[mh.rarity] || RARITY.common;
           let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
           if (mh.affixes && mh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + mh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ ${mh.baseDmgMin||1}-${mh.baseDmgMax||1} dmg`;
+          s += `⚔️ ${mh.baseDmgMin||1}-${mh.baseDmgMax||1} dmg · ⏱ ${Math.round(((mh.baseDmgMin||1)+(mh.baseDmgMax||1))/2 / ((mh.swingMs||2200)/1000) * 10) / 10} DPS`;
           if (mh.critChance) s += ` · 🎯 ${mh.critChance}% krit (×2.0)`;
           if (mh.weaponType === 'staff') s += ' 🪄 magická';
           else if (mh.weaponType === 'blade') s += ' ⚔️ fyzická';
@@ -9151,7 +9160,7 @@
           const er = RARITY[oh.rarity] || RARITY.common;
           let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
           if (oh.affixes && oh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + oh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ ${oh.baseDmgMin||1}-${oh.baseDmgMax||1} dmg`;
+          s += `⚔️ ${oh.baseDmgMin||1}-${oh.baseDmgMax||1} dmg · ⏱ ${Math.round(((oh.baseDmgMin||1)+(oh.baseDmgMax||1))/2 / ((oh.swingMs||2200)/1000) * 10) / 10} DPS`;
           if (oh.critChance) s += ` · 🎯 ${oh.critChance}% krit (×2.0)`;
           if (oh.weaponType === 'staff') s += ' 🪄 magická';
           else if (oh.weaponType === 'blade') s += ' ⚔️ fyzická';
