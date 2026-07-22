@@ -1475,19 +1475,19 @@
     { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
   ];
   const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:25, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
       boss:{name:'Troll',face:'assets/monsters/troll_test_small.png',hp:10,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE},
       reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10 },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:10, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:25, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
       boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:20 },
-    { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:11, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
+    { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:25, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
       boss:{name:'Ledový obr',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
       reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:35 },
-    { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:11, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
+    { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:25, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
       boss:{name:'Lich',face:'assets/monsters/lich.png',hp:22,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5}, monsterDefense:55 },
-    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:12, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
+    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:25, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
       boss:{name:'Lávový drak',face:'assets/monsters/lava_dragon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75}, monsterDefense:80 },
   ];
@@ -7758,9 +7758,37 @@
       saveGame();
       sfxSuccess();
 
+      // Checkpoint — každých 5 pater (5, 10, 15, 20) nabídne odpočinek nebo obchod
+      const isCheckpoint = p > 0 && p % 5 === 0 && p < 25;
+
       // Zjistit, jestli je další místnost boss
       const nextStep = steps ? steps[p] : null;
       const isNextBoss = nextStep && nextStep.choices[nextStep.chosenIdx] && nextStep.choices[nextStep.chosenIdx].isBoss;
+
+      if (isCheckpoint && !isNextBoss) {
+        mapBattleState.ended = true;
+        cleanupTimers();
+        saveGame();
+        // Checkpoint screen
+        state._floorLootDrops = [];
+        $('resultIcon').innerHTML = '🏕️';
+        $('resultTitle').textContent = `Checkpoint — Patro ${p}`;
+        $('resultMsg').innerHTML = `<div style="text-align:center;font-size:13px;color:#aaa;margin-bottom:12px">Odpočiň si nebo navštiv obchodníka.</div>
+          <div style="display:flex;gap:12px;justify-content:center">
+            <div class="dungeon-choice" onclick="game.handleCheckpoint('rest')" style="border-color:#2ecc71;background:#0d2d0d88;padding:12px;text-align:center;min-width:100px">
+              <span style="font-size:28px">🛌</span><br><span style="font-size:13px">Odpočinek</span>
+            </div>
+            <div class="dungeon-choice" onclick="game.handleCheckpoint('shop')" style="border-color:#e67e22;background:#2a1a0888;padding:12px;text-align:center;min-width:100px">
+              <span style="font-size:28px">🛒</span><br><span style="font-size:13px">Obchod</span>
+            </div>
+          </div>`;
+        $('resultLootList').innerHTML = '';
+        $('resultBtn').innerHTML = '';
+        $('resultScreen').onclick = null;
+        showScreen('result');
+        switchBGM('win');
+        return;
+      }
 
       mapBattleState.ended = true;
       cleanupTimers();
@@ -9809,8 +9837,21 @@
     showScreen('map');
   }
 
+  function handleCheckpoint(action) {
+    if (action === 'rest') {
+      state.hero.maxHp = getHeroMaxHp();
+      state.hero.hp = state.hero.maxHp;
+      state.hero.mana = getHeroMaxMana();
+      saveGame();
+      showScreen('map');
+      renderMap();
+    } else if (action === 'shop') {
+      showScreen('shop');
+    }
+  }
+
   window.game = {
-    showScreen, enterLocation, toggleDungeon, chooseDungeonPath,
+    showScreen, enterLocation, toggleDungeon, chooseDungeonPath, handleCheckpoint,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
