@@ -5465,7 +5465,9 @@
     canvas.height = rect.height;
     const ctx = canvas.getContext('2d');
     const s = isCrit ? 1.8 : 1.0;
-    const duration = isCrit ? 300 : 200;
+    let duration = isCrit ? 300 : 200;
+    // Blunt weapon — delší trvání, aby byla pavučina lépe vidět
+    if (weaponType === 'blunt') duration = isCrit ? 500 : 400;
     const startTime = performance.now();
 
     if (weaponType === 'staff') {
@@ -5665,7 +5667,9 @@
         const progress = Math.min(elapsed / duration, 1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const drawProgress = Math.min(progress * 1.5, 1);
-        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        // Blunt weapon — fade začíná později, aby pavučina zůstala déle vidět
+        const fadeStart = 0.5;
+        const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
         const alpha = 1 - fadeProgress;
 
         ctx.save();
@@ -5701,9 +5705,7 @@
           ctx.moveTo(cl.x1, cl.y1);
           ctx.lineTo(cl.x2, cl.y2);
           ctx.stroke();
-          segIdx++;
         });
-
         ctx.restore();
         if (progress < 1) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
