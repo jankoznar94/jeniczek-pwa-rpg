@@ -8929,8 +8929,9 @@
       }
       if (item.type === 'weapon') {
         const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-        const avgDmg = Math.round(((item.baseDmgMin||0) + (item.baseDmgMax||0)) / 2);
-        stats += `⚔️ +${avgDmg} dmg${handLabel}`;
+        const dmgMin = item.baseDmgMin || 1;
+        const dmgMax = item.baseDmgMax || 1;
+        stats += `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel}`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
       }
       else if (item.type === 'armor') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
@@ -9137,7 +9138,9 @@
         eStats += '<span style="font-size:10px;color:#aaa">' + equipped.affixes.map(a => a.name).join(' · ') + '</span><br>';
       }
       if (equipped.type === 'weapon') {
-        eStats += `⚔️ +${equipped.baseDmg || Math.round(((equipped.baseDmgMin||0)+(equipped.baseDmgMax||0))/2)} dmg`;
+        const dmgMin = equipped.baseDmgMin || 1;
+        const dmgMax = equipped.baseDmgMax || 1;
+        eStats += `⚔️ ${dmgMin}-${dmgMax} dmg`;
         if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% crit (×2.0)`;
       }
       else if (equipped.type === 'armor') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
