@@ -5568,12 +5568,12 @@
 
     } else if (weaponType === 'blunt') {
       // Tupá zbraň — pavučina/prasklina jako rozbité sklo
-      // Náhodný počet čar (5-9) vycházejících ze středu
-      const lineCount = 5 + Math.floor(Math.random() * 5);
+      // Méně čar, menší
+      const lineCount = 3 + Math.floor(Math.random() * 3);
       const lines = [];
       for (let i = 0; i < lineCount; i++) {
         const a = Math.random() * Math.PI * 2;
-        const l = (40 + Math.random() * 80) * s;
+        const l = (25 + Math.random() * 50) * s;
         // Každá čára má 1-2 zlomy (nepravidelnost)
         const segments = [];
         let cx2 = bx, cy2 = by;
@@ -5591,12 +5591,12 @@
       }
       // Pár náhodných spojovacích čar (pavučina mezi prasklinami)
       const crossLines = [];
-      const crossCount = 2 + Math.floor(Math.random() * 3);
+      const crossCount = 1 + Math.floor(Math.random() * 2);
       for (let i = 0; i < crossCount; i++) {
         const a1 = Math.random() * Math.PI * 2;
         const a2 = a1 + 0.3 + Math.random() * 0.8;
-        const r1 = (20 + Math.random() * 50) * s;
-        const r2 = (20 + Math.random() * 50) * s;
+        const r1 = (15 + Math.random() * 30) * s;
+        const r2 = (15 + Math.random() * 30) * s;
         crossLines.push({
           x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
           x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
@@ -5716,7 +5716,7 @@
   // ===== SPELL ANIMATIONS =====
 
   function spawnHeroicStrikeAnim(mb) {
-    // Heroic Strike — agresivní, výrazné žluté seknutí s velkým glow
+    // Heroic Strike — zvýrazněná verze normálního úderu, obarvená žlutě
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     const arena = $('mbArena');
     if (!arena) return;
@@ -5735,63 +5735,263 @@
     canvas.height = rect.height;
     const ctx = canvas.getContext('2d');
     const wt = weapon.weaponType || 'fists';
-    const angle = Math.random() * Math.PI * 0.6;
-    const len = 240;
-    const startX = bx - Math.cos(angle) * len * 0.5;
-    const startY = by - Math.sin(angle) * len * 0.5;
-    const endX = bx + Math.cos(angle) * len * 0.5;
-    const endY = by + Math.sin(angle) * len * 0.5;
-    const midX = bx + Math.cos(angle) * len * 0.1;
-    const midY = by + Math.sin(angle) * len * 0.1;
-    const perpX = -Math.sin(angle) * len * 0.25;
-    const perpY = Math.cos(angle) * len * 0.25;
-    const cpX = midX + perpX;
-    const cpY = midY + perpY;
-    const approxLen = len * 1.3;
     const startTime = performance.now();
     const duration = 350;
+    const s = 1.3; // o trochu větší než normální úder
+    const mainColor = '#ffd700';
+    const glowColor = 'rgba(255,215,0,0.8)';
 
-    function animate(ts) {
-      const elapsed = ts - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const drawProgress = Math.min(progress * 1.5, 1);
-      const fadeProgress = Math.max(0, (progress - 0.4) / 0.6);
-      const alpha = 1 - fadeProgress;
-      // Vnější záře
-      ctx.save();
-      ctx.shadowColor = 'rgba(255,200,0,0.9)';
-      ctx.shadowBlur = 40;
-      ctx.strokeStyle = 'rgba(255,200,0,0.3)';
-      ctx.lineWidth = 14;
-      ctx.lineCap = 'round';
-      ctx.globalAlpha = alpha * 0.5;
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-      ctx.setLineDash([approxLen, approxLen]);
-      ctx.lineDashOffset = approxLen * (1 - drawProgress);
-      ctx.stroke();
-      ctx.restore();
-      // Hlavní čára
-      ctx.save();
-      ctx.shadowColor = 'rgba(255,215,0,0.8)';
-      ctx.shadowBlur = 25;
-      ctx.strokeStyle = '#ffd700';
-      ctx.lineWidth = 8;
-      ctx.lineCap = 'round';
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-      ctx.setLineDash([approxLen, approxLen]);
-      ctx.lineDashOffset = approxLen * (1 - drawProgress);
-      ctx.stroke();
-      ctx.restore();
-      if (progress < 1) requestAnimationFrame(animate);
-      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (wt === 'blade') {
+      // Žluté seknutí
+      const angle = Math.random() * Math.PI * 0.6;
+      const len = 200 * s;
+      const midX = bx + Math.cos(angle) * len * 0.1;
+      const midY = by + Math.sin(angle) * len * 0.1;
+      const perpX = -Math.sin(angle) * len * 0.2;
+      const perpY = Math.cos(angle) * len * 0.2;
+      const cpX = midX + perpX;
+      const cpY = midY + perpY;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+      const approxLen = len * 1.3;
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        const alpha = 1 - fadeProgress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 20 * s;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 5 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        ctx.setLineDash([approxLen, approxLen]);
+        ctx.lineDashOffset = approxLen * (1 - drawProgress);
+        ctx.stroke();
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
+    } else if (wt === 'axe') {
+      // Žluté seknutí sekerou — kratší, tlustší
+      const angle = Math.random() * Math.PI * 0.6;
+      const len = 140 * s;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const fadeProgress = Math.max(0, (progress - 0.2) / 0.8);
+        const alpha = 1 - fadeProgress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 16 * s;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 7 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        ctx.stroke();
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
+    } else if (wt === 'blunt') {
+      // Žlutá pavučina — méně čar, menší
+      const lineCount = 3 + Math.floor(Math.random() * 3);
+      const lines = [];
+      for (let i = 0; i < lineCount; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const l = (30 + Math.random() * 50) * s;
+        const segments = [];
+        const segCount = 1 + Math.floor(Math.random() * 2);
+        for (let j = 0; j < segCount; j++) {
+          const frac = (j + 1) / (segCount + 1);
+          const dx = Math.cos(a + (Math.random() - 0.5) * 0.6) * l * frac;
+          const dy = Math.sin(a + (Math.random() - 0.5) * 0.6) * l * frac;
+          segments.push({ x: bx + dx, y: by + dy });
+        }
+        const endAngle = a + (Math.random() - 0.5) * 0.4;
+        segments.push({ x: bx + Math.cos(endAngle) * l, y: by + Math.sin(endAngle) * l });
+        lines.push(segments);
+      }
+      const crossLines = [];
+      const crossCount = 1 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < crossCount; i++) {
+        const a1 = Math.random() * Math.PI * 2;
+        const a2 = a1 + 0.3 + Math.random() * 0.8;
+        const r1 = (15 + Math.random() * 30) * s;
+        const r2 = (15 + Math.random() * 30) * s;
+        crossLines.push({
+          x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
+          x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
+        });
+      }
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        const alpha = 1 - fadeProgress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 10 * s;
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 3 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        const totalSegments = lines.reduce((sum, l) => sum + l.length, 0) + crossLines.length;
+        const drawnSegments = Math.floor(drawProgress * totalSegments);
+        let segIdx = 0;
+        lines.forEach(segments => {
+          ctx.beginPath();
+          ctx.moveTo(bx, by);
+          let drawn = 0;
+          for (const seg of segments) {
+            if (segIdx >= drawnSegments) break;
+            ctx.lineTo(seg.x, seg.y);
+            segIdx++;
+            drawn++;
+          }
+          if (drawn > 0) ctx.stroke();
+        });
+        crossLines.forEach(cl => {
+          if (segIdx >= drawnSegments) return;
+          ctx.beginPath();
+          ctx.moveTo(cl.x1, cl.y1);
+          ctx.lineTo(cl.x2, cl.y2);
+          ctx.stroke();
+          segIdx++;
+        });
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
+    } else if (wt === 'claws') {
+      // Tři žluté sečné rány
+      const angle = Math.random() * Math.PI * 0.6;
+      const len = 140 * s;
+      const spacing = 22 * s;
+      const perpX = -Math.sin(angle) * spacing;
+      const perpY = Math.cos(angle) * spacing;
+      const midX = bx + Math.cos(angle) * len * 0.1;
+      const midY = by + Math.sin(angle) * len * 0.1;
+      const curveX = -Math.sin(angle) * len * 0.2;
+      const curveY = Math.cos(angle) * len * 0.2;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
+      const approxLen = len * 1.3;
+      const slashes = [
+        { sx: startX - perpX, sy: startY - perpY, cpX: midX - perpX + curveX, cpY: midY - perpY + curveY, ex: endX - perpX, ey: endY - perpY },
+        { sx: startX, sy: startY, cpX: midX + curveX, cpY: midY + curveY, ex: endX, ey: endY },
+        { sx: startX + perpX, sy: startY + perpY, cpX: midX + perpX + curveX, cpY: midY + perpY + curveY, ex: endX + perpX, ey: endY + perpY }
+      ];
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const drawProgress = Math.min(progress * 1.5, 1);
+        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
+        const alpha = 1 - fadeProgress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 12 * s;
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 3 * s;
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = alpha;
+        slashes.forEach((sl, idx) => {
+          const offset = idx * 0.05;
+          const slProgress = Math.max(0, Math.min((drawProgress - offset) / (1 - offset), 1));
+          ctx.beginPath();
+          ctx.moveTo(sl.sx, sl.sy);
+          ctx.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
+          ctx.setLineDash([approxLen, approxLen]);
+          ctx.lineDashOffset = approxLen * (1 - slProgress);
+          ctx.stroke();
+        });
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
+    } else if (wt === 'staff') {
+      // Žlutý magický záblesk
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const r = 10 + progress * 80 * s;
+        const alpha = 1 - progress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 20 * s;
+        ctx.beginPath();
+        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 5 * s;
+        ctx.globalAlpha = alpha;
+        ctx.stroke();
+        const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
+        grad.addColorStop(0, `rgba(255,215,0,${alpha * 0.5})`);
+        grad.addColorStop(0.3, `rgba(255,215,0,${alpha * 0.2})`);
+        grad.addColorStop(1, 'rgba(255,215,0,0)');
+        ctx.beginPath();
+        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
+
+    } else {
+      // fists nebo fallback — žlutý kruh
+      function animate(ts) {
+        const elapsed = ts - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const r = 10 + progress * 70 * s;
+        const alpha = 1 - progress;
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = 16 * s;
+        ctx.beginPath();
+        ctx.arc(bx, by, r, 0, Math.PI * 2);
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = 6 * s;
+        ctx.globalAlpha = alpha;
+        ctx.stroke();
+        ctx.restore();
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      requestAnimationFrame(animate);
     }
-    requestAnimationFrame(animate);
   }
 
   function spawnDoubleSwingAnim(mb) {
