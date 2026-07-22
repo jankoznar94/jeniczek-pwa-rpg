@@ -2730,7 +2730,7 @@
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          showVictorySkull(function() { endMapBattle(true); });
+          endMapBattle(true);
         }
       }, 300);
       return;
@@ -2755,7 +2755,7 @@
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
-          showVictorySkull(function() { endMapBattle(true); });
+          endMapBattle(true);
         }
       }, 300);
       return;
@@ -3671,7 +3671,7 @@
         setTimeout(() => {
           if (!mapBattleState.ended) {
             spawnDeathEffect(mb);
-            showVictorySkull(function() { endMapBattle(true); });
+            endMapBattle(true);
           }
         }, 300);
         return;
