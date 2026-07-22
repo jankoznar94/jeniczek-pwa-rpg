@@ -1164,7 +1164,7 @@
       quality: quality,
       ilvl: ilvl,
       // Base staty
-      baseDmg: baseItem.baseDmg || 0,
+      baseDmg: baseItem.type === 'weapon' ? Math.round(((baseItem.baseDmgMin||0) + (baseItem.baseDmgMax||0)) / 2) : (baseItem.baseDmg || 0),
       bonusHp: baseItem.bonusHp || 0,
       bonusMana: baseItem.bonusMana || 0,
       defense: baseItem.defense || 0,
@@ -1240,7 +1240,7 @@
       icon: uniqueDef.icon || baseItem.icon,
       lvlReq: uniqueDef.minLevel || 1,
       // Base staty
-      baseDmg: baseItem.baseDmg || 0,
+      baseDmg: baseItem.type === 'weapon' ? Math.round(((baseItem.baseDmgMin||0) + (baseItem.baseDmgMax||0)) / 2) : (baseItem.baseDmg || 0),
       bonusHp: baseItem.bonusHp || 0,
       bonusMana: baseItem.bonusMana || 0,
       defense: baseItem.defense || 0,
@@ -3522,7 +3522,7 @@
       const pct = 80 + lv * 20; // 100% @ lv1, 120% @ lv2, ... 180% @ lv5
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
-      const baseDmg = 10 + Math.floor(state.hero.level * 3) + weapon.baseDmg + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
+      const baseDmg = 10 + Math.floor(state.hero.level * 3) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
       const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
       mb.bossHp -= dmg;
       // Omráčení — 3s + 0.5s/lv
@@ -7199,7 +7199,7 @@
     // Clean up spell buttons
     $('mbSpells').innerHTML = '';
     let effectMsg = '';
-    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + (ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']).baseDmg + (state.hero.attrStr||0)*2);
+    const baseDmg = mb.baseDmg || (10 + Math.floor(state.hero.level * 3) + getWeaponDmg(ITEM_MAP[state.hero.equip.weapon]||ITEM_MAP['fists']) + (state.hero.attrStr||0)*2);
     if (spellId === 'fireball') {
       const pct = 100 + lv * 100; // 200% @ lv1, 300% @ lv2, 400% @ lv3
       const resistMult = getSchoolResistMult('fire');
@@ -8474,11 +8474,12 @@
         let stats = '';
         if (item.type === 'weapon') {
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-          stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
+          const avgDmg = Math.round(((item.baseDmgMin||0) + (item.baseDmgMax||0)) / 2);
+          stats = `⚔️+${avgDmg} dmg${handLabel}`;
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
-        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
+        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Heals' : 'Restores'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'mana'}`;
         else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
         // Affix názvy
         if (item.affixes && item.affixes.length) {
@@ -8525,11 +8526,12 @@
         let stats = '';
         if (item.type === 'weapon') {
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-          stats = `⚔️+${item.baseDmg} dmg${handLabel}`;
+          const avgDmg = Math.round(((item.baseDmgMin||0) + (item.baseDmgMax||0)) / 2);
+          stats = `⚔️+${avgDmg} dmg${handLabel}`;
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
-        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
+        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Heals' : 'Restores'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'mana'}`;
         else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
         // Extra staty pro base itemy
         const extraStats = [];
@@ -8714,7 +8716,8 @@
       }
       if (item.type === 'weapon') {
         const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-        stats += `⚔️ +${item.baseDmg} poškození${handLabel}`;
+        const avgDmg = Math.round(((item.baseDmgMin||0) + (item.baseDmgMax||0)) / 2);
+        stats += `⚔️ +${avgDmg} dmg${handLabel}`;
         if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
       }
       else if (item.type === 'armor') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
@@ -8851,7 +8854,7 @@
           const er = RARITY[mh.rarity] || RARITY.common;
           let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
           if (mh.affixes && mh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + mh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ +${mh.baseDmg} poškození`;
+          s += `⚔️ +${mh.baseDmg || Math.round(((mh.baseDmgMin||0)+(mh.baseDmgMax||0))/2)} dmg`;
           if (mh.critChance) s += ` · 🎯 ${mh.critChance}% krit (×2.0)`;
           if (mh.weaponType === 'staff') s += ' 🪄 magická';
           else if (mh.weaponType === 'blade') s += ' ⚔️ fyzická';
@@ -8876,7 +8879,7 @@
           const er = RARITY[oh.rarity] || RARITY.common;
           let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
           if (oh.affixes && oh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + oh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ +${oh.baseDmg} poškození`;
+          s += `⚔️ +${oh.baseDmg || Math.round(((oh.baseDmgMin||0)+(oh.baseDmgMax||0))/2)} dmg`;
           if (oh.critChance) s += ` · 🎯 ${oh.critChance}% krit (×2.0)`;
           if (oh.weaponType === 'staff') s += ' 🪄 magická';
           else if (oh.weaponType === 'blade') s += ' ⚔️ fyzická';
@@ -8921,8 +8924,8 @@
         eStats += '<span style="font-size:10px;color:#aaa">' + equipped.affixes.map(a => a.name).join(' · ') + '</span><br>';
       }
       if (equipped.type === 'weapon') {
-        eStats += `⚔️ +${equipped.baseDmg} poškození`;
-        if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% krit (×2.0)`;
+        eStats += `⚔️ +${equipped.baseDmg || Math.round(((equipped.baseDmgMin||0)+(equipped.baseDmgMax||0))/2)} dmg`;
+        if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% crit (×2.0)`;
       }
       else if (equipped.type === 'armor') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
       else if (equipped.type === 'helmet') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
