@@ -1794,6 +1794,7 @@
     if (_treasurePopupOpen) return;
     _treasurePopupOpen = true;
     playSFX(treasureSfx);
+    playSFX(shopSfx);
 
     // Sestavit loot čtverečky
     let lootSquares = '';
