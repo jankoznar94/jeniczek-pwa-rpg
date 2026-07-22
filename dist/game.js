@@ -150,19 +150,19 @@
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
 
   // ===== FLOATING BATTLE TEXT (WoW-style scrolling arc) =====
-  // side: 'left' (enemy dmg → player, 11h→7h) or 'right' (player dmg → enemy, 1h→5h)
+  // side: 'left' (enemy dmg → player, arcs on left half) or 'right' (player dmg → enemy, arcs on right half)
   function spawnFloatingText(text, side, color, size, duration) {
     const arena = document.getElementById('mbArena');
     if (!arena) return;
     const ar = arena.getBoundingClientRect();
     const cx = ar.width / 2;
     const cy = ar.height / 2;
-    const radius = Math.min(cx, cy) * 0.75;
-    // Levá strana: 11h (4*PI/3) → 7h (2*PI/3)
-    // Pravá strana: 1h (5*PI/3) → 5h (PI/3)
-    const startAngle = side === 'left' ? 4 * Math.PI / 3 : 5 * Math.PI / 3;
-    const endAngle = side === 'left' ? 2 * Math.PI / 3 : Math.PI / 3;
-    const dur = duration || 1200;
+    const radius = Math.min(cx, cy) * 0.7;
+    // Levá strana: start 10h (150°) → konec 8h (210°) — arc na levé půlce
+    // Pravá strana: start 2h (30°) → konec 4h (330°) — arc na pravé půlce
+    const startAngle = side === 'left' ? 5 * Math.PI / 6 : Math.PI / 6;
+    const endAngle = side === 'left' ? 7 * Math.PI / 6 : 11 * Math.PI / 6;
+    const dur = duration || 1800;
     const startTime = performance.now();
 
     const el = document.createElement('div');
