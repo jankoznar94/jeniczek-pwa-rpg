@@ -1530,6 +1530,21 @@
     const steps = [];
 
     for (let step = 0; step < stepCount; step++) {
+      // Checkpoint patra (5., 10., 15., 20.) — rest/shop místo boje
+      const isCheckpoint = step > 0 && (step + 1) % 5 === 0 && step < 25;
+      if (isCheckpoint) {
+        steps.push({
+          choices: [{
+            type: 'checkpoint',
+            icon: '🏕️',
+            label: 'Checkpoint',
+            isCheckpoint: true,
+          }],
+          completed: false,
+          chosenIdx: -1,
+        });
+        continue;
+      }
       // Mezi checkpointy jen bojové místnosti — fountain a merchant jen na checkpointech
       const isFirstStep = step === 0;
       const numChoices = isFirstStep ? 2 : (2 + (Math.random() < 0.4 ? 1 : 0));
@@ -2128,6 +2143,7 @@
     const isFountain = !isBoss && !isReward && chosen.type === ROOM_TYPES.FOUNTAIN;
     const isChest = !isBoss && !isReward && chosen.type === ROOM_TYPES.CHEST;
     const isMerchantChoice = !isBoss && !isReward && chosen.type === ROOM_TYPES.MERCHANT;
+    const isCheckpoint = chosen.isCheckpoint || false;
 
     // Reset HP při vstupu do dungeonu (progress === 0)
     if (progress === 0) {
@@ -2153,6 +2169,28 @@
       $('resultLootList').innerHTML = '';
       $('resultBtn').innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      showScreen('result');
+      return;
+    }
+
+    // Checkpoint — rest/shop
+    if (isCheckpoint) {
+      state.locationProgress[locId] = progress + 1;
+      saveGame();
+      $('resultIcon').innerHTML = '🏕️';
+      $('resultTitle').textContent = `Checkpoint — Floor ${progress + 1}`;
+      $('resultMsg').innerHTML = `<div style="text-align:center;font-size:13px;color:#aaa;margin-bottom:12px">Rest or visit the merchant.</div>
+        <div style="display:flex;gap:12px;justify-content:center">
+          <div class="dungeon-choice" onclick="game.handleCheckpoint('rest')" style="border-color:#2ecc71;background:#0d2d0d88;padding:12px;text-align:center;min-width:100px">
+            <span style="font-size:28px">🛌</span><br><span style="font-size:13px">Rest</span>
+          </div>
+          <div class="dungeon-choice" onclick="game.handleCheckpoint('shop')" style="border-color:#e67e22;background:#2a1a0888;padding:12px;text-align:center;min-width:100px">
+            <span style="font-size:28px">🛒</span><br><span style="font-size:13px">Shop</span>
+          </div>
+        </div>`;
+      $('resultLootList').innerHTML = '';
+      $('resultBtn').innerHTML = '';
+      $('resultScreen').onclick = null;
       showScreen('result');
       return;
     }
@@ -7777,37 +7815,9 @@
       saveGame();
       sfxSuccess();
 
-      // Checkpoint — každých 5 pater (5, 10, 15, 20) nabídne odpočinek nebo obchod
-      const isCheckpoint = p > 0 && p % 5 === 0 && p < 25;
-
       // Zjistit, jestli je další místnost boss
       const nextStep = steps ? steps[p] : null;
       const isNextBoss = nextStep && nextStep.choices[nextStep.chosenIdx] && nextStep.choices[nextStep.chosenIdx].isBoss;
-
-      if (isCheckpoint && !isNextBoss) {
-        mapBattleState.ended = true;
-        cleanupTimers();
-        saveGame();
-        // Checkpoint screen
-        state._floorLootDrops = [];
-        $('resultIcon').innerHTML = '🏕️';
-        $('resultTitle').textContent = `Checkpoint — Floor ${p}`;
-        $('resultMsg').innerHTML = `<div style="text-align:center;font-size:13px;color:#aaa;margin-bottom:12px">Rest or visit the merchant.</div>
-          <div style="display:flex;gap:12px;justify-content:center">
-            <div class="dungeon-choice" onclick="game.handleCheckpoint('rest')" style="border-color:#2ecc71;background:#0d2d0d88;padding:12px;text-align:center;min-width:100px">
-              <span style="font-size:28px">🛌</span><br><span style="font-size:13px">Rest</span>
-            </div>
-            <div class="dungeon-choice" onclick="game.handleCheckpoint('shop')" style="border-color:#e67e22;background:#2a1a0888;padding:12px;text-align:center;min-width:100px">
-              <span style="font-size:28px">🛒</span><br><span style="font-size:13px">Shop</span>
-            </div>
-          </div>`;
-        $('resultLootList').innerHTML = '';
-        $('resultBtn').innerHTML = '';
-        $('resultScreen').onclick = null;
-        showScreen('result');
-        switchBGM('win');
-        return;
-      }
 
       mapBattleState.ended = true;
       cleanupTimers();
