@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
@@ -13,12 +13,12 @@
 <body>
 
 <nav class="nav-bar hidden">
-  <a href="#" data-screen="map" class="active"><img src="assets/menu-icons/mapa.png" alt="Mapa" class="nav-icon"></a>
-  <a href="#" data-screen="hero"><img src="assets/monsters/hero.png" alt="Hrdina" class="nav-icon" id="navHeroIcon"></a>
-  <a href="#" data-screen="talents"><img src="assets/menu-icons/talenty.png" alt="Talenty" class="nav-icon"><span class="nav-badge" id="talentBadge">0</span></a>
-  <a href="#" data-screen="inventory"><img src="assets/menu-icons/inventar.png" alt="Inventář" class="nav-icon"></a>
-  <a href="#" data-screen="bestiary"><img src="assets/menu-icons/bestiar.png" alt="Bestiář" class="nav-icon"></a>
-  <a href="#" id="musicToggle"><img src="assets/menu-icons/music.png" alt="Hudba" class="nav-icon"></a>
+  <a href="#" data-screen="map" class="active"><img src="assets/menu-icons/mapa.png" alt="Map" class="nav-icon"></a>
+  <a href="#" data-screen="hero"><img src="assets/monsters/hero.png" alt="Hero" class="nav-icon" id="navHeroIcon"></a>
+  <a href="#" data-screen="talents"><img src="assets/menu-icons/talenty.png" alt="Talents" class="nav-icon"><span class="nav-badge" id="talentBadge">0</span></a>
+  <a href="#" data-screen="inventory"><img src="assets/menu-icons/inventar.png" alt="Inventory" class="nav-icon"></a>
+  <a href="#" data-screen="bestiary"><img src="assets/menu-icons/bestiar.png" alt="Bestiary" class="nav-icon"></a>
+  <a href="#" id="musicToggle"><img src="assets/menu-icons/music.png" alt="Music" class="nav-icon"></a>
   <a href="#" id="testToggle"><img src="assets/menu-icons/testmode.png" alt="Test" class="nav-icon"></a>
   <a href="#" id="clearSave" style="color:#e94560;font-size:16px;font-weight:bold">🗑️</a>
   <a href="#" data-screen="spellbook" style="color:#f1c40f;font-size:18px;font-weight:bold">📖</a>
@@ -28,30 +28,30 @@
 <!-- ===== CLASS SELECT ===== -->
 <div id="classSelectScreen" class="container hidden">
   <div class="card">
-    <div class="card-title" style="text-align:center;font-size:20px">⚔️ Vyber si povolání</div>
-    <div class="card-subtitle" style="text-align:center">Každé povolání má vlastní zdroj energie, talentové stromy a omezení na zbraně.</div>
+    <div class="card-title" style="text-align:center;font-size:20px">⚔️ Choose Your Class</div>
+    <div class="card-subtitle" style="text-align:center">Each class has its own resource, talent trees and weapon restrictions.</div>
   </div>
   <div class="class-cards">
     <div class="class-card" onclick="game.selectClass('barbarian')">
-      <div class="class-card-icon"><img src="assets/monsters/hero_barbarian_m.png" alt="Barbar" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #e74c3c;box-shadow:0 0 10px rgba(231,76,60,0.3);"></div>
-      <div class="class-card-name">Barbar</div>
+      <div class="class-card-icon"><img src="assets/monsters/hero_barbarian_m.png" alt="Barbarian" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #e74c3c;box-shadow:0 0 10px rgba(231,76,60,0.3);"></div>
+      <div class="class-card-name">Barbarian</div>
       <div class="class-card-resource">💢 Rage (0–100)</div>
-      <div class="class-card-desc">Hromadí vztek za utržené a udělené poškození. Dvouruční zbraně, sekery, štíty. Vysoká síla a výdrž.</div>
-      <div class="class-card-weapons">⚔️ Obouručák · 1R+štít · 2×1R</div>
+      <div class="class-card-desc">Builds rage from damage taken and dealt. Two-handed weapons, axes, shields. High strength and stamina.</div>
+      <div class="class-card-weapons">⚔️ 2H · 1H+Shield · Dual Wield</div>
     </div>
     <div class="class-card" onclick="game.selectClass('assassin')">
       <div class="class-card-icon"><img src="assets/monsters/hero_rogue_m.png" alt="Assassin" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #4a7dff;box-shadow:0 0 10px rgba(74,125,255,0.3);"></div>
       <div class="class-card-name">Assassin</div>
-      <div class="class-card-resource">⚡ Energy (100, regeneruje)</div>
-      <div class="class-card-desc">Rychlé, přesné útoky. Energy se samovolně doplňuje. Dýky a jednoruční meče. Vysoká obratnost.</div>
-      <div class="class-card-weapons">🗡️ Dýky · ⚔️ Jednoruční meče</div>
+      <div class="class-card-resource">⚡ Energy (100, regenerates)</div>
+      <div class="class-card-desc">Fast precise attacks. Energy regenerates over time. Blades and claws. High dexterity.</div>
+      <div class="class-card-weapons">🗡️ Blades · ⚔️ Claws</div>
     </div>
     <div class="class-card" onclick="game.selectClass('mage')">
-      <div class="class-card-icon"><img src="assets/monsters/hero_mage_m.png" alt="Kouzelník" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #9b59b6;box-shadow:0 0 10px rgba(155,89,182,0.3);"></div>
-      <div class="class-card-name">Kouzelník</div>
-      <div class="class-card-resource">💧 Mana (škáluje s INT + gear)</div>
-      <div class="class-card-desc">Mocná kouzla na dálku. Hůlky a magické artefakty. Vysoký intelekt, nízká obrana.</div>
-      <div class="class-card-weapons">🪄 1R hůlka + artefakt · 2R hůl</div>
+      <div class="class-card-icon"><img src="assets/monsters/hero_mage_m.png" alt="Mage" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #9b59b6;box-shadow:0 0 10px rgba(155,89,182,0.3);"></div>
+      <div class="class-card-name">Mage</div>
+      <div class="class-card-resource">💧 Mana (scales with INT + gear)</div>
+      <div class="class-card-desc">Powerful ranged spells. Wands and magical artifacts. High intellect, low defense.</div>
+      <div class="class-card-weapons">🪄 1H Wand + Offhand · 2H Staff</div>
     </div>
   </div>
 </div>
@@ -68,8 +68,8 @@
   <div class="card">
     <div class="battle-header">
       <div class="battle-header-row">
-        <span class="battle-enemy-name" id="mbEnemyName">Nestvůra</span>
-        <span class="battle-location" id="mbLocation">Lokace 1</span>
+        <span class="battle-enemy-name" id="mbEnemyName">Monster</span>
+        <span class="battle-location" id="mbLocation">Location 1</span>
       </div>
     </div>
     <div class="flex-between" style="margin-top:4px">
@@ -161,7 +161,7 @@
       <span class="card-title"><img src="assets/menu-icons/talenty.png" class="page-icon" alt=""> Talent Tree</span>
       <span id="talentsPts" style="color:#f1c40f;font-weight:bold">Body: 0</span>
     </div>
-    <div class="card-subtitle">Za každý level získáš 1 talent bod. <strong>Jedna škola</strong> může být aktivní najednou.</div>
+    <div class="card-subtitle">You get 1 talent point per level. <strong>One school</strong> can be active at a time.</div>
   </div>
   <div class="talent-schools" id="talentSchools"></div>
   <!-- Skill info panel -->
@@ -174,7 +174,7 @@
     </div>
   </div>
   <div class="card" style="margin-top:8px">
-    <button class="btn btn-secondary" onclick="game.resetTalents()" id="resetTalentsBtn">🔄 Resetovat talenty (50💰)</button>
+    <button class="btn btn-secondary" onclick="game.resetTalents()" id="resetTalentsBtn">🔄 Reset Talents (50💰)</button>
   </div>
 </div>
 
@@ -184,15 +184,15 @@
     <div class="hero-header">
       <div class="hero-portrait-lg">
         <div class="hero-portrait-lg-frame"><img src="assets/monsters/hero.png" alt="" class="hero-portrait-lg-img" id="heroPortraitImg"/></div>
-        <button class="btn-change-face" onclick="game.showFaceSelect()" title="Změnit vzhled">🔄</button>
+        <button class="btn-change-face" onclick="game.showFaceSelect()" title="Change appearance">🔄</button>
       </div>
       <div class="hero-header-info">
         <div class="hero-name-row">
-          <span class="hero-name" id="heroName">Dobrodruh</span>
-          <button class="btn-rename" onclick="game.renameHero()" title="Přejmenovat">✏️</button>
+          <span class="hero-name" id="heroName">Adventurer</span>
+          <button class="btn-rename" onclick="game.renameHero()" title="Rename">✏️</button>
           <span class="hero-level" id="heroLevel">Lv.1</span>
         </div>
-        <div class="hero-subtitle" id="heroClassLabel">⚔️ Barbar</div>
+        <div class="hero-subtitle" id="heroClassLabel">⚔️ Barbarian</div>
         <div class="hero-subtitle">💀 <span id="heroDeaths">0</span> · 🏆 <span id="heroWins">0</span></div>
       </div>
     </div>
@@ -208,61 +208,61 @@
   </div>
 
   <div class="card">
-    <div class="card-title">💪 Atributy <span class="hero-attr-pts">(body: <span id="heroAttrPts">0</span>)</span></div>
+    <div class="card-title">💪 Attributes <span class="hero-attr-pts">(points: <span id="heroAttrPts">0</span>)</span></div>
     <div class="hero-attr-row">
-      <span class="hero-attr-label">💪 Síla</span>
+      <span class="hero-attr-label">💪 Strength</span>
       <span class="hero-attr-val" id="heroAttrStr">0</span>
       <button class="btn btn-primary hero-attr-btn" id="heroUpStr" onclick="game.upgradeAttr('str')">⬆️</button>
     </div>
     <div class="hero-attr-row">
-      <span class="hero-attr-label">❤️ Vitalita</span>
+      <span class="hero-attr-label">❤️ Vitality</span>
       <span class="hero-attr-val" id="heroAttrVit">0</span>
       <button class="btn btn-primary hero-attr-btn" id="heroUpVit" onclick="game.upgradeAttr('vit')">⬆️</button>
     </div>
     <div class="hero-attr-row">
-      <span class="hero-attr-label">🎯 Obratnost</span>
+      <span class="hero-attr-label">🎯 Dexterity</span>
       <span class="hero-attr-val" id="heroAttrDex">0</span>
       <button class="btn btn-primary hero-attr-btn" id="heroUpDex" onclick="game.upgradeAttr('dex')">⬆️</button>
     </div>
     <div class="hero-attr-row">
-      <span class="hero-attr-label">🧠 Intelekt</span>
+      <span class="hero-attr-label">🧠 Intellect</span>
       <span class="hero-attr-val" id="heroAttrInt">0</span>
       <button class="btn btn-primary hero-attr-btn" id="heroUpInt" onclick="game.upgradeAttr('int')">⬆️</button>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">⚔️ Detaily postavy</div>
+    <div class="card-title">⚔️ Character Details</div>
     <div class="hero-detail-grid">
-      <div class="hero-detail-item"><span class="hero-detail-icon">⚔️</span><span class="hero-detail-label">Poškození</span><span class="hero-detail-val" id="heroDetailDmg">12</span></div>
-      <div class="hero-detail-item"><span class="hero-detail-icon">🛡️</span><span class="hero-detail-label">Obrana</span><span class="hero-detail-val" id="heroDetailDef">0 (0%)</span></div>
-      <div class="hero-detail-item"><span class="hero-detail-icon">🗡️</span><span class="hero-detail-label">Krit</span><span class="hero-detail-val" id="heroDetailCrit">0%</span></div>
-      <div class="hero-detail-item"><span class="hero-detail-icon">🛡️</span><span class="hero-detail-label">Blok</span><span class="hero-detail-val" id="heroDetailBlock">0%</span></div>
+      <div class="hero-detail-item"><span class="hero-detail-icon">⚔️</span><span class="hero-detail-label">Damage</span><span class="hero-detail-val" id="heroDetailDmg">12</span></div>
+      <div class="hero-detail-item"><span class="hero-detail-icon">🛡️</span><span class="hero-detail-label">Defense</span><span class="hero-detail-val" id="heroDetailDef">0 (0%)</span></div>
+      <div class="hero-detail-item"><span class="hero-detail-icon">🗡️</span><span class="hero-detail-label">Crit</span><span class="hero-detail-val" id="heroDetailCrit">0%</span></div>
+      <div class="hero-detail-item"><span class="hero-detail-icon">🛡️</span><span class="hero-detail-label">Block</span><span class="hero-detail-val" id="heroDetailBlock">0%</span></div>
       <div class="hero-detail-item"><span class="hero-detail-icon">💨</span><span class="hero-detail-label">Dodge</span><span class="hero-detail-val" id="heroDetailDodge">0%</span></div>
       <div class="hero-detail-item"><span class="hero-detail-icon">🎯</span><span class="hero-detail-label">Hit Chance</span><span class="hero-detail-val" id="heroDetailHit">95%</span></div>
-      <div class="hero-detail-item"><span class="hero-detail-icon">❤️</span><span class="hero-detail-label">Životy</span><span class="hero-detail-val" id="heroDetailHp">100/100</span></div>
+      <div class="hero-detail-item"><span class="hero-detail-icon">❤️</span><span class="hero-detail-label">Health</span><span class="hero-detail-val" id="heroDetailHp">100/100</span></div>
       <div class="hero-detail-item"><span class="hero-detail-icon">💧</span><span class="hero-detail-label">Mana</span><span class="hero-detail-val" id="heroDetailMana">50/50</span></div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">🎓 Aktivní škola</div>
-    <div id="activeSchoolInfo" class="card-subtitle">Žádná — přidej talentové body v 🎓 Talent Tree</div>
+    <div class="card-title">🎓 Active School</div>
+    <div id="activeSchoolInfo" class="card-subtitle">None — spend talent points in 🎓 Talent Tree</div>
   </div>
 </div>
 
 <!-- ===== FACE SELECT OVERLAY ===== -->
 <div id="faceSelectOverlay" class="hidden" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:20px;box-sizing:border-box">
-  <div style="color:#f1c40f;font-size:18px;font-weight:bold;margin-bottom:12px">Vyber vzhled hrdiny</div>
+  <div style="color:#f1c40f;font-size:18px;font-weight:bold;margin-bottom:12px">Choose Hero Appearance</div>
   <div id="faceSelectGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:320px;width:100%"></div>
-  <button class="btn btn-secondary" style="margin-top:16px;padding:8px 24px" onclick="game.closeFaceSelect()">Zavřít</button>
+  <button class="btn btn-secondary" style="margin-top:16px;padding:8px 24px" onclick="game.closeFaceSelect()">Close</button>
 </div>
 
 <!-- ===== RESULT ===== -->
 <div id="resultScreen" class="hidden">
   <div class="result-screen container">
     <div class="result-icon" id="resultIcon">💀</div>
-    <div class="result-title" id="resultTitle">Konec</div>
+    <div class="result-title" id="resultTitle">End</div>
     <div class="result-sub" id="resultMsg"></div>
     <div class="result-loot-scroll" id="resultLootList"></div>
     <div id="resultBtn" class="mt-10"></div>
@@ -271,30 +271,30 @@
 
 <!-- ===== SHOP ===== -->
 <div id="shopScreen" class="container hidden">
-  <!-- Tlačítko zpět na bojiště — úplně nahoře -->
+  <!-- Back to battlefield button — top -->
   <div class="shop-back-map">
-    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Zpět na bojiště</button>
+    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Back to Battlefield</button>
   </div>
   <div class="card">
     <div class="flex-between">
-      <span class="card-title"><img src="assets/menu-icons/obchod.png" class="page-icon" alt=""> Obchod</span>
-      <span id="shopGold">💰 0 zlatých</span>
+      <span class="card-title"><img src="assets/menu-icons/obchod.png" class="page-icon" alt=""> Shop</span>
+      <span id="shopGold">💰 0 gold</span>
     </div>
-    <div class="card-subtitle">Nakup a prodávej výbavu</div>
+    <div class="card-subtitle">Buy and sell equipment</div>
   </div>
   <div class="shop-tabs">
-    <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Koupit</button>
-    <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Prodat</button>
-    <button class="shop-tab" onclick="game.openInventoryFromShop()">🎒 Inventář</button>
+    <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Buy</button>
+    <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Sell</button>
+    <button class="shop-tab" onclick="game.openInventoryFromShop()">🎒 Inventory</button>
   </div>
   <div id="shopList"></div>
 </div>
 
 <!-- ===== INVENTORY ===== -->
 <div id="inventoryScreen" class="container hidden">
-  <!-- Tlačítko zpět do obchodu — úplně nahoře -->
+  <!-- Back to shop button — top -->
   <div class="inv-shop-back hidden" id="invShopBack">
-    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Zpět do obchodu</button>
+    <button class="btn btn-secondary" onclick="game.showScreen('shop')">🛒 Back to Shop</button>
   </div>
   <!-- Equipment sloty — jeden grid -->
   <div class="inv-equip-panel">
@@ -350,8 +350,8 @@
 <!-- ===== BESTIARY ===== -->
 <div id="bestiaryScreen" class="container hidden">
   <div class="card">
-    <div class="card-title"><img src="assets/menu-icons/bestiar.png" class="page-icon" alt=""> Bestiář</div>
-    <div class="card-subtitle">Všechna monstra, jejich typy a způsob útoku.</div>
+    <div class="card-title"><img src="assets/menu-icons/bestiar.png" class="page-icon" alt=""> Bestiary</div>
+    <div class="card-subtitle">All monsters, their types and attack patterns.</div>
   </div>
   <div class="bestiary-grid" id="bestiaryGrid"></div>
 </div>
@@ -359,8 +359,8 @@
 <!-- ===== SPELLBOOK ===== -->
 <div id="spellbookScreen" class="container hidden">
   <div class="card">
-    <div class="card-title">📖 Kniha kouzel</div>
-    <div class="card-subtitle" id="spellbookSubtitle">Přehled kouzel pro vybranou classu.</div>
+    <div class="card-title">📖 Spellbook</div>
+    <div class="card-subtitle" id="spellbookSubtitle">Overview of spells for the selected class.</div>
   </div>
   <div id="spellbookList"></div>
 </div>
@@ -368,8 +368,8 @@
 <!-- ===== ITEMS REFERENCE ===== -->
 <div id="itemsScreen" class="container hidden">
   <div class="card">
-    <div class="card-title">📦 Přehled předmětů</div>
-    <div class="card-subtitle">Base itemy, affixy a unique předměty.</div>
+    <div class="card-title">📦 Item Reference</div>
+    <div class="card-subtitle">Base items, affixes and unique items.</div>
   </div>
   <div id="itemsContent"></div>
 </div>
@@ -382,11 +382,11 @@
 <!-- ===== SURRENDER MODAL ===== -->
 <div id="surrenderModal" class="surrender-modal hidden">
   <div class="surrender-modal-content">
-    <div class="surrender-modal-title">🏳️ Vzdát se?</div>
-    <div class="surrender-modal-text">Opravdu se chceš vzdát a opustit souboj? Postup v dungeonu bude ztracen.</div>
+    <div class="surrender-modal-title">🏳️ Surrender?</div>
+    <div class="surrender-modal-text">Are you sure you want to surrender and leave the battle? Dungeon progress will be lost.</div>
     <div class="surrender-modal-buttons">
-      <button class="btn btn-secondary" onclick="game.cancelSurrender()">Ne, zpět</button>
-      <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Vzdát se</button>
+      <button class="btn btn-secondary" onclick="game.cancelSurrender()">No, go back</button>
+      <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Surrender</button>
     </div>
   </div>
 </div>

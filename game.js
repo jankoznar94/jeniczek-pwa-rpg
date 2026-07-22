@@ -8,10 +8,10 @@
   // ===== CLASSES =====
   const CLASSES = {
     barbarian: {
-      id:'barbarian', name:'Barbar', icon:'🪓',
+      id:'barbarian', name:'Barbarian', icon:'🪓',
       resource:'rage', resourceName:'💢 Rage', maxResource:100, startResource:0,
       resourceRegen:0,
-      desc:'Hromadí vztek za utržené a udělené poškození.',
+      desc:'Builds rage from damage taken and dealt.',
       allowedWeapons:['blade','fists','blunt','axe','claws'],
       allowedShield:true,
       allowedOffhand:true,
@@ -21,20 +21,20 @@
       baseHp:40, baseDmg:5, baseMana:0,
       attrBonus:{str:20, vit:25, dex:15, int:10},
       spells: [
-        { id:'heroicStrike', name:'Heroic Strike', icon:'⚡', cost:20, cooldown:0, gcd:0.5, desc:'150% dmg při příštím swingu' },
-        { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + zpomalení nepřítele 10% na 10s' },
-        { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% zisk Rage na 10s' },
-        { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + omráčení 5s' },
-        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg na 30s' },
-        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg oběma zbraněmi + reset swing timerů' },
-        { id:'whirlwind', name:'Whirlwind', icon:'🌀', cost:50, cooldown:12, gcd:0.5, desc:'3× rychlé útoky oběma zbraněmi' }
+        { id:'heroicStrike', name:'Heroic Strike', icon:'⚡', cost:20, cooldown:0, gcd:0.5, desc:'150% dmg on next swing' },
+        { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + slow enemy 10% for 10s' },
+        { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% Rage gain for 10s' },
+        { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + stun 5s' },
+        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg for 30s' },
+        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg with both weapons + reset swing timers' },
+        { id:'whirlwind', name:'Whirlwind', icon:'🌀', cost:50, cooldown:12, gcd:0.5, desc:'3× fast attacks with both weapons' }
       ]
     },
     assassin: {
       id:'assassin', name:'Assassin', icon:'🗡️',
       resource:'energy', resourceName:'⚡ Energy', maxResource:100, startResource:100,
-      resourceRegen:10, // 10/s
-      desc:'Energy se samovolně doplňuje. Rychlé přesné útoky.',
+      resourceRegen:10,
+      desc:'Energy regenerates over time. Fast precise attacks.',
       allowedWeapons:['blade','fists','claws'],
       allowedShield:false,
       allowedOffhand:false,
@@ -45,35 +45,35 @@
       attrBonus:{str:15, vit:20, dex:25, int:10},
       spells: [
         { id:'sinisterStrike', name:'Sinister Strike', icon:'🗡️', cost:40, cooldown:0, gcd:0.5, desc:'150% dmg + 1 combo point' },
-        { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'Poškození dle combo pointů (1:150%–5:350%)' },
-        { id:'kidneyShot', name:'Kidney Shot', icon:'🔨', cost:35, cooldown:20, gcd:0.5, needsCombo:true, desc:'Omráčení dle combo pointů (1:1s–5:5s)' },
-        { id:'evasion', name:'Evasion', icon:'💨', cost:50, cooldown:60, gcd:0.5, desc:'+50% dodge na 10s' },
-        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'+20% rychlost útoku dle combo pointů (1:5s–5:17s)' }
+        { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'Damage based on combo points (1:150%–5:350%)' },
+        { id:'kidneyShot', name:'Kidney Shot', icon:'🔨', cost:35, cooldown:20, gcd:0.5, needsCombo:true, desc:'Stun based on combo points (1:1s–5:5s)' },
+        { id:'evasion', name:'Evasion', icon:'💨', cost:50, cooldown:60, gcd:0.5, desc:'+50% dodge for 10s' },
+        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'+20% attack speed based on combo points (1:5s–5:17s)' }
       ]
     },
     mage: {
-      id:'mage', name:'Kouzelník', icon:'🪄',
+      id:'mage', name:'Mage', icon:'🪄',
       resource:'mana', resourceName:'💧 Mana', maxResource:30, startResource:30,
-      resourceRegen:1, // 1/tick + INT bonus
-      desc:'Mana škáluje s INT a gearem. Mocná kouzla na dálku.',
+      resourceRegen:1,
+      desc:'Mana scales with INT and gear. Powerful ranged spells.',
       allowedWeapons:['staff','fists'],
       allowedShield:true,
-      allowedOffhand:true, // artefakt
+      allowedOffhand:true,
       dualWield:false,
       primaryAttr:'int',
       talentSchool:'fire',
       baseHp:25, baseDmg:6, baseMana:30,
       attrBonus:{str:15, vit:15, dex:15, int:25},
       spells: [
-        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Oheň: střední dmg, střední rozptyl' },
-        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Led: nízký dmg, malý rozptyl, zpomalí 25%' },
-        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Blesk: vysoký max dmg, velký rozptyl' },
-        { id:'fireball', name:'Fireball', icon:'💥', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Oheň: střední dmg, střední rozptyl + DoT' },
-        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Led: nízký dmg, malý rozptyl, zmrazení' },
-        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Blesk: vysoký max dmg, velký rozptyl, skáče' },
-        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Oheň: střední dmg, střední rozptyl' },
-        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Led: nízký dmg/tick, malý rozptyl' },
-        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Blesk: vysoký max dmg/tick, velký rozptyl' }
+        { id:'firebolt', name:'Firebolt', icon:'🔥', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Fire: medium dmg, medium spread' },
+        { id:'icebolt', name:'Icebolt', icon:'❄️', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Ice: low dmg, low spread, slow 25%' },
+        { id:'lightningBolt', name:'Lightning Bolt', icon:'⚡', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Lightning: high max dmg, wide spread' },
+        { id:'fireball', name:'Fireball', icon:'💥', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Fire: medium dmg, medium spread + DoT' },
+        { id:'frostbolt', name:'Frostbolt', icon:'🧊', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Ice: low dmg, low spread, freeze' },
+        { id:'chainLightning', name:'Chain Lightning', icon:'⚡', cost:40, cooldown:8, gcd:0.5, castTime:2.5, desc:'Lightning: high max dmg, wide spread, jumps' },
+        { id:'fireblast', name:'Fireblast', icon:'🌋', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Fire: medium dmg, medium spread' },
+        { id:'blizzard', name:'Blizzard', icon:'🌨️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Ice: low dmg/tick, low spread' },
+        { id:'thunderStorm', name:'Thunder Storm', icon:'🌩️', cost:60, cooldown:15, gcd:0.5, castTime:3.5, desc:'Lightning: high max dmg/tick, wide spread' }
       ]
     }
   };
@@ -401,125 +401,125 @@
   // Vyšší tier vyžaduje 1 bod v předchozím kouzlu dané větve
   const CLASS_SKILLS = {
     barbarian: {
-      id:'barbarian', name:'Barbar', icon:'🪓', desc:'Silné fyzické útoky a bojová kouzla.',
+      id:'barbarian', name:'Barbarian', icon:'🪓', desc:'Strong physical attacks and battle cries.',
       trees: {
-        attacks: { name:'Útoky', icon:'⚔️',
+        attacks: { name:'Attacks', icon:'⚔️',
           tiers: [
             { choices: [
-              { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% dmg zbraně` },
+              { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
             ]},
             { choices: [
-              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Útok oběma zbraněmi: ${60+lv*20}% + ${30+lv*15}% dmg` },
+              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Dual wield attack: ${60+lv*20}% + ${30+lv*15}% dmg` },
             ]},
             { choices: [
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 útoky po sobě` },
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
             ]}
           ]
         },
-        shouts: { name:'Pokřiky', icon:'📯',
+        shouts: { name:'Shouts', icon:'📯',
           tiers: [
             { choices: [
-              { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg na 60s` },
+              { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg for 60s` },
             ]},
             { choices: [
-              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain na 10s` },
-              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor na 30s` },
+              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
+              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
             ]},
             { choices: [
-              { k:'skillShout', name:'Skill Shout', icon:'📣', iconImg:'skill_shout.png', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} dočasná úroveň všech skillů na 30s` },
+              { k:'skillShout', name:'Skill Shout', icon:'📣', iconImg:'skill_shout.png', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} temporary skill levels for 30s` },
             ]}
           ]
         },
-        control: { name:'Kontrola', icon:'⚡',
+        control: { name:'Control', icon:'⚡',
           tiers: [
             { choices: [
-              { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + zpomalí 20% na ${1+lv}s` },
+              { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + slow 20% for ${1+lv}s` },
             ]},
             { choices: [
-              { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + omráčení ${3+(lv-1)*0.5}s` },
-              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + přeruší kouzlení` },
+              { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + stun ${3+(lv-1)*0.5}s` },
+              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + interrupt casting` },
             ]}
           ]
         }
       }
     },
     assassin: {
-      id:'assassin', name:'Assassin', icon:'🗡️', desc:'Rychlé útoky, kritické zásahy a stíny.',
+      id:'assassin', name:'Assassin', icon:'🗡️', desc:'Fast attacks, critical hits and shadows.',
       trees: {
-        attacks: { name:'Útoky', icon:'⚔️',
+        attacks: { name:'Attacks', icon:'⚔️',
           tiers: [
             { choices: [
               { k:'shadowStrike', name:'Shadow Strike', icon:'💢', iconImg:'shadowStrike.png', maxLv:5, desc:lv=>`${100+lv*50}% dmg, +${5+lv*5}% crit chance` },
             ]},
             { choices: [
-              { k:'bladeFury', name:'Blade Fury', icon:'⚡', iconImg:'bladeFury.png', maxLv:5, requires:'assassin_shadowStrike', requiresLv:1, desc:lv=>`${80+lv*30}% dmg, +${5+lv*3}% attack speed na 3s` },
+              { k:'bladeFury', name:'Blade Fury', icon:'⚡', iconImg:'bladeFury.png', maxLv:5, requires:'assassin_shadowStrike', requiresLv:1, desc:lv=>`${80+lv*30}% dmg, +${5+lv*3}% attack speed for 3s` },
             ]},
             { choices: [
-              { k:'deathMark', name:'Death Mark', icon:'🎯', iconImg:'deathMark.png', maxLv:5, requires:'assassin_bladeFury', requiresLv:1, desc:lv=>`+${10+lv*5}% crit chance na 5s` },
+              { k:'deathMark', name:'Death Mark', icon:'🎯', iconImg:'deathMark.png', maxLv:5, requires:'assassin_bladeFury', requiresLv:1, desc:lv=>`+${10+lv*5}% crit chance for 5s` },
             ]}
           ]
         },
-        shadows: { name:'Stíny', icon:'🌑',
+        shadows: { name:'Shadows', icon:'🌑',
           tiers: [
             { choices: [
-              { k:'poisonBlade', name:'Poison Blade', icon:'☠️', iconImg:'poisonBlade.png', maxLv:5, desc:lv=>`${50+lv*20}% dmg + jed ${10+lv*5}%/tick na 3s` },
+              { k:'poisonBlade', name:'Poison Blade', icon:'☠️', iconImg:'poisonBlade.png', maxLv:5, desc:lv=>`${50+lv*20}% dmg + poison ${10+lv*5}%/tick for 3s` },
             ]},
             { choices: [
-              { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', iconImg:'smokeScreen.png', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Sníží hitrate nepřítele o ${10+lv*5}% na 3s` },
+              { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', iconImg:'smokeScreen.png', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Reduces enemy hit rate by ${10+lv*5}% for 3s` },
             ]},
             { choices: [
-              { k:'shadowDance', name:'Shadow Dance', icon:'🌙', iconImg:'shadowDance.png', maxLv:5, requires:'assassin_smokeScreen', requiresLv:1, desc:lv=>`+${1+lv} combo point každý útok na 5s` },
+              { k:'shadowDance', name:'Shadow Dance', icon:'🌙', iconImg:'shadowDance.png', maxLv:5, requires:'assassin_smokeScreen', requiresLv:1, desc:lv=>`+${1+lv} combo point per attack for 5s` },
             ]}
           ]
         },
-        agility: { name:'Obratnost', icon:'💨',
+        agility: { name:'Agility', icon:'💨',
           tiers: [
             { choices: [
-              { k:'evasion', name:'Evasion', icon:'💨', iconImg:'evasion.png', maxLv:5, desc:lv=>`+${10+lv*5}% dodge na 3s` },
+              { k:'evasion', name:'Evasion', icon:'💨', iconImg:'evasion.png', maxLv:5, desc:lv=>`+${10+lv*5}% dodge for 3s` },
             ]}
           ]
         }
       }
     },
     mage: {
-      id:'mage', name:'Mage', icon:'🔮', desc:'Mocná kouzla ohně, ledu a blesků.',
+      id:'mage', name:'Mage', icon:'🔮', desc:'Powerful spells of fire, ice and lightning.',
       trees: {
-        fire: { name:'Oheň', icon:'🔥',
+        fire: { name:'Fire', icon:'🔥',
           tiers: [
             { choices: [
-              { k:'firebolt', name:'Firebolt', icon:'🔥', iconImg:'firebolt.png', maxLv:5, desc:lv=>`${10+lv*5}-${16+lv*8} dmg ohněm` },
+              { k:'firebolt', name:'Firebolt', icon:'🔥', iconImg:'firebolt.png', maxLv:5, desc:lv=>`${10+lv*5}-${16+lv*8} fire dmg` },
             ]},
             { choices: [
-              { k:'fireball', name:'Fireball', icon:'💥', iconImg:'fireball.png', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${18+lv*8}-${28+lv*12} dmg ohněm + DoT ${15+lv*5}%/tick na 2s` },
+              { k:'fireball', name:'Fireball', icon:'💥', iconImg:'fireball.png', maxLv:5, requires:'mage_firebolt', requiresLv:1, desc:lv=>`${18+lv*8}-${28+lv*12} fire dmg + DoT ${15+lv*5}%/tick for 2s` },
             ]},
             { choices: [
-              { k:'fireblast', name:'Fireblast', icon:'🌋', iconImg:'fireblast.png', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${30+lv*12}-${45+lv*18} dmg ohněm` },
+              { k:'fireblast', name:'Fireblast', icon:'🌋', iconImg:'fireblast.png', maxLv:5, requires:'mage_fireball', requiresLv:1, desc:lv=>`${30+lv*12}-${45+lv*18} fire dmg` },
             ]}
           ]
         },
-        ice: { name:'Led', icon:'❄️',
+        ice: { name:'Ice', icon:'❄️',
           tiers: [
             { choices: [
-              { k:'icebolt', name:'Icebolt', icon:'❄️', iconImg:'icebolt.png', maxLv:5, desc:lv=>`${8+lv*4}-${10+lv*5} dmg ledem, zpomalí 25% na 2s` },
+              { k:'icebolt', name:'Icebolt', icon:'❄️', iconImg:'icebolt.png', maxLv:5, desc:lv=>`${8+lv*4}-${10+lv*5} ice dmg, slow 25% for 2s` },
             ]},
             { choices: [
-              { k:'frostbolt', name:'Frostbolt', icon:'🧊', iconImg:'frostbolt.png', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${14+lv*6}-${18+lv*8} dmg ledem, zmrazení na ${1+lv}s` },
+              { k:'frostbolt', name:'Frostbolt', icon:'🧊', iconImg:'frostbolt.png', maxLv:5, requires:'mage_icebolt', requiresLv:1, desc:lv=>`${14+lv*6}-${18+lv*8} ice dmg, freeze for ${1+lv}s` },
             ]},
             { choices: [
-              { k:'blizzard', name:'Blizzard', icon:'🌨️', iconImg:'blizzard.png', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${6+lv*3}-${8+lv*4} dmg ledem/tick, zmrazení na ${1+lv} útoky` },
+              { k:'blizzard', name:'Blizzard', icon:'🌨️', iconImg:'blizzard.png', maxLv:5, requires:'mage_frostbolt', requiresLv:1, desc:lv=>`${6+lv*3}-${8+lv*4} ice dmg/tick, freeze for ${1+lv} attacks` },
             ]}
           ]
         },
-        lightning: { name:'Blesky', icon:'⚡',
+        lightning: { name:'Lightning', icon:'⚡',
           tiers: [
             { choices: [
-              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightningBolt.png', maxLv:5, desc:lv=>`${6+lv*3}-${28+lv*14} dmg bleskem` },
+              { k:'lightningBolt', name:'Lightning Bolt', icon:'⚡', iconImg:'lightningBolt.png', maxLv:5, desc:lv=>`${6+lv*3}-${28+lv*14} lightning dmg` },
             ]},
             { choices: [
-              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'chainLightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${10+lv*5}-${45+lv*20} dmg bleskem, skáče na ${1+Math.floor(lv/2)} další cíl` },
+              { k:'chainLightning', name:'Chain Lightning', icon:'⚡', iconImg:'chainLightning.png', maxLv:5, requires:'mage_lightningBolt', requiresLv:1, desc:lv=>`${10+lv*5}-${45+lv*20} lightning dmg, jumps to ${1+Math.floor(lv/2)} more target` },
             ]},
             { choices: [
-              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'thunderStorm.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${4+lv*2}-${20+lv*10} dmg bleskem/tick na 3s` },
+              { k:'thunderStorm', name:'Thunder Storm', icon:'🌩️', iconImg:'thunderStorm.png', maxLv:5, requires:'mage_chainLightning', requiresLv:1, desc:lv=>`${4+lv*2}-${20+lv*10} lightning dmg/tick for 3s` },
             ]}
           ]
         }
@@ -876,7 +876,7 @@
     { id:'unique_staff_wand', name:'Bane Ash', baseId:'staff_wand',
       affixIds:['keen','ofAccuracy'], minLevel:1, tier:2,
       iconImg:'assets/items/staff_wooden.png', icon:'🪄',
-      uniqueProp:{ type:'freeCast', value:10, desc:'10% šance sešle kouzlo zdarma' } },
+      uniqueProp:{ type:'freeCast', value:10, desc:'10% chance to cast for free' } },
     { id:'unique_staff_boneWand', name:'Gravenspine', baseId:'staff_boneWand',
       affixIds:['fiery','ofSlaughter'], minLevel:2, tier:3,
       iconImg:'assets/items/staff_wooden.png', icon:'🪄',
@@ -902,7 +902,7 @@
     { id:'unique_blade_shortSword', name:'Rixot\u2019s Keen', baseId:'blade_shortSword',
       affixIds:['deadly','ofSlaughter'], minLevel:1, tier:2,
       iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
-      uniqueProp:{ type:'defenseBonus', value:5, desc:'+5 defense při držení' } },
+      uniqueProp:{ type:'defenseBonus', value:5, desc:'+5 defense while held' } },
     { id:'unique_blade_broadSword', name:'Griswold\u2019s Edge', baseId:'blade_broadSword',
       affixIds:['keen','ofAccuracy'], minLevel:1, tier:2,
       iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
@@ -910,7 +910,7 @@
     { id:'unique_blade_gladius', name:'Bloodletter', baseId:'blade_gladius',
       affixIds:['fiery','ofCritical'], minLevel:2, tier:3,
       iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
-      uniqueProp:{ type:'fireProc', value:15, desc:'15% šance přidá fire dmg' } },
+      uniqueProp:{ type:'fireProc', value:15, desc:'15% chance to add fire dmg' } },
     { id:'unique_blade_dimBlade', name:'Ginther\u2019s Rift', baseId:'blade_dimBlade',
       affixIds:['keen','ofSpeed'], minLevel:2, tier:3,
       iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
@@ -924,7 +924,7 @@
     { id:'unique_blade2h_claymore', name:'Soulflay', baseId:'blade2h_claymore',
       affixIds:['sharp','ofCritical'], minLevel:4, tier:5,
       iconImg:'assets/items/weapon_claymore.png', icon:'⚔️',
-      uniqueProp:{ type:'doubleDmg', value:10, desc:'10% šance na double damage' } },
+      uniqueProp:{ type:'doubleDmg', value:10, desc:'10% chance for double damage' } },
     { id:'unique_blade2h_highlandBlade', name:'Highland Blade', baseId:'blade2h_highlandBlade',
       affixIds:['sharp','ofStrength'], minLevel:5, tier:6,
       iconImg:'assets/items/weapon_claymore.png', icon:'⚔️',
@@ -934,13 +934,13 @@
     { id:'unique_axe_handAxe', name:'The Gnasher', baseId:'axe_handAxe',
       affixIds:['deadly','ofStrength'], minLevel:1, tier:2,
       iconImg:'assets/items/weapon_battle_axe.png', icon:'🪓',
-      uniqueProp:{ type:'doubleHit', value:20, desc:'20% šance na double hit' } },
+      uniqueProp:{ type:'doubleHit', value:20, desc:'20% chance for double hit' } },
 
     // === 2H AXE ===
     { id:'unique_axe2h_battleAxe', name:'The Chieftain', baseId:'axe2h_battleAxe',
       affixIds:['deadly','ofStrength'], minLevel:3, tier:4,
       iconImg:'assets/items/weapon_war_axe.png', icon:'🪓',
-      uniqueProp:{ type:'doubleHit', value:20, desc:'20% šance na double hit' } },
+      uniqueProp:{ type:'doubleHit', value:20, desc:'20% chance for double hit' } },
     { id:'unique_axe2h_tabar', name:'Stormrider', baseId:'axe2h_tabar',
       affixIds:['bloody','ofStrength'], minLevel:4, tier:5,
       iconImg:'assets/items/weapon_war_axe.png', icon:'🪓',
@@ -948,13 +948,13 @@
     { id:'unique_axe2h_feralAxe', name:'Feral Axe', baseId:'axe2h_feralAxe',
       affixIds:['fiery','ofSlaughter'], minLevel:5, tier:6,
       iconImg:'assets/items/weapon_war_axe.png', icon:'🪓',
-      uniqueProp:{ type:'fireProcDmg', value:50, desc:'10% šance způsobí 50% base dmg jako fire' } },
+      uniqueProp:{ type:'fireProcDmg', value:50, desc:'10% chance deals 50% base dmg as fire' } },
 
     // === 2H BLUNT ===
     { id:'unique_blunt2h_ogreMaul', name:'Windhammer', baseId:'blunt2h_ogreMaul',
       affixIds:['deadly','ofEndurance'], minLevel:6, tier:7,
       iconImg:'assets/items/weapon_giant_hammer.png', icon:'🔨',
-      uniqueProp:{ type:'stunProc', value:15, desc:'15% šance omráčí na 1s' } },
+      uniqueProp:{ type:'stunProc', value:15, desc:'15% chance to stun for 1s' } },
 
     // === ARMOR ===
     { id:'unique_leather', name:'Leather Armor', baseId:'armor_leather',
@@ -968,15 +968,15 @@
     { id:'unique_bulletproof', name:'Ring Mail', baseId:'armor_ringMail',
       affixIds:['fortified','ofFortification'], minLevel:3, tier:4,
       iconImg:'assets/items/armor_scale.png', icon:'👘',
-      uniqueProp:{ type:'dmgReduce', value:50, desc:'5% šance sníží incoming dmg o 50%' } },
+      uniqueProp:{ type:'dmgReduce', value:50, desc:'5% chance reduces incoming dmg by 50%' } },
     { id:'unique_fullPlate', name:'Plate Mail', baseId:'armor_plateMail',
       affixIds:['fortified','ofEndurance'], minLevel:4, tier:5,
       iconImg:'assets/items/armor_plate.png', icon:'👘',
-      uniqueProp:{ type:'defenseMult', value:10, desc:'+10% k defense (multiplikativně)' } },
+      uniqueProp:{ type:'defenseMult', value:10, desc:'+10% defense (multiplicative)' } },
     { id:'unique_dragonScale', name:'Full Plate Armor', baseId:'armor_fullPlate',
       affixIds:['fortified','ofFortification'], minLevel:5, tier:6,
       iconImg:'assets/items/armor_dragon_scale.png', icon:'👘',
-      uniqueProp:{ type:'dmgReflect', value:20, desc:'10% šance odrazí 20% dmg zpět' } },
+      uniqueProp:{ type:'dmgReflect', value:20, desc:'10% chance reflects 20% dmg back' } },
 
     // === HELMET ===
     { id:'unique_linenHood', name:'Cap', baseId:'helm_cap',
@@ -990,7 +990,7 @@
     { id:'unique_crown_wisdom', name:'Full Helm', baseId:'helm_fullHelm',
       affixIds:['mystic','ofManaSteal'], minLevel:3, tier:4,
       iconImg:'assets/items/helmet_steel_helm.png', icon:'⛑️',
-      uniqueProp:{ type:'bonusTalent', value:1, desc:'+1 k náhodnému talentu' } },
+      uniqueProp:{ type:'bonusTalent', value:1, desc:'+1 to random talent' } },
     { id:'unique_crown', name:'Great Helm', baseId:'helm_greatHelm',
       affixIds:['skillful','ofWisdom'], minLevel:5, tier:6,
       iconImg:'assets/items/helmet_crown.png', icon:'👑',
@@ -1008,52 +1008,52 @@
     { id:'unique_shield_endurance', name:'Large Shield', baseId:'shield_largeShield',
       affixIds:['fortified','ofFortification'], minLevel:3, tier:4,
       iconImg:'assets/items/shield_iron.png', icon:'🛡️',
-      uniqueProp:{ type:'fullBlock', value:10, desc:'10% šance při bloku absorbuje 100% dmg' } },
+      uniqueProp:{ type:'fullBlock', value:10, desc:'10% chance on block absorbs 100% dmg' } },
     { id:'unique_steelShield', name:'Kite Shield', baseId:'shield_kiteShield',
       affixIds:['fortified','ofEndurance'], minLevel:4, tier:5,
       iconImg:'assets/items/shield_steel.png', icon:'🛡️',
-      uniqueProp:{ type:'blockReflect', value:30, desc:'10% šance při bloku odrazí 30% dmg' } },
+      uniqueProp:{ type:'blockReflect', value:30, desc:'10% chance on block reflects 30% dmg' } },
     { id:'unique_paladinShield', name:'Gothic Shield', baseId:'shield_gothicShield',
       affixIds:['fortified','ofStrength'], minLevel:5, tier:6,
       iconImg:'assets/items/shield_paladin.png', icon:'🛡️',
-      uniqueProp:{ type:'spellBlock', value:15, desc:'15% šance zablokuje kouzlo' } },
+      uniqueProp:{ type:'spellBlock', value:15, desc:'15% chance to block a spell' } },
 
     // === RING ===
-    { id:'unique_copperRing', name:'Měděný prsten', baseId:'copperRing',
+    { id:'unique_copperRing', name:'Copper Ring', baseId:'copperRing',
       affixIds:['skillful','ofManaSteal'], minLevel:1, tier:2,
       iconImg:'assets/items/ring_copper.png', icon:'💍',
       uniqueProp:{ type:'manaRegenFlat', value:1, desc:'+1 mana/sec regen' } },
-    { id:'unique_ring_blood', name:'Prsten krve', baseId:'silverRing',
+    { id:'unique_ring_blood', name:'Ring of Blood', baseId:'silverRing',
       affixIds:['bloody','ofSlaughter'], minLevel:3, tier:4,
       iconImg:'assets/items/ring_silver.png', icon:'💍',
-      uniqueProp:{ type:'killHeal', value:10, desc:'10% šance při killu obnoví 10% HP' } },
-    { id:'unique_goldRing', name:'Zlatý prsten', baseId:'goldRing',
+      uniqueProp:{ type:'killHeal', value:10, desc:'10% chance on kill heals 10% HP' } },
+    { id:'unique_goldRing', name:'Gold Ring', baseId:'goldRing',
       affixIds:['sharp','ofCritical'], minLevel:4, tier:5,
       iconImg:'assets/items/ring_gold.png', icon:'💍',
       uniqueProp:{ type:'critDmgBonus', value:10, desc:'+10% crit damage' } },
-    { id:'unique_gemRing', name:'Drahokamový prsten', baseId:'gemRing',
+    { id:'unique_gemRing', name:'Gem Ring', baseId:'gemRing',
       affixIds:['mystic','ofWisdom'], minLevel:5, tier:6,
       iconImg:'assets/items/ring_gem.png', icon:'💍',
       uniqueProp:{ type:'skillDmgBonus', value:5, desc:'+5% skill damage' } },
 
     // === AMULET ===
-    { id:'unique_boneAmulet', name:'Kostěný amulet', baseId:'boneAmulet',
+    { id:'unique_boneAmulet', name:'Bone Amulet', baseId:'boneAmulet',
       affixIds:['bloody','ofManaSteal'], minLevel:1, tier:2,
       iconImg:'assets/items/amulet_bone.png', icon:'📿',
       uniqueProp:{ type:'hpBonus', value:5, desc:'+5% HP' } },
-    { id:'unique_amulet_power', name:'Amulet moci', baseId:'silverAmulet',
+    { id:'unique_amulet_power', name:'Amulet of Power', baseId:'silverAmulet',
       affixIds:['sharp','ofStrength'], minLevel:3, tier:4,
       iconImg:'assets/items/amulet_silver.png', icon:'📿',
       uniqueProp:{ type:'baseDmgBonus', value:5, desc:'+5% base damage' } },
-    { id:'unique_goldAmulet', name:'Zlatý amulet', baseId:'goldAmulet',
+    { id:'unique_goldAmulet', name:'Gold Amulet', baseId:'goldAmulet',
       affixIds:['skillful','ofManaSteal'], minLevel:4, tier:5,
       iconImg:'assets/items/amulet_gold.png', icon:'📿',
       uniqueProp:{ type:'manaBonus', value:5, desc:'+5% mana' } },
-    { id:'unique_rubyAmulet', name:'Rubínový amulet', baseId:'rubyAmulet',
+    { id:'unique_rubyAmulet', name:'Ruby Amulet', baseId:'rubyAmulet',
       affixIds:['fiery','ofCritical'], minLevel:5, tier:6,
       iconImg:'assets/items/amulet_ruby.png', icon:'📿',
-      uniqueProp:{ type:'fireProcDmg', value:30, desc:'10% šance způsobí 30% base dmg jako fire' } },
-    { id:'unique_arcaneAmulet', name:'Arcánní amulet', baseId:'arcaneAmulet',
+      uniqueProp:{ type:'fireProcDmg', value:30, desc:'10% chance deals 30% base dmg as fire' } },
+    { id:'unique_arcaneAmulet', name:'Arcane Amulet', baseId:'arcaneAmulet',
       affixIds:['skillful','ofWisdom'], minLevel:6, tier:7,
       iconImg:'assets/items/amulet_arcane.png', icon:'📿',
       uniqueProp:{ type:'skillDmgBonus', value:10, desc:'+10% skill damage' } },
@@ -1310,18 +1310,18 @@
 
   // ===== ENEMY SPELLS =====
   const ENEMY_SPELLS = {
-    poison_bolt: { name:'Jedovatý výboj', icon:'☠️', castTime:1500, manaCost:10, type:MONSTER_TYPES.POISON, minManaPct:0.2,
-      desc:'DoT na hráče (3 ticky)' },
-    drain_life: { name:'Vysátí života', icon:'🩸', castTime:1200, manaCost:8, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.15,
-      desc:'Poškození + léčení nepřítele' },
-    mana_drain: { name:'Vysátí many', icon:'💧', castTime:1000, manaCost:5, type:MONSTER_TYPES.MANASTEALER, minManaPct:0.1,
-      desc:'Poškození + vysátí many' },
-    empower: { name:'Posílení', icon:'📈', castTime:1500, manaCost:12, type:MONSTER_TYPES.IMPROVER, minManaPct:0.25,
-      desc:'+50% damage na 3 útoky' },
-    shadow_bolt: { name:'Stínový výboj', icon:'🎯', castTime:1300, manaCost:8, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.15,
-      desc:'Vysoká šance na krit' },
-    heal: { name:'Léčení', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
-      desc:'Léčí nepřítele o 30% HP' },
+    poison_bolt: { name:'Poison Bolt', icon:'☠️', castTime:1500, manaCost:10, type:MONSTER_TYPES.POISON, minManaPct:0.2,
+      desc:'DoT on player (3 ticks)' },
+    drain_life: { name:'Drain Life', icon:'🩸', castTime:1200, manaCost:8, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.15,
+      desc:'Damage + heals enemy' },
+    mana_drain: { name:'Mana Drain', icon:'💧', castTime:1000, manaCost:5, type:MONSTER_TYPES.MANASTEALER, minManaPct:0.1,
+      desc:'Damage + mana drain' },
+    empower: { name:'Empower', icon:'📈', castTime:1500, manaCost:12, type:MONSTER_TYPES.IMPROVER, minManaPct:0.25,
+      desc:'+50% damage for 3 attacks' },
+    shadow_bolt: { name:'Shadow Bolt', icon:'🎯', castTime:1300, manaCost:8, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.15,
+      desc:'High crit chance' },
+    heal: { name:'Heal', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+      desc:'Heals enemy for 30% HP' },
   };
 
   // ===== MONSTER DB =====
