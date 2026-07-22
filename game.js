@@ -2891,31 +2891,31 @@
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
         _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 300, maxTicks: 300 };
-        spellText = '☠️ Jedovatý výboj!';
+        spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
         const healAmt = Math.round(amount * 0.6);
         mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
         // Heal text (zeleně u nepřítele)
         spawnFloatingText(`+${healAmt}`, 'left', '#2ecc71', 32);
-        spellText = `🩸 Vysátí života! -${amount}`;
+        spellText = `🩸 -${amount}`;
       } else if (spellId === 'mana_drain') {
         amount = Math.round(baseDmg * 0.6);
         const manaDrain = Math.round(amount * 0.8);
         state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaDrain);
-        spellText = `💧 Vysátí many! -${amount} HP, -${manaDrain} many`;
+        spellText = `💧 -${amount}`;
       } else if (spellId === 'empower') {
         amount = 0; // žádné přímé poškození
         mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
         _enemyBuffs['empower'] = { icon: '📈', name: 'Posílení', ticks: 600, maxTicks: 600 };
-        spellText = '📈 Posílení!';
+        spellText = '📈 Posílení';
       } else if (spellId === 'shadow_bolt') {
         amount = Math.round(baseDmg * 1.2);
         if (Math.random() < 0.5) {
           amount = Math.round(amount * 2.0);
-          spellText = `🎯 Stínový výboj! KRIT! -${amount}`;
+          spellText = `🎯 KRIT! -${amount}`;
         } else {
-          spellText = `🎯 Stínový výboj! -${amount}`;
+          spellText = `🎯 -${amount}`;
         }
       } else if (spellId === 'heal') {
         amount = 0;
@@ -3578,7 +3578,7 @@
       renderBuffs();
       // Animace
       spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
-      spawnFloatingText(`📯 Battle Shout +${dmgPct}% dmg`, 'left', '#f39c12', 32);
+      spawnFloatingText(`📯 +${dmgPct}% dmg`, 'left', '#f39c12', 32);
     } else if (spellId === 'defensiveShout') {
       const lv = getSpellLv('defensiveShout');
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
