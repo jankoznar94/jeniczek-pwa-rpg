@@ -6027,40 +6027,53 @@
   }
 
   function spawnShoutRings(mb, color, glowColor) {
-    // Několik červených/modrých zvětšujících se kruhů od středu
+    // Výrazné kruhy od obrázku nepřítele — jako když hodíš kámen do vody
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const canvas = $('mbProjectileCanvasOffhand');
+    const aRect = arena.getBoundingClientRect();
+    const bossFig = $('mbFigure');
+    let bx = rect.width / 2, by = rect.height / 2;
+    if (bossFig) {
+      const br = bossFig.getBoundingClientRect();
+      bx = br.left + br.width/2 - aRect.left;
+      by = br.top + br.height/2 - aRect.top;
+    }
+    const canvas = $('mbProjectileCanvas');
     if (!canvas) return;
     canvas.width = rect.width;
     canvas.height = rect.height;
     const ctx = canvas.getContext('2d');
     const startTime = performance.now();
-    const duration = 600;
-    const numRings = 4;
+    const duration = 800;
+    const numRings = 5;
 
     function animate(ts) {
       const elapsed = ts - startTime;
       const progress = Math.min(elapsed / duration, 1);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let i = 0; i < numRings; i++) {
-        const ringDelay = i * 0.12;
+        const ringDelay = i * 0.1;
         const ringProgress = Math.max(0, Math.min((progress - ringDelay) / (1 - ringDelay), 1));
         if (ringProgress <= 0) continue;
-        const radius = 20 + ringProgress * 180;
-        const alpha = (1 - ringProgress) * 0.6;
+        const radius = 10 + ringProgress * 250;
+        const alpha = (1 - ringProgress) * 0.8;
         ctx.save();
-        ctx.strokeStyle = color;
         ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 15;
-        ctx.lineWidth = 3;
+        ctx.shadowBlur = 25;
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 5;
         ctx.globalAlpha = alpha;
         ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.arc(bx, by, radius, 0, Math.PI * 2);
         ctx.stroke();
+        // Výplň pro lepší viditelnost
+        const grad = ctx.createRadialGradient(bx, by, 0, bx, by, radius);
+        grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.15})`);
+        grad.addColorStop(0.5, `rgba(255,255,255,${alpha * 0.05})`);
+        grad.addColorStop(1, 'rgba(255,255,255,0)');
+        ctx.fillStyle = grad;
+        ctx.fill();
         ctx.restore();
       }
       if (progress < 1) requestAnimationFrame(animate);
