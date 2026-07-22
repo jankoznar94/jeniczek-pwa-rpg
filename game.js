@@ -148,6 +148,45 @@
     return wt === 'staff' ? critSfx : meleeCritSfx;
   }
   function playSFX(audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+
+  // ===== FLOATING BATTLE TEXT (WoW-style scrolling arc) =====
+  // side: 'left' (enemy dmg) or 'right' (player dmg/heal)
+  function spawnFloatingText(text, side, color, size, duration) {
+    const arena = document.getElementById('mbArena');
+    if (!arena) return;
+    const ar = arena.getBoundingClientRect();
+    const cx = ar.width / 2;
+    const cy = ar.height / 2;
+    const radius = Math.min(cx, cy) * 0.75;
+    const startAngle = side === 'left' ? -Math.PI * 0.85 : -Math.PI * 0.15;
+    const endAngle = side === 'left' ? -Math.PI * 0.15 : Math.PI * 0.15;
+    const dur = duration || 1200;
+    const startTime = performance.now();
+
+    const el = document.createElement('div');
+    el.textContent = text;
+    el.style.cssText = `position:absolute;pointer-events:none;z-index:50;font-weight:bold;font-size:${size || 28}px;color:${color || '#fff'};text-shadow:0 0 15px ${color || 'rgba(255,255,255,0.5)'};white-space:nowrap;font-family:Arial,sans-serif;`;
+    arena.appendChild(el);
+
+    function animate(now) {
+      const t = Math.min((now - startTime) / dur, 1);
+      // ease-out cubic
+      const ease = 1 - Math.pow(1 - t, 3);
+      const angle = startAngle + (endAngle - startAngle) * ease;
+      const x = cx + Math.cos(angle) * radius - el.offsetWidth / 2;
+      const y = cy + Math.sin(angle) * radius - el.offsetHeight / 2;
+      el.style.left = x + 'px';
+      el.style.top = y + 'px';
+      el.style.opacity = 1 - t;
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        el.remove();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
   const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 1.0; return a; })();
   const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 1.0; return a; })();
   const strongStrikeSfx = (() => { const a = new Audio('strong_strike.mp3'); a.volume = 1.0; return a; })();
@@ -2749,13 +2788,7 @@
       // Evasion (assassin)
       if (state._dodgeBuffTimer > 0 && Math.random() < 0.5) {
         playSFX(dodgeSfx);
-        const dmgText = $('mbPlayerDamageText');
-        if (dmgText) {
-          dmgText.textContent = '💨 Dodge!';
-          dmgText.style.color = '#f1c40f';
-          dmgText.classList.remove('hidden');
-          setTimeout(() => dmgText.classList.add('hidden'), 500);
-        }
+        spawnFloatingText('💨 Dodge!', 'right', '#f1c40f');
         updateMapBattleUI();
         return;
       }
@@ -2781,12 +2814,7 @@
         const healAmt = Math.round(amount * 0.6);
         mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
         // Heal text (zeleně u nepřítele)
-        const healText = $('mbHealText');
-        if (healText) {
-          healText.textContent = `+${healAmt}`;
-          healText.classList.remove('hidden');
-          setTimeout(() => healText.classList.add('hidden'), 1200);
-        }
+        spawnFloatingText(`+${healAmt}`, 'left', '#2ecc71');
         spellText = `🩸 Vysátí života! -${amount}`;
       } else if (spellId === 'mana_drain') {
         amount = Math.round(baseDmg * 0.6);
@@ -2810,12 +2838,7 @@
         amount = 0;
         const healAmt = Math.round(mb.maxBossHp * 0.3);
         mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
-        const healText = $('mbHealText');
-        if (healText) {
-          healText.textContent = `💚 +${healAmt}`;
-          healText.classList.remove('hidden');
-          setTimeout(() => healText.classList.add('hidden'), 1200);
-        }
+        spawnFloatingText(`💚 +${healAmt}`, 'left', '#2ecc71');
         spellText = '';
       }
 
@@ -2845,13 +2868,7 @@
       }
 
       // Damage text
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = spellText;
-        dmgText.style.color = '#9b59b6';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 1200);
-      }
+      spawnFloatingText(spellText, 'right', '#9b59b6');
       // Červený záblesk
       const arena = $('mbArena');
       if (arena && amount > 0) {
@@ -2870,13 +2887,7 @@
       mb._enemySwingStart = performance.now();
       mb._enemySwingReady = false;
       // Vizuální feedback
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = '💨 Dodge!';
-        dmgText.style.color = '#f1c40f';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText('💨 Dodge!', 'right', '#f1c40f');
       return;
     }
 
@@ -2944,12 +2955,7 @@
     if (!blocked && lifeStealAmt > 0) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
       // Heal text (zeleně u nepřítele)
-      const healText = $('mbHealText');
-      if (healText) {
-        healText.textContent = `+${lifeStealAmt}`;
-        healText.classList.remove('hidden');
-        setTimeout(() => healText.classList.add('hidden'), 1200);
-      }
+      spawnFloatingText(`+${lifeStealAmt}`, 'left', '#2ecc71');
     }
     if (!blocked && manaStealAmt > 0) {
       state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);
@@ -2977,13 +2983,7 @@
     }
 
     // Damage text
-    const playerDamageText = $('mbPlayerDamageText');
-    if (playerDamageText) {
-      playerDamageText.textContent = blocked ? '🛡️ BLOCK!' : `-${amount}`;
-      playerDamageText.style.color = blocked ? '#3498db' : '';
-      playerDamageText.classList.remove('hidden');
-      setTimeout(() => playerDamageText.classList.add('hidden'), 800);
-    }
+    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'right', blocked ? '#3498db' : '#e74c3c');
 
     updateMapBattleUI();
 
@@ -3422,12 +3422,7 @@
       // Animace
       spawnThunderClapAnim(mb);
       playSFX(thunderClapSfx);
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `🌊 -${dmg}`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`🌊 -${dmg}`, 'left', '#5dade2');
     } else if (spellId === 'bloodrage') {
       // -15% HP, +100% zisk Rage na 10s
       const hpCost = Math.round(mb.playerHp * 0.15);
@@ -3438,13 +3433,7 @@
       _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
       // Animace
       spawnBloodrageAnim(mb);
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = `🩸 -${hpCost} HP`;
-        dmgText.style.color = '#e74c3c';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`🩸 -${hpCost} HP`, 'right', '#e74c3c');
     } else if (spellId === 'thunderBolt') {
       const lv = getSpellLv('thunderBolt');
       const pct = 80 + lv * 20; // 100% @ lv1, 120% @ lv2, ... 180% @ lv5
@@ -3466,12 +3455,7 @@
       playSFX(thunderBoltSfx);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `⚡ -${dmg}`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`⚡ -${dmg}`, 'left', '#f1c40f');
     } else if (spellId === 'shieldBash') {
       // Shield Bash — pouze se štítem
       const shield = ITEM_MAP[state.hero.equip.shield];
@@ -3497,12 +3481,7 @@
       spawnShieldBashAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `🛡️ -${dmg}`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`🛡️ -${dmg}`, 'left', '#888');
     } else if (spellId === 'battleShout') {
       // +5+lv*5% dmg na 60s (dle talentu)
       const lv = getSpellLv('battleShout');
@@ -3516,13 +3495,7 @@
       renderBuffs();
       // Animace
       spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = `📯 Battle Shout +${dmgPct}% dmg`;
-        dmgText.style.color = '#f39c12';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 1000);
-      }
+      spawnFloatingText(`📯 Battle Shout +${dmgPct}% dmg`, 'right', '#f39c12');
     } else if (spellId === 'defensiveShout') {
       const lv = getSpellLv('defensiveShout');
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
@@ -3561,12 +3534,7 @@
       mb._offhandSwingPct = 0;
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `⚔️ -${totalDmg}`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`⚔️ -${totalDmg}`, 'left', '#f1c40f');
     } else if (spellId === 'whirlwind') {
       // Whirlwind — 3× rychlé útoky
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -3580,12 +3548,7 @@
       playSFX(whirlwindSfx);
       // Animace
       spawnWhirlwindAnim(mb);
-      const dmgText2 = $('mbDamageText');
-      if (dmgText2) {
-        dmgText2.textContent = `🌀 -${totalDmg}`;
-        dmgText2.classList.remove('hidden');
-        setTimeout(() => dmgText2.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`🌀 -${totalDmg}`, 'left', '#1abc9c');
     } else if (spellId === 'sinisterStrike') {
       // 150% dmg + 1 combo point
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -3596,12 +3559,7 @@
       state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
       // Canvas melee impact
       spawnMeleeImpact(mb, false, getWeaponType());
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `🗡️ -${dmg}`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`🗡️ -${dmg}`, 'left', '#fff');
     } else if (spellId === 'eviscerate') {
       const cp = state.comboPoints || 0;
       if (cp < 1) return; // nelze použít bez combo pointů
@@ -3615,12 +3573,7 @@
       state.comboPoints = 0; // spotřebovat combo pointy
       // Canvas melee impact
       spawnMeleeImpact(mb, false, getWeaponType());
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `💥 -${dmg}`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`💥 -${dmg}`, 'left', '#e74c3c');
     } else if (spellId === 'kidneyShot') {
       const cp = state.comboPoints || 0;
       if (cp < 1) return; // nelze použít bez combo pointů
@@ -3632,23 +3585,12 @@
       state.comboPoints = 0; // spotřebovat combo pointy
       // Debuff ikona
       _sessionDebuffs['kidneyShot'] = { icon: '🔨', name: 'Omráčení', ticks: stunDuration * 60, maxTicks: stunDuration * 60 };
-      const dmgText = $('mbDamageText');
-      if (dmgText) {
-        dmgText.textContent = `🔨 Stun ${stunDuration}s`;
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`🔨 Stun ${stunDuration}s`, 'left', '#e67e22');
     } else if (spellId === 'evasion') {
       // +50% dodge na 10s
       state._dodgeBuffTimer = 600; // 10s * 60fps
       _sessionBuffs['evasion'] = { icon: '💨', name: 'Evasion', ticks: 600, maxTicks: 600, onExpire: function() { /* timer už je v state._dodgeBuffTimer */ } };
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = `💨 Evasion!`;
-        dmgText.style.color = '#f1c40f';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText('💨 Evasion!', 'right', '#f1c40f');
     } else if (spellId === 'speedBoost') {
       const cp = state.comboPoints || 0;
       if (cp < 1) return; // nelze použít bez combo pointů
@@ -3661,13 +3603,7 @@
       _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
       // Přepočítat swing timer
       mb.playerSwingMs = getSwingTime(state.hero.equip.weapon);
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = `⚡ Speed +${duration}s`;
-        dmgText.style.color = '#f1c40f';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => dmgText.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`⚡ Speed +${duration}s`, 'right', '#f1c40f');
     }
 
     updateMapBattleUI();
@@ -3719,12 +3655,7 @@
       if (mb.bossHp <= 0 && !mb._pendingKill) {
         mb._pendingKill = true;
         spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
-        const dmgEl = $('mbDamageText');
-        if (dmgEl) {
-          dmgEl.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:40px;height:40px;vertical-align:middle;filter:drop-shadow(0 0 6px rgba(255,255,255,0.6))"> -${finalDmg}`;
-          dmgEl.classList.remove('hidden');
-          setTimeout(() => dmgEl.classList.add('hidden'), 500);
-        }
+        spawnFloatingText(`-${finalDmg}`, 'left', '#f1c40f');
         updateMapBattleUI();
         cleanupTimers();
         dimTimers();
@@ -3767,12 +3698,7 @@
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
       sfxHit();
-      const dmgEl = $('mbDamageText');
-      if (dmgEl) {
-        dmgEl.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:40px;height:40px;vertical-align:middle;filter:drop-shadow(0 0 6px rgba(255,255,255,0.6))"> -${finalDmg}`;
-        dmgEl.classList.remove('hidden');
-        setTimeout(() => dmgEl.classList.add('hidden'), 500);
-      }
+      spawnFloatingText(`-${finalDmg}`, 'left', '#f1c40f');
     }
     updateMapBattleUI();
     saveGame();
@@ -4404,12 +4330,7 @@
     mb.bossHp -= mb.dot;
     mb.dotTicksLeft--;
     // (hint necháme pro bonus info)
-    const dotDmgText = $('mbDamageText');
-    if (dotDmgText) {
-      dotDmgText.textContent = `☠️ -${mb.dot}`;
-      dotDmgText.classList.remove('hidden');
-      setTimeout(() => dotDmgText.classList.add('hidden'), 800);
-    }
+    spawnFloatingText(`☠️ -${mb.dot}`, 'left', '#2ecc71');
     const bossFig = $('mbFigure');
     if (bossFig) {
       bossFig.style.transition = 'filter 0.2s';
@@ -4437,12 +4358,7 @@
       playerFig.style.filter = 'brightness(2.5) hue-rotate(270deg) saturate(2)';
       setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 300);
     }
-    const dotDmgText = $('mbPlayerDamageText');
-    if (dotDmgText) {
-      dotDmgText.textContent = `☠️ -${mb.playerDot}`;
-      dotDmgText.classList.remove('hidden');
-      setTimeout(() => dotDmgText.classList.add('hidden'), 800);
-    }
+    spawnFloatingText(`☠️ -${mb.playerDot}`, 'right', '#2ecc71');
     updateMapBattleUI();
     if (mb.playerHp <= 0) { endMapBattle(false); return true; }
     return false;
@@ -6735,13 +6651,7 @@
         const healAmt = Math.max(1, Math.round(mb.maxPlayerHp * 0.15));
         mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + healAmt);
         playSFX(healSfx);
-        const dmgText = $('mbPlayerDamageText');
-        if (dmgText) {
-          dmgText.textContent = `+${healAmt}`;
-          dmgText.style.color = '#2ecc71';
-          dmgText.classList.remove('hidden');
-          setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 800);
-        }
+        spawnFloatingText(`+${healAmt}`, 'right', '#2ecc71');
         updateMapBattleUI();
       }
     } else if (attack.type === 'truth') {
@@ -6849,13 +6759,7 @@
     // 🛡️ Pasivní dodge hráče — šance se zcela vyhnout bossovu útoku
     const playerDodgeChance = getPlayerDodgeChance(mb);
     if (Math.random() * 100 < playerDodgeChance) {
-      const dmgText = $('mbPlayerDamageText');
-      if (dmgText) {
-        dmgText.textContent = 'DODGE!';
-        dmgText.style.color = '#f39c12';
-        dmgText.classList.remove('hidden');
-        setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
-      }
+      spawnFloatingText('DODGE!', 'right', '#f39c12');
       playSFX(dodgeSfx);
       // Počkat na vykreslení resetu před novým kolem
       requestAnimationFrame(() => {
@@ -6948,13 +6852,7 @@
       setTimeout(() => { hitOverlay.style.backgroundColor = 'transparent'; }, 100);
     }
 
-    const playerDamageText = $('mbPlayerDamageText');
-    if (playerDamageText) {
-      playerDamageText.textContent = blocked ? '🛡️ BLOCK!' : `-${amount}`;
-      playerDamageText.style.color = blocked ? '#3498db' : '';
-      playerDamageText.classList.remove('hidden');
-      setTimeout(() => playerDamageText.classList.add('hidden'), 800);
-    }
+    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'right', blocked ? '#3498db' : '#e74c3c');
 
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
@@ -7048,12 +6946,7 @@
     let dmg = Math.max(1, Math.round(baseDmg * 0.3));
     mb.bossHp -= dmg;
     // Damage text
-    const dmgText = $('mbDamageText');
-    if (dmgText) {
-      dmgText.textContent = `-${dmg}`;
-      dmgText.classList.remove('hidden');
-      setTimeout(() => dmgText.classList.add('hidden'), 400);
-    }
+    spawnFloatingText(`-${dmg}`, 'left', '#fff');
     // Vizuální feedback
     if (tapId) {
       const el = $(tapId);
@@ -7083,13 +6976,7 @@
       const roll = Math.random() * 100;
       if (roll >= at.hitChance) {
         // MISS!
-        const dmgText = $('mbDamageText');
-        if (dmgText) {
-          dmgText.textContent = 'MISS!';
-          dmgText.style.color = '#888';
-          dmgText.classList.remove('hidden');
-          setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; }, 600);
-        }
+        spawnFloatingText('MISS!', 'left', '#888');
         playSFX(dodgeSfx);
         if (!mb._combatLoop) advanceSequence();
         return;
@@ -7201,15 +7088,7 @@
       state.hero.mana = Math.min(state.hero.maxMana, (state.hero.mana || 0) + manaAmt);
     }
     
-    const dmgTextId = isOffhand ? 'mbOffhandDamageText' : 'mbDamageText';
-    const dmgText = $(dmgTextId);
-    if (dmgText) {
-      dmgText.textContent = isCrit ? `💥 -${dmg}` : `-${dmg}`;
-      dmgText.style.color = isCrit ? '#ff4444' : '';
-      dmgText.style.fontSize = isCrit ? '28px' : '';
-      dmgText.classList.remove('hidden');
-      setTimeout(() => { dmgText.classList.add('hidden'); dmgText.style.color = ''; dmgText.style.fontSize = ''; }, 800);
-    }
+    spawnFloatingText(isCrit ? `💥 -${dmg}` : `-${dmg}`, 'left', isCrit ? '#ff4444' : '#fff', isCrit ? 32 : 28);
     const bossFig = $('mbFigure');
     if (bossFig) {
       bossFig.style.transition = 'filter 0.15s';
