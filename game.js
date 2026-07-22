@@ -5468,7 +5468,7 @@
     const s = isCrit ? 1.8 : 1.0;
     let duration = isCrit ? 300 : 200;
     // Blunt weapon — delší trvání, aby byla pavučina lépe vidět
-    if (weaponType === 'blunt') duration = isCrit ? 500 : 400;
+    if (weaponType === 'blunt') duration = isCrit ? 700 : 600;
     const startTime = performance.now();
 
     if (weaponType === 'staff') {
@@ -8483,7 +8483,7 @@
       h.xp -= xpNeeded;
       h.level++;
       h.maxHp = getHeroMaxHp();
-      h.baseDmg = getHeroDmg();
+      h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
       h.hp = h.maxHp; // full heal při levelu
       h.attrPoints = (h.attrPoints || 0) + 5;
       state.talentPoints = (state.talentPoints || 0) + 1;
@@ -8533,7 +8533,13 @@
     const amulet = ITEM_MAP[h.equip.amulet];
     const ringDmg = 0; // prsteny a amulety nemají baseDmg, jen affixy
     const eqAttrs = getEquipAttrs();
-    return Math.max(1, 2 + Math.floor(h.level * 1) + getWeaponDmg(weapon) + ((h.attrStr||0) + eqAttrs.str) * 0.5);
+    const strBonus = ((h.attrStr||0) + eqAttrs.str) * 0.5;
+    const lvBonus = Math.floor(h.level * 1);
+    const wMin = weapon.baseDmgMin || 1;
+    const wMax = weapon.baseDmgMax || 1;
+    const dmgMin = Math.max(1, 2 + lvBonus + wMin + strBonus);
+    const dmgMax = Math.max(1, 2 + lvBonus + wMax + strBonus);
+    return { min: Math.round(dmgMin), max: Math.round(dmgMax) };
   }
   function getHeroMaxHp() {
     const h = state.hero;
@@ -8602,7 +8608,7 @@
     const dex = (h.attrDex || 0) + (getEquipAttrs().dex || 0);
     const dodgePct = Math.min(50, Math.round(dex * 0.5));
     const hitChance = Math.min(95, 80 + Math.round(dex * 0.3));
-    $('heroDetailDmg').textContent = dmg;
+    $('heroDetailDmg').textContent = `${dmg.min}-${dmg.max}`;
     $('heroDetailDef').textContent = `${totalDef} (${defPct}%)`;
     $('heroDetailCrit').textContent = critChance > 0 ? `${critChance}% (×2.0)` : `0%`;
     $('heroDetailBlock').textContent = `${blockChance}%`;
@@ -8691,7 +8697,7 @@
     playSFX(levelupSfx);
     if (attr === 'str') {
       h.attrStr = (h.attrStr||0) + 1;
-      h.baseDmg = getHeroDmg();
+      h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
       showMessage('💪 Síla +1! Poškození zvýšeno!');
     } else if (attr === 'dex') {
       h.attrDex = (h.attrDex||0) + 1;
@@ -8865,7 +8871,7 @@
       h.equip.beltPotionSlots = [];
     }
     h.gold += sellPrice;
-    h.baseDmg = getHeroDmg();
+    h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
     saveGame();
@@ -9346,7 +9352,7 @@
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     h.inventory.push(current);
     h.equip[slot] = defaults[slot];
-    h.baseDmg = getHeroDmg();
+    h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
     saveGame();
@@ -9393,7 +9399,7 @@
       h.inventory.splice(invIdx, 1);
       if (h.equip.shield) h.inventory.push(h.equip.shield);
       h.equip.shield = itemId;
-      h.baseDmg = getHeroDmg();
+      h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
       h.maxHp = getHeroMaxHp();
       h.hp = h.maxHp;
       playSFX(equipSfx);
@@ -9476,7 +9482,7 @@
       if (h.equip.amulet) h.inventory.push(h.equip.amulet);
       h.equip.amulet = itemId;
     }
-    h.baseDmg = getHeroDmg();
+    h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
     h.maxMana = getHeroMaxMana();
@@ -9522,7 +9528,7 @@
       else return;
     } else return;
     h.inventory.push(itemId);
-    h.baseDmg = getHeroDmg();
+    h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
     h.hp = h.maxHp;
     h.maxMana = getHeroMaxMana();
