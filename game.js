@@ -9094,7 +9094,7 @@
           const er = RARITY[mh.rarity] || RARITY.common;
           let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
           if (mh.affixes && mh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + mh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ +${mh.baseDmg || Math.round(((mh.baseDmgMin||0)+(mh.baseDmgMax||0))/2)} dmg`;
+          s += `⚔️ ${mh.baseDmgMin||1}-${mh.baseDmgMax||1} dmg`;
           if (mh.critChance) s += ` · 🎯 ${mh.critChance}% krit (×2.0)`;
           if (mh.weaponType === 'staff') s += ' 🪄 magická';
           else if (mh.weaponType === 'blade') s += ' ⚔️ fyzická';
@@ -9119,7 +9119,7 @@
           const er = RARITY[oh.rarity] || RARITY.common;
           let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
           if (oh.affixes && oh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + oh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ +${oh.baseDmg || Math.round(((oh.baseDmgMin||0)+(oh.baseDmgMax||0))/2)} dmg`;
+          s += `⚔️ ${oh.baseDmgMin||1}-${oh.baseDmgMax||1} dmg`;
           if (oh.critChance) s += ` · 🎯 ${oh.critChance}% krit (×2.0)`;
           if (oh.weaponType === 'staff') s += ' 🪄 magická';
           else if (oh.weaponType === 'blade') s += ' ⚔️ fyzická';
