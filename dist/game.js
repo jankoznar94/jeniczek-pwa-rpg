@@ -151,7 +151,7 @@
 
   // ===== FLOATING BATTLE TEXT (WoW-style scrolling arc) =====
   // side: 'left' (enemy dmg → player, arcs on left half) or 'right' (player dmg → enemy, arcs on right half)
-  function spawnFloatingText(text, side, color, size, duration) {
+  function spawnFloatingText(text, side, color, size, duration, iconPath) {
     const arena = document.getElementById('mbArena');
     if (!arena) return;
     const ar = arena.getBoundingClientRect();
@@ -166,7 +166,11 @@
     const startTime = performance.now();
 
     const el = document.createElement('div');
-    el.textContent = text;
+    if (iconPath) {
+      el.innerHTML = `<img src="${iconPath}" style="width:24px;height:24px;vertical-align:middle;margin-right:4px"> ${text}`;
+    } else {
+      el.textContent = text;
+    }
     el.style.cssText = `position:absolute;pointer-events:none;z-index:50;font-weight:bold;font-size:${size || 32}px;color:${color || '#fff'};text-shadow:0 0 15px ${color || 'rgba(255,255,255,0.5)'};white-space:nowrap;font-family:Arial,sans-serif;`;
     arena.appendChild(el);
     // Nastavit počáteční pozici hned po appendu, aby text neblikal v (0,0)
@@ -417,7 +421,7 @@
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Dual wield attack: ${60+lv*20}% + ${30+lv*15}% dmg` },
             ]},
             { choices: [
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_bloodrage', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_doubleSwing', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
             ]}
           ]
         },
@@ -425,7 +429,7 @@
           tiers: [
             { choices: [
               { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg for 60s` },
-              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
+              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
             ]},
             { choices: [
               { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
@@ -3563,7 +3567,7 @@
       // Animace
       spawnThunderClapAnim(mb);
       playSFX(thunderClapSfx);
-      spawnFloatingText(`🌊 -${dmg}`, 'right', '#f1c40f', 32);
+      spawnFloatingText(`🌊 -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/thunderClap.png');
     } else if (spellId === 'bloodrage') {
       // -15% HP, +100% zisk Rage na 10s
       const hpCost = Math.round(mb.playerHp * 0.15);
@@ -3574,6 +3578,7 @@
       _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
       // Animace
       spawnBloodrageAnim(mb);
+      playSFX(shoutSfx);
       spawnFloatingText(`🩸 -${hpCost} HP`, 'left', '#e74c3c', 32);
     } else if (spellId === 'thunderBolt') {
       const lv = getSpellLv('thunderBolt');
@@ -3596,7 +3601,7 @@
       playSFX(thunderBoltSfx);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
-      spawnFloatingText(`⚡ -${dmg}`, 'right', '#f1c40f', 32);
+      spawnFloatingText(`⚡ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/thunderBolt.png');
     } else if (spellId === 'shieldBash') {
       // Shield Bash — pouze se štítem
       const shield = ITEM_MAP[state.hero.equip.shield];
@@ -3622,7 +3627,7 @@
       spawnShieldBashAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
-      spawnFloatingText(`🛡️ -${dmg}`, 'right', '#f1c40f', 32);
+      spawnFloatingText(`🛡️ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/shield_bash.png');
     } else if (spellId === 'battleShout') {
       // +5+lv*5% dmg na 60s (dle talentu)
       const lv = getSpellLv('battleShout');
@@ -3636,7 +3641,7 @@
       renderBuffs();
       // Animace
       spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
-      spawnFloatingText(`📯 +${dmgPct}% dmg`, 'left', '#f39c12', 32);
+      spawnFloatingText(`📯 +${dmgPct}% dmg`, 'left', '#f39c12', 32, 'assets/spells/battleShout.png');
     } else if (spellId === 'defensiveShout') {
       const lv = getSpellLv('defensiveShout');
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
@@ -3675,7 +3680,7 @@
       mb._offhandSwingPct = 0;
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
-      spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32);
+      spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 'assets/spells/doubleSwing.png');
     } else if (spellId === 'whirlwind') {
       // Whirlwind — 3× rychlé útoky
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -3689,7 +3694,7 @@
       playSFX(whirlwindSfx);
       // Animace
       spawnWhirlwindAnim(mb);
-      spawnFloatingText(`🌀 -${totalDmg}`, 'right', '#f1c40f', 32);
+      spawnFloatingText(`🌀 -${totalDmg}`, 'right', '#f1c40f', 32, 'assets/spells/whirlwind.png');
     } else if (spellId === 'sinisterStrike') {
       // 150% dmg + 1 combo point
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -3700,7 +3705,7 @@
       state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
       // Canvas melee impact
       spawnMeleeImpact(mb, false, getWeaponType());
-      spawnFloatingText(`🗡️ -${dmg}`, 'right', '#f1c40f', 32);
+      spawnFloatingText(`🗡️ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/shadowStrike.png');
     } else if (spellId === 'eviscerate') {
       const cp = state.comboPoints || 0;
       if (cp < 1) return; // nelze použít bez combo pointů
@@ -6131,25 +6136,47 @@
   }
 
   function spawnBloodrageAnim(mb) {
-    // Velký rudý kruh kolem swing timerů, pulzuje a zmizí
-    const ring = $('mbTimerRing');
-    if (!ring) return;
-    const origBorder = ring.style.border || '';
-    const origShadow = ring.style.boxShadow || '';
-    ring.style.border = '3px solid #e74c3c';
-    ring.style.boxShadow = '0 0 30px rgba(231,76,60,0.6), inset 0 0 30px rgba(231,76,60,0.3)';
-    let pulseCount = 0;
-    const pulseInterval = setInterval(() => {
-      pulseCount++;
-      ring.style.boxShadow = pulseCount % 2 === 0
-        ? '0 0 30px rgba(231,76,60,0.6), inset 0 0 30px rgba(231,76,60,0.3)'
-        : '0 0 50px rgba(231,76,60,0.9), inset 0 0 50px rgba(231,76,60,0.5)';
-      if (pulseCount >= 6) {
-        clearInterval(pulseInterval);
-        ring.style.border = origBorder;
-        ring.style.boxShadow = origShadow;
-      }
-    }, 150);
+    // Rudý expandující kruh na canvasu, jako shout rings ale jen jeden
+    const arena = $('mbArena');
+    if (!arena) return;
+    const rect = arena.getBoundingClientRect();
+    const canvas = $('mbProjectileCanvasOffhand');
+    if (!canvas) return;
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    const ctx = canvas.getContext('2d');
+    const cx = rect.width / 2;
+    const cy = rect.height / 2;
+    const startTime = performance.now();
+    const duration = 600;
+
+    function animate(ts) {
+      const elapsed = ts - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const r = 10 + progress * 200;
+      const alpha = 1 - progress;
+      ctx.save();
+      ctx.shadowColor = 'rgba(231,76,60,0.8)';
+      ctx.shadowBlur = 30;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(231,76,60,${alpha})`;
+      ctx.lineWidth = 6;
+      ctx.stroke();
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+      grad.addColorStop(0, `rgba(231,76,60,${alpha * 0.4})`);
+      grad.addColorStop(0.5, `rgba(231,76,60,${alpha * 0.15})`);
+      grad.addColorStop(1, 'rgba(231,76,60,0)');
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.restore();
+      if (progress < 1) requestAnimationFrame(animate);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    requestAnimationFrame(animate);
   }
 
   function spawnThunderClapAnim(mb) {
