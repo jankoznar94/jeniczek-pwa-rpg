@@ -158,10 +158,10 @@
     const cx = ar.width / 2;
     const cy = ar.height / 2;
     const radius = Math.min(cx, cy) * 0.7;
-    // Levá strana (enemy dmg → hráč): start 10h (150°) → konec 7h (210°) — po směru, 60°
-    // Pravá strana (player dmg → nepřítel): start 2h (30°) → konec 5h (-30°=330°) — po směru, 60°
-    const startAngle = side === 'left' ? 5 * Math.PI / 6 : Math.PI / 6;
-    const endAngle = side === 'left' ? 7 * Math.PI / 6 : -Math.PI / 6;
+    // Levá strana (enemy dmg → hráč): start 7h (210°) → konec 10h (150°) — proti směru, stoupá vzhůru
+    // Pravá strana (player dmg → nepřítel): start 2h (30°) → konec 5h (-30°=330°) — po směru, klesá dolů
+    const startAngle = side === 'left' ? 7 * Math.PI / 6 : Math.PI / 6;
+    const endAngle = side === 'left' ? 5 * Math.PI / 6 : -Math.PI / 6;
     const dur = duration || 2000;
     const startTime = performance.now();
 
