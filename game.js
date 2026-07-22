@@ -3035,8 +3035,8 @@
     // Life steal / mana steal
     if (!blocked && lifeStealAmt > 0) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
-      // Heal text (zeleně u nepřítele — vlevo)
-      spawnFloatingText(`+${lifeStealAmt}`, 'left', '#2ecc71', 32);
+      // Heal text (zeleně u nepřítele — vlevo) — zpožděný, aby se nepřekrýval s damage textem
+      setTimeout(() => spawnFloatingText(`+${lifeStealAmt}`, 'left', '#2ecc71', 32), 300);
     }
     if (!blocked && manaStealAmt > 0) {
       state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaStealAmt);
