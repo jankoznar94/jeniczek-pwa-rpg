@@ -169,6 +169,11 @@
     el.textContent = text;
     el.style.cssText = `position:absolute;pointer-events:none;z-index:50;font-weight:bold;font-size:${size || 32}px;color:${color || '#fff'};text-shadow:0 0 15px ${color || 'rgba(255,255,255,0.5)'};white-space:nowrap;font-family:Arial,sans-serif;`;
     arena.appendChild(el);
+    // Nastavit počáteční pozici hned po appendu, aby text neblikal v (0,0)
+    const startX = cx + Math.cos(startAngle) * radius;
+    const startY = cy + Math.sin(startAngle) * radius;
+    el.style.left = (startX - el.offsetWidth / 2) + 'px';
+    el.style.top = (startY - el.offsetHeight / 2) + 'px';
 
     function animate(now) {
       const t = Math.min((now - startTime) / dur, 1);
@@ -826,10 +831,16 @@
       types:['weapon','ring','amulet'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
     { id:'poisoned', name:'Poisoned', type:'prefix', group:11, minIlvl:8, weight:5,
       types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
-    { id:'manaRegen', name:'Regenerating', type:'prefix', group:12, minIlvl:1, weight:6,
+    { id:'manaRegen', name:'Regenerating', type:'prefix', group:12, minIlvl:1, weight:4,
       types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
     { id:'skillful', name:'Skillful', type:'prefix', group:13, minIlvl:8, weight:5,
       types:['weapon','ring','amulet'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
+    { id:'vital', name:'Vital', type:'prefix', group:20, minIlvl:1, weight:6,
+      types:['ring','amulet','armor'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
+    { id:'smoldering', name:'Smoldering', type:'prefix', group:21, minIlvl:5, weight:5,
+      types:['ring','amulet'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
+    { id:'glacial', name:'Glacial', type:'prefix', group:22, minIlvl:5, weight:5,
+      types:['ring','amulet'], stats:{ iceDmg:[2,6] }, tint:'#4a7dff' },
     // === SUFFIXY ===
     { id:'ofAccuracy', name:'of Accuracy', type:'suffix', group:105, minIlvl:5, weight:7,
       types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
@@ -845,14 +856,20 @@
       types:['ring','amulet','armor'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
     { id:'ofDexterity', name:'of Dexterity', type:'suffix', group:111, minIlvl:1, weight:6,
       types:['ring','amulet','weapon'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
-    { id:'ofManaRegen', name:'of Mana Regen', type:'suffix', group:112, minIlvl:1, weight:5,
+    { id:'ofManaRegen', name:'of Mana Regen', type:'suffix', group:112, minIlvl:1, weight:4,
       types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
     { id:'ofSkill', name:'of Skill', type:'suffix', group:113, minIlvl:10, weight:5,
       types:['ring','amulet','weapon'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     { id:'ofVenom', name:'of Venom', type:'suffix', group:114, minIlvl:10, weight:4,
       types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
-    { id:'ofManaSteal', name:'of Mana Steal', type:'suffix', group:115, minIlvl:8, weight:5,
+    { id:'ofManaSteal', name:'of Mana Steal', type:'suffix', group:115, minIlvl:8, weight:4,
       types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
+    { id:'ofLife', name:'of Life', type:'suffix', group:121, minIlvl:1, weight:6,
+      types:['ring','amulet','armor'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
+    { id:'ofBurning', name:'of Burning', type:'suffix', group:122, minIlvl:5, weight:5,
+      types:['ring','amulet'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
+    { id:'ofFrost', name:'of Frost', type:'suffix', group:123, minIlvl:5, weight:5,
+      types:['ring','amulet'], stats:{ iceDmg:[2,6] }, tint:'#4a7dff' },
     // Defenzivní suffixy — více tierů (ED + bonusHp)
     { id:'ofFortification', name:'of Fortification', type:'suffix', group:116, minIlvl:1, weight:8,
       types:['armor','shield','helmet'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
@@ -7621,15 +7638,15 @@
     // 1. Vybrat typ a base item z ITEMS podle floor/tieru
     const typeRoll = Math.random();
     let type, subtype;
-    if (typeRoll < 0.25) {
+    if (typeRoll < 0.28) {
       type = 'weapon';
       const weaponTypes = ['blade','blade','axe','axe','blunt','blunt','claws','staff','staff'];
       subtype = weaponTypes[rand(0, weaponTypes.length - 1)];
     }
-    else if (typeRoll < 0.50) { type = 'armor'; subtype = null; }
-    else if (typeRoll < 0.70) { type = 'helmet'; subtype = null; }
-    else if (typeRoll < 0.85) { type = 'shield'; subtype = null; }
-    else if (typeRoll < 0.92) { type = 'ring'; subtype = null; }
+    else if (typeRoll < 0.53) { type = 'armor'; subtype = null; }
+    else if (typeRoll < 0.73) { type = 'helmet'; subtype = null; }
+    else if (typeRoll < 0.90) { type = 'shield'; subtype = null; }
+    else if (typeRoll < 0.95) { type = 'ring'; subtype = null; }
     else { type = 'amulet'; subtype = null; }
 
     // Common itemy jen pro zbroj a zbraně (jako Diablo 2)
@@ -8717,8 +8734,9 @@
         let stats = '';
         if (item.type === 'weapon') {
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-          const avgDmg = Math.round(((item.baseDmgMin||0) + (item.baseDmgMax||0)) / 2);
-          stats = `⚔️+${avgDmg} dmg${handLabel}`;
+          const dmgMin = item.baseDmgMin || 1;
+          const dmgMax = item.baseDmgMax || 1;
+          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel}`;
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
@@ -8770,8 +8788,9 @@
         let stats = '';
         if (item.type === 'weapon') {
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-          const avgDmg = Math.round(((item.baseDmgMin||0) + (item.baseDmgMax||0)) / 2);
-          stats = `⚔️+${avgDmg} dmg${handLabel}`;
+          const dmgMin = item.baseDmgMin || 1;
+          const dmgMax = item.baseDmgMax || 1;
+          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel}`;
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
