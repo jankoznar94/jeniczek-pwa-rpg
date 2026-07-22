@@ -158,11 +158,11 @@
     const cx = ar.width / 2;
     const cy = ar.height / 2;
     const radius = Math.min(cx, cy) * 0.7;
-    // Levá strana: start 10h (150°) → konec 8h (210°) — arc na levé půlce
-    // Pravá strana: start 2h (30°) → konec 4h (330°) — arc na pravé půlce
-    const startAngle = side === 'left' ? 5 * Math.PI / 6 : Math.PI / 6;
-    const endAngle = side === 'left' ? 7 * Math.PI / 6 : 11 * Math.PI / 6;
-    const dur = duration || 1800;
+    // Levá strana (enemy dmg → hráč): start 9h (180°) → konec 6h (270°) — levý dolní kvadrant
+    // Pravá strana (player dmg → nepřítel): start 3h (0°) → konec 6h (270°) — pravý dolní kvadrant
+    const startAngle = side === 'left' ? Math.PI : 0;
+    const endAngle = 3 * Math.PI / 2;
+    const dur = duration || 2000;
     const startTime = performance.now();
 
     const el = document.createElement('div');
