@@ -5667,11 +5667,9 @@
         const elapsed = ts - startTime;
         const progress = Math.min(elapsed / duration, 1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const drawProgress = Math.min(progress * 1.5, 1);
-        // Blunt weapon — fade začíná později, aby pavučina zůstala déle vidět
-        const fadeStart = 0.5;
-        const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
-        const alpha = 1 - fadeProgress;
+        // Blunt — statický obrázek, objeví se celý najednou, zmizí celý najednou
+        if (progress >= 1) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+        const alpha = 1;
 
         ctx.save();
         ctx.shadowColor = glowColor;
@@ -5681,35 +5679,25 @@
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
 
-        // Kreslit praskliny postupně
-        const totalSegments = lines.reduce((sum, l) => sum + l.length, 0) + crossLines.length;
-        const drawnSegments = Math.floor(drawProgress * totalSegments);
-        let segIdx = 0;
-
+        // Kreslit všechny praskliny najednou
         lines.forEach(segments => {
           ctx.beginPath();
           ctx.moveTo(bx, by);
-          let drawn = 0;
           for (const seg of segments) {
-            if (segIdx >= drawnSegments) break;
             ctx.lineTo(seg.x, seg.y);
-            segIdx++;
-            drawn++;
           }
-          if (drawn > 0) ctx.stroke();
+          ctx.stroke();
         });
 
         // Spojovací čáry
         crossLines.forEach(cl => {
-          if (segIdx >= drawnSegments) return;
           ctx.beginPath();
           ctx.moveTo(cl.x1, cl.y1);
           ctx.lineTo(cl.x2, cl.y2);
           ctx.stroke();
         });
         ctx.restore();
-        if (progress < 1) requestAnimationFrame(animate);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(animate);
       }
       requestAnimationFrame(animate);
 
