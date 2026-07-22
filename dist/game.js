@@ -3579,7 +3579,7 @@
       // Animace
       spawnBloodrageAnim(mb);
       playSFX(shoutSfx);
-      spawnFloatingText(`🩸 -${hpCost} HP`, 'left', '#e74c3c', 32);
+      spawnFloatingText(`🩸 -${hpCost} HP`, 'right', '#e74c3c', 32);
     } else if (spellId === 'thunderBolt') {
       const lv = getSpellLv('thunderBolt');
       const pct = 80 + lv * 20; // 100% @ lv1, 120% @ lv2, ... 180% @ lv5
