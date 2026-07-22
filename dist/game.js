@@ -3435,9 +3435,9 @@
         if (!d) return;
         const remaining = Math.ceil(d.ticks / 60);
         const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
-        html += `<div class="buff-icon" title="${d.name || spellId}">
-          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="buff-icon-emoji">${d.icon}</span>`}
-          <span class="buff-icon-timer">${remaining}s</span>
+        html += `<div class="debuff-icon" title="${d.name || spellId}">
+          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
+          <span class="debuff-icon-timer">${remaining}s</span>
         </div>`;
       });
       container.innerHTML = html;
