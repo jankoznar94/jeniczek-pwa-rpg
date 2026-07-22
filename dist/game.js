@@ -3553,21 +3553,39 @@
     if (spellId === 'heroicStrike') {
       mb._heroicStrikeQueued = true;
     } else if (spellId === 'thunderClap') {
-      // 30% dmg
+      // Damage podle levelu talentu
+      const lv = getSpellLv(spellId);
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
-      const baseDmg = 10 + Math.floor(state.hero.level * 3) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const dmg = Math.max(1, Math.round(baseDmg * 0.3));
-      mb.bossHp -= dmg;
-      // Zpomalení nepřítele 10% na 10s
-      state.thunderClapTimer = 600; // 10s * 60fps
-      state.thunderClapSlowPct = 10;
-      // Debuff ikona nad příšerou
-      _sessionDebuffs['thunderClap'] = { icon: '🌊', name: 'Zpomalení', ticks: 600, maxTicks: 600 };
-      // Animace
+      const strBonus = (state.hero.attrStr||0) + eqAttrs.str;
+      const weaponDmg = getWeaponDmg(weapon);
+      const pctDmg = 0.5 + lv * 0.3;
+      const baseDmg = Math.round(weaponDmg * pctDmg) + Math.floor(strBonus * 0.5);
+      let finalDmg = Math.max(1, baseDmg);
+      const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet]].filter(Boolean);
+      const totalSkillDmg = eqItems.reduce((sum, it) => sum + (it.skillDmg || 0), 0);
+      if (totalSkillDmg > 0) {
+        finalDmg = Math.max(1, Math.round(finalDmg * (1 + totalSkillDmg / 100)));
+      }
+      mb.bossHp -= finalDmg;
+      // Slow: 20% for 1+lv seconds
+      const slowPct = 20;
+      const slowDuration = 1 + lv;
+      const slowTicks = Math.round(slowDuration * 60);
+      mb._enemySlowPct = slowPct;
+      mb._enemySlowTimer = slowTicks;
+      mb._enemySlowMax = slowTicks;
+      // Přepočítat enemy swing timer se zpomalením — zachovat % průběh
+      const now = performance.now();
+      const oldMs = mb.enemySwingMs;
+      const elapsed = now - mb._enemySwingStart;
+      const progress = Math.min(elapsed / oldMs, 1);
+      mb.enemySwingMs = getEnemySwingTime(mb);
+      mb._enemySwingStart = now - progress * mb.enemySwingMs;
+      _sessionDebuffs['thunderClap'] = { icon: '🌊', name: `Thunder Clap (slow ${slowPct}%)`, ticks: slowTicks, maxTicks: slowTicks };
       spawnThunderClapAnim(mb);
       playSFX(thunderClapSfx);
-      spawnFloatingText(`🌊 -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/thunderClap.png');
+      spawnFloatingText(`🌊 -${finalDmg}`, 'right', '#f39c12', 32, 'assets/spells/thunderClap.png');
     } else if (spellId === 'bloodrage') {
       // -15% HP, +100% zisk Rage na 10s
       const hpCost = Math.round(mb.playerHp * 0.15);
@@ -3845,6 +3863,46 @@
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
       sfxHit();
       spawnFloatingText(`-${finalDmg}`, 'right', '#f1c40f', 32);
+    } else if (spellId === 'thunderClap') {
+      // Barbar Thunder Clap — damage + slow
+      const lv = getSpellLv(spellId);
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      const eqAttrs = getEquipAttrs();
+      const strBonus = (state.hero.attrStr||0) + eqAttrs.str;
+      const weaponDmg = getWeaponDmg(weapon);
+      const pctDmg = 0.5 + lv * 0.3;
+      const baseDmg = Math.round(weaponDmg * pctDmg) + Math.floor(strBonus * 0.5);
+      let finalDmg = Math.max(1, baseDmg);
+      const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet]].filter(Boolean);
+      const totalSkillDmg = eqItems.reduce((sum, it) => sum + (it.skillDmg || 0), 0);
+      if (totalSkillDmg > 0) {
+        finalDmg = Math.max(1, Math.round(finalDmg * (1 + totalSkillDmg / 100)));
+      }
+      mb.bossHp -= finalDmg;
+      // Slow: 20% for 1+lv seconds
+      const slowPct = 20;
+      const slowDuration = 1 + lv;
+      const slowTicks = Math.round(slowDuration * 60);
+      mb._enemySlowPct = slowPct;
+      mb._enemySlowTimer = slowTicks;
+      mb._enemySlowMax = slowTicks;
+      // Přepočítat enemy swing timer se zpomalením — zachovat % průběh
+      const now = performance.now();
+      const oldMs = mb.enemySwingMs;
+      const elapsed = now - mb._enemySwingStart;
+      const progress = Math.min(elapsed / oldMs, 1);
+      mb.enemySwingMs = getEnemySwingTime(mb);
+      mb._enemySwingStart = now - progress * mb.enemySwingMs;
+      _sessionDebuffs['thunderClap'] = { icon: '🌊', name: `Thunder Clap (slow ${slowPct}%)`, ticks: slowTicks, maxTicks: slowTicks };
+      playSFX(thunderClapSfx);
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
+      spawnFloatingText(`-${finalDmg}`, 'right', '#f39c12', 32);
+      if (mb.bossHp <= 0 && !mb._pendingKill) {
+        mb._pendingKill = true;
+        spawnDeathEffect(mb);
+        endMapBattle(true);
+        return;
+      }
     }
     updateMapBattleUI();
     saveGame();
@@ -8657,13 +8715,6 @@
         btn.style.opacity = pts > 0 ? '1' : '0.3';
       }
     });
-    // Aktivní škola
-    const schoolInfo = $('activeSchoolInfo');
-    if (schoolInfo) {
-      const active = state.activeSchool ? (getClassSkillTree().schools || []).find(s => s.id === state.activeSchool) : null;
-      const schoolLv = active ? (state.talentLevels[active.id] || 0) : 0;
-      schoolInfo.textContent = active ? `${active.icon} ${active.name} — Lv.${schoolLv}/5` : 'Žádná — přidej talentové body v 🎓 Talent Tree';
-    }
   }
 
   function renameHero() {
