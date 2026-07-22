@@ -759,16 +759,16 @@
     { id:'shield_kiteShield_hell', name:'Monarch', type:'shield', baseDmg:0, blockChance:30, defense:155, cost:330, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:7 },
     { id:'shield_gothicShield_hell', name:'Ward', type:'shield', baseDmg:0, blockChance:35, defense:185, cost:420, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:7 },
     // === PRSTENY ===
-    { id:'copperRing', name:'Měděný prsten', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
-    { id:'silverRing', name:'Stříbrný prsten', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
-    { id:'goldRing', name:'Zlatý prsten', type:'ring', cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
-    { id:'gemRing', name:'Drahokamový prsten', type:'ring', cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
+    { id:'copperRing', name:'Copper Ring', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
+    { id:'silverRing', name:'Silver Ring', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
+    { id:'goldRing', name:'Gold Ring', type:'ring', cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
+    { id:'gemRing', name:'Gem Ring', type:'ring', cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
     // === AMULETY ===
-    { id:'boneAmulet', name:'Kostěný amulet', type:'amulet', cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
-    { id:'silverAmulet', name:'Stříbrný amulet', type:'amulet', cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
-    { id:'goldAmulet', name:'Zlatý amulet', type:'amulet', cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
-    { id:'rubyAmulet', name:'Rubínový amulet', type:'amulet', cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
-    { id:'arcaneAmulet', name:'Arcánní amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
+    { id:'boneAmulet', name:'Bone Amulet', type:'amulet', cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
+    { id:'silverAmulet', name:'Silver Amulet', type:'amulet', cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
+    { id:'goldAmulet', name:'Gold Amulet', type:'amulet', cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
+    { id:'rubyAmulet', name:'Ruby Amulet', type:'amulet', cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
+    { id:'arcaneAmulet', name:'Arcane Amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
     // === BELTY ===
     // Normal
     { id:'belt_sash', name:'Sash', type:'belt', baseDmg:0, beltSlots:1, defense:3, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
@@ -789,8 +789,8 @@
     { id:'belt_heavyBelt_hell', name:'Troll Belt', type:'belt', baseDmg:0, beltSlots:5, defense:115, cost:300, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:7 },
     { id:'belt_platedBelt_hell', name:'Colossus Girdle', type:'belt', baseDmg:0, beltSlots:5, defense:140, cost:380, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:7 },
     // === POTIONY (consumable) ===
-    { id:'healingPotion', name:'Léčivý lektvar', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
-    { id:'manaPotion', name:'Mana lektvar', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
+    { id:'healingPotion', name:'Healing Potion', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
+    { id:'manaPotion', name:'Mana Potion', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
   ];
 
   // ===== AFFIX DATABÁZE (prefixy + suffixy) =====
