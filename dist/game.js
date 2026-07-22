@@ -9292,8 +9292,8 @@
     document.addEventListener('click', function(e) {
       const btn = e.target.closest('button');
       if (!btn) return;
-      // Přeskočit tlačítka v aréně (mají vlastní SFX)
-      if (btn.closest('.mb-spells') || btn.closest('.mb-potion-buttons') || btn.closest('.arena-surrender-btn')) return;
+      // Přeskočit tlačítka v aréně (mají vlastní SFX) a tlačítka v obchodě (koupit/prodat)
+      if (btn.closest('.mb-spells') || btn.closest('.mb-potion-buttons') || btn.closest('.arena-surrender-btn') || btn.closest('.shop-item-actions')) return;
       playSFX(clickSfx);
     });
 
