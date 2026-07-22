@@ -420,9 +420,9 @@
           tiers: [
             { choices: [
               { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg for 60s` },
+              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
             ]},
             { choices: [
-              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
               { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
             ]},
             { choices: [
@@ -1993,7 +1993,8 @@
             if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Done'; }
             else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Locked'; }
             else { sIcon = chosen ? chosen.icon : '?'; sStyle = ''; sText = chosen ? chosen.label : ''; }
-            stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
+            const isCheckpoint = si > 0 && si % 5 === 0 && si < 25;
+            stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}${isCheckpoint?' floor-checkpoint':''}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
               <span class="floor-card-icon"${sStyle ? ` style="${sStyle}"` : ''}>${sIcon}</span>
               <span class="floor-card-num">Floor ${si+1}</span>
               <span class="floor-card-text">${sText}</span>
@@ -2843,10 +2844,13 @@
     mb._offhandSwingStart = performance.now();
     mb._offhandSwingReady = false;
     mb._offhandSwingPct = 0;
-    // Offhand útok — 50% damage hlavní zbraně
-    dealPlayerDamage(mb, 0.5, true);
-    updateMapBattleUI();
-    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    // Offhand útok — 50% damage hlavní zbraně, zpožděný o 200ms aby se nepřekrýval s main hand textem
+    setTimeout(() => {
+      if (mapBattleState.ended) return;
+      dealPlayerDamage(mb, 0.5, true);
+      updateMapBattleUI();
+      if (mb.bossHp <= 0) { endMapBattle(true); return; }
+    }, 200);
   }
 
   function onAutoEnemyAttack() {
@@ -8761,7 +8765,8 @@
     } else {
       $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0 && i.tier === 1 && i.type !== 'ring' && i.type !== 'amulet').map(item => {
         const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id || h.equip.amulet === item.id || h.equip.belt === item.id;
-        const canBuy = h.gold >= item.cost && !owned;
+        const isConsumable = item.type === 'consumable';
+        const canBuy = h.gold >= item.cost && (!owned || isConsumable);
         let stats = '';
         if (item.type === 'weapon') {
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
@@ -8781,14 +8786,14 @@
         if (item.beltSlots) extraStats.push(`🎗️${item.beltSlots} slotů`);
         if (item.swingMs) extraStats.push(`⚡${item.swingMs}ms`);
         if (extraStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + extraStats.join(' · ') + '</span>';
-        return `<div class="shop-item" style="opacity:${owned?'0.4':'1'}">
+        return `<div class="shop-item" style="opacity:${owned && !isConsumable?'0.4':'1'}">
           <div class="shop-item-header">
             <div class="shop-item-name">${renderItemIcon(item,64)}<span style="color:${getQualityColor(item)}">${item.name}</span></div>
             <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
           </div>
           <div class="shop-item-actions">
             <span class="price">💰 ${item.cost}</span>
-            ${owned ? '<span style="color:#2ecc71">✅ Owned</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Buy</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Buy</button>`}
+            ${owned && !isConsumable ? '<span style="color:#2ecc71">✅ Owned</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Buy</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Buy</button>`}
           </div>
         </div>`;
       }).join('');
@@ -8799,8 +8804,8 @@
     const item = ITEM_MAP[itemId];
     if (!item) return;
     const h = state.hero;
-    if (h.gold < item.cost) { showMessage('❌ Nemáš dost zlata!'); return; }
-    if (h.inventory.includes(itemId)) { showMessage('❌ Už to máš!'); return; }
+    if (h.gold < item.cost) { showMessage('❌ Not enough gold!'); return; }
+    if (item.type !== 'consumable' && h.inventory.includes(itemId)) { showMessage('❌ Already owned!'); return; }
     h.gold -= item.cost;
     h.inventory.push(itemId);
     playSFX(shopSfx);
