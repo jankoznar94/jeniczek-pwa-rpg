@@ -1,7 +1,7 @@
-const CODE_CACHE = 'boss-slayer-code-v123';
-const ASSET_CACHE = 'boss-slayer-assets-v10';
+const CODE_CACHE = 'boss-slayer-code-v124';
+const ASSET_CACHE = 'boss-slayer-assets-v11';
 
-const CODE_FILES = ['/', '/index.html', '/style.css?v=123', '/game.js?v=123', '/manifest.json'];
+const CODE_FILES = ['/', '/index.html', '/style.css?v=124', '/game.js?v=124', '/manifest.json'];
 
 const ASSET_FILES = [
   '/icon-192.png', '/icon-512.png',
@@ -64,7 +64,7 @@ const ASSET_FILES = [
   '/assets/menu-icons/inventar.png', '/assets/menu-icons/obchod.png',
   '/assets/menu-icons/navod.png', '/assets/menu-icons/bestiar.png',
   '/assets/menu-icons/music.png', '/assets/menu-icons/testmode.png',
-  '/assets/sfx/hurt1.mp3', '/assets/sfx/hurt2.mp3', '/assets/sfx/hurt3.mp3',
+  '/assets/sfx/hurt1.mp3', '/assets/sfx/hurt2.mp3', '/assets/sfx/hurt3.mp3', '/assets/sfx/hurt4.mp3',
   '/assets/sfx/shout.mp3',
   '/assets/sfx/shop.mp3',
   '/assets/sfx/melee_hit2.mp3',
@@ -75,6 +75,8 @@ const ASSET_FILES = [
   '/assets/sfx/click.mp3',
   '/assets/sfx/whirlwind.mp3',
   '/assets/sfx/enemy_hit.mp3',
+  '/assets/sfx/blunt_hit.mp3', '/assets/sfx/blunt_crit.mp3',
+  '/assets/sfx/thunder_clap.mp3', '/assets/sfx/thunder_bolt.mp3',
   '/assets/sfx/fire_spell.mp3', '/assets/sfx/ice_spell.mp3', '/assets/sfx/lightning_spell.mp3',
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
