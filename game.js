@@ -327,7 +327,7 @@
     saveGame();
     switchBGM('defeat');
     $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Vzdal ses">';
-    $('resultTitle').textContent = 'Vzdal ses';
+    $('resultTitle').textContent = 'Surrendered';
     $('resultMsg').innerHTML = '';
     $('resultLootList').innerHTML = '';
     $('resultBtn').innerHTML = '';
@@ -1401,11 +1401,11 @@
     MYSTERY: 'mystery',    // Náhodná (hráč neví co)
   };
   const ROOM_POOL = [
-    { type: ROOM_TYPES.ENEMY, weight:50, icon:'💀', label:'Nepřítel' },
-    { type: ROOM_TYPES.ELITE, weight:15, icon:'💀💀', label:'Elita' },
-    { type: ROOM_TYPES.FOUNTAIN, weight:12, icon:'🩸', label:'Pramen' },
-    { type: ROOM_TYPES.MERCHANT, weight:12, icon:'🛒', label:'Obchod' },
-    { type: ROOM_TYPES.CHEST, weight:6, icon:'💰', label:'Truhlice' },
+    { type: ROOM_TYPES.ENEMY, weight:50, icon:'💀', label:'Enemy' },
+    { type: ROOM_TYPES.ELITE, weight:15, icon:'💀💀', label:'Elite' },
+    { type: ROOM_TYPES.FOUNTAIN, weight:12, icon:'🩸', label:'Fountain' },
+    { type: ROOM_TYPES.MERCHANT, weight:12, icon:'🛒', label:'Merchant' },
+    { type: ROOM_TYPES.CHEST, weight:6, icon:'💰', label:'Chest' },
     { type: ROOM_TYPES.MYSTERY, weight:5, icon:'❓', label:'???' },
   ];
 
@@ -1570,7 +1570,7 @@
       choices: [{
         type: rewardType,
         icon: rewardType === ROOM_TYPES.CHEST ? '💰' : '🛒',
-        label: rewardType === ROOM_TYPES.CHEST ? 'Odměna' : 'Obchod',
+        label: rewardType === ROOM_TYPES.CHEST ? 'Reward' : 'Merchant',
         isReward: true,
       }],
       completed: false,
@@ -1984,18 +1984,18 @@
               </div>`;
             }).join('');
             stepHtml += `<div class="map-floor-card floor-active" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66);flex-direction:column;align-items:stretch;padding:8px">
-              <div style="font-size:12px;font-weight:bold;margin-bottom:4px;color:${theme.border}">🎲 Vyber si:</div>
+              <div style="font-size:12px;font-weight:bold;margin-bottom:4px;color:${theme.border}">🎲 Choose:</div>
               <div class="dungeon-choices">${choiceHtml}</div>
             </div>`;
           } else {
             // Hotový nebo zamčený krok
             let sIcon, sStyle, sText;
-            if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Hotovo'; }
-            else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Zamčeno'; }
+            if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Done'; }
+            else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Locked'; }
             else { sIcon = chosen ? chosen.icon : '?'; sStyle = ''; sText = chosen ? chosen.label : ''; }
             stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
               <span class="floor-card-icon"${sStyle ? ` style="${sStyle}"` : ''}>${sIcon}</span>
-              <span class="floor-card-num">Krok ${si+1}</span>
+              <span class="floor-card-num">Floor ${si+1}</span>
               <span class="floor-card-text">${sText}</span>
             </div>`;
           }
@@ -2130,8 +2130,8 @@
       state.locationProgress[locId] = progress + 1;
       saveGame();
       $('resultIcon').textContent = '🩸';
-      $('resultTitle').textContent = 'Léčivý pramen';
-      $('resultMsg').innerHTML = `<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">+${healAmt} HP</span></div><div class="result-stat"><span class="result-stat-icon">💧</span><span class="result-stat-val">Mana plná</span></div></div>`;
+      $('resultTitle').textContent = 'Healing Fountain';
+      $('resultMsg').innerHTML = `<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">+${healAmt} HP</span></div><div class="result-stat"><span class="result-stat-icon">💧</span><span class="result-stat-val">Mana full</span></div></div>`;
       $('resultLootList').innerHTML = '';
       $('resultBtn').innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
@@ -2156,7 +2156,7 @@
       }
       saveGame();
       $('resultIcon').textContent = '💰';
-      $('resultTitle').textContent = 'Truhlice!';
+      $('resultTitle').textContent = 'Chest!';
       $('resultMsg').innerHTML = `<div class="result-stats">${lootHtml}</div>`;
       $('resultLootList').innerHTML = '';
       $('resultBtn').innerHTML = '';
@@ -2334,7 +2334,7 @@
   }
 
   function getSwingTime(weaponId) {
-    // Rychlost zbraně v ms — čím rychlejší zbraň, tím kratší swing
+    // Speed zbraně v ms — čím rychlejší zbraň, tím kratší swing
     const w = ITEM_MAP[weaponId] || ITEM_MAP['fists'];
     const base = w.swingMs || 2000; // default 2s
     // DEX zkracuje swing
@@ -3851,7 +3851,7 @@
   function getFloorTimerMultiplier(floor, locId) {
     // D2 (Poušť) — base je o něco pomalejší, ale bude kolísat v rAF
     if (locId === 1) return Math.pow(0.95, floor) * 1.15;
-    // Ostatní dungeony: 1200ms base, každé patro -5%
+    // Other dungeony: 1200ms base, každé patro -5%
     return Math.pow(0.95, floor);
   }
 
@@ -7770,14 +7770,14 @@
         // Checkpoint screen
         state._floorLootDrops = [];
         $('resultIcon').innerHTML = '🏕️';
-        $('resultTitle').textContent = `Checkpoint — Patro ${p}`;
-        $('resultMsg').innerHTML = `<div style="text-align:center;font-size:13px;color:#aaa;margin-bottom:12px">Odpočiň si nebo navštiv obchodníka.</div>
+        $('resultTitle').textContent = `Checkpoint — Floor ${p}`;
+        $('resultMsg').innerHTML = `<div style="text-align:center;font-size:13px;color:#aaa;margin-bottom:12px">Rest or visit the merchant.</div>
           <div style="display:flex;gap:12px;justify-content:center">
             <div class="dungeon-choice" onclick="game.handleCheckpoint('rest')" style="border-color:#2ecc71;background:#0d2d0d88;padding:12px;text-align:center;min-width:100px">
-              <span style="font-size:28px">🛌</span><br><span style="font-size:13px">Odpočinek</span>
+              <span style="font-size:28px">🛌</span><br><span style="font-size:13px">Rest</span>
             </div>
             <div class="dungeon-choice" onclick="game.handleCheckpoint('shop')" style="border-color:#e67e22;background:#2a1a0888;padding:12px;text-align:center;min-width:100px">
-              <span style="font-size:28px">🛒</span><br><span style="font-size:13px">Obchod</span>
+              <span style="font-size:28px">🛒</span><br><span style="font-size:13px">Shop</span>
             </div>
           </div>`;
         $('resultLootList').innerHTML = '';
@@ -7801,7 +7801,7 @@
       });
       state._floorLootDrops = [];
       $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
-      $('resultTitle').textContent = 'Vítězství!';
+      $('resultTitle').textContent = 'Victory!';
       $('resultMsg').innerHTML = '';
       // Loot list
       let lootListHtml = '';
@@ -7848,7 +7848,7 @@
           saveGame();
           switchBGM('defeat');
           $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Prohra">';
-          $('resultTitle').textContent = 'Prohra';
+          $('resultTitle').textContent = 'Defeat';
           $('resultMsg').innerHTML = '';
           $('resultLootList').innerHTML = '';
           $('resultBtn').innerHTML = '';
@@ -7901,11 +7901,11 @@
       }
       saveGame();
       $('resultIcon').textContent = '💰';
-      $('resultTitle').textContent = 'Dungeon dokončen!';
+      $('resultTitle').textContent = 'Dungeon Complete!';
       $('resultMsg').innerHTML = '<div class="result-stats">'
                 + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + rewardGold + ' gold</span></div>'
                 + '</div>';
-      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Mapa</button>';
+      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Map</button>';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
       showScreen('result');
       switchBGM('win');
@@ -7999,17 +7999,17 @@
 
     // === BASE ITEMS ===
     html += `<div class="card"><div class="card-title">🏗️ Base itemy</div>
-    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Každý base item má fixní jméno a staty. Při lootu se na něj nabalují affixy.</p>`;
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Each base item has a fixed name and stats. Affixes are rolled on loot.</p>`;
 
     // Zbraně rozdělené do podskupin
-    html += `<div style="margin-top:12px"><strong>⚔️ Zbraně</strong></div>`;
+    html += `<div style="margin-top:12px"><strong>⚔️ Weapons</strong></div>`;
 
     // Hole (staff) — magické
     const staves = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'staff');
     if (staves.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪄 Hole (magické, jednoruční)</div>`;
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪄 Staves (magical, one-handed)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
       staves.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
@@ -8018,9 +8018,9 @@
     // Nože a šavle (dagger)
     const knives = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'dagger');
     if (knives.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🗡️ Nože a šavle (jednoruční)</div>`;
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🗡️ Knives & Sabres (one-handed)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
       knives.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
@@ -8028,9 +8028,9 @@
     // Meče (blade, jednoruční i obouruční)
     const swords = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade');
     if (swords.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">⚔️ Meče (jednoruční i obouruční)</div>`;
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">⚔️ Swords (one-handed & two-handed)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
       swords.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
@@ -8038,9 +8038,9 @@
     // Sekery (axe)
     const axes = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'axe');
     if (axes.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪓 Sekery (obouruční)</div>`;
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪓 Axes (two-handed)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
       axes.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
@@ -8048,9 +8048,9 @@
     // Kladiva (blunt)
     const hammers = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blunt');
     if (hammers.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🔨 Kladiva (obouruční)</div>`;
+      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🔨 Hammers (two-handed)</div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
       hammers.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
@@ -8058,35 +8058,35 @@
     // Drápy (claws)
     const claws = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'claws');
     if (claws.length > 0) {
-      html += `<div style=\"margin:6px 0 2px;font-size:12px;color:#8888aa\">🦅 Drápy (jednoruční)</div>`;
+      html += `<div style=\"margin:6px 0 2px;font-size:12px;color:#8888aa\">🦅 Claws (one-handed)</div>`;
       html += `<div style=\"overflow-x:auto;max-width:100%\"><table style=\"width:100%;border-collapse:collapse;font-size:12px;margin-top:2px\">
-        <tr style=\"background:#12122a;color:#8888aa\"><th style=\"padding:4px 6px\"></th><th style=\"padding:4px 6px;text-align:left\">Jméno</th><th style=\"padding:4px 6px\">Tier</th><th style=\"padding:4px 6px\">DMG</th><th style=\"padding:4px 6px\">HP</th><th style=\"padding:4px 6px\">Mana</th><th style=\"padding:4px 6px\">Def</th><th style=\"padding:4px 6px\">Rychlost</th><th style=\"padding:4px 6px\">Ostatní</th></tr>`;
+        <tr style=\"background:#12122a;color:#8888aa\"><th style=\"padding:4px 6px\"></th><th style=\"padding:4px 6px;text-align:left\">Name</th><th style=\"padding:4px 6px\">Tier</th><th style=\"padding:4px 6px\">DMG</th><th style=\"padding:4px 6px\">HP</th><th style=\"padding:4px 6px\">Mana</th><th style=\"padding:4px 6px\">Def</th><th style=\"padding:4px 6px\">Speed</th><th style=\"padding:4px 6px\">Other</th></tr>`;
       claws.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     }
 
-    // Ostatní sloty (armor, helmet, shield, ring, amulet)
+    // Other sloty (armor, helmet, shield, ring, amulet)
     ['armor','helmet','shield','ring','amulet'].forEach(type => {
       const items = ITEMS.filter(i => i.type === type);
       if (items.length === 0) return;
       html += `<div style="margin-top:12px"><strong>${TYPE_ICONS[type]} ${TYPE_LABELS[type]}y</strong></div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Rychlost</th><th style="padding:4px 6px">Ostatní</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
       items.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     });
     html += `</div>`;
 
     // === AFFIXES ===
-    html += `<div class="card"><div class="card-title">🔧 Affixy (módy)</div>
-    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Prefixy (před jménem) a suffixy (za jménem). Stejná <strong>group</strong> = vzájemně se vylučují. <strong>minIlvl</strong> = minimální monster level. <strong>Weight</strong> = relativní pravděpodobnost.</p>`;
+    html += `<div class="card"><div class="card-title">🔧 Affixes (mods)</div>
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Prefixes (before name) and suffixes (after name). Same <strong>group</strong> = mutually exclusive. <strong>minIlvl</strong> = minimum monster level. <strong>Weight</strong> = relative probability.</p>`;
 
     ['prefix','suffix'].forEach(type => {
-      const label = type === 'prefix' ? '🔷 Prefixy' : '🔶 Suffixy';
+      const label = type === 'prefix' ? '🔷 Prefixes' : '🔶 Suffixes';
       const items = AFFIXES.filter(a => a.type === type);
       html += `<div style="margin-top:12px"><strong>${label}</strong></div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px;text-align:left">Jméno</th><th style="padding:4px 6px">Group</th><th style="padding:4px 6px">minIlvl</th><th style="padding:4px 6px">Wt</th><th style="padding:4px 6px">Typy</th><th style="padding:4px 6px">Stat</th><th style="padding:4px 6px">Rozsah</th><th style="padding:4px 6px">Barva</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Group</th><th style="padding:4px 6px">minIlvl</th><th style="padding:4px 6px">Wt</th><th style="padding:4px 6px">Types</th><th style="padding:4px 6px">Stat</th><th style="padding:4px 6px">Range</th><th style="padding:4px 6px">Color</th></tr>`;
       items.forEach(a => {
         const statStr = Object.entries(a.stats).map(([k,v]) => `${k}: ${v[0]}-${v[1]}`).join(', ');
         html += `<tr style="border-bottom:1px solid #1a1a3a"><td style="padding:4px 6px"><strong>${a.name}</strong></td>
@@ -8699,12 +8699,12 @@
 
   function renderShop() {
     const h = state.hero;
-    $('shopGold').textContent = `💰 ${h.gold} zlatých`;
+    $('shopGold').textContent = `💰 ${h.gold} gold`;
     if (_shopTab === 'sell') {
       const equipSet = new Set(Object.values(h.equip).filter(Boolean));
       const sellable = h.inventory.filter(id => !equipSet.has(id));
       if (sellable.length === 0) {
-        $('shopList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nemáš nic na prodej</div>';
+        $('shopList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to sell</div>';
         return;
       }
       $('shopList').innerHTML = sellable.map(itemId => {
@@ -8754,7 +8754,7 @@
           </div>
           <div class="shop-item-actions">
             <span class="price">💰 ${sellPrice}</span>
-            <button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${item.id}')">Prodat</button>
+            <button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${item.id}')">Sell</button>
           </div>
         </div>`;
       }).join('');
@@ -8788,7 +8788,7 @@
           </div>
           <div class="shop-item-actions">
             <span class="price">💰 ${item.cost}</span>
-            ${owned ? '<span style="color:#2ecc71">✅ Vlastníš</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Koupit</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Koupit</button>`}
+            ${owned ? '<span style="color:#2ecc71">✅ Owned</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Buy</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Buy</button>`}
           </div>
         </div>`;
       }).join('');
@@ -8805,7 +8805,7 @@
     h.inventory.push(itemId);
     playSFX(shopSfx);
     saveGame();
-    showMessage(`✅ Koupil jsi ${item.icon} ${item.name}!`);
+    showMessage(`✅ Bought ${item.icon} ${item.name}!`);
     renderShop();
   }
 
