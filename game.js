@@ -850,7 +850,9 @@
     { id:'dexterous', name:'Dexterous', type:'prefix', group:10, minIlvl:1, weight:6,
       types:['weapon','ring','amulet'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
     { id:'poisoned', name:'Poisoned', type:'prefix', group:11, minIlvl:8, weight:5,
-      types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
+      types:['weapon'], stats:{ poisonDmg:[3,8], poisonDur:[2,4] }, tint:'#2ecc71' },
+    { id:'toxic', name:'Toxic', type:'prefix', group:17, minIlvl:14, weight:4,
+      types:['weapon'], stats:{ poisonDmg:[8,18], poisonDur:[3,5] }, tint:'#2ecc71' },
     { id:'manaRegen', name:'Regenerating', type:'prefix', group:12, minIlvl:1, weight:4,
       types:['ring','amulet','helmet'], stats:{ manaRegen:[1,3] }, tint:'#4a7dff' },
     { id:'skillful', name:'Skillful', type:'prefix', group:13, minIlvl:8, weight:5,
@@ -881,7 +883,9 @@
     { id:'ofSkill', name:'of Skill', type:'suffix', group:113, minIlvl:10, weight:5,
       types:['ring','amulet','weapon'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     { id:'ofVenom', name:'of Venom', type:'suffix', group:114, minIlvl:10, weight:4,
-      types:['weapon'], stats:{ poisonDmg:[3,8] }, tint:'#2ecc71' },
+      types:['weapon'], stats:{ poisonDmg:[3,8], poisonDur:[2,4] }, tint:'#2ecc71' },
+    { id:'ofPestilence', name:'of Pestilence', type:'suffix', group:124, minIlvl:16, weight:3,
+      types:['weapon'], stats:{ poisonDmg:[10,22], poisonDur:[3,6] }, tint:'#2ecc71' },
     { id:'ofManaSteal', name:'of Mana Steal', type:'suffix', group:115, minIlvl:8, weight:4,
       types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
     { id:'ofLife', name:'of Life', type:'suffix', group:121, minIlvl:1, weight:6,
@@ -1222,6 +1226,7 @@
       skillDmg: 0,
       manaRegen: 0,
       poisonDmg: 0,
+      poisonDur: 0,
     };
 
     // Aplikovat affix staty
@@ -1287,7 +1292,7 @@
       fireDmg: 0, iceDmg: 0, lifesteal: 0, manaSteal: 0,
       enhancedDefense: 0, enhancedDmg: 0,
       str: 0, vit: 0, int: 0, dex: 0,
-      skillDmg: 0, manaRegen: 0, poisonDmg: 0,
+      skillDmg: 0, manaRegen: 0, poisonDmg: 0, poisonDur: 0,
     };
 
     affixes.forEach(a => {
@@ -2327,6 +2332,7 @@
       ended: false, turn: 0,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, hot: 0, hotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
       playerDot: 0, playerDotTicksLeft: 0,
+      enemyDot: 0, enemyDotTicksLeft: 0,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
@@ -2671,6 +2677,8 @@
     });
     // Player DoT tick (jed z monster)
     doPlayerDotTick(mb);
+    // Enemy DoT tick (jed ze zbraně hráče)
+    doEnemyDotTick(mb);
     // Mana regen pro caster monstra (10/s plynule — v stamina intervalu)
     // (přesunuto do stamina intervalu 100ms pro plynulý UI update)
     // Buff tick (session persistent)
@@ -4587,6 +4595,27 @@
     return false;
   }
 
+  // Enemy DoT tick — jed ze zbraně hráče na nepřítele, tickuje 1×/s
+  let _lastEnemyDotTick = 0;
+  function doEnemyDotTick(mb) {
+    if (mb.enemyDot <= 0 || mb.enemyDotTicksLeft <= 0) return false;
+    const now = performance.now();
+    if (now - _lastEnemyDotTick < 1000) return false;
+    _lastEnemyDotTick = now;
+    mb.bossHp -= mb.enemyDot;
+    mb.enemyDotTicksLeft--;
+    spawnFloatingText(`☠️ -${mb.enemyDot}`, 'right', '#2ecc71', 32);
+    const bossFig = $('mbFigure');
+    if (bossFig) {
+      bossFig.style.transition = 'filter 0.2s';
+      bossFig.style.filter = 'brightness(2.5) hue-rotate(90deg) saturate(2)';
+      setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 300);
+    }
+    updateMapBattleUI();
+    if (mb.bossHp <= 0 && mb.isBoss) { setTimeout(() => { if (!mapBattleState.ended) endMapBattle(true); }, 250); return true; }
+    return false;
+  }
+
   // Player DoT tick — jed z monster, tickuje 1×/s
   let _lastPlayerDotTick = 0;
   function doPlayerDotTick(mb) {
@@ -4617,6 +4646,8 @@
     if (doDotTick(mb)) return;
     // Player DoT tick — jed z monster
     if (doPlayerDotTick(mb)) return;
+    // Enemy DoT tick — jed ze zbraně hráče
+    if (doEnemyDotTick(mb)) return;
 
     // HoT tick — léčení každý tick
     if (mb.hotTicksLeft > 0) {
@@ -7513,6 +7544,26 @@
       }
     }
 
+    // ☠️ Jedové poškození ze zbraně — DoT na nepřítele
+    if (weapon.poisonDmg > 0 && weapon.poisonDur > 0) {
+      const poisonResist = getLocAffix('poisonResist');
+      const effectiveDmg = Math.round(weapon.poisonDmg * (1 - poisonResist));
+      if (effectiveDmg > 0) {
+        // D2 styl: refresh duration, rate = total/dur
+        const tickDmg = Math.max(1, Math.round(effectiveDmg / weapon.poisonDur));
+        mb.enemyDot = tickDmg;
+        mb.enemyDotTicksLeft = weapon.poisonDur;
+        _sessionDebuffs['weapon_poison'] = { icon: '☠️', name: 'Jed', ticks: weapon.poisonDur * 60, maxTicks: weapon.poisonDur * 60 };
+        // Zelený záblesk
+        const arena = $('mbArena');
+        if (arena) {
+          arena.style.transition = 'background-color 0.15s';
+          arena.style.backgroundColor = 'rgba(46,204,113,0.2)';
+          setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 150);
+        }
+      }
+    }
+
     // Melee impact efekt na místě bosse
     const angleOff = isOffhand ? Math.PI : 0;
     if (!mb._skipMeleeImpact) {
@@ -9143,7 +9194,7 @@
       const affixStats = [];
       if (item.fireDmg) affixStats.push(`🔥 +${item.fireDmg} ohnivé dmg`);
       if (item.iceDmg) affixStats.push(`❄️ +${item.iceDmg} ledové dmg`);
-      if (item.poisonDmg) affixStats.push(`☠️ +${item.poisonDmg} jedové dmg`);
+      if (item.poisonDmg) affixStats.push(`☠️ +${item.poisonDmg} jedu za ${item.poisonDur||2}s`);
       if (item.lifesteal) affixStats.push(`🩸 +${item.lifesteal}% lifesteal`);
       if (item.manaSteal) affixStats.push(`💜 +${item.manaSteal}% many/útok`);
       if (item.attackRating) affixStats.push(`🎯 +${item.attackRating} hit rating`);
