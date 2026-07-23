@@ -1400,9 +1400,9 @@
       {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.2, ice:1.0, nature:0.8, lightning:1.0},
         hp:200, dmgMin:18, dmgMax:25, attackSpeed:3000, blockChance:0,
         resource:'mana', maxResource:50, spells:['thorn_shield']},
-      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
+      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
         hp:100, dmgMin:10, dmgMax:15, attackSpeed:2000, blockChance:0,
-        resource:'energy', maxResource:100, spells:['poison_weapon']},
+        resource:'rage', maxResource:100, spells:[], passivePoisonWeapon:true},
       {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
         hp:180, dmgMin:16, dmgMax:22, attackSpeed:2500, blockChance:0,
         resource:'rage', maxResource:100, spells:['battle_shout']},
@@ -1543,7 +1543,8 @@
     state._monsterLastSeen[theme] = seen;
     result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme, defense: pool[idx].defense || 0, resists: pool[idx].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0},
       hp: pool[idx].hp || 80, dmgMin: pool[idx].dmgMin || 5, dmgMax: pool[idx].dmgMax || 10, attackSpeed: pool[idx].attackSpeed || 2000, blockChance: pool[idx].blockChance || 0,
-      resource: pool[idx].resource || 'mana', maxResource: pool[idx].maxResource || 50, spells: pool[idx].spells || []});
+      resource: pool[idx].resource || 'mana', maxResource: pool[idx].maxResource || 50, spells: pool[idx].spells || [],
+      passivePoisonWeapon: pool[idx].passivePoisonWeapon || false});
     return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
@@ -2425,6 +2426,7 @@
       // Fixní staty monstra
       monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance,
       monsterResource, monsterMaxResource, monsterSpells,
+      passivePoisonWeapon: isBoss ? false : (isReward ? false : (floorMonsters[0].passivePoisonWeapon || false)),
       // Thorn shield state
       _thornShieldActive: false, _thornShieldTimer: 0,
       // Faerie fire state
@@ -3355,11 +3357,12 @@
         mb.enemyMana = Math.min(mb.maxEnemyMana, (mb.enemyMana || 0) + 5);
       }
       // ☠️ Poison Weapon — pasivní DoT na hráče při melee zásahu (Satyr)
-      if (mb._poisonWeaponActive && mb._poisonWeaponDmg > 0) {
-        mb.playerDot = mb._poisonWeaponDmg;
+      if (mb.passivePoisonWeapon) {
+        const poisonDmg = Math.max(1, Math.round(amount * 0.15));
+        mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['poison_weapon_dot'] = { icon: '☠️', name: 'Jed (zbraň)', ticks: 180, maxTicks: 180 };
-        spawnFloatingText(`☠️ -${mb._poisonWeaponDmg}/tick`, 'left', '#27ae60', 28);
+        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', ticks: 180, maxTicks: 180 };
+        spawnFloatingText(`☠️ -${poisonDmg}/tick`, 'left', '#27ae60', 28);
       }
     }
     // ✨ Faerie Fire — snížení resistencí hráče o 50%
