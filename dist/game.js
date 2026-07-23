@@ -1201,10 +1201,18 @@
         if (p) { chosenAffixes.push(p); usedGroups.add(p.group); }
       }
     } else if (quality === 'rare') {
-      // Rare: 3 affixy (střídavě prefix/suffix)
-      for (let i = 0; i < 3; i++) {
-        const pool = (i % 2 === 0) ? prefixes : suffixes;
-        const a = pickAffix(pool);
+      // Rare: 3-4 affixy (D2 styl — náhodně prefix/suffix)
+      const rareCount = 3 + (Math.random() < 0.5 ? 1 : 0); // 50% 3, 50% 4
+      for (let i = 0; i < rareCount; i++) {
+        // Zkusit oba pooly, preferovat ten s méně affixy
+        const pool = (chosenAffixes.filter(a => a.type === 'prefix').length <= chosenAffixes.filter(a => a.type === 'suffix').length)
+          ? prefixes : suffixes;
+        let a = pickAffix(pool);
+        if (!a) {
+          // Fallback na druhý pool
+          const fallback = pool === prefixes ? suffixes : prefixes;
+          a = pickAffix(fallback);
+        }
         if (a) { chosenAffixes.push(a); usedGroups.add(a.group); }
       }
     }
@@ -9402,12 +9410,8 @@
   function setSlotBorder(slotId, item) {
     const el = $(slotId);
     if (!el) return;
-    if (item && item.rarity) {
-      const r = RARITY[item.rarity] || RARITY.common;
-      el.style.borderColor = r.border;
-    } else if (item) {
-      // item exists but no rarity (fists, rags) — neutral gray
-      el.style.borderColor = '#4a4a4a';
+    if (item) {
+      el.style.borderColor = getQualityColor(item);
     } else {
       // empty slot — darker dashed gray
       el.style.borderColor = '#3a3a3a';
@@ -9473,12 +9477,12 @@
         const item = ITEM_MAP[itemId];
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' || item.type === 'amulet' ? (item.skillDmg ? `✨+${item.skillDmg}%` : item.manaRegen ? `💧+${item.manaRegen}` : item.str ? `💪+${item.str}` : item.int ? `🧠+${item.int}` : item.vit ? `❤️+${item.vit}` : item.dex ? `🎯+${item.dex}` : item.lifesteal ? `🩸+${item.lifesteal}%` : '') : item.bonusHp ? `❤️${item.bonusHp}` : '';
-        const r = RARITY[item.rarity] || RARITY.common;
+        const borderColor = getQualityColor(item);
         const cls = CLASSES[state.heroClass];
         let canEquip = true;
         if (item.type === 'weapon' && cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) canEquip = false;
         if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
-        const cellStyle = canEquip ? `border-color:${r.border}` : `border-color:#e74c3c;opacity:0.35`;
+        const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
           <div class="cell-name">${item.name}</div>
