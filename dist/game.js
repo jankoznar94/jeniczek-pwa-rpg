@@ -1377,15 +1377,15 @@
     heal: { name:'Heal', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Heals enemy for 30% HP' },
     // Act 1 — Lesní monstra
-    defensive_shout: { name:'Defensive Shout', icon:'🛡️', castTime:1000, manaCost:0, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
+    defensive_shout: { name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', castTime:1000, manaCost:0, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
       desc:'Reduces incoming damage by 30% for 8s' },
-    battle_shout: { name:'Battle Shout', icon:'📯', castTime:1000, manaCost:0, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
+    battle_shout: { name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', castTime:1000, manaCost:0, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
       desc:'+50% damage for 8s' },
-    thorn_shield: { name:'Thorn Shield', icon:'🌵', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
+    thorn_shield: { name:'Thorn Shield', icon:'🌵', iconImg:'', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
       desc:'Returns 5-10 dmg to attacker for 10s' },
-    faerie_fire: { name:'Faerie Fire', icon:'✨', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+    faerie_fire: { name:'Faerie Fire', icon:'✨', iconImg:'', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Reduces player resistances by 50% for 10s' },
-    slow: { name:'Slow', icon:'🐌', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
+    slow: { name:'Slow', icon:'🐌', iconImg:'', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
       desc:'Slows player attack speed by 50% for 5s' },
   };
 
@@ -3551,13 +3551,20 @@
     if (!el) return;
     // Zjistit, jestli něco castí — hráč nebo nepřítel
     let spellId = null;
+    let spellIconImg = null;
     if (mb._playerCasting && mb._playerCastSpell) {
       spellId = mb._playerCastSpell;
     } else if (mb._enemyCasting && mb._enemyCastSpell) {
       spellId = mb._enemyCastSpell;
+      const spellDef = ENEMY_SPELLS[spellId];
+      if (spellDef && spellDef.iconImg) spellIconImg = spellDef.iconImg;
     }
     if (spellId) {
-      el.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:64px;height:64px;object-fit:contain">`;
+      if (spellIconImg) {
+        el.innerHTML = `<img src="assets/spells/${spellIconImg}" style="width:64px;height:64px;object-fit:contain">`;
+      } else {
+        el.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:64px;height:64px;object-fit:contain">`;
+      }
       el.classList.remove('hidden');
     } else {
       el.classList.add('hidden');
@@ -3745,8 +3752,10 @@
           const b = _enemyBuffs[spellId];
           if (!b) return;
           const remaining = Math.ceil(b.ticks / 60);
+          const spellDef = ENEMY_SPELLS[spellId];
+          const hasImg = spellDef && spellDef.iconImg;
           html += `<div class="buff-icon" title="${b.name || spellId}">
-            <span class="buff-icon-emoji">${b.icon || '📈'}</span>
+            ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon || '📈'}</span>`}
             <span class="buff-icon-timer">${remaining}s</span>
           </div>`;
         });
