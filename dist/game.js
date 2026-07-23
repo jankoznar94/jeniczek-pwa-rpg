@@ -3241,9 +3241,9 @@
         if (totalDefense > 0) {
           amount = Math.round(amount * (1 - totalDefense / (totalDefense + 300)));
         }
-        // Block
+        // Block — pouze pokud je v shield slotu skutečně štít
         const shieldItem = ITEM_MAP[state.hero.equip.shield];
-        if (shieldItem && shieldItem.blockChance > 0 && Math.random() * 100 < shieldItem.blockChance) {
+        if (shieldItem && shieldItem.type === 'shield' && shieldItem.blockChance > 0 && Math.random() * 100 < shieldItem.blockChance) {
           amount = 0;
           spellText = spellIcon + ' 🛡️ BLOCK!';
           playSFX(blockSfx);
@@ -3337,10 +3337,10 @@
     }
     let amount = bossDmg;
 
-    // Pasivní blok ze štítu
+    // Pasivní blok ze štítu — pouze pokud je v shield slotu skutečně štít
     let blocked = false;
     const shieldItem = ITEM_MAP[state.hero.equip.shield];
-    if (shieldItem && shieldItem.blockChance > 0) {
+    if (shieldItem && shieldItem.type === 'shield' && shieldItem.blockChance > 0) {
       if (Math.random() * 100 < shieldItem.blockChance) {
         blocked = true;
         amount = 0;
