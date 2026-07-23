@@ -4366,8 +4366,7 @@
     updateActionButtons();
 
     // Timer ring — CSS animace (stabilní, žádné měnění během timeru)
-    if (mb.dotTicksLeft > 0) circle.style.stroke = '#4caf50';
-    else if (mb.chillTicksLeft > 0) circle.style.stroke = '#4fc3f7';
+    if (mb.chillTicksLeft > 0) circle.style.stroke = '#4fc3f7';
     else circle.style.stroke = '#888';
     
     // 🎯 Fixní výseč — začíná v 50% timeru (6 hodin), 20% šířka
