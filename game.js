@@ -1387,6 +1387,8 @@
       desc:'Reduces player resistances by 50% for 10s' },
     slow: { name:'Slow', icon:'🐌', iconImg:'', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
       desc:'Slows player attack speed by 50% for 5s' },
+    evasion: { name:'Evasion', icon:'💨', iconImg:'evasion.png', castTime:1000, manaCost:15, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.2,
+      desc:'30% dodge chance for 6s' },
   };
 
   // ===== MONSTER DB =====
