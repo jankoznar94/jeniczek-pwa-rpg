@@ -2767,6 +2767,10 @@
               mb._enemySwingReady = true;
               mb._enemyAttackProcessed = false;
             }
+          } else {
+            // Monstrum bez kouzel — normální swing
+            mb._enemySwingReady = true;
+            mb._enemyAttackProcessed = false;
           }
         }
       }
