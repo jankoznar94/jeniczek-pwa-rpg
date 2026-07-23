@@ -603,6 +603,15 @@
     return w.weaponType || 'fists';
   }
   // ===== RESIST MULT =====
+  function getLocAffix(key) {
+    const mb = mapBattleState;
+    if (!mb || mb.locId === undefined) return 0;
+    const loc = LOCATIONS[mb.locId];
+    if (!loc || !loc.locAffixes) return 0;
+    const diff = state.difficulty || 0;
+    const affix = loc.locAffixes[diff];
+    return affix ? (affix[key] || 0) : 0;
+  }
   function getSchoolResistMult(schoolId) {
     const mb = mapBattleState;
     if (!mb) return 1.0;
@@ -614,6 +623,13 @@
     else if (schoolId === 'ice') base = r.ice || 1.0;
     else if (schoolId === 'nature') base = r.nature || 1.0;
     else if (schoolId === 'lightning') base = r.lightning || 1.0;
+    // Aplikovat lokální affixy (per-dungeon per-difficulty)
+    const locFireResist = getLocAffix('fireResist');
+    const locFrostResist = getLocAffix('frostResist');
+    const locPoisonResist = getLocAffix('poisonResist');
+    if (schoolId === 'fire' && locFireResist > 0) base = 1 + locFireResist;
+    if (schoolId === 'ice' && locFrostResist > 0) base = 1 + locFrostResist;
+    if (schoolId === 'nature' && locPoisonResist > 0) base = 1 + locPoisonResist;
     // Aplikovat násobitel obtížnosti — na Normal se nic nemění,
     // na Nightmare/Hell se resisty zesilují (slabé míň slabé, silné víc silné)
     const diff = DIFFICULTIES[state.difficulty];
@@ -1498,19 +1514,44 @@
   const LOCATIONS = [
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:25, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
       boss:{name:'Troll',face:'assets/monsters/troll_test_small.png',hp:10,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE},
-      reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10 },
+      reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10,
+      locAffixes:[
+        { poisonResist:0.5 },   // Normal
+        { poisonResist:0.75 },  // Nightmare
+        { poisonResist:1.0 },   // Hell
+      ] },
     { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:25, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
       boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
-      reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:20 },
+      reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:20,
+      locAffixes:[
+        { armorMult:1.5 },   // Normal
+        { armorMult:1.75 },  // Nightmare
+        { armorMult:2.0 },   // Hell
+      ] },
     { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:25, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
       boss:{name:'Ledový obr',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
-      reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:35 },
+      reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:35,
+      locAffixes:[
+        { chillResist:0.5, frostResist:0.25 },   // Normal
+        { chillResist:0.75, frostResist:0.5 },   // Nightmare
+        { chillResist:1.0, frostResist:0.75 },   // Hell
+      ] },
     { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:25, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
       boss:{name:'Lich',face:'assets/monsters/lich.png',hp:22,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
-      reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5}, monsterDefense:55 },
+      reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5}, monsterDefense:55,
+      locAffixes:[
+        { lifestealReduction:0.5 },   // Normal
+        { lifestealReduction:0.75 },  // Nightmare
+        { lifestealReduction:1.0 },   // Hell
+      ] },
     { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:25, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
       boss:{name:'Lávový drak',face:'assets/monsters/lava_dragon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER},
-      reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75}, monsterDefense:80 },
+      reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75}, monsterDefense:80,
+      locAffixes:[
+        { fireResist:0.5 },   // Normal
+        { fireResist:0.75 },  // Nightmare
+        { fireResist:1.0 },   // Hell
+      ] },
   ];
 
   // Skoková obtížnost — násobitel HP a damage podle dungeonu
@@ -2297,7 +2338,7 @@
       currentMonsterName: isBoss ? loc.boss.name : (isReward ? '' : floorMonsters[0].name),
       monsterType: isBoss ? null : (isReward ? null : (floorMonsters[0].type || null)),
       monsterAttackType: isBoss ? (loc.boss.attackType || ATTACK_TYPES.MELEE) : (isReward ? ATTACK_TYPES.MELEE : (floorMonsters[0].attackType || ATTACK_TYPES.MELEE)),
-      monsterDefense: isBoss ? (loc.monsterDefense || 0) : (isReward ? 0 : (floorMonsters[0].defense || 0)),
+      monsterDefense: (isBoss ? (loc.monsterDefense || 0) : (isReward ? 0 : (floorMonsters[0].defense || 0))) * (1 + getLocAffix('armorMult')),
       monsterResists: isBoss ? (loc.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}) : (isReward ? {fire:1.0, ice:1.0, nature:1.0, lightning:1.0} : (floorMonsters[0].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0})),
       bossTypes: isBoss ? (loc.boss.types || []) : [],
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
@@ -7510,9 +7551,13 @@
     const totalLifeSteal = eqItems.reduce((sum, it) => sum + (it.lifesteal || 0), 0);
     const totalManaSteal = eqItems.reduce((sum, it) => sum + (it.manaSteal || 0), 0);
     if (totalLifeSteal > 0) {
-      const healAmt = Math.max(1, Math.round(dmg * totalLifeSteal / 100));
-      state.hero.hp = Math.min(state.hero.maxHp, (state.hero.hp || 0) + healAmt);
-      spawnFloatingText(`+${healAmt}`, 'right', '#2ecc71', 28);
+      const lifestealReduction = getLocAffix('lifestealReduction');
+      const effectiveLifeSteal = Math.round(totalLifeSteal * (1 - lifestealReduction));
+      if (effectiveLifeSteal > 0) {
+        const healAmt = Math.max(1, Math.round(dmg * effectiveLifeSteal / 100));
+        state.hero.hp = Math.min(state.hero.maxHp, (state.hero.hp || 0) + healAmt);
+        spawnFloatingText(`+${healAmt}`, 'right', '#2ecc71', 28);
+      }
     }
     if (totalManaSteal > 0) {
       const manaAmt = Math.max(1, Math.round(dmg * totalManaSteal / 100));
@@ -7587,9 +7632,12 @@
       if (iceboltLv > 0) ticks += iceboltLv;
       mb.bossHp -= dmg;
       mb._activeSpellChillActive = true;
-      mb.chillPercent = Math.max(mb.chillPercent || 0, slowPct);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení 40% na ${ticks} ticků!`;
+      const chillResist = getLocAffix('chillResist');
+      const effectiveSlowPct = Math.round(slowPct * (1 - chillResist));
+      const effectiveTicks = Math.max(1, Math.round(ticks * (1 - chillResist)));
+      mb.chillPercent = Math.max(mb.chillPercent || 0, effectiveSlowPct);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, effectiveTicks);
+      effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení ${effectiveSlowPct}% na ${effectiveTicks} ticků!`;
       spawnIceProjectile();
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
@@ -7605,9 +7653,12 @@
       let ticks = 3 + lv;
       mb.bossHp -= dmg;
       mb._activeSpellChillActive = true;
-      mb.chillPercent = Math.max(mb.chillPercent || 0, slowPct);
-      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, ticks);
-      effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení 40% na ${ticks} ticků!`;
+      const chillResist = getLocAffix('chillResist');
+      const effectiveSlowPct = Math.round(slowPct * (1 - chillResist));
+      const effectiveTicks = Math.max(1, Math.round(ticks * (1 - chillResist)));
+      mb.chillPercent = Math.max(mb.chillPercent || 0, effectiveSlowPct);
+      mb.chillTicksLeft = Math.max(mb.chillTicksLeft || 0, effectiveTicks);
+      effectMsg = `❄️ Frostbolt! ${dmg} poškození, zpomalení ${effectiveSlowPct}% na ${effectiveTicks} ticků!`;
       spawnIceProjectile();
       const bossFig = $('mbFigure');
       if (bossFig) { bossFig.style.transition = 'filter 0.3s'; bossFig.style.filter = 'brightness(1.8) hue-rotate(200deg) saturate(1.5)'; setTimeout(() => { bossFig.style.filter = 'brightness(1)'; setTimeout(() => { bossFig.style.transition = ''; }, 200); }, 800); }
