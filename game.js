@@ -1389,11 +1389,11 @@
       desc:'Reduces incoming damage by 30% for 8s' },
     battle_shout: { name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', castTime:1000, manaCost:0, rageCost:25, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
       desc:'+50% damage for 8s' },
-    thorn_shield: { name:'Thorn Shield', icon:'🌵', iconImg:'', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
+    thorn_shield: { name:'Thorn Shield', icon:'🌵', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
       desc:'Returns 5-10 dmg to attacker for 10s' },
-    faerie_fire: { name:'Faerie Fire', icon:'✨', iconImg:'', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+    faerie_fire: { name:'Faerie Fire', icon:'✨', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Reduces player resistances by 50% for 10s' },
-    slow: { name:'Slow', icon:'🐌', iconImg:'', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
+    slow: { name:'Slow', icon:'🐌', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
       desc:'Slows player attack speed by 50% for 5s' },
     evasion: { name:'Evasion', icon:'💨', iconImg:'evasion.png', castTime:1000, manaCost:15, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.2,
       desc:'30% dodge chance for 6s' },
@@ -3353,13 +3353,8 @@
         playSFX(blockSfx);
       }
     }
-    // Monster block chance (Troll)
-    if (!blocked && mb.monsterBlockChance > 0 && Math.random() * 100 < mb.monsterBlockChance) {
-      blocked = true;
-      amount = 0;
-      playSFX(blockSfx);
-      spawnFloatingText('🛡️ Block!', 'left', '#3498db', 28);
-    }
+    // Monster block chance (Troll) — přesunuto do dealPlayerDamage, kde patří
+    // (nepřítel blokuje hráčův útok, ne svůj vlastní)
 
     if (!blocked) {
       mb.playerHp -= amount;
@@ -3579,7 +3574,7 @@
       if (spellIconImg) {
         el.innerHTML = `<img src="assets/spells/${spellIconImg}" style="width:64px;height:64px;object-fit:contain">`;
       } else {
-        el.innerHTML = `<img src="assets/spells/${spellId}.png" style="width:64px;height:64px;object-fit:contain">`;
+        el.innerHTML = `<span style="font-size:48px">${ENEMY_SPELLS[spellId]?.icon || '🔮'}</span>`;
       }
       el.classList.remove('hidden');
     } else {
@@ -7782,6 +7777,13 @@
     if (mb._evasionActive && Math.random() < 0.3) {
       spawnFloatingText('💨 Evasion!', 'right', '#f1c40f', 32);
       playSFX(dodgeSfx);
+      if (!mb._combatLoop) advanceSequence();
+      return;
+    }
+    // 🛡️ Monster block — Troll blokuje hráčův útok štítem
+    if (mb.monsterBlockChance > 0 && Math.random() * 100 < mb.monsterBlockChance) {
+      spawnFloatingText('🛡️ Block!', 'right', '#3498db', 28);
+      playSFX(blockSfx);
       if (!mb._combatLoop) advanceSequence();
       return;
     }
