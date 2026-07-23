@@ -1402,7 +1402,7 @@
         resource:'mana', maxResource:50, spells:['thorn_shield']},
       {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
         hp:100, dmgMin:10, dmgMax:15, attackSpeed:2000, blockChance:0,
-        resource:'rage', maxResource:100, spells:[], passivePoisonWeapon:true},
+        resource:'energy', maxResource:100, spells:[], passivePoisonWeapon:true},
       {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
         hp:180, dmgMin:16, dmgMax:22, attackSpeed:2500, blockChance:0,
         resource:'rage', maxResource:100, spells:['battle_shout']},
