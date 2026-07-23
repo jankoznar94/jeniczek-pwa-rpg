@@ -3416,7 +3416,7 @@
     }
 
     // Damage text
-    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'left', blocked ? '#3498db' : '#fff', 32);
+    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'right', blocked ? '#3498db' : '#fff', 32);
 
     updateMapBattleUI();
 
