@@ -272,9 +272,9 @@
       state.hero.gold = 5000;
       state.talentPoints = 50;
       state.hero.attrPoints = 150;
-      state.bossesDefeated = LOCATIONS.map(() => true);
-      state.floorProgress = LOCATIONS.map(() => 5);
-      state.locationProgress = LOCATIONS.map(() => 5);
+      state.bossesDefeated = ACTS.map(() => true);
+      state.floorProgress = ACTS.map(() => 5);
+      state.locationProgress = ACTS.map(() => 5);
       // Odemknout celý bestiář
       state.encounteredMonsters = [];
       MONSTER_DB.forEach(themeMonsters => {
@@ -282,7 +282,7 @@
           if (!state.encounteredMonsters.includes(m.face)) state.encounteredMonsters.push(m.face);
         });
       });
-      LOCATIONS.forEach(loc => {
+      ACTS.forEach(loc => {
         if (loc && loc.boss && loc.boss.face && !state.encounteredMonsters.includes(loc.boss.face)) {
           state.encounteredMonsters.push(loc.boss.face);
         }
@@ -333,15 +333,14 @@
     state.locationProgress[locId] = 0;
     state._floorLootDrops = [];
     state.hero.hp = state.hero.maxHp;
-    state.dungeonSteps = null;
     saveGame();
     switchBGM('defeat');
     $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Vzdal ses">';
     $('resultTitle').textContent = 'Surrendered';
-    $('resultMsg').innerHTML = '';
+    $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
     $('resultLootList').innerHTML = '';
     $('resultBtn').innerHTML = '';
-    $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+    $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
     showScreen('result');
   }
   let _fromShop = false;
@@ -613,7 +612,7 @@
   function getLocAffix(key) {
     const mb = mapBattleState;
     if (!mb || mb.locId === undefined) return 0;
-    const loc = LOCATIONS[mb.locId];
+    const loc = ACTS[locId];
     if (!loc || !loc.locAffixes) return 0;
     const diff = state.difficulty || 0;
     const affix = loc.locAffixes[diff];
@@ -828,6 +827,7 @@
     // === POTIONY (consumable) ===
     { id:'healingPotion', name:'Healing Potion', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
     { id:'manaPotion', name:'Mana Potion', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
+    { id:'townPortalScroll', name:'Town Portal Scroll', type:'consumable', subtype:'townPortal', effectValue:0, cost:25, icon:'📜', iconImg:'assets/items/town_portal_scroll.png', tier:1 },
   ];
 
   // ===== AFFIX DATABÁZE (prefixy + suffixy) =====
@@ -1482,24 +1482,6 @@
     { id:'hell', name:'Hell', monsterLvMin:20, monsterLvMax:30, itemTierMin:5, itemTierMax:7, mult:3.0, resistMult:2.0 },
   ];
 
-  // ===== ROOM TYPES =====
-  const ROOM_TYPES = {
-    ENEMY: 'enemy',        // Běžný nepřítel
-    ELITE: 'elite',        // Elitní nepřítel
-    FOUNTAIN: 'fountain',  // Léčivý pramen
-    MERCHANT: 'merchant',  // Obchodník
-    CHEST: 'chest',        // Truhlice
-    MYSTERY: 'mystery',    // Náhodná (hráč neví co)
-  };
-  const ROOM_POOL = [
-    { type: ROOM_TYPES.ENEMY, weight:50, icon:'💀', label:'Enemy' },
-    { type: ROOM_TYPES.ELITE, weight:15, icon:'💀💀', label:'Elite' },
-    { type: ROOM_TYPES.FOUNTAIN, weight:12, icon:'🩸', label:'Fountain' },
-    { type: ROOM_TYPES.MERCHANT, weight:12, icon:'🛒', label:'Merchant' },
-    { type: ROOM_TYPES.CHEST, weight:6, icon:'💰', label:'Chest' },
-    { type: ROOM_TYPES.MYSTERY, weight:5, icon:'❓', label:'???' },
-  ];
-
   // ===== ELITE AFFIXY =====
   const ELITE_AFFIXES = [
     { name:'Ohnivý', icon:'🔥', desc:'+50% fire dmg', stat:'fireDmg', mult:1.5 },
@@ -1568,8 +1550,8 @@
     { bg:'#2d0d0d', border:'#e74c3c', borderGlow:'rgba(231,76,60,0.3)' },    // 3 Výspy — červená
     { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
   ];
-  const LOCATIONS = [
-    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:25, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
+  const ACTS = [
+    { id:0, name:'Začarovaný les', icon:'🌲', theme:0, zones:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
       boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:500,dmgMin:12,dmgMax:18,attackSpeed:1800,blockChance:0,resource:'mana',maxResource:200,spells:['thorn_shield','faerie_fire','poison_bolt'],types:[MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10,
       locAffixes:[
@@ -1577,7 +1559,7 @@
         { poisonResist:0.75 },  // Nightmare
         { poisonResist:1.0 },   // Hell
       ] },
-    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, rooms:25, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
+    { id:1, name:'Pouštní říše', icon:'🏜️', theme:1, zones:10, xpReward:16, bossXp:50, minLevel:4, maxLevel:6,
       boss:{name:'Faraon',face:'assets/monsters/desert_pharaoh.png',hp:14,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:12}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:20,
       locAffixes:[
@@ -1585,7 +1567,7 @@
         { armorMult:1.75 },  // Nightmare
         { armorMult:2.0 },   // Hell
       ] },
-    { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, rooms:25, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
+    { id:2, name:'Mrazivé štíty', icon:'❄️', theme:4, zones:10, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
       boss:{name:'Ledový obr',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
       reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:35,
       locAffixes:[
@@ -1593,7 +1575,7 @@
         { chillResist:0.75, frostResist:0.5 },   // Nightmare
         { chillResist:1.0, frostResist:0.75 },   // Hell
       ] },
-    { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, rooms:25, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
+    { id:3, name:'Nemrtvá země', icon:'🦴', theme:2, zones:10, xpReward:40, bossXp:130, minLevel:10, maxLevel:12,
       boss:{name:'Lich',face:'assets/monsters/lich.png',hp:22,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:25}, resists:{fire:0.5, ice:1.0, nature:1.5}, monsterDefense:55,
       locAffixes:[
@@ -1601,7 +1583,7 @@
         { lifestealReduction:0.75 },  // Nightmare
         { lifestealReduction:1.0 },   // Hell
       ] },
-    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, rooms:25, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
+    { id:4, name:'Pekelné výspy', icon:'🔥', theme:3, zones:10, xpReward:50, bossXp:180, minLevel:13, maxLevel:15,
       boss:{name:'Lávový drak',face:'assets/monsters/lava_dragon.png',hp:26,types:[MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:30}, resists:{fire:0.5, ice:1.5, nature:0.75}, monsterDefense:80,
       locAffixes:[
@@ -1614,115 +1596,15 @@
   // Skoková obtížnost — násobitel HP a damage podle dungeonu
   const DIFFICULTY_MULT = [1.0, 1.5, 2.5, 4.0, 6.0];
 
-  // ===== DUNGEON ROOM GENERATION (branching) =====
-  function pickWeightedFromPool(pool) {
-    const total = pool.reduce((s, p) => s + p.weight, 0);
-    let r = Math.random() * total;
-    for (const p of pool) {
-      r -= p.weight;
-      if (r <= 0) return p;
-    }
-    return pool[pool.length - 1];
-  }
-
-  function generateDungeonChoices(loc, difficulty) {
-    // Vytvoří pole kroků, každý krok = 2-3 možnosti na výběr
-    // Poslední krok vždy vede k bossovi
-    const stepCount = loc.rooms || 3; // 3-4 kroky volby
-    const steps = [];
-
-    for (let step = 0; step < stepCount; step++) {
-      // Checkpoint patra (5., 10., 15., 20.) — rest/shop místo boje
-      const isCheckpoint = step > 0 && (step + 1) % 5 === 0 && step < 25;
-      if (isCheckpoint) {
-        steps.push({
-          choices: [{
-            type: 'checkpoint',
-            icon: '🏕️',
-            label: 'Checkpoint',
-            isCheckpoint: true,
-          }],
-          completed: false,
-          chosenIdx: -1,
-        });
-        continue;
-      }
-      // Mezi checkpointy jen bojové místnosti — fountain a merchant jen na checkpointech
-      const isFirstStep = step === 0;
-      const numChoices = isFirstStep ? 2 : (2 + (Math.random() < 0.4 ? 1 : 0));
-      const choices = [];
-      const usedTypes = new Set();
-      // Jen bojové místnosti: enemy, elite, chest, mystery
-      let pool = ROOM_POOL.filter(r => r.type === ROOM_TYPES.ENEMY || r.type === ROOM_TYPES.ELITE || r.type === ROOM_TYPES.CHEST || r.type === ROOM_TYPES.MYSTERY);
-
-      for (let c = 0; c < numChoices; c++) {
-        let picked;
-        let attempts = 0;
-        do {
-          picked = pickWeightedFromPool(pool);
-          attempts++;
-        } while (usedTypes.has(picked.type) && attempts < 20);
-        usedTypes.add(picked.type);
-
-        const choice = {
-          type: picked.type,
-          icon: picked.icon,
-          label: picked.label,
-        };
-        if (picked.type === ROOM_TYPES.ELITE) {
-          choice.eliteAffix = ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
-        }
-        choices.push(choice);
-      }
-      steps.push({ choices, completed: false, chosenIdx: -1 });
-    }
-
-    // Boss room
-    const bossAffixes = [];
-    const numBossAffixes = 1 + (Math.random() < 0.4 ? 1 : 0);
-    for (let i = 0; i < numBossAffixes; i++) {
-      const affix = BOSS_AFFIXES[rand(0, BOSS_AFFIXES.length - 1)];
-      if (!bossAffixes.find(a => a.name === affix.name)) {
-        bossAffixes.push(affix);
-      }
-    }
-    steps.push({
-      choices: [{
-        type: ROOM_TYPES.ENEMY,
-        icon: '👹',
-        label: 'BOSS',
-        isBoss: true,
-        bossAffixes: bossAffixes,
-      }],
-      completed: false,
-      chosenIdx: -1,
-    });
-
-    // Reward room po bossovi
-    const rewardType = Math.random() < 0.5 ? ROOM_TYPES.CHEST : ROOM_TYPES.MERCHANT;
-    steps.push({
-      choices: [{
-        type: rewardType,
-        icon: rewardType === ROOM_TYPES.CHEST ? '💰' : '🛒',
-        label: rewardType === ROOM_TYPES.CHEST ? 'Reward' : 'Merchant',
-        isReward: true,
-      }],
-      completed: false,
-      chosenIdx: -1,
-    });
-
-    return steps;
-  }
-
   // ===== LEVEL / HIT / DODGE / XP HELPERS =====
   function getMonsterLevel(mb) {
     const loc = mb.loc;
     if (!loc || loc.minLevel === undefined) return 1;
-    // Level se lineárně zvyšuje od minLevel do maxLevel podle progresu v dungeonu
-    const totalRooms = (state.dungeonSteps ? state.dungeonSteps.length : 6) - 2; // bez bosse a reward
-    const roomPct = totalRooms > 0 ? (mb.progress || 0) / totalRooms : 0;
+    // Level se lineárně zvyšuje od minLevel do maxLevel podle progresu v zóně
+    const totalZones = loc.zones || 10;
+    const zonePct = totalZones > 0 ? (mb.progress || 0) / totalZones : 0;
     const range = loc.maxLevel - loc.minLevel;
-    return loc.minLevel + Math.round(range * roomPct);
+    return loc.minLevel + Math.round(range * zonePct);
   }
 
   function getLevelDiff(mb) {
@@ -1844,7 +1726,8 @@
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[]},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
-      dungeonSteps: null, // pole kroků pro aktuální dungeon run (každý krok = 2-3 možnosti)
+      waypoints:[[],[],[],[],[]], // waypoints[actId] = [zoneId, ...] — odemčené waypointy
+      townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
       rage:0, maxRage:100, // Barbar resource
       rageMultiplier:1, // Bloodrage buff
       _bloodrageTimer:0,
@@ -1915,7 +1798,7 @@
   }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen' };
+  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen' };
   function showScreen(name) {
     // Guard: bez vybrané classy nejde nikam kromě classSelect
     if (name !== 'classSelect' && !state.heroClass) {
@@ -1967,7 +1850,8 @@
     }
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
-    if (name === 'map') renderMap();
+    else if (name === 'map') renderMap();
+    else if (name === 'town') renderTown();
     else if (name === 'mapBattle') { window.scrollTo(0,0); document.documentElement.scrollTop = 0; }
     else if (name === 'talents') { renderTalents(); updateTalentBadge(); }
     else if (name === 'hero') { renderHero(); updateTalentBadge(); }
@@ -2046,25 +1930,8 @@
   }
 
   // ===== MAP =====
-  let _expandedDungeon = -1;
-  function toggleDungeon(idx) {
-    _expandedDungeon = _expandedDungeon === idx ? -1 : idx;
-    if (_expandedDungeon >= 0) {
-      const loc = LOCATIONS[idx];
-      if (loc) {
-        const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-        // Resetovat rotaci monster pro nový dungeon
-        state._monsterLastSeen = state._monsterLastSeen || {};
-        state._monsterLastSeen[loc.theme] = {};
-        state.dungeonSteps = generateDungeonChoices(loc, diff);
-      }
-    }
-    renderMap();
-  }
   function setDifficulty(di) {
     state.difficulty = di;
-    _expandedDungeon = -1;
-    state.dungeonSteps = null;
     saveGame();
     renderMap();
   }
@@ -2083,122 +1950,143 @@
       return `<button class="diff-btn ${isActive?'active':''} ${locked?'locked':''}" onclick="${locked?'':`game.setDifficulty(${di})`}">${locked?'🔒 ':''}${d.name}</button>`;
     }).join('');
 
-    $('mapScroll').innerHTML = `<div class="diff-selector">${diffBtns}</div>` + LOCATIONS.map((loc, i) => {
+    $('mapScroll').innerHTML = `<div class="diff-selector">${diffBtns}</div>` + ACTS.map((loc, i) => {
       const diffIdx = state.difficulty || 0;
       const prevDone = i === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i-1]);
       const unlocked = i === 0 || prevDone;
       const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
       const curProgress = state.locationProgress[i] || 0;
-      const expanded = _expandedDungeon === i;
       const theme = DUNGEON_THEMES[loc.theme] || DUNGEON_THEMES[0];
-      const steps = state.dungeonSteps;
+      const totalZones = loc.zones || 10;
+      const progressPct = completed ? 100 : Math.min(100, Math.round((curProgress / totalZones) * 100));
+
       let badgeHtml;
       if (completed) {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
       } else if (!unlocked) {
         badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
       } else {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">Hrát</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">${completed ? 'Hotovo' : 'Hrát'}</div></div>`;
       }
-      // Step cards — každý krok zobrazuje počet možností
-      let stepHtml = '';
-      if (unlocked && expanded && steps && steps.length > 0) {
-        steps.forEach((step, si) => {
-          const stepDone = completed || (curProgress > si);
-          const lockedStep = si > curProgress && !completed;
-          const isActive = si === curProgress && !completed;
-          const chosen = step.choices[step.chosenIdx];
-          if (isActive) {
-            // Aktivní krok — zobrazit možnosti výběru
-            const choiceHtml = step.choices.map((ch, ci) => {
-              const extra = ch.eliteAffix ? ` (${ch.eliteAffix.icon})` : '';
-              return `<div class="dungeon-choice" onclick="game.chooseDungeonPath(${i}, ${si}, ${ci})" style="border-color:${theme.border};background:${theme.bg}88">
-                <span class="dungeon-choice-icon">${ch.icon}</span>
-                <span class="dungeon-choice-label">${ch.label}${extra}</span>
-              </div>`;
-            }).join('');
-            stepHtml += `<div class="map-floor-card floor-active" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66);flex-direction:column;align-items:stretch;padding:8px">
-              <div style="font-size:12px;font-weight:bold;margin-bottom:4px;color:${theme.border}">🎲 Choose:</div>
-              <div class="dungeon-choices">${choiceHtml}</div>
-            </div>`;
-          } else {
-            // Hotový nebo zamčený krok
-            let sIcon, sStyle, sText;
-            if (stepDone) { sIcon = '✓'; sStyle = `color:${theme.border}`; sText = 'Done'; }
-            else if (lockedStep) { sIcon = '🔒\uFE0E'; sStyle = `color:${theme.border}`; sText = 'Locked'; }
-            else { sIcon = chosen ? chosen.icon : '?'; sStyle = ''; sText = chosen ? chosen.label : ''; }
-            const isCheckpoint = si > 0 && si % 5 === 0 && si < 25;
-            stepHtml += `<div class="map-floor-card ${stepDone?'floor-done':lockedStep?'floor-locked':'floor-active'}${isCheckpoint?' floor-checkpoint':''}" style="border-color:${theme.border};background:linear-gradient(135deg,${theme.bg}bb,${theme.bg}66)">
-              <span class="floor-card-icon"${sStyle ? ` style="${sStyle}"` : ''}>${sIcon}</span>
-              <span class="floor-card-num">Floor ${si+1}</span>
-              <span class="floor-card-text">${sText}</span>
-            </div>`;
-          }
-        });
-      }
+
       return `<div class="map-location-wrap">
-        <div class="map-location ${completed?'completed':!unlocked?'locked':''} ${expanded?'expanded':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleDungeon(${i})`}">
+        <div class="map-location ${completed?'completed':!unlocked?'locked':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.enterAct(${i})`}">
           <div class="map-loc-bg" style="background-image:url(assets/dungeons/${['forest','desert','frost','undead','hell'][i]||'forest'}.png)"></div>
           ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${['forest','desert','frost','undead','hell'][i]||'forest'}.png)"></div>` : ''}
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.name}</div>
+            ${!completed && unlocked ? `<div class="map-loc-progress"><div class="map-loc-progress-bar" style="width:${progressPct}%;background:${theme.border}"></div><span>${curProgress}/${totalZones}</span></div>` : ''}
           </div>
           ${badgeHtml}
         </div>
-        ${stepHtml}
       </div>`;
     }).join('');
   }
 
-  // ===== MAP BATTLE =====
-  function chooseDungeonPath(locId, stepIdx, choiceIdx) {
-    const steps = state.dungeonSteps;
-    if (!steps || !steps[stepIdx]) return;
-    const step = steps[stepIdx];
-    if (step.completed) return;
-    const choice = step.choices[choiceIdx];
-    if (!choice) return;
-
-    // Uložit volbu
-    step.chosenIdx = choiceIdx;
-    step.completed = true;
-    state.locationProgress[locId] = stepIdx; // zůstat na aktuálním kroku pro startLocation
-
-    // MYSTERY — náhodně odhalit, co to vlastně je
-    if (choice.type === ROOM_TYPES.MYSTERY) {
-      // Vybrat náhodný typ místnosti (kromě MYSTERY) — jen bojové
-      const mysteryPool = ROOM_POOL.filter(p => p.type !== ROOM_TYPES.MYSTERY && p.type !== ROOM_TYPES.FOUNTAIN && p.type !== ROOM_TYPES.MERCHANT);
-      const revealed = mysteryPool[rand(0, mysteryPool.length - 1)];
-      choice.type = revealed.type;
-      choice.icon = revealed.icon;
-      choice.label = '❓ ' + revealed.label;
-      if (revealed.type === ROOM_TYPES.ELITE) {
-        choice.eliteAffix = ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
+  // ===== TOWN =====
+  function renderTown() {
+    state.waypoints = state.waypoints || [[],[],[],[],[]];
+    const wpContainer = $('townWaypoints');
+    let wpHtml = '';
+    let hasAny = false;
+    ACTS.forEach((act, actId) => {
+      const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
+      const wps = state.waypoints[actId] || [];
+      if (wps.length === 0 && !completed) return;
+      hasAny = true;
+      const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
+      wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin-top:6px">${act.icon} ${act.name}</div>`;
+      if (completed) {
+        wpHtml += `<button class="btn btn-secondary" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">✔ ${act.name} (Completed)</button>`;
+      } else {
+        wps.sort((a,b) => a-b).forEach(zoneId => {
+          const zoneNum = zoneId + 1;
+          const isCurrent = state.locationProgress[actId] === zoneId;
+          wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
+            ${isCurrent ? '📍 ' : ''}Zone ${zoneNum}${isCurrent ? ' (Current)' : ''}</button>`;
+        });
       }
+    });
+    if (!hasAny) {
+      wpHtml = '<div style="color:#666;font-size:13px;text-align:center">No waypoints yet. Enter an act to unlock them.</div>';
+    }
+    wpContainer.innerHTML = wpHtml;
+
+    // Town portal scroll
+    const portalCard = $('townPortalCard');
+    const portalInfo = $('townPortalInfo');
+    if (state.townPortalReturn) {
+      const act = ACTS[state.townPortalReturn.actId];
+      const zoneNum = (state.townPortalReturn.zoneId || 0) + 1;
+      portalCard.style.display = '';
+      portalInfo.textContent = `📜 Return to ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Zone ${zoneNum}`;
+    } else {
+      portalCard.style.display = 'none';
+    }
+  }
+
+  function townHeal() {
+    state.hero.maxHp = getHeroMaxHp();
+    state.hero.hp = state.hero.maxHp;
+    state.hero.mana = getHeroMaxMana();
+    saveGame();
+    renderTown();
+    playSFX(healSfx);
+  }
+
+  function useTownPortal() {
+    if (!state.townPortalReturn) return;
+    const { actId, zoneId } = state.townPortalReturn;
+    state.townPortalReturn = null;
+    saveGame();
+    // Set progress to the saved zone
+    state.locationProgress[actId] = zoneId;
+    state.hero.maxHp = getHeroMaxHp();
+    state.hero.hp = state.hero.maxHp;
+    state._floorLootDrops = [];
+    state._monsterLastSeen = state._monsterLastSeen || {};
+    state._monsterLastSeen[ACTS[actId].theme] = {};
+    cleanupTimers();
+    startLocation(actId);
+  }
+
+  function useTownPortalScroll() {
+    // Called from inventory when using a town portal scroll item
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+    const actId = mb.locId;
+    const progress = state.locationProgress[actId] || 0;
+    state.townPortalReturn = { actId, zoneId: progress };
+    saveGame();
+    showScreen('town');
+    renderTown();
+  }
+
+  // ===== ACT ENTRY =====
+  function enterAct(actId) {
+    const act = ACTS[actId];
+    if (!act) return;
+    if (actId > 0 && !state.bossesDefeated[state.difficulty]?.[actId-1]) return;
+    const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
+    if (completed) return;
+
+    // Reset monster rotation
+    state._monsterLastSeen = state._monsterLastSeen || {};
+    state._monsterLastSeen[act.theme] = {};
+
+    // Start from current progress or zone 0
+    const progress = state.locationProgress[actId] || 0;
+    if (progress === 0) {
+      state.hero.maxHp = getHeroMaxHp();
+      state.hero.hp = state.hero.maxHp;
+      state._floorLootDrops = [];
     }
 
-    // Spustit souboj/efekt
     cleanupTimers();
-    startLocation(locId);
+    startLocation(actId);
   }
 
-  function enterLocation(locId) {
-    const loc = LOCATIONS[locId];
-    if (!loc) return;
-    if (locId > 0 && !state.bossesDefeated[state.difficulty]?.[locId-1]) { showMessage('🔒 Nejdřív poraz předchozí lokaci!'); return; }
-
-    // Reset dungeon steps při novém vstupu
-    const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-    state.dungeonSteps = generateDungeonChoices(loc, diff);
-    state.locationProgress[locId] = 0;
-    // Resetovat rotaci monster pro nový dungeon run
-    state._monsterLastSeen = state._monsterLastSeen || {};
-    state._monsterLastSeen[loc.theme] = {};
-    _expandedDungeon = locId;
-    renderMap();
-  }
-
-  function startLocation(locId) {
+  function startLocation(actId) {
     // Kompletní reset session stavu při vstupu do souboje
     _sessionDebuffs = {};
     _sessionBuffs = {};
@@ -2224,123 +2112,30 @@
     state.skillShoutBonus = 0;
     state.thunderClapTimer = 0;
     state.thunderClapSlowPct = 0;
-    const loc = LOCATIONS[locId];
+    const loc = ACTS[actId];
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-    const progress = state.locationProgress[locId] || 0; // aktuální krok (0 = první)
-    const steps = state.dungeonSteps;
+    const progress = state.locationProgress[actId] || 0;
 
-    // Generovat dungeon steps při prvním vstupu
-    if (!steps || steps.length === 0) {
-      state.dungeonSteps = generateDungeonChoices(loc, diff);
-    }
-    const currentSteps = state.dungeonSteps;
-    const currentStep = currentSteps[progress];
-    if (!currentStep) return;
-    const chosen = currentStep.choices[currentStep.chosenIdx];
-    if (!chosen) return;
+    const totalZones = loc.zones || 10;
+    const isBoss = progress >= totalZones;
 
-    const isBoss = chosen.isBoss || false;
-    const isReward = chosen.isReward || false;
-    const isFountain = !isBoss && !isReward && chosen.type === ROOM_TYPES.FOUNTAIN;
-    const isChest = !isBoss && !isReward && chosen.type === ROOM_TYPES.CHEST;
-    const isMerchantChoice = !isBoss && !isReward && chosen.type === ROOM_TYPES.MERCHANT;
-    const isCheckpoint = chosen.isCheckpoint || false;
-
-    // Reset HP při vstupu do dungeonu (progress === 0)
-    if (progress === 0) {
-      state.hero.maxHp = getHeroMaxHp();
-      state.hero.hp = state.hero.maxHp;
-      state._floorLootDrops = [];
+    // Odemknout waypoint pro aktuální zónu
+    state.waypoints = state.waypoints || [[],[],[],[],[]];
+    if (!isBoss && !state.waypoints[actId].includes(progress)) {
+      state.waypoints[actId].push(progress);
     }
 
-    // Fountain — heal, žádný boj
-    if (isFountain) {
-      const currentMaxHp = getHeroMaxHp();
-      state.hero.maxHp = currentMaxHp;
-      // Omezit hp na aktuální max (když hráč ztratil +HP z vybavení)
-      state.hero.hp = Math.min(state.hero.hp, currentMaxHp);
-      const healAmt = Math.round(currentMaxHp * 0.4);
-      state.hero.hp = Math.min(currentMaxHp, state.hero.hp + healAmt);
-      state.hero.mana = getHeroMaxMana();
-      state.locationProgress[locId] = progress + 1;
-      saveGame();
-      $('resultIcon').textContent = '🩸';
-      $('resultTitle').textContent = 'Healing Fountain';
-      $('resultMsg').innerHTML = `<div class="result-stats"><div class="result-stat"><span class="result-stat-icon">❤️</span><span class="result-stat-val">+${healAmt} HP</span></div><div class="result-stat"><span class="result-stat-icon">💧</span><span class="result-stat-val">Mana full</span></div></div>`;
-      $('resultLootList').innerHTML = '';
-      $('resultBtn').innerHTML = '';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
-      showScreen('result');
-      return;
-    }
-
-    // Checkpoint — rest/shop
-    if (isCheckpoint) {
-      state.locationProgress[locId] = progress + 1;
-      saveGame();
-      $('resultIcon').innerHTML = '🏕️';
-      $('resultTitle').textContent = `Checkpoint — Floor ${progress + 1}`;
-      $('resultMsg').innerHTML = `<div style="text-align:center;font-size:13px;color:#aaa;margin-bottom:12px">Rest or visit the merchant.</div>
-        <div style="display:flex;gap:12px;justify-content:center">
-          <div class="dungeon-choice" onclick="game.handleCheckpoint('rest')" style="border-color:#2ecc71;background:#0d2d0d88;padding:12px;text-align:center;min-width:100px">
-            <span style="font-size:28px">🛌</span><br><span style="font-size:13px">Rest</span>
-          </div>
-          <div class="dungeon-choice" onclick="game.handleCheckpoint('shop')" style="border-color:#e67e22;background:#2a1a0888;padding:12px;text-align:center;min-width:100px">
-            <span style="font-size:28px">🛒</span><br><span style="font-size:13px">Shop</span>
-          </div>
-        </div>`;
-      $('resultLootList').innerHTML = '';
-      $('resultBtn').innerHTML = '';
-      $('resultScreen').onclick = null;
-      showScreen('result');
-      return;
-    }
-
-    // Chest — gold + šance na item
-    if (isChest) {
-      const chestGold = 5 + locId * 3 + rand(0, 8);
-      state.hero.gold = (state.hero.gold || 0) + chestGold;
-      state.locationProgress[locId] = progress + 1;
-      let lootHtml = `<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+${chestGold} gold</span></div>`;
-      if (Math.random() < 0.4) {
-        const freeItem = generateLootItem(locId, progress, false);
-        if (freeItem) {
-          state.hero.inventory.push(freeItem.id);
-          ITEM_MAP[freeItem.id] = freeItem;
-          const rr = RARITY[freeItem.rarity] || RARITY.common;
-          lootHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(freeItem,32)}</span><span class="loot-scroll-name" style="color:${rr.color}">${freeItem.name}</span></div>`;
-        }
-      }
-      saveGame();
-      $('resultIcon').textContent = '💰';
-      $('resultTitle').textContent = 'Chest!';
-      $('resultMsg').innerHTML = `<div class="result-stats">${lootHtml}</div>`;
-      $('resultLootList').innerHTML = '';
-      $('resultBtn').innerHTML = '';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
-      showScreen('result');
-      return;
-    }
-
-    // Merchant — rovnou otevřít shop
-    if (isMerchantChoice) {
-      state.locationProgress[locId] = progress + 1;
-      saveGame();
-      showScreen('shop');
-      return;
-    }
     const playerMaxHp = getHeroMaxHp();
     state.hero.maxHp = playerMaxHp;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
-    // Použít fixní staty monstra místo škálování
     const diffMultOverall = diff.mult;
 
-    // Sada monster pro tuto místnost — vždy nové monstrum
+    // Sada monster pro tuto zónu
     state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, progress);
     const floorMonsters = state._floorMonsters;
 
-    // Fixní staty podle monstra
+    // Fixní staty monstra
     let monsterHp, monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance;
     let monsterResource, monsterMaxResource, monsterSpells;
     if (isBoss) {
@@ -2353,15 +2148,6 @@
       monsterResource = b.resource || 'mana';
       monsterMaxResource = b.maxResource || 200;
       monsterSpells = b.spells || [];
-    } else if (isReward) {
-      monsterHp = 1;
-      monsterDmgMin = 0;
-      monsterDmgMax = 0;
-      monsterAttackSpeed = 2000;
-      monsterBlockChance = 0;
-      monsterResource = 'mana';
-      monsterMaxResource = 0;
-      monsterSpells = [];
     } else {
       const m = floorMonsters[0];
       monsterHp = Math.round((m.hp || 80) * diffMultOverall);
@@ -2374,13 +2160,29 @@
       monsterSpells = m.spells || [];
     }
 
-    // Elitní HP bonus
-    const isElite = chosen.type === ROOM_TYPES.ELITE;
-    const eliteHpMult = isElite ? 1.75 : 1.0;
-    const bossHpMultBase = 4.0;
-    const baseHp = isBoss ? Math.round(monsterHp * bossHpMultBase) : Math.round(monsterHp * eliteHpMult);
+    // Boss affixy
+    let bossHpMult = 1.0;
+    let bossDmgMult = 1.0;
+    if (isBoss) {
+      const bossAffixes = [];
+      const numBossAffixes = 1 + (Math.random() < 0.4 ? 1 : 0);
+      for (let i = 0; i < numBossAffixes; i++) {
+        const affix = BOSS_AFFIXES[rand(0, BOSS_AFFIXES.length - 1)];
+        if (!bossAffixes.find(a => a.name === affix.name)) {
+          bossAffixes.push(affix);
+        }
+      }
+      bossAffixes.forEach(a => {
+        if (a.name === 'Nezničitelný') bossHpMult += 0.5;
+        if (a.name === 'Ohnivý' || a.name === 'Ledový') bossDmgMult += 1.0;
+        if (a.name === 'Rychlý') bossDmgMult += 0.5;
+      });
+    }
+
+    const baseHp = isBoss ? Math.round(monsterHp * 4.0) : Math.round(monsterHp);
+
     // Zaznamenat setkání s monstry do bestiáře
-    if (!isBoss && !isReward) {
+    if (!isBoss) {
       state.encounteredMonsters = state.encounteredMonsters || [];
       floorMonsters.forEach(m => {
         const key = m.face;
@@ -2388,27 +2190,15 @@
           state.encounteredMonsters.push(key);
         }
       });
-    } else if (isBoss) {
+    } else {
       state.encounteredMonsters = state.encounteredMonsters || [];
       if (loc.boss && loc.boss.face && !state.encounteredMonsters.includes(loc.boss.face)) {
         state.encounteredMonsters.push(loc.boss.face);
       }
     }
 
-    // Boss affix bonusy
-    let bossHpMult = 1.0;
-    let bossDmgMult = 1.0;
-    if (isBoss && chosen.bossAffixes) {
-      chosen.bossAffixes.forEach(a => {
-        if (a.name === 'Nezničitelný') bossHpMult += 0.5;
-        if (a.name === 'Ohnivý' || a.name === 'Ledový') bossDmgMult += 1.0;
-        if (a.name === 'Rychlý') bossDmgMult += 0.5;
-      });
-    }
-
     mapBattleState = {
-      locId, loc, isBoss, isReward, isElite, progress,
-      currentChoice: chosen,
+      locId: actId, loc, isBoss, progress,
       bossHp: Math.round(baseHp * bossHpMult), maxBossHp: Math.round(baseHp * bossHpMult),
       bossDmgMult: bossDmgMult,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
@@ -2423,36 +2213,27 @@
       _blizzardFreeAttacks: 0,
       _improverStacks: 0,
       floorMonsters,
-      monsterFace: isBoss ? loc.boss.face : (isReward ? '' : floorMonsters[0].face),
-      currentMonsterName: isBoss ? loc.boss.name : (isReward ? '' : floorMonsters[0].name),
-      monsterType: isBoss ? null : (isReward ? null : (floorMonsters[0].type || null)),
-      monsterAttackType: isBoss ? (loc.boss.attackType || ATTACK_TYPES.MELEE) : (isReward ? ATTACK_TYPES.MELEE : (floorMonsters[0].attackType || ATTACK_TYPES.MELEE)),
-      monsterDefense: (isBoss ? (loc.monsterDefense || 0) : (isReward ? 0 : (floorMonsters[0].defense || 0))) * (1 + getLocAffix('armorMult')),
-      monsterResists: isBoss ? (loc.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}) : (isReward ? {fire:1.0, ice:1.0, nature:1.0, lightning:1.0} : (floorMonsters[0].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0})),
+      monsterFace: isBoss ? loc.boss.face : floorMonsters[0].face,
+      currentMonsterName: isBoss ? loc.boss.name : floorMonsters[0].name,
+      monsterType: isBoss ? null : (floorMonsters[0].type || null),
+      monsterAttackType: isBoss ? (loc.boss.attackType || ATTACK_TYPES.MELEE) : (floorMonsters[0].attackType || ATTACK_TYPES.MELEE),
+      monsterDefense: (isBoss ? (loc.monsterDefense || 0) : (floorMonsters[0].defense || 0)) * (1 + getLocAffix('armorMult')),
+      monsterResists: isBoss ? (loc.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}) : (floorMonsters[0].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}),
       bossTypes: isBoss ? (loc.boss.types || []) : [],
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       monsterTheme: isBoss ? loc.theme : (floorMonsters[0].theme !== undefined ? floorMonsters[0].theme : loc.theme),
-      // Fixní staty monstra
       monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance,
       monsterResource, monsterMaxResource, monsterSpells,
-      passivePoisonWeapon: isBoss ? false : (isReward ? false : (floorMonsters[0].passivePoisonWeapon || false)),
-      // Thorn shield state
+      passivePoisonWeapon: isBoss ? false : (floorMonsters[0].passivePoisonWeapon || false),
       _thornShieldActive: false, _thornShieldTimer: 0,
-      // Faerie fire state
       _faerieFireActive: false, _faerieFireTimer: 0,
-      // Slow state (player slow)
       _playerSlowPct: 0, _playerSlowTimer: 0,
-      // Defensive shout state
       _defensiveShoutActive: false, _defensiveShoutTimer: 0,
-      // Battle shout state
       _battleShoutActive: false, _battleShoutTimer: 0,
-      // Evasion state (passive dodge for Vlk)
       _evasionActive: false, _evasionTimer: 0,
-      // Poison weapon state (passive DoT on player from Satyr melee)
       _poisonWeaponActive: false, _poisonWeaponTimer: 0, _poisonWeaponDmg: 0,
       _lootDrops: state._floorLootDrops || [],
-      // Auto-combat swing timery
       playerSwingMs: 0,
       offhandSwingMs: 0,
       enemySwingMs: 0,
@@ -2480,13 +2261,10 @@
       _enemySlowMax: 0,
       _heroicStrikeQueued: false,
       debuffs: {},
-      // Caster fields
       enemyMana: 0, maxEnemyMana: 0,
       _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
       _enemyCastProcessed: false,
-      // První swing flag — první swing je vždy melee, teprve pak monstrum castuje
       _enemyFirstSwingDone: false,
-      // Player cast fields
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
     };
 
@@ -3625,6 +3403,15 @@
         state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + pot.effectValue);
       }
       showMessage(`💧 +${pot.effectValue} many`);
+    } else if (pot.subtype === 'townPortal') {
+      // Town portal scroll — teleport to town, save position
+      const actId = mb.locId;
+      const progress = state.locationProgress[actId] || 0;
+      state.townPortalReturn = { actId, zoneId: progress };
+      saveGame();
+      showScreen('town');
+      renderTown();
+      return; // skip potion removal — scroll is consumed
     }
     // Potion zmizí ze slotu
     bpSlots[potionIdx] = null;
@@ -4390,7 +4177,7 @@
     return icons;
   }
   function getDungeonResistIcons(locId) {
-    const loc = LOCATIONS[locId];
+    const loc = ACTS[locId];
     if (!loc || !loc.resists) return '';
     const r = loc.resists;
     let weak = [], strong = [];
@@ -8278,6 +8065,13 @@
 
   function rollLoot(locId, floor, bossDrop) {
     const h = state.hero;
+    // 8% chance for town portal scroll (non-boss)
+    if (!bossDrop && Math.random() < 0.08) {
+      const scroll = ITEM_MAP['townPortalScroll'];
+      if (scroll) {
+        return { type:'item', item: scroll };
+      }
+    }
     if (bossDrop) {
       // Boss: zaručený item s vyšším tierem + goldy
       const item = generateLootItem(locId, floor, true);
@@ -8302,15 +8096,12 @@
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     const locId = mb.locId;
-    const steps = state.dungeonSteps;
-    const currentChoice = mb.currentChoice;
+    const totalZones = mb.loc.zones || 10;
 
-    // Monster killed - regular enemy or elite
-    if (won && !mb.isBoss && !mb.isReward) {
+    // Monster killed - regular enemy
+    if (won && !mb.isBoss) {
       mapBattleState.ended = true;
       cleanupTimers();
-      // Označit krok jako hotový
-      if (steps && currentChoice) currentChoice.completed = true;
       const p = (state.locationProgress[locId] || 0) + 1;
       state.locationProgress[locId] = p;
       const monsterGold = (1 + rand(0, 2)) * 5;
@@ -8338,10 +8129,6 @@
       saveGame();
       sfxSuccess();
 
-      // Zjistit, jestli je další místnost boss
-      const nextStep = steps ? steps[p] : null;
-      const isNextBoss = nextStep && nextStep.choices[nextStep.chosenIdx] && nextStep.choices[nextStep.chosenIdx].isBoss;
-
       mapBattleState.ended = true;
       cleanupTimers();
       saveGame();
@@ -8357,7 +8144,6 @@
       $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
       $('resultTitle').textContent = 'Victory!';
       $('resultMsg').innerHTML = '';
-      // Loot list
       let lootListHtml = '';
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
@@ -8369,7 +8155,14 @@
       }
       $('resultLootList').innerHTML = lootListHtml;
       $('resultBtn').innerHTML = '';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      // Po vítězství: pokud je to poslední zóna, další je boss
+      const isLastZone = p >= totalZones;
+      if (isLastZone) {
+        $('resultMsg').innerHTML = '<div style="text-align:center;color:#e74c3c;font-size:14px;font-weight:bold;margin-top:8px">👹 The boss awaits! Prepare for battle.</div>';
+        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; startLocation(locId); };
+      } else {
+        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      }
       showScreen('result');
       switchBGM('win');
       return;
@@ -8388,35 +8181,32 @@
     }
 
     if (!won) {
-          state.deaths = (state.deaths || 0) + 1;
-          // Útěcha i za prohru — 20% XP a pár goldů
-          const consXp = Math.max(3, Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * 0.2));
-          const consGold = 1 + rand(0, 2);
-          state.hero.xp = (state.hero.xp || 0) + consXp;
-          state.hero.gold = (state.hero.gold || 0) + consGold;
-          const leveled = applyLevelUp();
-          state.locationProgress[locId] = 0;
-          state._floorLootDrops = [];
-          state.hero.hp = state.hero.maxHp;
-          state.dungeonSteps = null; // reset dungeon při smrti
-          saveGame();
-          switchBGM('defeat');
-          $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Prohra">';
-          $('resultTitle').textContent = 'Defeat';
-          $('resultMsg').innerHTML = '';
-          $('resultLootList').innerHTML = '';
-          $('resultBtn').innerHTML = '';
-          $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+      // Death — return to town, lose act progress (keep waypoints)
+      state.deaths = (state.deaths || 0) + 1;
+      const consXp = Math.max(3, Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * 0.2));
+      const consGold = 1 + rand(0, 2);
+      state.hero.xp = (state.hero.xp || 0) + consXp;
+      state.hero.gold = (state.hero.gold || 0) + consGold;
+      const leveled = applyLevelUp();
+      state.locationProgress[locId] = 0;
+      state._floorLootDrops = [];
+      state.hero.hp = state.hero.maxHp;
+      saveGame();
+      switchBGM('defeat');
+      $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Prohra">';
+      $('resultTitle').textContent = 'Defeat';
+      $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
+      $('resultLootList').innerHTML = '';
+      $('resultBtn').innerHTML = '';
+      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
     } else if (mb.isBoss) {
       // Boss defeated
-      if (steps && currentChoice) currentChoice.completed = true;
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
       state.bossesDefeated[state.difficulty] = state.bossesDefeated[state.difficulty] || [false,false,false,false,false];
       state.bossesDefeated[state.difficulty][locId] = true;
       state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 6) * getXpModifier(mb));
       state.locationProgress[locId] = 0;
-      state.dungeonSteps = null; // reset dungeon po bossovi
       applyLevelUp();
       const r = mb.loc.reward;
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
@@ -8441,29 +8231,6 @@
       $('resultBtn').innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
       saveGame();
-    } else if (mb.isReward) {
-      // Reward room — jen gold/item, žádný boj
-      if (steps && currentChoice) currentChoice.completed = true;
-      state.hero.hp = mb.playerHp;
-      const rewardGold = 5 + locId * 3 + rand(0, 5);
-      state.hero.gold = (state.hero.gold || 0) + rewardGold;
-      // Možnost itemu zdarma
-      if (Math.random() < 0.3) {
-        const freeItem = generateLootItem(locId, mb.progress);
-        state.hero.inventory.push(freeItem.id);
-        ITEM_MAP[freeItem.id] = freeItem;
-      }
-      saveGame();
-      $('resultIcon').textContent = '💰';
-      $('resultTitle').textContent = 'Dungeon Complete!';
-      $('resultMsg').innerHTML = '<div class="result-stats">'
-                + '<div class="result-stat"><span class="result-stat-icon">💰</span><span class="result-stat-val">+' + rewardGold + ' gold</span></div>'
-                + '</div>';
-      $('resultBtn').innerHTML = '<button class="btn btn-primary" onclick="game.showScreen(\'map\'); game.renderMap();">🗺️ Map</button>';
-      $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showMapWithUnlock(locId); };
-      showScreen('result');
-      switchBGM('win');
-      return;
     }
     showScreen('result');
     if (won) switchBGM('win');
@@ -8473,7 +8240,7 @@
     showScreen('map');
     renderMap();
     const nextLocId = doneLocId + 1;
-    if (nextLocId < LOCATIONS.length) {
+    if (nextLocId < ACTS.length) {
       const el = document.querySelectorAll('.map-location-wrap')[nextLocId];
       if (el) {
         const locEl = el.querySelector('.map-location');
@@ -8694,7 +8461,7 @@
     let html = '';
     MONSTER_DB.forEach((themeMonsters, themeIdx) => {
       const theme = DUNGEON_THEMES[themeIdx] || DUNGEON_THEMES[0];
-      const loc = LOCATIONS[themeIdx];
+      const loc = ACTS[themeIdx];
       const locName = loc ? loc.name : `Oblast ${themeIdx+1}`;
       html += `<div class="bestiary-section"><div class="bestiary-section-title" style="color:${theme.border}">${locName}</div>`;
       // Normální monstra — první
@@ -9332,7 +9099,7 @@
         }
         else if (item.type === 'ring') stats = '';
         else if (item.type === 'amulet') stats = '';
-        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Heals' : 'Restores'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'mana'}`;
+        else if (item.type === 'consumable') stats = item.subtype === 'townPortal' ? '📜 Returns to town, saves position' : `🧪 ${item.subtype === 'heal' ? 'Heals' : 'Restores'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'mana'}`;
         else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
         // Extra staty pro base itemy
         const extraStats = [];
@@ -10229,15 +9996,15 @@
     MONSTER_DB.forEach(theme => theme.forEach(m => {
       if (m.face && m.face.startsWith('assets/')) allMonsterFaces.push(m.face);
     }));
-    LOCATIONS.forEach(loc => {
+    ACTS.forEach(loc => {
       if (loc.boss && loc.boss.face && loc.boss.face.startsWith('assets/')) allMonsterFaces.push(loc.boss.face);
     });
     // Deduplikace a prefetch
     [...new Set(allMonsterFaces)].forEach(src => { const img = new Image(); img.src = src; });
 
     if (!state.bossesDefeated || !Array.isArray(state.bossesDefeated) || state.bossesDefeated.length < 3 || !Array.isArray(state.bossesDefeated[0])) state.bossesDefeated = [[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]];
-    if (!state.locationProgress || state.locationProgress.length < LOCATIONS.length) state.locationProgress = Array(LOCATIONS.length).fill(0);
-    if (!state.floorProgress || state.floorProgress.length < LOCATIONS.length) state.floorProgress = Array(LOCATIONS.length).fill(0);
+    if (!state.locationProgress || state.locationProgress.length < ACTS.length) state.locationProgress = Array(ACTS.length).fill(0);
+    if (!state.floorProgress || state.floorProgress.length < ACTS.length) state.floorProgress = Array(ACTS.length).fill(0);
     if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, mana:50, maxMana:50, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:null}, attrStr:0, attrVit:0, attrPoints:0 };
     if (state.hero.maxHp === undefined) state.hero.maxHp = getHeroMaxHp();
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
@@ -10280,7 +10047,8 @@
       a.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (a.dataset.screen === 'map') showScreen('map');
+        if (a.dataset.screen === 'town') { showScreen('town'); renderTown(); }
+        else if (a.dataset.screen === 'map') showScreen('map');
         else if (a.dataset.screen === 'talents') showScreen('talents');
         else if (a.dataset.screen === 'hero') showScreen('hero');
         else if (a.dataset.screen === 'shop') showScreen('shop');
@@ -10410,7 +10178,7 @@
   }
 
   window.game = {
-    showScreen, enterLocation, toggleDungeon, chooseDungeonPath, handleCheckpoint,
+    showScreen, enterAct, setDifficulty,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
@@ -10424,7 +10192,8 @@
     showFaceSelect, closeFaceSelect, selectFace,
     selectClass,
     castClassSpell,
-    usePotion
+    usePotion,
+    townHeal, useTownPortal, renderTown
   };
   init();
 })();
