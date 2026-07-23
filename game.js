@@ -2593,7 +2593,11 @@
     // Update timer ring vizuál (až po zpracování útoků, aby nedošlo k zelenému probliku)
     updateSwingRings(mb);
 
-    mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+    // Guard: pokud endMapBattle byla zavolána zevnitř této smyčky (onAutoPlayerAttack apod.),
+    // neplánovat další rAF — cleanupTimers už ho zrušil a konec boje je zpracovaný
+    if (!mb.ended && !mb._pendingKill) {
+      mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+    }
   }
 
   let _lastBuffTick = 0;
