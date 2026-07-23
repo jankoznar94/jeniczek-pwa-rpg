@@ -3324,16 +3324,6 @@
     if (mb._defensiveShoutActive) {
       bossDmg = Math.round(bossDmg * 0.7);
     }
-    // Evasion — 30% dodge chance (Vlk)
-    if (mb._evasionActive && Math.random() < 0.3) {
-      playSFX(dodgeSfx);
-      spawnFloatingText('💨 Evasion!', 'left', '#f1c40f', 32);
-      mb._enemySwingStart = performance.now();
-      mb._enemySwingReady = false;
-      mb._enemySwingPct = 0;
-      updateMapBattleUI();
-      return;
-    }
     // 🛡️ Defense — WoW styl
     const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
@@ -7779,6 +7769,13 @@
         if (!mb._combatLoop) advanceSequence();
         return;
       }
+    }
+    // 💨 Evasion — Vlk uhýbá hráčovým útokům (30% šance)
+    if (mb._evasionActive && Math.random() < 0.3) {
+      spawnFloatingText('💨 Evasion!', 'right', '#f1c40f', 32);
+      playSFX(dodgeSfx);
+      if (!mb._combatLoop) advanceSequence();
+      return;
     }
     // HIT — normální damage
     let baseDmg;
