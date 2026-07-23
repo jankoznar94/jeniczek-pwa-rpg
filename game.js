@@ -3176,6 +3176,8 @@
         _enemyBuffs['defensive_shout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 800, maxTicks: 800,
           onExpire: () => { if (mapBattleState) mapBattleState._defensiveShoutActive = false; } };
         spellText = '🛡️ Defensive Shout';
+        playSFX(shoutSfx);
+        spawnShoutRings(mb, '#5dade2', 'rgba(93,173,226,0.6)');
       } else if (spellId === 'battle_shout') {
         amount = 0;
         mb._battleShoutActive = true;
@@ -3183,6 +3185,8 @@
         _enemyBuffs['battle_shout'] = { icon: '📯', name: 'Battle Shout', ticks: 800, maxTicks: 800,
           onExpire: () => { if (mapBattleState) mapBattleState._battleShoutActive = false; } };
         spellText = '📯 Battle Shout';
+        playSFX(shoutSfx);
+        spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
       } else if (spellId === 'thorn_shield') {
         amount = 0;
         mb._thornShieldActive = true;
