@@ -2476,6 +2476,8 @@
       enemyMana: 0, maxEnemyMana: 0,
       _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
       _enemyCastProcessed: false,
+      // První swing flag — první swing je vždy melee, teprve pak monstrum castuje
+      _enemyFirstSwingDone: false,
       // Player cast fields
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
     };
@@ -2742,8 +2744,9 @@
         mb._enemySwingPct = Math.min(enemyElapsed / mb.enemySwingMs, 1);
         if (enemyElapsed >= mb.enemySwingMs) {
           // Rozhodovací moment — monstrum s kouzly může začít castovat
+          // První swing je vždy melee, teprve pak se rozhoduje o castování
           const spells = mb.monsterSpells;
-          if (spells && spells.length > 0) {
+          if (spells && spells.length > 0 && mb._enemyFirstSwingDone) {
             const spell = pickEnemySpell(mb);
             if (spell) {
               const cost = mb.monsterResource === 'rage' ? (spell.rageCost || 0) : (spell.manaCost || 0);
@@ -2768,7 +2771,7 @@
               mb._enemyAttackProcessed = false;
             }
           } else {
-            // Monstrum bez kouzel — normální swing
+            // První swing nebo monstrum bez kouzel — normální melee útok
             mb._enemySwingReady = true;
             mb._enemyAttackProcessed = false;
           }
@@ -3285,6 +3288,7 @@
     }
 
     // Výpočet damage — fixní staty monstra
+    mb._enemyFirstSwingDone = true;
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
     let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall);
     const mType = mb.monsterType;
