@@ -13,7 +13,8 @@
 <body>
 
 <nav class="nav-bar hidden">
-  <a href="#" data-screen="map" class="active"><img src="assets/menu-icons/mapa.png" alt="Map" class="nav-icon"></a>
+  <a href="#" data-screen="town"><img src="assets/menu-icons/mapa.png" alt="Town" class="nav-icon"></a>
+  <a href="#" data-screen="map"><img src="assets/menu-icons/mapa.png" alt="Map" class="nav-icon"></a>
   <a href="#" data-screen="hero"><img src="assets/monsters/hero.png" alt="Hero" class="nav-icon" id="navHeroIcon"></a>
   <a href="#" data-screen="talents"><img src="assets/menu-icons/talenty.png" alt="Talents" class="nav-icon"><span class="nav-badge" id="talentBadge">0</span></a>
   <a href="#" data-screen="inventory"><img src="assets/menu-icons/inventar.png" alt="Inventory" class="nav-icon"></a>
@@ -53,6 +54,32 @@
       <div class="class-card-desc">Powerful ranged spells. Wands and magical artifacts. High intellect, low defense.</div>
       <div class="class-card-weapons">🪄 1H Wand + Offhand · 2H Staff</div>
     </div>
+  </div>
+</div>
+
+<!-- ===== TOWN ===== -->
+<div id="townScreen" class="container hidden">
+  <div class="card">
+    <div class="card-title" style="text-align:center;font-size:22px">🏘️ Town</div>
+    <div class="card-subtitle" style="text-align:center">Rest, shop, and travel via waypoints.</div>
+  </div>
+  <div class="town-heal" style="text-align:center;margin:8px 0">
+    <button class="btn btn-primary" onclick="game.townHeal()" style="padding:10px 24px;font-size:16px">🛌 Rest (Free)</button>
+  </div>
+  <div class="card">
+    <div class="card-title">🛒 Merchant</div>
+    <button class="btn btn-secondary" onclick="game.showScreen('shop')" style="width:100%;margin-top:4px">🛒 Open Shop</button>
+  </div>
+  <div class="card">
+    <div class="card-title">📍 Waypoints</div>
+    <div id="townWaypoints" style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+      <!-- Dynamically generated -->
+    </div>
+  </div>
+  <div class="card" id="townPortalCard" style="display:none">
+    <div class="card-title">📜 Town Portal</div>
+    <div id="townPortalInfo" style="font-size:13px;color:#aaa;margin-bottom:6px"></div>
+    <button class="btn btn-primary" onclick="game.useTownPortal()" style="width:100%">📜 Return</button>
   </div>
 </div>
 
