@@ -637,6 +637,11 @@
     if (schoolId === 'fire' && locFireResist > 0) base = 1 + locFireResist;
     if (schoolId === 'ice' && locFrostResist > 0) base = 1 + locFrostResist;
     if (schoolId === 'nature' && locPoisonResist > 0) base = 1 + locPoisonResist;
+    // ✨ Faerie Fire — sníží resisty o 50% (pro hráčova kouzla na nepříteli)
+    if (mb._faerieFireActive) {
+      if (base < 1.0) base = 1 - (1 - base) * 0.5; // slabé resisty ještě slabší
+      else if (base > 1.0) base = 1 + (base - 1) * 0.5; // silné resisty slabší
+    }
     // Aplikovat násobitel obtížnosti — na Normal se nic nemění,
     // na Nightmare/Hell se resisty zesilují (slabé míň slabé, silné víc silné)
     const diff = DIFFICULTIES[state.difficulty];
@@ -1371,21 +1376,48 @@
       desc:'High crit chance' },
     heal: { name:'Heal', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Heals enemy for 30% HP' },
+    // Act 1 — Lesní monstra
+    defensive_shout: { name:'Defensive Shout', icon:'🛡️', castTime:1000, manaCost:0, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
+      desc:'Reduces incoming damage by 30% for 8s' },
+    battle_shout: { name:'Battle Shout', icon:'📯', castTime:1000, manaCost:0, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
+      desc:'+50% damage for 8s' },
+    thorn_shield: { name:'Thorn Shield', icon:'🌵', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
+      desc:'Returns 5-10 dmg to attacker for 10s' },
+    faerie_fire: { name:'Faerie Fire', icon:'✨', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+      desc:'Reduces player resistances by 50% for 10s' },
+    slow: { name:'Slow', icon:'🐌', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
+      desc:'Slows player attack speed by 50% for 5s' },
   };
 
   // ===== MONSTER DB =====
-  // Každé monstrum má fixní face, name, type a attackType — nikdy se nemění
+  // Každé monstrum má fixní face, name, type, attackType a fixní staty — nikdy se nemění
   const MONSTER_DB = [
     // Theme 0 — Les (vyvážené, mírný nature bonus)
     [
-      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0}},
-      {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.2, ice:1.0, nature:0.8, lightning:1.0}},
-      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0}},
-      {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0}},
-      {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:8, resists:{fire:1.0, ice:1.0, nature:1.0, lightning:1.0}},
-      {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:5, resists:{fire:1.0, ice:1.0, nature:0.7, lightning:1.0}},
-      {face:'assets/monsters/lesni_rarach.png',name:'Lesní rarach',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:10, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0}},
-      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:8, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0}},
+      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
+        hp:120, dmgMin:8, dmgMax:12, attackSpeed:1400, blockChance:10,
+        resource:'rage', maxResource:100, spells:['defensive_shout']},
+      {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.2, ice:1.0, nature:0.8, lightning:1.0},
+        hp:200, dmgMin:18, dmgMax:25, attackSpeed:3000, blockChance:0,
+        resource:'mana', maxResource:50, spells:['thorn_shield']},
+      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.CASTER, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
+        hp:100, dmgMin:10, dmgMax:15, attackSpeed:2000, blockChance:0,
+        resource:'energy', maxResource:100, spells:['poison_weapon']},
+      {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
+        hp:180, dmgMin:16, dmgMax:22, attackSpeed:2500, blockChance:0,
+        resource:'rage', maxResource:100, spells:['battle_shout']},
+      {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:8, resists:{fire:1.0, ice:1.0, nature:1.0, lightning:1.0},
+        hp:90, dmgMin:6, dmgMax:10, attackSpeed:1200, blockChance:0,
+        resource:'energy', maxResource:100, spells:['evasion']},
+      {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:5, resists:{fire:1.0, ice:1.0, nature:0.7, lightning:1.0},
+        hp:70, dmgMin:7, dmgMax:11, attackSpeed:1800, blockChance:0,
+        resource:'mana', maxResource:75, spells:['faerie_fire']},
+      {face:'assets/monsters/lesni_rarach.png',name:'Lesní rarach',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:10, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
+        hp:60, dmgMin:5, dmgMax:9, attackSpeed:1500, blockChance:0,
+        resource:'mana', maxResource:50, spells:['poison_bolt']},
+      {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:8, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
+        hp:110, dmgMin:10, dmgMax:14, attackSpeed:2200, blockChance:0,
+        resource:'mana', maxResource:60, spells:['slow']},
     ],
     // Theme 1 — Poušť (slabí na led, odolní ohni)
     [
@@ -1509,7 +1541,9 @@
     // Uložit, kdy bylo toto monstrum viděno
     seen[idx] = floor;
     state._monsterLastSeen[theme] = seen;
-    result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme, defense: pool[idx].defense || 0, resists: pool[idx].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}});
+    result.push({idx, face: pool[idx].face, name: pool[idx].name, type: pool[idx].type, attackType: pool[idx].attackType, theme: theme, defense: pool[idx].defense || 0, resists: pool[idx].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0},
+      hp: pool[idx].hp || 80, dmgMin: pool[idx].dmgMin || 5, dmgMax: pool[idx].dmgMax || 10, attackSpeed: pool[idx].attackSpeed || 2000, blockChance: pool[idx].blockChance || 0,
+      resource: pool[idx].resource || 'mana', maxResource: pool[idx].maxResource || 50, spells: pool[idx].spells || []});
     return result;
   }
   const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
@@ -1525,7 +1559,7 @@
   ];
   const LOCATIONS = [
     { id:0, name:'Začarovaný les', icon:'🌲', theme:0, rooms:25, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
-      boss:{name:'Troll',face:'assets/monsters/troll_test_small.png',hp:10,types:[MONSTER_TYPES.MANASTEALER],attackType:ATTACK_TYPES.MELEE},
+      boss:{name:'Lesní pán',face:'assets/monsters/forest_lord.png',hp:500,dmgMin:12,dmgMax:18,attackSpeed:1800,blockChance:0,resource:'mana',maxResource:200,spells:['thorn_shield','faerie_fire','poison_bolt'],types:[MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER},
       reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10,
       locAffixes:[
         { poisonResist:0.5 },   // Normal
@@ -2288,21 +2322,52 @@
     const playerMaxHp = getHeroMaxHp();
     state.hero.maxHp = playerMaxHp;
     const playerHp = Math.min(state.hero.hp || playerMaxHp, playerMaxHp);
-    // HP škáluje s dungeonem a progresem
+    // Použít fixní staty monstra místo škálování
     const diffMultOverall = diff.mult;
-    const monsterBaseHp = [80, 160, 280, 420, 600];
-    const monsterHpPerStep = [8, 12, 16, 20, 24];
-    const monsterHp = Math.round((monsterBaseHp[locId] + monsterHpPerStep[locId] * progress) * diffMultOverall);
+
+    // Sada monster pro tuto místnost — vždy nové monstrum
+    state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, progress);
+    const floorMonsters = state._floorMonsters;
+
+    // Fixní staty podle monstra
+    let monsterHp, monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance;
+    let monsterResource, monsterMaxResource, monsterSpells;
+    if (isBoss) {
+      const b = loc.boss;
+      monsterHp = (b.hp || 500) * diffMultOverall;
+      monsterDmgMin = b.dmgMin || 12;
+      monsterDmgMax = b.dmgMax || 18;
+      monsterAttackSpeed = b.attackSpeed || 1800;
+      monsterBlockChance = b.blockChance || 0;
+      monsterResource = b.resource || 'mana';
+      monsterMaxResource = b.maxResource || 200;
+      monsterSpells = b.spells || [];
+    } else if (isReward) {
+      monsterHp = 1;
+      monsterDmgMin = 0;
+      monsterDmgMax = 0;
+      monsterAttackSpeed = 2000;
+      monsterBlockChance = 0;
+      monsterResource = 'mana';
+      monsterMaxResource = 0;
+      monsterSpells = [];
+    } else {
+      const m = floorMonsters[0];
+      monsterHp = Math.round((m.hp || 80) * diffMultOverall);
+      monsterDmgMin = m.dmgMin || 5;
+      monsterDmgMax = m.dmgMax || 10;
+      monsterAttackSpeed = m.attackSpeed || 2000;
+      monsterBlockChance = m.blockChance || 0;
+      monsterResource = m.resource || 'mana';
+      monsterMaxResource = m.maxResource || 50;
+      monsterSpells = m.spells || [];
+    }
 
     // Elitní HP bonus
     const isElite = chosen.type === ROOM_TYPES.ELITE;
     const eliteHpMult = isElite ? 1.75 : 1.0;
     const bossHpMultBase = 4.0;
     const baseHp = isBoss ? Math.round(monsterHp * bossHpMultBase) : Math.round(monsterHp * eliteHpMult);
-
-    // Sada monster pro tuto místnost — vždy nové monstrum
-    state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, progress);
-    const floorMonsters = state._floorMonsters;
     // Zaznamenat setkání s monstry do bestiáře
     if (!isBoss && !isReward) {
       state.encounteredMonsters = state.encounteredMonsters || [];
@@ -2357,6 +2422,23 @@
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
       monsterTheme: isBoss ? loc.theme : (floorMonsters[0].theme !== undefined ? floorMonsters[0].theme : loc.theme),
+      // Fixní staty monstra
+      monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance,
+      monsterResource, monsterMaxResource, monsterSpells,
+      // Thorn shield state
+      _thornShieldActive: false, _thornShieldTimer: 0,
+      // Faerie fire state
+      _faerieFireActive: false, _faerieFireTimer: 0,
+      // Slow state (player slow)
+      _playerSlowPct: 0, _playerSlowTimer: 0,
+      // Defensive shout state
+      _defensiveShoutActive: false, _defensiveShoutTimer: 0,
+      // Battle shout state
+      _battleShoutActive: false, _battleShoutTimer: 0,
+      // Evasion state (passive dodge for Vlk)
+      _evasionActive: false, _evasionTimer: 0,
+      // Poison weapon state (passive DoT on player from Satyr melee)
+      _poisonWeaponActive: false, _poisonWeaponTimer: 0, _poisonWeaponDmg: 0,
       _lootDrops: state._floorLootDrops || [],
       // Auto-combat swing timery
       playerSwingMs: 0,
@@ -2404,11 +2486,17 @@
     });
     const ring = document.getElementById('mbTimerRing');
     if (ring) ring.style.opacity = '1';
-    // Inicializace many pro caster monstra
-    if (mapBattleState.monsterAttackType === ATTACK_TYPES.CASTER) {
-      const baseMana = 30 + mapBattleState.locId * 10 + mapBattleState.progress * 3;
-      mapBattleState.maxEnemyMana = baseMana;
-      mapBattleState.enemyMana = baseMana;
+    // Inicializace resource monstra (mana/rage/energy)
+    const mb = mapBattleState;
+    if (mb.monsterResource === 'mana') {
+      mb.maxEnemyMana = mb.monsterMaxResource || 50;
+      mb.enemyMana = mb.maxEnemyMana;
+    } else if (mb.monsterResource === 'rage') {
+      mb.maxEnemyMana = mb.monsterMaxResource || 100;
+      mb.enemyMana = 0; // rage starts at 0, gained on hit
+    } else if (mb.monsterResource === 'energy') {
+      mb.maxEnemyMana = mb.monsterMaxResource || 100;
+      mb.enemyMana = mb.maxEnemyMana; // energy starts full
     }
     // Spustit stamina regen (3/s)
     if (mapBattleState._staminaInterval) clearInterval(mapBattleState._staminaInterval);
@@ -2419,9 +2507,14 @@
         mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.15); // 1.5/s = 0.15 per 100ms
         updateMapBattleUI();
       }
-      // Mana regen pro caster monstra — zanedbatelná (0.5/s = 0.05 per 100ms tick)
-      if (mb.monsterAttackType === ATTACK_TYPES.CASTER && mb.enemyMana < mb.maxEnemyMana) {
-        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.05);
+      // Mana/energy regen pro monstra
+      if (mb.monsterResource === 'mana' && mb.enemyMana < mb.maxEnemyMana) {
+        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.05); // 0.5/s
+        updateMapBattleUI();
+      }
+      // Energy regen (Satyr, Vlk) — rychlejší (1.5/s = 0.15 per 100ms)
+      if (mb.monsterResource === 'energy' && mb.enemyMana < mb.maxEnemyMana) {
+        mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.15);
         updateMapBattleUI();
       }
       // (přesunuto z tickBuffs pro plynulý UI update)
@@ -2464,14 +2557,8 @@
   }
 
   function getEnemySwingTime(mb) {
-    // Nepřítelův swing — závisí na obtížnosti a progresu
-    const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
-    const diffMult = diff.mult;
-    const progress = mb.progress || 0;
-    // Base 2000ms, s každou místností -30ms (lineární), dungeon násobitel
-    const base = 2000;
-    const progressReduction = progress * 30;
-    let swingMs = Math.max(800, Math.round((base - progressReduction) / diffMult));
+    // Použít fixní attackSpeed monstra
+    let swingMs = mb.monsterAttackSpeed || 2000;
     // Aplikovat zpomalení z ledových kouzel
     if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
       swingMs = Math.round(swingMs / (1 - mb._enemySlowPct / 100));
@@ -2480,15 +2567,15 @@
   }
 
   function pickEnemySpell(mb) {
-    // Vybere kouzlo podle typu monstra — náhodný výběr z kompatibilních
-    const mType = mb.monsterType;
-    if (!mType) return null;
-    let candidates = Object.keys(ENEMY_SPELLS).filter(id => ENEMY_SPELLS[id].type === mType);
+    // Vybere kouzlo podle seznamu kouzel monstra
+    const spells = mb.monsterSpells;
+    if (!spells || spells.length === 0) return null;
+    let candidates = spells.filter(id => ENEMY_SPELLS[id]);
     // Nevybírat empower, pokud už monstrum má aktivní buff
     if (mb._improverStacks > 0) {
       candidates = candidates.filter(id => id !== 'empower');
     }
-    // Nevybírat poison_bolt, pokud už hráč má aktivní jed (podle vizuálního debuffu)
+    // Nevybírat poison_bolt, pokud už hráč má aktivní jed
     if (_playerDebuffs['poison_bolt']) {
       candidates = candidates.filter(id => id !== 'poison_bolt');
     }
@@ -2496,8 +2583,48 @@
     if (mb.bossHp / mb.maxBossHp >= 0.9) {
       candidates = candidates.filter(id => id !== 'heal');
     }
-    // Vyřadit kouzla, na která nemá nepřítel manu
-    candidates = candidates.filter(id => mb.enemyMana >= ENEMY_SPELLS[id].manaCost);
+    // Nevybírat thorn_shield, pokud už je aktivní
+    if (mb._thornShieldActive) {
+      candidates = candidates.filter(id => id !== 'thorn_shield');
+    }
+    // Nevybírat defensive_shout, pokud už je aktivní
+    if (mb._defensiveShoutActive) {
+      candidates = candidates.filter(id => id !== 'defensive_shout');
+    }
+    // Nevybírat battle_shout, pokud už je aktivní
+    if (mb._battleShoutActive) {
+      candidates = candidates.filter(id => id !== 'battle_shout');
+    }
+    // Nevybírat faerie_fire, pokud už je aktivní
+    if (mb._faerieFireActive) {
+      candidates = candidates.filter(id => id !== 'faerie_fire');
+    }
+    // Nevybírat slow, pokud už je aktivní
+    if (mb._playerSlowTimer > 0) {
+      candidates = candidates.filter(id => id !== 'slow');
+    }
+    // Nevybírat evasion, pokud už je aktivní
+    if (mb._evasionActive) {
+      candidates = candidates.filter(id => id !== 'evasion');
+    }
+    // Nevybírat poison_weapon, pokud už je aktivní
+    if (mb._poisonWeaponActive) {
+      candidates = candidates.filter(id => id !== 'poison_weapon');
+    }
+    // Vyřadit kouzla, na která nemá nepřítel manu/resource
+    candidates = candidates.filter(id => {
+      const spell = ENEMY_SPELLS[id];
+      if (!spell) return false;
+      // Rage/energy monstra používají resource místo many
+      if (mb.monsterResource === 'rage') {
+        return mb.enemyMana >= (spell.manaCost || 0);
+      }
+      if (mb.monsterResource === 'energy') {
+        return mb.enemyMana >= (spell.manaCost || 0);
+      }
+      // Mana monstra
+      return mb.enemyMana >= (spell.manaCost || 0);
+    });
     if (candidates.length === 0) return null;
     const id = candidates[Math.floor(Math.random() * candidates.length)];
     return { id, ...ENEMY_SPELLS[id] };
@@ -2998,11 +3125,9 @@
       let spellIcon = spell.icon || '🔮';
       let spellText = spell.name;
 
-      // Výpočet base damage pro kouzla
-      const monsterBaseDmg = [5, 10, 15, 22, 30];
-      const monsterDmgPerStep = [0.8, 1.2, 1.5, 2, 2.5];
+      // Výpočet base damage pro kouzla — použít fixní staty monstra
       const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-      let baseDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * 0.8);
+      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8);
 
       if (spellId === 'poison_bolt') {
         amount = Math.round(baseDmg * 0.3);
@@ -3041,6 +3166,56 @@
         mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
         spawnFloatingText(`💚 +${healAmt}`, 'left', '#2ecc71', 32);
         spellText = '';
+      } else if (spellId === 'defensive_shout') {
+        amount = 0;
+        mb._defensiveShoutActive = true;
+        mb._defensiveShoutTimer = 800; // 8s
+        _enemyBuffs['defensive_shout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 800, maxTicks: 800,
+          onExpire: () => { if (mapBattleState) mapBattleState._defensiveShoutActive = false; } };
+        spellText = '🛡️ Defensive Shout';
+      } else if (spellId === 'battle_shout') {
+        amount = 0;
+        mb._battleShoutActive = true;
+        mb._battleShoutTimer = 800; // 8s
+        _enemyBuffs['battle_shout'] = { icon: '📯', name: 'Battle Shout', ticks: 800, maxTicks: 800,
+          onExpire: () => { if (mapBattleState) mapBattleState._battleShoutActive = false; } };
+        spellText = '📯 Battle Shout';
+      } else if (spellId === 'thorn_shield') {
+        amount = 0;
+        mb._thornShieldActive = true;
+        mb._thornShieldTimer = 1000; // 10s
+        _enemyBuffs['thorn_shield'] = { icon: '🌵', name: 'Thorn Shield', ticks: 1000, maxTicks: 1000,
+          onExpire: () => { if (mapBattleState) mapBattleState._thornShieldActive = false; } };
+        spellText = '🌵 Thorn Shield';
+      } else if (spellId === 'faerie_fire') {
+        amount = 0;
+        mb._faerieFireActive = true;
+        mb._faerieFireTimer = 1000; // 10s
+        _playerDebuffs['faerie_fire'] = { icon: '✨', name: 'Faerie Fire', ticks: 1000, maxTicks: 1000,
+          onExpire: () => { if (mapBattleState) mapBattleState._faerieFireActive = false; } };
+        spellText = '✨ Faerie Fire';
+      } else if (spellId === 'slow') {
+        amount = 0;
+        mb._playerSlowPct = 50;
+        mb._playerSlowTimer = 500; // 5s
+        _playerDebuffs['slow'] = { icon: '🐌', name: 'Slow', ticks: 500, maxTicks: 500,
+          onExpire: () => { if (mapBattleState) { mapBattleState._playerSlowPct = 0; mapBattleState._playerSlowTimer = 0; } } };
+        spellText = '🐌 Slow';
+      } else if (spellId === 'evasion') {
+        amount = 0;
+        mb._evasionActive = true;
+        mb._evasionTimer = 600; // 6s
+        _enemyBuffs['evasion'] = { icon: '💨', name: 'Evasion', ticks: 600, maxTicks: 600,
+          onExpire: () => { if (mapBattleState) mapBattleState._evasionActive = false; } };
+        spellText = '💨 Evasion';
+      } else if (spellId === 'poison_weapon') {
+        amount = 0;
+        mb._poisonWeaponActive = true;
+        mb._poisonWeaponTimer = 800; // 8s
+        mb._poisonWeaponDmg = Math.round(baseDmg * 0.15);
+        _enemyBuffs['poison_weapon'] = { icon: '☠️', name: 'Poison Weapon', ticks: 800, maxTicks: 800,
+          onExpire: () => { if (mapBattleState) { mapBattleState._poisonWeaponActive = false; mapBattleState._poisonWeaponDmg = 0; } } };
+        spellText = '☠️ Poison Weapon';
       }
 
       // 🛡️ Defense
@@ -3092,11 +3267,9 @@
       return;
     }
 
-    // Výpočet damage — StS styl, konzistentní s HP scalingem
-    const monsterBaseDmg = [5, 10, 15, 22, 30];
-    const monsterDmgPerStep = [0.8, 1.2, 1.5, 2, 2.5];
+    // Výpočet damage — fixní staty monstra
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-    let bossDmg = Math.round((monsterBaseDmg[mb.locId] + monsterDmgPerStep[mb.locId] * mb.progress) * diffMultOverall * (0.8 + Math.random() * 0.4));
+    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall);
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
     let isCrit = false;
@@ -3122,6 +3295,24 @@
         mb.playerDotTicksLeft = 3;
       }
     });
+    // Battle shout buff — +50% damage
+    if (mb._battleShoutActive) {
+      bossDmg = Math.round(bossDmg * 1.5);
+    }
+    // Defensive shout — -30% incoming damage
+    if (mb._defensiveShoutActive) {
+      bossDmg = Math.round(bossDmg * 0.7);
+    }
+    // Evasion — 30% dodge chance (Vlk)
+    if (mb._evasionActive && Math.random() < 0.3) {
+      playSFX(dodgeSfx);
+      spawnFloatingText('💨 Evasion!', 'left', '#f1c40f', 32);
+      mb._enemySwingStart = performance.now();
+      mb._enemySwingReady = false;
+      mb._enemySwingPct = 0;
+      updateMapBattleUI();
+      return;
+    }
     // 🛡️ Defense — WoW styl
     const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
@@ -3143,6 +3334,13 @@
         playSFX(blockSfx);
       }
     }
+    // Monster block chance (Troll)
+    if (!blocked && mb.monsterBlockChance > 0 && Math.random() * 100 < mb.monsterBlockChance) {
+      blocked = true;
+      amount = 0;
+      playSFX(blockSfx);
+      spawnFloatingText('🛡️ Block!', 'left', '#3498db', 28);
+    }
 
     if (!blocked) {
       mb.playerHp -= amount;
@@ -3151,6 +3349,22 @@
         const rageGain = Math.round(3 * state.rageMultiplier);
         state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
       }
+      // Monster rage gain (Troll, Medvěd)
+      if (mb.monsterResource === 'rage') {
+        mb.enemyMana = Math.min(mb.maxEnemyMana, (mb.enemyMana || 0) + 5);
+      }
+      // ☠️ Poison Weapon — pasivní DoT na hráče při melee zásahu (Satyr)
+      if (mb._poisonWeaponActive && mb._poisonWeaponDmg > 0) {
+        mb.playerDot = mb._poisonWeaponDmg;
+        mb.playerDotTicksLeft = 3;
+        _playerDebuffs['poison_weapon_dot'] = { icon: '☠️', name: 'Jed (zbraň)', ticks: 180, maxTicks: 180 };
+        spawnFloatingText(`☠️ -${mb._poisonWeaponDmg}/tick`, 'left', '#27ae60', 28);
+      }
+    }
+    // ✨ Faerie Fire — snížení resistencí hráče o 50%
+    if (mb._faerieFireActive) {
+      // Aplikuje se v getSchoolResistMult — tady jen vizuální feedback
+      spawnFloatingText('✨ Resist -50%', 'left', '#9b59b6', 28);
     }
     // Life steal / mana steal
     if (!blocked && lifeStealAmt > 0) {
@@ -3270,14 +3484,25 @@
       }
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
-    // Enemy mana bar (caster)
+    // Enemy resource bar (mana/rage/energy)
     const manaBar = $('mbEnemyManaBar');
     const manaFill = $('mbEnemyManaFill');
     if (manaBar && manaFill) {
-      if (mb.monsterAttackType === ATTACK_TYPES.CASTER && !mb.isBoss && mb.maxEnemyMana > 0) {
+      if (mb.maxEnemyMana > 0 && !mb.isBoss) {
         manaBar.classList.remove('hidden');
         const mpPct = Math.round((mb.enemyMana / mb.maxEnemyMana) * 100);
         manaFill.style.width = mpPct + '%';
+        // Resource icon
+        const iconEl = manaBar.querySelector('.resource-icon');
+        if (iconEl) {
+          if (mb.monsterResource === 'rage') iconEl.textContent = '💢';
+          else if (mb.monsterResource === 'energy') iconEl.textContent = '⚡';
+          else iconEl.textContent = '💧';
+        }
+        // Bar color podle resource
+        if (mb.monsterResource === 'rage') manaFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
+        else if (mb.monsterResource === 'energy') manaFill.style.background = 'linear-gradient(90deg, #f1c40f, #e67e22)';
+        else manaFill.style.background = 'linear-gradient(90deg, #3498db, #2980b9)';
       } else {
         manaBar.classList.add('hidden');
       }
@@ -7637,6 +7862,14 @@
     mb._skipMeleeImpact = false;
 
     mb.bossHp -= dmg;
+
+    // 🌵 Thorn Shield — vrací 5-10 dmg hráči při každém zásahu
+    if (mb._thornShieldActive) {
+      const thornDmg = 5 + Math.floor(Math.random() * 6); // 5-10
+      mb.playerHp -= thornDmg;
+      spawnFloatingText(`🌵 -${thornDmg}`, 'right', '#27ae60', 28);
+      if (mb.playerHp <= 0) { endMapBattle(false); return; }
+    }
 
     // Smrtelný zásah — okamžitě zastavit timery, červený záblesk, pak death exploze
     if (mb.bossHp <= 0 && !mb._pendingKill) {
