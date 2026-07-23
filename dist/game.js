@@ -2736,8 +2736,9 @@
         const enemyElapsed = now - mb._enemySwingStart;
         mb._enemySwingPct = Math.min(enemyElapsed / mb.enemySwingMs, 1);
         if (enemyElapsed >= mb.enemySwingMs) {
-          // Rozhodovací moment — caster může začít castovat kouzlo
-          if (mb.monsterAttackType === ATTACK_TYPES.CASTER && !mb.isBoss) {
+          // Rozhodovací moment — monstrum s kouzly může začít castovat
+          const spells = mb.monsterSpells;
+          if (spells && spells.length > 0) {
             const spell = pickEnemySpell(mb);
             if (spell && mb.enemyMana >= spell.manaCost) {
               // Začít castovat
@@ -2750,12 +2751,12 @@
               mb._enemySwingStart = now;
               updateMapBattleUI();
             } else {
-              // Málo many — slabý melee útok
+              // Málo many — normální melee útok
               mb._enemySwingReady = true;
               mb._enemyAttackProcessed = false;
             }
           } else {
-            // Melee monstrum — normální swing
+            // Monstrum bez kouzel — normální swing
             mb._enemySwingReady = true;
             mb._enemyAttackProcessed = false;
           }
