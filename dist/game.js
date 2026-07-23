@@ -1985,6 +1985,12 @@
 
   // ===== TOWN =====
   function renderTown() {
+    // Auto-heal při vstupu do města
+    state.hero.maxHp = getHeroMaxHp();
+    state.hero.hp = state.hero.maxHp;
+    state.hero.mana = getHeroMaxMana();
+    saveGame();
+
     state.waypoints = state.waypoints || [[],[],[],[],[]];
     const wpContainer = $('townWaypoints');
     let wpHtml = '';
@@ -2023,6 +2029,11 @@
     } else {
       portalCard.style.display = 'none';
     }
+  }
+
+  function toggleTownWaypoints() {
+    const wrap = $('townWaypointsWrap');
+    if (wrap) wrap.classList.toggle('hidden');
   }
 
   function townHeal() {
@@ -10193,7 +10204,7 @@
     selectClass,
     castClassSpell,
     usePotion,
-    townHeal, useTownPortal, renderTown
+    townHeal, useTownPortal, renderTown, toggleTownWaypoints
   };
   init();
 })();
