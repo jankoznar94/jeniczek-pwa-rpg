@@ -315,6 +315,10 @@ body.no-scroll { overflow: hidden; }
   width:162px;height:6px;pointer-events:none;
   background:#0a0a2a;border:1px solid #1a1a4a;border-radius:2px;
   overflow:hidden;
+  display:flex;align-items:center;gap:2px;
+}
+.enemy-mana-bar .resource-icon {
+  font-size:10px;line-height:1;position:absolute;left:-14px;top:-2px;
 }
 .enemy-mana-fill {
   height:100%;background:#4a7dff;
