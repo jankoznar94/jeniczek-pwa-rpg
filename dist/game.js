@@ -1377,9 +1377,9 @@
     heal: { name:'Heal', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Heals enemy for 30% HP' },
     // Act 1 — Lesní monstra
-    defensive_shout: { name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', castTime:1000, manaCost:0, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
+    defensive_shout: { name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', castTime:1000, manaCost:0, rageCost:20, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
       desc:'Reduces incoming damage by 30% for 8s' },
-    battle_shout: { name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', castTime:1000, manaCost:0, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
+    battle_shout: { name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', castTime:1000, manaCost:0, rageCost:25, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
       desc:'+50% damage for 8s' },
     thorn_shield: { name:'Thorn Shield', icon:'🌵', iconImg:'', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
       desc:'Returns 5-10 dmg to attacker for 10s' },
@@ -2617,10 +2617,11 @@
     candidates = candidates.filter(id => {
       const spell = ENEMY_SPELLS[id];
       if (!spell) return false;
-      // Rage/energy monstra používají resource místo many
+      // Rage monstra — kontrolovat rageCost
       if (mb.monsterResource === 'rage') {
-        return mb.enemyMana >= (spell.manaCost || 0);
+        return mb.enemyMana >= (spell.rageCost || 0);
       }
+      // Energy monstra — kontrolovat manaCost
       if (mb.monsterResource === 'energy') {
         return mb.enemyMana >= (spell.manaCost || 0);
       }
@@ -2742,22 +2743,24 @@
           const spells = mb.monsterSpells;
           if (spells && spells.length > 0) {
             const spell = pickEnemySpell(mb);
-            if (spell && mb.enemyMana >= spell.manaCost) {
-              // Začít castovat
-              mb._enemyCasting = true;
-              mb._enemyCastStart = now;
-              mb._enemyCastTime = spell.castTime;
-              mb._enemyCastSpell = spell.id;
-              mb._enemyCastManaCost = spell.manaCost; // Mana se strhne až po dokončení castu
-              // Reset normálního swing timeru — čekáme na cast
-              mb._enemySwingStart = now;
-              updateMapBattleUI();
+            if (spell) {
+              const cost = mb.monsterResource === 'rage' ? (spell.rageCost || 0) : (spell.manaCost || 0);
+              if (mb.enemyMana >= cost) {
+                // Začít castovat
+                mb._enemyCasting = true;
+                mb._enemyCastStart = now;
+                mb._enemyCastTime = spell.castTime;
+                mb._enemyCastSpell = spell.id;
+                mb._enemyCastManaCost = cost; // Resource se strhne až po dokončení castu
+                // Reset normálního swing timeru — čekáme na cast
+                mb._enemySwingStart = now;
+                updateMapBattleUI();
+              } else {
+                // Málo many — normální melee útok
+                mb._enemySwingReady = true;
+                mb._enemyAttackProcessed = false;
+              }
             } else {
-              // Málo many — normální melee útok
-              mb._enemySwingReady = true;
-              mb._enemyAttackProcessed = false;
-            }
-          } else {
             // Monstrum bez kouzel — normální swing
             mb._enemySwingReady = true;
             mb._enemyAttackProcessed = false;
