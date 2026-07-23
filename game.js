@@ -7899,8 +7899,11 @@
     if (mb._thornShieldActive) {
       const thornDmg = 5 + Math.floor(Math.random() * 6); // 5-10
       mb.playerHp -= thornDmg;
-      spawnFloatingText(`🌵 -${thornDmg}`, 'right', '#27ae60', 28);
       if (mb.playerHp <= 0) { endMapBattle(false); return; }
+      // Zpožděný floating text, aby se nekryl s útočným textem
+      setTimeout(() => {
+        spawnFloatingText(`🌵 -${thornDmg}`, 'right', '#f1c40f', 28);
+      }, 300);
     }
 
     // Smrtelný zásah — okamžitě zastavit timery, červený záblesk, pak death exploze
