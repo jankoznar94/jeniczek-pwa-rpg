@@ -612,7 +612,7 @@
   function getLocAffix(key) {
     const mb = mapBattleState;
     if (!mb || mb.locId === undefined) return 0;
-    const loc = ACTS[locId];
+    const loc = ACTS[mb.locId];
     if (!loc || !loc.locAffixes) return 0;
     const diff = state.difficulty || 0;
     const affix = loc.locAffixes[diff];
