@@ -3359,7 +3359,7 @@
         const rageGain = Math.round(3 * state.rageMultiplier);
         state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
       }
-      // Monster rage gain (Troll, Medvěd)
+      // Monster rage gain za útok na hráče (Troll, Medvěd)
       if (mb.monsterResource === 'rage') {
         mb.enemyMana = Math.min(mb.maxEnemyMana, (mb.enemyMana || 0) + 5);
       }
@@ -7882,6 +7882,11 @@
     mb._skipMeleeImpact = false;
 
     mb.bossHp -= dmg;
+
+    // Monster rage gain za obdržení poškození (Troll, Medvěd)
+    if (mb.monsterResource === 'rage') {
+      mb.enemyMana = Math.min(mb.maxEnemyMana, (mb.enemyMana || 0) + 3);
+    }
 
     // 🌵 Thorn Shield — vrací 5-10 dmg hráči při každém zásahu
     if (mb._thornShieldActive) {
