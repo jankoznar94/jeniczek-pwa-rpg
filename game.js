@@ -48,7 +48,8 @@
         { id:'eviscerate', name:'Eviscerate', icon:'💥', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'Damage based on combo points (1:150%–5:350%)' },
         { id:'kidneyShot', name:'Kidney Shot', icon:'🔨', cost:35, cooldown:20, gcd:0.5, needsCombo:true, desc:'Stun based on combo points (1:1s–5:5s)' },
         { id:'evasion', name:'Evasion', icon:'💨', cost:50, cooldown:60, gcd:0.5, desc:'+50% dodge for 10s' },
-        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'+20% attack speed based on combo points (1:5s–5:17s)' }
+        { id:'speedBoost', name:'Speed Boost', icon:'⚡', cost:30, cooldown:0, gcd:0.5, needsCombo:true, desc:'+20% attack speed based on combo points (1:5s–5:17s)' },
+        { id:'poisonExplosion', name:'Poison Explosion', icon:'💥', cost:35, cooldown:8, gcd:0.5, needsCombo:true, needsPoison:true, desc:'Consumes poison debuff, deals dmg based on combo points' }
       ]
     },
     mage: {
@@ -472,6 +473,7 @@
           tiers: [
             { choices: [
               { k:'poisonBlade', name:'Poison Blade', icon:'☠️', iconImg:'poisonBlade.png', maxLv:5, desc:lv=>`${50+lv*20}% dmg + poison ${10+lv*5}%/tick for 3s` },
+              { k:'evasion', name:'Evasion', icon:'💨', iconImg:'evasion.png', maxLv:5, desc:lv=>`+${10+lv*5}% dodge for 3s` },
             ]},
             { choices: [
               { k:'smokeScreen', name:'Smoke Screen', icon:'🌫️', iconImg:'smokeScreen.png', maxLv:5, requires:'assassin_poisonBlade', requiresLv:1, desc:lv=>`Reduces enemy hit rate by ${10+lv*5}% for 3s` },
@@ -481,10 +483,13 @@
             ]}
           ]
         },
-        agility: { name:'Agility', icon:'💨',
+        poisons: { name:'Poisons', icon:'☠️',
           tiers: [
             { choices: [
-              { k:'evasion', name:'Evasion', icon:'💨', iconImg:'evasion.png', maxLv:5, desc:lv=>`+${10+lv*5}% dodge for 3s` },
+              { k:'poisonedWeapon', name:'Poisoned Weapon', icon:'☠️', iconImg:'poisonedWeapon.png', maxLv:5, desc:lv=>`+${15+(lv-1)*10} poison dmg over 3s` },
+            ]},
+            { choices: [
+              { k:'poisonExplosion', name:'Poison Explosion', icon:'💥', iconImg:'poisonExplosion.png', maxLv:5, requires:'assassin_poisonedWeapon', requiresLv:1, desc:lv=>`Consumes poison, deals ${(1.1+(lv-1)*0.2).toFixed(1)}x-${(1.5+(lv-1)*0.2).toFixed(1)}x dmg based on combo` },
             ]}
           ]
         }
@@ -584,6 +589,8 @@
       if (spellId === 'smokeScreen') return getSkillLv('assassin_smokeScreen');
       if (spellId === 'deathMark') return getSkillLv('assassin_deathMark');
       if (spellId === 'shadowDance') return getSkillLv('assassin_shadowDance');
+      if (spellId === 'poisonedWeapon') return getSkillLv('assassin_poisonedWeapon');
+      if (spellId === 'poisonExplosion') return getSkillLv('assassin_poisonExplosion');
     }
     if (cls === 'mage') {
       if (spellId === 'firebolt') return getSkillLv('mage_firebolt');
@@ -2332,7 +2339,7 @@
       ended: false, turn: 0,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, hot: 0, hotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
       playerDot: 0, playerDotTicksLeft: 0,
-      enemyDot: 0, enemyDotTicksLeft: 0,
+      enemyDot: 0, enemyDotTicksLeft: 0, enemyPoisonBaseDmg: 0,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
       spellCooldowns: {},
@@ -3460,7 +3467,10 @@
       // Kouzla vyžadující combo pointy — bez nich nerozsvítit
       const hasCombo = (state.comboPoints || 0) > 0;
       const needsCombo = spell.needsCombo === true;
-      const canUseFinal = canUse && (!needsCombo || hasCombo);
+      const mb2 = mapBattleState;
+      const hasPoison = mb2 && mb2.enemyDot > 0 && mb2.enemyDotTicksLeft > 0;
+      const needsPoison = spell.needsPoison === true;
+      const canUseFinal = canUse && (!needsCombo || hasCombo) && (!needsPoison || hasPoison);
       const isQueued = spell.id === 'heroicStrike' && mapBattleState && mapBattleState._heroicStrikeQueued;
       const gcdActive = onGcd && !onCooldown && !isQueued;
       const gcdPct = onGcd ? Math.min(1, state._gcdTimer / 30) : 0;
@@ -3817,6 +3827,37 @@
       // Přepočítat swing timer
       mb.playerSwingMs = getSwingTime(state.hero.equip.weapon);
       spawnFloatingText(`⚡ Speed +${duration}s`, 'left', '#f1c40f', 32);
+    } else if (spellId === 'poisonExplosion') {
+      const cp = state.comboPoints || 0;
+      if (cp < 1) return;
+      const mb2 = mapBattleState;
+      if (!mb2 || mb2.ended) return;
+      // Potřebujeme aktivní poison debuff na nepříteli
+      if (mb2.enemyDot <= 0 || mb2.enemyDotTicksLeft <= 0) {
+        showMessage('☠️ No poison on enemy!');
+        return;
+      }
+      const lv = getSpellLv('poisonExplosion');
+      if (lv < 1) return;
+      // Multipliers podle levelu a combo pointů
+      const baseMult = 1.1 + (lv - 1) * 0.2; // 1.1 @ lv1, 1.3 @ lv2, ... 1.9 @ lv5
+      const cpMult = 0.4; // +0.4 per combo point (1cp=+0.0, 2cp=+0.1, ... 5cp=+0.4)
+      const mult = baseMult + (cp - 1) * cpMult;
+      // Damage = poison base dmg * mult
+      const poisonBase = mb2.enemyPoisonBaseDmg || 15;
+      const dmg = Math.max(1, Math.round(poisonBase * mult));
+      mb2.bossHp -= dmg;
+      // Smazat poison debuff
+      mb2.enemyDot = 0;
+      mb2.enemyDotTicksLeft = 0;
+      mb2.enemyPoisonBaseDmg = 0;
+      delete _sessionDebuffs['weapon_poison'];
+      delete _sessionDebuffs['poisonedWeapon_poison'];
+      state.comboPoints = 0;
+      // Zelená exploze
+      spawnMeleeImpact(mb2, false, getWeaponType());
+      spawnFloatingText(`💥 -${dmg}`, 'right', '#2ecc71', 36);
+      playSFX(lightningSpellSfx2);
     }
 
     updateMapBattleUI();
@@ -7559,6 +7600,31 @@
           arena.style.transition = 'background-color 0.15s';
           arena.style.backgroundColor = 'rgba(46,204,113,0.2)';
           setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 150);
+        }
+      }
+    }
+
+    // ☠️ Poisoned Weapon (assassin talent) — pasivní jed na každý útok
+    if (state.heroClass === 'assassin') {
+      const pwLv = getTalentLv('assassin_poisonedWeapon');
+      if (pwLv > 0) {
+        const poisonBaseDmg = 15 + (pwLv - 1) * 10; // 15, 25, 35, 45, 55
+        const poisonDur = 3; // vždy 3s
+        const poisonResist = getLocAffix('poisonResist');
+        const effectiveDmg = Math.round(poisonBaseDmg * (1 - poisonResist));
+        if (effectiveDmg > 0) {
+          const tickDmg = Math.max(1, Math.round(effectiveDmg / poisonDur));
+          mb.enemyDot = tickDmg;
+          mb.enemyDotTicksLeft = poisonDur;
+          mb.enemyPoisonBaseDmg = poisonBaseDmg; // pro poisonExplosion
+          _sessionDebuffs['poisonedWeapon_poison'] = { icon: '☠️', name: 'Jed (talent)', ticks: poisonDur * 60, maxTicks: poisonDur * 60 };
+          // Zelený záblesk
+          const arena = $('mbArena');
+          if (arena) {
+            arena.style.transition = 'background-color 0.15s';
+            arena.style.backgroundColor = 'rgba(46,204,113,0.2)';
+            setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 150);
+          }
         }
       }
     }
