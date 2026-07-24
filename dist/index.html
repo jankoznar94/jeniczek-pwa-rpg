@@ -86,9 +86,14 @@
 
 <!-- ===== TOWN ===== -->
 <div id="townScreen" class="container hidden">
-  <div class="card">
-    <div class="card-title" style="text-align:center;font-size:22px"><img src="assets/menu-icons/mesto.png" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:6px"> Town</div>
-    <div class="card-subtitle" style="text-align:center">Rest, shop, and plan your next expedition.</div>
+  <div class="card" style="padding:0;overflow:hidden">
+    <div style="display:flex;align-items:center;background:#000;padding:12px 16px;gap:16px">
+      <img src="assets/menu-icons/mesto.png" style="width:80px;height:80px;object-fit:contain;flex-shrink:0">
+      <div>
+        <div class="card-title" style="font-size:22px;margin:0">Town</div>
+        <div class="card-subtitle" style="margin:2px 0 0">Rest, shop, and plan your next expedition.</div>
+      </div>
+    </div>
   </div>
 
   <!-- Wilderness — continue from checkpoint -->
@@ -339,18 +344,18 @@
 <div id="shopScreen" class="container hidden">
   <!-- Back to town button — top -->
   <div class="shop-back-map">
-    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">🏘️ Back to Town</button>
+    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">Back to Town</button>
   </div>
   <div class="card">
     <div class="flex-between">
-      <span class="card-title"><img src="assets/menu-icons/obchod.png" class="page-icon" alt=""> Shop</span>
+      <span class="card-title"><img src="assets/menu-icons/shop.png" class="page-icon" alt=""> Shop</span>
       <span id="shopGold">💰 0 gold</span>
     </div>
     <div class="card-subtitle">Buy and sell equipment</div>
   </div>
   <div class="shop-tabs">
-    <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">🛒 Buy</button>
-    <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">💰 Sell</button>
+    <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">Buy</button>
+    <button class="shop-tab" data-shop-tab="sell" onclick="game.switchShopTab('sell')">Sell</button>
   </div>
   <div id="shopList"></div>
 </div>
