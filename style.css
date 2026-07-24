@@ -731,8 +731,6 @@ body.no-scroll { overflow: hidden; }
 .inv-compare-ring-icon { flex-shrink:0; }
 .inv-compare-ring-stats { flex:1; min-width:0; }
 .inv-compare-ring-name { font-size:13px; }
-.inv-shop-back { padding:12px; }
-.inv-shop-back .btn { width:100%; }
 
 /* XP bar pro swipe fight */
 .mb-xp-bar-wrap { display:flex; align-items:center; gap:8px; margin:0 12px; }
