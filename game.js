@@ -1819,8 +1819,8 @@
       return;
     }
 
-    // If it's a modal screen (inventory, talents), open modal instead
-    if (name === 'inventory' || name === 'talents') {
+    // If it's a modal screen (inventory, talents, hero), open modal instead
+    if (name === 'inventory' || name === 'talents' || name === 'hero') {
       openModal(name);
       return;
     }
@@ -1887,6 +1887,9 @@
       renderInventory();
     } else if (name === 'talents') {
       renderTalents();
+      updateTalentBadge();
+    } else if (name === 'hero') {
+      renderHero();
       updateTalentBadge();
     }
 
@@ -2034,55 +2037,84 @@
       const totalZones = loc.zones || 10;
       const curArea = state.locationProgress[actId] || 0;
       const curFight = state.areaFightProgress[actId] || 0;
+      const themeName = ['forest','desert','frost','undead','hell'][actId] || 'forest';
 
-      // Act header
-      html += `<div class="act-section ${completed?'act-completed':''} ${!unlocked?'act-locked':''}" style="--act-border:${theme.border};--act-glow:${theme.borderGlow}">
-        <div class="act-header" onclick="${!unlocked?'':`game.enterAct(${actId})`}">
-          <span class="act-icon">${loc.icon}</span>
-          <span class="act-name">${loc.name}</span>
-          ${completed ? '<span class="act-check">✔</span>' : ''}
-          ${!unlocked ? '<span class="act-lock-icon">🔒</span>' : ''}
-        </div>`;
-
-      if (unlocked && !completed) {
-        // Build dot path — 10 areas × (waypoint + 10 fights)
-        html += '<div class="act-dot-path">';
-        for (let area = 0; area < totalZones; area++) {
-          const areaDone = area < curArea;
-          const areaCurrent = area === curArea;
-          const areaLocked = area > curArea;
-
-          // Waypoint dot
-          const wpUnlocked = areaDone || areaCurrent;
-          html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
-          <div class="dot-circle dot-wp-inner">★</div>
-          </div>`;
-
-          // 10 fight dots
-          for (let f = 0; f < 10; f++) {
-          const fightDone = areaDone || (areaCurrent && f < curFight);
-          const fightCurrent = areaCurrent && f === curFight;
-          const fightLocked = areaLocked || (areaCurrent && f > curFight);
-          const fightNum = area * 10 + f + 1;
-          // Wave effect: shift left/right based on position
-          const waveOffset = (area * 10 + f) % 4;
-          const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
-          html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="${fightLocked?'':`game.startLocation(${actId})`}" title="Fight ${fightNum}">
-              <div class="dot-circle">${fightNum}</div>
-            </div>`;
-          }
-        }
-        html += '</div>';
-      } else if (completed) {
-        html += `<div class="act-done-msg">✔ All areas cleared</div>`;
+      let badgeHtml;
+      if (completed) {
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
+      } else if (!unlocked) {
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
       } else {
-        html += `<div class="act-locked-msg">🔒 Complete previous act to unlock</div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">Hrát</div></div>`;
       }
 
-      html += '</div>';
+      html += `<div class="map-location-wrap">
+        <div class="map-location ${completed?'completed':!unlocked?'locked':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.enterAct(${actId})`}">
+          <div class="map-loc-bg" style="background-image:url(assets/dungeons/${themeName}.png)"></div>
+          ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${themeName}.png)"></div>` : ''}
+          <div class="map-loc-info">
+            <div class="map-loc-name">${loc.icon} ${loc.name}</div>
+            ${!completed && unlocked ? `<div class="map-loc-dot-scroll" id="mapDotScroll_${actId}">
+              ${buildDotPath(actId, curArea, curFight, totalZones, theme)}
+            </div>` : ''}
+          </div>
+          ${badgeHtml}
+        </div>
+      </div>`;
     });
 
     $('mapScroll').innerHTML = html;
+
+    // Obnovit scroll pozici po návratu
+    ACTS.forEach((_, actId) => {
+      const key = `_mapScroll_${actId}`;
+      const saved = state[key];
+      if (saved) {
+        const el = $(`mapDotScroll_${actId}`);
+        if (el) el.scrollLeft = saved;
+      }
+    });
+
+    // Uložit scroll pozici při scrollování
+    setTimeout(() => {
+      ACTS.forEach((_, actId) => {
+        const el = $(`mapDotScroll_${actId}`);
+        if (el) {
+          el.onscroll = function() {
+            state[`_mapScroll_${actId}`] = this.scrollLeft;
+          };
+        }
+      });
+    }, 0);
+  }
+
+  function buildDotPath(actId, curArea, curFight, totalZones, theme) {
+    let html = '';
+    for (let area = 0; area < totalZones; area++) {
+      const areaDone = area < curArea;
+      const areaCurrent = area === curArea;
+      const areaLocked = area > curArea;
+
+      // Waypoint dot
+      const wpUnlocked = areaDone || areaCurrent;
+      html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Oblast ${area+1} — Waypoint">
+        <div class="dot-circle dot-wp-inner">★</div>
+      </div>`;
+
+      // 10 fight dots
+      for (let f = 0; f < 10; f++) {
+        const fightDone = areaDone || (areaCurrent && f < curFight);
+        const fightCurrent = areaCurrent && f === curFight;
+        const fightLocked = areaLocked || (areaCurrent && f > curFight);
+        const fightNum = area * 10 + f + 1;
+        const waveOffset = (area * 10 + f) % 4;
+        const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
+        html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${fightLocked?'':`game.startLocation(${actId})`}" title="Souboj ${fightNum}">
+          <div class="dot-circle">${fightNum}</div>
+        </div>`;
+      }
+    }
+    return html;
   }
 
   // ===== TOWN =====
