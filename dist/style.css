@@ -1151,7 +1151,7 @@ body.no-scroll { overflow: hidden; }
 .result-loot-scroll::-webkit-scrollbar-thumb { background:#4a4a4a;border-radius:2px; }
 .loot-scroll-item { display:flex;align-items:center;gap:10px;padding:5px 8px;font-size:15px;border-bottom:1px solid #1a1a1a; }
 .loot-scroll-item:last-child { border-bottom:none; }
-.loot-scroll-icon { font-size:32px; }
+.loot-scroll-icon { font-size:32px;display:flex;align-items:center;justify-content:center;width:36px;height:36px; }
 .loot-scroll-name { font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
 @keyframes resultTapPulse { 0%,100%{opacity:0.4}50%{opacity:1} }
 
