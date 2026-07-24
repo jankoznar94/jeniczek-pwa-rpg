@@ -1680,3 +1680,11 @@ body.no-scroll { overflow: hidden; }
   justify-content:center;
 }
 .map-action-btn { flex:1;font-size:12px;padding:8px; }
+
+/* Expandable dot path */
+.map-loc-dot-scroll-wrap {
+  background:rgba(0,0,0,0.3);
+  border-top:1px solid rgba(255,255,255,0.05);
+  padding:6px 12px;
+}
+.map-loc-dot-scroll-wrap.hidden { display:none; }

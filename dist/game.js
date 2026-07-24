@@ -1744,7 +1744,8 @@
       thunderClapSlowPct:0, // % zpomalení nepřítele
       skillShoutTimer:0, // Skill shout zbývající čas (ticky)
       skillShoutBonus:0, // Dočasné +lv ke všem skillům
-      _gcdTimer:0 // Global cooldown (ticky)
+      _gcdTimer:0, // Global cooldown (ticky)
+      _expandedAct: -1 // Který act je rozbalený na mapě (-1 = žádný)
     };
     return s;
   }
@@ -1992,7 +1993,17 @@
   // ===== MAP =====
   function setDifficulty(di) {
     state.difficulty = di;
+    state._expandedAct = -1;
     saveGame();
+    renderMap();
+  }
+
+  function toggleActExpand(actId) {
+    if (state._expandedAct === actId) {
+      state._expandedAct = -1;
+    } else {
+      state._expandedAct = actId;
+    }
     renderMap();
   }
   function renderMap() {
@@ -2048,17 +2059,19 @@
       }
 
       html += `<div class="map-location-wrap">
-        <div class="map-location ${completed?'completed':!unlocked?'locked':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.enterAct(${actId})`}">
+        <div class="map-location ${completed?'completed':!unlocked?'locked':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleActExpand(${actId})`}">
           <div class="map-loc-bg" style="background-image:url(assets/dungeons/${themeName}.png)"></div>
           ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${themeName}.png)"></div>` : ''}
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.icon} ${loc.name}</div>
-            ${!completed && unlocked ? `<div class="map-loc-dot-scroll" id="mapDotScroll_${actId}">
-              ${buildDotPath(actId, curArea, curFight, totalZones, theme)}
-            </div>` : ''}
           </div>
           ${badgeHtml}
         </div>
+        ${!completed && unlocked ? `<div class="map-loc-dot-scroll-wrap ${state._expandedAct === actId ? '' : 'hidden'}" id="mapDotScrollWrap_${actId}">
+          <div class="map-loc-dot-scroll" id="mapDotScroll_${actId}">
+            ${buildDotPath(actId, curArea, curFight, totalZones, theme)}
+          </div>
+        </div>` : ''}
       </div>`;
     });
 
@@ -10397,7 +10410,7 @@
   }
 
   window.game = {
-    showScreen, enterAct, startLocation, setDifficulty,
+    showScreen, enterAct, startLocation, setDifficulty, toggleActExpand,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
