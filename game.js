@@ -275,6 +275,7 @@
       state.bossesDefeated = ACTS.map(() => true);
       state.floorProgress = ACTS.map(() => 5);
       state.locationProgress = ACTS.map(() => 5);
+      state.areaFightProgress = ACTS.map(() => 5);
       // Odemknout celý bestiář
       state.encounteredMonsters = [];
       MONSTER_DB.forEach(themeMonsters => {
@@ -1724,7 +1725,7 @@
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[]},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
+      locationProgress:[0,0,0,0,0], areaFightProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
       waypoints:[[],[],[],[],[]], // waypoints[actId] = [zoneId, ...] — odemčené waypointy
       townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
@@ -2047,11 +2048,12 @@
 
   function useTownPortal() {
     if (!state.townPortalReturn) return;
-    const { actId, zoneId } = state.townPortalReturn;
+    const { actId, zoneId, areaFight } = state.townPortalReturn;
     state.townPortalReturn = null;
     saveGame();
-    // Set progress to the saved zone
+    // Set progress to the saved zone and fight
     state.locationProgress[actId] = zoneId;
+    state.areaFightProgress[actId] = areaFight || 0;
     state.hero.maxHp = getHeroMaxHp();
     state.hero.hp = state.hero.maxHp;
     state._floorLootDrops = [];
@@ -2067,7 +2069,8 @@
     if (!mb || mb.ended) return;
     const actId = mb.locId;
     const progress = state.locationProgress[actId] || 0;
-    state.townPortalReturn = { actId, zoneId: progress };
+    const areaFight = state.areaFightProgress[actId] || 0;
+    state.townPortalReturn = { actId, zoneId: progress, areaFight };
     saveGame();
     showScreen('town');
     renderTown();
@@ -2087,6 +2090,8 @@
 
     // Start from current progress or zone 0
     const progress = state.locationProgress[actId] || 0;
+    // Vstup do actu vždy začíná od začátku oblasti (waypoint)
+    state.areaFightProgress[actId] = 0;
     if (progress === 0) {
       state.hero.maxHp = getHeroMaxHp();
       state.hero.hp = state.hero.maxHp;
@@ -2127,6 +2132,7 @@
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
     const progress = state.locationProgress[actId] || 0;
+    const areaFight = state.areaFightProgress[actId] || 0;
 
     const totalZones = loc.zones || 10;
     const isBoss = progress >= totalZones;
@@ -2209,7 +2215,7 @@
     }
 
     mapBattleState = {
-      locId: actId, loc, isBoss, progress,
+      locId: actId, loc, isBoss, progress, areaFight,
       bossHp: Math.round(baseHp * bossHpMult), maxBossHp: Math.round(baseHp * bossHpMult),
       bossDmgMult: bossDmgMult,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
@@ -3422,7 +3428,8 @@
       // Town portal scroll — teleport to town, save position
       const actId = mb.locId;
       const progress = state.locationProgress[actId] || 0;
-      state.townPortalReturn = { actId, zoneId: progress };
+      const areaFight = state.areaFightProgress[actId] || 0;
+      state.townPortalReturn = { actId, zoneId: progress, areaFight };
       saveGame();
       showScreen('town');
       renderTown();
@@ -8117,8 +8124,15 @@
     if (won && !mb.isBoss) {
       mapBattleState.ended = true;
       cleanupTimers();
-      const p = (state.locationProgress[locId] || 0) + 1;
-      state.locationProgress[locId] = p;
+      // Inkrementovat fight v rámci oblasti
+      let af = (state.areaFightProgress[locId] || 0) + 1;
+      state.areaFightProgress[locId] = af;
+      // Po 10 soubojích se posunout do další oblasti
+      if (af >= 10) {
+        state.areaFightProgress[locId] = 0;
+        state.locationProgress[locId] = (state.locationProgress[locId] || 0) + 1;
+      }
+      const p = state.locationProgress[locId] || 0;
       const monsterGold = (1 + rand(0, 2)) * 5;
       const xpMod = getXpModifier(mb);
       const xpGain = Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * xpMod);
@@ -8203,7 +8217,8 @@
       state.hero.xp = (state.hero.xp || 0) + consXp;
       state.hero.gold = (state.hero.gold || 0) + consGold;
       const leveled = applyLevelUp();
-      state.locationProgress[locId] = 0;
+      // Smrt resetuje jen souboje v aktuální oblasti, locationProgress zůstává (waypoint)
+      state.areaFightProgress[locId] = 0;
       state._floorLootDrops = [];
       state.hero.hp = state.hero.maxHp;
       saveGame();
@@ -8222,6 +8237,7 @@
       state.bossesDefeated[state.difficulty][locId] = true;
       state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 6) * getXpModifier(mb));
       state.locationProgress[locId] = 0;
+      state.areaFightProgress[locId] = 0;
       applyLevelUp();
       const r = mb.loc.reward;
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
@@ -10019,6 +10035,7 @@
 
     if (!state.bossesDefeated || !Array.isArray(state.bossesDefeated) || state.bossesDefeated.length < 3 || !Array.isArray(state.bossesDefeated[0])) state.bossesDefeated = [[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]];
     if (!state.locationProgress || state.locationProgress.length < ACTS.length) state.locationProgress = Array(ACTS.length).fill(0);
+    if (!state.areaFightProgress || state.areaFightProgress.length < ACTS.length) state.areaFightProgress = Array(ACTS.length).fill(0);
     if (!state.floorProgress || state.floorProgress.length < ACTS.length) state.floorProgress = Array(ACTS.length).fill(0);
     if (!state.hero) state.hero = { level:1, xp:0, gold:0, hp:100, maxHp:100, mana:50, maxMana:50, baseDmg:12, inventory:[], equip:{weapon:'fists',armor:null}, attrStr:0, attrVit:0, attrPoints:0 };
     if (state.hero.maxHp === undefined) state.hero.maxHp = getHeroMaxHp();
