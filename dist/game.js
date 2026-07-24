@@ -418,7 +418,7 @@
           tiers: [
             { choices: [
               { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg for 60s` },
-              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
+              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensiveShout.png', maxLv:5, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
               { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
             ]}
           ]
