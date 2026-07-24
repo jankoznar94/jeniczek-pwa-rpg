@@ -1909,9 +1909,9 @@
       screensHtml += `<div class="combined-screen ${t.id === name ? 'active' : ''}" id="combinedScreen_${t.id}"></div>`;
     });
 
-    content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>
-      <div class="combined-tabs">${tabsHtml}</div>
-      ${screensHtml}`;
+    content.innerHTML = `<div class="combined-tabs">${tabsHtml}</div>
+      <div class="modal-body">${screensHtml}</div>
+      <button class="modal-close" onclick="game.closeModal()">✕</button>`;
 
     // Move screens into their wrappers
     tabs.forEach(t => {
