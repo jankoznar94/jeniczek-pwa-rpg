@@ -8,19 +8,20 @@
   <link rel="stylesheet" href="style.css?v=126">
   <style>
     .town-action-card {
-      display:flex;align-items:center;gap:12px;
-      background:linear-gradient(135deg,#2a2a3e,#1e1e2e);
-      border:1px solid #444;border-radius:10px;
-      padding:14px 18px;margin:8px 0;
+      display:flex;align-items:center;gap:16px;
+      background:#000;
+      border:1px solid #333;border-radius:10px;
+      padding:18px 20px;margin:8px 0;
       cursor:pointer;transition:all 0.15s;
       user-select:none;-webkit-tap-highlight-color:transparent;
     }
     .town-action-card:active {
-      background:linear-gradient(135deg,#3a3a5e,#2a2a4e);
-      border-color:#666;transform:scale(0.97);
+      background:#111;
+      border-color:#555;transform:scale(0.97);
     }
-    .town-action-icon { font-size:28px;width:40px;text-align:center; }
-    .town-action-label { font-size:16px;font-weight:bold;color:#ddd; }
+    .town-action-icon { width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
+    .town-action-icon img { width:64px;height:64px;object-fit:contain;display:block; }
+    .town-action-label { font-size:18px;font-weight:bold;color:#ddd; }
     .town-waypoints-wrap {
       background:rgba(0,0,0,0.3);border-radius:8px;
       padding:8px 12px;margin:0 0 8px 0;
@@ -98,13 +99,13 @@
 
   <!-- Shop -->
   <div class="town-action-card" onclick="game.showScreen('shop')">
-    <div class="town-action-icon"><img src="assets/menu-icons/shop.png" style="width:28px;height:28px;object-fit:contain;vertical-align:middle"></div>
+    <div class="town-action-icon"><img src="assets/menu-icons/shop.png"></div>
     <div class="town-action-label">Shop</div>
   </div>
 
   <!-- Waypoints -->
   <div class="town-action-card" onclick="game.toggleTownWaypoints()">
-    <div class="town-action-icon"><img src="assets/menu-icons/waypoint.png" style="width:28px;height:28px;object-fit:contain;vertical-align:middle"></div>
+    <div class="town-action-icon"><img src="assets/menu-icons/waypoint.png"></div>
     <div class="town-action-label">Waypoints</div>
   </div>
   <div id="townWaypointsWrap" class="town-waypoints-wrap hidden">
