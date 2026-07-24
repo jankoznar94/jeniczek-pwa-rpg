@@ -8970,20 +8970,13 @@
               const unlocked = isSkillUnlocked(t) && rowUnlocked;
               const selected = _selectedTalentKey === key;
               return `<div class="talent-btn ${lv>0?'owned':''} ${unlocked?'clickable':''} ${maxed?'maxed':''} ${!unlocked?'btn-locked':''} ${selected?'selected':''}" onclick="game.selectTalent('${key}')">
-                <div class="talent-btn-icon">${t.iconImg ? `<img src="assets/spells/${t.iconImg}" style="width:64px;height:64px;object-fit:contain">` : `<span style="font-size:40px">${t.icon}</span>`}</div>
-                <div class="talent-btn-name">${t.name}</div>
+                <div class="talent-btn-icon">${t.iconImg ? `<img src="assets/spells/${t.iconImg}">` : `<span style="font-size:40px">${t.icon}</span>`}</div>
                 <div class="talent-btn-lv">${lv}/${t.maxLv}</div>
-                <div class="talent-btn-desc">${t.desc(Math.max(lv,1))}</div>
               </div>`;
             }).join('')}
           </div>`;
         }).join('');
         $('talentSchools').innerHTML = `<div class="talent-school active ${cls.id}">
-          <div class="talent-school-header">
-            <span class="talent-school-icon">${cls.icon}</span>
-            <span class="talent-school-name">${cls.name}</span>
-          </div>
-          <div class="talent-school-desc">${cls.desc}</div>
           <div class="talent-tree-tabs">${treeTabs}</div>
           <div class="talent-tree">
             <div class="talent-tree-content">${grid}</div>

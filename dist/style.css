@@ -933,8 +933,8 @@ body.no-scroll { overflow: hidden; }
 .talent-tier-label { display:none; }
 .talent-tier-skills { display:none; }
 .talent-btn {
-  width:100px; height:110px;
-  border:2px solid #2a2a2a; border-radius:8px; padding:6px 4px;
+  width:80px; height:90px;
+  border:2px solid #2a2a2a; border-radius:8px; padding:4px 2px;
   background:#0d0d0d; text-align:center; cursor:default;
   transition:0.15s; position:relative;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
@@ -945,6 +945,7 @@ body.no-scroll { overflow: hidden; }
 .talent-btn.maxed { border-color:#2ecc71; background:#0a0a0a; }
 .talent-btn.selected { border-color:#f1c40f; box-shadow:0 0 8px rgba(241,196,15,0.4); }
 .talent-btn-icon { font-size:18px; line-height:1; }
+.talent-btn-icon img { width:48px; height:48px; }
 .talent-btn-name { font-size:9px; font-weight:bold; color:#ccc; line-height:1.1; }
 .talent-btn-lv { font-size:10px; font-weight:bold; color:#f1c40f; }
 .talent-btn-desc { font-size:8px; color:#666; line-height:1.1; }
@@ -1595,11 +1596,12 @@ body.no-scroll { overflow: hidden; }
   overflow-y:auto;
   padding:16px;
   box-shadow:0 0 30px rgba(0,0,0,0.5);
+  position:relative;
 }
 .modal-content .card { background:transparent;border:none;padding:0;margin:0; }
 .modal-content .card-title { font-size:18px; }
 .modal-close {
-  position:absolute;top:8px;right:12px;
+  position:absolute;top:12px;right:12px;
   font-size:22px;color:#888;cursor:pointer;
   background:none;border:none;padding:4px 8px;
   z-index:10;
