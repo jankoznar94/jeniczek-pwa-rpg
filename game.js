@@ -1800,6 +1800,11 @@
 
   // ===== SCREENS =====
   const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen' };
+  // Screens that are full-page (not modal)
+  const FULL_SCREENS = ['classSelect','map','mapBattle','result','town','shop','hero','bestiary','spellbook','items'];
+  // Track which screen is currently shown (for modal return)
+  let _currentScreen = null;
+
   function showScreen(name) {
     // Guard: bez vybrané classy nejde nikam kromě classSelect
     if (name !== 'classSelect' && !state.heroClass) {
@@ -1813,6 +1818,16 @@
       if (cs) { cs.classList.remove('hidden'); cs.classList.add('active'); }
       return;
     }
+
+    // If it's a modal screen (inventory, talents), open modal instead
+    if (name === 'inventory' || name === 'talents') {
+      openModal(name);
+      return;
+    }
+
+    // Close any open modal first
+    closeModal();
+
     cleanupTimers();
     
     // Když opouštíme map battle (bez výsledku), okamžitě ho ukončit
@@ -1834,6 +1849,7 @@
       if (!el) return;
       if (id === SCREEN_IDS[name]) { el.classList.remove('hidden'); el.classList.add('active'); } else { el.classList.add('hidden'); el.classList.remove('active'); }
     });
+    _currentScreen = name;
     // Aktivovat nav tlačítko
     document.querySelectorAll('.nav-bar a[data-screen]').forEach(a => {
       a.classList.toggle('active', a.dataset.screen === name);
@@ -1859,6 +1875,29 @@
     else if (name === 'shop') renderShop();
     else if (name === 'inventory') renderInventory();
     else if (name === 'spellbook') renderSpellbook();
+  }
+
+  function openModal(name) {
+    const overlay = $('modalOverlay');
+    const content = $('modalContent');
+    if (!overlay || !content) return;
+
+    if (name === 'inventory') {
+      renderInventory();
+      content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>
+        <div id="inventoryScreen" class="active">${$('inventoryScreen').innerHTML}</div>`;
+    } else if (name === 'talents') {
+      renderTalents();
+      updateTalentBadge();
+      content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>
+        <div id="talentsScreen" class="active">${$('talentsScreen').innerHTML}</div>`;
+    }
+    overlay.classList.remove('hidden');
+  }
+
+  function closeModal() {
+    const overlay = $('modalOverlay');
+    if (overlay) overlay.classList.add('hidden');
   }
 
   function showMessage(msg) {
@@ -2022,6 +2061,19 @@
     state.hero.mana = getHeroMaxMana();
     saveGame();
 
+    // Divočina tlačítko — ukázat jen pokud má hráč nějaký progress
+    const wildernessBtn = $('townWildernessBtn');
+    const hasProgress = state.locationProgress.some((p, i) => {
+      const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][i];
+      return !completed && (p > 0 || (state.areaFightProgress[i] || 0) > 0);
+    });
+    const firstUncompleted = ACTS.findIndex((loc, i) => {
+      const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][i];
+      return !completed;
+    });
+    const canEnter = firstUncompleted >= 0;
+    wildernessBtn.style.display = canEnter ? '' : 'none';
+
     state.waypoints = state.waypoints || [[],[],[],[],[]];
     const wpContainer = $('townWaypoints');
     let wpHtml = '';
@@ -2034,18 +2086,18 @@
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
       wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin-top:6px">${act.icon} ${act.name}</div>`;
       if (completed) {
-        wpHtml += `<button class="btn btn-secondary" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">✔ ${act.name} (Completed)</button>`;
+        wpHtml += `<button class="btn btn-secondary" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">✔ ${act.name} (Hotovo)</button>`;
       } else {
-        wps.sort((a,b) => a-b).forEach(zoneId => {
-          const zoneNum = zoneId + 1;
-          const isCurrent = state.locationProgress[actId] === zoneId;
+        wps.sort((a,b) => a-b).forEach(areaId => {
+          const areaNum = areaId + 1;
+          const isCurrent = state.locationProgress[actId] === areaId;
           wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
-            ${isCurrent ? '📍 ' : ''}Zone ${zoneNum}${isCurrent ? ' (Current)' : ''}</button>`;
+            ${isCurrent ? '📍 ' : ''}Oblast ${areaNum}${isCurrent ? ' (Aktuální)' : ''}</button>`;
         });
       }
     });
     if (!hasAny) {
-      wpHtml = '<div style="color:#666;font-size:13px;text-align:center">No waypoints yet. Enter an act to unlock them.</div>';
+      wpHtml = '<div style="color:#666;font-size:13px;text-align:center">Zatím žádné waypointy. Vyraz do divočiny a najdi je!</div>';
     }
     wpContainer.innerHTML = wpHtml;
 
@@ -2054,11 +2106,23 @@
     const portalInfo = $('townPortalInfo');
     if (state.townPortalReturn) {
       const act = ACTS[state.townPortalReturn.actId];
-      const zoneNum = (state.townPortalReturn.zoneId || 0) + 1;
+      const areaNum = (state.townPortalReturn.zoneId || 0) + 1;
       portalCard.style.display = '';
-      portalInfo.textContent = `📜 Return to ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Zone ${zoneNum}`;
+      portalInfo.textContent = `📜 Návrat do ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Oblast ${areaNum}`;
     } else {
       portalCard.style.display = 'none';
+    }
+  }
+
+  function enterCurrentAct() {
+    // Najít první nehotový act a vstoupit do něj
+    const diffIdx = state.difficulty || 0;
+    for (let i = 0; i < ACTS.length; i++) {
+      const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
+      if (!completed) {
+        enterAct(i);
+        return;
+      }
     }
   }
 
@@ -10255,7 +10319,7 @@
     selectClass,
     castClassSpell,
     usePotion,
-    townHeal, useTownPortal, renderTown, toggleTownWaypoints
+    townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal
   };
   init();
 })();
