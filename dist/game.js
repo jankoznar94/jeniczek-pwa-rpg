@@ -26,6 +26,7 @@
         { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% Rage gain for 10s' },
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + stun 5s' },
         { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg for 30s' },
+        { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:20, cooldown:30, gcd:0.5, desc:'+50% armor for 30s' },
         { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg with both weapons + reset swing timers' },
         { id:'whirlwind', name:'Whirlwind', icon:'🌀', cost:50, cooldown:12, gcd:0.5, desc:'3× fast attacks with both weapons' }
       ]
@@ -695,7 +696,7 @@
     { id:'blunt_flangedMace', name:'Flanged Mace', type:'weapon', baseDmgMin:13, baseDmgMax:28, bonusHp:0, cost:75, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:4, swingMs:2200 },
     { id:'blunt_truncheon', name:'Truncheon', type:'weapon', baseDmgMin:21, baseDmgMax:41, bonusHp:0, cost:130, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:5, swingMs:2200 },
     // === 2H MACE (blunt, twoHand) ===
-    { id:'blunt2h_maul', name:'Maul', type:'weapon', baseDmgMin:30, baseDmgMax:43, bonusHp:0, cost:40, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:1, swingMs:3000, twoHand:true },
+    { id:'blunt2h_maul', name:'Maul', type:'weapon', baseDmgMin:30, baseDmgMax:43, bonusHp:0, cost:40, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:3, swingMs:3000, twoHand:true },
     { id:'blunt2h_greatMaul', name:'Great Maul', type:'weapon', baseDmgMin:35, baseDmgMax:55, bonusHp:0, cost:70, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:2, swingMs:3000, twoHand:true },
     { id:'blunt2h_warClub', name:'War Club', type:'weapon', baseDmgMin:40, baseDmgMax:58, bonusHp:0, cost:110, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:3, swingMs:3000, twoHand:true },
     { id:'blunt2h_martel', name:'Martel de Fer', type:'weapon', baseDmgMin:52, baseDmgMax:70, bonusHp:0, cost:170, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:4, swingMs:3000, twoHand:true },
@@ -2188,9 +2189,10 @@
       } else {
         wps.sort((a,b) => a-b).forEach(areaId => {
           const areaNum = areaId + 1;
-          const isCurrent = state.locationProgress[actId] === areaId;
+          const nextArea = (state.locationProgress[actId] || 0) + 1;
+          const isCurrent = nextArea === areaId;
           wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.continueFromWaypoint(${actId}, ${areaId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
-            ${isCurrent ? '📍 ' : ''}Area ${areaNum}${isCurrent ? ' (Current)' : ''}</button>`;
+            ${isCurrent ? '📍 ' : ''}Area ${areaNum}${isCurrent ? ' (Next)' : ''}</button>`;
         });
       }
     });
@@ -2206,7 +2208,7 @@
       const act = ACTS[state.townPortalReturn.actId];
       const areaNum = (state.townPortalReturn.zoneId || 0) + 1;
       portalCard.style.display = '';
-      portalInfo.textContent = `📜 Return to ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Area ${areaNum}`;
+      portalInfo.textContent = `Return to ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Area ${areaNum}`;
     } else {
       portalCard.style.display = 'none';
     }
@@ -3094,7 +3096,7 @@
 
     // Rage gain za útok (barbar)
     if (state.heroClass === 'barbarian') {
-      const rageGain = Math.round(5 * state.rageMultiplier);
+      const rageGain = Math.round(8 * state.rageMultiplier);
       state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
     }
 
@@ -4042,6 +4044,7 @@
       state.defensiveShoutTimer = 1800; // 30s
       playSFX(shoutSfx);
       _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
+      renderBuffs();
       // Animace
       spawnShoutRings(mb, '#5dade2', 'rgba(93,173,226,0.6)');
     } else if (spellId === 'skillShout') {

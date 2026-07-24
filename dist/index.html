@@ -126,10 +126,12 @@
   </div>
 
   <!-- Town Portal (pouze pokud je aktivní) -->
-  <div class="card" id="townPortalCard" style="display:none">
-    <div class="card-title">📜 Town Portal</div>
-    <div id="townPortalInfo" style="font-size:13px;color:#aaa;margin-bottom:6px"></div>
-    <button class="btn btn-primary" onclick="game.useTownPortal()" style="width:100%">📜 Return</button>
+  <div class="town-action-card" id="townPortalCard" style="display:none" onclick="game.useTownPortal()">
+    <div class="town-action-icon"><img src="assets/items/town_portal_scroll.png"></div>
+    <div>
+      <div class="town-action-label" id="townPortalInfo" style="font-size:14px">📜 Return</div>
+      <div style="font-size:12px;color:#888">Return to your previous location</div>
+    </div>
   </div>
 </div>
 
