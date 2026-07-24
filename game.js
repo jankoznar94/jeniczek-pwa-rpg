@@ -313,7 +313,7 @@
     if (modal) modal.classList.add('hidden');
     const mb = mapBattleState;
     if (!mb || !mb.loc || mb.ended) return;
-    // Ukončit boj jako prohru
+    // Ukončit boj jako prohru — chová se jako smrt
     mb.ended = true;
     cleanupTimers();
     const arena = $('mbArena');
@@ -326,18 +326,15 @@
     }
     const locId = mb.locId;
     state.deaths = (state.deaths || 0) + 1;
-    const consXp = Math.max(3, Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * 0.2));
-    const consGold = 1 + rand(0, 2);
-    state.hero.xp = (state.hero.xp || 0) + consXp;
-    state.hero.gold = (state.hero.gold || 0) + consGold;
-    applyLevelUp();
-    state.locationProgress[locId] = 0;
+    // Žádné XP ani gold — forfeit je prohra bez odměny
+    // Reset jen aktuální oblasti (areaFightProgress), locationProgress zůstává (waypoint)
+    state.areaFightProgress[locId] = 0;
     state._floorLootDrops = [];
     state.hero.hp = state.hero.maxHp;
     saveGame();
     switchBGM('defeat');
     $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Vzdal ses">';
-    $('resultTitle').textContent = 'Surrendered';
+    $('resultTitle').textContent = 'Forfeit';
     $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
     $('resultLootList').innerHTML = '';
     $('resultBtn').innerHTML = '';
