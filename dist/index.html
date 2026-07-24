@@ -47,6 +47,13 @@
   <a href="#" data-screen="items" style="color:#888;font-size:18px;font-weight:bold">📦</a>
 </nav>
 
+<!-- ===== MODAL OVERLAYS (inventory, talents) ===== -->
+<div id="modalOverlay" class="modal-overlay hidden" onclick="game.closeModal()">
+  <div class="modal-content" id="modalContent" onclick="event.stopPropagation()">
+    <!-- Dynamically loaded -->
+  </div>
+</div>
+
 <!-- ===== CLASS SELECT ===== -->
 <div id="classSelectScreen" class="container hidden">
   <div class="card">
@@ -82,16 +89,22 @@
 <div id="townScreen" class="container hidden">
   <div class="card">
     <div class="card-title" style="text-align:center;font-size:22px">🏘️ Town</div>
-    <div class="card-subtitle" style="text-align:center">Rest, shop, and travel via waypoints.</div>
+    <div class="card-subtitle" style="text-align:center">Rest, shop, and plan your next expedition.</div>
   </div>
 
-  <!-- Shop action card -->
+  <!-- Divočina — pokračovat tam kde je checkpoint -->
+  <div class="town-action-card" id="townWildernessBtn" onclick="game.enterCurrentAct()">
+    <div class="town-action-icon">⚔️</div>
+    <div class="town-action-label">Divočina</div>
+  </div>
+
+  <!-- Obchod -->
   <div class="town-action-card" onclick="game.showScreen('shop')">
     <div class="town-action-icon">🛒</div>
     <div class="town-action-label">Obchod</div>
   </div>
 
-  <!-- Waypoints action card -->
+  <!-- Waypointy -->
   <div class="town-action-card" onclick="game.toggleTownWaypoints()">
     <div class="town-action-icon">📍</div>
     <div class="town-action-label">Waypointy</div>
@@ -102,6 +115,7 @@
     </div>
   </div>
 
+  <!-- Town Portal (pouze pokud je aktivní) -->
   <div class="card" id="townPortalCard" style="display:none">
     <div class="card-title">📜 Town Portal</div>
     <div id="townPortalInfo" style="font-size:13px;color:#aaa;margin-bottom:6px"></div>
@@ -321,9 +335,9 @@
 
 <!-- ===== SHOP ===== -->
 <div id="shopScreen" class="container hidden">
-  <!-- Back to battlefield button — top -->
+  <!-- Back to town button — top -->
   <div class="shop-back-map">
-    <button class="btn btn-secondary" onclick="game.showScreen('map'); game.renderMap();">🗺️ Back to Battlefield</button>
+    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">🏘️ Zpět do města</button>
   </div>
   <div class="card">
     <div class="flex-between">
