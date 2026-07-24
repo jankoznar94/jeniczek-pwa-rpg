@@ -341,12 +341,6 @@
     $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
     showScreen('result');
   }
-  let _fromShop = false;
-  function openInventoryFromShop() {
-    _fromShop = true;
-    showScreen('inventory');
-    renderInventory();
-  }
   let _forceNewBattleBgm = false;
   function switchBGM(mode) {
     // Vynucený nový výběr battle stopy při novém patře
@@ -1845,8 +1839,6 @@
     document.querySelectorAll('.nav-bar a[data-screen]').forEach(a => {
       a.classList.toggle('active', a.dataset.screen === name);
     });
-    // Resetovat _fromShop při opuštění inventáře
-    if (name !== 'inventory') _fromShop = false;
     // Schovat/ukázat nav-bar podle screenu
     const navBar = document.querySelector('.nav-bar');
     if (navBar) {
@@ -9582,11 +9574,6 @@
       }
     }
     grid.innerHTML = html;
-    // Tlačítko zpět do obchodu — viditelné jen když jsme přišli ze shopu
-    const shopBack = $('invShopBack');
-    if (shopBack) {
-      shopBack.classList.toggle('hidden', !_fromShop);
-    }
     // Info panel — zobrazit při kliknutí na item
     function showItemInfo(item) {
       const panel = $('invInfoPanel');
@@ -10506,7 +10493,6 @@
     onMapRapidTap,
     investTalent, resetTalents, selectTalent, selectTree, setDifficulty,
     showSurrenderModal, cancelSurrender, confirmSurrender,
-    openInventoryFromShop,
     renderBestiary,
     renderSpellbook,
     renderItemsReference,
