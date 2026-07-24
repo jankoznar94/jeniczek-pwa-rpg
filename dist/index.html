@@ -128,6 +128,11 @@
   <div class="map-scroll" id="mapScroll">
     <!-- Dynamically generated -->
   </div>
+  <!-- Divočina akční tlačítka -->
+  <div class="map-actions">
+    <button class="btn btn-secondary map-action-btn" onclick="game.walkToTown()">🚶 Pěšky do města</button>
+    <button class="btn btn-secondary map-action-btn" id="mapTownPortalBtn" style="display:none" onclick="game.useTownPortalScrollFromMap()">📜 Town Portal</button>
+  </div>
 </div>
 
 <!-- ===== MAP BATTLE (swipe fight) ===== -->

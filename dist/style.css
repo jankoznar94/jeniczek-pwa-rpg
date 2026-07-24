@@ -1687,3 +1687,10 @@ body.no-scroll { overflow: hidden; }
 .dot-wave-l { margin-left:0; }
 .dot-wave-c { margin-top:4px; }
 .dot-wave-r { margin-left:8px; margin-top:2px; }
+
+/* Map action buttons */
+.map-actions {
+  display:flex;gap:8px;padding:8px 12px 12px;
+  justify-content:center;
+}
+.map-action-btn { flex:1;font-size:12px;padding:8px; }
