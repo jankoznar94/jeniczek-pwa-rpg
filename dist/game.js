@@ -1951,37 +1951,67 @@
       return `<button class="diff-btn ${isActive?'active':''} ${locked?'locked':''}" onclick="${locked?'':`game.setDifficulty(${di})`}">${locked?'🔒 ':''}${d.name}</button>`;
     }).join('');
 
-    $('mapScroll').innerHTML = `<div class="diff-selector">${diffBtns}</div>` + ACTS.map((loc, i) => {
-      const diffIdx = state.difficulty || 0;
-      const prevDone = i === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i-1]);
-      const unlocked = i === 0 || prevDone;
-      const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
-      const curProgress = state.locationProgress[i] || 0;
+    // Build act sections with dot paths
+    let html = `<div class="diff-selector">${diffBtns}</div>`;
+    const diffIdx = state.difficulty || 0;
+
+    ACTS.forEach((loc, actId) => {
+      const prevDone = actId === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][actId-1]);
+      const unlocked = actId === 0 || prevDone;
+      const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][actId];
       const theme = DUNGEON_THEMES[loc.theme] || DUNGEON_THEMES[0];
       const totalZones = loc.zones || 10;
-      const progressPct = completed ? 100 : Math.min(100, Math.round((curProgress / totalZones) * 100));
+      const curArea = state.locationProgress[actId] || 0;
+      const curFight = state.areaFightProgress[actId] || 0;
 
-      let badgeHtml;
-      if (completed) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
-      } else if (!unlocked) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
+      // Act header
+      html += `<div class="act-section ${completed?'act-completed':''} ${!unlocked?'act-locked':''}" style="--act-border:${theme.border};--act-glow:${theme.borderGlow}">
+        <div class="act-header" onclick="${!unlocked?'':`game.enterAct(${actId})`}">
+          <span class="act-icon">${loc.icon}</span>
+          <span class="act-name">${loc.name}</span>
+          ${completed ? '<span class="act-check">✔</span>' : ''}
+          ${!unlocked ? '<span class="act-lock-icon">🔒</span>' : ''}
+        </div>`;
+
+      if (unlocked && !completed) {
+        // Build dot path — 10 areas × (waypoint + 10 fights)
+        html += '<div class="act-dot-path">';
+        for (let area = 0; area < totalZones; area++) {
+          const areaDone = area < curArea;
+          const areaCurrent = area === curArea;
+          const areaLocked = area > curArea;
+
+          // Waypoint dot
+          const wpUnlocked = areaDone || areaCurrent;
+          html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
+            <div class="dot-circle dot-wp-inner">★</div>
+          </div>`;
+
+          // 10 fight dots
+          for (let f = 0; f < 10; f++) {
+            const fightDone = areaDone || (areaCurrent && f < curFight);
+            const fightCurrent = areaCurrent && f === curFight;
+            const fightLocked = areaLocked || (areaCurrent && f > curFight);
+            const fightNum = area * 10 + f + 1;
+            // Wave effect: shift left/right based on position
+            const waveOffset = (area * 10 + f) % 4;
+            const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
+            html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="${fightLocked?'':`game.enterAct(${actId})`}" title="Fight ${fightNum}">
+              <div class="dot-circle">${fightNum}</div>
+            </div>`;
+          }
+        }
+        html += '</div>';
+      } else if (completed) {
+        html += `<div class="act-done-msg">✔ All areas cleared</div>`;
       } else {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">${completed ? 'Hotovo' : 'Hrát'}</div></div>`;
+        html += `<div class="act-locked-msg">🔒 Complete previous act to unlock</div>`;
       }
 
-      return `<div class="map-location-wrap">
-        <div class="map-location ${completed?'completed':!unlocked?'locked':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.enterAct(${i})`}">
-          <div class="map-loc-bg" style="background-image:url(assets/dungeons/${['forest','desert','frost','undead','hell'][i]||'forest'}.png)"></div>
-          ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${['forest','desert','frost','undead','hell'][i]||'forest'}.png)"></div>` : ''}
-          <div class="map-loc-info">
-            <div class="map-loc-name">${loc.name}</div>
-            ${!completed && unlocked ? `<div class="map-loc-progress"><div class="map-loc-progress-bar" style="width:${progressPct}%;background:${theme.border}"></div><span>${curProgress}/${totalZones}</span></div>` : ''}
-          </div>
-          ${badgeHtml}
-        </div>
-      </div>`;
-    }).join('');
+      html += '</div>';
+    });
+
+    $('mapScroll').innerHTML = html;
   }
 
   // ===== TOWN =====
