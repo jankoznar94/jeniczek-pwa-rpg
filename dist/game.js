@@ -1404,31 +1404,32 @@
   // Každé monstrum má fixní face, name, type, attackType a fixní staty — nikdy se nemění
   const MONSTER_DB = [
     // Theme 0 — Les (vyvážené, mírný nature bonus)
+    // Pořadí = postupně se přidávají s každou oblastí (minArea 0-7)
     [
-      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
-        hp:120, dmgMin:8, dmgMax:12, attackSpeed:1400, blockChance:10,
-        resource:'rage', maxResource:100, spells:['defensive_shout']},
-      {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.2, ice:1.0, nature:0.8, lightning:1.0},
-        hp:200, dmgMin:18, dmgMax:25, attackSpeed:3000, blockChance:0,
-        resource:'mana', maxResource:50, spells:['thorn_shield']},
-      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
-        hp:100, dmgMin:10, dmgMax:15, attackSpeed:2000, blockChance:0,
-        resource:'energy', maxResource:100, spells:[], passivePoisonWeapon:true},
-      {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
-        hp:180, dmgMin:16, dmgMax:22, attackSpeed:2500, blockChance:0,
-        resource:'rage', maxResource:100, spells:['battle_shout']},
-      {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:8, resists:{fire:1.0, ice:1.0, nature:1.0, lightning:1.0},
-        hp:90, dmgMin:6, dmgMax:10, attackSpeed:1200, blockChance:0,
-        resource:'energy', maxResource:100, spells:['evasion']},
-      {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:5, resists:{fire:1.0, ice:1.0, nature:0.7, lightning:1.0},
-        hp:70, dmgMin:7, dmgMax:11, attackSpeed:1800, blockChance:0,
-        resource:'mana', maxResource:75, spells:['faerie_fire']},
       {face:'assets/monsters/lesni_rarach.png',name:'Lesní rarach',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.MELEE, defense:10, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
         hp:60, dmgMin:5, dmgMax:9, attackSpeed:1500, blockChance:0,
-        resource:'mana', maxResource:50, spells:['poison_bolt']},
+        resource:'mana', maxResource:50, spells:['poison_bolt'], minArea:0},
+      {face:'assets/monsters/troll_test_small.png',name:'Troll',type:MONSTER_TYPES.MANASTEALER,attackType:ATTACK_TYPES.MELEE, defense:12, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
+        hp:120, dmgMin:8, dmgMax:12, attackSpeed:1400, blockChance:10,
+        resource:'rage', maxResource:100, spells:['defensive_shout'], minArea:1},
       {face:'assets/monsters/moc_alova_prisera.png',name:'Močálová příšera',type:MONSTER_TYPES.POISON,attackType:ATTACK_TYPES.CASTER, defense:8, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
         hp:110, dmgMin:10, dmgMax:14, attackSpeed:2200, blockChance:0,
-        resource:'mana', maxResource:60, spells:['slow']},
+        resource:'mana', maxResource:60, spells:['slow'], minArea:2},
+      {face:'assets/monsters/vlk.png',name:'Vlk',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:8, resists:{fire:1.0, ice:1.0, nature:1.0, lightning:1.0},
+        hp:90, dmgMin:6, dmgMax:10, attackSpeed:1200, blockChance:0,
+        resource:'energy', maxResource:100, spells:['evasion'], minArea:3},
+      {face:'assets/monsters/medved.png',name:'Medvěd',type:MONSTER_TYPES.CRITMASTER,attackType:ATTACK_TYPES.MELEE, defense:20, resists:{fire:1.0, ice:1.0, nature:0.8, lightning:1.0},
+        hp:180, dmgMin:16, dmgMax:22, attackSpeed:2500, blockChance:0,
+        resource:'rage', maxResource:100, spells:['battle_shout'], minArea:4},
+      {face:'assets/monsters/dryada.png',name:'Dryáda',type:MONSTER_TYPES.LIFESTEALER,attackType:ATTACK_TYPES.CASTER, defense:5, resists:{fire:1.0, ice:1.0, nature:0.7, lightning:1.0},
+        hp:70, dmgMin:7, dmgMax:11, attackSpeed:1800, blockChance:0,
+        resource:'mana', maxResource:75, spells:['faerie_fire'], minArea:5},
+      {face:'assets/monsters/satyr.png',name:'Satyr',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:6, resists:{fire:1.0, ice:1.0, nature:0.9, lightning:1.0},
+        hp:100, dmgMin:10, dmgMax:15, attackSpeed:2000, blockChance:0,
+        resource:'energy', maxResource:100, spells:[], passivePoisonWeapon:true, minArea:6},
+      {face:'assets/monsters/ent.png',name:'Ent',type:MONSTER_TYPES.IMPROVER,attackType:ATTACK_TYPES.MELEE, defense:18, resists:{fire:1.2, ice:1.0, nature:0.8, lightning:1.0},
+        hp:200, dmgMin:18, dmgMax:25, attackSpeed:3000, blockChance:0,
+        resource:'mana', maxResource:50, spells:['thorn_shield'], minArea:7},
     ],
     // Theme 1 — Poušť (slabí na led, odolní ohni)
     [
@@ -1510,9 +1511,10 @@
     return pool[rand(0, pool.length - 1)].name;
   }
   function getFloorMonsterSet(theme, floor) {
-    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
+    const pool = (MONSTER_DB[theme] || MONSTER_DB[0]).filter(m => (m.minArea || 0) <= floor);
     const result = [];
     const poolSize = pool.length;
+    if (poolSize === 0) return result;
     // Vážený náhodný výběr — nedávno viděná monstra mají menší šanci
     state._monsterLastSeen = state._monsterLastSeen || {};
     state._monsterLastSeen[theme] = state._monsterLastSeen[theme] || {};
