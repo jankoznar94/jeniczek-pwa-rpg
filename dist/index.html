@@ -22,6 +22,14 @@
     .town-action-icon { width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
     .town-action-icon img { width:64px;height:64px;object-fit:contain;display:block; }
     .town-action-label { font-size:18px;font-weight:bold;color:#ddd; }
+    .page-header {
+      display:flex;align-items:center;gap:16px;
+      background:#000;border:1px solid #333;border-radius:10px;
+      padding:14px 18px;margin:0 0 12px 0;
+    }
+    .page-header-icon { width:72px;height:72px;object-fit:contain;flex-shrink:0; }
+    .page-header-title { font-size:20px;font-weight:bold;color:#ddd;margin:0; }
+    .page-header-subtitle { font-size:13px;color:#888;margin:2px 0 0; }
     .town-waypoints-wrap {
       background:rgba(0,0,0,0.3);border-radius:8px;
       padding:8px 12px;margin:0 0 8px 0;
@@ -86,13 +94,11 @@
 
 <!-- ===== TOWN ===== -->
 <div id="townScreen" class="container hidden">
-  <div class="card" style="padding:0;overflow:hidden">
-    <div style="display:flex;align-items:center;background:#000;padding:12px 16px;gap:16px">
-      <img src="assets/menu-icons/mesto.png" style="width:80px;height:80px;object-fit:contain;flex-shrink:0">
-      <div>
-        <div class="card-title" style="font-size:22px;margin:0">Town</div>
-        <div class="card-subtitle" style="margin:2px 0 0">Rest, shop, and plan your next expedition.</div>
-      </div>
+  <div class="page-header">
+    <img src="assets/menu-icons/mesto.png" class="page-header-icon">
+    <div>
+      <div class="page-header-title">Town</div>
+      <div class="page-header-subtitle">Rest, shop, and plan your next expedition.</div>
     </div>
   </div>
 
@@ -346,12 +352,13 @@
   <div class="shop-back-map">
     <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">Back to Town</button>
   </div>
-  <div class="card">
-    <div class="flex-between">
-      <span class="card-title"><img src="assets/menu-icons/shop.png" class="page-icon" alt=""> Shop</span>
-      <span id="shopGold">💰 0 gold</span>
+  <div class="page-header">
+    <img src="assets/menu-icons/shop.png" class="page-header-icon">
+    <div>
+      <div class="page-header-title">Shop</div>
+      <div class="page-header-subtitle">Buy and sell equipment</div>
     </div>
-    <div class="card-subtitle">Buy and sell equipment</div>
+    <span id="shopGold" style="margin-left:auto;font-size:14px;color:#f1c40f;white-space:nowrap">💰 0 gold</span>
   </div>
   <div class="shop-tabs">
     <button class="shop-tab active" data-shop-tab="buy" onclick="game.switchShopTab('buy')">Buy</button>
