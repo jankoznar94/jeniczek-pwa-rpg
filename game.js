@@ -8443,8 +8443,11 @@
         else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
       });
       state._floorLootDrops = [];
-      $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
-      $('resultTitle').textContent = 'Victory!';
+      const isWaypoint = state._waypointFloor === true;
+      $('resultIcon').innerHTML = isWaypoint
+        ? '<img class="result-icon-img" src="assets/menu-icons/waypoint.png" alt="Waypoint">'
+        : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
+      $('resultTitle').textContent = isWaypoint ? 'Waypoint Reached!' : 'Victory!';
       const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
       const areaNum = (state.locationProgress[locId] || 0) + 1;
       const fightNum = (state.areaFightProgress[locId] || 0);
@@ -8465,7 +8468,6 @@
       $('resultLootList').innerHTML = lootListHtml;
       // Victory action buttons
       const hasScroll = (state.townPortalCount || 0) > 0;
-      const isWaypoint = state._waypointFloor === true;
       let actionsHtml;
       if (isWaypoint) {
         const nextArea = (state.locationProgress[locId] || 0) + 1;
