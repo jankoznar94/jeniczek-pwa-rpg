@@ -934,7 +934,7 @@ body.no-scroll { overflow: hidden; }
 .tree-tab.active { border-color:#f1c40f; color:#f1c40f; background:#1a1a1a; }
 .tree-tab:hover { border-color:#666; }
 .talent-tree-content { display:flex; flex-direction:column; gap:16px; align-items:center; }
-.talent-tier-row { display:flex; gap:10px; justify-content:center; width:100%; }
+.talent-tier-row { display:grid; gap:10px; width:100%; grid-template-columns:repeat(3, 1fr); }
 .talent-tier { display:none; }
 .talent-tier.tier-locked { opacity:0.4; filter:grayscale(0.5); }
 .talent-tier-label { display:none; }
@@ -944,6 +944,7 @@ body.no-scroll { overflow: hidden; }
   background:transparent; text-align:center; cursor:default;
   transition:0.15s; position:relative;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  width:100%;
 }
 .talent-btn.owned .talent-btn-icon { border-color:#f1c40f; }
 .talent-btn.clickable { cursor:pointer; }
@@ -955,8 +956,9 @@ body.no-scroll { overflow: hidden; }
   border:2px solid #2a2a2a; border-radius:8px; padding:2px;
   display:flex; align-items:center; justify-content:center;
   transition:0.15s;
+  width:100%; aspect-ratio:1;
 }
-.talent-btn-icon img { width:64px; height:64px; display:block; }
+.talent-btn-icon img { width:100%; height:100%; display:block; object-fit:contain; }
 .talent-btn-name { font-size:9px; font-weight:bold; color:#ccc; line-height:1.1; }
 .talent-btn-lv { font-size:10px; font-weight:bold; color:#f1c40f; }
 .talent-btn-desc { font-size:8px; color:#666; line-height:1.1; }
