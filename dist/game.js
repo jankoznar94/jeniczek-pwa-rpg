@@ -1850,7 +1850,7 @@
     }
     // Přepnout na overworld BGM mimo boj
     if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
-    else if (name === 'map') renderMap();
+    if (name === 'map') renderMap();
     else if (name === 'town') renderTown();
     else if (name === 'mapBattle') { window.scrollTo(0,0); document.documentElement.scrollTop = 0; }
     else if (name === 'talents') { renderTalents(); updateTalentBadge(); }
