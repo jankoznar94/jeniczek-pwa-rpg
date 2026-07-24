@@ -1884,26 +1884,46 @@
     const content = $('modalContent');
     if (!overlay || !content) return;
 
-    // Render the screen first
-    if (name === 'inventory') {
-      renderInventory();
-    } else if (name === 'talents') {
-      renderTalents();
-      updateTalentBadge();
-    } else if (name === 'hero') {
-      renderHero();
-      updateTalentBadge();
-    }
+    // Render all three screens
+    renderInventory();
+    renderTalents();
+    renderHero();
+    updateTalentBadge();
 
-    // Move the screen element into the modal (not copy — move)
-    const screenEl = $(SCREEN_IDS[name]);
-    if (!screenEl) return;
-    screenEl.classList.remove('hidden');
-    screenEl.classList.add('active');
-    // Store reference for return
-    content._returnScreen = name;
-    content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>`;
-    content.appendChild(screenEl);
+    // Build tabs
+    const tabs = [
+      { id:'inventory', label:'🎒 Inventory' },
+      { id:'talents', label:'⭐ Skills' },
+      { id:'hero', label:'📊 Stats' },
+    ];
+    const tabsHtml = tabs.map(t =>
+      `<div class="combined-tab ${t.id === name ? 'active' : ''}" onclick="game.switchCombinedTab('${t.id}')">${t.label}</div>`
+    ).join('');
+
+    // Build screen wrappers
+    const screenIds = { inventory:'inventoryScreen', talents:'talentsScreen', hero:'heroScreen' };
+    let screensHtml = '';
+    tabs.forEach(t => {
+      const el = $(screenIds[t.id]);
+      if (!el) return;
+      screensHtml += `<div class="combined-screen ${t.id === name ? 'active' : ''}" id="combinedScreen_${t.id}"></div>`;
+    });
+
+    content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>
+      <div class="combined-tabs">${tabsHtml}</div>
+      ${screensHtml}`;
+
+    // Move screens into their wrappers
+    tabs.forEach(t => {
+      const el = $(screenIds[t.id]);
+      const wrapper = $(`combinedScreen_${t.id}`);
+      if (el && wrapper) {
+        el.classList.remove('hidden');
+        el.classList.add('active');
+        wrapper.appendChild(el);
+      }
+    });
+
     overlay.classList.remove('hidden');
   }
 
@@ -1912,15 +1932,32 @@
     const content = $('modalContent');
     if (!overlay || !content) return;
 
-    // Move screen element back to body BEFORE clearing innerHTML
-    const screenEl = content.querySelector('.container.active, .container:not(.hidden)');
-    if (screenEl && content._returnScreen) {
-      document.body.appendChild(screenEl);
-      screenEl.classList.add('hidden');
-      screenEl.classList.remove('active');
-    }
+    // Move all three screens back to body
+    const screenIds = { inventory:'inventoryScreen', talents:'talentsScreen', hero:'heroScreen' };
+    Object.values(screenIds).forEach(id => {
+      const el = $(id);
+      if (el) {
+        document.body.appendChild(el);
+        el.classList.add('hidden');
+        el.classList.remove('active');
+      }
+    });
     content.innerHTML = '';
     overlay.classList.add('hidden');
+  }
+
+  function switchCombinedTab(tab) {
+    const tabs = ['inventory','talents','hero'];
+    // Update tab buttons
+    document.querySelectorAll('.combined-tab').forEach(btn => {
+      const isActive = btn.getAttribute('onclick')?.includes(`'${tab}'`);
+      btn.classList.toggle('active', !!isActive);
+    });
+    // Update screen visibility
+    tabs.forEach(t => {
+      const wrapper = $(`combinedScreen_${t}`);
+      if (wrapper) wrapper.classList.toggle('active', t === tab);
+    });
   }
 
   function showMessage(msg) {
@@ -8441,14 +8478,6 @@
           <span class="result-tile-label">Town Portal</span>
         </div>`;
       }
-      actionsHtml += `<div class="result-tile" onclick="game.openModal('inventory')" title="Inventory">
-        <img src="assets/menu-icons/inventar.png" class="result-tile-img">
-        <span class="result-tile-label">Inventory</span>
-      </div>`;
-      actionsHtml += `<div class="result-tile" onclick="game.openModal('talents')" title="Skills">
-        <img src="assets/menu-icons/talenty.png" class="result-tile-img">
-        <span class="result-tile-label">Skills</span>
-      </div>`;
       const heroFace = state.hero.face || 'hero';
       actionsHtml += `<div class="result-tile" onclick="game.openModal('hero')" title="Hero">
         <img src="assets/monsters/${heroFace}.png" class="result-tile-img">
@@ -10498,7 +10527,7 @@
     castClassSpell,
     usePotion,
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal,
-    walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal
+    walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab
   };
   init();
 })();
