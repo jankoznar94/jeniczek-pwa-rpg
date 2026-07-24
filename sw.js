@@ -81,7 +81,7 @@ const ASSET_FILES = [
   '/assets/sfx/fire_spell.mp3', '/assets/sfx/ice_spell.mp3', '/assets/sfx/lightning_spell.mp3',
   '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
-  '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png', '/assets/spells/defensive_shout.png', '/assets/spells/skill_shout.png', '/assets/spells/shield_bash.png',
+  '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png', '/assets/spells/defensiveShout.png', '/assets/spells/skill_shout.png', '/assets/spells/shield_bash.png',
   '/assets/spells/shadowStrike.png', '/assets/spells/bladeFury.png', '/assets/spells/deathMark.png',
   '/assets/spells/poisonBlade.png', '/assets/spells/smokeScreen.png', '/assets/spells/shadowDance.png', '/assets/spells/evasion.png',
   '/assets/spells/firebolt.png', '/assets/spells/fireball.png', '/assets/spells/fireblast.png',
