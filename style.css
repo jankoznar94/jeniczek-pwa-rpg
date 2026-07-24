@@ -1600,7 +1600,7 @@ body.no-scroll { overflow: hidden; }
   border-radius:14px;
   width:96%;
   max-width:600px;
-  max-height:88vh;
+  height:88vh;
   overflow-y:auto;
   padding:16px;
   box-shadow:0 0 30px rgba(0,0,0,0.5);
