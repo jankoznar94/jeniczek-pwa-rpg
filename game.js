@@ -2130,7 +2130,7 @@
       // Waypoint dot — jen pro oblasti 1+ (první oblast začíná fightem 1)
       if (area > 0) {
         const wpUnlocked = areaDone || areaCurrent;
-        html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
+        html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.continueFromWaypoint(${actId}, ${area})`}" title="Area ${area+1} — Waypoint">
           <div class="dot-circle dot-wp-inner">★</div>
         </div>`;
       }
@@ -2189,7 +2189,7 @@
         wps.sort((a,b) => a-b).forEach(areaId => {
           const areaNum = areaId + 1;
           const isCurrent = state.locationProgress[actId] === areaId;
-          wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
+          wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.continueFromWaypoint(${actId}, ${areaId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
             ${isCurrent ? '📍 ' : ''}Area ${areaNum}${isCurrent ? ' (Current)' : ''}</button>`;
         });
       }
@@ -2303,11 +2303,11 @@
     renderTown();
   }
 
-  function continueFromWaypoint(locId) {
-    state.areaFightProgress[locId] = 0;
-    state.locationProgress[locId] = (state.locationProgress[locId] || 0) + 1;
+  function continueFromWaypoint(actId, areaId) {
+    state.locationProgress[actId] = areaId;
+    state.areaFightProgress[actId] = 0;
     state._waypointFloor = false;
-    startLocation(locId);
+    startLocation(actId);
   }
 
   function returnToTownFromWaypoint(locId) {
@@ -2393,10 +2393,10 @@
     const totalZones = loc.zones || 10;
     const isBoss = progress >= totalZones;
 
-    // Odemknout waypoint pro aktuální zónu
+    // Odemknout waypoint pro další zónu (checkpoint na začátek další oblasti)
     state.waypoints = state.waypoints || [[],[],[],[],[]];
-    if (!isBoss && !state.waypoints[actId].includes(progress)) {
-      state.waypoints[actId].push(progress);
+    if (!isBoss && !state.waypoints[actId].includes(progress + 1)) {
+      state.waypoints[actId].push(progress + 1);
     }
 
     const playerMaxHp = getHeroMaxHp();
@@ -8465,8 +8465,9 @@
       const isWaypoint = state._waypointFloor === true;
       let actionsHtml;
       if (isWaypoint) {
-        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypoint(${locId})" title="Continue">
-          <img src="assets/menu-icons/waypoint.png" class="result-tile-img">
+        const nextArea = (state.locationProgress[locId] || 0) + 1;
+        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypoint(${locId}, ${nextArea})" title="Continue">
+          <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
           <span class="result-tile-label">Continue</span>
         </div>`;
         actionsHtml += `<div class="result-tile" onclick="game.returnToTownFromWaypoint(${locId})" title="Waypoint to Town">
