@@ -546,7 +546,7 @@ body.no-scroll { overflow: hidden; }
 .btn-change-face:hover { opacity:1; }
 .hero-portrait-lg { flex-shrink:0; position:relative; }
 /* Hero detail grid */
-.hero-detail-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px; }
+.hero-detail-grid { display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%; }
 .hero-detail-item { display:flex;align-items:center;gap:6px;background:#1a1a1a;padding:6px 10px;border-radius:6px;font-size:13px; }
 .hero-detail-icon { font-size:14px;flex-shrink:0; }
 .hero-detail-label { color:#888;flex:1; }
@@ -578,10 +578,9 @@ body.no-scroll { overflow: hidden; }
 
 /* Inventory — neutrální tmavý styl */
 .inv-equip-panel {
-  display:grid; gap:6px; margin:12px auto; justify-content:center;
+  display:grid; gap:6px; margin:12px 0; justify-content:center;
   grid-template-columns:repeat(3, auto);
-  grid-template-rows:auto auto auto auto;
-  max-width:280px;
+  width:100%;
 }
 .inv-equip-slot {
   background:#000; border:2px solid #4a4a4a;
@@ -667,6 +666,7 @@ body.no-scroll { overflow: hidden; }
 
 .inv-grid {
   display:grid; grid-template-columns:repeat(6, 1fr); gap:4px;
+  width:100%; box-sizing:border-box;
 }
 .inv-grid-cell {
   aspect-ratio:1; background:#222; border:1px solid #3a3a3a;
@@ -700,6 +700,7 @@ body.no-scroll { overflow: hidden; }
   max-height:170px; overflow-y:auto; margin:8px 0;
   scrollbar-width:thin; scrollbar-color:#444 #1a1a1a;
   background:#1a1a1a; border:1px solid #333; border-radius:8px; padding:6px;
+  width:100%; box-sizing:border-box;
 }
 .inv-grid-wrap::-webkit-scrollbar { width:6px; }
 .inv-grid-wrap::-webkit-scrollbar-track { background:#1a1a1a; }
@@ -707,6 +708,7 @@ body.no-scroll { overflow: hidden; }
 
 .inv-grid {
   display:grid; grid-template-columns:repeat(6, 1fr); gap:4px;
+  width:100%; box-sizing:border-box;
 }
 
 /* Info panel předmětu */
@@ -714,6 +716,7 @@ body.no-scroll { overflow: hidden; }
   display:flex; align-items:center; gap:16px;
   background:#1e1e1e; border:1px solid #3a3a3a; border-radius:10px;
   padding:14px 18px; margin-top:8px; min-height:72px;
+  width:100%; box-sizing:border-box;
 }
 .inv-info-panel .inv-info-icon { font-size:40px; flex-shrink:0; }
 .inv-info-panel .inv-info-details { flex:1; min-width:0; }
@@ -905,7 +908,7 @@ body.no-scroll { overflow: hidden; }
 }
 
 /* Talent Tree — WoW style */
-.talent-schools { display:flex; flex-direction:column; gap:8px; }
+.talent-schools { display:flex; flex-direction:column; gap:8px; width:100%; }
 .talent-school {
   border:none; border-radius:0; padding:0; background:transparent;
   transition:0.2s;
@@ -931,7 +934,7 @@ body.no-scroll { overflow: hidden; }
 .tree-tab.active { border-color:#f1c40f; color:#f1c40f; background:#1a1a1a; }
 .tree-tab:hover { border-color:#666; }
 .talent-tree-content { display:flex; flex-direction:column; gap:16px; align-items:center; }
-.talent-tier-row { display:flex; gap:10px; justify-content:center; }
+.talent-tier-row { display:flex; gap:10px; justify-content:center; width:100%; }
 .talent-tier { display:none; }
 .talent-tier.tier-locked { opacity:0.4; filter:grayscale(0.5); }
 .talent-tier-label { display:none; }
@@ -949,11 +952,11 @@ body.no-scroll { overflow: hidden; }
 .talent-btn.selected .talent-btn-icon { border-color:#f1c40f; box-shadow:0 0 8px rgba(241,196,15,0.4); }
 .talent-btn-icon {
   font-size:18px; line-height:1;
-  border:2px solid #2a2a2a; border-radius:8px; padding:4px;
+  border:2px solid #2a2a2a; border-radius:8px; padding:2px;
   display:flex; align-items:center; justify-content:center;
   transition:0.15s;
 }
-.talent-btn-icon img { width:48px; height:48px; display:block; }
+.talent-btn-icon img { width:64px; height:64px; display:block; }
 .talent-btn-name { font-size:9px; font-weight:bold; color:#ccc; line-height:1.1; }
 .talent-btn-lv { font-size:10px; font-weight:bold; color:#f1c40f; }
 .talent-btn-desc { font-size:8px; color:#666; line-height:1.1; }
@@ -968,7 +971,7 @@ body.no-scroll { overflow: hidden; }
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   font-size:48px;z-index:5;opacity:0.6;
 }
-.talent-tree-content { display:flex; gap:0; align-items:flex-start; justify-content:center; }
+.talent-tree-content { display:flex; gap:0; align-items:flex-start; justify-content:center; width:100%; }
 .talent-branch { display:flex; flex-direction:column; align-items:center; gap:0; flex:1; }
 .talent-divider { width:1px; min-height:100%; background:#2a2a2a; align-self:stretch; margin:0 8px; }
 .talent-connector { width:2px; height:18px; background:#333; }
