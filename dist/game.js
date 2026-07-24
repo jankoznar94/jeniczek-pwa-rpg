@@ -1728,6 +1728,7 @@
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
       waypoints:[[],[],[],[],[]], // waypoints[actId] = [zoneId, ...] — odemčené waypointy
       townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
+      townPortalCount: 0, // počet town portal scrollů (stack)
       rage:0, maxRage:100, // Barbar resource
       rageMultiplier:1, // Bloodrage buff
       _bloodrageTimer:0,
@@ -1757,6 +1758,7 @@
       if (!s.hero.equip.belt) s.hero.equip.belt = null;
       if (!s.hero.equip.beltPotionSlots) s.hero.equip.beltPotionSlots = [];
     }
+    if (s.townPortalCount === undefined) s.townPortalCount = 0;
     return s; } } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
@@ -2017,11 +2019,8 @@
       return !completed;
     });
 
-    // Town portal tlačítko — jen pokud má hráč scroll v inventáři
-    const hasScroll = (state.hero.inventory || []).some(itemId => {
-      const item = ITEM_MAP[itemId];
-      return item && item.subtype === 'townPortal';
-    });
+    // Town portal tlačítko — jen pokud má hráč scroll
+    const hasScroll = (state.townPortalCount || 0) > 0;
     const tpBtn = $('mapTownPortalBtn');
     if (tpBtn) tpBtn.style.display = (hasScroll && state._currentActOnMap >= 0) ? '' : 'none';
 
@@ -2239,30 +2238,26 @@
     // Called from inventory when using a town portal scroll item
     const mb = mapBattleState;
     if (!mb || mb.ended) return;
+    if ((state.townPortalCount || 0) <= 0) return;
     const actId = mb.locId;
     const progress = state.locationProgress[actId] || 0;
     const areaFight = state.areaFightProgress[actId] || 0;
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
+    state.townPortalCount = (state.townPortalCount || 0) - 1;
     saveGame();
     showScreen('town');
     renderTown();
   }
 
   function useTownPortalScrollFromMap() {
-    // Called from map screen — find a town portal scroll in inventory and use it
-    const inv = state.hero.inventory || [];
-    const scrollIdx = inv.findIndex(itemId => {
-      const item = ITEM_MAP[itemId];
-      return item && item.subtype === 'townPortal';
-    });
-    if (scrollIdx < 0) return;
+    // Called from map screen
+    if ((state.townPortalCount || 0) <= 0) return;
     const actId = state._currentActOnMap;
     if (actId === undefined || actId === null) return;
     const progress = state.locationProgress[actId] || 0;
     const areaFight = state.areaFightProgress[actId] || 0;
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
-    // Remove the scroll from inventory
-    inv.splice(scrollIdx, 1);
+    state.townPortalCount = (state.townPortalCount || 0) - 1;
     saveGame();
     showScreen('town');
     renderTown();
@@ -2290,17 +2285,12 @@
   function useTownPortalScrollFromResult() {
     const mb = mapBattleState;
     if (!mb) return;
+    if ((state.townPortalCount || 0) <= 0) return;
     const actId = mb.locId;
     const progress = state.locationProgress[actId] || 0;
     const areaFight = state.areaFightProgress[actId] || 0;
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
-    // Remove scroll from inventory
-    const inv = state.hero.inventory || [];
-    const scrollIdx = inv.findIndex(itemId => {
-      const item = ITEM_MAP[itemId];
-      return item && item.subtype === 'townPortal';
-    });
-    if (scrollIdx >= 0) inv.splice(scrollIdx, 1);
+    state.townPortalCount = (state.townPortalCount || 0) - 1;
     saveGame();
     showScreen('town');
     renderTown();
@@ -3656,10 +3646,12 @@
       showMessage(`💧 +${pot.effectValue} many`);
     } else if (pot.subtype === 'townPortal') {
       // Town portal scroll — teleport to town, save position
+      if ((state.townPortalCount || 0) <= 0) return;
       const actId = mb.locId;
       const progress = state.locationProgress[actId] || 0;
       const areaFight = state.areaFightProgress[actId] || 0;
       state.townPortalReturn = { actId, zoneId: progress, areaFight };
+      state.townPortalCount = (state.townPortalCount || 0) - 1;
       saveGame();
       showScreen('town');
       renderTown();
@@ -8379,7 +8371,13 @@
         if (!loot) continue;
         state._floorLootDrops.push(loot);
         if (loot.type === 'item' || loot.type === 'boss') {
-          if (loot.item) state.hero.inventory.push(loot.item.id);
+          if (loot.item) {
+            if (loot.item.id === 'townPortalScroll') {
+              state.townPortalCount = (state.townPortalCount || 0) + 1;
+            } else {
+              state.hero.inventory.push(loot.item.id);
+            }
+          }
         }
         if (loot.type === 'gold' || loot.type === 'boss') {
           state.hero.gold = (state.hero.gold || 0) + (loot.gold || 0);
@@ -8394,30 +8392,41 @@
       // Sumarizace lootu
       let totalLootGold = 0;
       const lootItems = [];
+      let tpScrollsFromLoot = 0;
       (state._floorLootDrops || []).forEach(d => {
         if (d.type === 'gold') totalLootGold += d.gold;
-        else if (d.type === 'item') { lootItems.push(d.item); }
+        else if (d.type === 'item') {
+          if (d.item && d.item.id === 'townPortalScroll') {
+            tpScrollsFromLoot++;
+          } else {
+            lootItems.push(d.item);
+          }
+        }
         else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
       });
       state._floorLootDrops = [];
       $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
       $('resultTitle').textContent = 'Victory!';
-      $('resultMsg').innerHTML = '';
+      const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
+      const areaNum = (state.locationProgress[locId] || 0) + 1;
+      const fightNum = (state.areaFightProgress[locId] || 0);
+      $('resultMsg').innerHTML = `<div style="text-align:center;color:#aaa;font-size:13px;margin-bottom:4px">${locName} · Area ${areaNum} · Fight ${fightNum}/10</div>`;
       let lootListHtml = '';
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
           const r = RARITY[item.rarity] || RARITY.common;
           lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,32)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
         });
-      } else {
+      }
+      if (tpScrollsFromLoot > 0) {
+        lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon"><img src="assets/items/town_portal_scroll.png" style="width:32px;height:32px;object-fit:contain"></span><span class="loot-scroll-name" style="color:#f1c40f">Town Portal Scroll ×${tpScrollsFromLoot}</span></div>`;
+      }
+      if (lootItems.length === 0 && tpScrollsFromLoot === 0) {
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
       // Victory action buttons
-      const hasScroll = (state.hero.inventory || []).some(itemId => {
-        const item = ITEM_MAP[itemId];
-        return item && item.subtype === 'townPortal';
-      });
+      const hasScroll = (state.townPortalCount || 0) > 0;
       let actionsHtml = `<div class="result-tile" onclick="game.startLocation(${locId})" title="Next Fight">
         <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
         <span class="result-tile-label">Next Fight</span>
@@ -9500,6 +9509,20 @@
     const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
     const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 0);
     const bS = $('invSlotBelt'); if (bS) { bS.classList.toggle('empty', !belt); setSlotBorder('invSlotBelt', belt); }
+    // Town portal slot — stackovaný
+    const tpSlot = $('invSlotTownPortal');
+    const tpIcon = $('invSlotTPIcon');
+    const tpCount = state.townPortalCount || 0;
+    if (tpSlot) {
+      tpSlot.classList.toggle('empty', tpCount <= 0);
+      if (tpIcon) {
+        if (tpCount > 0) {
+          tpIcon.innerHTML = `<div style="position:relative;width:100%;height:100%"><img src="assets/items/town_portal_scroll.png" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;bottom:-2px;right:-2px;background:#111;border:1px solid #f1c40f;border-radius:4px;color:#f1c40f;font-size:10px;font-weight:bold;padding:0 3px;line-height:14px">${tpCount}</span></div>`;
+        } else {
+          tpIcon.innerHTML = '<img src="assets/items/town_portal_scroll.png" style="width:100%;height:100%;object-fit:cover;opacity:0.25;filter:grayscale(1)">';
+        }
+      }
+    }
     // Potion sloty podle beltSlots
     const potionSlots = $('invPotionSlots');
     if (potionSlots) {
