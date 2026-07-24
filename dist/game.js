@@ -410,16 +410,12 @@
     barbarian: {
       id:'barbarian', name:'Barbarian', icon:'🪓', desc:'Strong physical attacks and battle cries.',
       trees: {
-        attacks: { name:'Attacks', icon:'⚔️',
+        combat: { name:'Combat', icon:'⚔️',
           tiers: [
             { choices: [
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
-            ]},
-            { choices: [
-              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Dual wield attack: ${60+lv*20}% + ${30+lv*15}% dmg` },
-            ]},
-            { choices: [
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_doubleSwing', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
+              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, desc:lv=>`Dual wield attack: ${60+lv*20}% + ${30+lv*15}% dmg` },
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
             ]}
           ]
         },
@@ -427,13 +423,8 @@
           tiers: [
             { choices: [
               { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg for 60s` },
+              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
               { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
-            ]},
-            { choices: [
-              { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', maxLv:5, requires:'barbarian_battleShout', requiresLv:1, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
-            ]},
-            { choices: [
-              { k:'skillShout', name:'Skill Shout', icon:'📣', iconImg:'skill_shout.png', maxLv:5, requires:'barbarian_defensiveShout', requiresLv:1, desc:lv=>`+${lv} temporary skill levels for 30s` },
             ]}
           ]
         },
@@ -441,10 +432,8 @@
           tiers: [
             { choices: [
               { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + slow 20% for ${1+lv}s` },
-            ]},
-            { choices: [
-              { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${80+lv*20}% dmg + stun ${3+(lv-1)*0.5}s` },
-              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_thunderClap', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + interrupt casting` },
+              { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, desc:lv=>`${80+lv*20}% dmg + stun ${3+(lv-1)*0.5}s` },
+              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, desc:lv=>`${60+lv*20}% dmg + interrupt casting` },
             ]}
           ]
         }
