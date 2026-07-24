@@ -902,11 +902,10 @@ body.no-scroll { overflow: hidden; }
 /* Talent Tree — WoW style */
 .talent-schools { display:flex; flex-direction:column; gap:8px; }
 .talent-school {
-  border:2px solid #2a2a2a; border-radius:10px; padding:12px; background:#1a1a1a;
-  transition:0.2s; cursor:pointer;
+  border:none; border-radius:0; padding:0; background:transparent;
+  transition:0.2s;
 }
-.talent-school:hover { border-color:#4a7dff; }
-.talent-school.active { border-color:#f1c40f; background:#1a1a1a; }
+.talent-school.active { border-color:transparent; background:transparent; }
 .talent-school-header {
   display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;
 }
@@ -933,19 +932,23 @@ body.no-scroll { overflow: hidden; }
 .talent-tier-label { display:none; }
 .talent-tier-skills { display:none; }
 .talent-btn {
-  width:80px; height:90px;
-  border:2px solid #2a2a2a; border-radius:8px; padding:4px 2px;
-  background:#0d0d0d; text-align:center; cursor:default;
+  border:none; padding:0;
+  background:transparent; text-align:center; cursor:default;
   transition:0.15s; position:relative;
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
 }
-.talent-btn.owned { border-color:#f1c40f; background:#1a1a1a; }
-.talent-btn.clickable { cursor:pointer; border-color:#4a7dff; }
-.talent-btn.clickable:hover { border-color:#6a9dff; background:#1a1a1a; transform:scale(1.05); }
-.talent-btn.maxed { border-color:#2ecc71; background:#0a0a0a; }
-.talent-btn.selected { border-color:#f1c40f; box-shadow:0 0 8px rgba(241,196,15,0.4); }
-.talent-btn-icon { font-size:18px; line-height:1; }
-.talent-btn-icon img { width:48px; height:48px; }
+.talent-btn.owned .talent-btn-icon { border-color:#f1c40f; }
+.talent-btn.clickable { cursor:pointer; }
+.talent-btn.clickable:hover .talent-btn-icon { border-color:#6a9dff; transform:scale(1.05); }
+.talent-btn.maxed .talent-btn-icon { border-color:#2ecc71; }
+.talent-btn.selected .talent-btn-icon { border-color:#f1c40f; box-shadow:0 0 8px rgba(241,196,15,0.4); }
+.talent-btn-icon {
+  font-size:18px; line-height:1;
+  border:2px solid #2a2a2a; border-radius:8px; padding:4px;
+  display:flex; align-items:center; justify-content:center;
+  transition:0.15s;
+}
+.talent-btn-icon img { width:48px; height:48px; display:block; }
 .talent-btn-name { font-size:9px; font-weight:bold; color:#ccc; line-height:1.1; }
 .talent-btn-lv { font-size:10px; font-weight:bold; color:#f1c40f; }
 .talent-btn-desc { font-size:8px; color:#666; line-height:1.1; }
