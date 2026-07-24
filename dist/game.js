@@ -1865,6 +1865,9 @@
     const content = $('modalContent');
     if (!overlay || !content) return;
 
+    // Vždy otevřít na záložce Inventory
+    const activeTab = 'inventory';
+
     // Render all three screens
     renderInventory();
     renderTalents();
@@ -1878,7 +1881,7 @@
       { id:'hero', label:'Stats' },
     ];
     const tabsHtml = tabs.map(t =>
-      `<div class="combined-tab ${t.id === name ? 'active' : ''}" onclick="game.switchCombinedTab('${t.id}')">${t.label}</div>`
+      `<div class="combined-tab ${t.id === activeTab ? 'active' : ''}" onclick="game.switchCombinedTab('${t.id}')">${t.label}</div>`
     ).join('');
 
     // Build screen wrappers
@@ -1887,7 +1890,7 @@
     tabs.forEach(t => {
       const el = $(screenIds[t.id]);
       if (!el) return;
-      screensHtml += `<div class="combined-screen ${t.id === name ? 'active' : ''}" id="combinedScreen_${t.id}"></div>`;
+      screensHtml += `<div class="combined-screen ${t.id === activeTab ? 'active' : ''}" id="combinedScreen_${t.id}"></div>`;
     });
 
     content.innerHTML = `<div class="combined-tabs">${tabsHtml}</div>
@@ -2295,6 +2298,21 @@
     const mb = mapBattleState;
     if (!mb) return;
     state.areaFightProgress[mb.locId] = 0;
+    saveGame();
+    showScreen('town');
+    renderTown();
+  }
+
+  function continueFromWaypoint(locId) {
+    state.areaFightProgress[locId] = 0;
+    state.locationProgress[locId] = (state.locationProgress[locId] || 0) + 1;
+    state._waypointFloor = false;
+    startLocation(locId);
+  }
+
+  function returnToTownFromWaypoint(locId) {
+    state.areaFightProgress[locId] = 0;
+    state._waypointFloor = false;
     saveGame();
     showScreen('town');
     renderTown();
@@ -8367,10 +8385,9 @@
       // Inkrementovat fight v rámci oblasti
       let af = (state.areaFightProgress[locId] || 0) + 1;
       state.areaFightProgress[locId] = af;
-      // Po 10 soubojích se posunout do další oblasti
+      // Po 10 soubojích — waypoint patro
       if (af >= 10) {
-        state.areaFightProgress[locId] = 0;
-        state.locationProgress[locId] = (state.locationProgress[locId] || 0) + 1;
+        state._waypointFloor = true;
       }
       const p = state.locationProgress[locId] || 0;
       const monsterGold = (1 + rand(0, 2)) * 5;
@@ -8445,14 +8462,27 @@
       $('resultLootList').innerHTML = lootListHtml;
       // Victory action buttons
       const hasScroll = (state.townPortalCount || 0) > 0;
-      let actionsHtml = `<div class="result-tile" onclick="game.startLocation(${locId})" title="Next Fight">
-        <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
-        <span class="result-tile-label">Next Fight</span>
-      </div>`;
-      actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
-        <img src="assets/menu-icons/mesto.png" class="result-tile-img">
-        <span class="result-tile-label">Walk to Town</span>
-      </div>`;
+      const isWaypoint = state._waypointFloor === true;
+      let actionsHtml;
+      if (isWaypoint) {
+        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypoint(${locId})" title="Waypoint">
+          <img src="assets/menu-icons/mapa.png" class="result-tile-img">
+          <span class="result-tile-label">Waypoint</span>
+        </div>`;
+        actionsHtml += `<div class="result-tile" onclick="game.returnToTownFromWaypoint(${locId})" title="Return to Town">
+          <img src="assets/menu-icons/mesto.png" class="result-tile-img">
+          <span class="result-tile-label">Return to Town</span>
+        </div>`;
+      } else {
+        actionsHtml = `<div class="result-tile" onclick="game.startLocation(${locId})" title="Next Fight">
+          <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
+          <span class="result-tile-label">Next Fight</span>
+        </div>`;
+        actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
+          <img src="assets/menu-icons/mesto.png" class="result-tile-img">
+          <span class="result-tile-label">Walk to Town</span>
+        </div>`;
+      }
       if (hasScroll) {
         actionsHtml += `<div class="result-tile" onclick="game.useTownPortalScrollFromResult()" title="Town Portal">
           <img src="assets/items/town_portal_scroll.png" class="result-tile-img">
@@ -10502,7 +10532,8 @@
     castClassSpell,
     usePotion,
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal,
-    walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab
+    walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
+    continueFromWaypoint, returnToTownFromWaypoint
   };
   init();
 })();
