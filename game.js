@@ -2040,11 +2040,11 @@
 
       let badgeHtml;
       if (completed) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Hotovo</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Done</div></div>`;
       } else if (!unlocked) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Zamčeno</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Locked</div></div>`;
       } else {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">Hrát</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">Play</div></div>`;
       }
 
       html += `<div class="map-location-wrap">
@@ -2096,7 +2096,7 @@
 
       // Waypoint dot
       const wpUnlocked = areaDone || areaCurrent;
-      html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Oblast ${area+1} — Waypoint">
+      html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
         <div class="dot-circle dot-wp-inner">★</div>
       </div>`;
 
@@ -2108,7 +2108,7 @@
         const fightNum = area * 10 + f + 1;
         const waveOffset = (area * 10 + f) % 4;
         const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
-        html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${fightLocked?'':`game.startLocation(${actId})`}" title="Souboj ${fightNum}">
+        html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${fightLocked?'':`game.startLocation(${actId})`}" title="Fight ${fightNum}">
           <div class="dot-circle">${fightNum}</div>
         </div>`;
       }
@@ -2149,18 +2149,18 @@
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
       wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin-top:6px">${act.icon} ${act.name}</div>`;
       if (completed) {
-        wpHtml += `<button class="btn btn-secondary" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">✔ ${act.name} (Hotovo)</button>`;
+        wpHtml += `<button class="btn btn-secondary" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">✔ ${act.name} (Done)</button>`;
       } else {
         wps.sort((a,b) => a-b).forEach(areaId => {
           const areaNum = areaId + 1;
           const isCurrent = state.locationProgress[actId] === areaId;
           wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
-            ${isCurrent ? '📍 ' : ''}Oblast ${areaNum}${isCurrent ? ' (Aktuální)' : ''}</button>`;
+            ${isCurrent ? '📍 ' : ''}Area ${areaNum}${isCurrent ? ' (Current)' : ''}</button>`;
         });
       }
     });
     if (!hasAny) {
-      wpHtml = '<div style="color:#666;font-size:13px;text-align:center">Zatím žádné waypointy. Vyraz do divočiny a najdi je!</div>';
+      wpHtml = '<div style="color:#666;font-size:13px;text-align:center">No waypoints yet. Venture into the wilderness to find them!</div>';
     }
     wpContainer.innerHTML = wpHtml;
 
@@ -2171,7 +2171,7 @@
       const act = ACTS[state.townPortalReturn.actId];
       const areaNum = (state.townPortalReturn.zoneId || 0) + 1;
       portalCard.style.display = '';
-      portalInfo.textContent = `📜 Návrat do ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Oblast ${areaNum}`;
+      portalInfo.textContent = `📜 Return to ${act ? act.name : 'Act ' + (state.townPortalReturn.actId+1)}, Area ${areaNum}`;
     } else {
       portalCard.style.display = 'none';
     }

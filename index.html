@@ -92,22 +92,22 @@
     <div class="card-subtitle" style="text-align:center">Rest, shop, and plan your next expedition.</div>
   </div>
 
-  <!-- Divočina — pokračovat tam kde je checkpoint -->
+  <!-- Wilderness — continue from checkpoint -->
   <div class="town-action-card" id="townWildernessBtn" onclick="game.enterCurrentAct()">
     <div class="town-action-icon">⚔️</div>
-    <div class="town-action-label">Divočina</div>
+    <div class="town-action-label">Wilderness</div>
   </div>
 
-  <!-- Obchod -->
+  <!-- Shop -->
   <div class="town-action-card" onclick="game.showScreen('shop')">
     <div class="town-action-icon">🛒</div>
-    <div class="town-action-label">Obchod</div>
+    <div class="town-action-label">Shop</div>
   </div>
 
-  <!-- Waypointy -->
+  <!-- Waypoints -->
   <div class="town-action-card" onclick="game.toggleTownWaypoints()">
     <div class="town-action-icon">📍</div>
-    <div class="town-action-label">Waypointy</div>
+    <div class="town-action-label">Waypoints</div>
   </div>
   <div id="townWaypointsWrap" class="town-waypoints-wrap hidden">
     <div id="townWaypoints" style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
@@ -128,9 +128,9 @@
   <div class="map-scroll" id="mapScroll">
     <!-- Dynamically generated -->
   </div>
-  <!-- Divočina akční tlačítka -->
+  <!-- Map action buttons -->
   <div class="map-actions">
-    <button class="btn btn-secondary map-action-btn" onclick="game.walkToTown()">🚶 Pěšky do města</button>
+    <button class="btn btn-secondary map-action-btn" onclick="game.walkToTown()">🚶 Walk to Town</button>
     <button class="btn btn-secondary map-action-btn" id="mapTownPortalBtn" style="display:none" onclick="game.useTownPortalScrollFromMap()">📜 Town Portal</button>
   </div>
 </div>
@@ -342,7 +342,7 @@
 <div id="shopScreen" class="container hidden">
   <!-- Back to town button — top -->
   <div class="shop-back-map">
-    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">🏘️ Zpět do města</button>
+    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">🏘️ Back to Town</button>
   </div>
   <div class="card">
     <div class="flex-between">
@@ -451,11 +451,11 @@
 <!-- ===== FORFEIT MODAL ===== -->
 <div id="surrenderModal" class="surrender-modal hidden">
   <div class="surrender-modal-content">
-    <div class="surrender-modal-title">🏳️ Vzdát se?</div>
-    <div class="surrender-modal-text">Opravdu se chceš vzdát a opustit boj? Progress v aktuální oblasti bude ztracen, waypointy zůstanou.</div>
+    <div class="surrender-modal-title">🏳️ Forfeit?</div>
+    <div class="surrender-modal-text">Are you sure you want to forfeit and leave the battle? Progress in the current area will be lost, waypoints remain.</div>
     <div class="surrender-modal-buttons">
-      <button class="btn btn-secondary" onclick="game.cancelSurrender()">Ne, zpět</button>
-      <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Vzdát se</button>
+      <button class="btn btn-secondary" onclick="game.cancelSurrender()">No, go back</button>
+      <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Forfeit</button>
     </div>
   </div>
 </div>
