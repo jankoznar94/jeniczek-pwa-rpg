@@ -1769,15 +1769,15 @@
     // Auto-set portrait podle classy
     const classFaces = { barbarian:'hero_barbarian_m', assassin:'hero_rogue_m', mage:'hero_mage_m' };
     state.hero.face = classFaces[classId] || 'hero';
-    state.hero.maxHp = getHeroMaxHp();
-    state.hero.hp = state.hero.maxHp;
-    state.hero.maxMana = getHeroMaxMana();
-    state.hero.mana = state.hero.maxMana;
     state.hero.baseDmg = cls.baseDmg;
     state.hero.attrStr = cls.attrBonus.str;
     state.hero.attrVit = cls.attrBonus.vit;
     state.hero.attrDex = cls.attrBonus.dex;
     state.hero.attrInt = cls.attrBonus.int;
+    state.hero.maxHp = getHeroMaxHp();
+    state.hero.hp = state.hero.maxHp;
+    state.hero.maxMana = getHeroMaxMana();
+    state.hero.mana = state.hero.maxMana;
     // První talent point až na lvl 2 — tady žádný
     state.talentPoints = 0;
     // Startovní zbraň podle classy

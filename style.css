@@ -1664,8 +1664,8 @@ body.no-scroll { overflow: hidden; }
   animation:dotPulse 1.2s ease-in-out infinite;
 }
 @keyframes dotPulse {
-  0%,100%{box-shadow:0 0 4px var(--dot-color,rgba(241,196,15,0.3));transform:scale(1);}
-  50%{box-shadow:0 0 16px var(--dot-color,rgba(241,196,15,0.6));transform:scale(1.2);}
+  0%,100%{box-shadow:0 0 4px var(--dot-color,rgba(241,196,15,0.3));}
+  50%{box-shadow:0 0 16px var(--dot-color,rgba(241,196,15,0.6));}
 }
 
 /* Waypoint dot */
