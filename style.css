@@ -1609,18 +1609,18 @@ body.no-scroll { overflow: hidden; }
 /* ===== DOT PATH INSIDE CARD ===== */
 .map-loc-dot-scroll {
   display:flex;
-  gap:6px;
+  gap:8px;
   overflow-x:auto;
   overflow-y:hidden;
-  padding:8px 0;
+  padding:10px 0;
   scroll-behavior:smooth;
   -webkit-overflow-scrolling:touch;
   /* Hide scrollbar but keep scrollable */
   scrollbar-width:thin;
-  scrollbar-color:#333 transparent;
+  scrollbar-color:#555 transparent;
 }
-.map-loc-dot-scroll::-webkit-scrollbar { height:4px; }
-.map-loc-dot-scroll::-webkit-scrollbar-thumb { background:#333;border-radius:2px; }
+.map-loc-dot-scroll::-webkit-scrollbar { height:6px; }
+.map-loc-dot-scroll::-webkit-scrollbar-thumb { background:#555;border-radius:3px; }
 .dot-wrap {
   display:flex;flex-direction:column;align-items:center;
   cursor:pointer;
@@ -1629,31 +1629,35 @@ body.no-scroll { overflow: hidden; }
   flex-shrink:0;
 }
 .dot-wrap:hover { filter:brightness(1.5); transform:scale(1.15); z-index:2; }
-.dot-wrap.dot-locked { opacity:0.3;cursor:default; }
+.dot-wrap.dot-locked { opacity:0.5;cursor:default; }
 .dot-wrap.dot-locked:hover { filter:none;transform:none; }
 .dot-circle {
-  width:36px;height:36px;
+  width:44px;height:44px;
   border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:bold;
+  font-size:15px;font-weight:bold;
   background:#1a1a1a;
-  border:2px solid #333;
-  color:#555;
+  border:2.5px solid #444;
+  color:#666;
   transition:0.2s;
 }
+/* Done = filled background, white text */
 .dot-done .dot-circle {
   background:var(--dot-color,#2ecc71);
   border-color:var(--dot-color,#2ecc71);
-  color:#000;
+  color:#fff;
 }
+/* Current = border + text only, no background, pulse glow */
 .dot-current .dot-circle {
-  background:var(--dot-color,#f1c40f);
+  background:transparent;
   border-color:var(--dot-color,#f1c40f);
-  color:#000;
-  box-shadow:0 0 10px var(--dot-color,rgba(241,196,15,0.5));
+  color:var(--dot-color,#f1c40f);
+  box-shadow:0 0 10px var(--dot-color,rgba(241,196,15,0.4));
 }
+/* Unlocked (available but not done/current) = border + text, no background */
 .dot-unlocked .dot-circle {
-  border-color:var(--dot-color,#555);
+  background:transparent;
+  border-color:var(--dot-color,#888);
   color:var(--dot-color,#aaa);
 }
 .dot-pulse .dot-circle {
@@ -1661,18 +1665,18 @@ body.no-scroll { overflow: hidden; }
 }
 @keyframes dotPulse {
   0%,100%{box-shadow:0 0 4px var(--dot-color,rgba(241,196,15,0.3));transform:scale(1);}
-  50%{box-shadow:0 0 14px var(--dot-color,rgba(241,196,15,0.6));transform:scale(1.2);}
+  50%{box-shadow:0 0 16px var(--dot-color,rgba(241,196,15,0.6));transform:scale(1.2);}
 }
 
 /* Waypoint dot */
-.dot-waypoint .dot-circle { width:40px;height:40px;font-size:16px; }
+.dot-waypoint .dot-circle { width:48px;height:48px;font-size:18px; }
 .dot-wp-inner { border-style:double;border-width:3px; }
 .dot-waypoint.dot-current .dot-circle { box-shadow:0 0 14px var(--dot-color,rgba(255,215,0,0.5)); }
 
 /* Wave positions */
-.dot-wave-l { margin-top:6px; }
+.dot-wave-l { margin-top:8px; }
 .dot-wave-c { margin-top:0; }
-.dot-wave-r { margin-top:6px; margin-left:2px; }
+.dot-wave-r { margin-top:8px; margin-left:4px; }
 
 /* Map action buttons */
 .map-actions {
@@ -1688,3 +1692,14 @@ body.no-scroll { overflow: hidden; }
   padding:6px 12px;
 }
 .map-loc-dot-scroll-wrap.hidden { display:none; }
+
+/* Result screen action buttons */
+.result-actions {
+  display:flex;flex-wrap:wrap;gap:6px;
+  padding:12px 0;
+  justify-content:center;
+}
+.result-action-btn {
+  flex:1;min-width:120px;font-size:12px;padding:8px 6px;
+  margin:0;
+}

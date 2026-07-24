@@ -2107,11 +2107,13 @@
       const areaCurrent = area === curArea;
       const areaLocked = area > curArea;
 
-      // Waypoint dot
-      const wpUnlocked = areaDone || areaCurrent;
-      html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
-        <div class="dot-circle dot-wp-inner">★</div>
-      </div>`;
+      // Waypoint dot — jen pro oblasti 1+ (první oblast začíná fightem 1)
+      if (area > 0) {
+        const wpUnlocked = areaDone || areaCurrent;
+        html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
+          <div class="dot-circle dot-wp-inner">★</div>
+        </div>`;
+      }
 
       // 10 fight dots
       for (let f = 0; f < 10; f++) {
@@ -2271,6 +2273,34 @@
     const actId = state._currentActOnMap;
     if (actId === undefined || actId === null) return;
     state.areaFightProgress[actId] = 0;
+    saveGame();
+    showScreen('town');
+    renderTown();
+  }
+
+  function walkToTownFromResult() {
+    const mb = mapBattleState;
+    if (!mb) return;
+    state.areaFightProgress[mb.locId] = 0;
+    saveGame();
+    showScreen('town');
+    renderTown();
+  }
+
+  function useTownPortalScrollFromResult() {
+    const mb = mapBattleState;
+    if (!mb) return;
+    const actId = mb.locId;
+    const progress = state.locationProgress[actId] || 0;
+    const areaFight = state.areaFightProgress[actId] || 0;
+    state.townPortalReturn = { actId, zoneId: progress, areaFight };
+    // Remove scroll from inventory
+    const inv = state.hero.inventory || [];
+    const scrollIdx = inv.findIndex(itemId => {
+      const item = ITEM_MAP[itemId];
+      return item && item.subtype === 'townPortal';
+    });
+    if (scrollIdx >= 0) inv.splice(scrollIdx, 1);
     saveGame();
     showScreen('town');
     renderTown();
@@ -8383,15 +8413,22 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
-      $('resultBtn').innerHTML = '';
-      // Po vítězství: rovnou do dalšího souboje (nebo boss)
-      const isLastZone = p >= totalZones;
-      if (isLastZone) {
-        $('resultMsg').innerHTML = '<div style="text-align:center;color:#e74c3c;font-size:14px;font-weight:bold;margin-top:8px">👹 The boss awaits! Prepare for battle.</div>';
-        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; startLocation(locId); };
-      } else {
-        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; startLocation(locId); };
+      // Victory action buttons
+      const hasScroll = (state.hero.inventory || []).some(itemId => {
+        const item = ITEM_MAP[itemId];
+        return item && item.subtype === 'townPortal';
+      });
+      let actionsHtml = `<button class="btn btn-primary result-action-btn" onclick="game.startLocation(${locId})">⚔️ Next Fight</button>`;
+      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.walkToTownFromResult()">🚶 Walk to Town</button>`;
+      if (hasScroll) {
+        actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.useTownPortalScrollFromResult()">📜 Town Portal</button>`;
       }
+      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.openModal('inventory')">🎒 Inventory</button>`;
+      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.openModal('talents')">🎓 Skills</button>`;
+      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.openModal('hero')">📊 Hero</button>`;
+      $('resultActions').innerHTML = actionsHtml;
+      // Remove old onclick
+      $('resultScreen').onclick = null;
       showScreen('result');
       switchBGM('win');
       return;
@@ -10426,7 +10463,7 @@
     castClassSpell,
     usePotion,
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal,
-    walkToTown, useTownPortalScrollFromMap
+    walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal
   };
   init();
 })();
