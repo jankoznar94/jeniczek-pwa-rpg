@@ -1882,22 +1882,40 @@
     const content = $('modalContent');
     if (!overlay || !content) return;
 
+    // Render the screen first
     if (name === 'inventory') {
       renderInventory();
-      content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>
-        <div id="inventoryScreen" class="active">${$('inventoryScreen').innerHTML}</div>`;
     } else if (name === 'talents') {
       renderTalents();
       updateTalentBadge();
-      content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>
-        <div id="talentsScreen" class="active">${$('talentsScreen').innerHTML}</div>`;
     }
+
+    // Move the screen element into the modal (not copy — move)
+    const screenEl = $(SCREEN_IDS[name]);
+    if (!screenEl) return;
+    screenEl.classList.remove('hidden');
+    screenEl.classList.add('active');
+    // Store reference for return
+    content._returnScreen = name;
+    content.innerHTML = `<button class="modal-close" onclick="game.closeModal()">✕</button>`;
+    content.appendChild(screenEl);
     overlay.classList.remove('hidden');
   }
 
   function closeModal() {
     const overlay = $('modalOverlay');
-    if (overlay) overlay.classList.add('hidden');
+    const content = $('modalContent');
+    if (!overlay || !content) return;
+
+    // Move screen element back to body BEFORE clearing innerHTML
+    const screenEl = content.querySelector('.container.active, .container:not(.hidden)');
+    if (screenEl && content._returnScreen) {
+      document.body.appendChild(screenEl);
+      screenEl.classList.add('hidden');
+      screenEl.classList.remove('active');
+    }
+    content.innerHTML = '';
+    overlay.classList.add('hidden');
   }
 
   function showMessage(msg) {
