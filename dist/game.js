@@ -1984,19 +1984,19 @@
           // Waypoint dot
           const wpUnlocked = areaDone || areaCurrent;
           html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="${!wpUnlocked?'':`game.enterAct(${actId})`}" title="Area ${area+1} — Waypoint">
-            <div class="dot-circle dot-wp-inner">★</div>
+          <div class="dot-circle dot-wp-inner">★</div>
           </div>`;
 
           // 10 fight dots
           for (let f = 0; f < 10; f++) {
-            const fightDone = areaDone || (areaCurrent && f < curFight);
-            const fightCurrent = areaCurrent && f === curFight;
-            const fightLocked = areaLocked || (areaCurrent && f > curFight);
-            const fightNum = area * 10 + f + 1;
-            // Wave effect: shift left/right based on position
-            const waveOffset = (area * 10 + f) % 4;
-            const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
-            html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="${fightLocked?'':`game.enterAct(${actId})`}" title="Fight ${fightNum}">
+          const fightDone = areaDone || (areaCurrent && f < curFight);
+          const fightCurrent = areaCurrent && f === curFight;
+          const fightLocked = areaLocked || (areaCurrent && f > curFight);
+          const fightNum = area * 10 + f + 1;
+          // Wave effect: shift left/right based on position
+          const waveOffset = (area * 10 + f) % 4;
+          const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
+          html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="${fightLocked?'':`game.startLocation(${actId})`}" title="Fight ${fightNum}">
               <div class="dot-circle">${fightNum}</div>
             </div>`;
           }
@@ -8214,13 +8214,13 @@
       }
       $('resultLootList').innerHTML = lootListHtml;
       $('resultBtn').innerHTML = '';
-      // Po vítězství: pokud je to poslední zóna, další je boss
+      // Po vítězství: rovnou do dalšího souboje (nebo boss)
       const isLastZone = p >= totalZones;
       if (isLastZone) {
         $('resultMsg').innerHTML = '<div style="text-align:center;color:#e74c3c;font-size:14px;font-weight:bold;margin-top:8px">👹 The boss awaits! Prepare for battle.</div>';
         $('resultScreen').onclick = function() { $('resultScreen').onclick = null; startLocation(locId); };
       } else {
-        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('map'); renderMap(); };
+        $('resultScreen').onclick = function() { $('resultScreen').onclick = null; startLocation(locId); };
       }
       showScreen('result');
       switchBGM('win');
@@ -10240,7 +10240,7 @@
   }
 
   window.game = {
-    showScreen, enterAct, setDifficulty,
+    showScreen, enterAct, startLocation, setDifficulty,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab,
     onMapRapidTap,
