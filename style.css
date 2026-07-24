@@ -962,8 +962,13 @@ body.no-scroll { overflow: hidden; }
 .talent-btn-name { font-size:9px; font-weight:bold; color:#ccc; line-height:1.1; }
 .talent-btn-lv { font-size:10px; font-weight:bold; color:#f1c40f; }
 .talent-btn-desc { font-size:8px; color:#666; line-height:1.1; }
-.talent-school.active.fire .talent-btn.owned { border-color:#e94560; }
-.talent-school.active.fire .talent-btn.maxed { border-color:#e94560; }
+.talents-reset-wrap {
+  margin-top:auto; padding:8px 0 0;
+  border-top:1px solid #2a2a2a;
+}
+.talents-reset-wrap .btn { width:100%; }
+#talentsScreen { display:flex; flex-direction:column; height:100%; }
+#talentsScreen .talent-schools { flex:1; }
 .talent-school.active.ice .talent-btn.owned { border-color:#4a7dff; }
 .talent-school.active.ice .talent-btn.maxed { border-color:#4a7dff; }
 .talent-school.active.nature .talent-btn.owned { border-color:#2ecc71; }
