@@ -14,24 +14,22 @@ body.no-scroll { overflow: hidden; }
 /* Nav */
 .nav-bar {
   display: flex; gap: 6px; padding: 8px 10px;
-  background: #1a1a1a; border-top: 1px solid #2a2a2a; overflow-x: auto;
+  background: #000; border-top: 1px solid #222; overflow-x: auto;
   align-items: center;
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
 }
 .nav-bar a {
   flex-shrink: 0; text-align: center; padding: 0; border-radius: 6px;
   text-decoration: none; color: #999999; font-size: 12px;
-  background: #222222; transition: 0.2s;
+  background: #000; transition: 0.2s;
   display: flex; align-items: center; justify-content: center;
   width: 44px; height: 44px;
   position:relative;
 }
-.nav-bar a:hover, .nav-bar a.active { color: #e8e0e8; background: #363636; }
-.nav-bar a.test-active { border: 2px solid #4caf50; }
-.nav-bar a.music-active { border: 2px solid #f1c40f; }
+.nav-bar a:hover, .nav-bar a.active { color: #e8e0e8; background: #1a1a1a; }
 .nav-icon {
   width: 100%; height: 100%; object-fit: contain; display: block;
-  border-radius: 4px; background: #1a1a1a;
+  border-radius: 4px; background: #000;
 }
 .nav-badge {
   position:absolute; top:-2px; right:-2px;
