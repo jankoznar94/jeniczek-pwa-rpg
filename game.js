@@ -1769,10 +1769,10 @@
     // Auto-set portrait podle classy
     const classFaces = { barbarian:'hero_barbarian_m', assassin:'hero_rogue_m', mage:'hero_mage_m' };
     state.hero.face = classFaces[classId] || 'hero';
-    state.hero.hp = cls.baseHp;
-    state.hero.maxHp = cls.baseHp;
-    state.hero.mana = cls.baseMana;
-    state.hero.maxMana = cls.baseMana;
+    state.hero.maxHp = getHeroMaxHp();
+    state.hero.hp = state.hero.maxHp;
+    state.hero.maxMana = getHeroMaxMana();
+    state.hero.mana = state.hero.maxMana;
     state.hero.baseDmg = cls.baseDmg;
     state.hero.attrStr = cls.attrBonus.str;
     state.hero.attrVit = cls.attrBonus.vit;
