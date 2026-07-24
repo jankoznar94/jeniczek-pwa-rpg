@@ -8465,13 +8465,13 @@
       const isWaypoint = state._waypointFloor === true;
       let actionsHtml;
       if (isWaypoint) {
-        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypoint(${locId})" title="Waypoint">
-          <img src="assets/menu-icons/mapa.png" class="result-tile-img">
-          <span class="result-tile-label">Waypoint</span>
+        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypoint(${locId})" title="Continue">
+          <img src="assets/menu-icons/waypoint.png" class="result-tile-img">
+          <span class="result-tile-label">Continue</span>
         </div>`;
-        actionsHtml += `<div class="result-tile" onclick="game.returnToTownFromWaypoint(${locId})" title="Return to Town">
-          <img src="assets/menu-icons/mesto.png" class="result-tile-img">
-          <span class="result-tile-label">Return to Town</span>
+        actionsHtml += `<div class="result-tile" onclick="game.returnToTownFromWaypoint(${locId})" title="Waypoint to Town">
+          <img src="assets/menu-icons/waypoint.png" class="result-tile-img">
+          <span class="result-tile-label">Waypoint to Town</span>
         </div>`;
       } else {
         actionsHtml = `<div class="result-tile" onclick="game.startLocation(${locId})" title="Next Fight">
