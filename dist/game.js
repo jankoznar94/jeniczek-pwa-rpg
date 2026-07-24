@@ -8418,14 +8418,33 @@
         const item = ITEM_MAP[itemId];
         return item && item.subtype === 'townPortal';
       });
-      let actionsHtml = `<button class="btn btn-primary result-action-btn" onclick="game.startLocation(${locId})">⚔️ Next Fight</button>`;
-      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.walkToTownFromResult()">🚶 Walk to Town</button>`;
+      let actionsHtml = `<div class="result-tile" onclick="game.startLocation(${locId})" title="Next Fight">
+        <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
+        <span class="result-tile-label">Next Fight</span>
+      </div>`;
+      actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
+        <img src="assets/menu-icons/mesto.png" class="result-tile-img">
+        <span class="result-tile-label">Walk to Town</span>
+      </div>`;
       if (hasScroll) {
-        actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.useTownPortalScrollFromResult()">📜 Town Portal</button>`;
+        actionsHtml += `<div class="result-tile" onclick="game.useTownPortalScrollFromResult()" title="Town Portal">
+          <img src="assets/items/town_portal_scroll.png" class="result-tile-img">
+          <span class="result-tile-label">Town Portal</span>
+        </div>`;
       }
-      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.openModal('inventory')">🎒 Inventory</button>`;
-      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.openModal('talents')">🎓 Skills</button>`;
-      actionsHtml += `<button class="btn btn-secondary result-action-btn" onclick="game.openModal('hero')">📊 Hero</button>`;
+      actionsHtml += `<div class="result-tile" onclick="game.openModal('inventory')" title="Inventory">
+        <img src="assets/menu-icons/inventar.png" class="result-tile-img">
+        <span class="result-tile-label">Inventory</span>
+      </div>`;
+      actionsHtml += `<div class="result-tile" onclick="game.openModal('talents')" title="Skills">
+        <img src="assets/menu-icons/talenty.png" class="result-tile-img">
+        <span class="result-tile-label">Skills</span>
+      </div>`;
+      const heroFace = state.hero.face || 'hero';
+      actionsHtml += `<div class="result-tile" onclick="game.openModal('hero')" title="Hero">
+        <img src="assets/monsters/${heroFace}.png" class="result-tile-img">
+        <span class="result-tile-label">Hero</span>
+      </div>`;
       $('resultActions').innerHTML = actionsHtml;
       // Remove old onclick
       $('resultScreen').onclick = null;
