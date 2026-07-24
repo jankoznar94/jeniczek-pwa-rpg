@@ -604,8 +604,8 @@ body.no-scroll { overflow: hidden; }
 #invSlotWeapon { grid-column:1; grid-row:2; justify-self:end; }
 #invSlotArmor { grid-column:2; grid-row:2; }
 #invSlotShield { grid-column:3; grid-row:2; justify-self:start; }
-#invSlotRing1 { grid-column:1; grid-row:3; justify-self:end; }
-#invSlotTownPortal { grid-column:2; grid-row:3; }
+#invSlotTownPortal { grid-column:1; grid-row:3; justify-self:end; }
+#invSlotRing1 { grid-column:2; grid-row:3; }
 #invSlotRing2 { grid-column:3; grid-row:3; justify-self:start; }
 #invSlotBelt { grid-column:2; grid-row:4; }
 
