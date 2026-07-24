@@ -963,10 +963,8 @@ body.no-scroll { overflow: hidden; }
 .talent-btn-lv { font-size:10px; font-weight:bold; color:#f1c40f; }
 .talent-btn-desc { font-size:8px; color:#666; line-height:1.1; }
 .talents-reset-wrap {
-  position:sticky; bottom:0;
-  padding:8px 0 0;
+  margin-top:auto; padding:8px 0 0;
   border-top:1px solid #2a2a2a;
-  background:#0d0d0d;
 }
 .talents-reset-wrap .btn { width:100%; }
 #talentsScreen { display:flex; flex-direction:column; height:100%; }
@@ -1652,10 +1650,10 @@ body.no-scroll { overflow: hidden; }
   transform:scale(0.96);
 }
 .combined-screen {
-  display:none;
+  display:none; height:100%;
 }
 .combined-screen.active {
-  display:block;
+  display:flex; flex-direction:column;
 }
 
 /* ===== DOT PATH INSIDE CARD ===== */
