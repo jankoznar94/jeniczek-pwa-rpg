@@ -1997,6 +1997,21 @@
     const h = state.hero;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
 
+    // Nastavit aktuální act pro map action buttons
+    const diffIdx = state.difficulty || 0;
+    state._currentActOnMap = ACTS.findIndex((loc, i) => {
+      const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
+      return !completed;
+    });
+
+    // Town portal tlačítko — jen pokud má hráč scroll v inventáři
+    const hasScroll = (state.hero.inventory || []).some(itemId => {
+      const item = ITEM_MAP[itemId];
+      return item && item.subtype === 'townPortal';
+    });
+    const tpBtn = $('mapTownPortalBtn');
+    if (tpBtn) tpBtn.style.display = (hasScroll && state._currentActOnMap >= 0) ? '' : 'none';
+
     // Difficulty selector
     const allNormalDone = state.bossesDefeated[0] && state.bossesDefeated[0].every(Boolean);
     const allNightmareDone = state.bossesDefeated[1] && state.bossesDefeated[1].every(Boolean);
@@ -2010,7 +2025,6 @@
 
     // Build act sections with dot paths
     let html = `<div class="diff-selector">${diffBtns}</div>`;
-    const diffIdx = state.difficulty || 0;
 
     ACTS.forEach((loc, actId) => {
       const prevDone = actId === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][actId-1]);
@@ -2183,6 +2197,36 @@
     const progress = state.locationProgress[actId] || 0;
     const areaFight = state.areaFightProgress[actId] || 0;
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
+    saveGame();
+    showScreen('town');
+    renderTown();
+  }
+
+  function useTownPortalScrollFromMap() {
+    // Called from map screen — find a town portal scroll in inventory and use it
+    const inv = state.hero.inventory || [];
+    const scrollIdx = inv.findIndex(itemId => {
+      const item = ITEM_MAP[itemId];
+      return item && item.subtype === 'townPortal';
+    });
+    if (scrollIdx < 0) return;
+    const actId = state._currentActOnMap;
+    if (actId === undefined || actId === null) return;
+    const progress = state.locationProgress[actId] || 0;
+    const areaFight = state.areaFightProgress[actId] || 0;
+    state.townPortalReturn = { actId, zoneId: progress, areaFight };
+    // Remove the scroll from inventory
+    inv.splice(scrollIdx, 1);
+    saveGame();
+    showScreen('town');
+    renderTown();
+  }
+
+  function walkToTown() {
+    // Pěšky do města — ztráta progressu v aktuální oblasti
+    const actId = state._currentActOnMap;
+    if (actId === undefined || actId === null) return;
+    state.areaFightProgress[actId] = 0;
     saveGame();
     showScreen('town');
     renderTown();
@@ -10337,7 +10381,8 @@
     selectClass,
     castClassSpell,
     usePotion,
-    townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal
+    townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal,
+    walkToTown, useTownPortalScrollFromMap
   };
   init();
 })();
