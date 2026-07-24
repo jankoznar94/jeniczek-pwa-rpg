@@ -1892,9 +1892,9 @@
 
     // Build tabs
     const tabs = [
-      { id:'inventory', label:'🎒 Inventory' },
-      { id:'talents', label:'⭐ Skills' },
-      { id:'hero', label:'📊 Stats' },
+      { id:'inventory', label:'Inventory' },
+      { id:'talents', label:'Skills' },
+      { id:'hero', label:'Stats' },
     ];
     const tabsHtml = tabs.map(t =>
       `<div class="combined-tab ${t.id === name ? 'active' : ''}" onclick="game.switchCombinedTab('${t.id}')">${t.label}</div>`
