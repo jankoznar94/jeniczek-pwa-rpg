@@ -121,6 +121,16 @@
   const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
   const meleeHitSfx2 = (() => { const a = new Audio('assets/sfx/melee_hit2.mp3'); a.volume = 1.0; return a; })();
   const enemyHitSfx = (() => { const a = new Audio('assets/sfx/enemy_hit.mp3'); a.volume = 1.0; return a; })();
+  const enemyHitSfxPool = [
+    enemyHitSfx,
+    (() => { const a = new Audio('assets/sfx/enemy_hit1.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit2.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit3.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit4.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit5.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit6.mp3'); a.volume = 1.0; return a; })(),
+  ];
+  function getEnemyHitSfx() { return enemyHitSfxPool[Math.floor(Math.random() * enemyHitSfxPool.length)]; }
   const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2];
   const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
   const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
@@ -7893,7 +7903,7 @@
     // Zvuk — crit má vlastní zvuk, jinak normální
     playSFX(isCrit ? getCritSfx() : getHitSfx());
     // Občasný zásahový zvuk (30% šance)
-    playSFX(enemyHitSfx);
+    playSFX(getEnemyHitSfx());
 
     // ❄️ Ledové poškození ze zbraně — lehký chill efekt
     if (weapon.iceDmg > 0) {
