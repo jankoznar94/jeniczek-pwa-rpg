@@ -8552,6 +8552,7 @@
       $('resultLootList').innerHTML = '';
       $('resultBtn').innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
+      showScreen('result');
     } else if (mb.isBoss) {
       // Boss defeated
       state.wins = (state.wins || 0) + 1;
