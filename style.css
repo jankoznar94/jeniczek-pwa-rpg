@@ -768,6 +768,12 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-compare-icon { font-size:40px; }
 .inv-item-overlay-compare-name { font-size:13px;font-weight:bold;text-align:center; }
 .inv-item-overlay-compare-stats { font-size:11px;color:#aaa;line-height:1.6;text-align:center; }
+.inv-item-overlay-btn {
+  margin-top:10px;padding:8px 24px;font-size:14px;font-weight:bold;
+  background:#2a2a2a;border:1px solid #555;border-radius:6px;
+  color:#eee;cursor:pointer;transition:0.15s;
+}
+.inv-item-overlay-btn:hover { background:#3a3a3a;border-color:#f1c40f; }
 .inv-compare-ring-stats { flex:1; min-width:0; }
 .inv-compare-ring-name { font-size:13px; }
 
