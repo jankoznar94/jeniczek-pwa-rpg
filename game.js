@@ -3202,10 +3202,12 @@
       state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
     }
 
-    // Heroic Strike — 150% dmg
+    // Heroic Strike — scaling podle levelu: 100 + lv*100 % weapon dmg
     let dmgMult = 1.0;
     if (mb._heroicStrikeQueued) {
-      dmgMult = 1.5;
+      const hsLv = getSpellLv('heroicStrike');
+      const hsPct = 100 + (hsLv || 1) * 100; // lv1=200%, lv2=300%, ...
+      dmgMult = hsPct / 100;
       mb._heroicStrikeQueued = false;
       // Heroic Strike — vlastní animace, normální spawnMeleeImpact se nevolá
       mb._skipMeleeImpact = true;
@@ -4156,7 +4158,10 @@
       playSFX(shoutSfx);
       _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
-      // Double Swing — 150% dmg oběma zbraněmi + reset swing timerů
+      // Double Swing — scaling podle levelu: (60+lv*20)% + (30+lv*15)% dmg
+      const lv = getSpellLv('doubleSwing');
+      const mainPct = (60 + lv * 20) / 100; // lv1=80%, lv2=100%, lv3=120%...
+      const offPct = (30 + lv * 15) / 100;  // lv1=45%, lv2=60%, lv3=75%...
       const offhandWeapon = (mb.offhandSwingMs > 0 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
       if (!offhandWeapon) {
         showMessage('⚔️ Potřebuješ dvě zbraně!');
@@ -4165,9 +4170,9 @@
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
       const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const mainDmg = baseDmg + getWeaponDmg(weapon);
-      const offDmg = baseDmg + getWeaponDmg(offhandWeapon);
-      const totalDmg = Math.max(1, Math.round((mainDmg + offDmg) * 1.5));
+      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * mainPct));
+      const offDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(offhandWeapon)) * offPct));
+      const totalDmg = mainDmg + offDmg;
       mb.bossHp -= totalDmg;
       // Reset obou swing timerů
       mb._playerSwingStart = performance.now();
@@ -4180,14 +4185,16 @@
       spawnDoubleSwingAnim(mb);
       spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 'assets/spells/doubleSwing.png');
     } else if (spellId === 'whirlwind') {
-      // Whirlwind — 3× rychlé útoky
+      // Whirlwind — scaling podle levelu: (50+lv*30)% dmg, 3 attacks
+      const lv = getSpellLv('whirlwind');
+      const pct = (50 + lv * 30) / 100; // lv1=80%, lv2=110%, lv3=140%...
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const offhandWeapon = (mb.offhandSwingMs > 0 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
       const eqAttrs = getEquipAttrs();
       const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const mainDmg = baseDmg + getWeaponDmg(weapon);
-      const offDmg = offhandWeapon ? baseDmg + getWeaponDmg(offhandWeapon) : 0;
-      const totalDmg = Math.max(1, Math.round((mainDmg + offDmg) * 1.5));
+      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * pct));
+      const offDmg = offhandWeapon ? Math.max(1, Math.round((baseDmg + getWeaponDmg(offhandWeapon)) * pct)) : 0;
+      const totalDmg = mainDmg + offDmg;
       mb.bossHp -= totalDmg;
       playSFX(whirlwindSfx);
       // Animace
