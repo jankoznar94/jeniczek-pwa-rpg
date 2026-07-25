@@ -1353,6 +1353,95 @@
     return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
   }
 
+  function buildItemStatsHtml(item) {
+    if (!item) return '';
+    const rows = [];
+    function addRow(label, value) {
+      if (value === undefined || value === null || value === '' || value === 0) return;
+      rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
+    }
+    // Názvy affixů
+    if (item.affixes && item.affixes.length) {
+      addRow('Affixes', item.affixes.map(a => a.name).join(', '));
+    }
+    // Sestavit mapu rozsahů z affixů — statName → [min, max]
+    const affixRangeMap = {};
+    if (item.affixes) {
+      item.affixes.forEach(a => {
+        if (a.stats) {
+          Object.keys(a.stats).forEach(stat => {
+            affixRangeMap[stat] = a.stats[stat];
+          });
+        }
+      });
+    }
+    function affixRange(stat) {
+      const r = affixRangeMap[stat];
+      if (!r) return '';
+      return ` [${r[0]} - ${r[1]}]`;
+    }
+    // Weapon staty
+    if (item.type === 'weapon') {
+      const handLabel = item.twoHand ? '2H' : '1H';
+      const dmgMin = item.baseDmgMin || 1;
+      const dmgMax = item.baseDmgMax || 1;
+      const swingSec = (item.swingMs || 2200) / 1000;
+      const avgDmg = (dmgMin + dmgMax) / 2;
+      const dps = Math.round(avgDmg / swingSec * 10) / 10;
+      addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel})`);
+      addRow('DPS', dps);
+      if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
+      if (item.weaponType === 'staff') addRow('Type', 'Magical');
+      else if (item.weaponType === 'blade') addRow('Type', 'Physical');
+    }
+    // Armor/helmet
+    else if (item.type === 'armor' || item.type === 'helmet') {
+      if (item.defense) addRow('Defense', item.defense);
+      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+    }
+    // Shield
+    else if (item.type === 'shield') {
+      if (item.blockChance) addRow('Block', `${item.blockChance}%`);
+      if (item.defense) addRow('Defense', item.defense);
+      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+    }
+    // Belt
+    else if (item.type === 'belt') {
+      addRow('Potion Slots', item.beltSlots || 0);
+      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+    }
+    // Consumable
+    else if (item.type === 'consumable') {
+      const label = item.subtype === 'heal' ? 'Heals' : 'Restores';
+      addRow(label, `${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'Mana'}`);
+    }
+    // Affix staty
+    if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}${affixRange('fireDmg')}`);
+    if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}${affixRange('iceDmg')}`);
+    if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
+    if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
+    if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
+    if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
+    if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
+    if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
+    if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
+    if (item.swingMs && item.swingMs < 0) addRow('Swing Speed', `${item.swingMs}ms${affixRange('swingMs')}`);
+    if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
+    if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
+    if (item.str) addRow('Strength', `+${item.str}${affixRange('str')}`);
+    if (item.vit) addRow('Vitality', `+${item.vit}${affixRange('vit')}`);
+    if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
+    if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
+    if (item.attrs) {
+      Object.keys(item.attrs).forEach(k => {
+        const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
+        addRow(names[k] || k, `+${item.attrs[k]}`);
+      });
+    }
+    if (item.cost) addRow('Value', `${item.cost} gold`);
+    return rows.join('');
+  }
+
   // ===== MONSTER TYPES =====
   const MONSTER_TYPES = {
     LIFESTEALER: 'lifestealer',
@@ -9646,92 +9735,7 @@
       $('invItemOverlayName').style.color = qColor;
       // Border overlay content podle kvality
       $('invItemOverlayContent').style.borderColor = qColor;
-      // Staty — řádek po řádku, žádná rarita
-      const rows = [];
-      function addRow(label, value) {
-        if (value === undefined || value === null || value === '' || value === 0) return;
-        rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
-      }
-      // Názvy affixů
-      if (item.affixes && item.affixes.length) {
-        addRow('Affixes', item.affixes.map(a => a.name).join(', '));
-      }
-      // Sestavit mapu rozsahů z affixů — statName → [min, max]
-      const affixRangeMap = {};
-      if (item.affixes) {
-        item.affixes.forEach(a => {
-          if (a.stats) {
-            Object.keys(a.stats).forEach(stat => {
-              affixRangeMap[stat] = a.stats[stat]; // [min, max]
-            });
-          }
-        });
-      }
-      function affixRange(stat) {
-        const r = affixRangeMap[stat];
-        if (!r) return '';
-        return ` [${r[0]} - ${r[1]}]`;
-      }
-      // Weapon staty
-      if (item.type === 'weapon') {
-        const handLabel = item.twoHand ? '2H' : '1H';
-        const dmgMin = item.baseDmgMin || 1;
-        const dmgMax = item.baseDmgMax || 1;
-        const swingSec = (item.swingMs || 2200) / 1000;
-        const avgDmg = (dmgMin + dmgMax) / 2;
-        const dps = Math.round(avgDmg / swingSec * 10) / 10;
-        addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel})`);
-        addRow('DPS', dps);
-        if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
-        if (item.weaponType === 'staff') addRow('Type', 'Magical');
-        else if (item.weaponType === 'blade') addRow('Type', 'Physical');
-      }
-      // Armor/helmet
-      else if (item.type === 'armor' || item.type === 'helmet') {
-        if (item.defense) addRow('Defense', item.defense);
-        if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
-      }
-      // Shield
-      else if (item.type === 'shield') {
-        if (item.blockChance) addRow('Block', `${item.blockChance}%`);
-        if (item.defense) addRow('Defense', item.defense);
-        if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
-      }
-      // Belt
-      else if (item.type === 'belt') {
-        addRow('Potion Slots', item.beltSlots || 0);
-        if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
-      }
-      // Consumable
-      else if (item.type === 'consumable') {
-        const label = item.subtype === 'heal' ? 'Heals' : 'Restores';
-        addRow(label, `${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'Mana'}`);
-      }
-      // Affix staty
-      if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}${affixRange('fireDmg')}`);
-      if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}${affixRange('iceDmg')}`);
-      if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
-      if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
-      if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
-      if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
-      if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
-      if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
-      if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
-      if (item.swingMs && item.swingMs < 0) addRow('Swing Speed', `${item.swingMs}ms${affixRange('swingMs')}`);
-      if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
-      if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
-      if (item.str) addRow('Strength', `+${item.str}${affixRange('str')}`);
-      if (item.vit) addRow('Vitality', `+${item.vit}${affixRange('vit')}`);
-      if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
-      if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
-      if (item.attrs) {
-        Object.keys(item.attrs).forEach(k => {
-          const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
-          addRow(names[k] || k, `+${item.attrs[k]}`);
-        });
-      }
-      if (item.cost) addRow('Value', `${item.cost} gold`);
-      $('invItemOverlayStats').innerHTML = rows.join('');
+      $('invItemOverlayStats').innerHTML = buildItemStatsHtml(item);
 
       // Srovnávací panel — nasazený předmět stejného slotu
       const compareEl = $('invItemOverlayCompare');
@@ -9751,26 +9755,9 @@
           [ring1, ring2].forEach(r => {
             if (!r) return;
             const eqColor = getQualityColor(r);
-            let s = `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${r.name}</div>`;
-            s += '<div class="stat-row"><span class="stat-label">Type</span><span class="stat-value">Ring</span></div>';
-            if (r.fireDmg) s += `<div class="stat-row"><span class="stat-label">Fire Dmg</span><span class="stat-value">+${r.fireDmg}</span></div>`;
-            if (r.iceDmg) s += `<div class="stat-row"><span class="stat-label">Ice Dmg</span><span class="stat-value">+${r.iceDmg}</span></div>`;
-            if (r.poisonDmg) s += `<div class="stat-row"><span class="stat-label">Poison Dmg</span><span class="stat-value">+${r.poisonDmg}</span></div>`;
-            if (r.lifesteal) s += `<div class="stat-row"><span class="stat-label">Life Steal</span><span class="stat-value">+${r.lifesteal}%</span></div>`;
-            if (r.manaSteal) s += `<div class="stat-row"><span class="stat-label">Mana Steal</span><span class="stat-value">+${r.manaSteal}%</span></div>`;
-            if (r.attackRating) s += `<div class="stat-row"><span class="stat-label">Hit Rating</span><span class="stat-value">+${r.attackRating}</span></div>`;
-            if (r.skillDmg) s += `<div class="stat-row"><span class="stat-label">Skill Dmg</span><span class="stat-value">+${r.skillDmg}%</span></div>`;
-            if (r.manaRegen) s += `<div class="stat-row"><span class="stat-label">Mana Regen</span><span class="stat-value">+${r.manaRegen}/tick</span></div>`;
-            if (r.bonusMana) s += `<div class="stat-row"><span class="stat-label">+Mana</span><span class="stat-value">+${r.bonusMana}</span></div>`;
-            if (r.enhancedDefense) s += `<div class="stat-row"><span class="stat-label">Enhanced Def</span><span class="stat-value">+${r.enhancedDefense}%</span></div>`;
-            if (r.enhancedDmg) s += `<div class="stat-row"><span class="stat-label">Enhanced Dmg</span><span class="stat-value">+${r.enhancedDmg}%</span></div>`;
-            if (r.defense) s += `<div class="stat-row"><span class="stat-label">Defense</span><span class="stat-value">${r.defense}</span></div>`;
-            if (r.critChance) s += `<div class="stat-row"><span class="stat-label">Crit</span><span class="stat-value">${r.critChance}%</span></div>`;
-            if (r.str) s += `<div class="stat-row"><span class="stat-label">Strength</span><span class="stat-value">+${r.str}</span></div>`;
-            if (r.vit) s += `<div class="stat-row"><span class="stat-label">Vitality</span><span class="stat-value">+${r.vit}</span></div>`;
-            if (r.int) s += `<div class="stat-row"><span class="stat-label">Intellect</span><span class="stat-value">+${r.int}</span></div>`;
-            if (r.dex) s += `<div class="stat-row"><span class="stat-label">Dexterity</span><span class="stat-value">+${r.dex}</span></div>`;
-            bothHtml += s + '<div style="height:4px"></div>';
+            bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${r.name}</div>`;
+            bothHtml += buildItemStatsHtml(r);
+            bothHtml += '<div style="height:4px"></div>';
           });
           if (bothHtml) {
             $('invItemOverlayCompareIcon').innerHTML = '';
@@ -9790,30 +9777,9 @@
           [mh, oh].forEach(w => {
             if (!w) return;
             const eqColor = getQualityColor(w);
-            let s = `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
-            const handLabel = w.twoHand ? '2H' : '1H';
-            const dmgMin = w.baseDmgMin || 1;
-            const dmgMax = w.baseDmgMax || 1;
-            const swingSec = (w.swingMs || 2200) / 1000;
-            const avgDmg = (dmgMin + dmgMax) / 2;
-            const dps = Math.round(avgDmg / swingSec * 10) / 10;
-            s += `<div class="stat-row"><span class="stat-label">Damage</span><span class="stat-value">${dmgMin}-${dmgMax} (${handLabel})</span></div>`;
-            s += `<div class="stat-row"><span class="stat-label">DPS</span><span class="stat-value">${dps}</span></div>`;
-            if (w.critChance) s += `<div class="stat-row"><span class="stat-label">Crit</span><span class="stat-value">${w.critChance}%</span></div>`;
-            if (w.fireDmg) s += `<div class="stat-row"><span class="stat-label">Fire Dmg</span><span class="stat-value">+${w.fireDmg}</span></div>`;
-            if (w.iceDmg) s += `<div class="stat-row"><span class="stat-label">Ice Dmg</span><span class="stat-value">+${w.iceDmg}</span></div>`;
-            if (w.poisonDmg) s += `<div class="stat-row"><span class="stat-label">Poison Dmg</span><span class="stat-value">+${w.poisonDmg}</span></div>`;
-            if (w.lifesteal) s += `<div class="stat-row"><span class="stat-label">Life Steal</span><span class="stat-value">+${w.lifesteal}%</span></div>`;
-            if (w.attackRating) s += `<div class="stat-row"><span class="stat-label">Hit Rating</span><span class="stat-value">+${w.attackRating}</span></div>`;
-            if (w.skillDmg) s += `<div class="stat-row"><span class="stat-label">Skill Dmg</span><span class="stat-value">+${w.skillDmg}%</span></div>`;
-            if (w.manaRegen) s += `<div class="stat-row"><span class="stat-label">Mana Regen</span><span class="stat-value">+${w.manaRegen}/tick</span></div>`;
-            if (w.bonusMana) s += `<div class="stat-row"><span class="stat-label">+Mana</span><span class="stat-value">+${w.bonusMana}</span></div>`;
-            if (w.enhancedDmg) s += `<div class="stat-row"><span class="stat-label">Enhanced Dmg</span><span class="stat-value">+${w.enhancedDmg}%</span></div>`;
-            if (w.str) s += `<div class="stat-row"><span class="stat-label">Strength</span><span class="stat-value">+${w.str}</span></div>`;
-            if (w.vit) s += `<div class="stat-row"><span class="stat-label">Vitality</span><span class="stat-value">+${w.vit}</span></div>`;
-            if (w.int) s += `<div class="stat-row"><span class="stat-label">Intellect</span><span class="stat-value">+${w.int}</span></div>`;
-            if (w.dex) s += `<div class="stat-row"><span class="stat-label">Dexterity</span><span class="stat-value">+${w.dex}</span></div>`;
-            bothHtml += s + '<div style="height:4px"></div>';
+            bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
+            bothHtml += buildItemStatsHtml(w);
+            bothHtml += '<div style="height:4px"></div>';
           });
           if (bothHtml) {
             $('invItemOverlayCompareIcon').innerHTML = '';
@@ -9833,44 +9799,7 @@
               $('invItemOverlayCompareIcon').innerHTML = renderItemIcon(equipped, 40);
               $('invItemOverlayCompareName').textContent = equipped.name;
               $('invItemOverlayCompareName').style.color = eqColor;
-              const erows = [];
-              if (equipped.type === 'weapon') {
-                const handLabel = equipped.twoHand ? '2H' : '1H';
-                const dmgMin = equipped.baseDmgMin || 1;
-                const dmgMax = equipped.baseDmgMax || 1;
-                const swingSec = (equipped.swingMs || 2200) / 1000;
-                const avgDmg = (dmgMin + dmgMax) / 2;
-                const dps = Math.round(avgDmg / swingSec * 10) / 10;
-                erows.push(`<div class="stat-row"><span class="stat-label">Damage</span><span class="stat-value">${dmgMin}-${dmgMax} (${handLabel})</span></div>`);
-                erows.push(`<div class="stat-row"><span class="stat-label">DPS</span><span class="stat-value">${dps}</span></div>`);
-                if (equipped.critChance) erows.push(`<div class="stat-row"><span class="stat-label">Crit</span><span class="stat-value">${equipped.critChance}%</span></div>`);
-              } else if (equipped.type === 'armor' || equipped.type === 'helmet') {
-                if (equipped.defense) erows.push(`<div class="stat-row"><span class="stat-label">Defense</span><span class="stat-value">${equipped.defense}</span></div>`);
-                if (equipped.bonusHp) erows.push(`<div class="stat-row"><span class="stat-label">+HP</span><span class="stat-value">+${equipped.bonusHp}</span></div>`);
-              } else if (equipped.type === 'shield') {
-                if (equipped.blockChance) erows.push(`<div class="stat-row"><span class="stat-label">Block</span><span class="stat-value">${equipped.blockChance}%</span></div>`);
-                if (equipped.defense) erows.push(`<div class="stat-row"><span class="stat-label">Defense</span><span class="stat-value">${equipped.defense}</span></div>`);
-                if (equipped.bonusHp) erows.push(`<div class="stat-row"><span class="stat-label">+HP</span><span class="stat-value">+${equipped.bonusHp}</span></div>`);
-              } else if (equipped.type === 'belt') {
-                erows.push(`<div class="stat-row"><span class="stat-label">Potion Slots</span><span class="stat-value">${equipped.beltSlots||0}</span></div>`);
-                if (equipped.bonusHp) erows.push(`<div class="stat-row"><span class="stat-label">+HP</span><span class="stat-value">+${equipped.bonusHp}</span></div>`);
-              }
-              if (equipped.fireDmg) erows.push(`<div class="stat-row"><span class="stat-label">Fire Dmg</span><span class="stat-value">+${equipped.fireDmg}</span></div>`);
-              if (equipped.iceDmg) erows.push(`<div class="stat-row"><span class="stat-label">Ice Dmg</span><span class="stat-value">+${equipped.iceDmg}</span></div>`);
-              if (equipped.poisonDmg) erows.push(`<div class="stat-row"><span class="stat-label">Poison Dmg</span><span class="stat-value">+${equipped.poisonDmg}</span></div>`);
-              if (equipped.lifesteal) erows.push(`<div class="stat-row"><span class="stat-label">Life Steal</span><span class="stat-value">+${equipped.lifesteal}%</span></div>`);
-              if (equipped.manaSteal) erows.push(`<div class="stat-row"><span class="stat-label">Mana Steal</span><span class="stat-value">+${equipped.manaSteal}%</span></div>`);
-              if (equipped.attackRating) erows.push(`<div class="stat-row"><span class="stat-label">Hit Rating</span><span class="stat-value">+${equipped.attackRating}</span></div>`);
-              if (equipped.skillDmg) erows.push(`<div class="stat-row"><span class="stat-label">Skill Dmg</span><span class="stat-value">+${equipped.skillDmg}%</span></div>`);
-              if (equipped.manaRegen) erows.push(`<div class="stat-row"><span class="stat-label">Mana Regen</span><span class="stat-value">+${equipped.manaRegen}/tick</span></div>`);
-              if (equipped.bonusMana) erows.push(`<div class="stat-row"><span class="stat-label">+Mana</span><span class="stat-value">+${equipped.bonusMana}</span></div>`);
-              if (equipped.enhancedDefense) erows.push(`<div class="stat-row"><span class="stat-label">Enhanced Def</span><span class="stat-value">+${equipped.enhancedDefense}%</span></div>`);
-              if (equipped.enhancedDmg) erows.push(`<div class="stat-row"><span class="stat-label">Enhanced Dmg</span><span class="stat-value">+${equipped.enhancedDmg}%</span></div>`);
-              if (equipped.str) erows.push(`<div class="stat-row"><span class="stat-label">Strength</span><span class="stat-value">+${equipped.str}</span></div>`);
-              if (equipped.vit) erows.push(`<div class="stat-row"><span class="stat-label">Vitality</span><span class="stat-value">+${equipped.vit}</span></div>`);
-              if (equipped.int) erows.push(`<div class="stat-row"><span class="stat-label">Intellect</span><span class="stat-value">+${equipped.int}</span></div>`);
-              if (equipped.dex) erows.push(`<div class="stat-row"><span class="stat-label">Dexterity</span><span class="stat-value">+${equipped.dex}</span></div>`);
-              $('invItemOverlayCompareStats').innerHTML = erows.join('');
+              $('invItemOverlayCompareStats').innerHTML = buildItemStatsHtml(equipped);
               hasCompare = true;
             }
           }
@@ -10208,6 +10137,28 @@
     } else if (item.type === 'amulet') {
       if (h.equip.amulet) h.inventory.push(h.equip.amulet);
       h.equip.amulet = itemId;
+    } else if (item.type === 'consumable') {
+      // Potiony a town portal scrolly — vložit do belt slotu nebo přičíst
+      if (item.subtype === 'townPortal') {
+        state.townPortalCount = (state.townPortalCount || 0) + 1;
+      } else {
+        // healingPotion / manaPotion — vložit do prvního volného belt slotu
+        const bpSlots = h.equip.beltPotionSlots || [];
+        const emptyIdx = bpSlots.indexOf(null);
+        if (emptyIdx !== -1) {
+          bpSlots[emptyIdx] = itemId;
+          h.equip.beltPotionSlots = bpSlots;
+        } else {
+          // Všechny sloty plné — vrátit do inventáře
+          h.inventory.splice(invIdx, 0, itemId);
+          showMessage('❌ No empty belt slots!');
+          return;
+        }
+      }
+      saveGame();
+      renderInventory();
+      renderHero();
+      return;
     }
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
