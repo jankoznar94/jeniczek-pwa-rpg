@@ -750,7 +750,7 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-icon { font-size:56px;margin-bottom:4px; }
 .inv-item-overlay-name { font-size:15px;font-weight:bold;text-align:center; }
 .inv-item-overlay-stats {
-  font-size:12px;color:#ccc;line-height:1.7;text-align:center;
+  font-size:12px;color:#ccc;line-height:1.7;text-align:left;
   width:100%;
 }
 .inv-item-overlay-stats .stat-row {
@@ -763,12 +763,12 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-compare {
   width:100%;margin-top:8px;padding-top:8px;
   border-top:1px solid #2a2a2a;
-  display:flex;flex-direction:column;align-items:center;gap:6px;
+  display:flex;flex-direction:column;align-items:flex-start;gap:6px;
 }
 .inv-item-overlay-compare-divider { font-size:10px;color:#555;letter-spacing:2px; }
 .inv-item-overlay-compare-icon { font-size:40px; }
-.inv-item-overlay-compare-name { font-size:13px;font-weight:bold;text-align:center; }
-.inv-item-overlay-compare-stats { font-size:11px;color:#aaa;line-height:1.6;text-align:center; }
+.inv-item-overlay-compare-name { font-size:13px;font-weight:bold;text-align:left; }
+.inv-item-overlay-compare-stats { font-size:11px;color:#aaa;line-height:1.6;text-align:left; }
 .inv-item-overlay-btn {
   margin-top:10px;padding:8px 24px;font-size:14px;font-weight:bold;
   background:#2a2a2a;border:1px solid #555;border-radius:6px;
