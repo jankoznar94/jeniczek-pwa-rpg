@@ -2425,7 +2425,7 @@
       monsterSpells = b.spells || [];
     } else {
       const m = floorMonsters[0];
-      monsterHp = Math.round((m.hp || 80) * diffMultOverall);
+      monsterHp = Math.round((m.hp || 80) * diffMultOverall * 2.0);
       monsterDmgMin = m.dmgMin || 5;
       monsterDmgMax = m.dmgMax || 10;
       monsterAttackSpeed = m.attackSpeed || 2000;
@@ -9859,15 +9859,51 @@
       // Equip/Unequip tlačítko
       const btn = $('invItemOverlayBtn');
       if (window._invSelectedIdx !== null) {
-        // Item z batohu → Equip
-        btn.textContent = 'Equip';
-        btn.className = 'inv-item-overlay-btn';
-        btn.onclick = function() {
-          equipItem(window._invSelectedIdx);
-          closeItemOverlay();
-          clearSelection();
-        };
-        btn.classList.remove('hidden');
+        // Item z batohu
+        const isWeapon = item.type === 'weapon';
+        const isOneHand = isWeapon && !item.twoHand;
+        const cls = CLASSES[state.heroClass];
+        const canDualWield = cls && cls.dualWield && isOneHand;
+        if (canDualWield) {
+          // Dvě tlačítka pro dual wield
+          btn.textContent = 'Equip Main Hand';
+          btn.className = 'inv-item-overlay-btn';
+          btn.onclick = function() {
+            equipItemToSlot(window._invSelectedIdx, 'weapon');
+            closeItemOverlay();
+            clearSelection();
+          };
+          btn.classList.remove('hidden');
+          // Druhé tlačítko — vytvořit nebo najít
+          let btn2 = $('invItemOverlayBtn2');
+          if (!btn2) {
+            btn2 = document.createElement('button');
+            btn2.id = 'invItemOverlayBtn2';
+            btn2.className = 'inv-item-overlay-btn';
+            btn2.style.marginTop = '0';
+            $('invItemOverlayContent').appendChild(btn2);
+          }
+          btn2.textContent = 'Equip Off Hand';
+          btn2.onclick = function() {
+            equipItemToSlot(window._invSelectedIdx, 'shield');
+            closeItemOverlay();
+            clearSelection();
+          };
+          btn2.classList.remove('hidden');
+        } else {
+          // Jedno tlačítko
+          btn.textContent = 'Equip';
+          btn.className = 'inv-item-overlay-btn';
+          btn.onclick = function() {
+            equipItem(window._invSelectedIdx);
+            closeItemOverlay();
+            clearSelection();
+          };
+          btn.classList.remove('hidden');
+          // Skrýt btn2 pokud existuje
+          const btn2 = $('invItemOverlayBtn2');
+          if (btn2) btn2.classList.add('hidden');
+        }
       } else if (window._invSelectedSlot !== null) {
         // Item z equip slotu → Unequip
         btn.textContent = 'Unequip';
@@ -9879,8 +9915,13 @@
           clearSelection();
         };
         btn.classList.remove('hidden');
+        // Skrýt btn2 pokud existuje
+        const btn2 = $('invItemOverlayBtn2');
+        if (btn2) btn2.classList.add('hidden');
       } else {
         btn.classList.add('hidden');
+        const btn2 = $('invItemOverlayBtn2');
+        if (btn2) btn2.classList.add('hidden');
       }
       ov.classList.remove('hidden');
     }
