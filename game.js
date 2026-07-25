@@ -9768,7 +9768,7 @@
         else if (item.type === 'weapon') {
           const mhId = state.hero.equip.weapon;
           const ohId = state.hero.equip.shield;
-          const mh = mhId ? ITEM_MAP[mhId] : null;
+          const mh = mhId && mhId !== 'fists' ? ITEM_MAP[mhId] : null;
           const oh = (ohId && ITEM_MAP[ohId] && ITEM_MAP[ohId].weaponType) ? ITEM_MAP[ohId] : null;
           let bothHtml = '';
           [mh, oh].forEach(w => {
@@ -9848,7 +9848,14 @@
           }
         }
       }
-      compareEl.classList.toggle('hidden', !hasCompare);
+      // VŽDY zobrazit compare sekci (i když prázdná — ukáže aspoň divider)
+      compareEl.classList.remove('hidden');
+      if (!hasCompare) {
+        $('invItemOverlayCompareIcon').innerHTML = '';
+        $('invItemOverlayCompareName').textContent = 'Nothing Equipped';
+        $('invItemOverlayCompareName').style.color = '#555';
+        $('invItemOverlayCompareStats').innerHTML = '';
+      }
       // Equip/Unequip tlačítko
       const btn = $('invItemOverlayBtn');
       if (window._invSelectedIdx !== null) {
