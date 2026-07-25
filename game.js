@@ -9640,6 +9640,22 @@
       if (item.affixes && item.affixes.length) {
         addRow('Affixes', item.affixes.map(a => a.name).join(', '));
       }
+      // Sestavit mapu rozsahů z affixů — statName → [min, max]
+      const affixRangeMap = {};
+      if (item.affixes) {
+        item.affixes.forEach(a => {
+          if (a.stats) {
+            Object.keys(a.stats).forEach(stat => {
+              affixRangeMap[stat] = a.stats[stat]; // [min, max]
+            });
+          }
+        });
+      }
+      function affixRange(stat) {
+        const r = affixRangeMap[stat];
+        if (!r) return '';
+        return ` [${r[0]} - ${r[1]}]`;
+      }
       // Weapon staty
       if (item.type === 'weapon') {
         const handLabel = item.twoHand ? '2H' : '1H';
@@ -9676,22 +9692,22 @@
         addRow(label, `${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'Mana'}`);
       }
       // Affix staty
-      if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}`);
-      if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}`);
-      if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)`);
-      if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%`);
-      if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%`);
-      if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}`);
-      if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%`);
-      if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick`);
-      if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}`);
-      if (item.swingMs && item.swingMs < 0) addRow('Swing Speed', `${item.swingMs}ms`);
-      if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%`);
-      if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%`);
-      if (item.str) addRow('Strength', `+${item.str}`);
-      if (item.vit) addRow('Vitality', `+${item.vit}`);
-      if (item.int) addRow('Intellect', `+${item.int}`);
-      if (item.dex) addRow('Dexterity', `+${item.dex}`);
+      if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}${affixRange('fireDmg')}`);
+      if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}${affixRange('iceDmg')}`);
+      if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
+      if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
+      if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
+      if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
+      if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
+      if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
+      if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
+      if (item.swingMs && item.swingMs < 0) addRow('Swing Speed', `${item.swingMs}ms${affixRange('swingMs')}`);
+      if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
+      if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
+      if (item.str) addRow('Strength', `+${item.str}${affixRange('str')}`);
+      if (item.vit) addRow('Vitality', `+${item.vit}${affixRange('vit')}`);
+      if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
+      if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
       if (item.attrs) {
         Object.keys(item.attrs).forEach(k => {
           const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
