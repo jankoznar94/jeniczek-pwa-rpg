@@ -9614,273 +9614,239 @@
       }
     }
     grid.innerHTML = html;
-    // Info panel — zobrazit při kliknutí na item
+    // Info panel — D2 overlay
+    function closeItemOverlay() {
+      const ov = $('invItemOverlay');
+      if (ov) ov.classList.add('hidden');
+    }
     function showItemInfo(item) {
-      const panel = $('invInfoPanel');
-      if (!panel || !item) { if (panel) panel.classList.add('hidden'); return; }
-      $('invInfoIcon').innerHTML = renderItemIcon(item, 48);
-      $('invInfoName').textContent = item.name;
-      const r = RARITY[item.rarity] || RARITY.common;
-      let stats = `<span style="color:${r.color};font-size:11px">${r.name}</span><br>`;
-      // Zobrazit názvy affixů
-      if (item.affixes && item.affixes.length) {
-        stats += '<span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span><br>';
+      const ov = $('invItemOverlay');
+      if (!ov || !item) { if (ov) ov.classList.add('hidden'); return; }
+      const qColor = getQualityColor(item);
+      // Icon
+      $('invItemOverlayIcon').innerHTML = renderItemIcon(item, 56);
+      // Name — barva podle kvality
+      $('invItemOverlayName').textContent = item.name;
+      $('invItemOverlayName').style.color = qColor;
+      // Border overlay content podle kvality
+      $('invItemOverlayContent').style.borderColor = qColor;
+      // Staty — řádek po řádku, žádná rarita
+      const rows = [];
+      function addRow(label, value) {
+        if (value === undefined || value === null || value === '' || value === 0) return;
+        rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
       }
+      // Názvy affixů
+      if (item.affixes && item.affixes.length) {
+        addRow('Affixes', item.affixes.map(a => a.name).join(', '));
+      }
+      // Weapon staty
       if (item.type === 'weapon') {
-        const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
+        const handLabel = item.twoHand ? '2H' : '1H';
         const dmgMin = item.baseDmgMin || 1;
         const dmgMax = item.baseDmgMax || 1;
         const swingSec = (item.swingMs || 2200) / 1000;
         const avgDmg = (dmgMin + dmgMax) / 2;
         const dps = Math.round(avgDmg / swingSec * 10) / 10;
-        stats += `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel} · ⏱ ${dps} DPS`;
-        if (item.critChance) stats += ` · 🎯 ${item.critChance}% krit (×2.0)`;
+        addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel})`);
+        addRow('DPS', dps);
+        if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
+        if (item.weaponType === 'staff') addRow('Type', 'Magical');
+        else if (item.weaponType === 'blade') addRow('Type', 'Physical');
       }
-      else if (item.type === 'armor') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
-      else if (item.type === 'helmet') stats += (item.bonusHp ? `❤️ +${item.bonusHp} HP · ` : '') + `🛡️ +${item.defense||0} Defense`;
-      else if (item.type === 'shield') stats += `🛡️ ${item.blockChance||0}% blok` + (item.bonusHp ? ` · ❤️ +${item.bonusHp} HP` : '') + ` · 🛡️ +${item.defense||0} Defense`;
-      else if (item.type === 'ring') stats += ``;
-      else if (item.type === 'amulet') stats += ``;
-      else if (item.type === 'belt') stats += `🎗️ ${item.beltSlots||0} slotů na potiony` + (item.bonusHp ? ` · ❤️ +${item.bonusHp} HP` : '');
-      else if (item.type === 'consumable') stats += `🧪 ${item.subtype === 'heal' ? 'Léčí' : 'Obnovuje'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'many'}`;
-      if (item.weaponType === 'staff') stats += ' 🪄 magická';
-      else if (item.weaponType === 'blade') stats += ' ⚔️ fyzická';
-      // Affix staty — zobrazit všechny nenulové
-      const affixStats = [];
-      if (item.fireDmg) affixStats.push(`🔥 +${item.fireDmg} ohnivé dmg`);
-      if (item.iceDmg) affixStats.push(`❄️ +${item.iceDmg} ledové dmg`);
-      if (item.poisonDmg) affixStats.push(`☠️ +${item.poisonDmg} jedu za ${item.poisonDur||2}s`);
-      if (item.lifesteal) affixStats.push(`🩸 +${item.lifesteal}% lifesteal`);
-      if (item.manaSteal) affixStats.push(`💜 +${item.manaSteal}% many/útok`);
-      if (item.attackRating) affixStats.push(`🎯 +${item.attackRating} hit rating`);
-      if (item.skillDmg) affixStats.push(`✨ +${item.skillDmg}% skill dmg`);
-      if (item.manaRegen) affixStats.push(`💧 +${item.manaRegen} many/tick`);
-      if (item.bonusMana) affixStats.push(`💧 +${item.bonusMana} many`);
-      if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡ ${item.swingMs}ms swing`);
-      if (item.enhancedDefense) affixStats.push(`🛡️ +${item.enhancedDefense}% obrana`);
-      if (item.enhancedDmg) affixStats.push(`⚔️ +${item.enhancedDmg}% poškození`);
-      if (item.str) affixStats.push(`💪 +${item.str} Síla`);
-      if (item.vit) affixStats.push(`❤️ +${item.vit} Vitalita`);
-      if (item.int) affixStats.push(`🧠 +${item.int} Intelekt`);
-      if (item.dex) affixStats.push(`🎯 +${item.dex} Obratnost`);
-      if (affixStats.length) stats += '<br>' + affixStats.join(' · ');
+      // Armor/helmet
+      else if (item.type === 'armor' || item.type === 'helmet') {
+        if (item.defense) addRow('Defense', item.defense);
+        if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      }
+      // Shield
+      else if (item.type === 'shield') {
+        if (item.blockChance) addRow('Block', `${item.blockChance}%`);
+        if (item.defense) addRow('Defense', item.defense);
+        if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      }
+      // Belt
+      else if (item.type === 'belt') {
+        addRow('Potion Slots', item.beltSlots || 0);
+        if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      }
+      // Consumable
+      else if (item.type === 'consumable') {
+        const label = item.subtype === 'heal' ? 'Heals' : 'Restores';
+        addRow(label, `${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'Mana'}`);
+      }
+      // Affix staty
+      if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}`);
+      if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}`);
+      if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)`);
+      if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%`);
+      if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%`);
+      if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}`);
+      if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%`);
+      if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick`);
+      if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}`);
+      if (item.swingMs && item.swingMs < 0) addRow('Swing Speed', `${item.swingMs}ms`);
+      if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%`);
+      if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%`);
+      if (item.str) addRow('Strength', `+${item.str}`);
+      if (item.vit) addRow('Vitality', `+${item.vit}`);
+      if (item.int) addRow('Intellect', `+${item.int}`);
+      if (item.dex) addRow('Dexterity', `+${item.dex}`);
       if (item.attrs) {
-        const attrStr = Object.keys(item.attrs).map(k => {
-          const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
-          return `${names[k]||k}+${item.attrs[k]}`;
-        }).join(' · ');
-        stats += '<br>' + attrStr;
+        Object.keys(item.attrs).forEach(k => {
+          const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
+          addRow(names[k] || k, `+${item.attrs[k]}`);
+        });
       }
-      if (item.cost) stats += ` · 💰 ${item.cost}`;
-      $('invInfoStats').innerHTML = stats;
-      panel.style.borderColor = r.border;
-      // Srovnávací panel — border podle rarity vybraného itemu
-      const cp = $('invComparePanel');
-      if (cp) cp.style.borderColor = r.border;
-      panel.classList.remove('hidden');
+      if (item.cost) addRow('Value', `${item.cost} gold`);
+      $('invItemOverlayStats').innerHTML = rows.join('');
 
       // Srovnávací panel — nasazený předmět stejného slotu
-      const comparePanel = $('invComparePanel');
-      if (!comparePanel) return;
+      const compareEl = $('invItemOverlayCompare');
       const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet' };
       const equipSlot = slotMap[item.type];
-      if (!equipSlot) { comparePanel.classList.add('hidden'); return; }
       const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null };
-      // Speciální případ: prsten — zkontrolovat oba sloty
-      if (item.type === 'ring') {
-        const ring1Id = state.hero.equip.ring1;
-        const ring2Id = state.hero.equip.ring2;
-        const ring1 = ring1Id ? ITEM_MAP[ring1Id] : null;
-        const ring2 = ring2Id ? ITEM_MAP[ring2Id] : null;
-        // Zobrazit oba nasazené prsteny (pokud existují) se staty
-        let bothHtml = '';
-        if (ring1) {
-          const er1 = RARITY[ring1.rarity] || RARITY.common;
-          let s1 = `<span style="color:${er1.color};font-size:11px">${er1.name}</span><br>`;
-          if (ring1.affixes && ring1.affixes.length) s1 += '<span style="font-size:10px;color:#aaa">' + ring1.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s1 += ``; // prsteny nemají base staty, jen affixy
-          const a1 = [];
-          if (ring1.fireDmg) a1.push(`🔥 +${ring1.fireDmg} ohnivé dmg`);
-          if (ring1.iceDmg) a1.push(`❄️ +${ring1.iceDmg} ledové dmg`);
-          if (ring1.poisonDmg) a1.push(`☠️ +${ring1.poisonDmg} jedové dmg`);
-          if (ring1.lifesteal) a1.push(`🩸 +${ring1.lifesteal}% lifesteal`);
-          if (ring1.manaSteal) a1.push(`💜 +${ring1.manaSteal}% many/útok`);
-          if (ring1.attackRating) a1.push(`🎯 +${ring1.attackRating} hit rating`);
-          if (ring1.skillDmg) a1.push(`✨ +${ring1.skillDmg}% skill dmg`);
-          if (ring1.manaRegen) a1.push(`💧 +${ring1.manaRegen} many/tick`);
-          if (ring1.bonusMana) a1.push(`💧 +${ring1.bonusMana} many`);
-          if (ring1.enhancedDefense) a1.push(`🛡️ +${ring1.enhancedDefense}% obrana`);
-          if (ring1.enhancedDmg) a1.push(`⚔️ +${ring1.enhancedDmg}% poškození`);
-          if (ring1.swingMs && ring1.swingMs < 0) a1.push(`⚡ ${ring1.swingMs}ms swing`);
-          if (ring1.defense) a1.push(`🛡️ +${ring1.defense}`);
-          if (ring1.critChance) a1.push(`🎯 ${ring1.critChance}%`);
-          if (a1.length) s1 += '<br><span style="font-size:10px;color:#ccc">' + a1.join(' · ') + '</span>';
-          if (ring1.attrs) {
-            const attrStr = Object.keys(ring1.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${ring1.attrs[k]}`; }).join(' · ');
-            s1 += '<br>' + attrStr;
+      let hasCompare = false;
+
+      if (equipSlot) {
+        // Speciální: prsteny
+        if (item.type === 'ring') {
+          const ring1Id = state.hero.equip.ring1;
+          const ring2Id = state.hero.equip.ring2;
+          const ring1 = ring1Id ? ITEM_MAP[ring1Id] : null;
+          const ring2 = ring2Id ? ITEM_MAP[ring2Id] : null;
+          let bothHtml = '';
+          [ring1, ring2].forEach(r => {
+            if (!r) return;
+            const eqColor = getQualityColor(r);
+            let s = `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${r.name}</div>`;
+            const erows = [];
+            if (r.fireDmg) erows.push(`🔥 +${r.fireDmg} Fire`);
+            if (r.iceDmg) erows.push(`❄️ +${r.iceDmg} Ice`);
+            if (r.poisonDmg) erows.push(`☠️ +${r.poisonDmg} Poison`);
+            if (r.lifesteal) erows.push(`🩸 +${r.lifesteal}% LS`);
+            if (r.manaSteal) erows.push(`💜 +${r.manaSteal}% MS`);
+            if (r.attackRating) erows.push(`🎯 +${r.attackRating} AR`);
+            if (r.skillDmg) erows.push(`✨ +${r.skillDmg}% SD`);
+            if (r.manaRegen) erows.push(`💧 +${r.manaRegen} Regen`);
+            if (r.bonusMana) erows.push(`💧 +${r.bonusMana} Mana`);
+            if (r.enhancedDefense) erows.push(`🛡️ +${r.enhancedDefense}% ED`);
+            if (r.enhancedDmg) erows.push(`⚔️ +${r.enhancedDmg}% EDmg`);
+            if (r.defense) erows.push(`🛡️ +${r.defense} Def`);
+            if (r.critChance) erows.push(`🎯 ${r.critChance}% Crit`);
+            if (r.str) erows.push(`💪 +${r.str} Str`);
+            if (r.vit) erows.push(`❤️ +${r.vit} Vit`);
+            if (r.int) erows.push(`🧠 +${r.int} Int`);
+            if (r.dex) erows.push(`🎯 +${r.dex} Dex`);
+            if (erows.length) s += '<div style="font-size:11px;color:#aaa;line-height:1.5">' + erows.join('<br>') + '</div>';
+            bothHtml += s + '<br>';
+          });
+          if (bothHtml) {
+            $('invItemOverlayCompareIcon').innerHTML = '';
+            $('invItemOverlayCompareName').textContent = 'Equipped Rings';
+            $('invItemOverlayCompareName').style.color = '#aaa';
+            $('invItemOverlayCompareStats').innerHTML = bothHtml;
+            hasCompare = true;
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring1, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${ring1.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s1}</div></div></div>`;
         }
-        if (ring2) {
-          const er2 = RARITY[ring2.rarity] || RARITY.common;
-          let s2 = `<span style="color:${er2.color};font-size:11px">${er2.name}</span><br>`;
-          if (ring2.affixes && ring2.affixes.length) s2 += '<span style="font-size:10px;color:#aaa">' + ring2.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s2 += ``; // prsteny nemají base staty, jen affixy
-          const a2 = [];
-          if (ring2.fireDmg) a2.push(`🔥 +${ring2.fireDmg} ohnivé dmg`);
-          if (ring2.iceDmg) a2.push(`❄️ +${ring2.iceDmg} ledové dmg`);
-          if (ring2.poisonDmg) a2.push(`☠️ +${ring2.poisonDmg} jedové dmg`);
-          if (ring2.lifesteal) a2.push(`🩸 +${ring2.lifesteal}% lifesteal`);
-          if (ring2.manaSteal) a2.push(`💜 +${ring2.manaSteal}% many/útok`);
-          if (ring2.attackRating) a2.push(`🎯 +${ring2.attackRating} hit rating`);
-          if (ring2.skillDmg) a2.push(`✨ +${ring2.skillDmg}% skill dmg`);
-          if (ring2.manaRegen) a2.push(`💧 +${ring2.manaRegen} many/tick`);
-          if (ring2.bonusMana) a2.push(`💧 +${ring2.bonusMana} many`);
-          if (ring2.enhancedDefense) a2.push(`🛡️ +${ring2.enhancedDefense}% obrana`);
-          if (ring2.enhancedDmg) a2.push(`⚔️ +${ring2.enhancedDmg}% poškození`);
-          if (ring2.swingMs && ring2.swingMs < 0) a2.push(`⚡ ${ring2.swingMs}ms swing`);
-          if (ring2.defense) a2.push(`🛡️ +${ring2.defense}`);
-          if (ring2.critChance) a2.push(`🎯 ${ring2.critChance}%`);
-          if (a2.length) s2 += '<br><span style="font-size:10px;color:#ccc">' + a2.join(' · ') + '</span>';
-          if (ring2.attrs) {
-            const attrStr = Object.keys(ring2.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${ring2.attrs[k]}`; }).join(' · ');
-            s2 += '<br>' + attrStr;
+        // Speciální: zbraně
+        else if (item.type === 'weapon') {
+          const mhId = state.hero.equip.weapon;
+          const ohId = state.hero.equip.shield;
+          const mh = mhId ? ITEM_MAP[mhId] : null;
+          const oh = (ohId && ITEM_MAP[ohId] && ITEM_MAP[ohId].weaponType) ? ITEM_MAP[ohId] : null;
+          let bothHtml = '';
+          [mh, oh].forEach(w => {
+            if (!w) return;
+            const eqColor = getQualityColor(w);
+            let s = `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
+            const erows = [];
+            erows.push(`⚔️ ${w.baseDmgMin||1}-${w.baseDmgMax||1} Dmg`);
+            if (w.critChance) erows.push(`🎯 ${w.critChance}% Crit`);
+            if (w.fireDmg) erows.push(`🔥 +${w.fireDmg} Fire`);
+            if (w.iceDmg) erows.push(`❄️ +${w.iceDmg} Ice`);
+            if (w.poisonDmg) erows.push(`☠️ +${w.poisonDmg} Poison`);
+            if (w.lifesteal) erows.push(`🩸 +${w.lifesteal}% LS`);
+            if (w.attackRating) erows.push(`🎯 +${w.attackRating} AR`);
+            if (w.skillDmg) erows.push(`✨ +${w.skillDmg}% SD`);
+            if (w.manaRegen) erows.push(`💧 +${w.manaRegen} Regen`);
+            if (w.bonusMana) erows.push(`💧 +${w.bonusMana} Mana`);
+            if (w.enhancedDmg) erows.push(`⚔️ +${w.enhancedDmg}% EDmg`);
+            if (w.str) erows.push(`💪 +${w.str} Str`);
+            if (w.vit) erows.push(`❤️ +${w.vit} Vit`);
+            if (w.int) erows.push(`🧠 +${w.int} Int`);
+            if (w.dex) erows.push(`🎯 +${w.dex} Dex`);
+            if (erows.length) s += '<div style="font-size:11px;color:#aaa;line-height:1.5">' + erows.join('<br>') + '</div>';
+            bothHtml += s + '<br>';
+          });
+          if (bothHtml) {
+            $('invItemOverlayCompareIcon').innerHTML = '';
+            $('invItemOverlayCompareName').textContent = 'Equipped Weapons';
+            $('invItemOverlayCompareName').style.color = '#aaa';
+            $('invItemOverlayCompareStats').innerHTML = bothHtml;
+            hasCompare = true;
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(ring2, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${ring2.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s2}</div></div></div>`;
         }
-        if (bothHtml) {
-          $('invCompareIcon').innerHTML = '';
-          $('invCompareName').textContent = 'Nasazené prsteny';
-          $('invCompareName').style.color = '#aaa';
-          $('invCompareStats').innerHTML = bothHtml;
-          comparePanel.classList.remove('hidden');
-        } else {
-          comparePanel.classList.add('hidden');
-        }
-        return;
-      }
-      // Speciální případ: zbraň — zkontrolovat main hand i offhand
-      if (item.type === 'weapon') {
-        const mhId = state.hero.equip.weapon;
-        const ohId = state.hero.equip.shield;
-        const mh = mhId ? ITEM_MAP[mhId] : null;
-        const oh = (ohId && ITEM_MAP[ohId] && ITEM_MAP[ohId].weaponType) ? ITEM_MAP[ohId] : null;
-        let bothHtml = '';
-        if (mh) {
-          const er = RARITY[mh.rarity] || RARITY.common;
-          let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
-          if (mh.affixes && mh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + mh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ ${mh.baseDmgMin||1}-${mh.baseDmgMax||1} dmg · ⏱ ${Math.round(((mh.baseDmgMin||1)+(mh.baseDmgMax||1))/2 / ((mh.swingMs||2200)/1000) * 10) / 10} DPS`;
-          if (mh.critChance) s += ` · 🎯 ${mh.critChance}% krit (×2.0)`;
-          if (mh.weaponType === 'staff') s += ' 🪄 magická';
-          else if (mh.weaponType === 'blade') s += ' ⚔️ fyzická';
-          const a = [];
-          if (mh.fireDmg) a.push(`🔥 +${mh.fireDmg} ohnivé dmg`);
-          if (mh.iceDmg) a.push(`❄️ +${mh.iceDmg} ledové dmg`);
-          if (mh.poisonDmg) a.push(`☠️ +${mh.poisonDmg} jedové dmg`);
-          if (mh.lifesteal) a.push(`🩸 +${mh.lifesteal}% lifesteal`);
-          if (mh.attackRating) a.push(`🎯 +${mh.attackRating} hit rating`);
-          if (mh.skillDmg) a.push(`✨ +${mh.skillDmg}% skill dmg`);
-          if (mh.manaRegen) a.push(`💧 +${mh.manaRegen} many/tick`);
-          if (mh.bonusMana) a.push(`💧 +${mh.bonusMana} many`);
-          if (mh.swingMs && mh.swingMs < 0) a.push(`⚡ ${mh.swingMs}ms swing`);
-          if (a.length) s += '<br><span style="font-size:10px;color:#ccc">' + a.join(' · ') + '</span>';
-          if (mh.attrs) {
-            const attrStr = Object.keys(mh.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${mh.attrs[k]}`; }).join(' · ');
-            s += '<br>' + attrStr;
+        // Ostatní sloty
+        else {
+          const equippedId = state.hero.equip[equipSlot];
+          if (equippedId && equippedId !== defaults[equipSlot]) {
+            const equipped = ITEM_MAP[equippedId];
+            if (equipped) {
+              const eqColor = getQualityColor(equipped);
+              $('invItemOverlayCompareIcon').innerHTML = renderItemIcon(equipped, 40);
+              $('invItemOverlayCompareName').textContent = equipped.name;
+              $('invItemOverlayCompareName').style.color = eqColor;
+              const erows = [];
+              if (equipped.type === 'weapon') {
+                erows.push(`⚔️ ${equipped.baseDmgMin||1}-${equipped.baseDmgMax||1} Dmg`);
+                if (equipped.critChance) erows.push(`🎯 ${equipped.critChance}% Crit`);
+              } else if (equipped.type === 'armor' || equipped.type === 'helmet') {
+                if (equipped.defense) erows.push(`🛡️ ${equipped.defense} Def`);
+                if (equipped.bonusHp) erows.push(`❤️ +${equipped.bonusHp} HP`);
+              } else if (equipped.type === 'shield') {
+                if (equipped.blockChance) erows.push(`🛡️ ${equipped.blockChance}% Block`);
+                if (equipped.defense) erows.push(`🛡️ ${equipped.defense} Def`);
+                if (equipped.bonusHp) erows.push(`❤️ +${equipped.bonusHp} HP`);
+              } else if (equipped.type === 'belt') {
+                erows.push(`🎗️ ${equipped.beltSlots||0} Slots`);
+                if (equipped.bonusHp) erows.push(`❤️ +${equipped.bonusHp} HP`);
+              }
+              if (equipped.fireDmg) erows.push(`🔥 +${equipped.fireDmg} Fire`);
+              if (equipped.iceDmg) erows.push(`❄️ +${equipped.iceDmg} Ice`);
+              if (equipped.poisonDmg) erows.push(`☠️ +${equipped.poisonDmg} Poison`);
+              if (equipped.lifesteal) erows.push(`🩸 +${equipped.lifesteal}% LS`);
+              if (equipped.manaSteal) erows.push(`💜 +${equipped.manaSteal}% MS`);
+              if (equipped.attackRating) erows.push(`🎯 +${equipped.attackRating} AR`);
+              if (equipped.skillDmg) erows.push(`✨ +${equipped.skillDmg}% SD`);
+              if (equipped.manaRegen) erows.push(`💧 +${equipped.manaRegen} Regen`);
+              if (equipped.bonusMana) erows.push(`💧 +${equipped.bonusMana} Mana`);
+              if (equipped.enhancedDefense) erows.push(`🛡️ +${equipped.enhancedDefense}% ED`);
+              if (equipped.enhancedDmg) erows.push(`⚔️ +${equipped.enhancedDmg}% EDmg`);
+              if (equipped.str) erows.push(`💪 +${equipped.str} Str`);
+              if (equipped.vit) erows.push(`❤️ +${equipped.vit} Vit`);
+              if (equipped.int) erows.push(`🧠 +${equipped.int} Int`);
+              if (equipped.dex) erows.push(`🎯 +${equipped.dex} Dex`);
+              $('invItemOverlayCompareStats').innerHTML = erows.length ? erows.join('<br>') : '';
+              hasCompare = true;
+            }
           }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(mh, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${mh.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s}</div></div></div>`;
         }
-        if (oh) {
-          const er = RARITY[oh.rarity] || RARITY.common;
-          let s = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
-          if (oh.affixes && oh.affixes.length) s += '<span style="font-size:10px;color:#aaa">' + oh.affixes.map(a => a.name).join(' · ') + '</span><br>';
-          s += `⚔️ ${oh.baseDmgMin||1}-${oh.baseDmgMax||1} dmg · ⏱ ${Math.round(((oh.baseDmgMin||1)+(oh.baseDmgMax||1))/2 / ((oh.swingMs||2200)/1000) * 10) / 10} DPS`;
-          if (oh.critChance) s += ` · 🎯 ${oh.critChance}% krit (×2.0)`;
-          if (oh.weaponType === 'staff') s += ' 🪄 magická';
-          else if (oh.weaponType === 'blade') s += ' ⚔️ fyzická';
-          const a = [];
-          if (oh.fireDmg) a.push(`🔥 +${oh.fireDmg} ohnivé dmg`);
-          if (oh.iceDmg) a.push(`❄️ +${oh.iceDmg} ledové dmg`);
-          if (oh.poisonDmg) a.push(`☠️ +${oh.poisonDmg} jedové dmg`);
-          if (oh.lifesteal) a.push(`🩸 +${oh.lifesteal}% lifesteal`);
-          if (oh.attackRating) a.push(`🎯 +${oh.attackRating} hit rating`);
-          if (oh.skillDmg) a.push(`✨ +${oh.skillDmg}% skill dmg`);
-          if (oh.manaRegen) a.push(`💧 +${oh.manaRegen} many/tick`);
-          if (oh.bonusMana) a.push(`💧 +${oh.bonusMana} many`);
-          if (oh.swingMs && oh.swingMs < 0) a.push(`⚡ ${oh.swingMs}ms swing`);
-          if (a.length) s += '<br><span style="font-size:10px;color:#ccc">' + a.join(' · ') + '</span>';
-          if (oh.attrs) {
-            const attrStr = Object.keys(oh.attrs).map(k => { const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' }; return `${names[k]||k}+${oh.attrs[k]}`; }).join(' · ');
-            s += '<br>' + attrStr;
-          }
-          bothHtml += `<div class="inv-compare-ring"><div class="inv-compare-ring-icon">${renderItemIcon(oh, 36)}</div><div class="inv-compare-ring-stats"><div class="inv-compare-ring-name" >${oh.name}</div><div style="font-size:10px;color:#ccc;line-height:1.4">${s}</div></div></div>`;
-        }
-        if (bothHtml) {
-          $('invCompareIcon').innerHTML = '';
-          $('invCompareName').textContent = 'Nasazené zbraně';
-          $('invCompareName').style.color = '#aaa';
-          $('invCompareStats').innerHTML = bothHtml;
-          comparePanel.classList.remove('hidden');
-        } else {
-          comparePanel.classList.add('hidden');
-        }
-        return;
       }
-      const equippedId = state.hero.equip[equipSlot];
-      if (!equippedId || equippedId === defaults[equipSlot]) { comparePanel.classList.add('hidden'); return; }
-      const equipped = ITEM_MAP[equippedId];
-      if (!equipped) { comparePanel.classList.add('hidden'); return; }
-      $('invCompareIcon').innerHTML = renderItemIcon(equipped, 48);
-      $('invCompareName').textContent = equipped.name;
-      const er = RARITY[equipped.rarity] || RARITY.common;
-      let eStats = `<span style="color:${er.color};font-size:11px">${er.name}</span><br>`;
-      // Zobrazit názvy affixů
-      if (equipped.affixes && equipped.affixes.length) {
-        eStats += '<span style="font-size:10px;color:#aaa">' + equipped.affixes.map(a => a.name).join(' · ') + '</span><br>';
-      }
-      if (equipped.type === 'weapon') {
-        const dmgMin = equipped.baseDmgMin || 1;
-        const dmgMax = equipped.baseDmgMax || 1;
-        eStats += `⚔️ ${dmgMin}-${dmgMax} dmg`;
-        if (equipped.critChance) eStats += ` · 🎯 ${equipped.critChance}% crit (×2.0)`;
-      }
-      else if (equipped.type === 'armor') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
-      else if (equipped.type === 'helmet') eStats += (equipped.bonusHp ? `❤️ +${equipped.bonusHp} HP · ` : '') + `🛡️ +${equipped.defense||0} Defense`;
-      else if (equipped.type === 'shield') eStats += `🛡️ ${equipped.blockChance||0}% blok` + (equipped.bonusHp ? ` · ❤️ +${equipped.bonusHp} HP` : '') + ` · 🛡️ +${equipped.defense||0} Defense`;
-      else if (equipped.type === 'ring') eStats += ``;
-      else if (equipped.type === 'amulet') eStats += ``;
-      if (equipped.weaponType === 'staff') eStats += ' 🪄 magická';
-      else if (equipped.weaponType === 'blade') eStats += ' ⚔️ fyzická';
-      // Affix staty — zobrazit všechny nenulové
-      const eAffixStats = [];
-      if (equipped.fireDmg) eAffixStats.push(`🔥 +${equipped.fireDmg} ohnivé dmg`);
-      if (equipped.iceDmg) eAffixStats.push(`❄️ +${equipped.iceDmg} ledové dmg`);
-      if (equipped.poisonDmg) eAffixStats.push(`☠️ +${equipped.poisonDmg} jedové dmg`);
-      if (equipped.lifesteal) eAffixStats.push(`🩸 +${equipped.lifesteal}% lifesteal`);
-      if (equipped.manaSteal) eAffixStats.push(`💜 +${equipped.manaSteal}% many/útok`);
-      if (equipped.attackRating) eAffixStats.push(`🎯 +${equipped.attackRating} hit rating`);
-      if (equipped.skillDmg) eAffixStats.push(`✨ +${equipped.skillDmg}% skill dmg`);
-      if (equipped.manaRegen) eAffixStats.push(`💧 +${equipped.manaRegen} many/tick`);
-      if (equipped.bonusMana) eAffixStats.push(`💧 +${equipped.bonusMana} many`);
-      if (equipped.swingMs && equipped.swingMs < 0) eAffixStats.push(`⚡ ${equipped.swingMs}ms swing`);
-      if (equipped.enhancedDefense) eAffixStats.push(`🛡️ +${equipped.enhancedDefense}% obrana`);
-      if (equipped.enhancedDmg) eAffixStats.push(`⚔️ +${equipped.enhancedDmg}% poškození`);
-      if (equipped.str) eAffixStats.push(`💪 +${equipped.str} Síla`);
-      if (equipped.vit) eAffixStats.push(`❤️ +${equipped.vit} Vitalita`);
-      if (equipped.int) eAffixStats.push(`🧠 +${equipped.int} Intelekt`);
-      if (equipped.dex) eAffixStats.push(`🎯 +${equipped.dex} Obratnost`);
-      if (eAffixStats.length) eStats += '<br>' + eAffixStats.join(' · ');
-      if (equipped.attrs) {
-        const attrStr = Object.keys(equipped.attrs).map(k => {
-          const names = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
-          return `${names[k]||k}+${equipped.attrs[k]}`;
-        }).join(' · ');
-        eStats += '<br>' + attrStr;
-      }
-      if (equipped.cost) eStats += ` · 💰 ${equipped.cost}`;
-      $('invCompareStats').innerHTML = eStats;
-      comparePanel.classList.remove('hidden');
+      compareEl.classList.toggle('hidden', !hasCompare);
+      ov.classList.remove('hidden');
+    }
+    // Klik na pozadí overlaye → zavřít
+    const ovBg = $('invItemOverlayBg');
+    const ovContent = $('invItemOverlayContent');
+    if (ovBg) {
+      ovBg.onclick = function() {
+        closeItemOverlay();
+        clearSelection();
+      };
+    }
+    if (ovContent) {
+      ovContent.onclick = function(e) { e.stopPropagation(); };
     }
     // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
     const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet', invSlotBelt:'belt' };
