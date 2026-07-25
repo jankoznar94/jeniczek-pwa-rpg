@@ -9850,6 +9850,32 @@
         }
       }
       compareEl.classList.toggle('hidden', !hasCompare);
+      // Equip/Unequip tlačítko
+      const btn = $('invItemOverlayBtn');
+      if (window._invSelectedIdx !== null) {
+        // Item z batohu → Equip
+        btn.textContent = 'Equip';
+        btn.className = 'inv-item-overlay-btn';
+        btn.onclick = function() {
+          equipItem(window._invSelectedIdx);
+          closeItemOverlay();
+          clearSelection();
+        };
+        btn.classList.remove('hidden');
+      } else if (window._invSelectedSlot !== null) {
+        // Item z equip slotu → Unequip
+        btn.textContent = 'Unequip';
+        btn.className = 'inv-item-overlay-btn';
+        const slot = window._invSelectedSlot;
+        btn.onclick = function() {
+          unequipSlot(slot);
+          closeItemOverlay();
+          clearSelection();
+        };
+        btn.classList.remove('hidden');
+      } else {
+        btn.classList.add('hidden');
+      }
       ov.classList.remove('hidden');
     }
     // Klik na pozadí overlaye → zavřít
