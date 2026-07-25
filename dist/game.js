@@ -6047,7 +6047,7 @@
     }
   }
 
-  function spawnMeleeImpact(mb, isCrit, weaponType, angleOffset = 0) {
+  function spawnMeleeImpact(mb, isCrit, weaponType, angleOffset = 0, elementColor = null) {
     const arena = $('mbArena');
     if (!arena) return;
     const rect = arena.getBoundingClientRect();
@@ -6079,8 +6079,17 @@
       return;
     }
 
-    const mainColor = isCrit ? '#e74c3c' : '#fff';
-    const glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
+    // Element color override — pokud zbraň má elementární poškození
+    const mainColor = elementColor || (isCrit ? '#e74c3c' : '#fff');
+    let glowColor;
+    if (elementColor) {
+      const r = parseInt(elementColor.slice(1,3), 16);
+      const g = parseInt(elementColor.slice(3,5), 16);
+      const b = parseInt(elementColor.slice(5,7), 16);
+      glowColor = `rgba(${r},${g},${b},0.7)`;
+    } else {
+      glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
+    }
 
     if (weaponType === 'blade') {
       // Meč — dlouhé jednolité seknutí
@@ -8071,10 +8080,14 @@
       }
     }
 
-    // Melee impact efekt na místě bosse
+    // Melee impact efekt na místě bosse — barva podle elementárního poškození zbraně
     const angleOff = isOffhand ? Math.PI : 0;
     if (!mb._skipMeleeImpact) {
-      spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff);
+      let elementColor = null;
+      if (weapon.fireDmg) elementColor = '#e67e22';
+      else if (weapon.iceDmg) elementColor = '#4a7dff';
+      else if (weapon.poisonDmg) elementColor = '#2ecc71';
+      spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff, elementColor);
     }
     mb._skipMeleeImpact = false;
 
