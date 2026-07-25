@@ -1939,6 +1939,8 @@
     });
     content.innerHTML = '';
     overlay.classList.add('hidden');
+    // Pokud je shop otevřený, překreslit ho (inventář se mohl změnit přes modal)
+    if (_currentScreen === 'shop') renderShop();
   }
 
   function switchCombinedTab(tab) {
