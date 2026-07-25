@@ -8551,6 +8551,7 @@
       $('resultTitle').textContent = 'Defeat';
       $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
       $('resultLootList').innerHTML = '';
+      $('resultActions').innerHTML = '';
       const resultBtn = $('resultBtn');
       if (resultBtn) resultBtn.innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
