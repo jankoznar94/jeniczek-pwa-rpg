@@ -742,9 +742,10 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-content {
   position:relative;
   background:#0d0d0d;border:2px solid #3a3a3a;border-radius:8px;
-  padding:20px 24px;min-width:220px;max-width:300px;
+  padding:20px 24px;min-width:220px;max-width:300px;max-height:80vh;
   display:flex;flex-direction:column;align-items:center;gap:8px;
   box-shadow:0 0 20px rgba(0,0,0,0.6);
+  overflow-y:auto;
 }
 .inv-item-overlay-icon { font-size:56px;margin-bottom:4px; }
 .inv-item-overlay-name { font-size:15px;font-weight:bold;text-align:center; }
