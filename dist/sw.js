@@ -76,6 +76,8 @@ const ASSET_FILES = [
   '/assets/sfx/click.mp3',
   '/assets/sfx/whirlwind.mp3',
   '/assets/sfx/enemy_hit.mp3',
+  '/assets/sfx/enemy_hit1.mp3', '/assets/sfx/enemy_hit2.mp3', '/assets/sfx/enemy_hit3.mp3',
+  '/assets/sfx/enemy_hit4.mp3', '/assets/sfx/enemy_hit5.mp3', '/assets/sfx/enemy_hit6.mp3',
   '/assets/sfx/blunt_hit.mp3', '/assets/sfx/blunt_crit.mp3',
   '/assets/sfx/thunder_clap.mp3', '/assets/sfx/thunder_bolt.mp3',
   '/assets/sfx/fire_spell.mp3', '/assets/sfx/ice_spell.mp3', '/assets/sfx/lightning_spell.mp3',
