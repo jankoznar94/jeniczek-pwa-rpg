@@ -9786,7 +9786,13 @@
             const eqColor = getQualityColor(w);
             let s = `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
             const handLabel = w.twoHand ? '2H' : '1H';
-            s += `<div class="stat-row"><span class="stat-label">Damage</span><span class="stat-value">${w.baseDmgMin||1}-${w.baseDmgMax||1} (${handLabel})</span></div>`;
+            const dmgMin = w.baseDmgMin || 1;
+            const dmgMax = w.baseDmgMax || 1;
+            const swingSec = (w.swingMs || 2200) / 1000;
+            const avgDmg = (dmgMin + dmgMax) / 2;
+            const dps = Math.round(avgDmg / swingSec * 10) / 10;
+            s += `<div class="stat-row"><span class="stat-label">Damage</span><span class="stat-value">${dmgMin}-${dmgMax} (${handLabel})</span></div>`;
+            s += `<div class="stat-row"><span class="stat-label">DPS</span><span class="stat-value">${dps}</span></div>`;
             if (w.critChance) s += `<div class="stat-row"><span class="stat-label">Crit</span><span class="stat-value">${w.critChance}%</span></div>`;
             if (w.fireDmg) s += `<div class="stat-row"><span class="stat-label">Fire Dmg</span><span class="stat-value">+${w.fireDmg}</span></div>`;
             if (w.iceDmg) s += `<div class="stat-row"><span class="stat-label">Ice Dmg</span><span class="stat-value">+${w.iceDmg}</span></div>`;
@@ -9824,7 +9830,13 @@
               const erows = [];
               if (equipped.type === 'weapon') {
                 const handLabel = equipped.twoHand ? '2H' : '1H';
-                erows.push(`<div class="stat-row"><span class="stat-label">Damage</span><span class="stat-value">${equipped.baseDmgMin||1}-${equipped.baseDmgMax||1} (${handLabel})</span></div>`);
+                const dmgMin = equipped.baseDmgMin || 1;
+                const dmgMax = equipped.baseDmgMax || 1;
+                const swingSec = (equipped.swingMs || 2200) / 1000;
+                const avgDmg = (dmgMin + dmgMax) / 2;
+                const dps = Math.round(avgDmg / swingSec * 10) / 10;
+                erows.push(`<div class="stat-row"><span class="stat-label">Damage</span><span class="stat-value">${dmgMin}-${dmgMax} (${handLabel})</span></div>`);
+                erows.push(`<div class="stat-row"><span class="stat-label">DPS</span><span class="stat-value">${dps}</span></div>`);
                 if (equipped.critChance) erows.push(`<div class="stat-row"><span class="stat-label">Crit</span><span class="stat-value">${equipped.critChance}%</span></div>`);
               } else if (equipped.type === 'armor' || equipped.type === 'helmet') {
                 if (equipped.defense) erows.push(`<div class="stat-row"><span class="stat-label">Defense</span><span class="stat-value">${equipped.defense}</span></div>`);
