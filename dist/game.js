@@ -1357,13 +1357,18 @@
       if (value === undefined || value === null || value === '' || value === 0) return;
       rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
     }
-    // Sestavit mapu rozsahů z affixů — statName → [min, max]
+    // Sestavit mapu rozsahů z affixů — statName → [min, max] (součet všech výskytů)
     const affixRangeMap = {};
     if (item.affixes) {
       item.affixes.forEach(a => {
         if (a.stats) {
           Object.keys(a.stats).forEach(stat => {
-            affixRangeMap[stat] = a.stats[stat];
+            const r = a.stats[stat];
+            if (affixRangeMap[stat]) {
+              affixRangeMap[stat] = [affixRangeMap[stat][0] + r[0], affixRangeMap[stat][1] + r[1]];
+            } else {
+              affixRangeMap[stat] = [r[0], r[1]];
+            }
           });
         }
       });
@@ -1383,6 +1388,7 @@
       const dps = Math.round(avgDmg / swingSec * 10) / 10;
       addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel}) [${dps} DPS]`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
+      if (item.attackRating) addRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
       if (item.weaponType === 'staff') addRow('Type', 'Magical');
       else if (item.weaponType === 'blade') addRow('Type', 'Physical');
     }
