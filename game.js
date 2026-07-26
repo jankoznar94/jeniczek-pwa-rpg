@@ -9790,11 +9790,11 @@
           }
         }
       }
-      // VŽDY zobrazit compare sekci (i když prázdná — ukáže aspoň divider)
-      compareEl.classList.remove('hidden');
-      if (!hasCompare) {
-        $('invItemOverlayCompareIcon').innerHTML = '';
-        $('invItemOverlayCompareStats').innerHTML = '';
+      // Zobrazit compare sekci jen pokud je co porovnávat
+      if (hasCompare) {
+        compareEl.classList.remove('hidden');
+      } else {
+        compareEl.classList.add('hidden');
       }
       // Equip/Unequip tlačítko
       const btn = $('invItemOverlayBtn');
