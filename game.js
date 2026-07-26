@@ -9487,6 +9487,8 @@
 
   function renderShop() {
     const h = state.hero;
+    // Reset bought items při každém otevření shopu
+    window._shopBoughtItems = new Set();
     $('shopGold').textContent = `💰 ${h.gold} gold`;
     if (_shopTab === 'sell') {
       const equipSet = new Set(Object.values(h.equip).filter(Boolean));
@@ -9558,17 +9560,20 @@
       const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
       // Vždy dostupné: potiony a scroll
       const alwaysItems = ['healingPotion', 'manaPotion', 'townPortalScroll'];
-      // Ostatní itemy: vybrat náhodnou podmnožinu z dostupných tierů
-      const equipPool = ITEMS.filter(i => i.cost > 0 && i.tier <= maxTier && i.tier >= Math.max(1, maxTier - 1) && i.type !== 'consumable');
+      // Ostatní itemy: vybrat náhodnou podmnožinu z dostupných tierů (bez šperků)
+      const equipPool = ITEMS.filter(i => i.cost > 0 && i.tier <= maxTier && i.tier >= Math.max(1, maxTier - 1) && i.type !== 'consumable' && i.type !== 'ring' && i.type !== 'amulet');
       // Náhodně vybrat 6-10 itemů (nebo méně, pokud je pool malý)
       const shuffled = equipPool.sort(() => Math.random() - 0.5);
       const count = Math.min(shuffled.length, 6 + rand(0, 4));
       const selectedEquip = shuffled.slice(0, count);
       const shopItems = [...alwaysItems.map(id => ITEM_MAP[id]).filter(Boolean), ...selectedEquip];
+      // Sledovat, co už bylo v této iteraci shopu koupeno
+      if (!window._shopBoughtItems) window._shopBoughtItems = new Set();
       $('shopList').innerHTML = shopItems.map(item => {
-        const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id || h.equip.amulet === item.id || h.equip.belt === item.id;
+        // Pokud už bylo koupeno v této iteraci, nezobrazovat
+        if (window._shopBoughtItems.has(item.id)) return '';
         const isConsumable = item.type === 'consumable';
-        const canBuy = h.gold >= item.cost && (!owned || isConsumable);
+        const canAfford = h.gold >= item.cost;
         let stats = '';
         if (item.type === 'weapon') {
           const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
@@ -9592,14 +9597,17 @@
         if (item.beltRows) extraStats.push(`🎗️${item.beltRows} řádků`);
         if (item.swingMs) extraStats.push(`⚡${item.swingMs}ms`);
         if (extraStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + extraStats.join(' · ') + '</span>';
-        return `<div class="shop-item" style="opacity:${owned && !isConsumable?'0.4':'1'}">
+        const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
+        return `<div class="shop-item">
           <div class="shop-item-header">
             <div class="shop-item-name">${renderItemIcon(item,64)}<span style="color:${getQualityColor(item)}">${item.name}</span></div>
             <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
           </div>
           <div class="shop-item-actions">
-            <span class="price">💰 ${item.cost}</span>
-            ${owned && !isConsumable ? '<span style="color:#2ecc71">✅ Owned</span>' : canBuy ? `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.buyItem('${item.id}')">Buy</button>` : `<button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px;opacity:0.3;pointer-events:none" onclick="game.buyItem('${item.id}')">Buy</button>`}
+            <button class="btn btn-shop-buy" onclick="game.buyItem('${item.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
+              <span class="btn-buy-icon">💰</span>
+              <span class="btn-buy-price" style="color:${priceColor}">${item.cost}</span>
+            </button>
           </div>
         </div>`;
       }).join('');
@@ -9611,7 +9619,6 @@
     if (!item) return;
     const h = state.hero;
     if (h.gold < item.cost) { showMessage('❌ Not enough gold!'); return; }
-    if (item.type !== 'consumable' && h.inventory.includes(itemId)) { showMessage('❌ Already owned!'); return; }
     h.gold -= item.cost;
     if (itemId === 'townPortalScroll') {
       state.townPortalCount = (state.townPortalCount || 0) + 1;
@@ -9621,6 +9628,8 @@
     playSFX(shopSfx);
     saveGame();
     showMessage(`✅ Bought ${item.icon} ${item.name}!`);
+    // Označit jako koupené v této iteraci shopu (zmizí z nabídky)
+    if (window._shopBoughtItems) window._shopBoughtItems.add(itemId);
     renderShop();
   }
 
