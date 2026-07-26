@@ -9344,6 +9344,7 @@
         playSFX(levelupSfx);
         saveGame();
         updateTalentBadge();
+        updateModalTabBadges();
         _selectedTalentKey = key;
         renderTalents();
       }
@@ -9357,6 +9358,7 @@
         state.talentPoints = (state.talentPoints || 0) + total;
         saveGame();
         updateTalentBadge();
+        updateModalTabBadges();
         renderTalents();
         renderHero();
         showMessage('🔄 Talenty resetovány! Získal jsi zpět ' + total + ' bodů.');
@@ -9389,6 +9391,7 @@
       showLevelUpOverlay(prevLevel);
     }
     updateTalentBadge();
+    updateModalTabBadges();
     return leveled;
   }
   function updateTalentBadge() {
@@ -9401,6 +9404,32 @@
     } else {
       badge.classList.remove('visible');
     }
+  }
+  function updateModalTabBadges() {
+    // Aktualizuje badge u záložek Skills a Stats v otevřeném modalu
+    const tabs = document.querySelectorAll('.combined-tab');
+    if (!tabs.length) return; // modal není otevřený
+    const talentPts = state.talentPoints || 0;
+    const attrPts = state.hero.attrPoints || 0;
+    tabs.forEach(tab => {
+      const label = tab.textContent.replace(/[0-9]/g, '').trim();
+      let badge = tab.querySelector('.tab-badge');
+      if (label === 'Skills') {
+        if (talentPts > 0) {
+          if (!badge) { badge = document.createElement('span'); badge.className = 'tab-badge'; tab.appendChild(badge); }
+          badge.textContent = talentPts;
+        } else {
+          if (badge) badge.remove();
+        }
+      } else if (label === 'Stats') {
+        if (attrPts > 0) {
+          if (!badge) { badge = document.createElement('span'); badge.className = 'tab-badge'; tab.appendChild(badge); }
+          badge.textContent = attrPts;
+        } else {
+          if (badge) badge.remove();
+        }
+      }
+    });
   }
   function getEquipAttrs() {
     const h = state.hero;
@@ -9601,6 +9630,7 @@
       showMessage('❤️ Vitalita +1! Max HP zvýšeno!');
     }
     saveGame();
+    updateModalTabBadges();
     renderHero();
   }
 
