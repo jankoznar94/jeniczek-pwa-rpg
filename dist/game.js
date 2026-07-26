@@ -1272,8 +1272,11 @@
     if (lootItem.enhancedDefense > 0 && lootItem.defense > 0) {
       lootItem.defense = Math.round(lootItem.defense * (1 + lootItem.enhancedDefense / 100));
     }
-    if (lootItem.enhancedDmg > 0 && lootItem.baseDmg > 0) {
-      lootItem.baseDmg = Math.round(lootItem.baseDmg * (1 + lootItem.enhancedDmg / 100));
+    if (lootItem.enhancedDmg > 0) {
+      // Aplikovat na baseDmgMin i baseDmgMax, nejen na průměr
+      if (lootItem.baseDmgMin > 0) lootItem.baseDmgMin = Math.round(lootItem.baseDmgMin * (1 + lootItem.enhancedDmg / 100));
+      if (lootItem.baseDmgMax > 0) lootItem.baseDmgMax = Math.round(lootItem.baseDmgMax * (1 + lootItem.enhancedDmg / 100));
+      if (lootItem.baseDmg > 0) lootItem.baseDmg = Math.round(lootItem.baseDmg * (1 + lootItem.enhancedDmg / 100));
     }
 
     // Level requirement
@@ -1334,8 +1337,10 @@
     if (item.enhancedDefense > 0 && item.defense > 0) {
       item.defense = Math.round(item.defense * (1 + item.enhancedDefense / 100));
     }
-    if (item.enhancedDmg > 0 && item.baseDmg > 0) {
-      item.baseDmg = Math.round(item.baseDmg * (1 + item.enhancedDmg / 100));
+    if (item.enhancedDmg > 0) {
+      if (item.baseDmgMin > 0) item.baseDmgMin = Math.round(item.baseDmgMin * (1 + item.enhancedDmg / 100));
+      if (item.baseDmgMax > 0) item.baseDmgMax = Math.round(item.baseDmgMax * (1 + item.enhancedDmg / 100));
+      if (item.baseDmg > 0) item.baseDmg = Math.round(item.baseDmg * (1 + item.enhancedDmg / 100));
     }
 
     return item;
