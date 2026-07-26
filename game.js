@@ -1362,20 +1362,17 @@
   function renderItemIcon(item, size) {
     if (!item) return '';
     const s = size || 28;
-    // Barva rámečku podle quality (affixů)
-    const borderColor = getQualityColor(item);
-    const border = `border:2px solid ${borderColor};`;
     // Affix tint — barevný overlay podle prvního affixu
     const affix = (item.affixes || [])[0];
     const tintStyle = affix ? `box-shadow:inset 0 0 0 100px ${affix.tint}33;` : '';
     if (item.iconImg) {
       if (size === 0) {
-        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000;${tintStyle}${border}">`;
+        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000;${tintStyle}">`;
       }
-      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${tintStyle}${border}">`;
+      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${tintStyle}">`;
     }
     const fs = size === 0 ? 28 : s;
-    return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;${border};border-radius:4px;padding:2px">${item.icon}</span>`;
+    return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;border-radius:4px;padding:2px">${item.icon}</span>`;
   }
 
   function buildItemStatsHtml(item) {
