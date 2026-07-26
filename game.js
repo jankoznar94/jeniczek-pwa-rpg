@@ -284,6 +284,13 @@
       state.talentPoints = 50;
       state.hero.attrPoints = 150;
       state.bossesDefeated = ACTS.map(() => true);
+      // bossesDefeated musí být 2D — opravit pokud test mode nastavil flat array
+      if (!Array.isArray(state.bossesDefeated[0])) {
+        state.bossesDefeated = [state.bossesDefeated.map(() => false), state.bossesDefeated.map(() => false), state.bossesDefeated.map(() => false)];
+        state.bossesDefeated.forEach((diffArr, di) => {
+          ACTS.forEach((loc, i) => { diffArr[i] = true; });
+        });
+      }
       state.floorProgress = ACTS.map(() => 5);
       state.locationProgress = ACTS.map(() => 5);
       state.areaFightProgress = ACTS.map(() => 5);
@@ -1869,6 +1876,14 @@
       if (!s.hero.equip.beltPotionSlots) s.hero.equip.beltPotionSlots = [];
     }
     if (s.townPortalCount === undefined) s.townPortalCount = 0;
+    // Migrace: bossesDefeated z flat array na 2D [difficulty][actId]
+    if (s.bossesDefeated && !Array.isArray(s.bossesDefeated[0])) {
+      const flat = s.bossesDefeated;
+      s.bossesDefeated = [flat.map(() => false), flat.map(() => false), flat.map(() => false)];
+      s.bossesDefeated.forEach((diffArr, di) => {
+        ACTS.forEach((loc, i) => { diffArr[i] = flat[i] || false; });
+      });
+    }
     return s; } } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
@@ -9888,6 +9903,9 @@
       const item = typeof itemOrId === 'string' ? ITEM_MAP[itemOrId] : itemOrId;
       const ov = $('invItemOverlay');
       if (!ov || !item) { if (ov) ov.classList.add('hidden'); return; }
+      // Resetovat výběr — při volání ze shopu nemáme žádný inv index
+      window._invSelectedIdx = null;
+      window._invSelectedSlot = null;
       const qColor = getQualityColor(item);
       // Icon
       $('invItemOverlayIcon').innerHTML = renderItemIcon(item, 56);
