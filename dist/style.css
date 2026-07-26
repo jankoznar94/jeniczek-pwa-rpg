@@ -1726,6 +1726,7 @@ body.no-scroll { overflow: hidden; }
   cursor:pointer; text-align:center;
   transition:all 0.15s;
   user-select:none;-webkit-tap-highlight-color:transparent;
+  display:flex;align-items:center;justify-content:center;gap:4px;
 }
 .combined-tab.active {
   background:#2a2a2a; border-color:#4a7dff; color:#fff;
