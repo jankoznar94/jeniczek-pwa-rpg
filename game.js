@@ -9792,16 +9792,21 @@
       let hasCompare = false;
 
       if (equipSlot) {
-        // Speciální: prsteny
+        // Speciální: prsteny — label Ring 1 / Ring 2
         if (item.type === 'ring') {
           const ring1Id = state.hero.equip.ring1;
           const ring2Id = state.hero.equip.ring2;
           const ring1 = ring1Id ? ITEM_MAP[ring1Id] : null;
           const ring2 = ring2Id ? ITEM_MAP[ring2Id] : null;
           let bothHtml = '';
-          [ring1, ring2].forEach(r => {
+          const ringEntries = [
+            { label: 'Ring 1', ring: ring1 },
+            { label: 'Ring 2', ring: ring2 }
+          ];
+          ringEntries.forEach(({label, ring: r}) => {
             if (!r) return;
             const eqColor = getQualityColor(r);
+            bothHtml += `<div style="color:#888;font-size:11px;margin-bottom:2px">${label}</div>`;
             bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${r.name}</div>`;
             bothHtml += buildItemStatsHtml(r);
             bothHtml += '<div style="height:4px"></div>';
@@ -9812,16 +9817,21 @@
             hasCompare = true;
           }
         }
-        // Speciální: zbraně
+        // Speciální: zbraně — label Main Hand / Off Hand
         else if (item.type === 'weapon') {
           const mhId = state.hero.equip.weapon;
           const ohId = state.hero.equip.shield;
           const mh = mhId && mhId !== 'fists' ? ITEM_MAP[mhId] : null;
           const oh = (ohId && ITEM_MAP[ohId] && ITEM_MAP[ohId].weaponType) ? ITEM_MAP[ohId] : null;
           let bothHtml = '';
-          [mh, oh].forEach(w => {
+          const weaponEntries = [
+            { label: 'Main Hand', weapon: mh },
+            { label: 'Off Hand', weapon: oh }
+          ];
+          weaponEntries.forEach(({label, weapon: w}) => {
             if (!w) return;
             const eqColor = getQualityColor(w);
+            bothHtml += `<div style="color:#888;font-size:11px;margin-bottom:2px">${label}</div>`;
             bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
             bothHtml += buildItemStatsHtml(w);
             bothHtml += '<div style="height:4px"></div>';
