@@ -1872,8 +1872,8 @@
     document.querySelector('.nav-bar').classList.remove('hidden');
     updateTalentBadge();
     renderHero();
-    showScreen('map');
-    renderMap();
+    showScreen('town');
+    renderTown();
   }
 
   // ===== SCREENS =====
@@ -3756,6 +3756,48 @@
         ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">'}
         ${manaCount > 0 ? `<span class="potion-stack-count">${manaCount}</span>` : ''}
       </div>`;
+  }
+
+  function addPotionToBelt(potionId) {
+    const h = state.hero;
+    const belt = ITEM_MAP[h.equip.belt];
+    if (!belt) return false;
+    const pot = ITEM_MAP[potionId];
+    if (!pot || pot.type !== 'consumable') return false;
+    const beltRows = belt.beltRows || 0;
+    if (beltRows <= 0) return false;
+    const bpSlots = h.equip.beltPotionSlots || [];
+    const totalSlots = beltRows * 4;
+    while (bpSlots.length < totalSlots) bpSlots.push(null);
+    const subtype = pot.subtype;
+    // Column-major: projít sloupce 0-3, pro každý řádky 0-beltRows-1
+    for (let col = 0; col < 4; col++) {
+      // Zkontrolovat kompatibilitu sloupce
+      let columnType = null;
+      let hasEmpty = false;
+      for (let row = 0; row < beltRows; row++) {
+        const idx = col * beltRows + row;
+        const pid = bpSlots[idx];
+        if (!pid) { hasEmpty = true; continue; }
+        const p = ITEM_MAP[pid];
+        if (p) {
+          if (!columnType) columnType = p.subtype;
+          else if (columnType !== p.subtype) { columnType = 'mixed'; break; }
+        }
+      }
+      if (columnType === 'mixed') continue; // sloupec má oba typy — přeskočit
+      if (columnType !== null && columnType !== subtype) continue; // sloupec má jiný typ
+      // Najít první prázdný slot v tomto sloupci
+      for (let row = 0; row < beltRows; row++) {
+        const idx = col * beltRows + row;
+        if (!bpSlots[idx]) {
+          bpSlots[idx] = potionId;
+          h.equip.beltPotionSlots = bpSlots;
+          return true;
+        }
+      }
+    }
+    return false; // není místo v opasku
   }
 
   function usePotion(potionType) {
@@ -8540,6 +8582,8 @@
           if (loot.item) {
             if (loot.item.id === 'townPortalScroll') {
               state.townPortalCount = (state.townPortalCount || 0) + 1;
+            } else if ((loot.item.id === 'healingPotion' || loot.item.id === 'manaPotion') && addPotionToBelt(loot.item.id)) {
+              // Potion se vložil do opasku
             } else {
               state.hero.inventory.push(loot.item.id);
             }
@@ -9561,6 +9605,8 @@
     h.gold -= item.cost;
     if (itemId === 'townPortalScroll') {
       state.townPortalCount = (state.townPortalCount || 0) + 1;
+    } else if ((itemId === 'healingPotion' || itemId === 'manaPotion') && addPotionToBelt(itemId)) {
+      // Potion se vložil do opasku
     } else {
       h.inventory.push(itemId);
     }
@@ -10345,12 +10391,12 @@
         splash.classList.add('fade-out');
         setTimeout(() => {
           splash.classList.add('hidden');
-          // Až po splashi zobrazit class select nebo mapu
+          // Až po splashi zobrazit class select nebo město
           if (!state.heroClass) {
             showScreen('classSelect');
           } else {
-            showScreen('map');
-            renderMap();
+            showScreen('town');
+            renderTown();
             updateTalentBadge();
           }
         }, 600);
@@ -10360,8 +10406,8 @@
       if (!state.heroClass) {
         showScreen('classSelect');
       } else {
-        showScreen('map');
-        renderMap();
+        showScreen('town');
+        renderTown();
         updateTalentBadge();
       }
     }
