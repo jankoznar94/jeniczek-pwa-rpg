@@ -1116,7 +1116,7 @@
     normal: '#888',
     magic: '#4a7dff',
     rare: '#ffd700',
-    unique: '#e94560'
+    unique: '#b8860b'
   };
 
   function getQualityColor(item) {
