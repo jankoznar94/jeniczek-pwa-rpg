@@ -801,22 +801,19 @@
     // === BELTY ===
     // Normal
     { id:'belt_sash', name:'Sash', type:'belt', baseDmg:0, beltRows:1, defense:3, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
-    { id:'belt_lightBelt', name:'Light Belt', type:'belt', baseDmg:0, beltRows:1, defense:5, cost:20, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:1 },
     { id:'belt_belt', name:'Belt', type:'belt', baseDmg:0, beltRows:2, defense:8, cost:35, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:2 },
-    { id:'belt_heavyBelt', name:'Heavy Belt', type:'belt', baseDmg:0, beltRows:2, defense:11, cost:50, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:2 },
-    { id:'belt_platedBelt', name:'Plated Belt', type:'belt', baseDmg:0, beltRows:3, defense:15, cost:70, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:3 },
+    { id:'belt_heavyBelt', name:'Heavy Belt', type:'belt', baseDmg:0, beltRows:3, defense:11, cost:50, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:2 },
+    { id:'belt_platedBelt', name:'Plated Belt', type:'belt', baseDmg:0, beltRows:4, defense:15, cost:70, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:3 },
     // Nightmare
-    { id:'belt_sash_nm', name:'Demonhide Sash', type:'belt', baseDmg:0, beltRows:3, defense:20, cost:60, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:3 },
-    { id:'belt_lightBelt_nm', name:'Sharkskin Belt', type:'belt', baseDmg:0, beltRows:4, defense:28, cost:90, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:4 },
+    { id:'belt_sash_nm', name:'Demonhide Sash', type:'belt', baseDmg:0, beltRows:4, defense:20, cost:60, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:3 },
     { id:'belt_belt_nm', name:'Mesh Belt', type:'belt', baseDmg:0, beltRows:4, defense:36, cost:130, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:4 },
-    { id:'belt_heavyBelt_nm', name:'Battle Belt', type:'belt', baseDmg:0, beltRows:5, defense:45, cost:170, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:5 },
-    { id:'belt_platedBelt_nm', name:'War Belt', type:'belt', baseDmg:0, beltRows:5, defense:55, cost:220, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:5 },
+    { id:'belt_heavyBelt_nm', name:'Battle Belt', type:'belt', baseDmg:0, beltRows:4, defense:45, cost:170, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:5 },
+    { id:'belt_platedBelt_nm', name:'War Belt', type:'belt', baseDmg:0, beltRows:4, defense:55, cost:220, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:5 },
     // Hell
-    { id:'belt_sash_hell', name:'Spiderweb Sash', type:'belt', baseDmg:0, beltRows:5, defense:65, cost:120, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:5 },
-    { id:'belt_lightBelt_hell', name:'Vampirefang Belt', type:'belt', baseDmg:0, beltRows:6, defense:80, cost:170, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:6 },
-    { id:'belt_belt_hell', name:'Mithril Coil', type:'belt', baseDmg:0, beltRows:6, defense:95, cost:230, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:6 },
-    { id:'belt_heavyBelt_hell', name:'Troll Belt', type:'belt', baseDmg:0, beltRows:7, defense:115, cost:300, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:7 },
-    { id:'belt_platedBelt_hell', name:'Colossus Girdle', type:'belt', baseDmg:0, beltRows:7, defense:140, cost:380, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:7 },
+    { id:'belt_sash_hell', name:'Spiderweb Sash', type:'belt', baseDmg:0, beltRows:4, defense:65, cost:120, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:5 },
+    { id:'belt_belt_hell', name:'Mithril Coil', type:'belt', baseDmg:0, beltRows:4, defense:95, cost:230, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:6 },
+    { id:'belt_heavyBelt_hell', name:'Troll Belt', type:'belt', baseDmg:0, beltRows:4, defense:115, cost:300, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:7 },
+    { id:'belt_platedBelt_hell', name:'Colossus Girdle', type:'belt', baseDmg:0, beltRows:4, defense:140, cost:380, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:7 },
     // === POTIONY (consumable) ===
     { id:'healingPotion', name:'Healing Potion', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
     { id:'manaPotion', name:'Mana Potion', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
