@@ -6425,7 +6425,7 @@
         ctx.moveTo(startX, startY);
         ctx.quadraticCurveTo(cpX, cpY, endX, endY);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 5 * s;
+        ctx.lineWidth = 4 * s;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         ctx.setLineDash([approxLen, approxLen]);
@@ -6458,7 +6458,7 @@
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 7 * s;
+        ctx.lineWidth = 6 * s;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         ctx.stroke();
@@ -6510,7 +6510,7 @@
         ctx.shadowColor = glowColor;
         ctx.shadowBlur = 10 * s;
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 3 * s;
+        ctx.lineWidth = 2 * s;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         const totalSegments = lines.reduce((sum, l) => sum + l.length, 0) + crossLines.length;
@@ -6574,7 +6574,7 @@
         ctx.shadowColor = glowColor;
         ctx.shadowBlur = 12 * s;
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 3 * s;
+        ctx.lineWidth = 2 * s;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         slashes.forEach((sl, idx) => {
@@ -6607,7 +6607,7 @@
         ctx.beginPath();
         ctx.arc(bx, by, r, 0, Math.PI * 2);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 5 * s;
+        ctx.lineWidth = 4 * s;
         ctx.globalAlpha = alpha;
         ctx.stroke();
         const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
