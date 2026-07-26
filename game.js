@@ -9777,13 +9777,13 @@
             const canAfford = h.gold >= item.cost;
             const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
             return `<div class="shop-item">
-              <div class="shop-item-header">
+              <div class="shop-item-header" onclick="game.showItemInfo('${item.id}')">
                 <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
                 <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
               </div>
               <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
               <div class="shop-item-actions">
-                <button class="btn btn-shop-buy" onclick="game.buyItem('${item.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
+                <button class="btn btn-shop-buy" onclick="event.stopPropagation();game.buyItem('${item.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
                   <span class="btn-buy-icon">💰</span>
                   <span class="btn-buy-price" style="color:${priceColor}">${item.cost}</span>
                 </button>
@@ -9960,7 +9960,8 @@
       const ov = $('invItemOverlay');
       if (ov) ov.classList.add('hidden');
     }
-    function showItemInfo(item) {
+    function showItemInfo(itemOrId) {
+      const item = typeof itemOrId === 'string' ? ITEM_MAP[itemOrId] : itemOrId;
       const ov = $('invItemOverlay');
       if (!ov || !item) { if (ov) ov.classList.add('hidden'); return; }
       const qColor = getQualityColor(item);
@@ -10810,6 +10811,7 @@
     showScreen, enterAct, startLocation, setDifficulty, toggleActExpand,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab, switchShopCategory,
+    showItemInfo, closeItemOverlay,
     onMapRapidTap,
     investTalent, resetTalents, selectTalent, selectTree, setDifficulty,
     showSurrenderModal, cancelSurrender, confirmSurrender,
