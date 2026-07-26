@@ -356,6 +356,7 @@
     $('resultTitle').textContent = 'Forfeit';
     $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
     $('resultLootList').innerHTML = '';
+    $('resultScreen').classList.add('centered');
     const resultBtn = $('resultBtn');
     if (resultBtn) resultBtn.innerHTML = '';
     $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
@@ -8731,6 +8732,7 @@
       });
       state._floorLootDrops = [];
       const isWaypoint = state._waypointFloor === true;
+      $('resultScreen').classList.remove('centered');
       $('resultIcon').innerHTML = isWaypoint
         ? '<img class="result-icon-img" src="assets/menu-icons/waypoint.png" alt="Waypoint">'
         : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
@@ -8826,6 +8828,7 @@
       $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
       $('resultLootList').innerHTML = '';
       $('resultActions').innerHTML = '';
+      $('resultScreen').classList.add('centered');
       const resultBtn = $('resultBtn');
       if (resultBtn) resultBtn.innerHTML = '';
       $('resultScreen').onclick = function() { $('resultScreen').onclick = null; showScreen('town'); renderTown(); };
@@ -8849,6 +8852,7 @@
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
       }
       sfxBossDefeat();
+      $('resultScreen').classList.remove('centered');
       $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítěz">';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
       $('resultMsg').innerHTML = '';
