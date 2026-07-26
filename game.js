@@ -1381,8 +1381,7 @@
       const swingSec = (item.swingMs || 2200) / 1000;
       const avgDmg = (dmgMin + dmgMax) / 2;
       const dps = Math.round(avgDmg / swingSec * 10) / 10;
-      addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel})`);
-      addRow('DPS', dps);
+      addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel}) [${dps} DPS]`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
       if (item.weaponType === 'staff') addRow('Type', 'Magical');
       else if (item.weaponType === 'blade') addRow('Type', 'Physical');
