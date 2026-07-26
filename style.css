@@ -1816,27 +1816,26 @@ body.no-scroll { overflow: hidden; }
 
 /* Result screen action buttons */
 .result-actions {
-  display:flex;flex-wrap:wrap;gap:8px;
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
   padding:12px 0;
-  justify-content:center;
 }
 .result-tile {
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  width:80px;height:80px;
+  width:100%;aspect-ratio:1.2;
   border:2px solid #333;border-radius:10px;
   background:transparent;cursor:pointer;
   transition:0.15s;gap:4px;
   overflow:hidden;
   position:relative;
 }
-.result-tile:hover { border-color:#f1c40f; transform:scale(1.05); }
+.result-tile:hover { border-color:#f1c40f; transform:scale(1.03); }
 .result-tile-img {
   position:absolute;top:0;left:0;width:100%;height:100%;
   object-fit:cover;border-radius:8px;
 }
 .result-tile-label {
   position:relative;z-index:1;
-  font-size:12px;color:#fff;text-align:center;line-height:1.2;
-  background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:3px;
-  margin-top:auto;margin-bottom:2px;
+  font-size:13px;color:#fff;text-align:center;line-height:1.2;
+  background:rgba(0,0,0,0.6);padding:3px 8px;border-radius:3px;
+  margin-top:auto;margin-bottom:4px;
 }
