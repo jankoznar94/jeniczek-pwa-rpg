@@ -8465,8 +8465,8 @@
         return { type:'item', item: scroll };
       }
     }
-    // 25% chance for potion (non-boss)
-    if (!bossDrop && Math.random() < 0.25) {
+    // 10% chance for potion (non-boss)
+    if (!bossDrop && Math.random() < 0.10) {
       const potionId = Math.random() < 0.6 ? 'healingPotion' : 'manaPotion';
       const potion = ITEM_MAP[potionId];
       if (potion) {
@@ -9676,10 +9676,10 @@
       }
       potionSlots.innerHTML = phtml;
     }
-    // Grid batohu — 5 sloupců, max 25 buněk
+    // Grid batohu — 4 sloupce, max 20 buněk
     const grid = $('invGrid');
     const inv = h.inventory || [];
-    const maxCells = 25;
+    const maxCells = 20;
     let html = '';
     for (let i = 0; i < maxCells; i++) {
       const itemId = inv[i];
