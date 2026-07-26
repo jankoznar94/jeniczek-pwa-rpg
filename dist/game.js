@@ -295,6 +295,12 @@
       state.floorProgress = ACTS.map(() => 5);
       state.locationProgress = ACTS.map(() => 5);
       state.areaFightProgress = ACTS.map(() => 5);
+      // Odemknout waypointy pro všechny acty (area 1-9)
+      state.waypoints = ACTS.map((_, actId) => {
+        const wps = [];
+        for (let a = 1; a < 10; a++) wps.push(a);
+        return wps;
+      });
       // Odemknout celý bestiář
       state.encounteredMonsters = [];
       MONSTER_DB.forEach(themeMonsters => {
@@ -2294,7 +2300,7 @@
         const fightNum = area * 10 + f + 1;
         const waveOffset = (area * 10 + f) % 4;
         const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
-        html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${fightLocked?'':`game.startLocation(${actId})`}" title="Fight ${fightNum}">
+        html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${fightLocked?'':`game.startLocation(${actId}, ${area}, ${f})`}" title="Fight ${fightNum}">
           <div class="dot-circle">${fightNum}</div>
         </div>`;
       }
@@ -2335,13 +2341,17 @@
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
       wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin:6px 0 2px 4px">${act.icon} ${act.name}</div>`;
       if (completed) {
-        wpHtml += `<div class="waypoint-btn" onclick="game.enterAct(${actId})">
-          <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
-          <div>
-            <div class="waypoint-btn-label">${act.name}</div>
-            <div class="waypoint-btn-sub">✔ Completed</div>
-          </div>
-        </div>`;
+        // Dokončený act — ukázat všech 10 waypointů (area 1-10)
+        for (let areaId = 1; areaId < 10; areaId++) {
+          const areaNum = areaId + 1;
+          wpHtml += `<div class="waypoint-btn" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
+            <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+            <div>
+              <div class="waypoint-btn-label">Area ${areaNum}</div>
+              <div class="waypoint-btn-sub">${act.name} · ✔ Completed</div>
+            </div>
+          </div>`;
+        }
       } else {
         wps.sort((a,b) => a-b).forEach(areaId => {
           const areaNum = areaId + 1;
@@ -2546,7 +2556,7 @@
     startLocation(actId);
   }
 
-  function startLocation(actId) {
+  function startLocation(actId, areaOverride, fightOverride) {
     // Kompletní reset session stavu při vstupu do souboje
     _sessionDebuffs = {};
     _sessionBuffs = {};
@@ -2575,6 +2585,13 @@
     const loc = ACTS[actId];
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
+    // Pokud je areaOverride/fightOverride zadáno, přepíšeme progress
+    if (areaOverride !== undefined) {
+      state.locationProgress[actId] = areaOverride;
+    }
+    if (fightOverride !== undefined) {
+      state.areaFightProgress[actId] = fightOverride;
+    }
     const progress = state.locationProgress[actId] || 0;
     const areaFight = state.areaFightProgress[actId] || 0;
 
