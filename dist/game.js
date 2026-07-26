@@ -9802,7 +9802,7 @@
           ${visible.map(item => {
             const canAfford = h.gold >= item.cost;
             const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
-            return `<div class="shop-item" onclick="game.showItemInfo('${item.id}')">
+            return `<div class="shop-item" onclick="window._invSelectedIdx=null;window._invSelectedSlot=null;game.showItemInfo('${item.id}')">
               <div class="shop-item-header">
                 <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
                 <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
@@ -9903,9 +9903,6 @@
       const item = typeof itemOrId === 'string' ? ITEM_MAP[itemOrId] : itemOrId;
       const ov = $('invItemOverlay');
       if (!ov || !item) { if (ov) ov.classList.add('hidden'); return; }
-      // Resetovat výběr — při volání ze shopu nemáme žádný inv index
-      window._invSelectedIdx = null;
-      window._invSelectedSlot = null;
       const qColor = getQualityColor(item);
       // Icon
       $('invItemOverlayIcon').innerHTML = renderItemIcon(item, 56);
