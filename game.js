@@ -4224,6 +4224,8 @@
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
       spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 'assets/spells/doubleSwing.png');
+      // Pokud smrtelná rána, ukončit boj hned
+      if (mb.bossHp <= 0) { endMapBattle(true); return; }
     } else if (spellId === 'whirlwind') {
       // Whirlwind — scaling podle levelu: (50+lv*30)% dmg, 3 attacks
       const lv = getSpellLv('whirlwind');
