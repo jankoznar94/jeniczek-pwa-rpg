@@ -283,7 +283,8 @@
       state.hero.gold = 5000;
       state.talentPoints = 50;
       state.hero.attrPoints = 150;
-      state.bossesDefeated = ACTS.map(() => true);
+      state.bossesDefeated = ACTS.map(() => ACTS.map(() => true));
+      state.bossesDefeated[state.difficulty][0] = false;
       // bossesDefeated musí být 2D — opravit pokud test mode nastavil flat array
       if (!Array.isArray(state.bossesDefeated[0])) {
         state.bossesDefeated = [state.bossesDefeated.map(() => false), state.bossesDefeated.map(() => false), state.bossesDefeated.map(() => false)];
