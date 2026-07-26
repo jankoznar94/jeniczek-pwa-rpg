@@ -114,36 +114,36 @@
   const sfxBossDefeat=()=>{playTone(523,0.15,'sine',0.14);setTimeout(()=>playTone(659,0.15,'sine',0.14),100);setTimeout(()=>playTone(784,0.15,'sine',0.16),200);setTimeout(()=>playTone(1047,0.3,'sine',0.18),300);};
   const sfxLevelUp=()=>{playTone(392,0.1,'sine',0.12);setTimeout(()=>playTone(523,0.1,'sine',0.12),100);setTimeout(()=>playTone(659,0.12,'sine',0.14),200);setTimeout(()=>playTone(784,0.15,'sine',0.16),300);};
   // MP3 SFX
-  const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 1.0; return a; })();
-  const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 1.0; return a; })();
-  const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 1.0; return a; })();
-  const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 1.0; return a; })();
-  const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 1.0; return a; })();
-  const meleeHitSfx2 = (() => { const a = new Audio('assets/sfx/melee_hit2.mp3'); a.volume = 1.0; return a; })();
-  const enemyHitSfx = (() => { const a = new Audio('assets/sfx/enemy_hit.mp3'); a.volume = 1.0; return a; })();
+  const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 0.70; return a; })();
+  const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 0.70; return a; })();
+  const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 0.70; return a; })();
+  const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 0.70; return a; })();
+  const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 0.70; return a; })();
+  const meleeHitSfx2 = (() => { const a = new Audio('assets/sfx/melee_hit2.mp3'); a.volume = 0.70; return a; })();
+  const enemyHitSfx = (() => { const a = new Audio('assets/sfx/enemy_hit.mp3'); a.volume = 0.70; return a; })();
   const enemyHitSfxPool = [
     enemyHitSfx,
-    (() => { const a = new Audio('assets/sfx/enemy_hit1.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/enemy_hit2.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/enemy_hit3.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/enemy_hit4.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/enemy_hit5.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/enemy_hit6.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit1.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit2.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit3.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit4.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit5.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/enemy_hit6.mp3'); a.volume = 0.70; return a; })(),
   ];
   function getEnemyHitSfx() { return enemyHitSfxPool[Math.floor(Math.random() * enemyHitSfxPool.length)]; }
   const meleeHitSfxPool = [meleeHitSfx, meleeHitSfx2];
-  const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 1.0; return a; })();
-  const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 1.0; return a; })();
-  const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 1.0; return a; })();
-  const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 1.0; return a; })();
-  const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 1.0; return a; })();
-  const lightningSpellSfx = (() => { const a = new Audio('lightning_spell.mp3'); a.volume = 1.0; return a; })();
-  const lightningSpellSfx2 = (() => { const a = new Audio('assets/sfx/lightning_spell2.mp3'); a.volume = 1.0; return a; })();
+  const meleeCritSfx = (() => { const a = new Audio('melee_crit.mp3'); a.volume = 0.70; return a; })();
+  const fistHitSfx = (() => { const a = new Audio('fist_hit.mp3'); a.volume = 0.70; return a; })();
+  const fistCritSfx = (() => { const a = new Audio('fist_crit.mp3'); a.volume = 0.70; return a; })();
+  const fireSpellSfx = (() => { const a = new Audio('fire_spell.mp3'); a.volume = 0.70; return a; })();
+  const iceSpellSfx = (() => { const a = new Audio('ice_spell.mp3'); a.volume = 0.70; return a; })();
+  const lightningSpellSfx = (() => { const a = new Audio('lightning_spell.mp3'); a.volume = 0.70; return a; })();
+  const lightningSpellSfx2 = (() => { const a = new Audio('assets/sfx/lightning_spell2.mp3'); a.volume = 0.70; return a; })();
   // Zvuky zranění hráče — 3 náhodné
   const hurtSfx = [
-    (() => { const a = new Audio('assets/sfx/hurt1.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/hurt2.mp3'); a.volume = 1.0; return a; })(),
-    (() => { const a = new Audio('assets/sfx/hurt3.mp3'); a.volume = 1.0; return a; })(),
+    (() => { const a = new Audio('assets/sfx/hurt1.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/hurt2.mp3'); a.volume = 0.70; return a; })(),
+    (() => { const a = new Audio('assets/sfx/hurt3.mp3'); a.volume = 0.70; return a; })(),
   ];
   function getHurtSfx() { return hurtSfx[Math.floor(Math.random() * hurtSfx.length)]; }
   function getHitSfx() {
@@ -216,20 +216,20 @@
     return min + Math.floor(Math.random() * (max - min + 1));
   }
 
-  const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 1.0; return a; })();
-  const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 1.0; return a; })();
-  const strongStrikeSfx = (() => { const a = new Audio('strong_strike.mp3'); a.volume = 1.0; return a; })();
-  const thunderClapSfx = (() => { const a = new Audio('assets/sfx/thunder_clap.mp3'); a.volume = 1.0; return a; })();
-  const thunderBoltSfx = (() => { const a = new Audio('assets/sfx/thunder_bolt.mp3'); a.volume = 1.0; return a; })();
-  const bluntHitSfx = (() => { const a = new Audio('assets/sfx/blunt_hit.mp3'); a.volume = 1.0; return a; })();
-  const bluntCritSfx = (() => { const a = new Audio('assets/sfx/blunt_crit.mp3'); a.volume = 1.0; return a; })();
-  const shoutSfx = (() => { const a = new Audio('assets/sfx/shout.mp3'); a.volume = 1.0; return a; })();
-  const shopSfx = (() => { const a = new Audio('assets/sfx/shop.mp3'); a.volume = 1.0; return a; })();
-  const equipSfx = (() => { const a = new Audio('assets/sfx/equip.mp3'); a.volume = 1.0; return a; })();
-  const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 1.0; return a; })();
-  const levelupSfx = (() => { const a = new Audio('assets/sfx/levelup.mp3'); a.volume = 1.0; return a; })();
-  const clickSfx = (() => { const a = new Audio('assets/sfx/click.mp3'); a.volume = 1.0; return a; })();
-  const whirlwindSfx = (() => { const a = new Audio('assets/sfx/whirlwind.mp3'); a.volume = 1.0; return a; })();
+  const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 0.70; return a; })();
+  const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 0.70; return a; })();
+  const strongStrikeSfx = (() => { const a = new Audio('strong_strike.mp3'); a.volume = 0.70; return a; })();
+  const thunderClapSfx = (() => { const a = new Audio('assets/sfx/thunder_clap.mp3'); a.volume = 0.70; return a; })();
+  const thunderBoltSfx = (() => { const a = new Audio('assets/sfx/thunder_bolt.mp3'); a.volume = 0.70; return a; })();
+  const bluntHitSfx = (() => { const a = new Audio('assets/sfx/blunt_hit.mp3'); a.volume = 0.70; return a; })();
+  const bluntCritSfx = (() => { const a = new Audio('assets/sfx/blunt_crit.mp3'); a.volume = 0.70; return a; })();
+  const shoutSfx = (() => { const a = new Audio('assets/sfx/shout.mp3'); a.volume = 0.70; return a; })();
+  const shopSfx = (() => { const a = new Audio('assets/sfx/shop.mp3'); a.volume = 0.70; return a; })();
+  const equipSfx = (() => { const a = new Audio('assets/sfx/equip.mp3'); a.volume = 0.70; return a; })();
+  const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 0.70; return a; })();
+  const levelupSfx = (() => { const a = new Audio('assets/sfx/levelup.mp3'); a.volume = 0.70; return a; })();
+  const clickSfx = (() => { const a = new Audio('assets/sfx/click.mp3'); a.volume = 0.70; return a; })();
+  const whirlwindSfx = (() => { const a = new Audio('assets/sfx/whirlwind.mp3'); a.volume = 0.70; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
