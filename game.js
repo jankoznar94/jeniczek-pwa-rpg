@@ -9500,52 +9500,13 @@
       $('shopList').innerHTML = sellable.map(itemId => {
         const item = ITEM_MAP[itemId];
         if (!item) return '';
-        let stats = '';
-        if (item.type === 'weapon') {
-          const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-          const dmgMin = item.baseDmgMin || 1;
-          const dmgMax = item.baseDmgMax || 1;
-          const swingSec = (item.swingMs || 2200) / 1000;
-          const avgDmg = (dmgMin + dmgMax) / 2;
-          const dps = Math.round(avgDmg / swingSec * 10) / 10;
-          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel} · ⏱ ${dps} DPS`;
-        }
-        else if (item.type === 'ring') stats = '';
-        else if (item.type === 'amulet') stats = '';
-        else if (item.type === 'consumable') stats = `🧪 ${item.subtype === 'heal' ? 'Heals' : 'Restores'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'mana'}`;
-        else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
-        // Affix názvy
-        if (item.affixes && item.affixes.length) {
-          stats += '<br><span style="font-size:10px;color:#aaa">' + item.affixes.map(a => a.name).join(' · ') + '</span>';
-        }
-        // Affix staty
-        const affixStats = [];
-        if (item.fireDmg) affixStats.push(`🔥+${item.fireDmg}`);
-        if (item.iceDmg) affixStats.push(`❄️+${item.iceDmg}`);
-        if (item.poisonDmg) affixStats.push(`☠️+${item.poisonDmg}`);
-        if (item.lifesteal) affixStats.push(`🩸+${item.lifesteal}%`);
-        if (item.manaSteal) affixStats.push(`💜+${item.manaSteal}%`);
-        if (item.attackRating) affixStats.push(`🎯+${item.attackRating}`);
-        if (item.skillDmg) affixStats.push(`✨+${item.skillDmg}%`);
-        if (item.manaRegen) affixStats.push(`💧+${item.manaRegen}/t`);
-        if (item.bonusMana) affixStats.push(`💧+${item.bonusMana}`);
-        if (item.swingMs && item.swingMs < 0) affixStats.push(`⚡${item.swingMs}ms`);
-        if (item.enhancedDefense) affixStats.push(`🛡️+${item.enhancedDefense}% obrana`);
-        if (item.enhancedDmg) affixStats.push(`⚔️+${item.enhancedDmg}% dmg`);
-        if (item.defense) affixStats.push(`🛡️+${item.defense}`);
-        if (item.blockChance) affixStats.push(`🛡️${item.blockChance}%`);
-        if (item.critChance) affixStats.push(`🎯${item.critChance}%`);
-        if (item.str) affixStats.push(`💪+${item.str}`);
-        if (item.vit) affixStats.push(`❤️+${item.vit}`);
-        if (item.int) affixStats.push(`🧠+${item.int}`);
-        if (item.dex) affixStats.push(`🎯+${item.dex}`);
-        if (affixStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + affixStats.join(' · ') + '</span>';
         const sellPrice = Math.round(item.cost * 0.5);
         return `<div class="shop-item">
           <div class="shop-item-header">
-            <div class="shop-item-name">${renderItemIcon(item,64)}<span style="color:${getQualityColor(item)}">${item.name}</span></div>
-            <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
+            <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
+            <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
           </div>
+          <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
           <div class="shop-item-actions">
             <button class="btn btn-shop-buy" onclick="game.sellItem('${item.id}')">
               <span class="btn-buy-icon">💰</span>
@@ -9576,35 +9537,13 @@
         if (window._shopBoughtItems.has(item.id)) return '';
         const isConsumable = item.type === 'consumable';
         const canAfford = h.gold >= item.cost;
-        let stats = '';
-        if (item.type === 'weapon') {
-          const handLabel = item.twoHand ? ' [2H]' : ' [1H]';
-          const dmgMin = item.baseDmgMin || 1;
-          const dmgMax = item.baseDmgMax || 1;
-          const swingSec = (item.swingMs || 2200) / 1000;
-          const avgDmg = (dmgMin + dmgMax) / 2;
-          const dps = Math.round(avgDmg / swingSec * 10) / 10;
-          stats = `⚔️ ${dmgMin}-${dmgMax} dmg${handLabel} · ⏱ ${dps} DPS`;
-        }
-        else if (item.type === 'ring') stats = '';
-        else if (item.type === 'amulet') stats = '';
-        else if (item.type === 'consumable') stats = item.subtype === 'townPortal' ? '📜 Returns to town, saves position' : `🧪 ${item.subtype === 'heal' ? 'Heals' : 'Restores'} ${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'mana'}`;
-        else stats = item.bonusHp ? `❤️+${item.bonusHp} HP` : item.defense ? `🛡️+${item.defense}` : '';
-        // Extra staty pro base itemy
-        const extraStats = [];
-        if (item.defense) extraStats.push(`🛡️+${item.defense}`);
-        if (item.blockChance) extraStats.push(`🛡️${item.blockChance}%`);
-        if (item.critChance) extraStats.push(`🎯${item.critChance}%`);
-        if (item.bonusMana) extraStats.push(`💧+${item.bonusMana}`);
-        if (item.beltRows) extraStats.push(`🎗️${item.beltRows} řádků`);
-        if (item.swingMs) extraStats.push(`⚡${item.swingMs}ms`);
-        if (extraStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + extraStats.join(' · ') + '</span>';
         const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
         return `<div class="shop-item">
           <div class="shop-item-header">
-            <div class="shop-item-name">${renderItemIcon(item,64)}<span style="color:${getQualityColor(item)}">${item.name}</span></div>
-            <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
+            <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
+            <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
           </div>
+          <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
           <div class="shop-item-actions">
             <button class="btn btn-shop-buy" onclick="game.buyItem('${item.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
               <span class="btn-buy-icon">💰</span>
