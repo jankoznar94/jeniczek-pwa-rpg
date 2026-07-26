@@ -581,6 +581,10 @@ body.no-scroll { overflow: hidden; }
 .shop-tab:hover:not(.active) { background:#0a0a0a; }
 .shop-category { margin:12px 0; }
 .shop-category-title { font-size:16px; font-weight:bold; color:#f0f0f0; padding:6px 0 4px; border-bottom:1px solid #333; margin-bottom:6px; }
+.shop-cat-tabs { display:flex; gap:4px; margin:4px 0; }
+.shop-cat-tab { flex:1; padding:8px; border:1px solid #2a2a2a; background:#000; color:#888; border-radius:6px; font-size:13px; cursor:pointer; text-align:center; transition:all 0.2s; }
+.shop-cat-tab.active { background:#111; border-color:#f1c40f; color:#f1c40f; font-weight:bold; }
+.shop-cat-tab:hover:not(.active) { background:#0a0a0a; border-color:#555; }
 .shop-back-map { margin:4px 0 8px; }
 .shop-back-map .btn { width:100%; }
 .inv-item { background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;margin:8px 0; }

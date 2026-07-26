@@ -9651,10 +9651,17 @@
 
   // ===== SHOP =====
   let _shopTab = 'buy';
+  let _shopCategory = 'Misc';
 
   function switchShopTab(tab) {
     _shopTab = tab;
     document.querySelectorAll('.shop-tab').forEach(t => t.classList.toggle('active', t.dataset.shopTab === tab));
+    renderShop();
+  }
+
+  function switchShopCategory(cat) {
+    _shopCategory = cat;
+    document.querySelectorAll('.shop-cat-tab').forEach(t => t.classList.toggle('active', t.dataset.shopCat === cat));
     renderShop();
   }
 
@@ -9664,6 +9671,7 @@
     window._shopBoughtItems = new Set();
     $('shopGold').textContent = `💰 ${h.gold} gold`;
     if (_shopTab === 'sell') {
+      $('shopCatTabs').style.display = 'none';
       const equipSet = new Set(Object.values(h.equip).filter(Boolean));
       const sellable = h.inventory.filter(id => !equipSet.has(id));
       if (sellable.length === 0) {
@@ -9751,11 +9759,23 @@
         { category: 'Weapons', items: weaponItems },
       ];
 
-      $('shopList').innerHTML = sections.map(section => {
-        const visible = section.items.filter(item => !window._shopBoughtItems.has(item.id));
+      // Kategorie záložky
+      const catTabsEl = $('shopCatTabs');
+      catTabsEl.style.display = 'flex';
+      catTabsEl.innerHTML = sections.map(s => {
+        const visible = s.items.filter(item => !window._shopBoughtItems.has(item.id));
         if (visible.length === 0) return '';
-        return `<div class="shop-category">
-          <div class="shop-category-title">${section.category}</div>
+        const active = s.category === _shopCategory ? 'active' : '';
+        return `<button class="shop-cat-tab ${active}" data-shop-cat="${s.category}" onclick="game.switchShopCategory('${s.category}')">${s.category}</button>`;
+      }).join('');
+
+      // Zobrazit jen aktivní kategorii
+      const activeSection = sections.find(s => s.category === _shopCategory) || sections[0];
+      const visible = activeSection.items.filter(item => !window._shopBoughtItems.has(item.id));
+
+      $('shopList').innerHTML = visible.length === 0
+        ? '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to buy</div>'
+        : `<div class="shop-category">
           ${visible.map(item => {
             const canAfford = h.gold >= item.cost;
             const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
@@ -9774,7 +9794,6 @@
             </div>`;
           }).join('')}
         </div>`;
-      }).join('');
     }
   }
 
@@ -10793,7 +10812,7 @@
   window.game = {
     showScreen, enterAct, startLocation, setDifficulty, toggleActExpand,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
-    switchShopTab,
+    switchShopTab, switchShopCategory,
     onMapRapidTap,
     investTalent, resetTalents, selectTalent, selectTree, setDifficulty,
     showSurrenderModal, cancelSurrender, confirmSurrender,
