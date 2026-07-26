@@ -2511,6 +2511,9 @@
     const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
     if (completed) return;
 
+    // Reset shop cache — při odchodu z města se nabídka obnoví
+    _resetShopCache();
+
     // Reset monster rotation
     state._monsterLastSeen = state._monsterLastSeen || {};
     state._monsterLastSeen[act.theme] = {};
@@ -9649,6 +9652,67 @@
   // ===== SHOP =====
   let _shopTab = 'buy';
   let _shopCategory = 'Misc';
+  let _shopItemsCache = null; // cache pro aktuální shop nabídku, resetuje se při opuštění města
+
+  function _generateShopItems() {
+    const h = state.hero;
+    const playerLevel = h.level || 1;
+    const maxProgress = Math.max(...state.locationProgress);
+    const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
+    const monsterLevel = 5 + playerLevel * 2;
+
+    function _shopFindBase(type, weaponType) {
+      const candidates = ITEMS.filter(i => {
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
+        return i.type === type && i.tier <= maxTier;
+      });
+      if (candidates.length === 0) return null;
+      const maxT = Math.max(...candidates.map(c => c.tier));
+      const pool = candidates.filter(c => c.tier === maxT);
+      return pool[rand(0, pool.length - 1)];
+    }
+
+    function _shopGenPair(baseItem) {
+      if (!baseItem) return [];
+      const common = generateLootItemWithAffixes(baseItem, 'normal', monsterLevel);
+      common.cost = baseItem.cost;
+      ITEM_MAP[common.id] = common;
+      state.lootItems = state.lootItems || {};
+      state.lootItems[common.id] = common;
+      const magic = generateLootItemWithAffixes(baseItem, 'magic', monsterLevel);
+      magic.cost = 10 + (baseItem.tier || 1) * 20 + (magic.affixes || []).length * 15;
+      ITEM_MAP[magic.id] = magic;
+      state.lootItems[magic.id] = magic;
+      return [common, magic];
+    }
+
+    const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll']
+      .map(id => ITEM_MAP[id]).filter(Boolean);
+
+    const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
+    const armorItems = [];
+    armorTypes.forEach(type => {
+      const base = _shopFindBase(type);
+      if (base) armorItems.push(..._shopGenPair(base));
+    });
+
+    const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
+    const weaponItems = [];
+    weaponTypes.forEach(wt => {
+      const base = _shopFindBase('weapon', wt);
+      if (base) weaponItems.push(..._shopGenPair(base));
+    });
+
+    return [
+      { category: 'Misc', items: miscItems },
+      { category: 'Armor', items: armorItems },
+      { category: 'Weapons', items: weaponItems },
+    ];
+  }
+
+  function _resetShopCache() {
+    _shopItemsCache = null;
+  }
 
   function switchShopTab(tab) {
     _shopTab = tab;
@@ -9694,67 +9758,14 @@
         </div>`;
       }).join('');
     } else {
-      // Dynamický shop — D2 styl: kategorie, common + magic od každého typu
-      const playerLevel = h.level || 1;
-      const maxProgress = Math.max(...state.locationProgress);
-      const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
-      const monsterLevel = 5 + playerLevel * 2;
-
-      // Helper: najít base item pro daný typ a nejvyšší dostupný tier
-      function _shopFindBase(type, weaponType) {
-        const candidates = ITEMS.filter(i => {
-          if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
-          return i.type === type && i.tier <= maxTier;
-        });
-        if (candidates.length === 0) return null;
-        const maxT = Math.max(...candidates.map(c => c.tier));
-        const pool = candidates.filter(c => c.tier === maxT);
-        return pool[rand(0, pool.length - 1)];
+      // Použít cache — pokud neexistuje, vygenerovat novou nabídku
+      if (!_shopItemsCache) {
+        _shopItemsCache = _generateShopItems();
       }
-
-      // Helper: vygenerovat common + magic pár z base itemu
-      function _shopGenPair(baseItem) {
-        if (!baseItem) return [];
-        const common = generateLootItemWithAffixes(baseItem, 'normal', monsterLevel);
-        common.cost = baseItem.cost;
-        ITEM_MAP[common.id] = common;
-        state.lootItems = state.lootItems || {};
-        state.lootItems[common.id] = common;
-        const magic = generateLootItemWithAffixes(baseItem, 'magic', monsterLevel);
-        magic.cost = 10 + (baseItem.tier || 1) * 20 + (magic.affixes || []).length * 15;
-        ITEM_MAP[magic.id] = magic;
-        state.lootItems[magic.id] = magic;
-        return [common, magic];
-      }
-
-      // === MISC ===
-      const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll']
-        .map(id => ITEM_MAP[id]).filter(Boolean);
-
-      // === ARMOR ===
-      const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
-      const armorItems = [];
-      armorTypes.forEach(type => {
-        const base = _shopFindBase(type);
-        if (base) armorItems.push(..._shopGenPair(base));
-      });
-
-      // === WEAPONS ===
-      const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
-      const weaponItems = [];
-      weaponTypes.forEach(wt => {
-        const base = _shopFindBase('weapon', wt);
-        if (base) weaponItems.push(..._shopGenPair(base));
-      });
+      const sections = _shopItemsCache;
 
       // Sledovat, co už bylo v této iteraci shopu koupeno
       if (!window._shopBoughtItems) window._shopBoughtItems = new Set();
-
-      const sections = [
-        { category: 'Misc', items: miscItems },
-        { category: 'Armor', items: armorItems },
-        { category: 'Weapons', items: weaponItems },
-      ];
 
       // Kategorie záložky
       const catTabsEl = $('shopCatTabs');
