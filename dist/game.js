@@ -9547,8 +9547,10 @@
             <div class="shop-item-stats"><span class="stat-line">${stats}</span></div>
           </div>
           <div class="shop-item-actions">
-            <span class="price">💰 ${sellPrice}</span>
-            <button class="btn btn-primary" style="width:auto;padding:8px 18px;font-size:13px" onclick="game.sellItem('${item.id}')">Sell</button>
+            <button class="btn btn-shop-buy" onclick="game.sellItem('${item.id}')">
+              <span class="btn-buy-icon">💰</span>
+              <span class="btn-buy-price" style="color:#f1c40f">${sellPrice}</span>
+            </button>
           </div>
         </div>`;
       }).join('');
