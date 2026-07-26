@@ -1979,9 +1979,14 @@
       { id:'talents', label:'Skills' },
       { id:'hero', label:'Stats' },
     ];
-    const tabsHtml = tabs.map(t =>
-      `<div class="combined-tab ${t.id === activeTab ? 'active' : ''}" onclick="game.switchCombinedTab('${t.id}')">${t.label}</div>`
-    ).join('');
+    const talentPts = state.talentPoints || 0;
+    const attrPts = state.hero.attrPoints || 0;
+    const tabsHtml = tabs.map(t => {
+      let badge = '';
+      if (t.id === 'talents' && talentPts > 0) badge = `<span class="tab-badge">${talentPts}</span>`;
+      if (t.id === 'hero' && attrPts > 0) badge = `<span class="tab-badge">${attrPts}</span>`;
+      return `<div class="combined-tab ${t.id === activeTab ? 'active' : ''}" onclick="game.switchCombinedTab('${t.id}')">${t.label}${badge}</div>`;
+    }).join('');
 
     // Build screen wrappers
     const screenIds = { inventory:'inventoryScreen', talents:'talentsScreen', hero:'heroScreen' };

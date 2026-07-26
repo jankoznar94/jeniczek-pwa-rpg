@@ -1727,6 +1727,12 @@ body.no-scroll { overflow: hidden; }
 .combined-tab:active {
   transform:scale(0.96);
 }
+.combined-tab .tab-badge {
+  display:inline-block; margin-left:4px; padding:0 5px;
+  background:#e94560; color:#fff; border-radius:8px;
+  font-size:10px; font-weight:bold; line-height:16px;
+  vertical-align:middle;
+}
 .combined-screen {
   display:none; height:100%;
 }
