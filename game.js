@@ -9806,6 +9806,8 @@
   }
 
   function buyItem(itemId) {
+    // Zavřít overlay pokud je otevřený
+    closeItemOverlay();
     const item = ITEM_MAP[itemId];
     if (!item) return;
     const h = state.hero;
@@ -9827,6 +9829,8 @@
   }
 
   function sellItem(itemId) {
+    // Zavřít overlay pokud je otevřený
+    closeItemOverlay();
     const item = ITEM_MAP[itemId];
     if (!item || item.cost === 0) return;
     const h = state.hero;
