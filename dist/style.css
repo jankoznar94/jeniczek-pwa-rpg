@@ -657,6 +657,10 @@ body.no-scroll { overflow: hidden; }
 .mb-potion-btn .potion-key-hint {
   position:absolute; bottom:1px; right:2px; font-size:8px; color:#888; background:rgba(0,0,0,0.6); padding:0 2px; border-radius:2px;
 }
+.mb-potion-btn .potion-stack-count {
+  position:absolute; bottom:1px; right:2px; font-size:9px; color:#f1c40f; background:rgba(0,0,0,0.7); padding:0 3px; border-radius:3px; font-weight:bold; line-height:14px;
+}
+.mb-potion-btn.empty { opacity:0.25; border-style:dashed; cursor:default; pointer-events:none; }
 .mb-bars-column {
   display:flex;flex-direction:column;gap:3px;flex:1;
 }

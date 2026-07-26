@@ -3735,31 +3735,41 @@
     const h = state.hero;
     const belt = ITEM_MAP[h.equip.belt];
     if (!belt) { container.innerHTML = ''; return; }
-    const beltRows = belt.beltRows || 0;
-    const totalSlots = beltRows * 4;
     const bpSlots = h.equip.beltPotionSlots || [];
-    container.innerHTML = bpSlots.map((potId, i) => {
-      const pot = potId ? ITEM_MAP[potId] : null;
-      const keyHint = i < 9 ? (i + 1) : '';
-      if (pot) {
-        return `<div class="mb-potion-btn" data-potion-idx="${i}" onclick="game.usePotion(${i})" title="${pot.name} (${pot.subtype === 'heal' ? '+' + pot.effectValue + ' HP' : '+' + pot.effectValue + ' many'})">
-          ${renderItemIcon(pot, 0)}
-          ${keyHint ? `<span class="potion-key-hint">${keyHint}</span>` : ''}
-        </div>`;
-      } else {
-        // Prázdný slot — placeholder s healing potion ikonou
-        return `<div class="mb-potion-btn" style="opacity:0.25;border-style:dashed;cursor:default;pointer-events:none">
-          <img src="assets/items/potion_healing.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">
-        </div>`;
-      }
-    }).join('');
+    // Spočítat healing a mana potiony
+    let healCount = 0, manaCount = 0;
+    bpSlots.forEach(potId => {
+      if (!potId) return;
+      const pot = ITEM_MAP[potId];
+      if (!pot) return;
+      if (pot.subtype === 'heal') healCount++;
+      else if (pot.subtype === 'mana') manaCount++;
+    });
+    const healPot = ITEM_MAP['healingPotion'];
+    const manaPot = ITEM_MAP['manaPotion'];
+    container.innerHTML = `
+      <div class="mb-potion-btn ${healCount > 0 ? '' : 'empty'}" onclick="game.usePotion('heal')" title="Healing Potion (${healCount})">
+        ${healCount > 0 ? renderItemIcon(healPot, 0) : '<img src="assets/items/potion_healing.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">'}
+        ${healCount > 0 ? `<span class="potion-stack-count">${healCount}</span>` : ''}
+      </div>
+      <div class="mb-potion-btn ${manaCount > 0 ? '' : 'empty'}" onclick="game.usePotion('mana')" title="Mana Potion (${manaCount})">
+        ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">'}
+        ${manaCount > 0 ? `<span class="potion-stack-count">${manaCount}</span>` : ''}
+      </div>`;
   }
 
-  function usePotion(potionIdx) {
+  function usePotion(potionType) {
     const h = state.hero;
     const bpSlots = h.equip.beltPotionSlots || [];
-    const potId = bpSlots[potionIdx];
-    if (!potId) return;
+    // Najít první slot s daným typem potionu
+    let potIdx = -1, potId = null;
+    for (let i = 0; i < bpSlots.length; i++) {
+      const pid = bpSlots[i];
+      if (!pid) continue;
+      const p = ITEM_MAP[pid];
+      if (p && p.subtype === potionType) { potIdx = i; potId = pid; break; }
+    }
+    if (potIdx === -1 || !potId) return;
     const pot = ITEM_MAP[potId];
     if (!pot || pot.type !== 'consumable') return;
     playSFX(potionSfx);
@@ -3788,7 +3798,7 @@
       return; // skip potion removal — scroll is consumed
     }
     // Potion zmizí ze slotu
-    bpSlots[potionIdx] = null;
+    bpSlots[potIdx] = null;
     h.equip.beltPotionSlots = bpSlots;
     saveGame();
     updateMapBattleUI();
