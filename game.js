@@ -9728,8 +9728,8 @@
 
   function renderShop() {
     const h = state.hero;
-    // Reset bought items při každém otevření shopu
-    window._shopBoughtItems = new Set();
+    // Inicializovat shop bought items při prvním otevření
+    if (!window._shopBoughtItems) window._shopBoughtItems = new Set();
     $('shopGold').textContent = `💰 ${h.gold} gold`;
     if (_shopTab === 'sell') {
       $('shopCatTabs').style.display = 'none';
@@ -10148,13 +10148,15 @@
     // Klik na pozadí overlaye → zavřít
     const ovBg = $('invItemOverlayBg');
     const ovContent = $('invItemOverlayContent');
-    if (ovBg) {
+    if (ovBg && !ovBg._handlerSet) {
+      ovBg._handlerSet = true;
       ovBg.onclick = function() {
         closeItemOverlay();
         clearSelection();
       };
     }
-    if (ovContent) {
+    if (ovContent && !ovContent._handlerSet) {
+      ovContent._handlerSet = true;
       ovContent.onclick = function(e) { e.stopPropagation(); };
     }
     // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
