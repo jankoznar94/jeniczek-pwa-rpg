@@ -3304,7 +3304,7 @@
         amount = Math.round(baseDmg * 0.3);
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 300, maxTicks: 300 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
         spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
