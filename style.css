@@ -629,9 +629,9 @@ body.no-scroll { overflow: hidden; }
 .inv-slot-tp {
   width:48px; height:48px;
 }
-/* Potion sloty — vedle sebe, menší */
+/* Potion sloty — grid 4 sloupce (řádky nad sebou) */
 .inv-potion-slots {
-  display:flex; flex-direction:row; gap:2px;
+  display:grid; grid-template-columns:repeat(4, 36px); gap:2px;
   margin:4px 0; justify-content:center;
 }
 .inv-potion-slot {
