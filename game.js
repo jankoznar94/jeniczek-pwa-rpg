@@ -9634,7 +9634,7 @@
     h.gold += sellPrice;
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
-    h.hp = h.maxHp;
+    h.hp = Math.min(h.hp, h.maxHp);
     saveGame();
     renderInventory();
     renderHero();
@@ -10030,7 +10030,7 @@
     h.equip[slot] = defaults[slot];
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
-    h.hp = h.maxHp;
+    h.hp = Math.min(h.hp, h.maxHp);
     saveGame();
     renderInventory();
     renderHero();
@@ -10077,7 +10077,7 @@
       h.equip.shield = itemId;
       h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
       h.maxHp = getHeroMaxHp();
-      h.hp = h.maxHp;
+      h.hp = Math.min(h.hp, h.maxHp);
       playSFX(equipSfx);
       saveGame();
       renderInventory();
@@ -10182,9 +10182,9 @@
     }
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
-    h.hp = h.maxHp;
+    h.hp = Math.min(h.hp, h.maxHp);
     h.maxMana = getHeroMaxMana();
-    h.mana = h.maxMana;
+    h.mana = Math.min(h.mana, h.maxMana);
     playSFX(equipSfx);
     saveGame();
     showMessage(`🎽 Oblékl jsi ${item.icon} ${item.name}!`);
@@ -10228,9 +10228,9 @@
     h.inventory.push(itemId);
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
-    h.hp = h.maxHp;
+    h.hp = Math.min(h.hp, h.maxHp);
     h.maxMana = getHeroMaxMana();
-    h.mana = h.maxMana;
+    h.mana = Math.min(h.mana, h.maxMana);
     playSFX(equipSfx);
     saveGame();
     showMessage(`📦 Sundal jsi ${item.icon} ${item.name} do inventáře!`);
