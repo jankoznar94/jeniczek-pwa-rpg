@@ -706,7 +706,7 @@ body.no-scroll { overflow: hidden; }
 .inv-grid-wrap::-webkit-scrollbar-thumb { background:#444; border-radius:3px; }
 
 .inv-grid {
-  display:grid; grid-template-columns:repeat(6, 1fr); gap:4px;
+  display:grid; grid-template-columns:repeat(5, 1fr); gap:4px;
   width:100%; box-sizing:border-box;
 }
 
