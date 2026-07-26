@@ -211,8 +211,8 @@
   }
 
   function getWeaponDmg(weapon) {
-    const min = weapon.baseDmgMin || weapon.baseDmg || 1;
-    const max = weapon.baseDmgMax || weapon.baseDmg || 1;
+    const min = getWeaponTotalDmgMin(weapon);
+    const max = getWeaponTotalDmgMax(weapon);
     return min + Math.floor(Math.random() * (max - min + 1));
   }
 
@@ -608,6 +608,12 @@
     if (weapon.poisonDmg) return '#2ecc71';
     if (weapon.lightningDmg) return '#8b5cf6';
     return null;
+  }
+  function getWeaponTotalDmgMin(weapon) {
+    return (weapon.baseDmgMin || 0) + (weapon.fireDmg || 0) + (weapon.iceDmg || 0) + (weapon.lightningDmg || 0);
+  }
+  function getWeaponTotalDmgMax(weapon) {
+    return (weapon.baseDmgMax || 0) + (weapon.fireDmg || 0) + (weapon.iceDmg || 0) + (weapon.lightningDmg || 0);
   }
   // ===== RESIST MULT =====
   function getLocAffix(key) {
@@ -1403,12 +1409,14 @@
     // Weapon staty
     if (item.type === 'weapon') {
       const handLabel = item.twoHand ? '2H' : '1H';
-      const dmgMin = item.baseDmgMin || 1;
-      const dmgMax = item.baseDmgMax || 1;
+      const dmgMin = getWeaponTotalDmgMin(item);
+      const dmgMax = getWeaponTotalDmgMax(item);
       const swingSec = (item.swingMs || 2200) / 1000;
       const avgDmg = (dmgMin + dmgMax) / 2;
       const dps = Math.round(avgDmg / swingSec * 10) / 10;
-      addRow('Damage', `${dmgMin}-${dmgMax} (${handLabel}) [${dps} DPS]`);
+      const elemColor = getWeaponElementColor(item);
+      const dmgColor = elemColor || '#e8e0e8';
+      addRow('Damage', `<span style="color:${dmgColor}">${dmgMin}-${dmgMax}</span> (${handLabel}) [${dps} DPS]`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
       if (item.attackRating) addRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
       if (item.weaponType === 'staff') addRow('Type', 'Magical');
@@ -9463,8 +9471,8 @@
     const eqAttrs = getEquipAttrs();
     const strBonus = ((h.attrStr||0) + eqAttrs.str) * 0.5;
     const lvBonus = Math.floor(h.level * 1);
-    const wMin = weapon.baseDmgMin || 1;
-    const wMax = weapon.baseDmgMax || 1;
+    const wMin = getWeaponTotalDmgMin(weapon);
+    const wMax = getWeaponTotalDmgMax(weapon);
     const dmgMin = Math.max(1, 2 + lvBonus + wMin + strBonus);
     const dmgMax = Math.max(1, 2 + lvBonus + wMax + strBonus);
     return { min: Math.round(dmgMin), max: Math.round(dmgMax) };
@@ -9536,7 +9544,9 @@
     const dex = (h.attrDex || 0) + (getEquipAttrs().dex || 0);
     const dodgePct = Math.min(50, Math.round(dex * 0.5));
     const hitChance = Math.min(95, 80 + Math.round(dex * 0.3));
-    $('heroDetailDmg').textContent = `${dmg.min}-${dmg.max}`;
+    const elemColor = getWeaponElementColor(weapon);
+    const dmgColor = elemColor || '#e8e0e8';
+    $('heroDetailDmg').innerHTML = `<span style="color:${dmgColor}">${dmg.min}-${dmg.max}</span>`;
     $('heroDetailDef').textContent = `${totalDef} (${defPct}%)`;
     $('heroDetailCrit').textContent = critChance > 0 ? `${critChance}% (×2.0)` : `0%`;
     $('heroDetailBlock').textContent = `${blockChance}%`;
