@@ -119,7 +119,7 @@
     <div class="town-action-label">Waypoints</div>
   </div>
   <div id="townWaypointsWrap" class="town-waypoints-wrap hidden">
-    <div id="townWaypoints" style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+    <div id="townWaypoints" style="display:flex;flex-direction:column;gap:4px;margin-top:4px">
       <!-- Dynamically generated -->
     </div>
   </div>
@@ -467,6 +467,15 @@
       <button class="btn btn-secondary" onclick="game.cancelSurrender()">No, go back</button>
       <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Forfeit</button>
     </div>
+  </div>
+</div>
+
+<!-- ===== TRANSITION SCREEN (waypoint / portal scroll) ===== -->
+<div id="transitionScreen" class="transition-screen hidden">
+  <div class="transition-content">
+    <img id="transitionImage" src="" alt="" class="transition-image">
+    <div class="transition-glow" id="transitionGlow"></div>
+    <div class="transition-label" id="transitionLabel"></div>
   </div>
 </div>
 

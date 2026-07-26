@@ -2288,21 +2288,33 @@
       if (wps.length === 0 && !completed) return;
       hasAny = true;
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
-      wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin-top:6px">${act.icon} ${act.name}</div>`;
+      wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin:6px 0 2px 4px">${act.icon} ${act.name}</div>`;
       if (completed) {
-        wpHtml += `<button class="btn btn-secondary" onclick="game.enterAct(${actId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">✔ ${act.name} (Done)</button>`;
+        wpHtml += `<div class="waypoint-btn" onclick="game.enterAct(${actId})">
+          <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+          <div>
+            <div class="waypoint-btn-label">${act.name}</div>
+            <div class="waypoint-btn-sub">✔ Completed</div>
+          </div>
+        </div>`;
       } else {
         wps.sort((a,b) => a-b).forEach(areaId => {
           const areaNum = areaId + 1;
           const nextArea = (state.locationProgress[actId] || 0) + 1;
           const isCurrent = nextArea === areaId;
-          wpHtml += `<button class="btn ${isCurrent?'btn-primary':'btn-secondary'}" onclick="game.continueFromWaypoint(${actId}, ${areaId})" style="width:100%;font-size:12px;padding:6px;margin:2px 0">
-            ${isCurrent ? '📍 ' : ''}Area ${areaNum}${isCurrent ? ' (Next)' : ''}</button>`;
+          const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
+          wpHtml += `<div class="${cls}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
+            <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+            <div>
+              <div class="waypoint-btn-label">Area ${areaNum}</div>
+              <div class="waypoint-btn-sub">${act.name}${isCurrent ? ' · Next' : ''}</div>
+            </div>
+          </div>`;
         });
       }
     });
     if (!hasAny) {
-      wpHtml = '<div style="color:#666;font-size:13px;text-align:center">No waypoints yet. Venture into the wilderness to find them!</div>';
+      wpHtml = '<div style="color:#666;font-size:13px;text-align:center;padding:8px">No waypoints yet. Venture into the wilderness to find them!</div>';
     }
     wpContainer.innerHTML = wpHtml;
 
@@ -2330,6 +2342,27 @@
     if (wrap) wrap.classList.toggle('hidden');
   }
 
+  function showTransition(type, actId, callback) {
+    const screen = $('transitionScreen');
+    const img = $('transitionImage');
+    const glow = $('transitionGlow');
+    const label = $('transitionLabel');
+    if (type === 'waypoint') {
+      img.src = `assets/waypoints/waypoint_act${actId}.png`;
+      glow.style.background = 'radial-gradient(circle, rgba(100,180,255,0.3) 0%, transparent 70%)';
+      label.textContent = 'Waypoint';
+    } else {
+      img.src = 'assets/items/town_portal_scroll.png';
+      glow.style.background = 'radial-gradient(circle, rgba(100,180,255,0.3) 0%, transparent 70%)';
+      label.textContent = 'Town Portal';
+    }
+    screen.classList.remove('hidden');
+    setTimeout(() => {
+      screen.classList.add('hidden');
+      callback();
+    }, 1500);
+  }
+
   function townHeal() {
     state.hero.maxHp = getHeroMaxHp();
     state.hero.hp = state.hero.maxHp;
@@ -2344,16 +2377,17 @@
     const { actId, zoneId, areaFight } = state.townPortalReturn;
     state.townPortalReturn = null;
     saveGame();
-    // Set progress to the saved zone and fight
-    state.locationProgress[actId] = zoneId;
-    state.areaFightProgress[actId] = areaFight || 0;
-    state.hero.maxHp = getHeroMaxHp();
-    state.hero.hp = state.hero.maxHp;
-    state._floorLootDrops = [];
-    state._monsterLastSeen = state._monsterLastSeen || {};
-    state._monsterLastSeen[ACTS[actId].theme] = {};
-    cleanupTimers();
-    startLocation(actId);
+    showTransition('portal', actId, () => {
+      state.locationProgress[actId] = zoneId;
+      state.areaFightProgress[actId] = areaFight || 0;
+      state.hero.maxHp = getHeroMaxHp();
+      state.hero.hp = state.hero.maxHp;
+      state._floorLootDrops = [];
+      state._monsterLastSeen = state._monsterLastSeen || {};
+      state._monsterLastSeen[ACTS[actId].theme] = {};
+      cleanupTimers();
+      startLocation(actId);
+    });
   }
 
   function useTownPortalScroll() {
@@ -2367,8 +2401,10 @@
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
     state.townPortalCount = (state.townPortalCount || 0) - 1;
     saveGame();
-    showScreen('town');
-    renderTown();
+    showTransition('portal', actId, () => {
+      showScreen('town');
+      renderTown();
+    });
   }
 
   function useTownPortalScrollFromMap() {
@@ -2381,8 +2417,10 @@
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
     state.townPortalCount = (state.townPortalCount || 0) - 1;
     saveGame();
-    showScreen('town');
-    renderTown();
+    showTransition('portal', actId, () => {
+      showScreen('town');
+      renderTown();
+    });
   }
 
   function walkToTown() {
@@ -2405,10 +2443,12 @@
   }
 
   function continueFromWaypoint(actId, areaId) {
-    state.locationProgress[actId] = areaId;
-    state.areaFightProgress[actId] = 0;
-    state._waypointFloor = false;
-    startLocation(actId);
+    showTransition('waypoint', actId, () => {
+      state.locationProgress[actId] = areaId;
+      state.areaFightProgress[actId] = 0;
+      state._waypointFloor = false;
+      startLocation(actId);
+    });
   }
 
   function returnToTownFromWaypoint(locId) {
@@ -2429,8 +2469,10 @@
     state.townPortalReturn = { actId, zoneId: progress, areaFight };
     state.townPortalCount = (state.townPortalCount || 0) - 1;
     saveGame();
-    showScreen('town');
-    renderTown();
+    showTransition('portal', actId, () => {
+      showScreen('town');
+      renderTown();
+    });
   }
 
   // ===== ACT ENTRY =====
@@ -2493,12 +2535,6 @@
 
     const totalZones = loc.zones || 10;
     const isBoss = progress >= totalZones;
-
-    // Odemknout waypoint pro další zónu (checkpoint na začátek další oblasti)
-    state.waypoints = state.waypoints || [[],[],[],[],[]];
-    if (!isBoss && !state.waypoints[actId].includes(progress + 1)) {
-      state.waypoints[actId].push(progress + 1);
-    }
 
     const playerMaxHp = getHeroMaxHp();
     state.hero.maxHp = playerMaxHp;
@@ -8574,6 +8610,12 @@
       // Po 10 soubojích — waypoint patro
       if (af >= 10) {
         state._waypointFloor = true;
+        // Odemknout waypoint pro další oblast — až když hráč reálně projde 10 soubojů
+        state.waypoints = state.waypoints || [[],[],[],[],[]];
+        const nextArea = (state.locationProgress[locId] || 0) + 1;
+        if (!state.waypoints[locId].includes(nextArea)) {
+          state.waypoints[locId].push(nextArea);
+        }
       }
       const p = state.locationProgress[locId] || 0;
       const monsterGold = (1 + rand(0, 2)) * 5;
