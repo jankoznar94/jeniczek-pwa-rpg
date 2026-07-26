@@ -9689,40 +9689,90 @@
         </div>`;
       }).join('');
     } else {
-      // Dynamický shop — při každé návštěvě se zboží mění
-      // Vypočítat max tier podle levelu a progressu
+      // Dynamický shop — D2 styl: kategorie, common + magic od každého typu
       const playerLevel = h.level || 1;
       const maxProgress = Math.max(...state.locationProgress);
       const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
-      // Vždy dostupné: potiony a scroll
-      const alwaysItems = ['healingPotion', 'manaPotion', 'townPortalScroll'];
-      // Ostatní itemy: vybrat náhodnou podmnožinu z dostupných tierů (bez šperků)
-      const equipPool = ITEMS.filter(i => i.cost > 0 && i.tier <= maxTier && i.tier >= Math.max(1, maxTier - 1) && i.type !== 'consumable' && i.type !== 'ring' && i.type !== 'amulet');
-      // Náhodně vybrat 6-10 itemů (nebo méně, pokud je pool malý)
-      const shuffled = equipPool.sort(() => Math.random() - 0.5);
-      const count = Math.min(shuffled.length, 6 + rand(0, 4));
-      const selectedEquip = shuffled.slice(0, count);
-      const shopItems = [...alwaysItems.map(id => ITEM_MAP[id]).filter(Boolean), ...selectedEquip];
+      const monsterLevel = 5 + playerLevel * 2;
+
+      // Helper: najít base item pro daný typ a nejvyšší dostupný tier
+      function _shopFindBase(type, weaponType) {
+        const candidates = ITEMS.filter(i => {
+          if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
+          return i.type === type && i.tier <= maxTier;
+        });
+        if (candidates.length === 0) return null;
+        const maxT = Math.max(...candidates.map(c => c.tier));
+        const pool = candidates.filter(c => c.tier === maxT);
+        return pool[rand(0, pool.length - 1)];
+      }
+
+      // Helper: vygenerovat common + magic pár z base itemu
+      function _shopGenPair(baseItem) {
+        if (!baseItem) return [];
+        const common = generateLootItemWithAffixes(baseItem, 'normal', monsterLevel);
+        common.cost = baseItem.cost;
+        ITEM_MAP[common.id] = common;
+        state.lootItems = state.lootItems || {};
+        state.lootItems[common.id] = common;
+        const magic = generateLootItemWithAffixes(baseItem, 'magic', monsterLevel);
+        magic.cost = 10 + (baseItem.tier || 1) * 20 + (magic.affixes || []).length * 15;
+        ITEM_MAP[magic.id] = magic;
+        state.lootItems[magic.id] = magic;
+        return [common, magic];
+      }
+
+      // === MISC ===
+      const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll']
+        .map(id => ITEM_MAP[id]).filter(Boolean);
+
+      // === ARMOR ===
+      const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
+      const armorItems = [];
+      armorTypes.forEach(type => {
+        const base = _shopFindBase(type);
+        if (base) armorItems.push(..._shopGenPair(base));
+      });
+
+      // === WEAPONS ===
+      const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
+      const weaponItems = [];
+      weaponTypes.forEach(wt => {
+        const base = _shopFindBase('weapon', wt);
+        if (base) weaponItems.push(..._shopGenPair(base));
+      });
+
       // Sledovat, co už bylo v této iteraci shopu koupeno
       if (!window._shopBoughtItems) window._shopBoughtItems = new Set();
-      $('shopList').innerHTML = shopItems.map(item => {
-        // Pokud už bylo koupeno v této iteraci, nezobrazovat
-        if (window._shopBoughtItems.has(item.id)) return '';
-        const isConsumable = item.type === 'consumable';
-        const canAfford = h.gold >= item.cost;
-        const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
-        return `<div class="shop-item">
-          <div class="shop-item-header">
-            <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
-            <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
-          </div>
-          <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
-          <div class="shop-item-actions">
-            <button class="btn btn-shop-buy" onclick="game.buyItem('${item.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
-              <span class="btn-buy-icon">💰</span>
-              <span class="btn-buy-price" style="color:${priceColor}">${item.cost}</span>
-            </button>
-          </div>
+
+      const sections = [
+        { category: 'Misc', items: miscItems },
+        { category: 'Armor', items: armorItems },
+        { category: 'Weapons', items: weaponItems },
+      ];
+
+      $('shopList').innerHTML = sections.map(section => {
+        const visible = section.items.filter(item => !window._shopBoughtItems.has(item.id));
+        if (visible.length === 0) return '';
+        return `<div class="shop-category">
+          <div class="shop-category-title">${section.category}</div>
+          ${visible.map(item => {
+            const canAfford = h.gold >= item.cost;
+            const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
+            return `<div class="shop-item">
+              <div class="shop-item-header">
+                <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
+                <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
+              </div>
+              <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
+              <div class="shop-item-actions">
+                <button class="btn btn-shop-buy" onclick="game.buyItem('${item.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
+                  <span class="btn-buy-icon">💰</span>
+                  <span class="btn-buy-price" style="color:${priceColor}">${item.cost}</span>
+                </button>
+              </div>
+            </div>`;
+          }).join('')}
         </div>`;
       }).join('');
     }
