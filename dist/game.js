@@ -800,23 +800,23 @@
     { id:'arcaneAmulet', name:'Arcane Amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
     // === BELTY ===
     // Normal
-    { id:'belt_sash', name:'Sash', type:'belt', baseDmg:0, beltSlots:1, defense:3, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
-    { id:'belt_lightBelt', name:'Light Belt', type:'belt', baseDmg:0, beltSlots:2, defense:5, cost:20, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:1 },
-    { id:'belt_belt', name:'Belt', type:'belt', baseDmg:0, beltSlots:3, defense:8, cost:35, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:2 },
-    { id:'belt_heavyBelt', name:'Heavy Belt', type:'belt', baseDmg:0, beltSlots:3, defense:11, cost:50, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:2 },
-    { id:'belt_platedBelt', name:'Plated Belt', type:'belt', baseDmg:0, beltSlots:4, defense:15, cost:70, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:3 },
+    { id:'belt_sash', name:'Sash', type:'belt', baseDmg:0, beltRows:1, defense:3, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
+    { id:'belt_lightBelt', name:'Light Belt', type:'belt', baseDmg:0, beltRows:1, defense:5, cost:20, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:1 },
+    { id:'belt_belt', name:'Belt', type:'belt', baseDmg:0, beltRows:2, defense:8, cost:35, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:2 },
+    { id:'belt_heavyBelt', name:'Heavy Belt', type:'belt', baseDmg:0, beltRows:2, defense:11, cost:50, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:2 },
+    { id:'belt_platedBelt', name:'Plated Belt', type:'belt', baseDmg:0, beltRows:3, defense:15, cost:70, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:3 },
     // Nightmare
-    { id:'belt_sash_nm', name:'Demonhide Sash', type:'belt', baseDmg:0, beltSlots:2, defense:20, cost:60, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:3 },
-    { id:'belt_lightBelt_nm', name:'Sharkskin Belt', type:'belt', baseDmg:0, beltSlots:3, defense:28, cost:90, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:4 },
-    { id:'belt_belt_nm', name:'Mesh Belt', type:'belt', baseDmg:0, beltSlots:4, defense:36, cost:130, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:4 },
-    { id:'belt_heavyBelt_nm', name:'Battle Belt', type:'belt', baseDmg:0, beltSlots:4, defense:45, cost:170, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:5 },
-    { id:'belt_platedBelt_nm', name:'War Belt', type:'belt', baseDmg:0, beltSlots:5, defense:55, cost:220, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:5 },
+    { id:'belt_sash_nm', name:'Demonhide Sash', type:'belt', baseDmg:0, beltRows:3, defense:20, cost:60, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:3 },
+    { id:'belt_lightBelt_nm', name:'Sharkskin Belt', type:'belt', baseDmg:0, beltRows:4, defense:28, cost:90, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:4 },
+    { id:'belt_belt_nm', name:'Mesh Belt', type:'belt', baseDmg:0, beltRows:4, defense:36, cost:130, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:4 },
+    { id:'belt_heavyBelt_nm', name:'Battle Belt', type:'belt', baseDmg:0, beltRows:5, defense:45, cost:170, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:5 },
+    { id:'belt_platedBelt_nm', name:'War Belt', type:'belt', baseDmg:0, beltRows:5, defense:55, cost:220, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:5 },
     // Hell
-    { id:'belt_sash_hell', name:'Spiderweb Sash', type:'belt', baseDmg:0, beltSlots:3, defense:65, cost:120, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:5 },
-    { id:'belt_lightBelt_hell', name:'Vampirefang Belt', type:'belt', baseDmg:0, beltSlots:4, defense:80, cost:170, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:6 },
-    { id:'belt_belt_hell', name:'Mithril Coil', type:'belt', baseDmg:0, beltSlots:4, defense:95, cost:230, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:6 },
-    { id:'belt_heavyBelt_hell', name:'Troll Belt', type:'belt', baseDmg:0, beltSlots:5, defense:115, cost:300, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:7 },
-    { id:'belt_platedBelt_hell', name:'Colossus Girdle', type:'belt', baseDmg:0, beltSlots:5, defense:140, cost:380, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:7 },
+    { id:'belt_sash_hell', name:'Spiderweb Sash', type:'belt', baseDmg:0, beltRows:5, defense:65, cost:120, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:5 },
+    { id:'belt_lightBelt_hell', name:'Vampirefang Belt', type:'belt', baseDmg:0, beltRows:6, defense:80, cost:170, icon:'🎗️', iconImg:'assets/items/belt_leather.png', tier:6 },
+    { id:'belt_belt_hell', name:'Mithril Coil', type:'belt', baseDmg:0, beltRows:6, defense:95, cost:230, icon:'🎗️', iconImg:'assets/items/belt_iron.png', tier:6 },
+    { id:'belt_heavyBelt_hell', name:'Troll Belt', type:'belt', baseDmg:0, beltRows:7, defense:115, cost:300, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:7 },
+    { id:'belt_platedBelt_hell', name:'Colossus Girdle', type:'belt', baseDmg:0, beltRows:7, defense:140, cost:380, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:7 },
     // === POTIONY (consumable) ===
     { id:'healingPotion', name:'Healing Potion', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
     { id:'manaPotion', name:'Mana Potion', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
@@ -1407,7 +1407,8 @@
     }
     // Belt
     else if (item.type === 'belt') {
-      addRow('Potion Slots', item.beltSlots || 0);
+      const rows = item.beltRows || 0;
+      addRow('Potion Slots', rows > 0 ? `${rows} rows (${rows * 4} slots)` : '0');
       if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
     }
     // Consumable
@@ -3749,6 +3750,8 @@
     const h = state.hero;
     const belt = ITEM_MAP[h.equip.belt];
     if (!belt) { container.innerHTML = ''; return; }
+    const beltRows = belt.beltRows || 0;
+    const totalSlots = beltRows * 4;
     const bpSlots = h.equip.beltPotionSlots || [];
     container.innerHTML = bpSlots.map((potId, i) => {
       const pot = potId ? ITEM_MAP[potId] : null;
@@ -8477,6 +8480,14 @@
         return { type:'item', item: scroll };
       }
     }
+    // 10% chance for potion (non-boss)
+    if (!bossDrop && Math.random() < 0.10) {
+      const potionId = Math.random() < 0.6 ? 'healingPotion' : 'manaPotion';
+      const potion = ITEM_MAP[potionId];
+      if (potion) {
+        return { type:'item', item: potion };
+      }
+    }
     if (bossDrop) {
       // Boss: zaručený item s vyšším tierem + goldy
       const item = generateLootItem(locId, floor, true);
@@ -9543,7 +9554,21 @@
         </div>`;
       }).join('');
     } else {
-      $('shopList').innerHTML = ITEMS.filter(i => i.cost > 0 && i.tier === 1 && i.type !== 'ring' && i.type !== 'amulet').map(item => {
+      // Dynamický shop — při každé návštěvě se zboží mění
+      // Vypočítat max tier podle levelu a progressu
+      const playerLevel = h.level || 1;
+      const maxProgress = Math.max(...state.locationProgress);
+      const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
+      // Vždy dostupné: potiony a scroll
+      const alwaysItems = ['healingPotion', 'manaPotion', 'townPortalScroll'];
+      // Ostatní itemy: vybrat náhodnou podmnožinu z dostupných tierů
+      const equipPool = ITEMS.filter(i => i.cost > 0 && i.tier <= maxTier && i.tier >= Math.max(1, maxTier - 1) && i.type !== 'consumable');
+      // Náhodně vybrat 6-10 itemů (nebo méně, pokud je pool malý)
+      const shuffled = equipPool.sort(() => Math.random() - 0.5);
+      const count = Math.min(shuffled.length, 6 + rand(0, 4));
+      const selectedEquip = shuffled.slice(0, count);
+      const shopItems = [...alwaysItems.map(id => ITEM_MAP[id]).filter(Boolean), ...selectedEquip];
+      $('shopList').innerHTML = shopItems.map(item => {
         const owned = h.inventory.includes(item.id) || h.equip.weapon === item.id || h.equip.armor === item.id || h.equip.helmet === item.id || h.equip.ring1 === item.id || h.equip.ring2 === item.id || h.equip.amulet === item.id || h.equip.belt === item.id;
         const isConsumable = item.type === 'consumable';
         const canBuy = h.gold >= item.cost && (!owned || isConsumable);
@@ -9567,7 +9592,7 @@
         if (item.blockChance) extraStats.push(`🛡️${item.blockChance}%`);
         if (item.critChance) extraStats.push(`🎯${item.critChance}%`);
         if (item.bonusMana) extraStats.push(`💧+${item.bonusMana}`);
-        if (item.beltSlots) extraStats.push(`🎗️${item.beltSlots} slotů`);
+        if (item.beltRows) extraStats.push(`🎗️${item.beltRows} řádků`);
         if (item.swingMs) extraStats.push(`⚡${item.swingMs}ms`);
         if (extraStats.length) stats += '<br><span style="font-size:10px;color:#ccc">' + extraStats.join(' · ') + '</span>';
         return `<div class="shop-item" style="opacity:${owned && !isConsumable?'0.4':'1'}">
@@ -9698,18 +9723,21 @@
         }
       }
     }
-    // Potion sloty podle beltSlots
+    // Potion sloty podle beltRows (každý řádek = 4 sloty)
     const potionSlots = $('invPotionSlots');
     if (potionSlots) {
-      const beltSlots = belt ? (belt.beltSlots || 0) : 0;
+      const beltRows = belt ? (belt.beltRows || 0) : 0;
+      const totalSlots = beltRows * 4;
       const bpSlots = h.equip.beltPotionSlots || [];
+      // Zajistit, že bpSlots má správnou délku
+      while (bpSlots.length < totalSlots) bpSlots.push(null);
+      if (bpSlots.length > totalSlots) bpSlots.length = totalSlots;
+      h.equip.beltPotionSlots = bpSlots;
       let phtml = '';
-      for (let i = 0; i < beltSlots; i++) {
+      for (let i = 0; i < totalSlots; i++) {
         const potId = bpSlots[i];
         const potItem = potId ? ITEM_MAP[potId] : null;
-        phtml += `<div class="inv-potion-slot ${potItem ? '' : 'empty'}" data-potion-idx="${i}">
-          <div class="inv-slot-icon">${potItem ? renderItemIcon(potItem, 0) : '🧪'}</div>
-        </div>`;
+        phtml += `<div class="inv-potion-slot ${potItem ? '' : 'empty'}" data-potion-idx="${i}">\n          <div class="inv-slot-icon">${potItem ? renderItemIcon(potItem, 0) : '🧪'}</div>\n        </div>`;
       }
       potionSlots.innerHTML = phtml;
     }
@@ -10137,9 +10165,10 @@
     } else if (item.type === 'belt') {
       if (h.equip.belt) h.inventory.push(h.equip.belt);
       h.equip.belt = itemId;
-      // Inicializovat potion sloty podle beltSlots
+      // Inicializovat potion sloty podle beltRows
       const beltItem = ITEM_MAP[itemId];
-      const slots = beltItem ? (beltItem.beltSlots || 0) : 0;
+      const rows = beltItem ? (beltItem.beltRows || 0) : 0;
+      const slots = rows * 4;
       h.equip.beltPotionSlots = h.equip.beltPotionSlots || [];
       while (h.equip.beltPotionSlots.length < slots) h.equip.beltPotionSlots.push(null);
       while (h.equip.beltPotionSlots.length > slots) {
