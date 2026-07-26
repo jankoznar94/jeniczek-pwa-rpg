@@ -579,6 +579,8 @@ body.no-scroll { overflow: hidden; }
 .shop-tab { flex:1; padding:10px; border:1px solid #2a2a2a; background:#1a1a1a; color:#ccc; border-radius:8px; font-size:14px; cursor:pointer; text-align:center; transition:all 0.2s; }
 .shop-tab.active { background:#2a2a2a; border-color:#4a7dff; color:#fff; font-weight:bold; }
 .shop-tab:hover:not(.active) { background:#222; }
+.shop-category { margin:12px 0; }
+.shop-category-title { font-size:16px; font-weight:bold; color:#f0f0f0; padding:6px 0 4px; border-bottom:1px solid #333; margin-bottom:6px; }
 .shop-back-map { margin:4px 0 8px; }
 .shop-back-map .btn { width:100%; }
 .inv-item { background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:14px;margin:8px 0; }
