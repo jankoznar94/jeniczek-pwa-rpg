@@ -1232,6 +1232,7 @@ body.no-scroll { overflow: hidden; }
 }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
 .result-icon-img { width:auto;height:auto;max-width:60vw;max-height:20vh;object-fit:contain;display:block; }
+.result-icon-img.large { max-width:90vw;max-height:50vh; }
 .result-title { font-size:22px; font-weight:bold; margin:8px 0; }
 .result-sub { font-size:16px; color:#888888; }
 .result-stats { display:flex;flex-direction:column;gap:8px;align-items:center;margin:16px 0; }

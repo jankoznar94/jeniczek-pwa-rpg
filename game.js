@@ -352,7 +352,7 @@
     state.hero.hp = state.hero.maxHp;
     saveGame();
     switchBGM('defeat');
-    $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Vzdal ses">';
+    $('resultIcon').innerHTML = '<img class="result-icon-img large" src="assets/result_defeat.png" alt="Vzdal ses">';
     $('resultTitle').textContent = 'Forfeit';
     $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
     $('resultLootList').innerHTML = '';
@@ -8821,7 +8821,7 @@
       state.hero.hp = state.hero.maxHp;
       saveGame();
       switchBGM('defeat');
-      $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_defeat.png" alt="Prohra">';
+      $('resultIcon').innerHTML = '<img class="result-icon-img large" src="assets/result_defeat.png" alt="Prohra">';
       $('resultTitle').textContent = 'Defeat';
       $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
       $('resultLootList').innerHTML = '';
