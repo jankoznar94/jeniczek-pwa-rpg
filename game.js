@@ -9776,8 +9776,8 @@
           ${visible.map(item => {
             const canAfford = h.gold >= item.cost;
             const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
-            return `<div class="shop-item">
-              <div class="shop-item-header" onclick="game.showItemInfo('${item.id}')">
+            return `<div class="shop-item" onclick="game.showItemInfo('${item.id}')">
+              <div class="shop-item-header">
                 <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
                 <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
               </div>
