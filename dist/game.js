@@ -6240,7 +6240,7 @@
         ctx.moveTo(startX, startY);
         ctx.quadraticCurveTo(cpX, cpY, endX, endY);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = isCrit ? 4 * s : 3 * s;
+        ctx.lineWidth = 3;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         ctx.setLineDash([approxLen, approxLen]);
@@ -6274,7 +6274,7 @@
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = isCrit ? 6 * s : 5 * s;
+        ctx.lineWidth = 5;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         ctx.stroke();
@@ -6314,7 +6314,7 @@
         ctx.moveTo(startX, startY);
         ctx.quadraticCurveTo(cpX, cpY, endX, endY);
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineWidth = 2;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
         ctx.setLineDash([approxLen, approxLen]);
@@ -6406,7 +6406,7 @@
         ctx.shadowColor = glowColor;
         ctx.shadowBlur = 6 * s;
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineWidth = 2;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
 
@@ -6469,7 +6469,7 @@
         ctx.shadowColor = glowColor;
         ctx.shadowBlur = 8 * s;
         ctx.strokeStyle = mainColor;
-        ctx.lineWidth = isCrit ? 3 * s : 2 * s;
+        ctx.lineWidth = 2;
         ctx.lineCap = 'round';
         ctx.globalAlpha = alpha;
 
