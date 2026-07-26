@@ -2338,8 +2338,6 @@
       const wps = state.waypoints[actId] || [];
       if (wps.length === 0 && !completed) return;
       hasAny = true;
-      const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
-      wpHtml += `<div style="font-size:13px;font-weight:bold;color:${theme.border};margin:6px 0 2px 4px">${act.icon} ${act.name}</div>`;
       if (completed) {
         // Dokončený act — ukázat všech 10 waypointů (area 1-10)
         for (let areaId = 1; areaId < 10; areaId++) {
