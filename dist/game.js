@@ -788,16 +788,16 @@
     { id:'shield_kiteShield_hell', name:'Monarch', type:'shield', baseDmg:0, blockChance:30, defense:155, cost:330, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:7 },
     { id:'shield_gothicShield_hell', name:'Ward', type:'shield', baseDmg:0, blockChance:35, defense:185, cost:420, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:7 },
     // === PRSTENY ===
-    { id:'copperRing', name:'Copper Ring', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
-    { id:'silverRing', name:'Silver Ring', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
-    { id:'goldRing', name:'Gold Ring', type:'ring', cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
-    { id:'gemRing', name:'Gem Ring', type:'ring', cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
+    { id:'copperRing', name:'Ring', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
+    { id:'silverRing', name:'Ring', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
+    { id:'goldRing', name:'Ring', type:'ring', cost:100, icon:'💍', iconImg:'assets/items/ring_gold.png', tier:4 },
+    { id:'gemRing', name:'Ring', type:'ring', cost:180, icon:'💍', iconImg:'assets/items/ring_gem.png', tier:5 },
     // === AMULETY ===
-    { id:'boneAmulet', name:'Bone Amulet', type:'amulet', cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
-    { id:'silverAmulet', name:'Silver Amulet', type:'amulet', cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
-    { id:'goldAmulet', name:'Gold Amulet', type:'amulet', cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
-    { id:'rubyAmulet', name:'Ruby Amulet', type:'amulet', cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
-    { id:'arcaneAmulet', name:'Arcane Amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
+    { id:'boneAmulet', name:'Amulet', type:'amulet', cost:20, icon:'📿', iconImg:'assets/items/amulet_bone.png', tier:1 },
+    { id:'silverAmulet', name:'Amulet', type:'amulet', cost:60, icon:'📿', iconImg:'assets/items/amulet_silver.png', tier:3 },
+    { id:'goldAmulet', name:'Amulet', type:'amulet', cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
+    { id:'rubyAmulet', name:'Amulet', type:'amulet', cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
+    { id:'arcaneAmulet', name:'Amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
     // === BELTY ===
     // Normal
     { id:'belt_sash', name:'Sash', type:'belt', baseDmg:0, beltRows:1, defense:3, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
