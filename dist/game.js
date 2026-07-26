@@ -2390,15 +2390,12 @@
   function showTransition(type, actId, callback) {
     const screen = $('transitionScreen');
     const img = $('transitionImage');
-    const glow = $('transitionGlow');
     const label = $('transitionLabel');
     if (type === 'waypoint') {
       img.src = `assets/waypoints/waypoint_act${actId}.png`;
-      glow.style.background = 'radial-gradient(circle, rgba(100,180,255,0.3) 0%, transparent 70%)';
       label.textContent = 'Waypoint';
     } else {
       img.src = 'assets/items/town_portal_scroll.png';
-      glow.style.background = 'radial-gradient(circle, rgba(100,180,255,0.3) 0%, transparent 70%)';
       label.textContent = 'Town Portal';
     }
     screen.classList.remove('hidden');
