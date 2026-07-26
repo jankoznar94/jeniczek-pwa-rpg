@@ -601,6 +601,14 @@
     const w = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     return w.weaponType || 'fists';
   }
+  function getWeaponElementColor(weapon) {
+    if (!weapon) return null;
+    if (weapon.fireDmg) return '#e67e22';
+    if (weapon.iceDmg) return '#4a7dff';
+    if (weapon.poisonDmg) return '#2ecc71';
+    if (weapon.lightningDmg) return '#8b5cf6';
+    return null;
+  }
   // ===== RESIST MULT =====
   function getLocAffix(key) {
     const mb = mapBattleState;
@@ -865,6 +873,10 @@
       types:['ring','amulet'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'glacial', name:'Glacial', type:'prefix', group:22, minIlvl:5, weight:5,
       types:['ring','amulet'], stats:{ iceDmg:[2,6] }, tint:'#4a7dff' },
+    { id:'shocking', name:'Shocking', type:'prefix', group:23, minIlvl:3, weight:6,
+      types:['weapon'], stats:{ lightningDmg:[3,8] }, tint:'#8b5cf6' },
+    { id:'thunderous', name:'Thunderous', type:'prefix', group:24, minIlvl:10, weight:4,
+      types:['weapon'], stats:{ lightningDmg:[8,18] }, tint:'#8b5cf6' },
     // === SUFFIXY ===
     { id:'ofAccuracy', name:'of Accuracy', type:'suffix', group:105, minIlvl:5, weight:7,
       types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
@@ -896,6 +908,10 @@
       types:['ring','amulet'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'ofFrost', name:'of Frost', type:'suffix', group:123, minIlvl:5, weight:5,
       types:['ring','amulet'], stats:{ iceDmg:[2,6] }, tint:'#4a7dff' },
+    { id:'ofStorms', name:'of Storms', type:'suffix', group:125, minIlvl:5, weight:5,
+      types:['ring','amulet'], stats:{ lightningDmg:[2,6] }, tint:'#8b5cf6' },
+    { id:'ofLightning', name:'of Lightning', type:'suffix', group:126, minIlvl:8, weight:5,
+      types:['weapon'], stats:{ lightningDmg:[3,8] }, tint:'#8b5cf6' },
     // Defenzivní suffixy — více tierů (ED + bonusHp)
     { id:'ofFortification', name:'of Fortification', type:'suffix', group:116, minIlvl:1, weight:8,
       types:['armor','shield','helmet'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
@@ -1237,6 +1253,7 @@
       manaRegen: 0,
       poisonDmg: 0,
       poisonDur: 0,
+      lightningDmg: 0,
     };
 
     // Aplikovat affix staty
@@ -1302,7 +1319,7 @@
       fireDmg: 0, iceDmg: 0, lifesteal: 0, manaSteal: 0,
       enhancedDefense: 0, enhancedDmg: 0,
       str: 0, vit: 0, int: 0, dex: 0,
-      skillDmg: 0, manaRegen: 0, poisonDmg: 0, poisonDur: 0,
+      skillDmg: 0, manaRegen: 0, poisonDmg: 0, poisonDur: 0, lightningDmg: 0,
     };
 
     affixes.forEach(a => {
@@ -1418,6 +1435,7 @@
     if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}${affixRange('fireDmg')}`);
     if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}${affixRange('iceDmg')}`);
     if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
+    if (item.lightningDmg) addRow('Lightning Dmg', `+${item.lightningDmg}${affixRange('lightningDmg')}`);
     if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
     if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
     if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
@@ -3351,6 +3369,7 @@
         amount = Math.round(baseDmg * 0.3);
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
+        _lastPlayerDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
         _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
         spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
@@ -4298,7 +4317,7 @@
       mb.bossHp -= dmg;
       state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
       // Canvas melee impact
-      spawnMeleeImpact(mb, false, getWeaponType());
+      spawnMeleeImpact(mb, false, getWeaponType(), 0, getWeaponElementColor(weapon));
       spawnFloatingText(`🗡️ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/shadowStrike.png');
     } else if (spellId === 'eviscerate') {
       const cp = state.comboPoints || 0;
@@ -4312,7 +4331,7 @@
       mb.bossHp -= dmg;
       state.comboPoints = 0; // spotřebovat combo pointy
       // Canvas melee impact
-      spawnMeleeImpact(mb, false, getWeaponType());
+      spawnMeleeImpact(mb, false, getWeaponType(), 0, getWeaponElementColor(weapon));
       spawnFloatingText(`💥 -${dmg}`, 'right', '#f1c40f', 32);
     } else if (spellId === 'kidneyShot') {
       const cp = state.comboPoints || 0;
@@ -4356,6 +4375,7 @@
       }
       const lv = getSpellLv('poisonExplosion');
       if (lv < 1) return;
+      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       // Multipliers podle levelu a combo pointů
       const baseMult = 1.1 + (lv - 1) * 0.2; // 1.1 @ lv1, 1.3 @ lv2, ... 1.9 @ lv5
       const cpMult = 0.4; // +0.4 per combo point (1cp=+0.0, 2cp=+0.1, ... 5cp=+0.4)
@@ -4372,7 +4392,7 @@
       delete _sessionDebuffs['poisonedWeapon_poison'];
       state.comboPoints = 0;
       // Zelená exploze
-      spawnMeleeImpact(mb2, false, getWeaponType());
+      spawnMeleeImpact(mb2, false, getWeaponType(), 0, getWeaponElementColor(weapon));
       spawnFloatingText(`💥 -${dmg}`, 'right', '#2ecc71', 36);
       playSFX(lightningSpellSfx2);
     }
@@ -6465,7 +6485,7 @@
   // ===== SPELL ANIMATIONS =====
 
   function spawnHeroicStrikeAnim(mb) {
-    // Heroic Strike — zvýrazněná verze normálního úderu, obarvená žlutě
+    // Heroic Strike — zvýrazněná verze normálního úderu, obarvená podle elementu zbraně
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     const arena = $('mbArena');
     if (!arena) return;
@@ -6487,8 +6507,11 @@
     const startTime = performance.now();
     const duration = 350;
     const s = 1.3; // o trochu větší než normální úder
-    const mainColor = '#ffd700';
-    const glowColor = 'rgba(255,215,0,0.8)';
+    const elemColor = getWeaponElementColor(weapon);
+    const mainColor = elemColor || '#ffd700';
+    const glowColor = elemColor
+      ? `rgba(${parseInt(elemColor.slice(1,3),16)},${parseInt(elemColor.slice(3,5),16)},${parseInt(elemColor.slice(5,7),16)},0.8)`
+      : 'rgba(255,215,0,0.8)';
 
     if (wt === 'blade') {
       // Žluté seknutí
@@ -6747,9 +6770,11 @@
     // Double Swing — obě zbraně zároveň
     const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     const offhandWeapon = (state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
-    spawnMeleeImpact(mb, false, weapon.weaponType || 'fists', 0);
+    const elemColor = getWeaponElementColor(weapon);
+    const offElemColor = offhandWeapon ? getWeaponElementColor(offhandWeapon) : null;
+    spawnMeleeImpact(mb, false, weapon.weaponType || 'fists', 0, elemColor);
     if (offhandWeapon) {
-      spawnMeleeImpact(mb, false, offhandWeapon.weaponType, Math.PI);
+      spawnMeleeImpact(mb, false, offhandWeapon.weaponType, Math.PI, offElemColor);
     }
   }
 
@@ -6760,6 +6785,8 @@
     const offhandWeapon = hasOffhand ? ITEM_MAP[state.hero.equip.shield] : null;
     const wt = weapon.weaponType || 'fists';
     const owt = offhandWeapon ? offhandWeapon.weaponType : null;
+    const elemColor = getWeaponElementColor(weapon);
+    const offElemColor = offhandWeapon ? getWeaponElementColor(offhandWeapon) : null;
     const sequence = hasOffhand
       ? [0, Math.PI, 0, Math.PI, 0, Math.PI]
       : [0, 0, 0];
@@ -6768,7 +6795,8 @@
       if (idx >= sequence.length) return;
       const angleOff = sequence[idx];
       const wType = angleOff === 0 ? wt : owt;
-      spawnMeleeImpact(mb, false, wType, angleOff);
+      const color = angleOff === 0 ? elemColor : offElemColor;
+      spawnMeleeImpact(mb, false, wType, angleOff, color);
       idx++;
       setTimeout(nextHit, 100);
     }
@@ -8133,6 +8161,7 @@
         const tickDmg = Math.max(1, Math.round(effectiveDmg / weapon.poisonDur));
         mb.enemyDot = tickDmg;
         mb.enemyDotTicksLeft = weapon.poisonDur;
+        _lastEnemyDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
         _sessionDebuffs['weapon_poison'] = { icon: '☠️', name: 'Jed', ticks: weapon.poisonDur * 60, maxTicks: weapon.poisonDur * 60 };
         // Zelený záblesk
         const arena = $('mbArena');
@@ -8157,6 +8186,7 @@
           mb.enemyDot = tickDmg;
           mb.enemyDotTicksLeft = poisonDur;
           mb.enemyPoisonBaseDmg = poisonBaseDmg; // pro poisonExplosion
+          _lastEnemyDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
           _sessionDebuffs['poisonedWeapon_poison'] = { icon: '☠️', name: 'Jed (talent)', ticks: poisonDur * 60, maxTicks: poisonDur * 60 };
           // Zelený záblesk
           const arena = $('mbArena');
@@ -8176,6 +8206,7 @@
       if (weapon.fireDmg) elementColor = '#e67e22';
       else if (weapon.iceDmg) elementColor = '#4a7dff';
       else if (weapon.poisonDmg) elementColor = '#2ecc71';
+      else if (weapon.lightningDmg) elementColor = '#8b5cf6';
       spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff, elementColor);
     }
     mb._skipMeleeImpact = false;
