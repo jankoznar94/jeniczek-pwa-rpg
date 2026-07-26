@@ -764,7 +764,7 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-bg {
   position:absolute;top:0;left:0;width:100%;height:100%;
   background:rgba(0,0,0,0.4);
-  pointer-events:none;
+  pointer-events:auto;
 }
 .inv-item-overlay-content {
   position:relative;
