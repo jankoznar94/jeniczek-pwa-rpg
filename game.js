@@ -2310,15 +2310,9 @@
   }
 
   function enterCurrentAct() {
-    // Najít první nehotový act a vstoupit do něj
-    const diffIdx = state.difficulty || 0;
-    for (let i = 0; i < ACTS.length; i++) {
-      const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
-      if (!completed) {
-        enterAct(i);
-        return;
-      }
-    }
+    // Místo přímého vstupu do aktu ukázat map screen — hráč si vybere ručně
+    showScreen('map');
+    renderMap();
   }
 
   function toggleTownWaypoints() {
