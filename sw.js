@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v126';
-const ASSET_CACHE = 'boss-slayer-assets-v16';
+const ASSET_CACHE = 'boss-slayer-assets-v17';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=126', '/game.js?v=126', '/manifest.json'];
 
@@ -99,6 +99,9 @@ const ASSET_FILES = [
   '/assets/items/belt_mithril.png', '/assets/items/potion_healing.png',
   '/assets/items/potion_mana.png',
   '/assets/items/town_portal_scroll.png',
+  '/assets/waypoints/waypoint_act0.png', '/assets/waypoints/waypoint_act1.png',
+  '/assets/waypoints/waypoint_act2.png', '/assets/waypoints/waypoint_act3.png',
+  '/assets/waypoints/waypoint_act4.png',
 ];
 
 self.addEventListener('install', e => {
