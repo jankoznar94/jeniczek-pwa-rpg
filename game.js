@@ -234,24 +234,24 @@
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
   bgmAudio.loop = true;
-  bgmAudio.volume = 0.70;
+  bgmAudio.volume = 0.85;
   const overworldAudio = new Audio('overworld.mp3');
   overworldAudio.loop = true;
-  overworldAudio.volume = 0.90;
+  overworldAudio.volume = 1.0;
   const defeatAudio = new Audio('defeat.mp3');
   defeatAudio.loop = true;
-  defeatAudio.volume = 0.75;
+  defeatAudio.volume = 0.85;
   const winAudio = new Audio('win.mp3');
   winAudio.loop = false;
-  winAudio.volume = 0.80;
+  winAudio.volume = 0.90;
 
   const minigameBgm = new Audio('minigame-bgm.mp3');
   minigameBgm.loop = true;
-  minigameBgm.volume = 0.70;
+  minigameBgm.volume = 0.80;
 
   const bossBgm = new Audio('boss_bgm.mp3');
   bossBgm.loop = true;
-  bossBgm.volume = 0.50;
+  bossBgm.volume = 0.70;
 
   // Battle BGM kolekce — 3 stopy, náhodně se střídají po patrech
   const battleBgmTracks = [
@@ -259,7 +259,7 @@
     new Audio('bgm_2.mp3'),
     new Audio('bgm_3.mp3')
   ];
-  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.80; });
+  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.90; });
   let currentBattleIndex = 0; // vybraná stopa pro aktuální patro
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
@@ -267,12 +267,12 @@
   let musicMuted = false;
   function toggleMusic() {
     musicMuted = !musicMuted;
-    bgmAudio.volume = musicMuted ? 0 : 0.70;
-    overworldAudio.volume = musicMuted ? 0 : 0.90;
-    defeatAudio.volume = musicMuted ? 0 : 0.75;
-    winAudio.volume = musicMuted ? 0 : 0.80;
-    bossBgm.volume = musicMuted ? 0 : 0.50;
-    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.80; });
+    bgmAudio.volume = musicMuted ? 0 : 0.85;
+    overworldAudio.volume = musicMuted ? 0 : 1.0;
+    defeatAudio.volume = musicMuted ? 0 : 0.85;
+    winAudio.volume = musicMuted ? 0 : 0.90;
+    bossBgm.volume = musicMuted ? 0 : 0.70;
+    battleBgmTracks.forEach(t => { t.volume = musicMuted ? 0 : 0.90; });
     document.getElementById('musicToggle').className = musicMuted ? '' : 'music-active';
   }
   let testMode = false;
