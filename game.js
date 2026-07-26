@@ -9781,8 +9781,6 @@
           });
           if (bothHtml) {
             $('invItemOverlayCompareIcon').innerHTML = '';
-            $('invItemOverlayCompareName').textContent = 'Equipped Rings';
-            $('invItemOverlayCompareName').style.color = '#aaa';
             $('invItemOverlayCompareStats').innerHTML = bothHtml;
             hasCompare = true;
           }
@@ -9803,8 +9801,6 @@
           });
           if (bothHtml) {
             $('invItemOverlayCompareIcon').innerHTML = '';
-            $('invItemOverlayCompareName').textContent = 'Equipped Weapons';
-            $('invItemOverlayCompareName').style.color = '#aaa';
             $('invItemOverlayCompareStats').innerHTML = bothHtml;
             hasCompare = true;
           }
@@ -9817,8 +9813,6 @@
             if (equipped) {
               const eqColor = getQualityColor(equipped);
               $('invItemOverlayCompareIcon').innerHTML = renderItemIcon(equipped, 40);
-              $('invItemOverlayCompareName').textContent = equipped.name;
-              $('invItemOverlayCompareName').style.color = eqColor;
               $('invItemOverlayCompareStats').innerHTML = buildItemStatsHtml(equipped);
               hasCompare = true;
             }
@@ -9829,8 +9823,6 @@
       compareEl.classList.remove('hidden');
       if (!hasCompare) {
         $('invItemOverlayCompareIcon').innerHTML = '';
-        $('invItemOverlayCompareName').textContent = 'Nothing Equipped';
-        $('invItemOverlayCompareName').style.color = '#555';
         $('invItemOverlayCompareStats').innerHTML = '';
       }
       // Equip/Unequip tlačítko
