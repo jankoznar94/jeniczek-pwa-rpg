@@ -1431,7 +1431,6 @@
         addRow(names[k] || k, `+${item.attrs[k]}`);
       });
     }
-    if (item.cost) addRow('Value', `${item.cost} gold`);
     return rows.join('');
   }
 
