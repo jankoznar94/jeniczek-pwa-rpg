@@ -768,7 +768,14 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-compare-divider { font-size:10px;color:#555;letter-spacing:2px; }
 .inv-item-overlay-compare-icon { font-size:40px; }
 .inv-item-overlay-compare-name { font-size:13px;font-weight:bold;text-align:left; }
-.inv-item-overlay-compare-stats { font-size:11px;color:#aaa;line-height:1.6;text-align:left; }
+.inv-item-overlay-compare-stats { font-size:12px;color:#ccc;line-height:1.7;text-align:left;width:100%; }
+.inv-item-overlay-compare-stats .stat-row {
+  display:flex;justify-content:space-between;gap:12px;
+  padding:2px 0;border-bottom:1px solid #1a1a1a;
+}
+.inv-item-overlay-compare-stats .stat-row:last-child { border-bottom:none; }
+.inv-item-overlay-compare-stats .stat-label { color:#888; }
+.inv-item-overlay-compare-stats .stat-value { color:#e8e0e8; }
 .inv-item-overlay-btn {
   margin-top:10px;padding:8px 24px;font-size:14px;font-weight:bold;
   background:#2a2a2a;border:1px solid #555;border-radius:6px;
