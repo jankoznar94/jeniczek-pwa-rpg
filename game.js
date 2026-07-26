@@ -1357,10 +1357,6 @@
       if (value === undefined || value === null || value === '' || value === 0) return;
       rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
     }
-    // Názvy affixů
-    if (item.affixes && item.affixes.length) {
-      addRow('Affixes', item.affixes.map(a => a.name).join(', '));
-    }
     // Sestavit mapu rozsahů z affixů — statName → [min, max]
     const affixRangeMap = {};
     if (item.affixes) {
