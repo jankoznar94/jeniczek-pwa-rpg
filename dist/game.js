@@ -1160,7 +1160,8 @@
       GEM_QUALITIES.forEach(q => {
         const gem = GEMS[type];
         const qData = gem.qualities[q];
-        const id = type + '_' + q;
+        const id = type + (q === 'normal' ? '' : '_' + q);
+        const filename = id + '.png';
         ITEM_MAP[id] = {
           id: id,
           name: qData.name,
@@ -1168,9 +1169,9 @@
           gemType: type,
           gemQuality: q,
           icon: gem.icon,
-          iconImg: null,
-          cost: q === 'normal' ? 20 : q === 'flawless' ? 50 : 100,
-          tier: q === 'normal' ? 1 : q === 'flawless' ? 3 : 5,
+          iconImg: '/assets/gems/' + filename,
+          cost: q === 'chipped' ? 10 : q === 'flawed' ? 15 : q === 'normal' ? 20 : q === 'flawless' ? 50 : 100,
+          tier: q === 'chipped' ? 1 : q === 'flawed' ? 2 : q === 'normal' ? 3 : q === 'flawless' ? 4 : 5,
           quality: 'magic'
         };
       });
@@ -1198,12 +1199,14 @@
   // Socket chance pro normal quality itemy
   const SOCKET_CHANCE_NORMAL = 0.25;
 
-  // Gems: 4 types × 3 qualities (normal, flawless, perfect)
+  // Gems: 4 types × 5 qualities (chipped, flawed, normal, flawless, perfect)
   const GEMS = {
     ruby: {
       name: 'Ruby',
       icon: '🔴',
       qualities: {
+        chipped: { name: 'Chipped Ruby', weapon: { fireDmg: [1,3] }, armor: { bonusHp: [3,8] } },
+        flawed: { name: 'Flawed Ruby', weapon: { fireDmg: [2,5] }, armor: { bonusHp: [6,15] } },
         normal: { name: 'Ruby', weapon: { fireDmg: [3,6] }, armor: { bonusHp: [10,20] } },
         flawless: { name: 'Flawless Ruby', weapon: { fireDmg: [6,12] }, armor: { bonusHp: [25,40] } },
         perfect: { name: 'Perfect Ruby', weapon: { fireDmg: [12,20] }, armor: { bonusHp: [50,80] } }
@@ -1213,6 +1216,8 @@
       name: 'Sapphire',
       icon: '🔵',
       qualities: {
+        chipped: { name: 'Chipped Sapphire', weapon: { coldDmg: [1,3] }, armor: { bonusMana: [3,8] } },
+        flawed: { name: 'Flawed Sapphire', weapon: { coldDmg: [2,5] }, armor: { bonusMana: [6,15] } },
         normal: { name: 'Sapphire', weapon: { coldDmg: [3,6] }, armor: { bonusMana: [10,20] } },
         flawless: { name: 'Flawless Sapphire', weapon: { coldDmg: [6,12] }, armor: { bonusMana: [25,40] } },
         perfect: { name: 'Perfect Sapphire', weapon: { coldDmg: [12,20] }, armor: { bonusMana: [50,80] } }
@@ -1222,6 +1227,8 @@
       name: 'Emerald',
       icon: '🟢',
       qualities: {
+        chipped: { name: 'Chipped Emerald', weapon: { poisonDmg: [1,3], poisonDur: 2 }, armor: { attackRating: [3,8] } },
+        flawed: { name: 'Flawed Emerald', weapon: { poisonDmg: [2,5], poisonDur: 3 }, armor: { attackRating: [6,15] } },
         normal: { name: 'Emerald', weapon: { poisonDmg: [3,6], poisonDur: 3 }, armor: { attackRating: [10,20] } },
         flawless: { name: 'Flawless Emerald', weapon: { poisonDmg: [6,12], poisonDur: 4 }, armor: { attackRating: [25,40] } },
         perfect: { name: 'Perfect Emerald', weapon: { poisonDmg: [12,20], poisonDur: 5 }, armor: { attackRating: [50,80] } }
@@ -1231,6 +1238,8 @@
       name: 'Topaz',
       icon: '🟡',
       qualities: {
+        chipped: { name: 'Chipped Topaz', weapon: { lightningDmg: [1,3] }, armor: { magicFind: [2,5] } },
+        flawed: { name: 'Flawed Topaz', weapon: { lightningDmg: [2,5] }, armor: { magicFind: [4,8] } },
         normal: { name: 'Topaz', weapon: { lightningDmg: [3,6] }, armor: { magicFind: [5,10] } },
         flawless: { name: 'Flawless Topaz', weapon: { lightningDmg: [6,12] }, armor: { magicFind: [10,20] } },
         perfect: { name: 'Perfect Topaz', weapon: { lightningDmg: [12,20] }, armor: { magicFind: [20,35] } }
@@ -1238,8 +1247,8 @@
     }
   };
 
-  // Gem quality levels
-  const GEM_QUALITIES = ['normal', 'flawless', 'perfect'];
+  // Gem quality levels (D2 style: chipped → flawed → normal → flawless → perfect)
+  const GEM_QUALITIES = ['chipped', 'flawed', 'normal', 'flawless', 'perfect'];
 
   function getQualityColor(item) {
     if (item.unique) return QUALITY_COLORS.unique;
@@ -8858,9 +8867,9 @@
       const gemTypes = ['ruby', 'sapphire', 'emerald', 'topaz'];
       const type = gemTypes[rand(0, 3)];
       // Quality based on floor
-      const qIdx = floor < 3 ? 0 : floor < 6 ? rand(0,1) : rand(0,2);
+      const qIdx = floor < 2 ? 0 : floor < 4 ? rand(0,1) : floor < 6 ? rand(0,2) : floor < 8 ? rand(0,3) : rand(0,4);
       const quality = GEM_QUALITIES[qIdx];
-      const gemId = type + '_' + quality;
+      const gemId = type + (quality === 'normal' ? '' : '_' + quality);
       const gem = ITEM_MAP[gemId];
       if (gem) {
         return { type:'item', item: gem };
@@ -9946,9 +9955,10 @@
     }
 
     const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll',
-      'ruby_normal', 'sapphire_normal', 'emerald_normal', 'topaz_normal',
-      'ruby_flawless', 'sapphire_flawless', 'emerald_flawless', 'topaz_flawless',
-      'ruby_perfect', 'sapphire_perfect', 'emerald_perfect', 'topaz_perfect']
+      'ruby_chipped', 'ruby_flawed', 'ruby', 'ruby_flawless', 'ruby_perfect',
+      'sapphire_chipped', 'sapphire_flawed', 'sapphire', 'sapphire_flawless', 'sapphire_perfect',
+      'emerald_chipped', 'emerald_flawed', 'emerald', 'emerald_flawless', 'emerald_perfect',
+      'topaz_chipped', 'topaz_flawed', 'topaz', 'topaz_flawless', 'topaz_perfect']
       .map(id => ITEM_MAP[id]).filter(Boolean);
 
     const armorTypes = ['armor', 'helmet', 'shield', 'belt'];

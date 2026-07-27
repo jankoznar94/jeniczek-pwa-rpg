@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v126';
-const ASSET_CACHE = 'boss-slayer-assets-v17';
+const ASSET_CACHE = 'boss-slayer-assets-v18';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=126', '/game.js?v=126', '/manifest.json'];
 
@@ -102,6 +102,15 @@ const ASSET_FILES = [
   '/assets/waypoints/waypoint_act0.png', '/assets/waypoints/waypoint_act1.png',
   '/assets/waypoints/waypoint_act2.png', '/assets/waypoints/waypoint_act3.png',
   '/assets/waypoints/waypoint_act4.png',
+  // Gems
+  '/assets/gems/ruby_chipped.png', '/assets/gems/ruby_flawed.png', '/assets/gems/ruby.png',
+  '/assets/gems/ruby_flawless.png', '/assets/gems/ruby_perfect.png',
+  '/assets/gems/sapphire_chipped.png', '/assets/gems/sapphire_flawed.png', '/assets/gems/sapphire.png',
+  '/assets/gems/sapphire_flawless.png', '/assets/gems/sapphire_perfect.png',
+  '/assets/gems/emerald_chipped.png', '/assets/gems/emerald_flawed.png', '/assets/gems/emerald.png',
+  '/assets/gems/emerald_flawless.png', '/assets/gems/emerald_perfect.png',
+  '/assets/gems/topaz_chipped.png', '/assets/gems/topaz_flawed.png', '/assets/gems/topaz.png',
+  '/assets/gems/topaz_flawless.png', '/assets/gems/topaz_perfect.png',
 ];
 
 self.addEventListener('install', e => {
