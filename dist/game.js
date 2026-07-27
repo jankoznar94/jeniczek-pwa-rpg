@@ -10164,8 +10164,10 @@
 
     // Gem select modal pro socket insert
     function openGemSelectModal(targetItemId, socketIdx) {
+      console.log('openGemSelectModal called', targetItemId, socketIdx);
       const modal = $('gemSelectModal');
-      if (!modal) return;
+      console.log('modal element:', modal);
+      if (!modal) { console.log('modal not found!'); return; }
       const grid = $('gemSelectGrid');
       const emptyMsg = $('gemSelectEmpty');
       if (!grid || !emptyMsg) return;
