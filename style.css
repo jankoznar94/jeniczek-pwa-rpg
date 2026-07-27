@@ -702,6 +702,8 @@ body.no-scroll { overflow: hidden; }
 .inv-grid-cell .cell-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 .inv-grid-cell .cell-icon img { width:100%; height:100%; object-fit:cover; display:block; border-radius:0; }
 .inv-grid-cell .cell-name { display:none; }
+.inv-grid-cell.socket-glow { box-shadow:0 0 8px 2px rgba(255,215,0,0.6), inset 0 0 8px rgba(255,215,0,0.15); border-color:#ffd700; }
+.inv-grid-cell.dimmed { opacity:0.3; pointer-events:none; }
 .inv-grid-cell .cell-actions {
   display:none; position:absolute; top:0; left:0; width:100%; height:100%;
   background:rgba(0,0,0,0.75); border-radius:5px; flex-direction:column;

@@ -10194,6 +10194,18 @@
           }
           socketOverlay.innerHTML = shtml;
           socketOverlay.classList.remove('hidden');
+          // Klik na prázdný socket slot → spustit insert mode
+          socketOverlay.querySelectorAll('.socket-slot.empty').forEach(el => {
+            el.onclick = function(e) {
+              e.stopPropagation();
+              const idx = parseInt(this.dataset.socketIdx);
+              closeItemOverlay();
+              clearSelection();
+              window._socketInsertMode = { targetItemId: item.id, socketIdx: idx };
+              renderInventory();
+              showMessage('🔧 Klikni na gem v batohu pro vložení do socketu');
+            };
+          });
         } else {
           socketOverlay.classList.add('hidden');
         }
@@ -10347,18 +10359,6 @@
         };
         btn.classList.remove('hidden');
         btn2.classList.add('hidden');
-      } else if (item.type === 'gem' && window._invSelectedIdx !== null) {
-        // Gem — tlačítko Insert to Socket
-        btn.textContent = 'Insert to Socket';
-        btn.className = 'inv-item-overlay-btn';
-        btn.onclick = function() {
-          closeItemOverlay();
-          clearSelection();
-          window._socketInsertMode = { gemId: item.id };
-          showMessage('🔧 Klikni na item s volným socketem do kterého chceš gem vložit');
-        };
-        btn.classList.remove('hidden');
-        btn2.classList.add('hidden');
       } else {
         btn.classList.add('hidden');
         btn2.classList.add('hidden');
@@ -10448,7 +10448,16 @@
         if (item.type === 'weapon' && cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) canEquip = false;
         if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
         const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
-        html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
+        // Socket insert mode — zvýraznit jen gemy
+        let extraClass = '';
+        if (window._socketInsertMode) {
+          if (item.type === 'gem') {
+            extraClass = ' socket-glow';
+          } else {
+            extraClass = ' dimmed';
+          }
+        }
+        html += `<div class="inv-grid-cell${extraClass}" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
           <div class="cell-name">${getItemSocketName(item)}</div>
         </div>`;
@@ -10489,74 +10498,43 @@
       const inv = h.inventory || [];
       const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, ring2:null, amulet:null, belt:null };
 
-      // Socket insert mode — klik na item vloží gem
+      // Socket insert mode — klik na gem v batohu vloží do socketu
       if (window._socketInsertMode) {
-        const gemId = window._socketInsertMode.gemId;
-        const gemItem = ITEM_MAP[gemId];
-        if (!gemItem) { window._socketInsertMode = null; return; }
-
-        // Zkusit equip slot
-        const slotEl = e.target.closest('.inv-equip-slot');
-        if (slotEl) {
-          const slot = slotMap[slotEl.id];
-          if (slot) {
-            const itemId = h.equip[slot];
-            const targetItem = itemId ? ITEM_MAP[itemId] : null;
-            if (targetItem && targetItem.sockets > 0) {
-              if (!targetItem.socketedGems) targetItem.socketedGems = [];
-              const freeIdx = targetItem.socketedGems.findIndex(g => !g);
-              if (freeIdx >= 0) {
-                // Odebrat gem z inventáře
-                const gemInvIdx = inv.indexOf(gemId);
-                if (gemInvIdx >= 0) {
-                  inv.splice(gemInvIdx, 1);
-                }
-                targetItem.socketedGems[freeIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
-                applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
-                saveGame();
-                renderInventory();
-                window._socketInsertMode = null;
-                showMessage('✅ Gem inserted!');
-                return;
-              }
-            }
-          }
-          showMessage('❌ No free socket on this item');
-          window._socketInsertMode = null;
-          return;
-        }
+        const targetId = window._socketInsertMode.targetItemId;
+        const socketIdx = window._socketInsertMode.socketIdx;
+        const targetItem = targetId ? ITEM_MAP[targetId] : null;
+        if (!targetItem) { window._socketInsertMode = null; renderInventory(); return; }
 
         // Zkusit grid cell
         const cell = e.target.closest('.inv-grid-cell');
         if (cell && !cell.classList.contains('empty')) {
           const idx = parseInt(cell.dataset.idx);
           const itemId = inv[idx];
-          const targetItem = itemId ? ITEM_MAP[itemId] : null;
-          if (targetItem && targetItem.sockets > 0) {
+          const gemItem = itemId ? ITEM_MAP[itemId] : null;
+          if (gemItem && gemItem.type === 'gem') {
             if (!targetItem.socketedGems) targetItem.socketedGems = [];
-            const freeIdx = targetItem.socketedGems.findIndex(g => !g);
-            if (freeIdx >= 0) {
+            if (!targetItem.socketedGems[socketIdx]) {
               // Odebrat gem z inventáře
-              const gemInvIdx = inv.indexOf(gemId);
+              const gemInvIdx = inv.indexOf(itemId);
               if (gemInvIdx >= 0) {
                 inv.splice(gemInvIdx, 1);
               }
-              targetItem.socketedGems[freeIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
+              targetItem.socketedGems[socketIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
               applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
               saveGame();
-              renderInventory();
               window._socketInsertMode = null;
+              renderInventory();
               showMessage('✅ Gem inserted!');
               return;
             }
           }
-          showMessage('❌ No free socket on this item');
-          window._socketInsertMode = null;
+          showMessage('❌ Klikni na gem, ne na jiný item');
           return;
         }
 
         // Klik jinam — zrušit insert mode
         window._socketInsertMode = null;
+        renderInventory();
         showMessage('❌ Socket insert cancelled');
         return;
       }
