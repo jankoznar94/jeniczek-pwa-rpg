@@ -1,7 +1,7 @@
-const CODE_CACHE = 'boss-slayer-code-v128';
-const ASSET_CACHE = 'boss-slayer-assets-v21';
+const CODE_CACHE = 'boss-slayer-code-v129';
+const ASSET_CACHE = 'boss-slayer-assets-v22';
 
-const CODE_FILES = ['/', '/index.html', '/style.css?v=128', '/game.js?v=128', '/manifest.json'];
+const CODE_FILES = ['/', '/index.html', '/style.css?v=129', '/game.js?v=129', '/manifest.json'];
 
 const ASSET_FILES = [
   '/icon-192.png', '/icon-512.png',
@@ -111,6 +111,8 @@ const ASSET_FILES = [
   '/assets/gems/emerald_flawless.png', '/assets/gems/emerald_perfect.png',
   '/assets/gems/topaz_chipped.png', '/assets/gems/topaz_flawed.png', '/assets/gems/topaz.png',
   '/assets/gems/topaz_flawless.png', '/assets/gems/topaz_perfect.png',
+  // Menu icons
+  '/assets/menu-icons/chest.png',
 ];
 
 self.addEventListener('install', e => {
