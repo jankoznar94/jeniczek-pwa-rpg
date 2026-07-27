@@ -622,17 +622,20 @@
   }
   function getWeaponElementColor(weapon) {
     if (!weapon) return null;
-    if (weapon.fireDmg) return '#e67e22';
-    if (weapon.coldDmg) return '#4a7dff';
+    function hasDmg(v) { return Array.isArray(v) ? v[1] > 0 : (v > 0); }
+    if (hasDmg(weapon.fireDmg)) return '#e67e22';
+    if (hasDmg(weapon.coldDmg)) return '#4a7dff';
     if (weapon.poisonDmg) return '#2ecc71';
-    if (weapon.lightningDmg) return '#8b5cf6';
+    if (hasDmg(weapon.lightningDmg)) return '#8b5cf6';
     return null;
   }
   function getWeaponTotalDmgMin(weapon) {
-    return (weapon.baseDmgMin || 0) + (weapon.fireDmg || 0) + (weapon.coldDmg || 0) + (weapon.lightningDmg || 0);
+    function getMin(v) { return Array.isArray(v) ? v[0] : (v || 0); }
+    return (weapon.baseDmgMin || 0) + getMin(weapon.fireDmg) + getMin(weapon.coldDmg) + getMin(weapon.lightningDmg);
   }
   function getWeaponTotalDmgMax(weapon) {
-    return (weapon.baseDmgMax || 0) + (weapon.fireDmg || 0) + (weapon.coldDmg || 0) + (weapon.lightningDmg || 0);
+    function getMax(v) { return Array.isArray(v) ? v[1] : (v || 0); }
+    return (weapon.baseDmgMax || 0) + getMax(weapon.fireDmg) + getMax(weapon.coldDmg) + getMax(weapon.lightningDmg);
   }
   // ===== RESIST MULT =====
   function getLocAffix(key) {
@@ -1324,7 +1327,14 @@
     Object.keys(stats).forEach(stat => {
       const val = stats[stat];
       if (Array.isArray(val)) {
-        item[stat] = (item[stat] || 0) + rollStat(val);
+        // Uložit jako rozsah [min, max]
+        if (Array.isArray(item[stat])) {
+          item[stat][0] += val[0];
+          item[stat][1] += val[1];
+        } else {
+          const existing = item[stat] || 0;
+          item[stat] = [existing + val[0], existing + val[1]];
+        }
       } else {
         item[stat] = (item[stat] || 0) + val;
       }
@@ -1670,10 +1680,11 @@
       }
     }
     // Affix staty
-    if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}${affixRange('fireDmg')}`);
-    if (item.coldDmg) addRow('Cold Dmg', `+${item.coldDmg}${affixRange('coldDmg')}`);
-    if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
-    if (item.lightningDmg) addRow('Lightning Dmg', `+${item.lightningDmg}${affixRange('lightningDmg')}`);
+    function fmtDmg(v) { return Array.isArray(v) ? `${v[0]}-${v[1]}` : v; }
+    if (item.fireDmg) addRow('Fire Dmg', `+${fmtDmg(item.fireDmg)}${affixRange('fireDmg')}`);
+    if (item.coldDmg) addRow('Cold Dmg', `+${fmtDmg(item.coldDmg)}${affixRange('coldDmg')}`);
+    if (item.poisonDmg) addRow('Poison Dmg', `+${fmtDmg(item.poisonDmg)} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
+    if (item.lightningDmg) addRow('Lightning Dmg', `+${fmtDmg(item.lightningDmg)}${affixRange('lightningDmg')}`);
     if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
     if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
     if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
@@ -8430,7 +8441,8 @@
     playSFX(getEnemyHitSfx());
 
     // ❄️ Ledové poškození ze zbraně — lehký chill efekt
-    if (weapon.coldDmg > 0) {
+    const coldDmgVal = Array.isArray(weapon.coldDmg) ? weapon.coldDmg[1] : (weapon.coldDmg || 0);
+    if (coldDmgVal > 0) {
       mb._enemySlowPct = 15; // 15% zpomalení
       mb._enemySlowTimer = 180; // 3s
       mb._enemySlowMax = 180;
@@ -8452,16 +8464,18 @@
     }
 
     // ☠️ Jedové poškození ze zbraně — DoT na nepřítele
-    if (weapon.poisonDmg > 0 && weapon.poisonDur > 0) {
+    const poisonDmgVal = Array.isArray(weapon.poisonDmg) ? weapon.poisonDmg[1] : (weapon.poisonDmg || 0);
+    const poisonDurVal = weapon.poisonDur || 0;
+    if (poisonDmgVal > 0 && poisonDurVal > 0) {
       const poisonResist = getLocAffix('poisonResist');
-      const effectiveDmg = Math.round(weapon.poisonDmg * (1 - poisonResist));
+      const effectiveDmg = Math.round(poisonDmgVal * (1 - poisonResist));
       if (effectiveDmg > 0) {
         // D2 styl: refresh duration, rate = total/dur
-        const tickDmg = Math.max(1, Math.round(effectiveDmg / weapon.poisonDur));
+        const tickDmg = Math.max(1, Math.round(effectiveDmg / poisonDurVal));
         mb.enemyDot = tickDmg;
-        mb.enemyDotTicksLeft = weapon.poisonDur;
+        mb.enemyDotTicksLeft = poisonDurVal;
         _lastEnemyDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
-        _sessionDebuffs['weapon_poison'] = { icon: '☠️', name: 'Jed', ticks: weapon.poisonDur * 60, maxTicks: weapon.poisonDur * 60 };
+        _sessionDebuffs['weapon_poison'] = { icon: '☠️', name: 'Jed', ticks: poisonDurVal * 60, maxTicks: poisonDurVal * 60 };
         // Zelený záblesk
         const arena = $('mbArena');
         if (arena) {
@@ -8502,10 +8516,11 @@
     const angleOff = isOffhand ? Math.PI : 0;
     if (!mb._skipMeleeImpact) {
       let elementColor = null;
-      if (weapon.fireDmg) elementColor = '#e67e22';
-      else if (weapon.coldDmg) elementColor = '#4a7dff';
+      function hasDmg(v) { return Array.isArray(v) ? v[1] > 0 : (v > 0); }
+      if (hasDmg(weapon.fireDmg)) elementColor = '#e67e22';
+      else if (hasDmg(weapon.coldDmg)) elementColor = '#4a7dff';
       else if (weapon.poisonDmg) elementColor = '#2ecc71';
-      else if (weapon.lightningDmg) elementColor = '#8b5cf6';
+      else if (hasDmg(weapon.lightningDmg)) elementColor = '#8b5cf6';
       spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff, elementColor);
     }
     mb._skipMeleeImpact = false;
