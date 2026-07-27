@@ -10277,7 +10277,7 @@
       // Equip/Unequip tlačítko
       const btn = $('invItemOverlayBtn');
       const btn2 = $('invItemOverlayBtn2');
-      if (window._invSelectedIdx !== null) {
+      if (window._invSelectedIdx !== null && item.type !== 'gem') {
         // Item z batohu
         const isWeapon = item.type === 'weapon';
         const isOneHand = isWeapon && !item.twoHand;
