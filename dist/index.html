@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <title>Dungeon Recall</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=127">
+  <link rel="stylesheet" href="style.css?v=128">
   <style>
     .town-action-card {
       display:flex;align-items:center;gap:16px;
@@ -464,6 +464,20 @@
   <div class="countdown-number" id="pauseCountdownNumber">3</div>
 </div>
 
+<!-- ===== GEM SELECT MODAL (socket insert) ===== -->
+<div id="gemSelectModal" class="gem-select-modal hidden">
+  <div class="gem-select-modal-content">
+    <div class="gem-select-modal-header">
+      <span class="gem-select-modal-title">💎 Select a Gem</span>
+      <button class="gem-select-modal-close" onclick="game.closeGemSelectModal()">✕</button>
+    </div>
+    <div class="gem-select-modal-grid" id="gemSelectGrid">
+      <!-- Dynamicky naplněno gemy z inventáře -->
+    </div>
+    <div class="gem-select-modal-empty" id="gemSelectEmpty">No gems in inventory.</div>
+  </div>
+</div>
+
 <!-- ===== FORFEIT MODAL ===== -->
 <div id="surrenderModal" class="surrender-modal hidden">
   <div class="surrender-modal-content">
@@ -507,6 +521,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
-<script src="game.js?v=127"></script>
+<script src="game.js?v=128"></script>
 </body>
 </html>

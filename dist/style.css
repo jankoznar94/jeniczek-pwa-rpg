@@ -1246,6 +1246,41 @@ body.no-scroll { overflow: hidden; }
 .surrender-modal-buttons { display:flex; gap:10px; justify-content:center; }
 .surrender-modal-buttons .btn { flex:1; }
 
+/* Gem select modal (socket insert) */
+.gem-select-modal {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.8); display:flex;
+  align-items:center; justify-content:center;
+  z-index:350;
+}
+.gem-select-modal-content {
+  background:#000; border:1px solid #444; border-radius:12px;
+  padding:20px; max-width:340px; width:90%;
+  max-height:80vh; overflow-y:auto;
+}
+.gem-select-modal-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:14px;
+}
+.gem-select-modal-title { font-size:18px; font-weight:bold; color:#ddd; }
+.gem-select-modal-close {
+  background:none; border:none; color:#888; font-size:20px;
+  cursor:pointer; line-height:1; padding:2px 6px;
+}
+.gem-select-modal-close:hover { color:#fff; }
+.gem-select-modal-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+}
+.gem-select-item {
+  display:flex; flex-direction:column; align-items:center;
+  padding:8px 4px; border:1px solid #333; border-radius:8px;
+  cursor:pointer; transition:0.15s; background:#0a0a0a;
+}
+.gem-select-item:hover { border-color:#ffd700; background:#111; }
+.gem-select-item-icon { font-size:28px; margin-bottom:4px; }
+.gem-select-item-name { font-size:11px; color:#aaa; text-align:center; word-break:break-word; }
+.gem-select-modal-empty { text-align:center; color:#666; padding:20px; font-size:14px; }
+
 /* Result */
 .result-screen {
   text-align:center;
