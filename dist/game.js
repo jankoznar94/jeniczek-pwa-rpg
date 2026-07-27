@@ -10502,7 +10502,8 @@
           if (slot) {
             const itemId = h.equip[slot];
             const targetItem = itemId ? ITEM_MAP[itemId] : null;
-            if (targetItem && targetItem.sockets && targetItem.socketedGems) {
+            if (targetItem && targetItem.sockets > 0) {
+              if (!targetItem.socketedGems) targetItem.socketedGems = [];
               const freeIdx = targetItem.socketedGems.findIndex(g => !g);
               if (freeIdx >= 0) {
                 // Odebrat gem z inventáře
@@ -10531,7 +10532,8 @@
           const idx = parseInt(cell.dataset.idx);
           const itemId = inv[idx];
           const targetItem = itemId ? ITEM_MAP[itemId] : null;
-          if (targetItem && targetItem.sockets && targetItem.socketedGems) {
+          if (targetItem && targetItem.sockets > 0) {
+            if (!targetItem.socketedGems) targetItem.socketedGems = [];
             const freeIdx = targetItem.socketedGems.findIndex(g => !g);
             if (freeIdx >= 0) {
               // Odebrat gem z inventáře
