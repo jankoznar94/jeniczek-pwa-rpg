@@ -1331,6 +1331,37 @@
     });
   }
 
+  function buildGemStatsHtml(gemType, gemQuality) {
+    const gem = GEMS[gemType];
+    if (!gem) return '';
+    const qData = gem.qualities[gemQuality];
+    if (!qData) return '';
+    const parts = [];
+    // Weapon stats
+    if (qData.weapon) {
+      Object.keys(qData.weapon).forEach(stat => {
+        const val = qData.weapon[stat];
+        if (Array.isArray(val)) {
+          parts.push(`${stat}: ${val[0]}-${val[1]}`);
+        } else {
+          parts.push(`${stat}: ${val}`);
+        }
+      });
+    }
+    // Armor stats
+    if (qData.armor) {
+      Object.keys(qData.armor).forEach(stat => {
+        const val = qData.armor[stat];
+        if (Array.isArray(val)) {
+          parts.push(`${stat}: ${val[0]}-${val[1]}`);
+        } else {
+          parts.push(`${stat}: ${val}`);
+        }
+      });
+    }
+    return parts.join(' | ');
+  }
+
   function getItemSocketName(item) {
     if (!item.sockets || item.sockets <= 0) return item.name;
     return item.name + ' (' + item.sockets + ')';
@@ -10189,12 +10220,14 @@
         let ghtml = '';
         gems.forEach(g => {
           const gemData = GEMS[g.item.gemType];
-          const icon = gemData ? gemData.icon : '💎';
+          const iconImg = g.item.iconImg || '';
           const qName = g.item.gemQuality ? g.item.gemQuality.charAt(0).toUpperCase() + g.item.gemQuality.slice(1) : '';
           const displayName = qName ? `${qName} ${gemData ? gemData.name : 'Gem'}` : g.item.name || 'Gem';
+          const statsHtml = gemData ? buildGemStatsHtml(g.item.gemType, g.item.gemQuality) : '';
           ghtml += `<div class="gem-select-item" data-inv-idx="${g.idx}" data-target-id="${targetItemId}" data-socket-idx="${socketIdx}">
-            <div class="gem-select-item-icon">${icon}</div>
+            <div class="gem-select-item-icon">${iconImg ? `<img src="${iconImg}" style="width:32px;height:32px;image-rendering:pixelated">` : '💎'}</div>
             <div class="gem-select-item-name">${displayName}</div>
+            <div class="gem-select-item-stats" style="font-size:10px;color:#888;text-align:center;margin-top:2px">${statsHtml}</div>
           </div>`;
         });
         grid.innerHTML = ghtml;
