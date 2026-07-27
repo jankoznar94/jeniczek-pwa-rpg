@@ -1663,6 +1663,9 @@
         addRow(names[k] || k, `+${item.attrs[k]}`);
       });
     }
+    if (item.sockets > 0) {
+      addRow('Sockets', item.sockets);
+    }
     return rows.join('');
   }
 
