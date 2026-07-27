@@ -1185,6 +1185,45 @@
     return ITEM_MAP[id] || _lootItemMap[id] || null;
   }
 
+  // Stackovatelné itemy (gemy, potiony)
+  function isStackable(itemId) {
+    const item = ITEM_MAP[itemId];
+    return item && (item.type === 'gem' || item.type === 'consumable');
+  }
+  function addToInventory(inventory, itemId, count) {
+    if (!isStackable(itemId)) { inventory.push(itemId); return; }
+    for (let i = 0; i < inventory.length; i++) {
+      const entry = inventory[i];
+      if (typeof entry === 'object' && entry.id === itemId) {
+        entry.count = (entry.count || 1) + (count || 1);
+        return;
+      }
+    }
+    inventory.push({ id: itemId, count: count || 1 });
+  }
+  function removeFromInventory(inventory, itemId, count) {
+    for (let i = 0; i < inventory.length; i++) {
+      const entry = inventory[i];
+      const eid = typeof entry === 'object' ? entry.id : entry;
+      if (eid === itemId) {
+        if (typeof entry === 'object') {
+          entry.count -= count || 1;
+          if (entry.count <= 0) inventory.splice(i, 1);
+        } else {
+          inventory.splice(i, 1);
+        }
+        return;
+      }
+    }
+  }
+  function getStackCount(inventory, itemId) {
+    for (let i = 0; i < inventory.length; i++) {
+      const entry = inventory[i];
+      if (typeof entry === 'object' && entry.id === itemId) return entry.count || 1;
+    }
+    return 0;
+  }
+
   // ===== LOOT GENERATION =====
   // Quality podle počtu affixů: normal(0), magic(1-2), rare(3-4), unique(5+)
   const QUALITY_COLORS = {
@@ -1346,30 +1385,34 @@
     if (!gem) return '';
     const qData = gem.qualities[gemQuality];
     if (!qData) return '';
-    const parts = [];
+    const lines = [];
     // Weapon stats
     if (qData.weapon) {
+      lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Weapon:</div>');
       Object.keys(qData.weapon).forEach(stat => {
         const val = qData.weapon[stat];
+        const label = stat === 'fireDmg' ? 'Fire Dmg' : stat === 'coldDmg' ? 'Cold Dmg' : stat === 'lightningDmg' ? 'Lightning Dmg' : stat === 'poisonDmg' ? 'Poison Dmg' : stat === 'poisonDur' ? 'Duration' : stat;
         if (Array.isArray(val)) {
-          parts.push(`${stat}: ${val[0]}-${val[1]}`);
+          lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val[0]}-${val[1]}</div>`);
         } else {
-          parts.push(`${stat}: ${val}`);
+          lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
         }
       });
     }
     // Armor stats
     if (qData.armor) {
+      lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Armor/Helm/Shield:</div>');
       Object.keys(qData.armor).forEach(stat => {
         const val = qData.armor[stat];
+        const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Hit Rating' : stat === 'magicFind' ? 'MF' : stat;
         if (Array.isArray(val)) {
-          parts.push(`${stat}: ${val[0]}-${val[1]}`);
+          lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val[0]}-${val[1]}</div>`);
         } else {
-          parts.push(`${stat}: ${val}`);
+          lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
         }
       });
     }
-    return parts.join(' | ');
+    return lines.join('');
   }
 
   function getItemSocketName(item) {
@@ -8998,7 +9041,7 @@
             } else if ((loot.item.id === 'healingPotion' || loot.item.id === 'manaPotion') && addPotionToBelt(loot.item.id)) {
               // Potion se vložil do opasku
             } else {
-              state.hero.inventory.push(loot.item.id);
+              addToInventory(state.hero.inventory, loot.item.id);
             }
           }
         }
@@ -9145,7 +9188,7 @@
       // Boss loot
       const bossLoot = rollLoot(locId, mb.progress, true);
       if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
-        state.hero.inventory.push(bossLoot.item.id);
+        addToInventory(state.hero.inventory, bossLoot.item.id);
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
       }
       sfxBossDefeat();
@@ -10139,7 +10182,7 @@
     } else if ((itemId === 'healingPotion' || itemId === 'manaPotion') && addPotionToBelt(itemId)) {
       // Potion se vložil do opasku
     } else {
-      h.inventory.push(itemId);
+      addStackable(h.inventory, itemId);
     }
     playSFX(shopSfx);
     saveGame();
@@ -10158,10 +10201,10 @@
     const item = ITEM_MAP[itemId];
     if (!item || item.cost === 0) return;
     const h = state.hero;
-    const idx = h.inventory.indexOf(itemId);
-    if (idx === -1) { showMessage('❌ Tento předmět nemáš v inventáři!'); return; }
+    const count = getStackCount(h.inventory, itemId);
+    if (count === 0) { showMessage('❌ Tento předmět nemáš v inventáři!'); return; }
     const sellPrice = Math.round(item.cost * 0.5);
-    h.inventory.splice(idx, 1);
+    removeFromInventory(h.inventory, itemId);
     h.gold += sellPrice;
     playSFX(shopSfx);
     saveGame();
@@ -10175,12 +10218,13 @@
     if (h.equip[slot] !== itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
+    const sellPrice = Math.round(item.cost * 0.5);
     // Získat gold
     h.equip[slot] = defaults[slot];
     // Při prodeji beltu vrátit potiony
     if (slot === 'belt') {
       const bpSlots = h.equip.beltPotionSlots || [];
-      bpSlots.forEach(potId => { if (potId) h.inventory.push(potId); });
+      bpSlots.forEach(potId => { if (potId) addToInventory(h.inventory, potId); });
       h.equip.beltPotionSlots = [];
     }
     h.gold += sellPrice;
@@ -10221,10 +10265,12 @@
       const inv = h.inventory || [];
       const gems = [];
       for (let i = 0; i < inv.length; i++) {
-        const itemId = inv[i];
+        const entry = inv[i];
+        const itemId = typeof entry === 'object' ? entry.id : entry;
+        const count = typeof entry === 'object' ? (entry.count || 1) : 1;
         const item = itemId ? ITEM_MAP[itemId] : null;
         if (item && item.type === 'gem') {
-          gems.push({ idx: i, item: item });
+          gems.push({ idx: i, item: item, count: count });
         }
       }
       if (gems.length === 0) {
@@ -10238,10 +10284,11 @@
           const iconImg = g.item.iconImg || '';
           const qName = g.item.gemQuality ? g.item.gemQuality.charAt(0).toUpperCase() + g.item.gemQuality.slice(1) : '';
           const displayName = qName ? `${qName} ${gemData ? gemData.name : 'Gem'}` : g.item.name || 'Gem';
+          const countLabel = g.count > 1 ? ` <span style="color:#888;font-size:10px">×${g.count}</span>` : '';
           const statsHtml = gemData ? buildGemStatsHtml(g.item.gemType, g.item.gemQuality) : '';
           ghtml += `<div class="gem-select-item" data-inv-idx="${g.idx}" data-target-id="${targetItemId}" data-socket-idx="${socketIdx}">
             <div class="gem-select-item-icon">${iconImg ? `<img src="${iconImg}" style="width:32px;height:32px;image-rendering:pixelated">` : '💎'}</div>
-            <div class="gem-select-item-name">${displayName}</div>
+            <div class="gem-select-item-name">${displayName}${countLabel}</div>
             <div class="gem-select-item-stats" style="font-size:10px;color:#888;text-align:center;margin-top:2px">${statsHtml}</div>
           </div>`;
         });
@@ -10255,13 +10302,14 @@
             const sIdx = parseInt(this.dataset.socketIdx);
             const targetItem = tId ? ITEM_MAP[tId] : null;
             if (!targetItem) { closeGemSelectModal(); return; }
-            const gemItemId = inv[invIdx];
+            const entry = inv[invIdx];
+            const gemItemId = typeof entry === 'object' ? entry.id : entry;
             const gemItem = gemItemId ? ITEM_MAP[gemItemId] : null;
             if (!gemItem) { closeGemSelectModal(); return; }
             if (!targetItem.socketedGems) targetItem.socketedGems = [];
             if (targetItem.socketedGems[sIdx]) { closeGemSelectModal(); showMessage('❌ Socket already filled'); return; }
             // Odebrat gem z inventáře
-            inv.splice(invIdx, 1);
+            removeFromInventory(inv, gemItemId);
             targetItem.socketedGems[sIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
             applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
             saveGame();
@@ -10302,8 +10350,9 @@
             const gem = item.socketedGems && item.socketedGems[i];
             if (gem) {
               const gemData = GEMS[gem.type];
-              const gemIcon = gemData ? gemData.icon : '💎';
-              shtml += `<div class="socket-slot filled" title="${gem.name}">${gemIcon}</div>`;
+              const gemId = gem.type + (gem.quality === 'normal' ? '' : '_' + gem.quality);
+              const gemImg = 'assets/gems/' + gemId + '.png';
+              shtml += `<div class="socket-slot filled" title="${gem.name}"><img src="${gemImg}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:pixelated"></div>`;
             } else {
               shtml += `<div class="socket-slot empty" data-socket-idx="${i}"></div>`;
             }
@@ -10550,8 +10599,10 @@
     const maxCells = 20;
     let html = '';
     for (let i = 0; i < maxCells; i++) {
-      const itemId = inv[i];
-      if (itemId) {
+      const entry = inv[i];
+      if (entry) {
+        const itemId = typeof entry === 'object' ? entry.id : entry;
+        const count = typeof entry === 'object' ? (entry.count || 1) : 1;
         const item = ITEM_MAP[itemId];
         if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' || item.type === 'amulet' ? (item.skillDmg ? `✨+${item.skillDmg}%` : item.manaRegen ? `💧+${item.manaRegen}` : item.str ? `💪+${item.str}` : item.int ? `🧠+${item.int}` : item.vit ? `❤️+${item.vit}` : item.dex ? `🎯+${item.dex}` : item.lifesteal ? `🩸+${item.lifesteal}%` : '') : item.bonusHp ? `❤️${item.bonusHp}` : '';
@@ -10561,9 +10612,10 @@
         if (item.type === 'weapon' && cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) canEquip = false;
         if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
         const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
+        const countLabel = count > 1 ? `<span class="cell-count">${count}</span>` : '';
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
-          <div class="cell-name">${getItemSocketName(item)}</div>
+          <div class="cell-name">${getItemSocketName(item)}${countLabel}</div>
         </div>`;
       } else {
         html += '<div class="inv-grid-cell empty"></div>';
@@ -10638,7 +10690,8 @@
           return;
         }
         const idx = parseInt(cell.dataset.idx);
-        const itemId = inv[idx];
+        const entry = inv[idx];
+        const itemId = typeof entry === 'object' ? entry.id : entry;
         const item = itemId ? ITEM_MAP[itemId] : null;
         if (!item) return;
         clearSelection();
@@ -10654,13 +10707,14 @@
         const bpSlots = h.equip.beltPotionSlots || [];
         // Pokud je vybraný item v batohu a je to consumable → vlož
         if (window._invSelectedIdx !== null) {
-          const selItemId = inv[window._invSelectedIdx];
+          const entry = inv[window._invSelectedIdx];
+          const selItemId = typeof entry === 'object' ? entry.id : entry;
           const selItem = selItemId ? ITEM_MAP[selItemId] : null;
           if (selItem && selItem.type === 'consumable') {
             // Odebrat z batohu
-            h.inventory.splice(window._invSelectedIdx, 1);
+            removeFromInventory(inv, selItemId);
             // Pokud už v tom slotu něco je, vrátit do batohu
-            if (bpSlots[potIdx]) h.inventory.push(bpSlots[potIdx]);
+            if (bpSlots[potIdx]) addToInventory(inv, bpSlots[potIdx]);
             bpSlots[potIdx] = selItemId;
             h.equip.beltPotionSlots = bpSlots;
             saveGame();
@@ -10676,7 +10730,7 @@
           if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
           bpSlots[potIdx] = null;
           h.equip.beltPotionSlots = bpSlots;
-          h.inventory.push(potId);
+          addToInventory(inv, potId);
           saveGame();
           renderInventory();
           return;
@@ -10698,7 +10752,7 @@
     const current = h.equip[slot];
     if (!current || current === defaults[slot]) return;
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
-    h.inventory.push(current);
+    addToInventory(h.inventory, current);
     h.equip[slot] = defaults[slot];
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
@@ -10710,7 +10764,8 @@
 
   function equipItemToSlot(invIdx, targetSlot) {
     const h = state.hero;
-    const itemId = h.inventory[invIdx];
+    const entry = h.inventory[invIdx];
+    const itemId = typeof entry === 'object' ? entry.id : entry;
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
@@ -10744,8 +10799,8 @@
     if (targetSlot !== correctSlot) return;
     // Pokud je to weapon a target je shield, dát do shield slotu
     if (item.type === 'weapon' && targetSlot === 'shield') {
-      h.inventory.splice(invIdx, 1);
-      if (h.equip.shield) h.inventory.push(h.equip.shield);
+      removeFromInventory(h.inventory, itemId);
+      if (h.equip.shield) addToInventory(h.inventory, h.equip.shield);
       h.equip.shield = itemId;
       h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
       h.maxHp = getHeroMaxHp();
@@ -10762,48 +10817,49 @@
 
   function equipItem(invIdx) {
     const h = state.hero;
-    const itemId = h.inventory[invIdx];
+    const entry = h.inventory[invIdx];
+    const itemId = typeof entry === 'object' ? entry.id : entry;
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
-    h.inventory.splice(invIdx, 1);
+    removeFromInventory(h.inventory, itemId);
     if (item.type === 'weapon') {
       // Kontrola, zda classa smí používat tento typ zbraně
       const cls = CLASSES[state.heroClass];
       if (cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) {
-        h.inventory.splice(invIdx, 0, itemId); // vrátit zpět
+        addToInventory(h.inventory, itemId); // vrátit zpět
         return;
       }
       // Obouruční zbraň vyhodí štít i offhand zpět do batohu
       const isTwoHanded = item.twoHand === true;
       if (isTwoHanded) {
-        if (h.equip.shield) { h.inventory.push(h.equip.shield); h.equip.shield = null; }
+        if (h.equip.shield) { addToInventory(h.inventory, h.equip.shield); h.equip.shield = null; }
       }
       // Prostě vyměnit main hand — offhand zůstává jak je
-      if (h.equip.weapon !== 'fists') h.inventory.push(h.equip.weapon);
+      if (h.equip.weapon !== 'fists') addToInventory(h.inventory, h.equip.weapon);
       h.equip.weapon = itemId;
     } else if (item.type === 'armor') {
-      if (h.equip.armor) h.inventory.push(h.equip.armor);
+      if (h.equip.armor) addToInventory(h.inventory, h.equip.armor);
       h.equip.armor = itemId;
     } else if (item.type === 'helmet') {
-      if (h.equip.helmet) h.inventory.push(h.equip.helmet);
+      if (h.equip.helmet) addToInventory(h.inventory, h.equip.helmet);
       h.equip.helmet = itemId;
     } else if (item.type === 'shield') {
       // Kontrola, zda classa smí používat štít
       const cls = CLASSES[state.heroClass];
       if (cls && cls.allowedShield === false) {
-        h.inventory.splice(invIdx, 0, itemId); // vrátit zpět
+        addToInventory(h.inventory, itemId); // vrátit zpět
         return;
       }
       // Štít nejde s obouruční zbraní — vyhodit zbraň zpět
       const curWeapon = ITEM_MAP[h.equip.weapon];
       const isTwoHanded = curWeapon && curWeapon.twoHand === true;
       if (isTwoHanded) {
-        h.inventory.push(h.equip.weapon);
+        addToInventory(h.inventory, h.equip.weapon);
         h.equip.weapon = 'fists';
       }
-      if (h.equip.shield) h.inventory.push(h.equip.shield);
+      if (h.equip.shield) addToInventory(h.inventory, h.equip.shield);
       h.equip.shield = itemId;
     } else if (item.type === 'ring') {
       if (!h.equip.ring1) {
@@ -10811,11 +10867,11 @@
       } else if (!h.equip.ring2) {
         h.equip.ring2 = itemId;
       } else {
-        h.inventory.push(h.equip.ring1);
+        addToInventory(h.inventory, h.equip.ring1);
         h.equip.ring1 = itemId;
       }
     } else if (item.type === 'belt') {
-      if (h.equip.belt) h.inventory.push(h.equip.belt);
+      if (h.equip.belt) addToInventory(h.inventory, h.equip.belt);
       h.equip.belt = itemId;
       // Inicializovat potion sloty podle beltRows
       const beltItem = ITEM_MAP[itemId];
@@ -10825,10 +10881,10 @@
       while (h.equip.beltPotionSlots.length < slots) h.equip.beltPotionSlots.push(null);
       while (h.equip.beltPotionSlots.length > slots) {
         const removed = h.equip.beltPotionSlots.pop();
-        if (removed) h.inventory.push(removed);
+        if (removed) addToInventory(h.inventory, removed);
       }
     } else if (item.type === 'amulet') {
-      if (h.equip.amulet) h.inventory.push(h.equip.amulet);
+      if (h.equip.amulet) addToInventory(h.inventory, h.equip.amulet);
       h.equip.amulet = itemId;
     } else if (item.type === 'consumable') {
       // Potiony a town portal scrolly — vložit do belt slotu nebo přičíst
@@ -10843,7 +10899,7 @@
           h.equip.beltPotionSlots = bpSlots;
         } else {
           // Všechny sloty plné — vrátit do inventáře
-          h.inventory.splice(invIdx, 0, itemId);
+          addToInventory(h.inventory, itemId);
           showMessage('❌ No empty belt slots!');
           return;
         }
@@ -10891,14 +10947,14 @@
       if (h.equip.belt !== itemId) return;
       // Při sundání beltu vrátit potiony do inventáře
       const bpSlots = h.equip.beltPotionSlots || [];
-      bpSlots.forEach(potId => { if (potId) h.inventory.push(potId); });
+      bpSlots.forEach(potId => { if (potId) addToInventory(h.inventory, potId); });
       h.equip.beltPotionSlots = [];
       h.equip.belt = defaults.belt;
     } else if (item.type === 'amulet') {
       if (h.equip.amulet === itemId) h.equip.amulet = defaults.amulet;
       else return;
     } else return;
-    h.inventory.push(itemId);
+    addToInventory(h.inventory, itemId);
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
     h.maxHp = getHeroMaxHp();
     h.hp = Math.min(h.hp, h.maxHp);
