@@ -8993,7 +8993,7 @@
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
           const r = RARITY[item.rarity] || RARITY.common;
-          lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,32)}</span><span class="loot-scroll-name" style="color:${r.color}">${item.name}</span></div>`;
+          lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,32)}</span><span class="loot-scroll-name" style="color:${r.color}">${getItemSocketName(item)}</span></div>`;
         });
       }
       if (tpScrollsFromLoot > 0) {
@@ -10018,7 +10018,7 @@
         return `<div class="shop-item">
           <div class="shop-item-header">
             <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
-            <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
+            <div class="shop-item-name" style="color:${getQualityColor(item)}">${getItemSocketName(item)}</div>
           </div>
           <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
           <div class="shop-item-actions">
@@ -10062,7 +10062,7 @@
             return `<div class="shop-item" onclick="window._invSelectedIdx=null;window._invSelectedSlot=null;game.showItemInfo('${item.id}')">
               <div class="shop-item-header">
                 <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
-                <div class="shop-item-name" style="color:${getQualityColor(item)}">${item.name}</div>
+                <div class="shop-item-name" style="color:${getQualityColor(item)}">${getItemSocketName(item)}</div>
               </div>
               <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
               <div class="shop-item-actions">
@@ -10094,7 +10094,7 @@
     }
     playSFX(shopSfx);
     saveGame();
-    showMessage(`✅ Bought ${item.icon} ${item.name}!`);
+    showMessage(`✅ Bought ${item.icon} ${getItemSocketName(item)}!`);
     // Označit jako koupené v této iteraci shopu (zmizí z nabídky)
     // Výjimka: Misc itemy (potiony, scrolly) zůstávají — lze kupovat neomezeně
     if (window._shopBoughtItems && itemId !== 'healingPotion' && itemId !== 'manaPotion' && itemId !== 'townPortalScroll') {
@@ -10116,7 +10116,7 @@
     h.gold += sellPrice;
     playSFX(shopSfx);
     saveGame();
-    showMessage(`💰 Prodáno ${item.icon} ${item.name} za ${sellPrice}💰`);
+    showMessage(`💰 Prodáno ${item.icon} ${getItemSocketName(item)} za ${sellPrice}💰`);
     renderShop();
   }
 
@@ -10814,7 +10814,7 @@
     h.mana = Math.min(h.mana, h.maxMana);
     playSFX(equipSfx);
     saveGame();
-    showMessage(`🎽 Oblékl jsi ${item.icon} ${item.name}!`);
+    showMessage(`🎽 Oblékl jsi ${item.icon} ${getItemSocketName(item)}!`);
     renderInventory();
     renderHero();
   }
@@ -10860,7 +10860,7 @@
     h.mana = Math.min(h.mana, h.maxMana);
     playSFX(equipSfx);
     saveGame();
-    showMessage(`📦 Sundal jsi ${item.icon} ${item.name} do inventáře!`);
+    showMessage(`📦 Sundal jsi ${item.icon} ${getItemSocketName(item)} do inventáře!`);
     renderInventory();
   }
 
