@@ -10182,7 +10182,7 @@
     } else if ((itemId === 'healingPotion' || itemId === 'manaPotion') && addPotionToBelt(itemId)) {
       // Potion se vložil do opasku
     } else {
-      addStackable(h.inventory, itemId);
+      addToInventory(h.inventory, itemId);
     }
     playSFX(shopSfx);
     saveGame();
