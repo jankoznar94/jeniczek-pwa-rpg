@@ -1169,7 +1169,7 @@
           gemType: type,
           gemQuality: q,
           icon: gem.icon,
-          iconImg: '/assets/gems/' + filename,
+          iconImg: 'assets/gems/' + filename,
           cost: q === 'chipped' ? 10 : q === 'flawed' ? 15 : q === 'normal' ? 20 : q === 'flawless' ? 50 : 100,
           tier: q === 'chipped' ? 1 : q === 'flawed' ? 2 : q === 'normal' ? 3 : q === 'flawless' ? 4 : 5,
           quality: 'magic'
