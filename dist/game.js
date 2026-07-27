@@ -10069,7 +10069,7 @@
   function renderChestInventory() {
     const h = state.hero;
     // Grid batohu
-    const grid = $('invGrid');
+    const grid = $('chestInvGrid');
     const inv = h.inventory || [];
     const maxCells = 20;
     let ghtml = '';
