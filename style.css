@@ -824,6 +824,27 @@ body.no-scroll { overflow: hidden; }
   display:flex; flex-direction:row; gap:6px;
   margin-top:10px; width:100%;
 }
+.inv-item-overlay-sockets {
+  display:flex; gap:6px; justify-content:center;
+  margin-top:8px; padding:6px 0;
+  border-top:1px solid #2a2a2a;
+}
+.socket-slot {
+  width:24px; height:24px; border-radius:50%;
+  border:2px solid #555; background:#1a1a1a;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; cursor:default; transition:0.15s;
+}
+.socket-slot.empty {
+  border-color:#444; background:#111;
+  cursor:pointer;
+}
+.socket-slot.empty:hover {
+  border-color:#888; background:#222;
+}
+.socket-slot.filled {
+  border-color:#888; background:#1a1a1a;
+}
 .inv-compare-ring-stats { flex:1; min-width:0; }
 .inv-compare-ring-name { font-size:13px; }
 
