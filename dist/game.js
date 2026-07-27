@@ -10615,7 +10615,7 @@
         const countLabel = count > 1 ? `<span class="cell-count">${count}</span>` : '';
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
-          <div class="cell-name">${getItemSocketName(item)}${countLabel}</div>
+          <div class="cell-name">${getItemSocketName(item)}</div>${countLabel}
         </div>`;
       } else {
         html += '<div class="inv-grid-cell empty"></div>';
