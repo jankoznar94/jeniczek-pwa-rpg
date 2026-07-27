@@ -1673,11 +1673,11 @@
     '', '', '', '', '', '', '', '', '', '', '', '',
   ];
   const DUNGEON_THEMES = [
-    { bg:'#0d2d0d', border:'#2ecc71', borderGlow:'rgba(46,204,113,0.3)' },   // 0 Les — zelená
-    { bg:'#2a1a08', border:'#e67e22', borderGlow:'rgba(230,126,34,0.3)' },   // 1 Poušť — oranžová
-    { bg:'#1a0d1a', border:'#888', borderGlow:'rgba(136,136,136,0.3)' },   // 2 Nemrtvá země — šedá
-    { bg:'#2d0d0d', border:'#e74c3c', borderGlow:'rgba(231,76,60,0.3)' },    // 3 Výspy — červená
-    { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Štíty — ledová modrá
+    { bg:'#0d2d0d', border:'#2ecc71', borderGlow:'rgba(46,204,113,0.3)' },   // 0 Act 1: Enchanted Forest — zelená
+    { bg:'#2a1a08', border:'#e67e22', borderGlow:'rgba(230,126,34,0.3)' },   // 1 Act 2: Desert Realm — pískově oranžová
+    { bg:'#1a0d2a', border:'#b07cd8', borderGlow:'rgba(176,124,216,0.3)' },  // 2 Act 4: Undead Lands — fialová
+    { bg:'#2d0d0d', border:'#e74c3c', borderGlow:'rgba(231,76,60,0.3)' },    // 3 Act 5: Hellish Wastes — červená jako láva
+    { bg:'#0d122d', border:'#a8d8ea', borderGlow:'rgba(168,216,234,0.3)' },  // 4 Act 3: Frost Peaks — ledově modrá
   ];
   const ACTS = [
     { id:0, name:'Enchanted Forest', icon:'🌲', theme:0, zones:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
