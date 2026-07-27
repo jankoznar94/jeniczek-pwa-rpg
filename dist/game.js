@@ -623,16 +623,16 @@
   function getWeaponElementColor(weapon) {
     if (!weapon) return null;
     if (weapon.fireDmg) return '#e67e22';
-    if (weapon.iceDmg) return '#4a7dff';
+    if (weapon.coldDmg) return '#4a7dff';
     if (weapon.poisonDmg) return '#2ecc71';
     if (weapon.lightningDmg) return '#8b5cf6';
     return null;
   }
   function getWeaponTotalDmgMin(weapon) {
-    return (weapon.baseDmgMin || 0) + (weapon.fireDmg || 0) + (weapon.iceDmg || 0) + (weapon.lightningDmg || 0);
+    return (weapon.baseDmgMin || 0) + (weapon.fireDmg || 0) + (weapon.coldDmg || 0) + (weapon.lightningDmg || 0);
   }
   function getWeaponTotalDmgMax(weapon) {
-    return (weapon.baseDmgMax || 0) + (weapon.fireDmg || 0) + (weapon.iceDmg || 0) + (weapon.lightningDmg || 0);
+    return (weapon.baseDmgMax || 0) + (weapon.fireDmg || 0) + (weapon.coldDmg || 0) + (weapon.lightningDmg || 0);
   }
   // ===== RESIST MULT =====
   function getLocAffix(key) {
@@ -710,116 +710,116 @@
     // === ZÁKLADNÍ (bez ceny, startovní) ===
     { id:'fists', name:'Pěsti', type:'weapon', baseDmgMin:1, baseDmgMax:2, bonusHp:0, icon:'👊', iconImg:'', weaponType:'fists', swingMs:1000 },
     // === 1H SWORD (blade) ===
-    { id:'blade_shortSword', name:'Short Sword', type:'weapon', baseDmgMin:2, baseDmgMax:7, bonusHp:0, cost:15, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:2200 },
-    { id:'blade_broadSword', name:'Broad Sword', type:'weapon', baseDmgMin:7, baseDmgMax:14, bonusHp:0, critChance:5, cost:30, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:2, swingMs:2200 },
-    { id:'blade_gladius', name:'Gladius', type:'weapon', baseDmgMin:8, baseDmgMax:22, bonusHp:0, critChance:5, cost:50, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:3, swingMs:2200 },
-    { id:'blade_dimBlade', name:'Dimensional Blade', type:'weapon', baseDmgMin:13, baseDmgMax:35, bonusHp:0, critChance:10, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:4, swingMs:2200 },
-    { id:'blade_falcata', name:'Falcata', type:'weapon', baseDmgMin:31, baseDmgMax:59, bonusHp:0, critChance:10, cost:150, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:5, swingMs:2200 },
+    { id:'blade_shortSword', name:'Short Sword', type:'weapon', baseDmgMin:2, baseDmgMax:7, bonusHp:0, cost:15, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:1, swingMs:2200, maxSockets:2 },
+    { id:'blade_broadSword', name:'Broad Sword', type:'weapon', baseDmgMin:7, baseDmgMax:14, bonusHp:0, critChance:5, cost:30, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:2, swingMs:2200, maxSockets:2 },
+    { id:'blade_gladius', name:'Gladius', type:'weapon', baseDmgMin:8, baseDmgMax:22, bonusHp:0, critChance:5, cost:50, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:3, swingMs:2200, maxSockets:2 },
+    { id:'blade_dimBlade', name:'Dimensional Blade', type:'weapon', baseDmgMin:13, baseDmgMax:35, bonusHp:0, critChance:10, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:4, swingMs:2200, maxSockets:2 },
+    { id:'blade_falcata', name:'Falcata', type:'weapon', baseDmgMin:31, baseDmgMax:59, bonusHp:0, critChance:10, cost:150, icon:'⚔️', iconImg:'assets/items/weapon_iron_sword.png', weaponType:'blade', tier:5, swingMs:2200, maxSockets:2 },
     // === 2H SWORD (blade, twoHand) ===
-    { id:'blade2h_twoHandedSword', name:'Two-Handed Sword', type:'weapon', baseDmgMin:8, baseDmgMax:17, bonusHp:0, cost:25, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:1, swingMs:2750, twoHand:true },
-    { id:'blade2h_claymore', name:'Claymore', type:'weapon', baseDmgMin:13, baseDmgMax:30, bonusHp:0, critChance:5, cost:50, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:2, swingMs:2750, twoHand:true },
-    { id:'blade2h_espadon', name:'Espandon', type:'weapon', baseDmgMin:18, baseDmgMax:40, bonusHp:0, critChance:5, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:3, swingMs:2750, twoHand:true },
-    { id:'blade2h_dacianFalx', name:'Dacian Falx', type:'weapon', baseDmgMin:26, baseDmgMax:61, bonusHp:0, critChance:10, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2750, twoHand:true },
-    { id:'blade2h_highlandBlade', name:'Highland Blade', type:'weapon', baseDmgMin:67, baseDmgMax:96, bonusHp:0, critChance:10, cost:220, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:5, swingMs:2750, twoHand:true },
+    { id:'blade2h_twoHandedSword', name:'Two-Handed Sword', type:'weapon', baseDmgMin:8, baseDmgMax:17, bonusHp:0, cost:25, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:1, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'blade2h_claymore', name:'Claymore', type:'weapon', baseDmgMin:13, baseDmgMax:30, bonusHp:0, critChance:5, cost:50, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:2, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'blade2h_espadon', name:'Espandon', type:'weapon', baseDmgMin:18, baseDmgMax:40, bonusHp:0, critChance:5, cost:80, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:3, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'blade2h_dacianFalx', name:'Dacian Falx', type:'weapon', baseDmgMin:26, baseDmgMax:61, bonusHp:0, critChance:10, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'blade2h_highlandBlade', name:'Highland Blade', type:'weapon', baseDmgMin:67, baseDmgMax:96, bonusHp:0, critChance:10, cost:220, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:5, swingMs:2750, twoHand:true, maxSockets:3 },
     // === 1H AXE (axe) ===
-    { id:'axe_handAxe', name:'Hand Axe', type:'weapon', baseDmgMin:3, baseDmgMax:6, bonusHp:0, cost:15, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:1, swingMs:2200 },
-    { id:'axe_doubleAxe', name:'Double Axe', type:'weapon', baseDmgMin:5, baseDmgMax:13, bonusHp:0, critChance:5, cost:30, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:2, swingMs:2200 },
-    { id:'axe_hatchet', name:'Hatchet', type:'weapon', baseDmgMin:8, baseDmgMax:20, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:3, swingMs:2200 },
-    { id:'axe_twinAxe', name:'Twin Axe', type:'weapon', baseDmgMin:13, baseDmgMax:38, bonusHp:0, critChance:10, cost:90, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:4, swingMs:2200 },
-    { id:'axe_tomahawk', name:'Tomahawk', type:'weapon', baseDmgMin:33, baseDmgMax:58, bonusHp:0, critChance:10, cost:160, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:5, swingMs:2200 },
+    { id:'axe_handAxe', name:'Hand Axe', type:'weapon', baseDmgMin:3, baseDmgMax:6, bonusHp:0, cost:15, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:1, swingMs:2200, maxSockets:2 },
+    { id:'axe_doubleAxe', name:'Double Axe', type:'weapon', baseDmgMin:5, baseDmgMax:13, bonusHp:0, critChance:5, cost:30, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:2, swingMs:2200, maxSockets:2 },
+    { id:'axe_hatchet', name:'Hatchet', type:'weapon', baseDmgMin:8, baseDmgMax:20, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:3, swingMs:2200, maxSockets:2 },
+    { id:'axe_twinAxe', name:'Twin Axe', type:'weapon', baseDmgMin:13, baseDmgMax:38, bonusHp:0, critChance:10, cost:90, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:4, swingMs:2200, maxSockets:2 },
+    { id:'axe_tomahawk', name:'Tomahawk', type:'weapon', baseDmgMin:33, baseDmgMax:58, bonusHp:0, critChance:10, cost:160, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:5, swingMs:2200, maxSockets:2 },
     // === 2H AXE (axe, twoHand) ===
-    { id:'axe2h_largeAxe', name:'Large Axe', type:'weapon', baseDmgMin:6, baseDmgMax:13, bonusHp:0, cost:25, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:1, swingMs:2750, twoHand:true },
-    { id:'axe2h_battleAxe', name:'Battle Axe', type:'weapon', baseDmgMin:14, baseDmgMax:34, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:2, swingMs:2750, twoHand:true },
-    { id:'axe2h_militaryAxe', name:'Military Axe', type:'weapon', baseDmgMin:24, baseDmgMax:48, bonusHp:0, critChance:5, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:3, swingMs:2750, twoHand:true },
-    { id:'axe2h_tabar', name:'Tabar', type:'weapon', baseDmgMin:33, baseDmgMax:58, bonusHp:0, critChance:10, cost:140, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:4, swingMs:2750, twoHand:true },
-    { id:'axe2h_feralAxe', name:'Feral Axe', type:'weapon', baseDmgMin:45, baseDmgMax:82, bonusHp:0, critChance:10, cost:200, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:5, swingMs:2750, twoHand:true },
+    { id:'axe2h_largeAxe', name:'Large Axe', type:'weapon', baseDmgMin:6, baseDmgMax:13, bonusHp:0, cost:25, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:1, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'axe2h_battleAxe', name:'Battle Axe', type:'weapon', baseDmgMin:14, baseDmgMax:34, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:2, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'axe2h_militaryAxe', name:'Military Axe', type:'weapon', baseDmgMin:24, baseDmgMax:48, bonusHp:0, critChance:5, cost:90, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:3, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'axe2h_tabar', name:'Tabar', type:'weapon', baseDmgMin:33, baseDmgMax:58, bonusHp:0, critChance:10, cost:140, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:4, swingMs:2750, twoHand:true, maxSockets:3 },
+    { id:'axe2h_feralAxe', name:'Feral Axe', type:'weapon', baseDmgMin:45, baseDmgMax:82, bonusHp:0, critChance:10, cost:200, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:5, swingMs:2750, twoHand:true, maxSockets:3 },
     // === 1H MACE (blunt) ===
-    { id:'blunt_club', name:'Club', type:'weapon', baseDmgMin:1, baseDmgMax:6, bonusHp:0, cost:10, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:1, swingMs:2200 },
-    { id:'blunt_mace', name:'Mace', type:'weapon', baseDmgMin:4, baseDmgMax:10, bonusHp:0, cost:25, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:2, swingMs:2200 },
-    { id:'blunt_cudgel', name:'Cudgel', type:'weapon', baseDmgMin:8, baseDmgMax:18, bonusHp:0, cost:45, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:3, swingMs:2200 },
-    { id:'blunt_flangedMace', name:'Flanged Mace', type:'weapon', baseDmgMin:13, baseDmgMax:28, bonusHp:0, cost:75, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:4, swingMs:2200 },
-    { id:'blunt_truncheon', name:'Truncheon', type:'weapon', baseDmgMin:21, baseDmgMax:41, bonusHp:0, cost:130, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:5, swingMs:2200 },
+    { id:'blunt_club', name:'Club', type:'weapon', baseDmgMin:1, baseDmgMax:6, bonusHp:0, cost:10, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:1, swingMs:2200, maxSockets:2 },
+    { id:'blunt_mace', name:'Mace', type:'weapon', baseDmgMin:4, baseDmgMax:10, bonusHp:0, cost:25, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:2, swingMs:2200, maxSockets:2 },
+    { id:'blunt_cudgel', name:'Cudgel', type:'weapon', baseDmgMin:8, baseDmgMax:18, bonusHp:0, cost:45, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:3, swingMs:2200, maxSockets:2 },
+    { id:'blunt_flangedMace', name:'Flanged Mace', type:'weapon', baseDmgMin:13, baseDmgMax:28, bonusHp:0, cost:75, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:4, swingMs:2200, maxSockets:2 },
+    { id:'blunt_truncheon', name:'Truncheon', type:'weapon', baseDmgMin:21, baseDmgMax:41, bonusHp:0, cost:130, icon:'🔨', iconImg:'assets/items/war_hammer.png', weaponType:'blunt', tier:5, swingMs:2200, maxSockets:2 },
     // === 2H MACE (blunt, twoHand) ===
-    { id:'blunt2h_maul', name:'Maul', type:'weapon', baseDmgMin:30, baseDmgMax:43, bonusHp:0, cost:40, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:3, swingMs:3000, twoHand:true },
-    { id:'blunt2h_greatMaul', name:'Great Maul', type:'weapon', baseDmgMin:35, baseDmgMax:55, bonusHp:0, cost:70, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:2, swingMs:3000, twoHand:true },
-    { id:'blunt2h_warClub', name:'War Club', type:'weapon', baseDmgMin:40, baseDmgMax:58, bonusHp:0, cost:110, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:3, swingMs:3000, twoHand:true },
-    { id:'blunt2h_martel', name:'Martel de Fer', type:'weapon', baseDmgMin:52, baseDmgMax:70, bonusHp:0, cost:170, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:4, swingMs:3000, twoHand:true },
-    { id:'blunt2h_ogreMaul', name:'Ogre Maul', type:'weapon', baseDmgMin:77, baseDmgMax:106, bonusHp:0, cost:260, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:5, swingMs:3000, twoHand:true },
+    { id:'blunt2h_maul', name:'Maul', type:'weapon', baseDmgMin:30, baseDmgMax:43, bonusHp:0, cost:40, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:3, swingMs:3000, twoHand:true, maxSockets:3 },
+    { id:'blunt2h_greatMaul', name:'Great Maul', type:'weapon', baseDmgMin:35, baseDmgMax:55, bonusHp:0, cost:70, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:2, swingMs:3000, twoHand:true, maxSockets:3 },
+    { id:'blunt2h_warClub', name:'War Club', type:'weapon', baseDmgMin:40, baseDmgMax:58, bonusHp:0, cost:110, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:3, swingMs:3000, twoHand:true, maxSockets:3 },
+    { id:'blunt2h_martel', name:'Martel de Fer', type:'weapon', baseDmgMin:52, baseDmgMax:70, bonusHp:0, cost:170, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:4, swingMs:3000, twoHand:true, maxSockets:3 },
+    { id:'blunt2h_ogreMaul', name:'Ogre Maul', type:'weapon', baseDmgMin:77, baseDmgMax:106, bonusHp:0, cost:260, icon:'🔨', iconImg:'assets/items/weapon_giant_hammer.png', weaponType:'blunt', tier:5, swingMs:3000, twoHand:true, maxSockets:3 },
     // === CLAWS (claws) ===
-    { id:'claws_katar', name:'Katar', type:'weapon', baseDmgMin:4, baseDmgMax:7, bonusHp:0, critChance:15, cost:20, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:1, swingMs:1950 },
-    { id:'claws_claws', name:'Claws', type:'weapon', baseDmgMin:8, baseDmgMax:15, bonusHp:0, critChance:20, cost:40, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:2, swingMs:1950 },
-    { id:'claws_quhab', name:'Quhab', type:'weapon', baseDmgMin:11, baseDmgMax:24, bonusHp:0, critChance:20, cost:65, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:3, swingMs:2200 },
-    { id:'claws_greaterClaws', name:'Greater Claws', type:'weapon', baseDmgMin:18, baseDmgMax:37, bonusHp:0, critChance:25, cost:110, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:4, swingMs:1650 },
-    { id:'claws_suwayyah', name:'Suwayyah', type:'weapon', baseDmgMin:39, baseDmgMax:52, bonusHp:0, critChance:25, cost:180, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:5, swingMs:2200 },
+    { id:'claws_katar', name:'Katar', type:'weapon', baseDmgMin:4, baseDmgMax:7, bonusHp:0, critChance:15, cost:20, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:1, swingMs:1950, maxSockets:2 },
+    { id:'claws_claws', name:'Claws', type:'weapon', baseDmgMin:8, baseDmgMax:15, bonusHp:0, critChance:20, cost:40, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:2, swingMs:1950, maxSockets:2 },
+    { id:'claws_quhab', name:'Quhab', type:'weapon', baseDmgMin:11, baseDmgMax:24, bonusHp:0, critChance:20, cost:65, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:3, swingMs:2200, maxSockets:2 },
+    { id:'claws_greaterClaws', name:'Greater Claws', type:'weapon', baseDmgMin:18, baseDmgMax:37, bonusHp:0, critChance:25, cost:110, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:4, swingMs:1650, maxSockets:2 },
+    { id:'claws_suwayyah', name:'Suwayyah', type:'weapon', baseDmgMin:39, baseDmgMax:52, bonusHp:0, critChance:25, cost:180, icon:'🦅', iconImg:'assets/items/claws.png', weaponType:'claws', tier:5, swingMs:2200, maxSockets:2 },
     // === 1H WAND (staff) ===
-    { id:'staff_wand', name:'Wand', type:'weapon', baseDmgMin:2, baseDmgMax:4, cost:10, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:2200 },
-    { id:'staff_boneWand', name:'Bone Wand', type:'weapon', baseDmgMin:3, baseDmgMax:7, cost:25, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:2, swingMs:2200 },
-    { id:'staff_polishedWand', name:'Polished Wand', type:'weapon', baseDmgMin:5, baseDmgMax:11, cost:45, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:3, swingMs:2200 },
-    { id:'staff_lichWand', name:'Lich Wand', type:'weapon', baseDmgMin:10, baseDmgMax:19, cost:80, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:4, swingMs:2200 },
-    { id:'staff_petrifiedWand', name:'Petrified Wand', type:'weapon', baseDmgMin:13, baseDmgMax:27, cost:130, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:5, swingMs:2200 },
+    { id:'staff_wand', name:'Wand', type:'weapon', baseDmgMin:2, baseDmgMax:4, cost:10, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:1, swingMs:2200, maxSockets:2 },
+    { id:'staff_boneWand', name:'Bone Wand', type:'weapon', baseDmgMin:3, baseDmgMax:7, cost:25, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:2, swingMs:2200, maxSockets:2 },
+    { id:'staff_polishedWand', name:'Polished Wand', type:'weapon', baseDmgMin:5, baseDmgMax:11, cost:45, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:3, swingMs:2200, maxSockets:2 },
+    { id:'staff_lichWand', name:'Lich Wand', type:'weapon', baseDmgMin:10, baseDmgMax:19, cost:80, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:4, swingMs:2200, maxSockets:2 },
+    { id:'staff_petrifiedWand', name:'Petrified Wand', type:'weapon', baseDmgMin:13, baseDmgMax:27, cost:130, icon:'🪄', iconImg:'assets/items/staff_wooden.png', weaponType:'staff', tier:5, swingMs:2200, maxSockets:2 },
     // === 2H STAFF (staff, twoHand) ===
-    { id:'staff2h_shortStaff', name:'Short Staff', type:'weapon', baseDmgMin:1, baseDmgMax:5, cost:15, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:1, swingMs:2200, twoHand:true },
-    { id:'staff2h_battleStaff', name:'Battle Staff', type:'weapon', baseDmgMin:6, baseDmgMax:13, cost:35, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:2, swingMs:2200, twoHand:true },
-    { id:'staff2h_joStaff', name:'Jo Staff', type:'weapon', baseDmgMin:10, baseDmgMax:18, cost:60, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:2200, twoHand:true },
-    { id:'staff2h_gothicStaff', name:'Gothic Staff', type:'weapon', baseDmgMin:14, baseDmgMax:26, cost:100, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:2200, twoHand:true },
-    { id:'staff2h_archonStaff', name:'Archon Staff', type:'weapon', baseDmgMin:20, baseDmgMax:34, cost:170, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:5, swingMs:2200, twoHand:true },
+    { id:'staff2h_shortStaff', name:'Short Staff', type:'weapon', baseDmgMin:1, baseDmgMax:5, cost:15, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:1, swingMs:2200, twoHand:true, maxSockets:3 },
+    { id:'staff2h_battleStaff', name:'Battle Staff', type:'weapon', baseDmgMin:6, baseDmgMax:13, cost:35, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:2, swingMs:2200, twoHand:true, maxSockets:3 },
+    { id:'staff2h_joStaff', name:'Jo Staff', type:'weapon', baseDmgMin:10, baseDmgMax:18, cost:60, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:3, swingMs:2200, twoHand:true, maxSockets:3 },
+    { id:'staff2h_gothicStaff', name:'Gothic Staff', type:'weapon', baseDmgMin:14, baseDmgMax:26, cost:100, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:4, swingMs:2200, twoHand:true, maxSockets:3 },
+    { id:'staff2h_archonStaff', name:'Archon Staff', type:'weapon', baseDmgMin:20, baseDmgMax:34, cost:170, icon:'🪄', iconImg:'assets/items/staff_archmage.png', weaponType:'staff', tier:5, swingMs:2200, twoHand:true, maxSockets:3 },
     // === BRNĚNÍ ===
     // Normal (tier 1-3)
-    { id:'armor_leather', name:'Leather Armor', type:'armor', baseDmg:0, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1 },
-    { id:'armor_hardLeather', name:'Hard Leather Armor', type:'armor', baseDmg:0, defense:25, cost:35, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:1 },
-    { id:'armor_ringMail', name:'Ring Mail', type:'armor', baseDmg:0, defense:38, cost:55, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:2 },
-    { id:'armor_plateMail', name:'Plate Mail', type:'armor', baseDmg:0, defense:55, cost:85, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:2 },
-    { id:'armor_fullPlate', name:'Full Plate Armor', type:'armor', baseDmg:0, defense:75, cost:130, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:3 },
+    { id:'armor_leather', name:'Leather Armor', type:'armor', baseDmg:0, defense:15, cost:20, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:1, maxSockets:2 },
+    { id:'armor_hardLeather', name:'Hard Leather Armor', type:'armor', baseDmg:0, defense:25, cost:35, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:1, maxSockets:2 },
+    { id:'armor_ringMail', name:'Ring Mail', type:'armor', baseDmg:0, defense:38, cost:55, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:2, maxSockets:2 },
+    { id:'armor_plateMail', name:'Plate Mail', type:'armor', baseDmg:0, defense:55, cost:85, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:2, maxSockets:4 },
+    { id:'armor_fullPlate', name:'Full Plate Armor', type:'armor', baseDmg:0, defense:75, cost:130, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:3, maxSockets:4 },
     // Nightmare (tier 3-5)
-    { id:'armor_leather_nm', name:'Serpentskin Armor', type:'armor', baseDmg:0, defense:90, cost:100, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:3 },
-    { id:'armor_hardLeather_nm', name:'Demonhide Armor', type:'armor', baseDmg:0, defense:110, cost:140, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:4 },
-    { id:'armor_ringMail_nm', name:'Linked Mail', type:'armor', baseDmg:0, defense:130, cost:180, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:4 },
-    { id:'armor_plateMail_nm', name:'Templar Coat', type:'armor', baseDmg:0, defense:155, cost:230, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:5 },
-    { id:'armor_fullPlate_nm', name:'Chaos Armor', type:'armor', baseDmg:0, defense:180, cost:280, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:5 },
+    { id:'armor_leather_nm', name:'Serpentskin Armor', type:'armor', baseDmg:0, defense:90, cost:100, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:3, maxSockets:2 },
+    { id:'armor_hardLeather_nm', name:'Demonhide Armor', type:'armor', baseDmg:0, defense:110, cost:140, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:4, maxSockets:2 },
+    { id:'armor_ringMail_nm', name:'Linked Mail', type:'armor', baseDmg:0, defense:130, cost:180, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:4, maxSockets:2 },
+    { id:'armor_plateMail_nm', name:'Templar Coat', type:'armor', baseDmg:0, defense:155, cost:230, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:5, maxSockets:4 },
+    { id:'armor_fullPlate_nm', name:'Chaos Armor', type:'armor', baseDmg:0, defense:180, cost:280, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:5, maxSockets:4 },
     // Hell (tier 5-7)
-    { id:'armor_leather_hell', name:'Wyrmhide', type:'armor', baseDmg:0, defense:200, cost:180, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:5 },
-    { id:'armor_hardLeather_hell', name:'Scarab Husk', type:'armor', baseDmg:0, defense:230, cost:240, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:6 },
-    { id:'armor_ringMail_hell', name:'Diamond Mail', type:'armor', baseDmg:0, defense:260, cost:300, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:6 },
-    { id:'armor_plateMail_hell', name:'Hellforge Plate', type:'armor', baseDmg:0, defense:300, cost:380, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:7 },
-    { id:'armor_fullPlate_hell', name:'Sacred Armor', type:'armor', baseDmg:0, defense:350, cost:480, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:7 },
+    { id:'armor_leather_hell', name:'Wyrmhide', type:'armor', baseDmg:0, defense:200, cost:180, icon:'👘', iconImg:'assets/items/armor_leather.png', tier:5, maxSockets:2 },
+    { id:'armor_hardLeather_hell', name:'Scarab Husk', type:'armor', baseDmg:0, defense:230, cost:240, icon:'👘', iconImg:'assets/items/armor_chainmail.png', tier:6, maxSockets:2 },
+    { id:'armor_ringMail_hell', name:'Diamond Mail', type:'armor', baseDmg:0, defense:260, cost:300, icon:'👘', iconImg:'assets/items/armor_scale.png', tier:6, maxSockets:2 },
+    { id:'armor_plateMail_hell', name:'Hellforge Plate', type:'armor', baseDmg:0, defense:300, cost:380, icon:'👘', iconImg:'assets/items/armor_plate.png', tier:7, maxSockets:4 },
+    { id:'armor_fullPlate_hell', name:'Sacred Armor', type:'armor', baseDmg:0, defense:350, cost:480, icon:'👘', iconImg:'assets/items/armor_dragon_scale.png', tier:7, maxSockets:4 },
     // === HELMY ===
     // Normal
-    { id:'helm_cap', name:'Cap', type:'helmet', baseDmg:0, defense:8, cost:15, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:1 },
-    { id:'helm_helm', name:'Helm', type:'helmet', baseDmg:0, defense:15, cost:30, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:2 },
-    { id:'helm_fullHelm', name:'Full Helm', type:'helmet', baseDmg:0, defense:23, cost:60, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:3 },
-    { id:'helm_greatHelm', name:'Great Helm', type:'helmet', baseDmg:0, defense:30, cost:80, icon:'⛑️', iconImg:'assets/items/helmet_silver_helm.png', tier:3 },
-    { id:'helm_crown', name:'Crown', type:'helmet', baseDmg:0, defense:40, cost:110, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:3 },
+    { id:'helm_cap', name:'Cap', type:'helmet', baseDmg:0, defense:8, cost:15, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:1, maxSockets:2 },
+    { id:'helm_helm', name:'Helm', type:'helmet', baseDmg:0, defense:15, cost:30, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:2, maxSockets:3 },
+    { id:'helm_fullHelm', name:'Full Helm', type:'helmet', baseDmg:0, defense:23, cost:60, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:3, maxSockets:2 },
+    { id:'helm_greatHelm', name:'Great Helm', type:'helmet', baseDmg:0, defense:30, cost:80, icon:'⛑️', iconImg:'assets/items/helmet_silver_helm.png', tier:3, maxSockets:3 },
+    { id:'helm_crown', name:'Crown', type:'helmet', baseDmg:0, defense:40, cost:110, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:3, maxSockets:3 },
     // Nightmare
-    { id:'helm_cap_nm', name:'War Hat', type:'helmet', baseDmg:0, defense:45, cost:70, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:3 },
-    { id:'helm_helm_nm', name:'Casque', type:'helmet', baseDmg:0, defense:55, cost:100, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:4 },
-    { id:'helm_fullHelm_nm', name:'Basinet', type:'helmet', baseDmg:0, defense:65, cost:140, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:4 },
-    { id:'helm_greatHelm_nm', name:'Winged Helm', type:'helmet', baseDmg:0, defense:78, cost:180, icon:'⛑️', iconImg:'assets/items/helmet_silver_helm.png', tier:5 },
-    { id:'helm_crown_nm', name:'Grand Crown', type:'helmet', baseDmg:0, defense:90, cost:230, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:5 },
+    { id:'helm_cap_nm', name:'War Hat', type:'helmet', baseDmg:0, defense:45, cost:70, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:3, maxSockets:2 },
+    { id:'helm_helm_nm', name:'Casque', type:'helmet', baseDmg:0, defense:55, cost:100, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:4, maxSockets:3 },
+    { id:'helm_fullHelm_nm', name:'Basinet', type:'helmet', baseDmg:0, defense:65, cost:140, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:4, maxSockets:2 },
+    { id:'helm_greatHelm_nm', name:'Winged Helm', type:'helmet', baseDmg:0, defense:78, cost:180, icon:'⛑️', iconImg:'assets/items/helmet_silver_helm.png', tier:5, maxSockets:3 },
+    { id:'helm_crown_nm', name:'Grand Crown', type:'helmet', baseDmg:0, defense:90, cost:230, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:5, maxSockets:3 },
     // Hell
-    { id:'helm_cap_hell', name:'Shako', type:'helmet', baseDmg:0, defense:100, cost:140, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:5 },
-    { id:'helm_helm_hell', name:'Armet', type:'helmet', baseDmg:0, defense:120, cost:190, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:6 },
-    { id:'helm_fullHelm_hell', name:'Giant Conch', type:'helmet', baseDmg:0, defense:140, cost:250, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:6 },
-    { id:'helm_greatHelm_hell', name:'Spired Helm', type:'helmet', baseDmg:0, defense:165, cost:320, icon:'⛑️', iconImg:'assets/items/helmet_silver_helm.png', tier:7 },
-    { id:'helm_crown_hell', name:'Corona', type:'helmet', baseDmg:0, defense:190, cost:400, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:7 },
+    { id:'helm_cap_hell', name:'Shako', type:'helmet', baseDmg:0, defense:100, cost:140, icon:'🎭', iconImg:'assets/items/helmet_linen_hood.png', tier:5, maxSockets:2 },
+    { id:'helm_helm_hell', name:'Armet', type:'helmet', baseDmg:0, defense:120, cost:190, icon:'⛑️', iconImg:'assets/items/helmet_iron_helm.png', tier:6, maxSockets:3 },
+    { id:'helm_fullHelm_hell', name:'Giant Conch', type:'helmet', baseDmg:0, defense:140, cost:250, icon:'⛑️', iconImg:'assets/items/helmet_steel_helm.png', tier:6, maxSockets:2 },
+    { id:'helm_greatHelm_hell', name:'Spired Helm', type:'helmet', baseDmg:0, defense:165, cost:320, icon:'⛑️', iconImg:'assets/items/helmet_silver_helm.png', tier:7, maxSockets:3 },
+    { id:'helm_crown_hell', name:'Corona', type:'helmet', baseDmg:0, defense:190, cost:400, icon:'👑', iconImg:'assets/items/helmet_crown.png', tier:7, maxSockets:3 },
     // === ŠTÍTY ===
     // Normal
-    { id:'shield_buckler', name:'Buckler', type:'shield', baseDmg:0, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:1 },
-    { id:'shield_smallShield', name:'Small Shield', type:'shield', baseDmg:0, blockChance:25, defense:11, cost:30, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:2 },
-    { id:'shield_largeShield', name:'Large Shield', type:'shield', baseDmg:0, blockChance:30, defense:18, cost:55, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:3 },
-    { id:'shield_kiteShield', name:'Kite Shield', type:'shield', baseDmg:0, blockChance:30, defense:25, cost:80, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:3 },
-    { id:'shield_gothicShield', name:'Gothic Shield', type:'shield', baseDmg:0, blockChance:35, defense:33, cost:120, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:3 },
+    { id:'shield_buckler', name:'Buckler', type:'shield', baseDmg:0, blockChance:20, defense:6, cost:15, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:1, maxSockets:2 },
+    { id:'shield_smallShield', name:'Small Shield', type:'shield', baseDmg:0, blockChance:25, defense:11, cost:30, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:2, maxSockets:2 },
+    { id:'shield_largeShield', name:'Large Shield', type:'shield', baseDmg:0, blockChance:30, defense:18, cost:55, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:3, maxSockets:3 },
+    { id:'shield_kiteShield', name:'Kite Shield', type:'shield', baseDmg:0, blockChance:30, defense:25, cost:80, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:3, maxSockets:3 },
+    { id:'shield_gothicShield', name:'Gothic Shield', type:'shield', baseDmg:0, blockChance:35, defense:33, cost:120, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:3, maxSockets:3 },
     // Nightmare
-    { id:'shield_buckler_nm', name:'Defender', type:'shield', baseDmg:0, blockChance:20, defense:35, cost:70, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:3 },
-    { id:'shield_smallShield_nm', name:'Round Shield', type:'shield', baseDmg:0, blockChance:25, defense:45, cost:100, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:4 },
-    { id:'shield_largeShield_nm', name:'Scutum', type:'shield', baseDmg:0, blockChance:30, defense:55, cost:140, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:4 },
-    { id:'shield_kiteShield_nm', name:'Dragon Shield', type:'shield', baseDmg:0, blockChance:30, defense:68, cost:190, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:5 },
-    { id:'shield_gothicShield_nm', name:'Ancient Shield', type:'shield', baseDmg:0, blockChance:35, defense:82, cost:250, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:5 },
+    { id:'shield_buckler_nm', name:'Defender', type:'shield', baseDmg:0, blockChance:20, defense:35, cost:70, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:3, maxSockets:2 },
+    { id:'shield_smallShield_nm', name:'Round Shield', type:'shield', baseDmg:0, blockChance:25, defense:45, cost:100, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:4, maxSockets:2 },
+    { id:'shield_largeShield_nm', name:'Scutum', type:'shield', baseDmg:0, blockChance:30, defense:55, cost:140, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:4, maxSockets:3 },
+    { id:'shield_kiteShield_nm', name:'Dragon Shield', type:'shield', baseDmg:0, blockChance:30, defense:68, cost:190, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:5, maxSockets:3 },
+    { id:'shield_gothicShield_nm', name:'Ancient Shield', type:'shield', baseDmg:0, blockChance:35, defense:82, cost:250, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:5, maxSockets:3 },
     // Hell
-    { id:'shield_buckler_hell', name:'Heater', type:'shield', baseDmg:0, blockChance:20, defense:85, cost:130, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:5 },
-    { id:'shield_smallShield_hell', name:'Luna', type:'shield', baseDmg:0, blockChance:25, defense:105, cost:180, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:6 },
-    { id:'shield_largeShield_hell', name:'Hyperion', type:'shield', baseDmg:0, blockChance:30, defense:130, cost:250, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:6 },
-    { id:'shield_kiteShield_hell', name:'Monarch', type:'shield', baseDmg:0, blockChance:30, defense:155, cost:330, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:7 },
-    { id:'shield_gothicShield_hell', name:'Ward', type:'shield', baseDmg:0, blockChance:35, defense:185, cost:420, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:7 },
+    { id:'shield_buckler_hell', name:'Heater', type:'shield', baseDmg:0, blockChance:20, defense:85, cost:130, icon:'🛡️', iconImg:'assets/items/shield_wooden.png', tier:5, maxSockets:2 },
+    { id:'shield_smallShield_hell', name:'Luna', type:'shield', baseDmg:0, blockChance:25, defense:105, cost:180, icon:'🛡️', iconImg:'assets/items/shield_leather.png', tier:6, maxSockets:2 },
+    { id:'shield_largeShield_hell', name:'Hyperion', type:'shield', baseDmg:0, blockChance:30, defense:130, cost:250, icon:'🛡️', iconImg:'assets/items/shield_iron.png', tier:6, maxSockets:3 },
+    { id:'shield_kiteShield_hell', name:'Monarch', type:'shield', baseDmg:0, blockChance:30, defense:155, cost:330, icon:'🛡️', iconImg:'assets/items/shield_steel.png', tier:7, maxSockets:3 },
+    { id:'shield_gothicShield_hell', name:'Ward', type:'shield', baseDmg:0, blockChance:35, defense:185, cost:420, icon:'🛡️', iconImg:'assets/items/shield_paladin.png', tier:7, maxSockets:3 },
     // === PRSTENY ===
     { id:'copperRing', name:'Ring', type:'ring', cost:15, icon:'💍', iconImg:'assets/items/ring_copper.png', tier:1 },
     { id:'silverRing', name:'Ring', type:'ring', cost:55, icon:'💍', iconImg:'assets/items/ring_silver.png', tier:3 },
@@ -862,7 +862,14 @@
     { id:'fiery', name:'Fiery', type:'prefix', group:1, minIlvl:1, weight:8,
       types:['weapon'], stats:{ fireDmg:[3,8] }, tint:'#e94560' },
     { id:'icy', name:'Icy', type:'prefix', group:1, minIlvl:5, weight:8,
-      types:['weapon'], stats:{ iceDmg:[3,8] }, tint:'#4a7dff' },
+      types:['weapon'], stats:{ coldDmg:[3,8] }, tint:'#4a7dff' },
+    // Socket prefixy (D2 style)
+    { id:'mechanics', name:"Mechanic's", type:'prefix', group:50, minIlvl:10, weight:3,
+      types:['weapon','armor','helmet','shield'], sockets:1, tint:'#888' },
+    { id:'artisans', name:"Artisan's", type:'prefix', group:50, minIlvl:20, weight:2,
+      types:['weapon','armor','helmet','shield'], sockets:2, tint:'#888', magicOnly:true },
+    { id:'jewelers', name:"Jeweler's", type:'prefix', group:50, minIlvl:35, weight:1,
+      types:['weapon','armor','helmet','shield'], sockets:3, tint:'#888', magicOnly:true },
     { id:'keen', name:'Keen', type:'prefix', group:6, minIlvl:1, weight:7,
       types:['weapon','ring'], stats:{ attackRating:[5,15] }, tint:'#f1c40f' },
     { id:'sharp', name:'Sharp', type:'prefix', group:7, minIlvl:5, weight:6,
@@ -897,7 +904,7 @@
     { id:'smoldering', name:'Smoldering', type:'prefix', group:21, minIlvl:5, weight:5,
       types:['weapon'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'glacial', name:'Glacial', type:'prefix', group:22, minIlvl:5, weight:5,
-      types:['weapon'], stats:{ iceDmg:[2,6] }, tint:'#4a7dff' },
+      types:['weapon'], stats:{ coldDmg:[2,6] }, tint:'#4a7dff' },
     { id:'shocking', name:'Shocking', type:'prefix', group:23, minIlvl:3, weight:6,
       types:['weapon'], stats:{ lightningDmg:[3,8] }, tint:'#8b5cf6' },
     { id:'thunderous', name:'Thunderous', type:'prefix', group:24, minIlvl:10, weight:4,
@@ -932,7 +939,7 @@
     { id:'ofBurning', name:'of Burning', type:'suffix', group:122, minIlvl:5, weight:5,
       types:['weapon'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'ofFrost', name:'of Frost', type:'suffix', group:123, minIlvl:5, weight:5,
-      types:['weapon'], stats:{ iceDmg:[2,6] }, tint:'#4a7dff' },
+      types:['weapon'], stats:{ coldDmg:[2,6] }, tint:'#4a7dff' },
     { id:'ofStorms', name:'of Storms', type:'suffix', group:125, minIlvl:5, weight:5,
       types:['weapon'], stats:{ lightningDmg:[2,6] }, tint:'#8b5cf6' },
     { id:'ofLightning', name:'of Lightning', type:'suffix', group:126, minIlvl:8, weight:5,
@@ -1147,6 +1154,29 @@
   // Mapa pro generované loot itemy (doplňuje ITEM_MAP)
   let _lootItemMap = {};
 
+  function initGemItems() {
+    const gemTypes = ['ruby', 'sapphire', 'emerald', 'topaz'];
+    gemTypes.forEach(type => {
+      GEM_QUALITIES.forEach(q => {
+        const gem = GEMS[type];
+        const qData = gem.qualities[q];
+        const id = type + '_' + q;
+        ITEM_MAP[id] = {
+          id: id,
+          name: qData.name,
+          type: 'gem',
+          gemType: type,
+          gemQuality: q,
+          icon: gem.icon,
+          iconImg: null,
+          cost: q === 'normal' ? 20 : q === 'flawless' ? 50 : 100,
+          tier: q === 'normal' ? 1 : q === 'flawless' ? 3 : 5,
+          quality: 'magic'
+        };
+      });
+    });
+  }
+
   function getItemInfo(id) {
     return ITEM_MAP[id] || _lootItemMap[id] || null;
   }
@@ -1160,6 +1190,57 @@
     unique: '#b8860b'
   };
 
+  // ===== SOCKET SYSTEM =====
+  // D2 style: jen normal (common) itemy můžou mít sockety jako base.
+  // Magic/Rare/Unique dostávají sockety jen přes affixy (Mechanic's, Artisan's, Jeweler's).
+  // Každý base item má vlastní maxSockets podle D2 dat.
+
+  // Socket chance pro normal quality itemy
+  const SOCKET_CHANCE_NORMAL = 0.25;
+
+  // Gems: 4 types × 3 qualities (normal, flawless, perfect)
+  const GEMS = {
+    ruby: {
+      name: 'Ruby',
+      icon: '🔴',
+      qualities: {
+        normal: { name: 'Ruby', weapon: { fireDmg: [3,6] }, armor: { bonusHp: [10,20] } },
+        flawless: { name: 'Flawless Ruby', weapon: { fireDmg: [6,12] }, armor: { bonusHp: [25,40] } },
+        perfect: { name: 'Perfect Ruby', weapon: { fireDmg: [12,20] }, armor: { bonusHp: [50,80] } }
+      }
+    },
+    sapphire: {
+      name: 'Sapphire',
+      icon: '🔵',
+      qualities: {
+        normal: { name: 'Sapphire', weapon: { coldDmg: [3,6] }, armor: { bonusMana: [10,20] } },
+        flawless: { name: 'Flawless Sapphire', weapon: { coldDmg: [6,12] }, armor: { bonusMana: [25,40] } },
+        perfect: { name: 'Perfect Sapphire', weapon: { coldDmg: [12,20] }, armor: { bonusMana: [50,80] } }
+      }
+    },
+    emerald: {
+      name: 'Emerald',
+      icon: '🟢',
+      qualities: {
+        normal: { name: 'Emerald', weapon: { poisonDmg: [3,6], poisonDur: 3 }, armor: { attackRating: [10,20] } },
+        flawless: { name: 'Flawless Emerald', weapon: { poisonDmg: [6,12], poisonDur: 4 }, armor: { attackRating: [25,40] } },
+        perfect: { name: 'Perfect Emerald', weapon: { poisonDmg: [12,20], poisonDur: 5 }, armor: { attackRating: [50,80] } }
+      }
+    },
+    topaz: {
+      name: 'Topaz',
+      icon: '🟡',
+      qualities: {
+        normal: { name: 'Topaz', weapon: { lightningDmg: [3,6] }, armor: { magicFind: [5,10] } },
+        flawless: { name: 'Flawless Topaz', weapon: { lightningDmg: [6,12] }, armor: { magicFind: [10,20] } },
+        perfect: { name: 'Perfect Topaz', weapon: { lightningDmg: [12,20] }, armor: { magicFind: [20,35] } }
+      }
+    }
+  };
+
+  // Gem quality levels
+  const GEM_QUALITIES = ['normal', 'flawless', 'perfect'];
+
   function getQualityColor(item) {
     if (item.unique) return QUALITY_COLORS.unique;
     // Použít quality/rarity místo počítání affixů — rare bez affixů je pořád rare
@@ -1169,12 +1250,34 @@
     return QUALITY_COLORS.normal;
   }
 
+  function getMagicFind() {
+    let mf = 0;
+    const h = state.hero;
+    if (!h || !h.equip) return 0;
+    // Projít všechny equip sloty
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt'];
+    slots.forEach(slot => {
+      const itemId = h.equip[slot];
+      if (itemId) {
+        const item = ITEM_MAP[itemId];
+        if (item && item.magicFind) mf += item.magicFind;
+      }
+    });
+    return mf;
+  }
+
   function rollQuality() {
+    let mf = getMagicFind();
+    // Diminishing returns (D2 style)
+    const effectiveMF = Math.floor((mf * 250) / (mf + 250));
+    const uniqueChance = 1 + Math.floor(effectiveMF * 0.01);
+    const rareChance = 5 + Math.floor(effectiveMF * 0.05);
+    const magicChance = 24 + Math.floor(effectiveMF * 0.1);
     const roll = Math.random() * 100;
-    if (roll < 1) return 'unique';       // 1% unique
-    if (roll < 6) return 'rare';          // 5% rare
-    if (roll < 30) return 'magic';        // 24% magic
-    return 'normal';                      // 70% common
+    if (roll < uniqueChance) return 'unique';
+    if (roll < rareChance) return 'rare';
+    if (roll < magicChance) return 'magic';
+    return 'normal';
   }
 
   function pickWeighted(arr, weightKey) {
@@ -1189,6 +1292,39 @@
 
   function rollStat(statRange) {
     return statRange[0] + Math.floor(Math.random() * (statRange[1] - statRange[0] + 1));
+  }
+
+  function rollSockets(itemType, quality, baseItem) {
+    // D2: Jen normal quality itemy můžou mít sockety jako base
+    if (quality !== 'normal') return 0;
+    // Jen kontaktní itemy můžou mít sockety
+    if (!baseItem || !baseItem.maxSockets) return 0;
+    if (Math.random() >= SOCKET_CHANCE_NORMAL) return 0;
+    // Roll 1 až maxSockets (stejně jako v D2 — náhodný počet do maxima)
+    return 1 + Math.floor(Math.random() * baseItem.maxSockets);
+  }
+
+  function applyGemStats(item, gemType, gemQuality) {
+    const gem = GEMS[gemType];
+    if (!gem) return;
+    const qData = gem.qualities[gemQuality];
+    if (!qData) return;
+    const isWeapon = item.type === 'weapon';
+    const stats = isWeapon ? qData.weapon : qData.armor;
+    if (!stats) return;
+    Object.keys(stats).forEach(stat => {
+      const val = stats[stat];
+      if (Array.isArray(val)) {
+        item[stat] = (item[stat] || 0) + rollStat(val);
+      } else {
+        item[stat] = (item[stat] || 0) + val;
+      }
+    });
+  }
+
+  function getItemSocketName(item) {
+    if (!item.sockets || item.sockets <= 0) return item.name;
+    return item.name + ' (' + item.sockets + ')';
   }
 
   function generateLootItemWithAffixes(baseItem, quality, monsterLevel) {
@@ -1233,15 +1369,18 @@
       }
     } else if (quality === 'rare') {
       // Rare: 3-4 affixy (D2 styl — náhodně prefix/suffix)
+      // Rare může mít jen Mechanic's (max 2 sockety), ne Artisan's/Jeweler's
+      const rarePrefixes = prefixes.filter(a => !a.magicOnly);
+      const rareSuffixes = suffixes;
       const rareCount = 3 + (Math.random() < 0.5 ? 1 : 0); // 50% 3, 50% 4
       for (let i = 0; i < rareCount; i++) {
         // Zkusit oba pooly, preferovat ten s méně affixy
         const pool = (chosenAffixes.filter(a => a.type === 'prefix').length <= chosenAffixes.filter(a => a.type === 'suffix').length)
-          ? prefixes : suffixes;
+          ? rarePrefixes : rareSuffixes;
         let a = pickAffix(pool);
         if (!a) {
           // Fallback na druhý pool
-          const fallback = pool === prefixes ? suffixes : prefixes;
+          const fallback = pool === rarePrefixes ? rareSuffixes : rarePrefixes;
           a = pickAffix(fallback);
         }
         if (a) { chosenAffixes.push(a); usedGroups.add(a.group); }
@@ -1255,6 +1394,9 @@
       affixes: chosenAffixes,
       quality: quality,
       ilvl: ilvl,
+      // Sockety — roll podle kvality a typu (jen normal itemy)
+      sockets: rollSockets(baseItem.type, quality, baseItem),
+      socketedGems: [],
       // Base staty
       baseDmg: baseItem.type === 'weapon' ? Math.round(((baseItem.baseDmgMin||0) + (baseItem.baseDmgMax||0)) / 2) : (baseItem.baseDmg || 0),
       bonusHp: baseItem.bonusHp || 0,
@@ -1265,7 +1407,7 @@
       swingMs: baseItem.swingMs || 0,
       // Affix staty (přičtou se)
       fireDmg: 0,
-      iceDmg: 0,
+      coldDmg: 0,
       lifesteal: 0,
       manaSteal: 0,
       enhancedDefense: 0,
@@ -1283,6 +1425,15 @@
 
     // Aplikovat affix staty
     chosenAffixes.forEach(a => {
+      // Socket affix — přidá sockety k itemu
+      if (a.sockets) {
+        const maxFromBase = baseItem.maxSockets || 0;
+        const addSockets = Math.min(a.sockets, maxFromBase);
+        if (addSockets > 0) {
+          lootItem.sockets = (lootItem.sockets || 0) + addSockets;
+        }
+        return; // socket affix nemá stats
+      }
       Object.keys(a.stats).forEach(stat => {
         const val = rollStat(a.stats[stat]);
         if (stat === 'swingMs') {
@@ -1336,6 +1487,9 @@
       iconImg: uniqueDef.iconImg || baseItem.iconImg,
       icon: uniqueDef.icon || baseItem.icon,
       lvlReq: uniqueDef.minLevel || 1,
+      // Sockety pro unique (jen pokud by měl base maxSockets, ale quality!=normal → 0)
+      sockets: rollSockets(baseItem.type, 'unique', baseItem),
+      socketedGems: [],
       // Base staty
       baseDmg: baseItem.type === 'weapon' ? Math.round(((baseItem.baseDmgMin||0) + (baseItem.baseDmgMax||0)) / 2) : (baseItem.baseDmg || 0),
       bonusHp: baseItem.bonusHp || 0,
@@ -1344,7 +1498,7 @@
       critChance: baseItem.critChance || 0,
       attackRating: baseItem.attackRating || 0,
       swingMs: baseItem.swingMs || 0,
-      fireDmg: 0, iceDmg: 0, lifesteal: 0, manaSteal: 0,
+      fireDmg: 0, coldDmg: 0, lifesteal: 0, manaSteal: 0,
       enhancedDefense: 0, enhancedDmg: 0,
       str: 0, vit: 0, int: 0, dex: 0,
       skillDmg: 0, manaRegen: 0, poisonDmg: 0, poisonDur: 0, lightningDmg: 0,
@@ -1460,9 +1614,24 @@
       const label = item.subtype === 'heal' ? 'Heals' : 'Restores';
       addRow(label, `${item.effectValue} ${item.subtype === 'heal' ? 'HP' : 'Mana'}`);
     }
+    // Gem
+    else if (item.type === 'gem') {
+      const gem = GEMS[item.gemType];
+      const qData = gem ? gem.qualities[item.gemQuality] : null;
+      if (qData) {
+        addRow('Weapon', Object.entries(qData.weapon || {}).map(([k,v]) => {
+          if (Array.isArray(v)) return `${k}: ${v[0]}-${v[1]}`;
+          return `${k}: ${v}`;
+        }).join(', '));
+        addRow('Armor/Helm/Shield', Object.entries(qData.armor || {}).map(([k,v]) => {
+          if (Array.isArray(v)) return `${k}: ${v[0]}-${v[1]}`;
+          return `${k}: ${v}`;
+        }).join(', '));
+      }
+    }
     // Affix staty
     if (item.fireDmg) addRow('Fire Dmg', `+${item.fireDmg}${affixRange('fireDmg')}`);
-    if (item.iceDmg) addRow('Ice Dmg', `+${item.iceDmg}${affixRange('iceDmg')}`);
+    if (item.coldDmg) addRow('Cold Dmg', `+${item.coldDmg}${affixRange('coldDmg')}`);
     if (item.poisonDmg) addRow('Poison Dmg', `+${item.poisonDmg} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
     if (item.lightningDmg) addRow('Lightning Dmg', `+${item.lightningDmg}${affixRange('lightningDmg')}`);
     if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
@@ -1478,6 +1647,7 @@
     if (item.vit) addRow('Vitality', `+${item.vit}${affixRange('vit')}`);
     if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
     if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
+    if (item.magicFind) addRow('Magic Find', `+${item.magicFind}%`);
     if (item.attrs) {
       Object.keys(item.attrs).forEach(k => {
         const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
@@ -1613,7 +1783,7 @@
   // ===== ELITE AFFIXY =====
   const ELITE_AFFIXES = [
     { name:'Ohnivý', icon:'🔥', desc:'+50% fire dmg', stat:'fireDmg', mult:1.5 },
-    { name:'Ledový', icon:'❄️', desc:'+50% ice dmg', stat:'iceDmg', mult:1.5 },
+    { name:'Ledový', icon:'❄️', desc:'+50% ice dmg', stat:'coldDmg', mult:1.5 },
     { name:'Rychlý', icon:'💨', desc:'+30% attack speed', stat:'swingMs', mult:0.7 },
     { name:'Jedovatý', icon:'☠️', desc:'+poison dmg', stat:'poisonDmg', mult:1.5 },
     { name:'Krvavý', icon:'🩸', desc:'+lifesteal', stat:'lifesteal', mult:1.5 },
@@ -8217,7 +8387,7 @@
     playSFX(getEnemyHitSfx());
 
     // ❄️ Ledové poškození ze zbraně — lehký chill efekt
-    if (weapon.iceDmg > 0) {
+    if (weapon.coldDmg > 0) {
       mb._enemySlowPct = 15; // 15% zpomalení
       mb._enemySlowTimer = 180; // 3s
       mb._enemySlowMax = 180;
@@ -8290,7 +8460,7 @@
     if (!mb._skipMeleeImpact) {
       let elementColor = null;
       if (weapon.fireDmg) elementColor = '#e67e22';
-      else if (weapon.iceDmg) elementColor = '#4a7dff';
+      else if (weapon.coldDmg) elementColor = '#4a7dff';
       else if (weapon.poisonDmg) elementColor = '#2ecc71';
       else if (weapon.lightningDmg) elementColor = '#8b5cf6';
       spawnMeleeImpact(mb, isCrit, weapon.weaponType, angleOff, elementColor);
@@ -8681,6 +8851,19 @@
       const scroll = ITEM_MAP['townPortalScroll'];
       if (scroll) {
         return { type:'item', item: scroll };
+      }
+    }
+    // 5% chance for gem (non-boss)
+    if (!bossDrop && Math.random() < 0.05) {
+      const gemTypes = ['ruby', 'sapphire', 'emerald', 'topaz'];
+      const type = gemTypes[rand(0, 3)];
+      // Quality based on floor
+      const qIdx = floor < 3 ? 0 : floor < 6 ? rand(0,1) : rand(0,2);
+      const quality = GEM_QUALITIES[qIdx];
+      const gemId = type + '_' + quality;
+      const gem = ITEM_MAP[gemId];
+      if (gem) {
+        return { type:'item', item: gem };
       }
     }
     // 10% chance for potion (non-boss)
@@ -9762,7 +9945,10 @@
       return [common, magic];
     }
 
-    const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll']
+    const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll',
+      'ruby_normal', 'sapphire_normal', 'emerald_normal', 'topaz_normal',
+      'ruby_flawless', 'sapphire_flawless', 'emerald_flawless', 'topaz_flawless',
+      'ruby_perfect', 'sapphire_perfect', 'emerald_perfect', 'topaz_perfect']
       .map(id => ITEM_MAP[id]).filter(Boolean);
 
     const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
@@ -9961,6 +10147,7 @@
     function closeItemOverlay() {
       const ov = $('invItemOverlay');
       if (ov) ov.classList.add('hidden');
+      window._socketInsertMode = null;
     }
 
     function showItemInfo(itemOrId) {
@@ -9970,12 +10157,34 @@
       const qColor = getQualityColor(item);
       // Icon
       $('invItemOverlayIcon').innerHTML = renderItemIcon(item, 56);
-      // Name — barva podle kvality
-      $('invItemOverlayName').textContent = item.name;
+      // Name — barva podle kvality, s počtem socketů
+      $('invItemOverlayName').textContent = getItemSocketName(item);
       $('invItemOverlayName').style.color = qColor;
       // Border overlay content podle kvality
       $('invItemOverlayContent').style.borderColor = qColor;
       $('invItemOverlayStats').innerHTML = buildItemStatsHtml(item);
+
+      // Socket overlay — kulaté sloty
+      const socketOverlay = $('invItemOverlaySockets');
+      if (socketOverlay) {
+        if (item.sockets && item.sockets > 0) {
+          let shtml = '';
+          for (let i = 0; i < item.sockets; i++) {
+            const gem = item.socketedGems && item.socketedGems[i];
+            if (gem) {
+              const gemData = GEMS[gem.type];
+              const gemIcon = gemData ? gemData.icon : '💎';
+              shtml += `<div class="socket-slot filled" title="${gem.name}">${gemIcon}</div>`;
+            } else {
+              shtml += `<div class="socket-slot empty" data-socket-idx="${i}"></div>`;
+            }
+          }
+          socketOverlay.innerHTML = shtml;
+          socketOverlay.classList.remove('hidden');
+        } else {
+          socketOverlay.classList.add('hidden');
+        }
+      }
 
       // Srovnávací panel — nasazený předmět stejného slotu
       const compareEl = $('invItemOverlayCompare');
@@ -10125,6 +10334,18 @@
         };
         btn.classList.remove('hidden');
         btn2.classList.add('hidden');
+      } else if (item.type === 'gem') {
+        // Gem — tlačítko Insert to Socket
+        btn.textContent = 'Insert to Socket';
+        btn.className = 'inv-item-overlay-btn';
+        btn.onclick = function() {
+          closeItemOverlay();
+          clearSelection();
+          window._socketInsertMode = { gemId: item.id };
+          showMessage('🔧 Klikni na item s volným socketem do kterého chceš gem vložit');
+        };
+        btn.classList.remove('hidden');
+        btn2.classList.add('hidden');
       } else {
         btn.classList.add('hidden');
         btn2.classList.add('hidden');
@@ -10216,7 +10437,7 @@
         const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
         html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
-          <div class="cell-name">${item.name}</div>
+          <div class="cell-name">${getItemSocketName(item)}</div>
         </div>`;
       } else {
         html += '<div class="inv-grid-cell empty"></div>';
@@ -10254,6 +10475,77 @@
       const h = state.hero;
       const inv = h.inventory || [];
       const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, ring2:null, amulet:null, belt:null };
+
+      // Socket insert mode — klik na item vloží gem
+      if (window._socketInsertMode) {
+        const gemId = window._socketInsertMode.gemId;
+        const gemItem = ITEM_MAP[gemId];
+        if (!gemItem) { window._socketInsertMode = null; return; }
+
+        // Zkusit equip slot
+        const slotEl = e.target.closest('.inv-equip-slot');
+        if (slotEl) {
+          const slot = slotMap[slotEl.id];
+          if (slot) {
+            const itemId = h.equip[slot];
+            const targetItem = itemId ? ITEM_MAP[itemId] : null;
+            if (targetItem && targetItem.sockets && targetItem.socketedGems) {
+              const freeIdx = targetItem.socketedGems.findIndex(g => !g);
+              if (freeIdx >= 0) {
+                // Odebrat gem z inventáře
+                const gemInvIdx = inv.indexOf(gemId);
+                if (gemInvIdx >= 0) {
+                  inv.splice(gemInvIdx, 1);
+                }
+                targetItem.socketedGems[freeIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
+                applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
+                saveGame();
+                renderInventory();
+                window._socketInsertMode = null;
+                showMessage('✅ Gem inserted!');
+                return;
+              }
+            }
+          }
+          showMessage('❌ No free socket on this item');
+          window._socketInsertMode = null;
+          return;
+        }
+
+        // Zkusit grid cell
+        const cell = e.target.closest('.inv-grid-cell');
+        if (cell && !cell.classList.contains('empty')) {
+          const idx = parseInt(cell.dataset.idx);
+          const itemId = inv[idx];
+          const targetItem = itemId ? ITEM_MAP[itemId] : null;
+          if (targetItem && targetItem.sockets && targetItem.socketedGems) {
+            const freeIdx = targetItem.socketedGems.findIndex(g => !g);
+            if (freeIdx >= 0) {
+              // Odebrat gem z inventáře
+              const gemInvIdx = inv.indexOf(gemId);
+              if (gemInvIdx >= 0) {
+                inv.splice(gemInvIdx, 1);
+              }
+              targetItem.socketedGems[freeIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
+              applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
+              saveGame();
+              renderInventory();
+              window._socketInsertMode = null;
+              showMessage('✅ Gem inserted!');
+              return;
+            }
+          }
+          showMessage('❌ No free socket on this item');
+          window._socketInsertMode = null;
+          return;
+        }
+
+        // Klik jinam — zrušit insert mode
+        window._socketInsertMode = null;
+        showMessage('❌ Socket insert cancelled');
+        return;
+      }
+
       // Equip slot klik
       const slotEl = e.target.closest('.inv-equip-slot');
       if (slotEl) {
@@ -10676,6 +10968,7 @@
   function init() {
     state = loadSave();
     initUniqueItems();
+    initGemItems();
 
     // Nav-bar schovat hned na začátku — splash ho překrývá, ale po fade by prosvítal
     const navBar = document.querySelector('.nav-bar');
