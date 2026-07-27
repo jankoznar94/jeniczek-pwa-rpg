@@ -10160,7 +10160,6 @@
     function closeItemOverlay() {
       const ov = $('invItemOverlay');
       if (ov) ov.classList.add('hidden');
-      window._socketInsertMode = null;
     }
 
     function showItemInfo(itemOrId) {
@@ -10466,6 +10465,42 @@
       }
     }
     grid.innerHTML = html;
+    // Socket insert mode — přímý handler na gem buňky
+    if (window._socketInsertMode) {
+      const targetId = window._socketInsertMode.targetItemId;
+      const socketIdx = window._socketInsertMode.socketIdx;
+      const targetItem = targetId ? ITEM_MAP[targetId] : null;
+      if (targetItem) {
+        grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
+          const idx = parseInt(cell.dataset.idx);
+          const itemId = inv[idx];
+          const gemItem = itemId ? ITEM_MAP[itemId] : null;
+          if (gemItem && gemItem.type === 'gem') {
+            cell.onclick = function(e) {
+              e.stopPropagation();
+              if (!targetItem.socketedGems) targetItem.socketedGems = [];
+              if (!targetItem.socketedGems[socketIdx]) {
+                const gemInvIdx = inv.indexOf(itemId);
+                if (gemInvIdx >= 0) inv.splice(gemInvIdx, 1);
+                targetItem.socketedGems[socketIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
+                applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
+                saveGame();
+                window._socketInsertMode = null;
+                renderInventory();
+                showMessage('✅ Gem inserted!');
+              }
+            };
+          } else {
+            cell.onclick = function(e) {
+              e.stopPropagation();
+              window._socketInsertMode = null;
+              renderInventory();
+              showMessage('❌ Klikni na gem, ne na jiný item');
+            };
+          }
+        });
+      }
+    }
     // Info panel — D2 overlay
     // Klik na pozadí overlaye → zavřít
     const ovBg = $('invItemOverlayBg');
@@ -10497,47 +10532,6 @@
       const h = state.hero;
       const inv = h.inventory || [];
       const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, offhand:null, ring1:null, ring2:null, amulet:null, belt:null };
-
-      // Socket insert mode — klik na gem v batohu vloží do socketu
-      if (window._socketInsertMode) {
-        const targetId = window._socketInsertMode.targetItemId;
-        const socketIdx = window._socketInsertMode.socketIdx;
-        const targetItem = targetId ? ITEM_MAP[targetId] : null;
-        if (!targetItem) { window._socketInsertMode = null; renderInventory(); return; }
-
-        // Zkusit grid cell
-        const cell = e.target.closest('.inv-grid-cell');
-        if (cell && !cell.classList.contains('empty')) {
-          const idx = parseInt(cell.dataset.idx);
-          const itemId = inv[idx];
-          const gemItem = itemId ? ITEM_MAP[itemId] : null;
-          if (gemItem && gemItem.type === 'gem') {
-            if (!targetItem.socketedGems) targetItem.socketedGems = [];
-            if (!targetItem.socketedGems[socketIdx]) {
-              // Odebrat gem z inventáře
-              const gemInvIdx = inv.indexOf(itemId);
-              if (gemInvIdx >= 0) {
-                inv.splice(gemInvIdx, 1);
-              }
-              targetItem.socketedGems[socketIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
-              applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
-              saveGame();
-              window._socketInsertMode = null;
-              renderInventory();
-              showMessage('✅ Gem inserted!');
-              return;
-            }
-          }
-          showMessage('❌ Klikni na gem, ne na jiný item');
-          return;
-        }
-
-        // Klik jinam — zrušit insert mode
-        window._socketInsertMode = null;
-        renderInventory();
-        showMessage('❌ Socket insert cancelled');
-        return;
-      }
 
       // Equip slot klik
       const slotEl = e.target.closest('.inv-equip-slot');
