@@ -4,6 +4,10 @@
   const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
   const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rand(0, i); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+  const hexToRgb = hex => {
+    const h = hex.replace('#','');
+    return { r: parseInt(h.substring(0,2), 16), g: parseInt(h.substring(2,4), 16), b: parseInt(h.substring(4,6), 16) };
+  };
 
   // ===== CLASSES =====
   const CLASSES = {
@@ -2333,37 +2337,50 @@
     const wpContainer = $('townWaypoints');
     let wpHtml = '';
     let hasAny = false;
+    // Inicializovat expanded state
+    if (state._expandedWaypointAct === undefined) state._expandedWaypointAct = -1;
     ACTS.forEach((act, actId) => {
       const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
       const wps = state.waypoints[actId] || [];
       if (wps.length === 0 && !completed) return;
       hasAny = true;
-      if (completed) {
-        // Dokončený act — ukázat všech 10 waypointů (area 1-10)
-        for (let areaId = 1; areaId < 10; areaId++) {
-          const areaNum = areaId + 1;
-          wpHtml += `<div class="waypoint-btn" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
-            <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
-            <div>
-              <div class="waypoint-btn-label">Area ${areaNum}</div>
-              <div class="waypoint-btn-sub">${act.name} · ✔ Completed</div>
-            </div>
-          </div>`;
+      const isExpanded = state._expandedWaypointAct === actId;
+      const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
+      // Hlavička actu — kliknutím toggle rozbalení
+      wpHtml += `<div class="wp-act-header" style="border-color:${theme.border}" onclick="game.toggleWaypointAct(${actId})">
+        <img src="assets/waypoints/waypoint_act${actId}.png" class="wp-act-header-icon">
+        <span class="wp-act-header-label">${act.name}</span>
+        <span class="wp-act-header-arrow">${isExpanded ? '▼' : '▶'}</span>
+      </div>`;
+      if (isExpanded) {
+        wpHtml += `<div class="wp-act-body">`;
+        if (completed) {
+          for (let areaId = 1; areaId < 10; areaId++) {
+            const areaNum = areaId + 1;
+            wpHtml += `<div class="waypoint-btn" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
+              <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+              <div>
+                <div class="waypoint-btn-label">Area ${areaNum}</div>
+                <div class="waypoint-btn-sub">${act.name} · ✔ Completed</div>
+              </div>
+            </div>`;
+          }
+        } else {
+          wps.sort((a,b) => a-b).forEach(areaId => {
+            const areaNum = areaId + 1;
+            const nextArea = (state.locationProgress[actId] || 0) + 1;
+            const isCurrent = nextArea === areaId;
+            const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
+            wpHtml += `<div class="${cls}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
+              <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+              <div>
+                <div class="waypoint-btn-label">Area ${areaNum}</div>
+                <div class="waypoint-btn-sub">${act.name}${isCurrent ? ' · Next' : ''}</div>
+              </div>
+            </div>`;
+          });
         }
-      } else {
-        wps.sort((a,b) => a-b).forEach(areaId => {
-          const areaNum = areaId + 1;
-          const nextArea = (state.locationProgress[actId] || 0) + 1;
-          const isCurrent = nextArea === areaId;
-          const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
-          wpHtml += `<div class="${cls}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
-            <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
-            <div>
-              <div class="waypoint-btn-label">Area ${areaNum}</div>
-              <div class="waypoint-btn-sub">${act.name}${isCurrent ? ' · Next' : ''}</div>
-            </div>
-          </div>`;
-        });
+        wpHtml += `</div>`;
       }
     });
     if (!hasAny) {
@@ -2395,6 +2412,15 @@
     if (wrap) wrap.classList.toggle('hidden');
   }
 
+  function toggleWaypointAct(actId) {
+    if (state._expandedWaypointAct === actId) {
+      state._expandedWaypointAct = -1;
+    } else {
+      state._expandedWaypointAct = actId;
+    }
+    renderTown();
+  }
+
   function showTransition(type, actId, callback) {
     const screen = $('transitionScreen');
     const img = $('transitionImage');
@@ -2402,9 +2428,16 @@
     if (type === 'waypoint') {
       img.src = `assets/waypoints/waypoint_act${actId}.png`;
       label.textContent = 'Waypoint';
+      // Glow barva podle actu
+      const theme = DUNGEON_THEMES[ACTS[actId]?.theme] || DUNGEON_THEMES[0];
+      const c = hexToRgb(theme.border);
+      img.style.setProperty('--glow-low', `rgba(${c.r},${c.g},${c.b},0.3)`);
+      img.style.setProperty('--glow-high', `rgba(${c.r},${c.g},${c.b},0.6)`);
     } else {
       img.src = 'assets/items/town_portal_scroll.png';
       label.textContent = 'Town Portal';
+      img.style.setProperty('--glow-low', 'rgba(100,180,255,0.3)');
+      img.style.setProperty('--glow-high', 'rgba(100,180,255,0.6)');
     }
     screen.classList.remove('hidden');
     setTimeout(() => {
@@ -9856,7 +9889,10 @@
     saveGame();
     showMessage(`✅ Bought ${item.icon} ${item.name}!`);
     // Označit jako koupené v této iteraci shopu (zmizí z nabídky)
-    if (window._shopBoughtItems) window._shopBoughtItems.add(itemId);
+    // Výjimka: Misc itemy (potiony, scrolly) zůstávají — lze kupovat neomezeně
+    if (window._shopBoughtItems && itemId !== 'healingPotion' && itemId !== 'manaPotion' && itemId !== 'townPortalScroll') {
+      window._shopBoughtItems.add(itemId);
+    }
     renderShop();
   }
 
@@ -10874,7 +10910,7 @@
     selectClass,
     castClassSpell,
     usePotion,
-    townHeal, useTownPortal, renderTown, toggleTownWaypoints, enterCurrentAct, closeModal,
+    townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
     continueFromWaypoint, returnToTownFromWaypoint
   };
