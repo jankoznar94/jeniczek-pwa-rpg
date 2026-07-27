@@ -10162,6 +10162,73 @@
       if (ov) ov.classList.add('hidden');
     }
 
+    // Gem select modal pro socket insert
+    function openGemSelectModal(targetItemId, socketIdx) {
+      const modal = $('gemSelectModal');
+      if (!modal) return;
+      const grid = $('gemSelectGrid');
+      const emptyMsg = $('gemSelectEmpty');
+      if (!grid || !emptyMsg) return;
+      const h = state.hero;
+      const inv = h.inventory || [];
+      const gems = [];
+      for (let i = 0; i < inv.length; i++) {
+        const itemId = inv[i];
+        const item = itemId ? ITEM_MAP[itemId] : null;
+        if (item && item.type === 'gem') {
+          gems.push({ idx: i, item: item });
+        }
+      }
+      if (gems.length === 0) {
+        grid.innerHTML = '';
+        emptyMsg.classList.remove('hidden');
+      } else {
+        emptyMsg.classList.add('hidden');
+        let ghtml = '';
+        gems.forEach(g => {
+          const gemData = GEMS[g.item.gemType];
+          const icon = gemData ? gemData.icon : '💎';
+          const qName = g.item.gemQuality ? g.item.gemQuality.charAt(0).toUpperCase() + g.item.gemQuality.slice(1) : '';
+          const displayName = qName ? `${qName} ${gemData ? gemData.name : 'Gem'}` : g.item.name || 'Gem';
+          ghtml += `<div class="gem-select-item" data-inv-idx="${g.idx}" data-target-id="${targetItemId}" data-socket-idx="${socketIdx}">
+            <div class="gem-select-item-icon">${icon}</div>
+            <div class="gem-select-item-name">${displayName}</div>
+          </div>`;
+        });
+        grid.innerHTML = ghtml;
+        // Klik na gem — vložit do socketu
+        grid.querySelectorAll('.gem-select-item').forEach(el => {
+          el.onclick = function(e) {
+            e.stopPropagation();
+            const invIdx = parseInt(this.dataset.invIdx);
+            const tId = this.dataset.targetId;
+            const sIdx = parseInt(this.dataset.socketIdx);
+            const targetItem = tId ? ITEM_MAP[tId] : null;
+            if (!targetItem) { closeGemSelectModal(); return; }
+            const gemItemId = inv[invIdx];
+            const gemItem = gemItemId ? ITEM_MAP[gemItemId] : null;
+            if (!gemItem) { closeGemSelectModal(); return; }
+            if (!targetItem.socketedGems) targetItem.socketedGems = [];
+            if (targetItem.socketedGems[sIdx]) { closeGemSelectModal(); showMessage('❌ Socket already filled'); return; }
+            // Odebrat gem z inventáře
+            inv.splice(invIdx, 1);
+            targetItem.socketedGems[sIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
+            applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
+            saveGame();
+            closeGemSelectModal();
+            renderInventory();
+            showMessage('✅ Gem inserted!');
+          };
+        });
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeGemSelectModal() {
+      const modal = $('gemSelectModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
     function showItemInfo(itemOrId) {
       const item = typeof itemOrId === 'string' ? ITEM_MAP[itemOrId] : itemOrId;
       const ov = $('invItemOverlay');
@@ -10193,16 +10260,14 @@
           }
           socketOverlay.innerHTML = shtml;
           socketOverlay.classList.remove('hidden');
-          // Klik na prázdný socket slot → spustit insert mode
+          // Klik na prázdný socket slot → otevřít gem select modal
           socketOverlay.querySelectorAll('.socket-slot.empty').forEach(el => {
             el.onclick = function(e) {
               e.stopPropagation();
               const idx = parseInt(this.dataset.socketIdx);
               closeItemOverlay();
               clearSelection();
-              window._socketInsertMode = { targetItemId: item.id, socketIdx: idx };
-              renderInventory();
-              showMessage('🔧 Klikni na gem v batohu pro vložení do socketu');
+              openGemSelectModal(item.id, idx);
             };
           });
         } else {
@@ -10447,16 +10512,7 @@
         if (item.type === 'weapon' && cls && cls.allowedWeapons && !cls.allowedWeapons.includes(item.weaponType)) canEquip = false;
         if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
         const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
-        // Socket insert mode — zvýraznit jen gemy
-        let extraClass = '';
-        if (window._socketInsertMode) {
-          if (item.type === 'gem') {
-            extraClass = ' socket-glow';
-          } else {
-            extraClass = ' dimmed';
-          }
-        }
-        html += `<div class="inv-grid-cell${extraClass}" data-idx="${i}" draggable="true" style="${cellStyle}">
+        html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}</div>
           <div class="cell-name">${getItemSocketName(item)}</div>
         </div>`;
@@ -10465,42 +10521,6 @@
       }
     }
     grid.innerHTML = html;
-    // Socket insert mode — přímý handler na gem buňky
-    if (window._socketInsertMode) {
-      const targetId = window._socketInsertMode.targetItemId;
-      const socketIdx = window._socketInsertMode.socketIdx;
-      const targetItem = targetId ? ITEM_MAP[targetId] : null;
-      if (targetItem) {
-        grid.querySelectorAll('.inv-grid-cell:not(.empty)').forEach(cell => {
-          const idx = parseInt(cell.dataset.idx);
-          const itemId = inv[idx];
-          const gemItem = itemId ? ITEM_MAP[itemId] : null;
-          if (gemItem && gemItem.type === 'gem') {
-            cell.onclick = function(e) {
-              e.stopPropagation();
-              if (!targetItem.socketedGems) targetItem.socketedGems = [];
-              if (!targetItem.socketedGems[socketIdx]) {
-                const gemInvIdx = inv.indexOf(itemId);
-                if (gemInvIdx >= 0) inv.splice(gemInvIdx, 1);
-                targetItem.socketedGems[socketIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
-                applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
-                saveGame();
-                window._socketInsertMode = null;
-                renderInventory();
-                showMessage('✅ Gem inserted!');
-              }
-            };
-          } else {
-            cell.onclick = function(e) {
-              e.stopPropagation();
-              window._socketInsertMode = null;
-              renderInventory();
-              showMessage('❌ Klikni na gem, ne na jiný item');
-            };
-          }
-        });
-      }
-    }
     // Info panel — D2 overlay
     // Klik na pozadí overlaye → zavřít
     const ovBg = $('invItemOverlayBg');
@@ -11190,6 +11210,7 @@
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab, switchShopCategory,
     showItemInfo, closeItemOverlay,
+    openGemSelectModal, closeGemSelectModal,
     onMapRapidTap,
     investTalent, resetTalents, selectTalent, selectTree, setDifficulty,
     showSurrenderModal, cancelSurrender, confirmSurrender,
