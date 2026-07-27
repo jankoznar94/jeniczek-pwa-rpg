@@ -1714,22 +1714,20 @@
       const gem = GEMS[item.gemType];
       const qData = gem ? gem.qualities[item.gemQuality] : null;
       if (qData) {
-        const wLines = [];
+        rows.push('<div class="stat-row" style="color:#888;font-size:11px;font-weight:bold">Weapon</div>');
         Object.entries(qData.weapon || {}).forEach(([k,v]) => {
           const label = k === 'fireDmg' ? 'Fire Dmg' : k === 'coldDmg' ? 'Cold Dmg' : k === 'lightningDmg' ? 'Lightning Dmg' : k === 'poisonDmg' ? 'Poison Dmg' : k === 'poisonDur' ? 'Duration' : k;
           if (Array.isArray(v)) {
-            wLines.push(`${label}: ${v[0]}-${v[1]}`);
+            rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${v[0]}-${v[1]}</span></div>`);
           } else {
-            wLines.push(`${label}: ${v}`);
+            rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${v}</span></div>`);
           }
         });
-        if (wLines.length) addRow('Weapon', wLines.join(', '));
-        const aLines = [];
+        rows.push('<div class="stat-row" style="color:#888;font-size:11px;font-weight:bold">Armor/Helm/Shield</div>');
         Object.entries(qData.armor || {}).forEach(([k,v]) => {
           const label = k === 'bonusHp' ? '+HP' : k === 'bonusMana' ? '+Mana' : k === 'attackRating' ? 'Hit Rating' : k === 'magicFind' ? 'MF' : k;
-          aLines.push(`${label}: ${v}`);
+          rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${v}</span></div>`);
         });
-        if (aLines.length) addRow('Armor/Helm/Shield', aLines.join(', '));
       }
     }
     // Affix staty
