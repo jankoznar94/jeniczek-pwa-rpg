@@ -10068,64 +10068,6 @@
 
   function renderChestInventory() {
     const h = state.hero;
-    // Equipment sloty
-    const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    const armor = ITEM_MAP[h.equip.armor];
-    const helmet = ITEM_MAP[h.equip.helmet];
-    const shield = ITEM_MAP[h.equip.shield];
-    const ring1 = ITEM_MAP[h.equip.ring1];
-    const ring2 = ITEM_MAP[h.equip.ring2];
-    const amulet = ITEM_MAP[h.equip.amulet];
-    const belt = ITEM_MAP[h.equip.belt];
-    $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
-    $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
-    setSlotBorder('invSlotWeapon', weapon);
-    $('invSlotArmorIcon').innerHTML = !h.equip.armor ? renderItemIcon({iconImg:'assets/items/armor_leather.png',tier:1}, 0) : renderItemIcon(armor, 0);
-    $('invSlotArmor').classList.toggle('empty', !h.equip.armor);
-    setSlotBorder('invSlotArmor', armor);
-    const hEl = $('invSlotHelmetIcon'); if (hEl) hEl.innerHTML = helmet ? renderItemIcon(helmet, 0) : renderItemIcon({iconImg:'assets/items/helmet_linen_hood.png',tier:1}, 0);
-    const hS = $('invSlotHelmet'); if (hS) { hS.classList.toggle('empty', !helmet); setSlotBorder('invSlotHelmet', helmet); }
-    const sEl = $('invSlotShieldIcon'); if (sEl) sEl.innerHTML = shield ? renderItemIcon(shield, 0) : renderItemIcon({iconImg:'assets/items/shield_wooden.png',tier:1}, 0);
-    const sS = $('invSlotShield'); if (sS) { sS.classList.toggle('empty', !shield); setSlotBorder('invSlotShield', shield); }
-    const r1El = $('invSlotRing1Icon'); if (r1El) r1El.innerHTML = ring1 ? renderItemIcon(ring1, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
-    const r1S = $('invSlotRing1'); if (r1S) { r1S.classList.toggle('empty', !ring1); setSlotBorder('invSlotRing1', ring1); }
-    const r2El = $('invSlotRing2Icon'); if (r2El) r2El.innerHTML = ring2 ? renderItemIcon(ring2, 0) : renderItemIcon({iconImg:'assets/items/ring_copper.png',tier:1}, 0);
-    const r2S = $('invSlotRing2'); if (r2S) { r2S.classList.toggle('empty', !ring2); setSlotBorder('invSlotRing2', ring2); }
-    const amEl = $('invSlotAmuletIcon'); if (amEl) amEl.innerHTML = amulet ? renderItemIcon(amulet, 0) : renderItemIcon({iconImg:'assets/items/amulet_bone.png',tier:1}, 0);
-    const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
-    const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 0);
-    const bS = $('invSlotBelt'); if (bS) { bS.classList.toggle('empty', !belt); setSlotBorder('invSlotBelt', belt); }
-    // Town portal slot
-    const tpSlot = $('invSlotTownPortal');
-    const tpIcon = $('invSlotTPIcon');
-    const tpCount = state.townPortalCount || 0;
-    if (tpSlot) {
-      tpSlot.classList.toggle('empty', tpCount <= 0);
-      if (tpIcon) {
-        if (tpCount > 0) {
-          tpIcon.innerHTML = `<div style="position:relative;width:100%;height:100%"><img src="assets/items/town_portal_scroll.png" style="width:100%;height:100%;object-fit:cover"><span style="position:absolute;bottom:-2px;right:-2px;background:#111;border:1px solid #f1c40f;border-radius:4px;color:#f1c40f;font-size:10px;font-weight:bold;padding:0 3px;line-height:14px">${tpCount}</span></div>`;
-        } else {
-          tpIcon.innerHTML = '<img src="assets/items/town_portal_scroll.png" style="width:100%;height:100%;object-fit:cover;opacity:0.25;filter:grayscale(1)">';
-        }
-      }
-    }
-    // Potion sloty
-    const potionSlots = $('invPotionSlots');
-    if (potionSlots) {
-      const beltRows = belt ? (belt.beltRows || 0) : 0;
-      const totalSlots = beltRows * 4;
-      const bpSlots = h.equip.beltPotionSlots || [];
-      while (bpSlots.length < totalSlots) bpSlots.push(null);
-      if (bpSlots.length > totalSlots) bpSlots.length = totalSlots;
-      h.equip.beltPotionSlots = bpSlots;
-      let phtml = '';
-      for (let i = 0; i < totalSlots; i++) {
-        const potId = bpSlots[i];
-        const potItem = potId ? ITEM_MAP[potId] : null;
-        phtml += `<div class="inv-potion-slot ${potItem ? '' : 'empty'}" data-potion-idx="${i}">\n          <div class="inv-slot-icon">${potItem ? renderItemIcon(potItem, 0) : '🧪'}</div>\n        </div>`;
-      }
-      potionSlots.innerHTML = phtml;
-    }
     // Grid batohu
     const grid = $('invGrid');
     const inv = h.inventory || [];
