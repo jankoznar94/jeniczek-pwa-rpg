@@ -10344,7 +10344,7 @@
         };
         btn.classList.remove('hidden');
         btn2.classList.add('hidden');
-      } else if (item.type === 'gem') {
+      } else if (item.type === 'gem' && window._invSelectedIdx !== null) {
         // Gem — tlačítko Insert to Socket
         btn.textContent = 'Insert to Socket';
         btn.className = 'inv-item-overlay-btn';
