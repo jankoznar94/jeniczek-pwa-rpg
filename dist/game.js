@@ -2161,7 +2161,8 @@
       skillShoutTimer:0, // Skill shout zbývající čas (ticky)
       skillShoutBonus:0, // Dočasné +lv ke všem skillům
       _gcdTimer:0, // Global cooldown (ticky)
-      _expandedAct: -1 // Který act je rozbalený na mapě (-1 = žádný)
+      _expandedAct: -1, // Který act je rozbalený na mapě (-1 = žádný)
+      chest: new Array(25).fill(null) // Truhla — 25 slotů, itemId nebo null
     };
     return s;
   }
@@ -2182,6 +2183,8 @@
         ACTS.forEach((loc, i) => { diffArr[i] = flat[i] || false; });
       });
     }
+    // Migrace: truhla
+    if (!s.chest) s.chest = new Array(25).fill(null);
     return s; } } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
@@ -2224,9 +2227,9 @@
   }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen' };
+  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen', chest:'chestScreen' };
   // Screens that are full-page (not modal)
-  const FULL_SCREENS = ['classSelect','map','mapBattle','result','town','shop','hero','bestiary','spellbook','items'];
+  const FULL_SCREENS = ['classSelect','map','mapBattle','result','town','shop','hero','bestiary','spellbook','items','chest'];
   // Track which screen is currently shown (for modal return)
   let _currentScreen = null;
 
@@ -2297,6 +2300,7 @@
     else if (name === 'hero') { renderHero(); updateTalentBadge(); }
     else if (name === 'shop') renderShop();
     else if (name === 'inventory') renderInventory();
+    else if (name === 'chest') renderChest();
     else if (name === 'spellbook') renderSpellbook();
   }
 
@@ -2373,6 +2377,11 @@
     });
     content.innerHTML = '';
     overlay.classList.add('hidden');
+    // Pokud je chest mód, vrátit se na chest screen
+    if (_chestMode) {
+      showScreen('chest');
+      return;
+    }
     // Pokud je shop otevřený, překreslit ho (inventář se mohl změnit přes modal)
     if (_currentScreen === 'shop') renderShop();
   }
@@ -10017,6 +10026,78 @@
     renderHero();
   }
 
+  // ===== CHEST =====
+  let _chestMode = false; // true = chest screen je otevřený
+  let _chestTargetIdx = -1; // který slot v truhle se právě plní
+
+  function renderChest() {
+    const grid = $('chestGrid');
+    if (!grid) return;
+    const chest = state.chest || [];
+    let html = '';
+    for (let i = 0; i < 25; i++) {
+      const entry = chest[i];
+      if (entry) {
+        const itemId = typeof entry === 'object' ? entry.id : entry;
+        const count = typeof entry === 'object' ? (entry.count || 1) : 1;
+        const item = ITEM_MAP[itemId];
+        if (!item) { html += '<div class="chest-cell empty"></div>'; continue; }
+        const borderColor = getQualityColor(item);
+        const countLabel = count > 1 ? `<span class="cell-count">${count}</span>` : '';
+        html += `<div class="chest-cell" data-chest-idx="${i}" style="border-color:${borderColor}">
+          <div class="cell-icon">${renderItemIcon(item,0)}${countLabel}</div>
+        </div>`;
+      } else {
+        html += `<div class="chest-cell empty" data-chest-idx="${i}" style="border-color:#3a3a3a">
+          <div class="cell-icon" style="color:#333;font-size:20px">+</div>
+        </div>`;
+      }
+    }
+    grid.innerHTML = html;
+
+    // Delegace kliků na chest grid
+    grid.onclick = (e) => {
+      const cell = e.target.closest('.chest-cell');
+      if (!cell) return;
+      const idx = parseInt(cell.dataset.chestIdx);
+      const entry = chest[idx];
+      if (entry) {
+        // Item v truhle — ukázat overlay s možností vzít
+        const itemId = typeof entry === 'object' ? entry.id : entry;
+        const item = ITEM_MAP[itemId];
+        if (item) {
+          _chestMode = true;
+          _chestTargetIdx = idx;
+          showItemInfo(item);
+        }
+      } else {
+        // Prázdná buňka — otevřít inventář pro výběr itemu k uložení
+        _chestMode = true;
+        _chestTargetIdx = idx;
+        showScreen('inventory');
+        renderInventory();
+      }
+    };
+  }
+
+  function chestTakeItem() {
+    const chest = state.chest;
+    const entry = chest[_chestTargetIdx];
+    if (!entry) return;
+    const itemId = typeof entry === 'object' ? entry.id : entry;
+    const count = typeof entry === 'object' ? (entry.count || 1) : 1;
+    // Přidat do inventáře
+    addToInventory(state.hero.inventory, itemId, count);
+    // Odebrat z truhly
+    chest[_chestTargetIdx] = null;
+    saveGame();
+    _chestMode = false;
+    _chestTargetIdx = -1;
+    closeItemOverlay();
+    renderChest();
+    renderInventory();
+  }
+
   // ===== SHOP =====
   let _shopTab = 'buy';
   let _shopCategory = 'Misc';
@@ -10464,7 +10545,44 @@
       // Equip/Unequip tlačítko
       const btn = $('invItemOverlayBtn');
       const btn2 = $('invItemOverlayBtn2');
-      if (window._invSelectedIdx !== null && item.type !== 'gem') {
+      if (_chestMode) {
+        // Chest mód — ukládání/vybírání
+        if (window._invSelectedIdx !== null) {
+          // Item z inventáře → Store to Chest
+          btn.textContent = 'Store to Chest';
+          btn.className = 'inv-item-overlay-btn';
+          btn.onclick = function() {
+            const invIdx = window._invSelectedIdx;
+            const entry = state.hero.inventory[invIdx];
+            if (!entry) { closeItemOverlay(); return; }
+            const itemId = typeof entry === 'object' ? entry.id : entry;
+            const count = typeof entry === 'object' ? (entry.count || 1) : 1;
+            // Odebrat z inventáře
+            removeFromInventory(state.hero.inventory, itemId, count);
+            // Uložit do truhly
+            state.chest[_chestTargetIdx] = { id: itemId, count: count };
+            saveGame();
+            _chestMode = false;
+            _chestTargetIdx = -1;
+            closeItemOverlay();
+            clearSelection();
+            renderInventory();
+            renderChest();
+            showScreen('chest');
+          };
+          btn.classList.remove('hidden');
+          btn2.classList.add('hidden');
+        } else {
+          // Item z truhly → Take from Chest
+          btn.textContent = 'Take from Chest';
+          btn.className = 'inv-item-overlay-btn';
+          btn.onclick = function() {
+            chestTakeItem();
+          };
+          btn.classList.remove('hidden');
+          btn2.classList.add('hidden');
+        }
+      } else if (window._invSelectedIdx !== null && item.type !== 'gem') {
         // Item z batohu
         const isWeapon = item.type === 'weapon';
         const isOneHand = isWeapon && !item.twoHand;
@@ -11339,7 +11457,8 @@
     usePotion,
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
-    continueFromWaypoint, returnToTownFromWaypoint
+    continueFromWaypoint, returnToTownFromWaypoint,
+    renderChest, chestTakeItem
   };
   init();
 })();
