@@ -10268,7 +10268,6 @@
               e.stopPropagation();
               const idx = parseInt(this.dataset.socketIdx);
               closeItemOverlay();
-              clearSelection();
               openGemSelectModal(item.id, idx);
             };
           });
