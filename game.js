@@ -1722,8 +1722,10 @@
       ] },
   ];
 
-  // Skoková obtížnost — násobitel HP a damage podle dungeonu
-  const DIFFICULTY_MULT = [1.0, 1.5, 2.5, 4.0, 6.0];
+  // Násobitel obtížnosti podle zóny (progress 0-9) — každá zóna přidá +25% k HP a damage
+  function getZoneMult(progress) {
+    return 1.0 + (progress || 0) * 0.25;
+  }
 
   // ===== LEVEL / HIT / DODGE / XP HELPERS =====
   function getMonsterLevel(mb) {
@@ -2653,7 +2655,7 @@
       monsterSpells = b.spells || [];
     } else {
       const m = floorMonsters[0];
-      monsterHp = Math.round((m.hp || 80) * diffMultOverall * 2.0);
+      monsterHp = Math.round((m.hp || 80) * diffMultOverall * 2.0 * getZoneMult(progress));
       monsterDmgMin = m.dmgMin || 5;
       monsterDmgMax = m.dmgMax || 10;
       monsterAttackSpeed = m.attackSpeed || 2000;
@@ -3438,7 +3440,7 @@
 
       // Výpočet base damage pro kouzla — použít fixní staty monstra
       const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8);
+      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8 * getZoneMult(mb.progress));
 
       if (spellId === 'poison_bolt') {
         amount = Math.round(baseDmg * 0.3);
@@ -3586,7 +3588,7 @@
     // Výpočet damage — fixní staty monstra
     mb._enemyFirstSwingDone = true;
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall);
+    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * getZoneMult(mb.progress));
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
     let isCrit = false;
