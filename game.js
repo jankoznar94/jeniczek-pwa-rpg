@@ -1722,9 +1722,18 @@
       ] },
   ];
 
-  // Násobitel obtížnosti podle zóny (progress 0-9) — každá zóna přidá +25% k HP a damage
-  function getZoneMult(progress) {
-    return 1.0 + (progress || 0) * 0.25;
+  // Násobitel obtížnosti podle zóny a obtížnosti
+  // Normal: Act 1 zóna 0 = ×1.0, Act 5 zóna 9 = ×3.25
+  // Nightmare: Act 1 zóna 0 = ×3.25 (navazuje na Act 5 Normal), Act 5 zóna 9 = ×6.40
+  // Hell: Act 1 zóna 0 = ×6.40 (navazuje na Act 5 Nightmare), Act 5 zóna 9 = ×10.90
+  function getZoneMult(progress, difficulty) {
+    const configs = [
+      { base: 1.0, step: 0.25 },   // Normal
+      { base: 3.25, step: 0.35 },  // Nightmare
+      { base: 6.40, step: 0.50 },  // Hell
+    ];
+    const cfg = configs[difficulty] || configs[0];
+    return cfg.base + (progress || 0) * cfg.step;
   }
 
   // ===== LEVEL / HIT / DODGE / XP HELPERS =====
@@ -2655,7 +2664,7 @@
       monsterSpells = b.spells || [];
     } else {
       const m = floorMonsters[0];
-      monsterHp = Math.round((m.hp || 80) * diffMultOverall * 2.0 * getZoneMult(progress));
+      monsterHp = Math.round((m.hp || 80) * diffMultOverall * 2.0 * getZoneMult(progress, state.difficulty));
       monsterDmgMin = m.dmgMin || 5;
       monsterDmgMax = m.dmgMax || 10;
       monsterAttackSpeed = m.attackSpeed || 2000;
@@ -3440,7 +3449,7 @@
 
       // Výpočet base damage pro kouzla — použít fixní staty monstra
       const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8 * (mb.isBoss ? 1.0 : getZoneMult(mb.progress)));
+      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8 * (mb.isBoss ? 1.0 : getZoneMult(mb.progress, state.difficulty)));
 
       if (spellId === 'poison_bolt') {
         amount = Math.round(baseDmg * 0.3);
@@ -3588,7 +3597,7 @@
     // Výpočet damage — fixní staty monstra
     mb._enemyFirstSwingDone = true;
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * (mb.isBoss ? 1.0 : getZoneMult(mb.progress)));
+    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * (mb.isBoss ? 1.0 : getZoneMult(mb.progress, state.difficulty)));
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
     let isCrit = false;
