@@ -3440,7 +3440,7 @@
 
       // Výpočet base damage pro kouzla — použít fixní staty monstra
       const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8 * getZoneMult(mb.progress));
+      let baseDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8 * (mb.isBoss ? 1.0 : getZoneMult(mb.progress)));
 
       if (spellId === 'poison_bolt') {
         amount = Math.round(baseDmg * 0.3);
@@ -3588,7 +3588,7 @@
     // Výpočet damage — fixní staty monstra
     mb._enemyFirstSwingDone = true;
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
-    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * getZoneMult(mb.progress));
+    let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * (mb.isBoss ? 1.0 : getZoneMult(mb.progress)));
     const mType = mb.monsterType;
     const bossTypes = mb.bossTypes || [];
     let isCrit = false;
