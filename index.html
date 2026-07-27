@@ -51,6 +51,7 @@
     .chest-cell .cell-icon img { width:80%;height:80%;object-fit:contain; }
     .chest-cell .cell-name { display:none; }
     .chest-cell .cell-count { position:absolute;bottom:1px;right:1px;background:#111;border:1px solid #f1c40f;border-radius:4px;color:#f1c40f;font-size:10px;font-weight:bold;padding:0 3px;line-height:14px;z-index:2; }
+    .chest-section-label { font-size:14px;font-weight:bold;color:#aaa;margin:8px 0 4px; }
   </style>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -162,11 +163,49 @@
     <img src="assets/menu-icons/chest.png" class="page-header-icon">
     <div>
       <div class="page-header-title">Chest</div>
-      <div class="page-header-subtitle">Store your precious items here.</div>
+      <div class="page-header-subtitle">Click items to move between chest and inventory.</div>
     </div>
   </div>
+  <div class="chest-section-label">Chest (25 slots)</div>
   <div class="chest-grid" id="chestGrid">
     <!-- Dynamically generated 5x5 grid -->
+  </div>
+  <div class="chest-section-label" style="margin-top:12px">Inventory</div>
+  <!-- Equipment sloty -->
+  <div class="inv-equip-panel">
+    <div class="inv-equip-slot inv-slot-square" id="invSlotHelmet">
+      <div class="inv-slot-icon" id="invSlotHelmetIcon">⛑️</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-small" id="invSlotAmulet">
+      <div class="inv-slot-icon" id="invSlotAmuletIcon">📿</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-tall" id="invSlotWeapon">
+      <div class="inv-slot-icon" id="invSlotWeaponIcon">⚔️</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-tall" id="invSlotArmor">
+      <div class="inv-slot-icon" id="invSlotArmorIcon">🛡️</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-tall" id="invSlotShield">
+      <div class="inv-slot-icon" id="invSlotShieldIcon">🛡️</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-tp" id="invSlotTownPortal">
+      <div class="inv-slot-icon" id="invSlotTPIcon"><img src="assets/items/town_portal_scroll.png" style="width:100%;height:100%;object-fit:cover"></div>
+    </div>
+    <div class="inv-equip-slot inv-slot-small" id="invSlotRing1">
+      <div class="inv-slot-icon" id="invSlotRing1Icon">💍</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-belt" id="invSlotBelt">
+      <div class="inv-slot-icon" id="invSlotBeltIcon">🎗️</div>
+    </div>
+    <div class="inv-equip-slot inv-slot-small" id="invSlotRing2">
+      <div class="inv-slot-icon" id="invSlotRing2Icon">💍</div>
+    </div>
+  </div>
+  <!-- Potion sloty -->
+  <div class="inv-potion-slots" id="invPotionSlots"></div>
+  <!-- Grid batohu -->
+  <div class="inv-grid-wrap" id="invGridWrap">
+    <div class="inv-grid" id="invGrid"></div>
   </div>
   <div style="margin-top:12px;text-align:center">
     <button class="btn btn-secondary" onclick="game.showScreen('town')">← Back to Town</button>
