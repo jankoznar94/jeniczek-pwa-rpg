@@ -8896,15 +8896,20 @@
       quality = 'magic';
     }
 
-    // 2. Najít base item z ITEMS podle typu a tieru
+    // 2. Najít base item z ITEMS podle typu a tieru — weighted výběr (vyšší tier = vyšší váha)
     const candidates = ITEMS.filter(i => {
       if (type === 'weapon') return i.type === 'weapon' && i.weaponType === subtype && i.tier <= tier;
       return i.type === type && i.tier <= tier;
     });
-    // Preferovat nejvyšší možný tier
-    const maxTier = candidates.length > 0 ? Math.max(...candidates.map(c => c.tier)) : 1;
-    const pool = candidates.filter(c => c.tier === maxTier);
-    const baseItem = pool.length > 0 ? pool[rand(0, pool.length - 1)] : null;
+    if (candidates.length === 0) return null;
+    // Weighted výběr: váha = tier, takže vyšší tier je častější, ale nižší taky padá
+    const totalTierWeight = candidates.reduce((s, c) => s + c.tier, 0);
+    let rw = Math.random() * totalTierWeight;
+    let baseItem = candidates[0];
+    for (const c of candidates) {
+      rw -= c.tier;
+      if (rw <= 0) { baseItem = c; break; }
+    }
     if (!baseItem) return null; // žádný vhodný item pro tento typ/tier
 
     // 3. Unique — najít unikát pro tento base item
@@ -8969,9 +8974,15 @@
     // 5% chance for gem (non-boss)
     if (!bossDrop && Math.random() < 0.05) {
       const gemTypes = ['ruby', 'sapphire', 'emerald', 'topaz'];
-      const type = gemTypes[rand(0, 3)];
-      // Quality based on floor
-      const qIdx = floor < 2 ? 0 : floor < 4 ? rand(0,1) : floor < 6 ? rand(0,2) : floor < 8 ? rand(0,3) : rand(0,4);
+      // Anti-repeat: pokud už v tomhle kole padl stejný typ, zkusit jiný
+      const usedGems = state._floorLootDrops
+        ? state._floorLootDrops.filter(d => d.type === 'item' && d.item && d.item.type === 'gem').map(d => d.item.id.split('_')[0])
+        : [];
+      let available = gemTypes.filter(t => !usedGems.includes(t));
+      if (available.length === 0) available = gemTypes;
+      const type = available[rand(0, available.length - 1)];
+      // Quality based on floor — širší paleta už od nízkých floorů
+      const qIdx = floor < 1 ? 0 : floor < 3 ? rand(0,1) : floor < 5 ? rand(0,2) : floor < 7 ? rand(0,3) : rand(0,4);
       const quality = GEM_QUALITIES[qIdx];
       const gemId = type + (quality === 'normal' ? '' : '_' + quality);
       const gem = ITEM_MAP[gemId];
@@ -10131,15 +10142,27 @@
     const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
     const monsterLevel = 5 + playerLevel * 2;
 
-    function _shopFindBase(type, weaponType) {
+    function _shopFindBases(type, weaponType, count) {
       const candidates = ITEMS.filter(i => {
         if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
         return i.type === type && i.tier <= maxTier;
       });
-      if (candidates.length === 0) return null;
-      const maxT = Math.max(...candidates.map(c => c.tier));
-      const pool = candidates.filter(c => c.tier === maxT);
-      return pool[rand(0, pool.length - 1)];
+      if (candidates.length === 0) return [];
+      // Weighted výběr: vyšší tier = vyšší váha, ale nižší taky šance
+      const result = [];
+      const pool = [...candidates];
+      for (let n = 0; n < count && pool.length > 0; n++) {
+        const totalW = pool.reduce((s, c) => s + c.tier, 0);
+        let r = Math.random() * totalW;
+        let idx = 0;
+        for (let i = 0; i < pool.length; i++) {
+          r -= pool[i].tier;
+          if (r <= 0) { idx = i; break; }
+        }
+        result.push(pool[idx]);
+        pool.splice(idx, 1); // neopakovat stejný base
+      }
+      return result;
     }
 
     function _shopGenPair(baseItem) {
@@ -10156,6 +10179,16 @@
       return [common, magic];
     }
 
+    function _shopGenSingle(baseItem, quality) {
+      if (!baseItem) return null;
+      const item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
+      item.cost = 10 + (baseItem.tier || 1) * 20 + (item.affixes || []).length * 15;
+      ITEM_MAP[item.id] = item;
+      state.lootItems = state.lootItems || {};
+      state.lootItems[item.id] = item;
+      return item;
+    }
+
     const miscItems = ['healingPotion', 'manaPotion', 'townPortalScroll',
       'ruby_chipped', 'ruby_flawed', 'ruby', 'ruby_flawless', 'ruby_perfect',
       'sapphire_chipped', 'sapphire_flawed', 'sapphire', 'sapphire_flawless', 'sapphire_perfect',
@@ -10163,24 +10196,40 @@
       'topaz_chipped', 'topaz_flawed', 'topaz', 'topaz_flawless', 'topaz_perfect']
       .map(id => ITEM_MAP[id]).filter(Boolean);
 
+    // Armor: 3-4 itemy z poolu armor/helmet/shield/belt
     const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
     const armorItems = [];
     armorTypes.forEach(type => {
-      const base = _shopFindBase(type);
-      if (base) armorItems.push(..._shopGenPair(base));
+      const bases = _shopFindBases(type, null, 2); // 2 itemy na typ
+      bases.forEach(b => armorItems.push(..._shopGenPair(b)));
     });
 
+    // Weapons: 3-4 itemy z poolu všech weapon typů
     const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
     const weaponItems = [];
     weaponTypes.forEach(wt => {
-      const base = _shopFindBase('weapon', wt);
-      if (base) weaponItems.push(..._shopGenPair(base));
+      const bases = _shopFindBases('weapon', wt, 2); // 2 itemy na weapon typ
+      bases.forEach(b => weaponItems.push(..._shopGenPair(b)));
+    });
+
+    // Jewelry: rings + amulety, jen magic (jako D2 — common jewelry neexistuje)
+    const jewelryItems = [];
+    const ringBases = _shopFindBases('ring', null, 2);
+    ringBases.forEach(b => {
+      const m = _shopGenSingle(b, 'magic');
+      if (m) jewelryItems.push(m);
+    });
+    const amuletBases = _shopFindBases('amulet', null, 2);
+    amuletBases.forEach(b => {
+      const m = _shopGenSingle(b, 'magic');
+      if (m) jewelryItems.push(m);
     });
 
     return [
       { category: 'Misc', items: miscItems },
       { category: 'Armor', items: armorItems },
       { category: 'Weapons', items: weaponItems },
+      { category: 'Jewelry', items: jewelryItems },
     ];
   }
 
