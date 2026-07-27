@@ -1230,6 +1230,22 @@ body.no-scroll { overflow: hidden; }
   min-height:100vh;padding:12px 20px;cursor:pointer;
   background:#000;
 }
+.result-top {
+  flex:2;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:0;
+}
+.result-bottom {
+  flex:1;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;
+  width:100%;
+  min-height:0;
+  gap:8px;
+}
+.result-bottom:empty { display:none; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
 .result-icon-img { width:auto;height:auto;max-width:60vw;max-height:20vh;object-fit:contain;display:block; }
 .result-icon-img.large { max-width:90vw;max-height:50vh; }
