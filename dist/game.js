@@ -961,6 +961,72 @@
       types:['weapon'], stats:{ swingMs:[-300,-150] }, tint:'#1abc9c' },
     { id:'ofCasting', name:'of Casting', type:'suffix', group:120, minIlvl:10, weight:5,
       types:['weapon','ring','amulet'], stats:{ castSpeed:[10,25] }, tint:'#9b59b6' },
+    // === ELEMENTÁRNÍ REZISTENCE (D2 styl) ===
+    // Single resists — prefixy
+    { id:'crimson', name:'Crimson', type:'prefix', group:30, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
+    { id:'azure', name:'Azure', type:'prefix', group:31, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
+    { id:'tangerine', name:'Tangerine', type:'prefix', group:32, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
+    { id:'viridian', name:'Viridian', type:'prefix', group:33, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
+    // Single resists — vyšší tier
+    { id:'scarlet', name:'Scarlet', type:'prefix', group:30, minIlvl:12, weight:5,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ fireRes:[10,25] }, tint:'#e94560' },
+    { id:'lapis', name:'Lapis', type:'prefix', group:31, minIlvl:12, weight:5,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ coldRes:[10,25] }, tint:'#4a7dff' },
+    { id:'orange', name:'Orange', type:'prefix', group:32, minIlvl:12, weight:5,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ lightningRes:[10,25] }, tint:'#f39c12' },
+    { id:'jade', name:'Jade', type:'prefix', group:33, minIlvl:12, weight:5,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ poisonRes:[10,25] }, tint:'#2ecc71' },
+    // All resists — prefix
+    { id:'scintillating', name:'Scintillating', type:'prefix', group:34, minIlvl:15, weight:4,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
+    { id:'rainbow', name:'Rainbow', type:'prefix', group:34, minIlvl:25, weight:3,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
+    // Single resists — suffixy
+    { id:'ofWardingFire', name:'of Warding', type:'suffix', group:130, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
+    { id:'ofWardingCold', name:'of Frost Warding', type:'suffix', group:131, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
+    { id:'ofWardingLightning', name:'of Lightning Warding', type:'suffix', group:132, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
+    { id:'ofWardingPoison', name:'of Poison Warding', type:'suffix', group:133, minIlvl:1, weight:7,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
+    // All resists — suffix
+    { id:'ofProtectionAll', name:'of Protection', type:'suffix', group:134, minIlvl:15, weight:4,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
+    { id:'ofImmunity', name:'of Immunity', type:'suffix', group:134, minIlvl:25, weight:3,
+      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
+    // === MAGIC FIND (D2 styl) ===
+    { id:'chance', name:'Chance', type:'prefix', group:35, minIlvl:5, weight:5,
+      types:['ring','amulet','helmet'], stats:{ magicFind:[5,15] }, tint:'#f1c40f' },
+    { id:'fortune', name:'Fortune', type:'prefix', group:35, minIlvl:15, weight:3,
+      types:['ring','amulet','helmet'], stats:{ magicFind:[15,25] }, tint:'#f1c40f' },
+    { id:'ofLuck', name:'of Luck', type:'suffix', group:135, minIlvl:5, weight:5,
+      types:['ring','amulet','helmet'], stats:{ magicFind:[5,15] }, tint:'#f1c40f' },
+    { id:'ofFortune', name:'of Fortune', type:'suffix', group:135, minIlvl:15, weight:3,
+      types:['ring','amulet','helmet'], stats:{ magicFind:[15,25] }, tint:'#f1c40f' },
+    // === GOLD FIND (D2 styl) ===
+    { id:'greedy', name:'Greedy', type:'prefix', group:36, minIlvl:1, weight:6,
+      types:['ring','amulet','helmet'], stats:{ goldFind:[10,40] }, tint:'#f1c40f' },
+    { id:'wealthy', name:'Wealthy', type:'prefix', group:36, minIlvl:12, weight:4,
+      types:['ring','amulet','helmet'], stats:{ goldFind:[30,80] }, tint:'#f1c40f' },
+    { id:'ofGreed', name:'of Greed', type:'suffix', group:136, minIlvl:1, weight:6,
+      types:['ring','amulet','helmet'], stats:{ goldFind:[10,40] }, tint:'#f1c40f' },
+    { id:'ofWealth', name:'of Wealth', type:'suffix', group:136, minIlvl:12, weight:4,
+      types:['ring','amulet','helmet'], stats:{ goldFind:[30,80] }, tint:'#f1c40f' },
+    // === +ALL SKILLS (D2 styl — jen amulet) ===
+    { id:'ofSorcery', name:'of Sorcery', type:'suffix', group:137, minIlvl:30, weight:2,
+      types:['amulet'], stats:{ allSkills:[1,1] }, tint:'#9b59b6' },
+    // === +CLASS SKILLS (D2 styl — jen amulet) ===
+    { id:'ofBarbarian', name:'of the Barbarian', type:'suffix', group:138, minIlvl:20, weight:3,
+      types:['amulet'], stats:{ classSkills:['barbarian',1,1] }, tint:'#e94560' },
+    { id:'ofAssassin', name:'of the Assassin', type:'suffix', group:138, minIlvl:20, weight:3,
+      types:['amulet'], stats:{ classSkills:['assassin',1,1] }, tint:'#1abc9c' },
+    { id:'ofMage', name:'of the Mage', type:'suffix', group:138, minIlvl:20, weight:3,
+      types:['amulet'], stats:{ classSkills:['mage',1,1] }, tint:'#4a7dff' },
   ];
 
   // ===== UNIQUE ITEMY (fixní sady affixů) =====
@@ -1317,6 +1383,42 @@
     return mf;
   }
 
+  function getGoldFind() {
+    let gf = 0;
+    const h = state.hero;
+    if (!h || !h.equip) return 0;
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt'];
+    slots.forEach(slot => {
+      const itemId = h.equip[slot];
+      if (itemId) {
+        const item = ITEM_MAP[itemId];
+        if (item && item.goldFind) gf += item.goldFind;
+      }
+    });
+    return gf;
+  }
+
+  function getPlayerResist(school) {
+    let res = 0;
+    const h = state.hero;
+    if (!h || !h.equip) return 0;
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt'];
+    slots.forEach(slot => {
+      const itemId = h.equip[slot];
+      if (itemId) {
+        const item = ITEM_MAP[itemId];
+        if (item) {
+          if (school === 'fire') res += item.fireRes || 0;
+          else if (school === 'ice') res += item.coldRes || 0;
+          else if (school === 'lightning') res += item.lightningRes || 0;
+          else if (school === 'nature') res += item.poisonRes || 0;
+        }
+      }
+    });
+    // Cap na 75% (D2 styl)
+    return Math.min(75, res);
+  }
+
   function rollQuality() {
     let mf = getMagicFind();
     // Diminishing returns (D2 style)
@@ -1516,6 +1618,17 @@
       poisonDmg: 0,
       poisonDur: 0,
       lightningDmg: 0,
+      // Resist staty
+      fireRes: 0,
+      coldRes: 0,
+      lightningRes: 0,
+      poisonRes: 0,
+      allRes: 0,
+      // Gold Find
+      goldFind: 0,
+      // +Skills
+      allSkills: 0,
+      classSkills: 0,
     };
 
     // Aplikovat affix staty
@@ -1530,11 +1643,25 @@
         return; // socket affix nemá stats
       }
       Object.keys(a.stats).forEach(stat => {
-        const val = rollStat(a.stats[stat]);
+        const val = a.stats[stat];
         if (stat === 'swingMs') {
-          lootItem[stat] += val; // záporné = rychlejší
+          lootItem[stat] += rollStat(val);
+        } else if (stat === 'allRes') {
+          // allRes se rozloží na všechny 4 resisty
+          const v = rollStat(val);
+          lootItem.fireRes += v;
+          lootItem.coldRes += v;
+          lootItem.lightningRes += v;
+          lootItem.poisonRes += v;
+        } else if (stat === 'allSkills') {
+          lootItem.allSkills += rollStat(val);
+        } else if (stat === 'classSkills') {
+          // classSkills: [className, min, max] — uložíme jako objekt
+          const v = rollStat([val[1], val[2]]);
+          lootItem.classSkills = (lootItem.classSkills || 0) + v;
+          lootItem._classSkillsClass = val[0];
         } else {
-          lootItem[stat] += val;
+          lootItem[stat] += rollStat(val);
         }
       });
     });
@@ -1750,6 +1877,16 @@
     if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
     if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
     if (item.magicFind) addRow('Magic Find', `+${item.magicFind}%`);
+    if (item.goldFind) addRow('Gold Find', `+${item.goldFind}%`);
+    if (item.fireRes) addRow('Fire Resist', `+${item.fireRes}%`);
+    if (item.coldRes) addRow('Cold Resist', `+${item.coldRes}%`);
+    if (item.lightningRes) addRow('Lightning Resist', `+${item.lightningRes}%`);
+    if (item.poisonRes) addRow('Poison Resist', `+${item.poisonRes}%`);
+    if (item.allSkills) addRow('All Skills', `+${item.allSkills}`);
+    if (item.classSkills) {
+      const className = item._classSkillsClass || 'unknown';
+      addRow(className.charAt(0).toUpperCase() + className.slice(1) + ' Skills', `+${item.classSkills}`);
+    }
     if (item.attrs) {
       Object.keys(item.attrs).forEach(k => {
         const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
@@ -3824,8 +3961,20 @@
         spellText = '☠️ Poison Weapon';
       }
 
-      // 🛡️ Defense
+      // 🛡️ Defense + Elementární resisty
       if (amount > 0) {
+        // Elementární resisty hráče (jen pro kouzla)
+        if (spellId === 'poison_bolt' || spellId === 'drain_life' || spellId === 'mana_drain') {
+          const playerRes = getPlayerResist('nature');
+          if (playerRes > 0) {
+            amount = Math.round(amount * (1 - playerRes / 100));
+          }
+        } else if (spellId === 'shadow_bolt' || spellId === 'fire_bolt') {
+          const playerRes = getPlayerResist('fire');
+          if (playerRes > 0) {
+            amount = Math.round(amount * (1 - playerRes / 100));
+          }
+        }
         const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
         const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
         const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
@@ -9002,13 +9151,15 @@
       // Boss: zaručený item s vyšším tierem + goldy
       const item = generateLootItem(locId, floor, true);
       if (!item) return { type:'gold', gold: 10 + floor * 3 };
-      const gold = 5 + floor * 3 + rand(0, 5);
+      const gf = getGoldFind();
+      const gold = Math.round((5 + floor * 3 + rand(0, 5)) * (1 + gf / 100));
       return { type:'boss', item, gold };
     }
     // 70% gold, 30% item
     if (Math.random() < 0.7) {
       // Gold reward
-      const gold = 2 + floor * 2 + rand(0, 3);
+      const gf = getGoldFind();
+      const gold = Math.round((2 + floor * 2 + rand(0, 3)) * (1 + gf / 100));
       return { type:'gold', gold };
     } else {
       // Item reward
