@@ -65,6 +65,7 @@ const ASSET_FILES = [
   '/assets/menu-icons/navod.png', '/assets/menu-icons/bestiar.png',
   '/assets/menu-icons/music.png', '/assets/menu-icons/testmode.png',
   '/assets/menu-icons/waypoint.png', '/assets/menu-icons/shop.png',
+  '/assets/menu-icons/chest.png', '/assets/menu-icons/gamble.png',
   '/assets/sfx/hurt1.mp3', '/assets/sfx/hurt2.mp3', '/assets/sfx/hurt3.mp3', '/assets/sfx/hurt4.mp3',
   '/assets/sfx/shout.mp3',
   '/assets/sfx/shop.mp3',
