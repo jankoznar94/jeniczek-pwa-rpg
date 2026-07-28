@@ -10561,7 +10561,11 @@
     const weaponItems = [];
     weaponTypes.forEach(wt => {
       const bases = _gambleFindBases('weapon', wt, 1);
-      bases.forEach(b => weaponItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
+      bases.forEach(b => {
+        const baseCost = b.cost || 10;
+        const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+        weaponItems.push({ baseItem: b, price });
+      });
     });
 
     // Armor — 1 z každého typu
@@ -10569,15 +10573,27 @@
     const armorItems = [];
     armorTypes.forEach(type => {
       const bases = _gambleFindBases(type, null, 1);
-      bases.forEach(b => armorItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
+      bases.forEach(b => {
+        const baseCost = b.cost || 10;
+        const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+        armorItems.push({ baseItem: b, price });
+      });
     });
 
     // Jewelry — 1 ring + 1 amulet
     const jewelryItems = [];
     const ringBases = _gambleFindBases('ring', null, 1);
-    ringBases.forEach(b => jewelryItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
+    ringBases.forEach(b => {
+      const baseCost = b.cost || 10;
+      const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+      jewelryItems.push({ baseItem: b, price });
+    });
     const amuletBases = _gambleFindBases('amulet', null, 1);
-    amuletBases.forEach(b => jewelryItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
+    amuletBases.forEach(b => {
+      const baseCost = b.cost || 10;
+      const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+      jewelryItems.push({ baseItem: b, price });
+    });
 
     return [
       { category: 'Weapons', items: weaponItems },
