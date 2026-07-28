@@ -2364,9 +2364,9 @@
   }
 
   // ===== SCREENS =====
-  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen', chest:'chestScreen' };
+  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen', chest:'chestScreen', gamble:'gambleScreen' };
   // Screens that are full-page (not modal)
-  const FULL_SCREENS = ['classSelect','map','mapBattle','result','town','shop','hero','bestiary','spellbook','items','chest'];
+  const FULL_SCREENS = ['classSelect','map','mapBattle','result','town','shop','hero','bestiary','spellbook','items','chest','gamble'];
   // Track which screen is currently shown (for modal return)
   let _currentScreen = null;
 
@@ -2438,6 +2438,7 @@
     else if (name === 'shop') renderShop();
     else if (name === 'inventory') renderInventory();
     else if (name === 'chest') renderChest();
+    else if (name === 'gamble') renderGamble();
     else if (name === 'spellbook') renderSpellbook();
   }
 
@@ -10522,6 +10523,207 @@
     renderShop();
   }
 
+  // ===== GAMBLE (D2 styl) =====
+  let _gambleCategory = 'Weapons';
+  let _gambleItemsCache = null;
+
+  function _generateGambleItems() {
+    const h = state.hero;
+    const playerLevel = h.level || 1;
+    const maxProgress = Math.max(...state.locationProgress);
+    const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
+    const monsterLevel = 5 + playerLevel * 2;
+
+    function _gambleFindBases(type, weaponType, count) {
+      const candidates = ITEMS.filter(i => {
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
+        return i.type === type && i.tier <= maxTier;
+      });
+      if (candidates.length === 0) return [];
+      const result = [];
+      const pool = [...candidates];
+      for (let n = 0; n < count && pool.length > 0; n++) {
+        const totalW = pool.reduce((s, c) => s + c.tier, 0);
+        let r = Math.random() * totalW;
+        let idx = 0;
+        for (let i = 0; i < pool.length; i++) {
+          r -= pool[i].tier;
+          if (r <= 0) { idx = i; break; }
+        }
+        result.push(pool[idx]);
+        pool.splice(idx, 1);
+      }
+      return result;
+    }
+
+    // Weapons — 1 z každého typu
+    const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
+    const weaponItems = [];
+    weaponTypes.forEach(wt => {
+      const bases = _gambleFindBases('weapon', wt, 1);
+      bases.forEach(b => weaponItems.push(b));
+    });
+
+    // Armor — 1 z každého typu
+    const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
+    const armorItems = [];
+    armorTypes.forEach(type => {
+      const bases = _gambleFindBases(type, null, 1);
+      bases.forEach(b => armorItems.push(b));
+    });
+
+    // Jewelry — 1 ring + 1 amulet
+    const jewelryItems = [];
+    const ringBases = _gambleFindBases('ring', null, 1);
+    ringBases.forEach(b => jewelryItems.push(b));
+    const amuletBases = _gambleFindBases('amulet', null, 1);
+    amuletBases.forEach(b => jewelryItems.push(b));
+
+    return [
+      { category: 'Weapons', items: weaponItems },
+      { category: 'Armor', items: armorItems },
+      { category: 'Jewelry', items: jewelryItems },
+    ];
+  }
+
+  function renderGamble() {
+    const h = state.hero;
+    $('gambleGold').textContent = `💰 ${h.gold} gold`;
+
+    if (!_gambleItemsCache) {
+      _gambleItemsCache = _generateGambleItems();
+    }
+
+    const sections = _gambleItemsCache;
+
+    // Kategorie záložky
+    const catTabsEl = $('gambleCatTabs');
+    catTabsEl.innerHTML = sections.map(s => {
+      if (s.items.length === 0) return '';
+      const active = s.category === _gambleCategory ? 'active' : '';
+      return `<button class="shop-cat-tab ${active}" onclick="game.switchGambleCategory('${s.category}')">${s.category}</button>`;
+    }).join('');
+
+    const activeSection = sections.find(s => s.category === _gambleCategory) || sections[0];
+    const items = activeSection.items;
+
+    $('gambleList').innerHTML = items.length === 0
+      ? '<div style="text-align:center;padding:30px;color:#666">Nothing available</div>'
+      : `<div class="shop-category">
+        ${items.map(baseItem => {
+          // Cena: base cost × 3-5 (D2: gamble je dražší než shop)
+          const priceMult = 3 + Math.floor(Math.random() * 3);
+          const price = (baseItem.cost || 10) * priceMult;
+          const canAfford = h.gold >= price;
+          const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
+          return `<div class="shop-item">
+            <div class="shop-item-header">
+              <div class="shop-item-icon">${renderItemIcon(baseItem, 48)}</div>
+              <div class="shop-item-name" style="color:#888">${baseItem.name}</div>
+            </div>
+            <div class="shop-item-stats" style="color:#666;font-size:11px">
+              <div>??? unidentified</div>
+              <div style="color:#888;font-size:10px">${baseItem.type === 'weapon' ? (baseItem.twoHand ? '2H ' : '1H ') + (baseItem.weaponType || '') : baseItem.type}</div>
+            </div>
+            <div class="shop-item-actions">
+              <button class="btn btn-shop-buy" onclick="event.stopPropagation();game.buyGambleItem('${baseItem.id}')" ${canAfford ? '' : 'style="opacity:0.5"'}>
+                <span class="btn-buy-icon">🎲</span>
+                <span class="btn-buy-price" style="color:${priceColor}">${price}</span>
+              </button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>`;
+  }
+
+  function switchGambleCategory(cat) {
+    _gambleCategory = cat;
+    renderGamble();
+  }
+
+  function buyGambleItem(baseItemId) {
+    closeItemOverlay();
+    const baseItem = ITEMS.find(i => i.id === baseItemId);
+    if (!baseItem) return;
+    const h = state.hero;
+    const priceMult = 3 + Math.floor(Math.random() * 3);
+    const price = (baseItem.cost || 10) * priceMult;
+    if (h.gold < price) { showMessage('❌ Not enough gold!'); return; }
+
+    // D2 gamble quality roll: vyšší šance na rare/unique než běžný loot
+    // Base: unique 1%, rare 10%, magic 30%, normal 59%
+    // S MF se to zvyšuje
+    const mf = getMagicFind();
+    const effectiveMF = Math.floor((mf * 250) / (mf + 250));
+    const uniqueChance = 1 + Math.floor(effectiveMF * 0.02);
+    const rareChance = 10 + Math.floor(effectiveMF * 0.1);
+    const magicChance = 30 + Math.floor(effectiveMF * 0.2);
+    const roll = Math.random() * 100;
+    let quality;
+    if (roll < uniqueChance) quality = 'unique';
+    else if (roll < rareChance) quality = 'rare';
+    else if (roll < magicChance) quality = 'magic';
+    else quality = 'normal';
+
+    // Ring/amulet nemůžou být normal
+    if (quality === 'normal' && (baseItem.type === 'ring' || baseItem.type === 'amulet')) {
+      quality = 'magic';
+    }
+
+    const playerLevel = h.level || 1;
+    const monsterLevel = 5 + playerLevel * 2;
+
+    let item;
+    if (quality === 'unique') {
+      const uniqueDef = UNIQUE_ITEMS.find(u => u.baseId === baseItem.id);
+      if (uniqueDef) {
+        item = generateUniqueItem(uniqueDef);
+        if (item) {
+          item.tier = baseItem.tier || 1;
+          item.rarity = 'epic';
+          item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
+          item.cost = price;
+          ITEM_MAP[item.id] = item;
+          state.lootItems = state.lootItems || {};
+          state.lootItems[item.id] = item;
+        }
+      }
+      // Pokud unique neexistuje, spadnout na rare
+      if (!item) quality = 'rare';
+    }
+
+    if (!item) {
+      item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
+      item.tier = baseItem.tier || 1;
+      item.rarity = quality === 'normal' ? 'common' : quality === 'magic' ? 'magic' : 'rare';
+      item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
+      item.cost = price;
+      // HitRating a ExpertiseRating
+      if (item.rarity !== 'common') {
+        const hitChance = item.rarity === 'magic' ? 0.3 : 0.6;
+        if (Math.random() < hitChance) item.attackRating = (item.attackRating || 0) + 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.5));
+        const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
+        if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.4));
+      }
+      if (baseItem.type === 'weapon' && baseItem.weaponType === 'blade') {
+        item.critChance = (item.critChance || 0) + Math.min(25, 5 + (baseItem.tier || 1) * 3 + rand(0, 5));
+      }
+      if (baseItem.type === 'shield') {
+        item.blockChance = Math.min(45, 15 + (baseItem.tier || 1) * 4 + rand(0, 5));
+      }
+      ITEM_MAP[item.id] = item;
+      state.lootItems = state.lootItems || {};
+      state.lootItems[item.id] = item;
+    }
+
+    h.gold -= price;
+    addToInventory(h.inventory, item.id);
+    playSFX(shopSfx);
+    saveGame();
+    showMessage(`🎲 ${item.icon} ${getItemSocketName(item)}! (${item.rarity})`);
+    renderGamble();
+  }
+
   function sellSlotItem(itemId, slot) {
     const h = state.hero;
     const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
@@ -11642,7 +11844,8 @@
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
     continueFromWaypoint, returnToTownFromWaypoint,
-    renderChest
+    renderChest,
+    renderGamble, switchGambleCategory, buyGambleItem
   };
   init();
 })();
