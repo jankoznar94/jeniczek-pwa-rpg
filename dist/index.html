@@ -124,6 +124,12 @@
     <div class="town-action-label">Chest</div>
   </div>
 
+  <!-- Gamble -->
+  <div class="town-action-card" onclick="game.showScreen('gamble')">
+    <div class="town-action-icon">🎲</div>
+    <div class="town-action-label">Gamble</div>
+  </div>
+
   <!-- Shop -->
   <div class="town-action-card" onclick="game.showScreen('shop')">
     <div class="town-action-icon"><img src="assets/menu-icons/shop.png"></div>
@@ -415,6 +421,23 @@
   </div>
   <div class="shop-cat-tabs" id="shopCatTabs" style="display:none"></div>
   <div id="shopList"></div>
+</div>
+
+<!-- ===== GAMBLE ===== -->
+<div id="gambleScreen" class="container hidden">
+  <div class="shop-back-map">
+    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">Back to Town</button>
+  </div>
+  <div class="page-header">
+    <div class="page-header-icon" style="font-size:32px">🎲</div>
+    <div>
+      <div class="page-header-title">Gamble</div>
+      <div class="page-header-subtitle">Buy unidentified items — roll the dice!</div>
+    </div>
+    <span id="gambleGold" style="margin-left:auto;font-size:14px;color:#f1c40f;white-space:nowrap">💰 0 gold</span>
+  </div>
+  <div class="shop-cat-tabs" id="gambleCatTabs"></div>
+  <div id="gambleList"></div>
 </div>
 
 <!-- ===== INVENTORY ===== -->
