@@ -10561,7 +10561,7 @@
     const weaponItems = [];
     weaponTypes.forEach(wt => {
       const bases = _gambleFindBases('weapon', wt, 1);
-      bases.forEach(b => weaponItems.push(b));
+      bases.forEach(b => weaponItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
     });
 
     // Armor — 1 z každého typu
@@ -10569,15 +10569,15 @@
     const armorItems = [];
     armorTypes.forEach(type => {
       const bases = _gambleFindBases(type, null, 1);
-      bases.forEach(b => armorItems.push(b));
+      bases.forEach(b => armorItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
     });
 
     // Jewelry — 1 ring + 1 amulet
     const jewelryItems = [];
     const ringBases = _gambleFindBases('ring', null, 1);
-    ringBases.forEach(b => jewelryItems.push(b));
+    ringBases.forEach(b => jewelryItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
     const amuletBases = _gambleFindBases('amulet', null, 1);
-    amuletBases.forEach(b => jewelryItems.push(b));
+    amuletBases.forEach(b => jewelryItems.push({ baseItem: b, price: (b.cost || 10) * (3 + Math.floor(Math.random() * 3)) }));
 
     return [
       { category: 'Weapons', items: weaponItems },
@@ -10610,10 +10610,9 @@
     $('gambleList').innerHTML = items.length === 0
       ? '<div style="text-align:center;padding:30px;color:#666">Nothing available</div>'
       : `<div class="shop-category">
-        ${items.map(baseItem => {
-          // Cena: base cost × 3-5 (D2: gamble je dražší než shop)
-          const priceMult = 3 + Math.floor(Math.random() * 3);
-          const price = (baseItem.cost || 10) * priceMult;
+        ${items.map(entry => {
+          const baseItem = entry.baseItem;
+          const price = entry.price;
           const canAfford = h.gold >= price;
           const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
           return `<div class="shop-item">
@@ -10646,8 +10645,15 @@
     const baseItem = ITEMS.find(i => i.id === baseItemId);
     if (!baseItem) return;
     const h = state.hero;
-    const priceMult = 3 + Math.floor(Math.random() * 3);
-    const price = (baseItem.cost || 10) * priceMult;
+    // Najít cenu z cache (fixní, nemění se)
+    let price = 0;
+    if (_gambleItemsCache) {
+      for (const section of _gambleItemsCache) {
+        const entry = section.items.find(e => e.baseItem && e.baseItem.id === baseItemId);
+        if (entry) { price = entry.price; break; }
+      }
+    }
+    if (price === 0) price = (baseItem.cost || 10) * 4; // fallback
     if (h.gold < price) { showMessage('❌ Not enough gold!'); return; }
 
     // D2 gamble: nikdy normal quality, vždy minimálně magic
