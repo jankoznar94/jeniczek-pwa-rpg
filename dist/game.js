@@ -10563,7 +10563,7 @@
       const bases = _gambleFindBases('weapon', wt, 1);
       bases.forEach(b => {
         const baseCost = b.cost || 10;
-        const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+        const price = Math.round(baseCost * (1 + playerLevel * 0.15));
         weaponItems.push({ baseItem: b, price });
       });
     });
@@ -10575,7 +10575,7 @@
       const bases = _gambleFindBases(type, null, 1);
       bases.forEach(b => {
         const baseCost = b.cost || 10;
-        const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+        const price = Math.round(baseCost * (1 + playerLevel * 0.15));
         armorItems.push({ baseItem: b, price });
       });
     });
@@ -10585,13 +10585,13 @@
     const ringBases = _gambleFindBases('ring', null, 1);
     ringBases.forEach(b => {
       const baseCost = b.cost || 10;
-      const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+      const price = Math.round(baseCost * (1 + playerLevel * 0.15));
       jewelryItems.push({ baseItem: b, price });
     });
     const amuletBases = _gambleFindBases('amulet', null, 1);
     amuletBases.forEach(b => {
       const baseCost = b.cost || 10;
-      const price = Math.round(baseCost * (1 + playerLevel * 0.1) * (3 + Math.floor(Math.random() * 3)));
+      const price = Math.round(baseCost * (1 + playerLevel * 0.15));
       jewelryItems.push({ baseItem: b, price });
     });
 
@@ -10669,7 +10669,7 @@
         if (entry) { price = entry.price; break; }
       }
     }
-    if (price === 0) price = (baseItem.cost || 10) * 4; // fallback
+    if (price === 0) price = Math.round((baseItem.cost || 10) * (1 + (state.hero.level || 1) * 0.15)); // fallback
     if (h.gold < price) { showMessage('❌ Not enough gold!'); return; }
 
     // D2 gamble: nikdy normal quality, vždy minimálně magic
