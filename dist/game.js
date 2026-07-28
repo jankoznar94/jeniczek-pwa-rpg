@@ -10650,19 +10650,13 @@
     const price = (baseItem.cost || 10) * priceMult;
     if (h.gold < price) { showMessage('❌ Not enough gold!'); return; }
 
-    // D2 gamble quality roll: fixní šance, MF neovlivňuje
-    // D2: unique ~0.05% (1/2000), rare 10%, magic 30%, normal ~60%
+    // D2 gamble: nikdy normal quality, vždy minimálně magic
+    // D2: magic ~89.95%, rare 10%, unique ~0.05% (1/2000)
     const roll = Math.random() * 100;
     let quality;
     if (roll < 0.05) quality = 'unique';
     else if (roll < 10.05) quality = 'rare';
-    else if (roll < 40.05) quality = 'magic';
-    else quality = 'normal';
-
-    // Ring/amulet nemůžou být normal
-    if (quality === 'normal' && (baseItem.type === 'ring' || baseItem.type === 'amulet')) {
-      quality = 'magic';
-    }
+    else quality = 'magic';
 
     const playerLevel = h.level || 1;
     const monsterLevel = 5 + playerLevel * 2;
