@@ -10650,19 +10650,13 @@
     const price = (baseItem.cost || 10) * priceMult;
     if (h.gold < price) { showMessage('❌ Not enough gold!'); return; }
 
-    // D2 gamble quality roll: vyšší šance na rare/unique než běžný loot
-    // Base: unique 1%, rare 10%, magic 30%, normal 59%
-    // S MF se to zvyšuje
-    const mf = getMagicFind();
-    const effectiveMF = Math.floor((mf * 250) / (mf + 250));
-    const uniqueChance = 1 + Math.floor(effectiveMF * 0.02);
-    const rareChance = 10 + Math.floor(effectiveMF * 0.1);
-    const magicChance = 30 + Math.floor(effectiveMF * 0.2);
+    // D2 gamble quality roll: fixní šance, MF neovlivňuje
+    // D2: unique ~0.05% (1/2000), rare 10%, magic 30%, normal ~60%
     const roll = Math.random() * 100;
     let quality;
-    if (roll < uniqueChance) quality = 'unique';
-    else if (roll < rareChance) quality = 'rare';
-    else if (roll < magicChance) quality = 'magic';
+    if (roll < 0.05) quality = 'unique';
+    else if (roll < 10.05) quality = 'rare';
+    else if (roll < 40.05) quality = 'magic';
     else quality = 'normal';
 
     // Ring/amulet nemůžou být normal
