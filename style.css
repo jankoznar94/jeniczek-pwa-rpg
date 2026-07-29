@@ -730,7 +730,8 @@ body.no-scroll { overflow: hidden; }
 }
 /* V inventory modalu větší prostor pro sloty */
 #invGridWrap {
-  max-height:340px;
+  max-height:55vh;
+  padding:12px;
 }
 /* V chest screenu wrapper stejný jako horní chest grid */
 #chestInvGridWrap {
@@ -1800,9 +1801,9 @@ body.no-scroll { overflow: hidden; }
   background:#000;
   border:1px solid #333;
   border-radius:14px;
-  width:96%;
-  max-width:600px;
-  height:88vh;
+  width:98%;
+  max-width:800px;
+  height:96vh;
   box-shadow:0 0 30px rgba(0,0,0,0.5);
   position:relative;
   display:flex;flex-direction:column;
