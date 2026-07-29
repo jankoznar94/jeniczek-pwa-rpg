@@ -1808,7 +1808,6 @@ body.no-scroll { overflow: hidden; }
   box-shadow:0 0 30px rgba(0,0,0,0.5);
   position:relative;
   display:flex;flex-direction:column;
-  overflow:hidden;
 }
 .modal-content .card { background:transparent;border:none;padding:0;margin:0; }
 .modal-content .card-title { font-size:18px; }
@@ -1853,10 +1852,16 @@ body.no-scroll { overflow: hidden; }
   vertical-align:middle;
 }
 .combined-screen {
-  display:none; height:100%;
+  display:none; flex:1; min-height:0;
 }
 .combined-screen.active {
   display:flex; flex-direction:column;
+}
+/* V modálním okně přebít container třídu */
+.combined-screen.active #inventoryScreen,
+.combined-screen.active #talentsScreen,
+.combined-screen.active #heroScreen {
+  max-width:none; margin:0; padding:0; flex:1; min-height:0;
 }
 
 /* ===== DOT PATH INSIDE CARD ===== */
