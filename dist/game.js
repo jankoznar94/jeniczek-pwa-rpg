@@ -10250,7 +10250,7 @@
         if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
         const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
         const countLabel = count > 1 ? `<span class="cell-count">${count}</span>` : '';
-        ghtml += `<div class="inv-grid-cell" data-idx="${i}" style="${cellStyle}">
+        ghtml += `<div class="chest-cell" data-idx="${i}" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}${countLabel}</div>
           <div class="cell-name">${getItemSocketName(item)}</div>
         </div>`;
@@ -10261,7 +10261,7 @@
     grid.innerHTML = ghtml;
 
     // Klik na item v inventáři → přesunout do chest
-    grid.querySelectorAll('.inv-grid-cell[data-idx]').forEach(cell => {
+    grid.querySelectorAll('.chest-cell[data-idx]').forEach(cell => {
       cell.onclick = (e) => {
         const idx = parseInt(cell.dataset.idx);
         const entry = inv[idx];
