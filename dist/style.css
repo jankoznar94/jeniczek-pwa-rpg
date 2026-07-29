@@ -693,12 +693,18 @@ body.no-scroll { overflow: hidden; }
   width:100%; box-sizing:border-box;
 }
 .inv-grid-cell {
-  aspect-ratio:1; background:#111; border:1px solid #333;
+  aspect-ratio:1; background:#1a1a1a; border:1px solid #555;
   border-radius:6px; display:flex; flex-direction:column; align-items:center;
   justify-content:center; cursor:pointer; transition:0.15s; position:relative;
   min-height:56px; overflow:hidden; padding:0;
 }
-.inv-grid-cell:hover { border-color:#888; background:#1a1a1a; }
+.inv-grid-cell:hover { border-color:#aaa; background:#222; }
+/* V chest screenu použít stejný styl jako horní chest grid */
+#chestInvGridWrap .inv-grid-cell {
+  background:#111;
+  border:1px solid #333;
+}
+#chestInvGridWrap .inv-grid-cell:hover { border-color:#888; background:#1a1a1a; }
 .inv-grid-cell .cell-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 .inv-grid-cell .cell-icon img { width:80%; height:80%; object-fit:contain; display:block; }
 .inv-grid-cell .cell-name { display:none; }
@@ -731,8 +737,13 @@ body.no-scroll { overflow: hidden; }
 .inv-grid-wrap {
   max-height:200px; overflow-y:auto; margin:8px 0;
   scrollbar-width:thin; scrollbar-color:#444 #000;
-  background:#000; border:1px solid #333; border-radius:10px; padding:12px;
+  background:#0d0d0d; border:1px solid #444; border-radius:10px; padding:12px;
   width:100%; box-sizing:border-box;
+}
+/* V chest screenu wrapper stejný jako horní chest grid */
+#chestInvGridWrap {
+  background:#000;
+  border:1px solid #333;
 }
 .inv-grid-wrap::-webkit-scrollbar { width:6px; }
 .inv-grid-wrap::-webkit-scrollbar-track { background:#1a1a1a; }
