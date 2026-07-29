@@ -1796,6 +1796,7 @@ body.no-scroll { overflow: hidden; }
   display:flex;align-items:center;justify-content:center;
   backdrop-filter:blur(4px);
   -webkit-backdrop-filter:blur(4px);
+  overflow:hidden;
 }
 .modal-content {
   background:#000;
@@ -1807,6 +1808,7 @@ body.no-scroll { overflow: hidden; }
   box-shadow:0 0 30px rgba(0,0,0,0.5);
   position:relative;
   display:flex;flex-direction:column;
+  overflow:hidden;
 }
 .modal-content .card { background:transparent;border:none;padding:0;margin:0; }
 .modal-content .card-title { font-size:18px; }
