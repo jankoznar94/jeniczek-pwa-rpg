@@ -1858,11 +1858,9 @@ body.no-scroll { overflow: hidden; }
 .combined-screen.active {
   display:flex; flex-direction:column;
 }
-/* V modálním okně přebít container třídu */
-.combined-screen.active #inventoryScreen,
-.combined-screen.active #talentsScreen,
-.combined-screen.active #heroScreen {
-  max-width:none; margin:0; padding:0; flex:1; min-height:0;
+/* V modálním okně přebít container třídu jen pro inventář */
+.combined-screen.active #inventoryScreen {
+  max-width:none; margin:0; padding:0 4px; flex:1; min-height:0;
 }
 
 /* ===== DOT PATH INSIDE CARD ===== */
