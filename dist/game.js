@@ -10242,7 +10242,7 @@
         const itemId = typeof entry === 'object' ? entry.id : entry;
         const count = typeof entry === 'object' ? (entry.count || 1) : 1;
         const item = ITEM_MAP[itemId];
-        if (!item) { ghtml += '<div class="inv-grid-cell empty"></div>'; continue; }
+        if (!item) { ghtml += '<div class="chest-cell empty"></div>'; continue; }
         const borderColor = getQualityColor(item);
         const cls = CLASSES[state.heroClass];
         let canEquip = true;
@@ -10255,7 +10255,7 @@
           <div class="cell-name">${getItemSocketName(item)}</div>
         </div>`;
       } else {
-        ghtml += '<div class="inv-grid-cell empty"></div>';
+        ghtml += '<div class="chest-cell empty"></div>';
       }
     }
     grid.innerHTML = ghtml;
@@ -11128,7 +11128,7 @@
         const itemId = typeof entry === 'object' ? entry.id : entry;
         const count = typeof entry === 'object' ? (entry.count || 1) : 1;
         const item = ITEM_MAP[itemId];
-        if (!item) { html += '<div class="inv-grid-cell empty"></div>'; continue; }
+        if (!item) { html += '<div class="chest-cell empty"></div>'; continue; }
         const stats = item.type === 'weapon' ? `⚔️${item.baseDmg}` : item.type === 'ring' || item.type === 'amulet' ? (item.skillDmg ? `✨+${item.skillDmg}%` : item.manaRegen ? `💧+${item.manaRegen}` : item.str ? `💪+${item.str}` : item.int ? `🧠+${item.int}` : item.vit ? `❤️+${item.vit}` : item.dex ? `🎯+${item.dex}` : item.lifesteal ? `🩸+${item.lifesteal}%` : '') : item.bonusHp ? `❤️${item.bonusHp}` : '';
         const borderColor = getQualityColor(item);
         const cls = CLASSES[state.heroClass];
@@ -11137,12 +11137,12 @@
         if (item.type === 'shield' && cls && cls.allowedShield === false) canEquip = false;
         const cellStyle = canEquip ? `border-color:${borderColor}` : `border-color:#e74c3c;opacity:0.35`;
         const countLabel = count > 1 ? `<span class="cell-count">${count}</span>` : '';
-        html += `<div class="inv-grid-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
+        html += `<div class="chest-cell" data-idx="${i}" draggable="true" style="${cellStyle}">
           <div class="cell-icon">${renderItemIcon(item,0)}${countLabel}</div>
           <div class="cell-name">${getItemSocketName(item)}</div>
         </div>`;
       } else {
-        html += '<div class="inv-grid-cell empty"></div>';
+        html += '<div class="chest-cell empty"></div>';
       }
     }
     grid.innerHTML = html;
@@ -11166,7 +11166,7 @@
     function clearSelection() {
       window._invSelectedIdx = null;
       window._invSelectedSlot = null;
-      document.querySelectorAll('.inv-grid-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
+      document.querySelectorAll('.chest-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
     }
     // Delegace handler je nastaven dříve v init() — tady jen clearujeme
     const invScreen = $('inventoryScreen');
@@ -11207,7 +11207,7 @@
         return;
       }
       // Grid cell klik
-      const cell = e.target.closest('.inv-grid-cell');
+      const cell = e.target.closest('.chest-cell');
       if (cell) {
         if (cell.classList.contains('empty')) {
           clearSelection();
