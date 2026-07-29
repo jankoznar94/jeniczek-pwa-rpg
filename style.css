@@ -1804,10 +1804,11 @@ body.no-scroll { overflow: hidden; }
   border-radius:14px;
   width:98%;
   max-width:800px;
-  height:80vh;
+  height:70vh;
   box-shadow:0 0 30px rgba(0,0,0,0.5);
   position:relative;
   display:flex;flex-direction:column;
+  padding-bottom:24px;
 }
 .modal-content .card { background:transparent;border:none;padding:0;margin:0; }
 .modal-content .card-title { font-size:18px; }
