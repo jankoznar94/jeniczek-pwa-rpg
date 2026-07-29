@@ -693,9 +693,6 @@ body.no-scroll { overflow: hidden; }
   width:100%; box-sizing:border-box;
 }
 /* Všechny sloty používají .chest-cell (definovaný v HTML <style>) */
-#chestInvGridWrap .chest-cell:hover { border-color:#888; background:#1a1a1a; }
-#chestInvGridWrap .chest-cell.empty { opacity:0.25; cursor:default; }
-#chestInvGridWrap .chest-cell.empty:hover { border-color:#333; background:#111; }
 .chest-cell .cell-icon { width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
 .chest-cell .cell-icon img { width:80%; height:80%; object-fit:contain; display:block; }
 .chest-cell .cell-name { display:none; }
