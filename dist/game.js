@@ -9395,11 +9395,11 @@
       const manaPot = ITEM_MAP['manaPotion'];
       const potionsHtml = `<div class="result-status-potions">
         <div class="result-status-potion ${healCount > 0 ? '' : 'empty'}" onclick="${healCount > 0 ? `game.usePotionFromResult('heal')` : ''}" title="Healing Potion (${healCount})">
-          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<img src="assets/items/potion_healing.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
           ${healCount > 0 ? `<span class="result-status-potion-count">${healCount}</span>` : ''}
         </div>
         <div class="result-status-potion ${manaCount > 0 ? '' : 'empty'}" onclick="${manaCount > 0 ? `game.usePotionFromResult('mana')` : ''}" title="Mana Potion (${manaCount})">
-          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
           ${manaCount > 0 ? `<span class="result-status-potion-count">${manaCount}</span>` : ''}
         </div>
       </div>`;
