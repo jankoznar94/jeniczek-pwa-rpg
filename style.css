@@ -1307,6 +1307,7 @@ body.no-scroll { overflow: hidden; }
   display:flex;flex-direction:column;align-items:center;
   min-height:100vh;padding:12px 20px;cursor:pointer;
   background:#000;
+  overflow-y:auto;
 }
 .result-top {
   flex:2;
@@ -1322,6 +1323,8 @@ body.no-scroll { overflow: hidden; }
   width:100%;
   min-height:0;
   gap:8px;
+  overflow-y:auto;
+  padding:8px 0;
 }
 .result-bottom:empty { display:none; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
