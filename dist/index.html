@@ -166,6 +166,9 @@
 
 <!-- ===== CHEST ===== -->
 <div id="chestScreen" class="container hidden">
+  <div class="shop-back-map">
+    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">Back to Town</button>
+  </div>
   <div class="page-header">
     <img src="assets/menu-icons/chest.png" class="page-header-icon">
     <div>
@@ -181,9 +184,6 @@
   <!-- Grid batohu -->
   <div class="inv-grid-wrap" id="chestInvGridWrap">
     <div class="inv-grid" id="chestInvGrid"></div>
-  </div>
-  <div style="margin-top:12px;text-align:center">
-    <button class="btn btn-secondary" onclick="game.showScreen('town')">← Back to Town</button>
   </div>
 </div>
 
