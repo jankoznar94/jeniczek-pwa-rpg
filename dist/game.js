@@ -1627,6 +1627,8 @@
       allRes: 0,
       // Gold Find
       goldFind: 0,
+      // Magic Find
+      magicFind: 0,
       // +Skills
       allSkills: 0,
       classSkills: 0,
@@ -1924,7 +1926,7 @@
     heal: { name:'Heal', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Heals enemy for 30% HP' },
     // Act 1 — Lesní monstra
-    defensive_shout: { name:'Defensive Shout', icon:'🛡️', iconImg:'defensive_shout.png', castTime:1000, manaCost:0, rageCost:20, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
+    defensive_shout: { name:'Defensive Shout', icon:'🛡️', iconImg:'defensiveShout.png', castTime:1000, manaCost:0, rageCost:20, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
       desc:'Reduces incoming damage by 30% for 8s' },
     battle_shout: { name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', castTime:1000, manaCost:0, rageCost:25, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
       desc:'+50% damage for 8s' },
