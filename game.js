@@ -11303,19 +11303,21 @@
     }
     // Shield slot může přijmout: shield, offhand, nebo zbraň (pro dual wield)
     if (targetSlot === 'shield') {
-      // Zákaz: pokud má hráč 2H zbraň v main hand, nic do shield slotu nesmí
+      // Pokud má hráč 2H zbraň v main hand, sundat ji (dát do batohu)
       const mainWeapon = h.equip.weapon ? ITEM_MAP[h.equip.weapon] : null;
       const hasTwoHand = mainWeapon && mainWeapon.twoHand === true;
+      if (hasTwoHand) {
+        // Sundat 2H zbraň do batohu
+        if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+        addToInventory(h.inventory, h.equip.weapon);
+        h.equip.weapon = 'fists';
+      }
       if (item.type === 'shield' || item.type === 'offhand') {
-        if (!hasTwoHand) {
-          correctSlot = 'shield';
-        }
+        correctSlot = 'shield';
       } else if (item.type === 'weapon') {
         const cls = CLASSES[state.heroClass];
         if (cls && cls.dualWield) {
-          if (!hasTwoHand) {
-            correctSlot = 'shield';
-          }
+          correctSlot = 'shield';
         }
       }
     }
