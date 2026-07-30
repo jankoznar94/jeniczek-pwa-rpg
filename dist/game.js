@@ -2414,6 +2414,8 @@
       if (id === SCREEN_IDS[name]) { el.classList.remove('hidden'); el.classList.add('active'); } else { el.classList.add('hidden'); el.classList.remove('active'); }
     });
     _currentScreen = name;
+    // Reset session state při vstupu do města
+    if (name === 'town') resetSessionState();
     // Aktivovat nav tlačítko
     document.querySelectorAll('.nav-bar a[data-screen]').forEach(a => {
       a.classList.toggle('active', a.dataset.screen === name);
@@ -3021,8 +3023,7 @@
     startLocation(actId);
   }
 
-  function startLocation(actId, areaOverride, fightOverride) {
-    // Kompletní reset session stavu při vstupu do souboje
+  function resetSessionState() {
     _sessionDebuffs = {};
     _sessionBuffs = {};
     _enemyBuffs = {};
@@ -3047,6 +3048,12 @@
     state.skillShoutBonus = 0;
     state.thunderClapTimer = 0;
     state.thunderClapSlowPct = 0;
+  }
+
+  function startLocation(actId, areaOverride, fightOverride) {
+    // Reset GCD a combo points per fight (session state zůstává)
+    state._gcdTimer = 0;
+    state.comboPoints = 0;
     const loc = ACTS[actId];
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
@@ -4431,6 +4438,68 @@
     h.equip.beltPotionSlots = bpSlots;
     saveGame();
     updateMapBattleUI();
+  }
+
+  function usePotionFromResult(potionType) {
+    const h = state.hero;
+    const bpSlots = h.equip.beltPotionSlots || [];
+    let potIdx = -1, potId = null;
+    for (let i = 0; i < bpSlots.length; i++) {
+      const pid = bpSlots[i];
+      if (!pid) continue;
+      const p = ITEM_MAP[pid];
+      if (p && p.subtype === potionType) { potIdx = i; potId = pid; break; }
+    }
+    if (potIdx === -1 || !potId) return;
+    const pot = ITEM_MAP[potId];
+    if (!pot || pot.type !== 'consumable') return;
+    playSFX(potionSfx);
+    if (pot.subtype === 'heal') {
+      h.hp = Math.min(h.maxHp, h.hp + pot.effectValue);
+      showMessage(`❤️ +${pot.effectValue} HP`);
+    } else if (pot.subtype === 'mana') {
+      const cls = CLASSES[state.heroClass];
+      if (cls && cls.resource === 'mana') {
+        state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + pot.effectValue);
+      }
+      showMessage(`💧 +${pot.effectValue} many`);
+    }
+    bpSlots[potIdx] = null;
+    h.equip.beltPotionSlots = bpSlots;
+    saveGame();
+    // Překreslit status na Victory page
+    const mb = mapBattleState;
+    if (mb && mb.locId !== undefined) {
+      const locId = mb.locId;
+      const isWaypoint = state._waypointFloor === true;
+      const nextArea = (state.locationProgress[locId] || 0) + 1;
+      // Znovu vykreslit status
+      const hpPct = Math.round(h.hp / h.maxHp * 100);
+      let resourceHtml = '';
+      if (state.rage !== undefined) resourceHtml = `Rage: <span class="result-status-resource">${Math.round(state.rage)}</span>`;
+      else if (state.energy !== undefined) resourceHtml = `Energy: <span class="result-status-resource">${Math.round(state.energy)}</span>`;
+      else if (state.mana !== undefined) resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
+      let buffsHtml = '';
+      Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${b.icon}</span>`; });
+      Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${d.icon}</span>`; });
+      let healCount = 0, manaCount = 0;
+      bpSlots.forEach(pid => { if (pid === 'healingPotion') healCount++; else if (pid === 'manaPotion') manaCount++; });
+      const healPot = ITEM_MAP['healingPotion'];
+      const manaPot = ITEM_MAP['manaPotion'];
+      const potionsHtml = `<div class="result-status-potions">
+        <div class="result-status-potion ${healCount > 0 ? '' : 'empty'}" onclick="${healCount > 0 ? `game.usePotionFromResult('heal')` : ''}" title="Healing Potion (${healCount})">
+          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${healCount > 0 ? `<span class="result-status-potion-count">${healCount}</span>` : ''}
+        </div>
+        <div class="result-status-potion ${manaCount > 0 ? '' : 'empty'}" onclick="${manaCount > 0 ? `game.usePotionFromResult('mana')` : ''}" title="Mana Potion (${manaCount})">
+          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${manaCount > 0 ? `<span class="result-status-potion-count">${manaCount}</span>` : ''}
+        </div>
+      </div>`;
+      $('resultStatus').innerHTML = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
+        ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
+        ${potionsHtml}`;
+    }
   }
 
   function updateSpellButtons() {
@@ -9276,6 +9345,58 @@
         lootListHtml = '<div style="text-align:center;color:#555;font-size:12px;padding:8px">Žádné předměty</div>';
       }
       $('resultLootList').innerHTML = lootListHtml;
+
+      // === Stav hráče na Victory page ===
+      const h = state.hero;
+      const hpPct = Math.round(h.hp / h.maxHp * 100);
+      const hpColor = hpPct > 50 ? '#e74c3c' : hpPct > 20 ? '#e67e22' : '#ff4444';
+      let resourceHtml = '';
+      if (state.rage !== undefined) {
+        resourceHtml = `Rage: <span class="result-status-resource">${Math.round(state.rage)}</span>`;
+      } else if (state.energy !== undefined) {
+        resourceHtml = `Energy: <span class="result-status-resource">${Math.round(state.energy)}</span>`;
+      } else if (state.mana !== undefined) {
+        resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
+      }
+      // Buffy
+      let buffsHtml = '';
+      Object.keys(_sessionBuffs).forEach(k => {
+        const b = _sessionBuffs[k];
+        if (b && b.ticks > 0) {
+          buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${b.icon}</span>`;
+        }
+      });
+      // Debuffy na hráči
+      Object.keys(_playerDebuffs).forEach(k => {
+        const d = _playerDebuffs[k];
+        if (d && d.ticks > 0) {
+          buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${d.icon}</span>`;
+        }
+      });
+      // Potiony v opasku
+      const bpSlots = h.equip.beltPotionSlots || [];
+      let healCount = 0, manaCount = 0;
+      bpSlots.forEach(potId => {
+        if (potId === 'healingPotion') healCount++;
+        else if (potId === 'manaPotion') manaCount++;
+      });
+      const healPot = ITEM_MAP['healingPotion'];
+      const manaPot = ITEM_MAP['manaPotion'];
+      const potionsHtml = `<div class="result-status-potions">
+        <div class="result-status-potion ${healCount > 0 ? '' : 'empty'}" onclick="${healCount > 0 ? `game.usePotionFromResult('heal')` : ''}" title="Healing Potion (${healCount})">
+          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${healCount > 0 ? `<span class="result-status-potion-count">${healCount}</span>` : ''}
+        </div>
+        <div class="result-status-potion ${manaCount > 0 ? '' : 'empty'}" onclick="${manaCount > 0 ? `game.usePotionFromResult('mana')` : ''}" title="Mana Potion (${manaCount})">
+          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${manaCount > 0 ? `<span class="result-status-potion-count">${manaCount}</span>` : ''}
+        </div>
+      </div>`;
+      const statusHtml = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
+        ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
+        ${potionsHtml}`;
+      $('resultStatus').innerHTML = statusHtml;
+
       // Victory action buttons
       const hasScroll = (state.townPortalCount || 0) > 0;
       let actionsHtml;
@@ -11862,7 +11983,7 @@
     showFaceSelect, closeFaceSelect, selectFace,
     selectClass,
     castClassSpell,
-    usePotion,
+    usePotion, usePotionFromResult,
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
     continueFromWaypoint, continueFromWaypointResult, returnToTownFromWaypoint,

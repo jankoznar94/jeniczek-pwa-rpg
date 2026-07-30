@@ -1327,7 +1327,7 @@ body.no-scroll { overflow: hidden; }
 }
 .result-bottom:empty { display:none; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
-.result-icon-img { width:auto;height:auto;max-width:60vw;max-height:20vh;object-fit:contain;display:block; }
+.result-icon-img { width:auto;height:auto;max-width:60vw;max-height:12vh;object-fit:contain;display:block; }
 .result-icon-img.large { max-width:90vw;max-height:50vh; }
 .result-screen.centered,
 #resultScreen.centered .result-screen {
@@ -1335,6 +1335,19 @@ body.no-scroll { overflow: hidden; }
 }
 .result-title { font-size:22px; font-weight:bold; margin:8px 0; }
 .result-sub { font-size:16px; color:#888888; }
+.result-status { display:flex;flex-direction:column;gap:4px;align-items:center;margin:6px 0;width:100%; }
+.result-status-row { display:flex;align-items:center;gap:8px;font-size:13px;color:#aaa; }
+.result-status-hp { color:#e74c3c;font-weight:bold; }
+.result-status-resource { color:#5dade2;font-weight:bold; }
+.result-status-buffs { display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:2px 0; }
+.result-status-buff { font-size:18px;cursor:default;position:relative; }
+.result-status-buff:hover::after { content:attr(data-name);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:2px 6px;border-radius:4px;font-size:11px;white-space:nowrap;z-index:10; }
+.result-status-potions { display:flex;gap:6px;margin:4px 0; }
+.result-status-potion { width:36px;height:36px;border-radius:6px;border:1px solid #555;background:#111;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:0.15s; }
+.result-status-potion:hover { border-color:#f1c40f;transform:scale(1.05); }
+.result-status-potion.empty { opacity:0.3;cursor:default; }
+.result-status-potion.empty:hover { border-color:#555;transform:none; }
+.result-status-potion-count { position:absolute;bottom:0;right:0;background:#111;border:1px solid #f1c40f;border-radius:3px;color:#f1c40f;font-size:9px;font-weight:bold;padding:0 2px;line-height:12px; }
 .result-stats { display:flex;flex-direction:column;gap:8px;align-items:center;margin:16px 0; }
 .result-stat { display:flex;align-items:center;gap:8px;font-size:15px;background:#000;padding:6px 14px;border-radius:8px;min-width:160px;justify-content:center; }
 .result-stat-icon { font-size:20px; }
