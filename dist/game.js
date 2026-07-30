@@ -1285,7 +1285,8 @@
   function getStackCount(inventory, itemId) {
     for (let i = 0; i < inventory.length; i++) {
       const entry = inventory[i];
-      if (typeof entry === 'object' && entry.id === itemId) return entry.count || 1;
+      const eid = typeof entry === 'object' ? entry.id : entry;
+      if (eid === itemId) return typeof entry === 'object' ? (entry.count || 1) : 1;
     }
     return 0;
   }
