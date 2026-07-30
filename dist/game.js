@@ -1766,7 +1766,7 @@
     // Socket indikátory — puntíky u spodní hrany
     let socketDots = '';
     if (item.sockets && item.sockets > 0) {
-      const dotSize = size === 0 ? 6 : 5;
+      const dotSize = size === 0 ? 7 : 6;
       const dotGap = 2;
       const totalW = item.sockets * dotSize + (item.sockets - 1) * dotGap;
       const startX = size === 0 ? `calc(50% - ${totalW/2}px)` : `calc(50% - ${totalW/2}px)`;
