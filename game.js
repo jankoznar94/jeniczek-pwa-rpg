@@ -11327,9 +11327,8 @@
         const slot = slotMap[slotEl.id];
         if (!slot) return;
         const itemId = h.equip[slot];
-        // Pokud je vybraný item v batohu → equipni ho do slotu
+        // Pokud je vybraný item v batohu → nic, equip jde jen přes tlačítko v info okně
         if (window._invSelectedIdx !== null) {
-          equipItemToSlot(window._invSelectedIdx, slot);
           clearSelection();
           return;
         }
@@ -11457,7 +11456,7 @@
       }
       if (item.type === 'shield' || item.type === 'offhand') {
         correctSlot = 'shield';
-      } else if (item.type === 'weapon') {
+      } else if (item.type === 'weapon' && !item.twoHand) {
         const cls = CLASSES[state.heroClass];
         if (cls && cls.dualWield) {
           correctSlot = 'shield';
