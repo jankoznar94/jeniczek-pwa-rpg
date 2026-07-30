@@ -962,7 +962,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Enemy buff overlay — vlevo v aréně, pod debuffy, zelený border */
 .enemy-buff-overlay {
-  position:absolute;top:10px;left:42px;z-index:30;
+  position:absolute;top:10px;left:24px;z-index:30;
   display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
@@ -971,7 +971,7 @@ body.no-scroll { overflow: hidden; }
 
 /* Player debuff overlay — vpravo v aréně, na stejné úrovni jako buffy */
 .player-debuff-overlay {
-  position:absolute;bottom:70px;right:42px;z-index:29;
+  position:absolute;bottom:70px;right:56px;z-index:29;
   display:flex;flex-direction:column-reverse;align-items:center;gap:4px;pointer-events:none;
   width:auto;
 }
