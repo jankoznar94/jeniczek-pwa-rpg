@@ -8989,19 +8989,19 @@
   const RARITY = {
     common: { name:'Common', color:'#e8e0e8', border:'#888' },
     magic: { name:'Magic', color:'#4a7dff', border:'#4a7dff' },
-    rare: { name:'Rare', color:'#c8d8ff', border:'#4a8af4' },
-    epic: { name:'Epic', color:'#e8c8ff', border:'#9c27b0' }
+    rare: { name:'Rare', color:'#ffd700', border:'#ffd700' },
+    unique: { name:'Unique', color:'#b8860b', border:'#b8860b' }
   };
 
   function getRarity(bossDrop) {
     const r = Math.random();
     if (bossDrop) {
-      if (r < 0.15) return 'epic';
+      if (r < 0.15) return 'unique';
       if (r < 0.40) return 'rare';
       if (r < 0.70) return 'magic';
       return 'common';
     } else {
-      if (r < 0.01) return 'epic';
+      if (r < 0.01) return 'unique';
       if (r < 0.06) return 'rare';
       if (r < 0.35) return 'magic';
       return 'common';
@@ -9070,7 +9070,7 @@
         if (item) {
           item.tier = tier;
           item.subtype = subtype;
-          item.rarity = 'epic';
+          item.rarity = 'unique';
           item.icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
           item.cost = 10 + tier * 20 + (item.affixes || []).length * 15;
           ITEM_MAP[item.id] = item;
@@ -9260,7 +9260,7 @@
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
           const r = RARITY[item.rarity] || RARITY.common;
-          lootListHtml += `<div class="loot-scroll-item"><span class="loot-scroll-icon">${renderItemIcon(item,32)}</span><span class="loot-scroll-name" style="color:${r.color}">${getItemSocketName(item)}</span></div>`;
+          lootListHtml += `<div class="loot-scroll-item" style="border-left:3px solid ${r.border}"><span class="loot-scroll-icon">${renderItemIcon(item,32)}</span><span class="loot-scroll-name" style="color:${r.color}">${getItemSocketName(item)}</span></div>`;
         });
       }
       if (tpScrollsFromLoot > 0) {
@@ -10690,7 +10690,7 @@
         item = generateUniqueItem(uniqueDef);
         if (item) {
           item.tier = baseItem.tier || 1;
-          item.rarity = 'epic';
+          item.rarity = 'unique';
           item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
           item.cost = price;
           ITEM_MAP[item.id] = item;
