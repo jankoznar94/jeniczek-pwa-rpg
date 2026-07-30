@@ -1778,9 +1778,9 @@
           const gemColors = { ruby:'#e94560', sapphire:'#4a7dff', emerald:'#2ecc71', topaz:'#f1c40f' };
           dotColor = gemColors[gem.type] || '#555';
         }
-        dots += `<span style="display:inline-block;width:${dotSize}px;height:${dotSize}px;border-radius:50%;background:${dotColor};${i < item.sockets - 1 ? `margin-right:${dotGap}px` : ''}"></span>`;
+        dots += `<span style="display:inline-block;width:${dotSize}px;height:${dotSize}px;border-radius:50%;border:1px solid #333;background:${dotColor};${i < item.sockets - 1 ? `margin-right:${dotGap}px` : ''}"></span>`;
       }
-      socketDots = `<span style="position:absolute;bottom:1px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0;line-height:0;pointer-events:none">${dots}</span>`;
+      socketDots = `<span style="position:absolute;bottom:3px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0;line-height:0;pointer-events:none">${dots}</span>`;
     }
     if (item.iconImg) {
       if (size === 0) {
