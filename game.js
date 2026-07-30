@@ -4484,8 +4484,8 @@
       else if (state.energy !== undefined) resourceHtml = `Energy: <span class="result-status-resource">${Math.round(state.energy)}</span>`;
       else if (state.mana !== undefined) resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
       let buffsHtml = '';
-      Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${b.icon}</span>`; });
-      Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${d.icon}</span>`; });
+      Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = k === 'bloodrage' || k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout'; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
+      Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = k === 'thunderClap' || k === 'thunderBolt'; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
       let healCount = 0, manaCount = 0;
       bpSlots.forEach(pid => { if (pid === 'healingPotion') healCount++; else if (pid === 'manaPotion') manaCount++; });
       const healPot = ITEM_MAP['healingPotion'];
@@ -9369,14 +9369,16 @@
       Object.keys(_sessionBuffs).forEach(k => {
         const b = _sessionBuffs[k];
         if (b && b.ticks > 0) {
-          buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${b.icon}</span>`;
+          const hasImg = k === 'bloodrage' || k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout';
+          buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`;
         }
       });
       // Debuffy na hráči
       Object.keys(_playerDebuffs).forEach(k => {
         const d = _playerDebuffs[k];
         if (d && d.ticks > 0) {
-          buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${d.icon}</span>`;
+          const hasImg = k === 'thunderClap' || k === 'thunderBolt';
+          buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`;
         }
       });
       // Potiony v opasku
