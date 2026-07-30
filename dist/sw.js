@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v129';
-const ASSET_CACHE = 'boss-slayer-assets-v22';
+const ASSET_CACHE = 'boss-slayer-assets-v23';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=129', '/game.js?v=129', '/manifest.json'];
 
@@ -100,6 +100,12 @@ const ASSET_FILES = [
   '/assets/items/belt_mithril.png', '/assets/items/potion_healing.png',
   '/assets/items/potion_mana.png',
   '/assets/items/town_portal_scroll.png',
+  '/assets/items/gloves_leather.png', '/assets/items/gloves_heavy.png',
+  '/assets/items/gloves_chain.png', '/assets/items/gloves_lightGauntlets.png',
+  '/assets/items/gloves_gauntlets.png',
+  '/assets/items/boots_boots.png', '/assets/items/boots_heavy.png',
+  '/assets/items/boots_chain.png', '/assets/items/boots_lightPlated.png',
+  '/assets/items/boots_greaves.png',
   '/assets/waypoints/waypoint_act0.png', '/assets/waypoints/waypoint_act1.png',
   '/assets/waypoints/waypoint_act2.png', '/assets/waypoints/waypoint_act3.png',
   '/assets/waypoints/waypoint_act4.png',

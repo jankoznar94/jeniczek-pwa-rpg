@@ -834,6 +834,44 @@
     { id:'goldAmulet', name:'Amulet', type:'amulet', cost:110, icon:'📿', iconImg:'assets/items/amulet_gold.png', tier:4 },
     { id:'rubyAmulet', name:'Amulet', type:'amulet', cost:190, icon:'📿', iconImg:'assets/items/amulet_ruby.png', tier:5 },
     { id:'arcaneAmulet', name:'Amulet', type:'amulet', cost:250, icon:'📿', iconImg:'assets/items/amulet_arcane.png', tier:6 },
+    // === RUKAVICE ===
+    // Normal
+    { id:'gloves_leather', name:'Leather Gloves', type:'gloves', baseDmg:0, defense:3, cost:10, icon:'🧤', iconImg:'assets/items/gloves_leather.png', tier:1 },
+    { id:'gloves_heavy', name:'Heavy Gloves', type:'gloves', baseDmg:0, defense:6, cost:20, icon:'🧤', iconImg:'assets/items/gloves_heavy.png', tier:1 },
+    { id:'gloves_chain', name:'Chain Gloves', type:'gloves', baseDmg:0, defense:9, cost:30, icon:'🧤', iconImg:'assets/items/gloves_chain.png', tier:2 },
+    { id:'gloves_lightGauntlets', name:'Light Gauntlets', type:'gloves', baseDmg:0, defense:12, cost:45, icon:'🧤', iconImg:'assets/items/gloves_lightGauntlets.png', tier:2 },
+    { id:'gloves_gauntlets', name:'Gauntlets', type:'gloves', baseDmg:0, defense:14, cost:60, icon:'🧤', iconImg:'assets/items/gloves_gauntlets.png', tier:3 },
+    // Nightmare
+    { id:'gloves_demonhide', name:'Demonhide Gloves', type:'gloves', baseDmg:0, defense:32, cost:80, icon:'🧤', iconImg:'assets/items/gloves_leather.png', tier:3 },
+    { id:'gloves_sharkskin', name:'Sharkskin Gloves', type:'gloves', baseDmg:0, defense:36, cost:110, icon:'🧤', iconImg:'assets/items/gloves_heavy.png', tier:4 },
+    { id:'gloves_heavyBracers', name:'Heavy Bracers', type:'gloves', baseDmg:0, defense:41, cost:140, icon:'🧤', iconImg:'assets/items/gloves_chain.png', tier:4 },
+    { id:'gloves_battleGauntlets', name:'Battle Gauntlets', type:'gloves', baseDmg:0, defense:43, cost:170, icon:'🧤', iconImg:'assets/items/gloves_lightGauntlets.png', tier:5 },
+    { id:'gloves_warGauntlets', name:'War Gauntlets', type:'gloves', baseDmg:0, defense:49, cost:200, icon:'🧤', iconImg:'assets/items/gloves_gauntlets.png', tier:5 },
+    // Hell
+    { id:'gloves_brambleMitts', name:'Bramble Mitts', type:'gloves', baseDmg:0, defense:58, cost:150, icon:'🧤', iconImg:'assets/items/gloves_leather.png', tier:5 },
+    { id:'gloves_vampirebone', name:'Vampirebone Gloves', type:'gloves', baseDmg:0, defense:61, cost:190, icon:'🧤', iconImg:'assets/items/gloves_heavy.png', tier:6 },
+    { id:'gloves_vambraces', name:'Vambraces', type:'gloves', baseDmg:0, defense:63, cost:240, icon:'🧤', iconImg:'assets/items/gloves_chain.png', tier:6 },
+    { id:'gloves_cruelGauntlets', name:'Cruel Gauntlets', type:'gloves', baseDmg:0, defense:64, cost:300, icon:'🧤', iconImg:'assets/items/gloves_lightGauntlets.png', tier:7 },
+    { id:'gloves_ogreGauntlets', name:'Ogre Gauntlets', type:'gloves', baseDmg:0, defense:70, cost:370, icon:'🧤', iconImg:'assets/items/gloves_gauntlets.png', tier:7 },
+    // === BOTY ===
+    // Normal
+    { id:'boots_boots', name:'Boots', type:'boots', baseDmg:0, defense:3, cost:10, icon:'👢', iconImg:'assets/items/boots_boots.png', tier:1 },
+    { id:'boots_heavy', name:'Heavy Boots', type:'boots', baseDmg:0, defense:6, cost:20, icon:'👢', iconImg:'assets/items/boots_heavy.png', tier:1 },
+    { id:'boots_chain', name:'Chain Boots', type:'boots', baseDmg:0, defense:9, cost:30, icon:'👢', iconImg:'assets/items/boots_chain.png', tier:2 },
+    { id:'boots_lightPlated', name:'Light Plated Boots', type:'boots', baseDmg:0, defense:10, cost:45, icon:'👢', iconImg:'assets/items/boots_lightPlated.png', tier:2 },
+    { id:'boots_greaves', name:'Greaves', type:'boots', baseDmg:0, defense:14, cost:60, icon:'👢', iconImg:'assets/items/boots_greaves.png', tier:3 },
+    // Nightmare
+    { id:'boots_demonhide', name:'Demonhide Boots', type:'boots', baseDmg:0, defense:32, cost:80, icon:'👢', iconImg:'assets/items/boots_boots.png', tier:3 },
+    { id:'boots_sharkskin', name:'Sharkskin Boots', type:'boots', baseDmg:0, defense:36, cost:110, icon:'👢', iconImg:'assets/items/boots_heavy.png', tier:4 },
+    { id:'boots_mesh', name:'Mesh Boots', type:'boots', baseDmg:0, defense:41, cost:140, icon:'👢', iconImg:'assets/items/boots_chain.png', tier:4 },
+    { id:'boots_battle', name:'Battle Boots', type:'boots', baseDmg:0, defense:43, cost:170, icon:'👢', iconImg:'assets/items/boots_lightPlated.png', tier:5 },
+    { id:'boots_war', name:'War Boots', type:'boots', baseDmg:0, defense:49, cost:200, icon:'👢', iconImg:'assets/items/boots_greaves.png', tier:5 },
+    // Hell
+    { id:'boots_wyrmhide', name:'Wyrmhide Boots', type:'boots', baseDmg:0, defense:58, cost:150, icon:'👢', iconImg:'assets/items/boots_boots.png', tier:5 },
+    { id:'boots_scarabshell', name:'Scarabshell Boots', type:'boots', baseDmg:0, defense:61, cost:190, icon:'👢', iconImg:'assets/items/boots_heavy.png', tier:6 },
+    { id:'boots_boneweave', name:'Boneweave Boots', type:'boots', baseDmg:0, defense:63, cost:240, icon:'👢', iconImg:'assets/items/boots_chain.png', tier:6 },
+    { id:'boots_mirrored', name:'Mirrored Boots', type:'boots', baseDmg:0, defense:64, cost:300, icon:'👢', iconImg:'assets/items/boots_lightPlated.png', tier:7 },
+    { id:'boots_myrmidon', name:'Myrmidon Greaves', type:'boots', baseDmg:0, defense:67, cost:370, icon:'👢', iconImg:'assets/items/boots_greaves.png', tier:7 },
     // === BELTY ===
     // Normal
     { id:'belt_sash', name:'Sash', type:'belt', baseDmg:0, beltRows:1, defense:3, cost:10, icon:'🎗️', iconImg:'assets/items/belt_cloth.png', tier:1 },
@@ -878,16 +916,16 @@
     { id:'sharp', name:'Sharp', type:'prefix', group:7, minIlvl:5, weight:6,
       types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
     { id:'bloody', name:'Bloody', type:'prefix', group:8, minIlvl:10, weight:5,
-      types:['weapon','ring','amulet'], stats:{ lifesteal:[2,5] }, tint:'#e94560' },
+      types:['weapon','ring','amulet','gloves'], stats:{ lifesteal:[2,5] }, tint:'#e94560' },
     { id:'manaSteal', name:'Mana Steal', type:'prefix', group:14, minIlvl:8, weight:5,
-      types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
+      types:['weapon','ring','amulet','gloves'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
     // Defenzivní prefixy — více tierů (ED + bonusHp)
     { id:'fortified', name:'Fortified', type:'prefix', group:15, minIlvl:1, weight:8,
-      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
+      types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
     { id:'sturdy', name:'Sturdy', type:'prefix', group:18, minIlvl:8, weight:7,
-      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
+      types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
     { id:'reinforced', name:'Reinforced', type:'prefix', group:19, minIlvl:14, weight:6,
-      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
+      types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
     { id:'deadly', name:'Deadly', type:'prefix', group:16, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
     { id:'mystic', name:'Mystic', type:'prefix', group:9, minIlvl:1, weight:6,
@@ -903,7 +941,7 @@
     { id:'skillful', name:'Skillful', type:'prefix', group:13, minIlvl:8, weight:5,
       types:['weapon','ring','amulet'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     { id:'vital', name:'Vital', type:'prefix', group:20, minIlvl:1, weight:6,
-      types:['ring','amulet','armor','belt'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','belt','gloves','boots'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
     { id:'smoldering', name:'Smoldering', type:'prefix', group:21, minIlvl:5, weight:5,
       types:['weapon'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'glacial', name:'Glacial', type:'prefix', group:22, minIlvl:5, weight:5,
@@ -922,9 +960,9 @@
     { id:'ofWisdom', name:'of Wisdom', type:'suffix', group:108, minIlvl:1, weight:6,
       types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
     { id:'ofStrength', name:'of Strength', type:'suffix', group:109, minIlvl:1, weight:6,
-      types:['ring','amulet','armor','belt'], stats:{ str:[2,6] }, tint:'#e94560' },
+      types:['ring','amulet','armor','belt','gloves','boots'], stats:{ str:[2,6] }, tint:'#e94560' },
     { id:'ofEndurance', name:'of Endurance', type:'suffix', group:110, minIlvl:1, weight:6,
-      types:['ring','amulet','armor','belt'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','belt','gloves','boots'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
     { id:'ofDexterity', name:'of Dexterity', type:'suffix', group:111, minIlvl:1, weight:6,
       types:['ring','amulet','weapon'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
     { id:'ofManaRegen', name:'of Mana Regen', type:'suffix', group:112, minIlvl:1, weight:4,
@@ -936,9 +974,9 @@
     { id:'ofPestilence', name:'of Pestilence', type:'suffix', group:124, minIlvl:16, weight:3,
       types:['weapon'], stats:{ poisonDmg:[10,22], poisonDur:[3,6] }, tint:'#2ecc71' },
     { id:'ofManaSteal', name:'of Mana Steal', type:'suffix', group:115, minIlvl:8, weight:4,
-      types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
+      types:['weapon','ring','amulet','gloves'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
     { id:'ofLife', name:'of Life', type:'suffix', group:121, minIlvl:1, weight:6,
-      types:['ring','amulet','armor'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','gloves','boots'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
     { id:'ofBurning', name:'of Burning', type:'suffix', group:122, minIlvl:5, weight:5,
       types:['weapon'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'ofFrost', name:'of Frost', type:'suffix', group:123, minIlvl:5, weight:5,
@@ -949,56 +987,60 @@
       types:['weapon'], stats:{ lightningDmg:[3,8] }, tint:'#8b5cf6' },
     // Defenzivní suffixy — více tierů (ED + bonusHp)
     { id:'ofFortification', name:'of Fortification', type:'suffix', group:116, minIlvl:1, weight:8,
-      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
+      types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
     { id:'ofProtection', name:'of Protection', type:'suffix', group:118, minIlvl:8, weight:7,
-      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
+      types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
     { id:'ofWarding', name:'of Warding', type:'suffix', group:119, minIlvl:14, weight:6,
-      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
+      types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
     { id:'ofSlaughter', name:'of Slaughter', type:'suffix', group:117, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
     // === RYCHLOST ÚTOKU A KOUZLENÍ ===
     { id:'swift', name:'Swift', type:'prefix', group:18, minIlvl:8, weight:5,
-      types:['weapon'], stats:{ swingMs:[-300,-150] }, tint:'#1abc9c' },
+      types:['weapon','gloves'], stats:{ swingMs:[-300,-150] }, tint:'#1abc9c' },
+    { id:'ofSpeed', name:'of Speed', type:'suffix', group:106, minIlvl:10, weight:5,
+      types:['weapon','gloves'], stats:{ swingMs:[-200,-100] }, tint:'#1abc9c' },
+    { id:'ofAlacrity', name:'of Alacrity', type:'suffix', group:140, minIlvl:20, weight:3,
+      types:['weapon','gloves'], stats:{ swingMs:[-400,-250] }, tint:'#1abc9c' },
     { id:'ofCasting', name:'of Casting', type:'suffix', group:120, minIlvl:10, weight:5,
       types:['weapon','ring','amulet'], stats:{ castSpeed:[10,25] }, tint:'#9b59b6' },
     // === ELEMENTÁRNÍ REZISTENCE (D2 styl) ===
     // Single resists — prefixy
     { id:'crimson', name:'Crimson', type:'prefix', group:30, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
     { id:'azure', name:'Azure', type:'prefix', group:31, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
     { id:'tangerine', name:'Tangerine', type:'prefix', group:32, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
     { id:'viridian', name:'Viridian', type:'prefix', group:33, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
     // Single resists — vyšší tier
     { id:'scarlet', name:'Scarlet', type:'prefix', group:30, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ fireRes:[10,25] }, tint:'#e94560' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ fireRes:[10,25] }, tint:'#e94560' },
     { id:'lapis', name:'Lapis', type:'prefix', group:31, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ coldRes:[10,25] }, tint:'#4a7dff' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ coldRes:[10,25] }, tint:'#4a7dff' },
     { id:'orange', name:'Orange', type:'prefix', group:32, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ lightningRes:[10,25] }, tint:'#f39c12' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ lightningRes:[10,25] }, tint:'#f39c12' },
     { id:'jade', name:'Jade', type:'prefix', group:33, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ poisonRes:[10,25] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ poisonRes:[10,25] }, tint:'#2ecc71' },
     // All resists — prefix
     { id:'scintillating', name:'Scintillating', type:'prefix', group:34, minIlvl:15, weight:4,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
     { id:'rainbow', name:'Rainbow', type:'prefix', group:34, minIlvl:25, weight:3,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
     // Single resists — suffixy
     { id:'ofWardingFire', name:'of Warding', type:'suffix', group:130, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
     { id:'ofWardingCold', name:'of Frost Warding', type:'suffix', group:131, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
     { id:'ofWardingLightning', name:'of Lightning Warding', type:'suffix', group:132, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
     { id:'ofWardingPoison', name:'of Poison Warding', type:'suffix', group:133, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
     // All resists — suffix
     { id:'ofProtectionAll', name:'of Protection', type:'suffix', group:134, minIlvl:15, weight:4,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
     { id:'ofImmunity', name:'of Immunity', type:'suffix', group:134, minIlvl:25, weight:3,
-      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt','gloves','boots'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
     // === MAGIC FIND (D2 styl) ===
     { id:'chance', name:'Chance', type:'prefix', group:35, minIlvl:5, weight:5,
       types:['ring','amulet','helmet'], stats:{ magicFind:[5,15] }, tint:'#f1c40f' },
@@ -1373,7 +1415,7 @@
     const h = state.hero;
     if (!h || !h.equip) return 0;
     // Projít všechny equip sloty
-    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt'];
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt', 'gloves', 'boots'];
     slots.forEach(slot => {
       const itemId = h.equip[slot];
       if (itemId) {
@@ -1388,7 +1430,7 @@
     let gf = 0;
     const h = state.hero;
     if (!h || !h.equip) return 0;
-    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt'];
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt', 'gloves', 'boots'];
     slots.forEach(slot => {
       const itemId = h.equip[slot];
       if (itemId) {
@@ -1403,7 +1445,7 @@
     let res = 0;
     const h = state.hero;
     if (!h || !h.equip) return 0;
-    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt'];
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt', 'gloves', 'boots'];
     slots.forEach(slot => {
       const itemId = h.equip[slot];
       if (itemId) {
@@ -2296,7 +2338,7 @@
         });
       });
     });
-    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[]},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
+    const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[],gloves:null,boots:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], areaFightProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
       waypoints:[[],[],[],[],[]], // waypoints[actId] = [zoneId, ...] — odemčené waypointy
@@ -2333,6 +2375,8 @@
       if (!s.hero.equip.ring2) s.hero.equip.ring2 = null;
       if (!s.hero.equip.belt) s.hero.equip.belt = null;
       if (!s.hero.equip.beltPotionSlots) s.hero.equip.beltPotionSlots = [];
+      if (!s.hero.equip.gloves) s.hero.equip.gloves = null;
+      if (!s.hero.equip.boots) s.hero.equip.boots = null;
     }
     if (s.townPortalCount === undefined) s.townPortalCount = 0;
     // Migrace: bossesDefeated z flat array na 2D [difficulty][actId]
@@ -8874,7 +8918,7 @@
     }
 
     // 🩸 Life steal a 💜 Mana steal z equipu (procentuálně z uděleného dmg)
-    const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet]].filter(Boolean);
+    const eqItems = [weapon, ITEM_MAP[state.hero.equip.ring1], ITEM_MAP[state.hero.equip.ring2], ITEM_MAP[state.hero.equip.amulet], ITEM_MAP[state.hero.equip.gloves]].filter(Boolean);
     const totalLifeSteal = eqItems.reduce((sum, it) => sum + (it.lifesteal || 0), 0);
     const totalManaSteal = eqItems.reduce((sum, it) => sum + (it.manaSteal || 0), 0);
     if (totalLifeSteal > 0) {
@@ -9082,9 +9126,11 @@
     helmet: ['Lněná kápě','Kožená čapka','Železná helma','Ocelová helma','Stříbrná přilba','Arcimágova koruna'],
     shield: ['Dřevěný štít','Kožený štít','Železný štít','Ocelový štít','Stříbrný štít','Paladinův štít'],
     ring: ['Měděný prsten','Cínový prsten','Stříbrný prsten','Zlatý prsten','Platinový prsten','Drahokamový prsten'],
-    amulet: ['Kostěný amulet','Měděný amulet','Stříbrný amulet','Zlatý amulet','Rubínový amulet','Arcánní amulet']
+    amulet: ['Kostěný amulet','Měděný amulet','Stříbrný amulet','Zlatý amulet','Rubínový amulet','Arcánní amulet'],
+    gloves: ['Kožené rukavice','Těžké rukavice','Řetězové rukavice','Lehké pláty','Plátové rukavice','Démonické rukavice','Žraločí rukavice','Těžké nápažníky','Bojové pláty','Válečné pláty','Bramble rukavice','Upíří rukavice','Vambrace','Kruté pláty','Hydraskin rukavice'],
+    boots: ['Boty','Těžké boty','Řetězové boty','Lehké plátované boty','Nákoleníky','Démonické boty','Žraločí boty','Síťované boty','Bojové boty','Válečné boty','Wyrmhide boty','Scarabshell boty','Kostěné boty','Zrcadlové boty','Myrmidon nákoleníky']
   };
-  const LOOT_ICONS = { weapon_staff:'🪄', weapon_blade:'⚔️', armor:'👘', helmet:'⛑️', shield:'🛡️', ring:'💍', amulet:'📿' };
+  const LOOT_ICONS = { weapon_staff:'🪄', weapon_blade:'⚔️', armor:'👘', helmet:'⛑️', shield:'🛡️', ring:'💍', amulet:'📿', gloves:'🧤', boots:'👢' };
   const ATTR_KEYS = ['str','vit','dex','int'];
   const ATTR_NAMES = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
   const RARITY = {
@@ -9140,6 +9186,8 @@
     else if (typeRoll < 0.73) { type = 'helmet'; subtype = null; }
     else if (typeRoll < 0.90) { type = 'shield'; subtype = null; }
     else if (typeRoll < 0.95) { type = 'ring'; subtype = null; }
+    else if (typeRoll < 0.975) { type = 'gloves'; subtype = null; }
+    else if (typeRoll < 1.0) { type = 'boots'; subtype = null; }
     else { type = 'amulet'; subtype = null; }
 
     // Common itemy jen pro zbroj a zbraně (jako Diablo 2)
@@ -10140,8 +10188,8 @@
   }
   function getEquipAttrs() {
     const h = state.hero;
-    const slots = ['weapon','armor','helmet','shield','ring1','ring2','amulet','belt'];
-    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
+    const slots = ['weapon','armor','helmet','shield','ring1','ring2','amulet','belt','gloves','boots'];
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null, gloves:null, boots:null };
     const total = { str:0, vit:0, dex:0, int:0, castSpeed:0 };
     slots.forEach(slot => {
       const itemId = h.equip[slot];
@@ -10180,7 +10228,9 @@
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
-    const bonus = (armor ? armor.bonusHp||0 : 0) + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0) + (amulet ? amulet.bonusHp||0 : 0) + (belt ? belt.bonusHp||0 : 0);
+    const gloves = ITEM_MAP[h.equip.gloves];
+    const boots = ITEM_MAP[h.equip.boots];
+    const bonus = (armor ? armor.bonusHp||0 : 0) + (helmet ? helmet.bonusHp||0 : 0) + (shield ? shield.bonusHp||0 : 0) + (ring1 ? ring1.bonusHp||0 : 0) + (ring2 ? ring2.bonusHp||0 : 0) + (amulet ? amulet.bonusHp||0 : 0) + (belt ? belt.bonusHp||0 : 0) + (gloves ? gloves.bonusHp||0 : 0) + (boots ? boots.bonusHp||0 : 0);
     const eqAttrs = getEquipAttrs();
     return Math.max(1, 30 + Math.floor(h.level * 5) + bonus + ((h.attrVit||0) + eqAttrs.vit) * 5);
   }
@@ -10196,7 +10246,9 @@
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
-    const bonus = (weapon.bonusMana||0) + (armor ? armor.bonusMana||0 : 0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0);
+    const gloves = ITEM_MAP[h.equip.gloves];
+    const boots = ITEM_MAP[h.equip.boots];
+    const bonus = (weapon.bonusMana||0) + (armor ? armor.bonusMana||0 : 0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0) + (gloves ? gloves.bonusMana||0 : 0) + (boots ? boots.bonusMana||0 : 0);
     return Math.max(10, baseMana + ((h.attrInt||0) + getEquipAttrs().int) * 5 + bonus);
   }
   const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
@@ -10233,7 +10285,9 @@
     const armorDef = (ITEM_MAP[h.equip.armor] ? ITEM_MAP[h.equip.armor].defense || 0 : 0);
     const helmetDef = ITEM_MAP[h.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[h.equip.shield]?.defense || 0;
-    const totalDef = armorDef + helmetDef + shieldDef;
+    const glovesDef = ITEM_MAP[h.equip.gloves]?.defense || 0;
+    const bootsDef = ITEM_MAP[h.equip.boots]?.defense || 0;
+    const totalDef = armorDef + helmetDef + shieldDef + glovesDef + bootsDef;
     const defPct = Math.round(100 - 10000 / (100 + totalDef));
     const dex = (h.attrDex || 0) + (getEquipAttrs().dex || 0);
     const dodgePct = Math.min(50, Math.round(dex * 0.5));
@@ -10507,8 +10561,8 @@
       'topaz_chipped', 'topaz_flawed', 'topaz', 'topaz_flawless', 'topaz_perfect']
       .map(id => ITEM_MAP[id]).filter(Boolean);
 
-    // Armor: 3-4 itemy z poolu armor/helmet/shield/belt
-    const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
+    // Armor: 3-4 itemy z poolu armor/helmet/shield/belt/gloves/boots
+    const armorTypes = ['armor', 'helmet', 'shield', 'belt', 'gloves', 'boots'];
     const armorItems = [];
     armorTypes.forEach(type => {
       const bases = _shopFindBases(type, null, 2); // 2 itemy na typ
@@ -10732,7 +10786,7 @@
     });
 
     // Armor — 1 z každého typu
-    const armorTypes = ['armor', 'helmet', 'shield', 'belt'];
+    const armorTypes = ['armor', 'helmet', 'shield', 'belt', 'gloves', 'boots'];
     const armorItems = [];
     armorTypes.forEach(type => {
       const bases = _gambleFindBases(type, null, 1);
@@ -10899,7 +10953,7 @@
 
   function sellSlotItem(itemId, slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null, gloves:null, boots:null };
     if (h.equip[slot] !== itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
@@ -11067,7 +11121,7 @@
       const compareEl = $('invItemOverlayCompare');
       const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet' };
       const equipSlot = slotMap[item.type];
-      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null };
+      const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null, gloves:null, boots:null };
       let hasCompare = false;
 
       if (equipSlot) {
@@ -11232,6 +11286,8 @@
     const ring2 = ITEM_MAP[h.equip.ring2];
     const amulet = ITEM_MAP[h.equip.amulet];
     const belt = ITEM_MAP[h.equip.belt];
+    const gloves = ITEM_MAP[h.equip.gloves];
+    const boots = ITEM_MAP[h.equip.boots];
     $('invSlotWeaponIcon').innerHTML = h.equip.weapon === 'fists' ? renderItemIcon({iconImg:'assets/items/weapon_iron_sword.png',tier:1}, 0) : renderItemIcon(weapon, 0);
     $('invSlotWeapon').classList.toggle('empty', h.equip.weapon === 'fists');
     setSlotBorder('invSlotWeapon', weapon);
@@ -11251,6 +11307,10 @@
     const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
     const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 0);
     const bS = $('invSlotBelt'); if (bS) { bS.classList.toggle('empty', !belt); setSlotBorder('invSlotBelt', belt); }
+    const gEl = $('invSlotGlovesIcon'); if (gEl) gEl.innerHTML = gloves ? renderItemIcon(gloves, 0) : renderItemIcon({iconImg:'assets/items/gloves_leather.png',tier:1}, 0);
+    const gS = $('invSlotGloves'); if (gS) { gS.classList.toggle('empty', !gloves); setSlotBorder('invSlotGloves', gloves); }
+    const bEl2 = $('invSlotBootsIcon'); if (bEl2) bEl2.innerHTML = boots ? renderItemIcon(boots, 0) : renderItemIcon({iconImg:'assets/items/boots_boots.png',tier:1}, 0);
+    const bS2 = $('invSlotBoots'); if (bS2) { bS2.classList.toggle('empty', !boots); setSlotBorder('invSlotBoots', boots); }
     // Town portal slot — stackovaný
     const tpSlot = $('invSlotTownPortal');
     const tpIcon = $('invSlotTPIcon');
@@ -11328,7 +11388,7 @@
       ovContent.onclick = function(e) { e.stopPropagation(); };
     }
     // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
-    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet', invSlotBelt:'belt' };
+    const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet', invSlotBelt:'belt', invSlotGloves:'gloves', invSlotBoots:'boots' };
     function clearSelection() {
       window._invSelectedIdx = null;
       window._invSelectedSlot = null;
@@ -11437,7 +11497,7 @@
 
   function unequipSlot(slot) {
     const h = state.hero;
-    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null, gloves:null, boots:null };
     const current = h.equip[slot];
     if (!current || current === defaults[slot]) return;
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
@@ -11459,7 +11519,7 @@
     const item = ITEM_MAP[itemId];
     if (!item) return;
     // Zjistit správný slot podle typu itemu
-    const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet' };
+    const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet', gloves:'gloves', boots:'boots' };
     let correctSlot = typeToSlot[item.type];
     if (!correctSlot) return;
     // Ring může jít do ring1 nebo ring2
@@ -11577,6 +11637,12 @@
     } else if (item.type === 'amulet') {
       if (h.equip.amulet) addToInventory(h.inventory, h.equip.amulet);
       h.equip.amulet = itemId;
+    } else if (item.type === 'gloves') {
+      if (h.equip.gloves) addToInventory(h.inventory, h.equip.gloves);
+      h.equip.gloves = itemId;
+    } else if (item.type === 'boots') {
+      if (h.equip.boots) addToInventory(h.inventory, h.equip.boots);
+      h.equip.boots = itemId;
     } else if (item.type === 'consumable') {
       // Potiony a town portal scrolly — vložit do belt slotu nebo přičíst
       if (item.subtype === 'townPortal') {
@@ -11617,7 +11683,7 @@
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, amulet:null };
+    const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null, gloves:null, boots:null };
     if (item.type === 'weapon') {
       if (h.equip.weapon !== itemId) return;
       h.equip.weapon = defaults.weapon;
@@ -11644,6 +11710,12 @@
     } else if (item.type === 'amulet') {
       if (h.equip.amulet === itemId) h.equip.amulet = defaults.amulet;
       else return;
+    } else if (item.type === 'gloves') {
+      if (h.equip.gloves !== itemId) return;
+      h.equip.gloves = defaults.gloves;
+    } else if (item.type === 'boots') {
+      if (h.equip.boots !== itemId) return;
+      h.equip.boots = defaults.boots;
     } else return;
     addToInventory(h.inventory, itemId);
     h.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
