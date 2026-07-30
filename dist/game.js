@@ -10409,12 +10409,16 @@
     if (_shopTab === 'sell') {
       $('shopCatTabs').style.display = 'none';
       const equipSet = new Set(Object.values(h.equip).filter(Boolean));
-      const sellable = h.inventory.filter(id => !equipSet.has(id));
+      const sellable = h.inventory.filter(entry => {
+        const id = typeof entry === 'object' ? entry.id : entry;
+        return !equipSet.has(id);
+      });
       if (sellable.length === 0) {
         $('shopList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to sell</div>';
         return;
       }
-      $('shopList').innerHTML = sellable.map(itemId => {
+      $('shopList').innerHTML = sellable.map(entry => {
+        const itemId = typeof entry === 'object' ? entry.id : entry;
         const item = ITEM_MAP[itemId];
         if (!item) return '';
         const sellPrice = Math.round(item.cost * 0.5);
@@ -10425,7 +10429,7 @@
           </div>
           <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
           <div class="shop-item-actions">
-            <button class="btn btn-shop-buy" onclick="game.sellItem('${item.id}')">
+            <button class="btn btn-shop-buy" onclick="game.sellItem('${itemId}')">
               <span class="btn-buy-icon">💰</span>
               <span class="btn-buy-price" style="color:#f1c40f">${sellPrice}</span>
             </button>
