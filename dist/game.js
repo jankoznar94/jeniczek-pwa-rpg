@@ -2961,6 +2961,13 @@
     });
   }
 
+  function continueFromWaypointResult(actId, areaId) {
+    state.locationProgress[actId] = areaId;
+    state.areaFightProgress[actId] = 0;
+    state._waypointFloor = false;
+    startLocation(actId);
+  }
+
   function returnToTownFromWaypoint(locId) {
     state.areaFightProgress[locId] = 0;
     state._waypointFloor = false;
@@ -9274,7 +9281,7 @@
       let actionsHtml;
       if (isWaypoint) {
         const nextArea = (state.locationProgress[locId] || 0) + 1;
-        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypoint(${locId}, ${nextArea})" title="Continue">
+        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypointResult(${locId}, ${nextArea})" title="Continue">
           <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
           <span class="result-tile-label">Continue</span>
         </div>`;
@@ -11858,7 +11865,7 @@
     usePotion,
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
-    continueFromWaypoint, returnToTownFromWaypoint,
+    continueFromWaypoint, continueFromWaypointResult, returnToTownFromWaypoint,
     renderChest,
     renderGamble, switchGambleCategory, buyGambleItem
   };
