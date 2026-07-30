@@ -1812,8 +1812,6 @@
       addRow('Damage', `<span style="color:${dmgColor}">${dmgMin}-${dmgMax}</span> (${handLabel}) [${dps} DPS]`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
       if (item.attackRating) addRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
-      if (item.weaponType === 'staff') addRow('Type', 'Magical');
-      else if (item.weaponType === 'blade') addRow('Type', 'Physical');
     }
     // Armor/helmet
     else if (item.type === 'armor' || item.type === 'helmet') {
