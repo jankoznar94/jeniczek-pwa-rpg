@@ -1763,11 +1763,30 @@
     // Affix tint — barevný overlay podle prvního affixu
     const affix = (item.affixes || [])[0];
     const tintStyle = affix ? `box-shadow:inset 0 0 0 100px ${affix.tint}33;` : '';
+    // Socket indikátory — puntíky u spodní hrany
+    let socketDots = '';
+    if (item.sockets && item.sockets > 0) {
+      const dotSize = size === 0 ? 6 : 5;
+      const dotGap = 2;
+      const totalW = item.sockets * dotSize + (item.sockets - 1) * dotGap;
+      const startX = size === 0 ? `calc(50% - ${totalW/2}px)` : `calc(50% - ${totalW/2}px)`;
+      let dots = '';
+      for (let i = 0; i < item.sockets; i++) {
+        const gem = item.socketedGems && item.socketedGems[i];
+        let dotColor = '#555';
+        if (gem) {
+          const gemColors = { ruby:'#e94560', sapphire:'#4a7dff', emerald:'#2ecc71', topaz:'#f1c40f' };
+          dotColor = gemColors[gem.type] || '#555';
+        }
+        dots += `<span style="display:inline-block;width:${dotSize}px;height:${dotSize}px;border-radius:50%;background:${dotColor};${i < item.sockets - 1 ? `margin-right:${dotGap}px` : ''}"></span>`;
+      }
+      socketDots = `<span style="position:absolute;bottom:1px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0;line-height:0;pointer-events:none">${dots}</span>`;
+    }
     if (item.iconImg) {
       if (size === 0) {
-        return `<img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000;${tintStyle}">`;
+        return `<span style="position:relative;display:block;width:100%;height:100%"><img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000;${tintStyle}">${socketDots}</span>`;
       }
-      return `<img src="${item.iconImg}" alt="" style="width:${s}px;height:${s}px;border-radius:4px;vertical-align:middle;display:inline-block;${tintStyle}">`;
+      return `<span style="position:relative;display:inline-block;width:${s}px;height:${s}px;vertical-align:middle"><img src="${item.iconImg}" alt="" style="width:100%;height:100%;border-radius:4px;vertical-align:middle;display:block;${tintStyle}">${socketDots}</span>`;
     }
     const fs = size === 0 ? 28 : s;
     return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;border-radius:4px;padding:2px">${item.icon}</span>`;
