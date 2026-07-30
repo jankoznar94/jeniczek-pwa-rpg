@@ -29,9 +29,9 @@
         { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + slow enemy 10% for 10s' },
         { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% Rage gain for 10s' },
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + stun 5s' },
-        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:15, cooldown:45, gcd:0.5, desc:'+15% dmg for 30s' },
-        { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:20, cooldown:30, gcd:0.5, desc:'+50% armor for 30s' },
-        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0.5, desc:'150% dmg with both weapons + reset swing timers' },
+        { id:'battleShout', name:'Battle Shout', icon:'📯', cost:20, cooldown:10, gcd:0.5, desc:'+15% dmg for 30s' },
+        { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:20, cooldown:10, gcd:0.5, desc:'+50% armor for 30s' },
+        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0, desc:'150% dmg with both weapons + reset swing timers' },
         { id:'whirlwind', name:'Whirlwind', icon:'🌀', cost:50, cooldown:12, gcd:0.5, desc:'3× fast attacks with both weapons' }
       ]
     },
