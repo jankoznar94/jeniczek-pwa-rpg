@@ -2297,6 +2297,8 @@
       skillShoutTimer:0, // Skill shout zbývající čas (ticky)
       skillShoutBonus:0, // Dočasné +lv ke všem skillům
       _gcdTimer:0, // Global cooldown (ticky)
+      _playerDot:0, // Jed na hráči — damage per tick
+      _playerDotTicksLeft:0, // Zbývající ticky jedu
       _expandedAct: -1, // Který act je rozbalený na mapě (-1 = žádný)
       chest: new Array(25).fill(null) // Truhla — 25 slotů, itemId nebo null
     };
@@ -3048,6 +3050,8 @@
     state.skillShoutBonus = 0;
     state.thunderClapTimer = 0;
     state.thunderClapSlowPct = 0;
+    state._playerDot = 0;
+    state._playerDotTicksLeft = 0;
   }
 
   function startLocation(actId, areaOverride, fightOverride) {
@@ -3148,7 +3152,7 @@
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
       ended: false, turn: 0,
       mistakes: 0, floorMistakes: 0, stunned: 0, frozen: 0, dot: 0, dotTicksLeft: 0, hot: 0, hotTicksLeft: 0, chillPercent: 0, chillTicksLeft: 0, _activeSpellChillActive: false, _poisonBlockHeal: false, shieldActive: null,
-      playerDot: 0, playerDotTicksLeft: 0,
+      playerDot: state._playerDot || 0, playerDotTicksLeft: state._playerDotTicksLeft || 0,
       enemyDot: 0, enemyDotTicksLeft: 0, enemyPoisonBaseDmg: 0,
       _ringTimer: null, _sequenceTimer: null, _attackWindowTimer: null,
       _freezeTimer: null, _bonusRaf: null,
@@ -9275,6 +9279,8 @@
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
+      state._playerDot = mb.playerDot || 0;
+      state._playerDotTicksLeft = mb.playerDotTicksLeft || 0;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
       // Loot roll — 2-3 itemy na kill
@@ -9479,6 +9485,8 @@
       // Boss defeated
       state.wins = (state.wins || 0) + 1;
       state.hero.hp = mb.playerHp;
+      state._playerDot = mb.playerDot || 0;
+      state._playerDotTicksLeft = mb.playerDotTicksLeft || 0;
       state.bossesDefeated[state.difficulty] = state.bossesDefeated[state.difficulty] || [false,false,false,false,false];
       state.bossesDefeated[state.difficulty][locId] = true;
       state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 6) * getXpModifier(mb));
@@ -10903,6 +10911,7 @@
     function closeItemOverlay() {
       const ov = $('invItemOverlay');
       if (ov) ov.classList.add('hidden');
+      clearSelection();
     }
 
     // Gem select modal pro socket insert
