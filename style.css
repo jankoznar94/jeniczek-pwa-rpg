@@ -1310,7 +1310,7 @@ body.no-scroll { overflow: hidden; }
   overflow-y:auto;
 }
 .result-top {
-  flex:2;
+  flex:1;
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;
   width:100%;
@@ -1322,9 +1322,8 @@ body.no-scroll { overflow: hidden; }
   justify-content:center;
   width:100%;
   min-height:0;
-  gap:8px;
-  overflow-y:auto;
-  padding:8px 0;
+  gap:6px;
+  padding:4px 0;
 }
 .result-bottom:empty { display:none; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
@@ -1963,10 +1962,10 @@ body.no-scroll { overflow: hidden; }
 }
 .result-tile {
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  width:100px;aspect-ratio:1;
+  flex:1 1 60px;min-width:60px;max-width:90px;aspect-ratio:1;
   border:2px solid #333;border-radius:10px;
   background:#000;cursor:pointer;
-  transition:0.15s;gap:4px;
+  transition:0.15s;gap:2px;
   overflow:hidden;
   position:relative;
 }
