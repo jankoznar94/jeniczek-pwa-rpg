@@ -883,11 +883,11 @@
       types:['weapon','ring','amulet'], stats:{ manaSteal:[2,5] }, tint:'#4a7dff' },
     // Defenzivní prefixy — více tierů (ED + bonusHp)
     { id:'fortified', name:'Fortified', type:'prefix', group:15, minIlvl:1, weight:8,
-      types:['armor','shield','helmet'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
+      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
     { id:'sturdy', name:'Sturdy', type:'prefix', group:18, minIlvl:8, weight:7,
-      types:['armor','shield','helmet'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
+      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
     { id:'reinforced', name:'Reinforced', type:'prefix', group:19, minIlvl:14, weight:6,
-      types:['armor','shield','helmet'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
+      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
     { id:'deadly', name:'Deadly', type:'prefix', group:16, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
     { id:'mystic', name:'Mystic', type:'prefix', group:9, minIlvl:1, weight:6,
@@ -903,7 +903,7 @@
     { id:'skillful', name:'Skillful', type:'prefix', group:13, minIlvl:8, weight:5,
       types:['weapon','ring','amulet'], stats:{ skillDmg:[5,15] }, tint:'#9b59b6' },
     { id:'vital', name:'Vital', type:'prefix', group:20, minIlvl:1, weight:6,
-      types:['ring','amulet','armor'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','belt'], stats:{ bonusHp:[5,15] }, tint:'#2ecc71' },
     { id:'smoldering', name:'Smoldering', type:'prefix', group:21, minIlvl:5, weight:5,
       types:['weapon'], stats:{ fireDmg:[2,6] }, tint:'#e94560' },
     { id:'glacial', name:'Glacial', type:'prefix', group:22, minIlvl:5, weight:5,
@@ -922,9 +922,9 @@
     { id:'ofWisdom', name:'of Wisdom', type:'suffix', group:108, minIlvl:1, weight:6,
       types:['ring','amulet','helmet'], stats:{ int:[2,6] }, tint:'#9b59b6' },
     { id:'ofStrength', name:'of Strength', type:'suffix', group:109, minIlvl:1, weight:6,
-      types:['ring','amulet','armor'], stats:{ str:[2,6] }, tint:'#e94560' },
+      types:['ring','amulet','armor','belt'], stats:{ str:[2,6] }, tint:'#e94560' },
     { id:'ofEndurance', name:'of Endurance', type:'suffix', group:110, minIlvl:1, weight:6,
-      types:['ring','amulet','armor'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','belt'], stats:{ vit:[2,6] }, tint:'#2ecc71' },
     { id:'ofDexterity', name:'of Dexterity', type:'suffix', group:111, minIlvl:1, weight:6,
       types:['ring','amulet','weapon'], stats:{ dex:[2,6] }, tint:'#1abc9c' },
     { id:'ofManaRegen', name:'of Mana Regen', type:'suffix', group:112, minIlvl:1, weight:4,
@@ -949,11 +949,11 @@
       types:['weapon'], stats:{ lightningDmg:[3,8] }, tint:'#8b5cf6' },
     // Defenzivní suffixy — více tierů (ED + bonusHp)
     { id:'ofFortification', name:'of Fortification', type:'suffix', group:116, minIlvl:1, weight:8,
-      types:['armor','shield','helmet'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
+      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[5,15], bonusHp:[3,8] }, tint:'#888' },
     { id:'ofProtection', name:'of Protection', type:'suffix', group:118, minIlvl:8, weight:7,
-      types:['armor','shield','helmet'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
+      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[15,30], bonusHp:[8,15] }, tint:'#888' },
     { id:'ofWarding', name:'of Warding', type:'suffix', group:119, minIlvl:14, weight:6,
-      types:['armor','shield','helmet'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
+      types:['armor','shield','helmet','belt'], stats:{ enhancedDefense:[25,45], bonusHp:[12,25] }, tint:'#888' },
     { id:'ofSlaughter', name:'of Slaughter', type:'suffix', group:117, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
     // === RYCHLOST ÚTOKU A KOUZLENÍ ===
@@ -964,41 +964,41 @@
     // === ELEMENTÁRNÍ REZISTENCE (D2 styl) ===
     // Single resists — prefixy
     { id:'crimson', name:'Crimson', type:'prefix', group:30, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
     { id:'azure', name:'Azure', type:'prefix', group:31, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
     { id:'tangerine', name:'Tangerine', type:'prefix', group:32, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
     { id:'viridian', name:'Viridian', type:'prefix', group:33, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
     // Single resists — vyšší tier
     { id:'scarlet', name:'Scarlet', type:'prefix', group:30, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ fireRes:[10,25] }, tint:'#e94560' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ fireRes:[10,25] }, tint:'#e94560' },
     { id:'lapis', name:'Lapis', type:'prefix', group:31, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ coldRes:[10,25] }, tint:'#4a7dff' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ coldRes:[10,25] }, tint:'#4a7dff' },
     { id:'orange', name:'Orange', type:'prefix', group:32, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ lightningRes:[10,25] }, tint:'#f39c12' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ lightningRes:[10,25] }, tint:'#f39c12' },
     { id:'jade', name:'Jade', type:'prefix', group:33, minIlvl:12, weight:5,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ poisonRes:[10,25] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ poisonRes:[10,25] }, tint:'#2ecc71' },
     // All resists — prefix
     { id:'scintillating', name:'Scintillating', type:'prefix', group:34, minIlvl:15, weight:4,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
     { id:'rainbow', name:'Rainbow', type:'prefix', group:34, minIlvl:25, weight:3,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
     // Single resists — suffixy
     { id:'ofWardingFire', name:'of Warding', type:'suffix', group:130, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ fireRes:[5,15] }, tint:'#e94560' },
     { id:'ofWardingCold', name:'of Frost Warding', type:'suffix', group:131, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ coldRes:[5,15] }, tint:'#4a7dff' },
     { id:'ofWardingLightning', name:'of Lightning Warding', type:'suffix', group:132, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ lightningRes:[5,15] }, tint:'#f39c12' },
     { id:'ofWardingPoison', name:'of Poison Warding', type:'suffix', group:133, minIlvl:1, weight:7,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ poisonRes:[5,15] }, tint:'#2ecc71' },
     // All resists — suffix
     { id:'ofProtectionAll', name:'of Protection', type:'suffix', group:134, minIlvl:15, weight:4,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[5,12] }, tint:'#9b59b6' },
     { id:'ofImmunity', name:'of Immunity', type:'suffix', group:134, minIlvl:25, weight:3,
-      types:['ring','amulet','armor','helmet','shield'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
+      types:['ring','amulet','armor','helmet','shield','belt'], stats:{ allRes:[10,20] }, tint:'#9b59b6' },
     // === MAGIC FIND (D2 styl) ===
     { id:'chance', name:'Chance', type:'prefix', group:35, minIlvl:5, weight:5,
       types:['ring','amulet','helmet'], stats:{ magicFind:[5,15] }, tint:'#f1c40f' },
@@ -1875,16 +1875,17 @@
     if (item.vit) addRow('Vitality', `+${item.vit}${affixRange('vit')}`);
     if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
     if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
-    if (item.magicFind) addRow('Magic Find', `+${item.magicFind}%`);
-    if (item.goldFind) addRow('Gold Find', `+${item.goldFind}%`);
-    if (item.fireRes) addRow('Fire Resist', `+${item.fireRes}%`);
-    if (item.coldRes) addRow('Cold Resist', `+${item.coldRes}%`);
-    if (item.lightningRes) addRow('Lightning Resist', `+${item.lightningRes}%`);
-    if (item.poisonRes) addRow('Poison Resist', `+${item.poisonRes}%`);
-    if (item.allSkills) addRow('All Skills', `+${item.allSkills}`);
+    if (item.magicFind) addRow('Magic Find', `+${item.magicFind}%${affixRange('magicFind')}`);
+    if (item.goldFind) addRow('Gold Find', `+${item.goldFind}%${affixRange('goldFind')}`);
+    if (item.fireRes) addRow('Fire Resist', `+${item.fireRes}%${affixRange('fireRes')}`);
+    if (item.coldRes) addRow('Cold Resist', `+${item.coldRes}%${affixRange('coldRes')}`);
+    if (item.lightningRes) addRow('Lightning Resist', `+${item.lightningRes}%${affixRange('lightningRes')}`);
+    if (item.poisonRes) addRow('Poison Resist', `+${item.poisonRes}%${affixRange('poisonRes')}`);
+    if (item.allRes) addRow('All Resists', `+${item.allRes}%${affixRange('allRes')}`);
+    if (item.allSkills) addRow('All Skills', `+${item.allSkills}${affixRange('allSkills')}`);
     if (item.classSkills) {
       const className = item._classSkillsClass || 'unknown';
-      addRow(className.charAt(0).toUpperCase() + className.slice(1) + ' Skills', `+${item.classSkills}`);
+      addRow(className.charAt(0).toUpperCase() + className.slice(1) + ' Skills', `+${item.classSkills}${affixRange('classSkills')}`);
     }
     if (item.attrs) {
       Object.keys(item.attrs).forEach(k => {
@@ -4492,11 +4493,11 @@
       const manaPot = ITEM_MAP['manaPotion'];
       const potionsHtml = `<div class="result-status-potions">
         <div class="result-status-potion ${healCount > 0 ? '' : 'empty'}" onclick="${healCount > 0 ? `game.usePotionFromResult('heal')` : ''}" title="Healing Potion (${healCount})">
-          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<img src="assets/items/potion_healing.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
           ${healCount > 0 ? `<span class="result-status-potion-count">${healCount}</span>` : ''}
         </div>
         <div class="result-status-potion ${manaCount > 0 ? '' : 'empty'}" onclick="${manaCount > 0 ? `game.usePotionFromResult('mana')` : ''}" title="Mana Potion (${manaCount})">
-          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<span style="color:#555;font-size:16px">🧪</span>'}
+          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
           ${manaCount > 0 ? `<span class="result-status-potion-count">${manaCount}</span>` : ''}
         </div>
       </div>`;
