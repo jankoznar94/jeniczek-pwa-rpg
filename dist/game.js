@@ -10914,7 +10914,9 @@
     function closeItemOverlay() {
       const ov = $('invItemOverlay');
       if (ov) ov.classList.add('hidden');
-      clearSelection();
+      window._invSelectedIdx = null;
+      window._invSelectedSlot = null;
+      document.querySelectorAll('.chest-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
     }
 
     // Gem select modal pro socket insert
