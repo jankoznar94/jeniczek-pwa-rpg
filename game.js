@@ -11352,7 +11352,7 @@
       for (let i = 0; i < totalSlots; i++) {
         const potId = bpSlots[i];
         const potItem = potId ? ITEM_MAP[potId] : null;
-        phtml += `<div class="inv-potion-slot ${potItem ? '' : 'empty'}" data-potion-idx="${i}">\n          <div class="inv-slot-icon">${potItem ? renderItemIcon(potItem, 0) : '🧪'}</div>\n        </div>`;
+        phtml += `<div class="inv-potion-slot ${potItem ? '' : 'empty'}" data-potion-idx="${i}">\n          <div class="inv-slot-icon">${potItem ? renderItemIcon(potItem, 0) : '<img src="assets/items/potion_healing.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1);opacity:0.25">'}</div>\n        </div>`;
       }
       potionSlots.innerHTML = phtml;
     }
