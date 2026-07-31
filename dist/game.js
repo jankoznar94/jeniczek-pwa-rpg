@@ -11320,9 +11320,9 @@
     const amS = $('invSlotAmulet'); if (amS) { amS.classList.toggle('empty', !amulet); setSlotBorder('invSlotAmulet', amulet); }
     const bEl = $('invSlotBeltIcon'); if (bEl) bEl.innerHTML = belt ? renderItemIcon(belt, 0) : renderItemIcon({iconImg:'assets/items/belt_cloth.png',tier:1}, 0);
     const bS = $('invSlotBelt'); if (bS) { bS.classList.toggle('empty', !belt); setSlotBorder('invSlotBelt', belt); }
-    const gEl = $('invSlotGlovesIcon'); if (gEl) gEl.innerHTML = gloves ? renderItemIcon(gloves, 0) : renderItemIcon({iconImg:'assets/items/gloves_leather.png',tier:1}, 0);
+    const gEl = $('invSlotGlovesIcon'); if (gEl) gEl.innerHTML = gloves ? renderItemIcon(gloves, 0) : '🧤';
     const gS = $('invSlotGloves'); if (gS) { gS.classList.toggle('empty', !gloves); setSlotBorder('invSlotGloves', gloves); }
-    const bEl2 = $('invSlotBootsIcon'); if (bEl2) bEl2.innerHTML = boots ? renderItemIcon(boots, 0) : renderItemIcon({iconImg:'assets/items/boots_boots.png',tier:1}, 0);
+    const bEl2 = $('invSlotBootsIcon'); if (bEl2) bEl2.innerHTML = boots ? renderItemIcon(boots, 0) : '👢';
     const bS2 = $('invSlotBoots'); if (bS2) { bS2.classList.toggle('empty', !boots); setSlotBorder('invSlotBoots', boots); }
     // Town portal slot — stackovaný
     const tpSlot = $('invSlotTownPortal');
