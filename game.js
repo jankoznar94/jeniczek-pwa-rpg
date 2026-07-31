@@ -1878,6 +1878,16 @@
       if (item.defense) addRow('Defense', item.defense);
       if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
     }
+    // Gloves
+    else if (item.type === 'gloves') {
+      if (item.defense) addRow('Defense', item.defense);
+      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+    }
+    // Boots
+    else if (item.type === 'boots') {
+      if (item.defense) addRow('Defense', item.defense);
+      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+    }
     // Shield
     else if (item.type === 'shield') {
       if (item.blockChance) addRow('Block', `${item.blockChance}%`);
@@ -4059,7 +4069,9 @@
         const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
         const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
         const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
-        let totalDefense = armorDef + helmetDef + shieldDef;
+        const glovesDef = ITEM_MAP[state.hero.equip.gloves]?.defense || 0;
+        const bootsDef = ITEM_MAP[state.hero.equip.boots]?.defense || 0;
+        let totalDefense = armorDef + helmetDef + shieldDef + glovesDef + bootsDef;
         if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
         if (totalDefense > 0) {
           amount = Math.round(amount * (1 - totalDefense / (totalDefense + 300)));
@@ -4144,7 +4156,9 @@
     const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
-    let totalDefense = armorDef + helmetDef + shieldDef;
+    const glovesDef = ITEM_MAP[state.hero.equip.gloves]?.defense || 0;
+    const bootsDef = ITEM_MAP[state.hero.equip.boots]?.defense || 0;
+    let totalDefense = armorDef + helmetDef + shieldDef + glovesDef + bootsDef;
     if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
     if (totalDefense > 0) {
       bossDmg = Math.round(bossDmg * (1 - totalDefense / (totalDefense + 300)));
@@ -8553,7 +8567,9 @@
     const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
     const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
-    let totalDefense = armorDef + helmetDef + shieldDef;
+    const glovesDef = ITEM_MAP[state.hero.equip.gloves]?.defense || 0;
+    const bootsDef = ITEM_MAP[state.hero.equip.boots]?.defense || 0;
+    let totalDefense = armorDef + helmetDef + shieldDef + glovesDef + bootsDef;
     if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
     if (totalDefense > 0) {
       bossDmg = Math.round(bossDmg * (1 - totalDefense / (totalDefense + 300)));
