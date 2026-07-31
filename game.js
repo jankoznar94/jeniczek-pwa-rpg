@@ -1802,9 +1802,6 @@
   function renderItemIcon(item, size) {
     if (!item) return '';
     const s = size || 28;
-    // Affix tint — barevný overlay podle prvního affixu
-    const affix = (item.affixes || [])[0];
-    const tintStyle = affix ? `box-shadow:inset 0 0 0 100px ${affix.tint}33;` : '';
     // Socket indikátory — puntíky u spodní hrany
     let socketDots = '';
     if (item.sockets && item.sockets > 0) {
@@ -1826,9 +1823,9 @@
     }
     if (item.iconImg) {
       if (size === 0) {
-        return `<span style="position:relative;display:block;width:100%;height:100%"><img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000;${tintStyle}">${socketDots}</span>`;
+        return `<span style="position:relative;display:block;width:100%;height:100%"><img src="${item.iconImg}" alt="" style="display:block;width:100%;height:100%;object-fit:contain;background:#000">${socketDots}</span>`;
       }
-      return `<span style="position:relative;display:inline-block;width:${s}px;height:${s}px;vertical-align:middle"><img src="${item.iconImg}" alt="" style="width:100%;height:100%;border-radius:4px;vertical-align:middle;display:block;${tintStyle}">${socketDots}</span>`;
+      return `<span style="position:relative;display:inline-block;width:${s}px;height:${s}px;vertical-align:middle"><img src="${item.iconImg}" alt="" style="width:100%;height:100%;border-radius:4px;vertical-align:middle;display:block">${socketDots}</span>`;
     }
     const fs = size === 0 ? 28 : s;
     return `<span style="font-size:${fs}px;display:inline-flex;align-items:center;vertical-align:middle;border-radius:4px;padding:2px">${item.icon}</span>`;
@@ -10637,7 +10634,7 @@
         const sellPrice = Math.round(item.cost * 0.5);
         return `<div class="shop-item">
           <div class="shop-item-header">
-            <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
+            <div class="shop-item-icon">${renderItemIcon(item,64)}</div>
             <div class="shop-item-name" style="color:${getQualityColor(item)}">${getItemSocketName(item)}</div>
           </div>
           <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
@@ -10681,7 +10678,7 @@
             const priceColor = canAfford ? '#f1c40f' : '#e74c3c';
             return `<div class="shop-item" onclick="window._invSelectedIdx=null;window._invSelectedSlot=null;game.showItemInfo('${item.id}')">
               <div class="shop-item-header">
-                <div class="shop-item-icon">${renderItemIcon(item,48)}</div>
+                <div class="shop-item-icon">${renderItemIcon(item,64)}</div>
                 <div class="shop-item-name" style="color:${getQualityColor(item)}">${getItemSocketName(item)}</div>
               </div>
               <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
