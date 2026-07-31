@@ -1981,28 +1981,28 @@
 
   // ===== ENEMY SPELLS =====
   const ENEMY_SPELLS = {
-    poison_bolt: { name:'Poison Bolt', icon:'☠️', castTime:1500, manaCost:10, type:MONSTER_TYPES.POISON, minManaPct:0.2,
+    poison_bolt: { name:'Poison Bolt', icon:'☠️', iconImg:'poison_bolt.png', castTime:1500, manaCost:10, type:MONSTER_TYPES.POISON, minManaPct:0.2,
       desc:'DoT on player (3 ticks)' },
-    drain_life: { name:'Drain Life', icon:'🩸', castTime:1200, manaCost:8, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.15,
+    drain_life: { name:'Drain Life', icon:'🩸', iconImg:'drain_life.png', castTime:1200, manaCost:8, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.15,
       desc:'Damage + heals enemy' },
-    mana_drain: { name:'Mana Drain', icon:'💧', castTime:1000, manaCost:5, type:MONSTER_TYPES.MANASTEALER, minManaPct:0.1,
+    mana_drain: { name:'Mana Drain', icon:'💧', iconImg:'mana_drain.png', castTime:1000, manaCost:5, type:MONSTER_TYPES.MANASTEALER, minManaPct:0.1,
       desc:'Damage + mana drain' },
-    empower: { name:'Empower', icon:'📈', castTime:1500, manaCost:12, type:MONSTER_TYPES.IMPROVER, minManaPct:0.25,
+    empower: { name:'Empower', icon:'📈', iconImg:'empower.png', castTime:1500, manaCost:12, type:MONSTER_TYPES.IMPROVER, minManaPct:0.25,
       desc:'+50% damage for 3 attacks' },
-    shadow_bolt: { name:'Shadow Bolt', icon:'🎯', castTime:1300, manaCost:8, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.15,
+    shadow_bolt: { name:'Shadow Bolt', icon:'🎯', iconImg:'shadow_bolt.png', castTime:1300, manaCost:8, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.15,
       desc:'High crit chance' },
-    heal: { name:'Heal', icon:'💚', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+    heal: { name:'Heal', icon:'💚', iconImg:'heal.png', castTime:2000, manaCost:15, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Heals enemy for 30% HP' },
     // Act 1 — Lesní monstra
     defensive_shout: { name:'Defensive Shout', icon:'🛡️', iconImg:'defensiveShout.png', castTime:1000, manaCost:0, rageCost:20, type:MONSTER_TYPES.MANASTEALER, minManaPct:0,
       desc:'Reduces incoming damage by 30% for 8s' },
     battle_shout: { name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', castTime:1000, manaCost:0, rageCost:25, type:MONSTER_TYPES.CRITMASTER, minManaPct:0,
       desc:'+50% damage for 8s' },
-    thorn_shield: { name:'Thorn Shield', icon:'🌵', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
+    thorn_shield: { name:'Thorn Shield', icon:'🌵', iconImg:'thorn_shield.png', castTime:1500, manaCost:50, type:MONSTER_TYPES.IMPROVER, minManaPct:0.5,
       desc:'Returns 5-10 dmg to attacker for 10s' },
-    faerie_fire: { name:'Faerie Fire', icon:'✨', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
+    faerie_fire: { name:'Faerie Fire', icon:'✨', iconImg:'faerie_fire.png', castTime:2000, manaCost:25, type:MONSTER_TYPES.LIFESTEALER, minManaPct:0.3,
       desc:'Reduces player resistances by 50% for 10s' },
-    slow: { name:'Slow', icon:'🐌', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
+    slow: { name:'Slow', icon:'🐌', iconImg:'slow.png', castTime:3000, manaCost:20, type:MONSTER_TYPES.POISON, minManaPct:0.3,
       desc:'Slows player attack speed by 50% for 5s' },
     evasion: { name:'Evasion', icon:'💨', iconImg:'evasion.png', castTime:1000, manaCost:15, type:MONSTER_TYPES.CRITMASTER, minManaPct:0.2,
       desc:'30% dodge chance for 6s' },
@@ -3963,7 +3963,7 @@
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
         _lastPlayerDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', iconImg:'poison_bolt.png', ticks: 180, maxTicks: 180 };
         spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
@@ -4025,14 +4025,14 @@
         amount = 0;
         mb._faerieFireActive = true;
         mb._faerieFireTimer = 1000; // 10s
-        _playerDebuffs['faerie_fire'] = { icon: '✨', name: 'Faerie Fire', ticks: 1000, maxTicks: 1000,
+        _playerDebuffs['faerie_fire'] = { icon: '✨', name: 'Faerie Fire', iconImg:'faerie_fire.png', ticks: 1000, maxTicks: 1000,
           onExpire: () => { if (mapBattleState) mapBattleState._faerieFireActive = false; } };
         spellText = '✨ Faerie Fire';
       } else if (spellId === 'slow') {
         amount = 0;
         mb._playerSlowPct = 50;
         mb._playerSlowTimer = 500; // 5s
-        _playerDebuffs['slow'] = { icon: '🐌', name: 'Slow', ticks: 500, maxTicks: 500,
+        _playerDebuffs['slow'] = { icon: '🐌', name: 'Slow', iconImg:'slow.png', ticks: 500, maxTicks: 500,
           onExpire: () => { if (mapBattleState) { mapBattleState._playerSlowPct = 0; mapBattleState._playerSlowTimer = 0; } } };
         spellText = '🐌 Slow';
       } else if (spellId === 'evasion') {
@@ -4194,7 +4194,7 @@
         const poisonDmg = Math.max(1, Math.round(amount * 0.15));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison_bolt.png', ticks: 180, maxTicks: 180 };
         spawnFloatingText(`☠️ -${poisonDmg}/tick`, 'left', '#27ae60', 28);
       }
     }
@@ -4561,8 +4561,8 @@
       else if (state.energy !== undefined) resourceHtml = `Energy: <span class="result-status-resource">${Math.round(state.energy)}</span>`;
       else if (state.mana !== undefined) resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
       let buffsHtml = '';
-      Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = k === 'bloodrage' || k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout'; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
-      Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = k === 'thunderClap' || k === 'thunderBolt'; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
+      Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = b.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
+      Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = d.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
       let healCount = 0, manaCount = 0;
       bpSlots.forEach(pid => { if (pid === 'healingPotion') healCount++; else if (pid === 'manaPotion') manaCount++; });
       const healPot = ITEM_MAP['healingPotion'];
@@ -4695,9 +4695,10 @@
         const d = _sessionDebuffs[spellId];
         if (!d) return;
         const remaining = Math.ceil(d.ticks / 60);
-        const hasImg = spellId === 'thunderClap' || spellId === 'thunderBolt';
+        const spellDef = ENEMY_SPELLS[spellId];
+        const hasImg = spellDef && spellDef.iconImg;
         html += `<div class="debuff-icon" title="${d.name || spellId}">
-          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
+          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
           <span class="debuff-icon-timer">${remaining}s</span>
         </div>`;
       });
@@ -4735,9 +4736,9 @@
         const b = _sessionBuffs[spellId];
         if (!b) return;
         const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = spellId === 'bloodrage' || spellId === 'defensiveShout' || spellId === 'skillShout' || spellId === 'shieldBash' || spellId === 'battleShout';
+        const hasImg = b.iconImg;
         html += `<div class="buff-icon" title="${b.name || spellId}">
-          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellId}.png" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
+          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${b.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
           <span class="buff-icon-timer">${remaining}s</span>
         </div>`;
       });
@@ -4753,8 +4754,9 @@
           const d = _playerDebuffs[spellId];
           if (!d) return;
           const remaining = Math.ceil(d.ticks / 60);
+          const hasImg = d.iconImg;
           html += `<div class="buff-icon" title="${d.name || spellId}">
-            <span class="buff-icon-emoji">${d.icon || '☠️'}</span>
+            ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${d.iconImg}" alt="${d.name}">` : `<span class="buff-icon-emoji">${d.icon || '☠️'}</span>`}
             <span class="buff-icon-timer">${remaining}s</span>
           </div>`;
         });
@@ -4851,7 +4853,7 @@
       state.rageMultiplier = 2;
       state._bloodrageTimer = 600; // 10s
       // Buff ikona hráče
-      _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
+      _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', iconImg:'bloodrage.png', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
       // Animace
       spawnBloodrageAnim(mb);
       playSFX(shoutSfx);
@@ -4911,7 +4913,7 @@
       state.battleShoutDmgPct = dmgPct;
       state.battleShoutTimer = 1800; // 30s
       playSFX(shoutSfx);
-      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
+      _sessionBuffs['battleShout'] = { icon: '📯', name: 'Battle Shout', iconImg:'battleShout.png', ticks: 1800, maxTicks: 1800, onExpire: function() { state.battleShoutDmgPct = 0; } };
       console.log('BATTLE SHOUT: dmgPct=' + dmgPct + ' timer=' + state.battleShoutTimer + ' buffs keys=' + Object.keys(_sessionBuffs).join(','));
       // Vykreslit buff HNED
       renderBuffs();
@@ -4924,7 +4926,7 @@
       state.defensiveShoutArmorPct = armorPct;
       state.defensiveShoutTimer = 1800; // 30s
       playSFX(shoutSfx);
-      _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
+      _sessionBuffs['defensiveShout'] = { icon: '🛡️', name: 'Defensive Shout', iconImg:'defensiveShout.png', ticks: 1800, maxTicks: 1800, onExpire: function() { state.defensiveShoutArmorPct = 0; } };
       renderBuffs();
       // Animace
       spawnShoutRings(mb, '#5dade2', 'rgba(93,173,226,0.6)');
@@ -4933,7 +4935,7 @@
       state.skillShoutBonus = lv;
       state.skillShoutTimer = 1800; // 30s
       playSFX(shoutSfx);
-      _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
+      _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', iconImg:'skillShout.png', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
       // Double Swing — scaling podle levelu: (60+lv*20)% + (30+lv*15)% dmg
       const lv = getSpellLv('doubleSwing');
@@ -5019,7 +5021,7 @@
     } else if (spellId === 'evasion') {
       // +50% dodge na 10s
       state._dodgeBuffTimer = 600; // 10s * 60fps
-      _sessionBuffs['evasion'] = { icon: '💨', name: 'Evasion', ticks: 600, maxTicks: 600, onExpire: function() { /* timer už je v state._dodgeBuffTimer */ } };
+      _sessionBuffs['evasion'] = { icon: '💨', name: 'Evasion', iconImg:'evasion.png', ticks: 600, maxTicks: 600, onExpire: function() { /* timer už je v state._dodgeBuffTimer */ } };
       spawnFloatingText('💨 Evasion!', 'left', '#f1c40f', 32);
     } else if (spellId === 'speedBoost') {
       const cp = state.comboPoints || 0;
@@ -5030,7 +5032,7 @@
       state._speedBoostTimer = duration * 60; // v tickách
       state.comboPoints = 0; // spotřebovat combo pointy
       // Buff ikona
-      _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
+      _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', iconImg:'speedBoost.png', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
       // Přepočítat swing timer
       mb.playerSwingMs = getSwingTime(state.hero.equip.weapon);
       spawnFloatingText(`⚡ Speed +${duration}s`, 'left', '#f1c40f', 32);
