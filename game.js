@@ -2572,6 +2572,10 @@
     });
 
     overlay.classList.remove('hidden');
+    // Zamknout scroll stránky — URL bar zůstane viditelný
+    document.body.style.overflow = 'hidden';
+    document.body.style.position = 'fixed';
+    document.body.style.width = '100%';
   }
 
   function closeModal() {
@@ -2591,6 +2595,10 @@
     });
     content.innerHTML = '';
     overlay.classList.add('hidden');
+    // Odemknout scroll stránky
+    document.body.style.overflow = '';
+    document.body.style.position = '';
+    document.body.style.width = '';
     // Pokud je shop otevřený, překreslit ho (inventář se mohl změnit přes modal)
     if (_currentScreen === 'shop') renderShop();
   }
