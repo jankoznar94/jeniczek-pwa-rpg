@@ -11142,10 +11142,14 @@
 
       // Srovnávací panel — nasazený předmět stejného slotu
       const compareEl = $('invItemOverlayCompare');
-      const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet' };
+      const slotMap = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet', gloves:'gloves', boots:'boots' };
       const equipSlot = slotMap[item.type];
       const defaults = { weapon:'fists', armor:null, helmet:null, shield:null, ring1:null, ring2:null, amulet:null, belt:null, gloves:null, boots:null };
       let hasCompare = false;
+
+      // Pokud je prohlížený item ten samý, co je nasazený — Equipped nedává smysl
+      const currentEquippedId = equipSlot ? state.hero.equip[equipSlot] : null;
+      const isSameAsEquipped = currentEquippedId && currentEquippedId === item.id;
 
       if (equipSlot) {
         // Speciální: prsteny — label Ring 1 / Ring 2
@@ -11160,7 +11164,7 @@
             { label: 'Ring 2', ring: ring2 }
           ];
           ringEntries.forEach(({label, ring: r}) => {
-            if (!r) return;
+            if (!r || r.id === item.id) return;
             const eqColor = getQualityColor(r);
             bothHtml += `<div style="color:#888;font-size:11px;margin-bottom:2px">${label}</div>`;
             bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${r.name}</div>`;
@@ -11185,7 +11189,7 @@
             { label: 'Off Hand', weapon: oh }
           ];
           weaponEntries.forEach(({label, weapon: w}) => {
-            if (!w) return;
+            if (!w || w.id === item.id) return;
             const eqColor = getQualityColor(w);
             bothHtml += `<div style="color:#888;font-size:11px;margin-bottom:2px">${label}</div>`;
             bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
@@ -11201,7 +11205,7 @@
         // Ostatní sloty
         else {
           const equippedId = state.hero.equip[equipSlot];
-          if (equippedId && equippedId !== defaults[equipSlot]) {
+          if (equippedId && equippedId !== defaults[equipSlot] && equippedId !== item.id) {
             const equipped = ITEM_MAP[equippedId];
             if (equipped) {
               const eqColor = getQualityColor(equipped);
