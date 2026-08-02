@@ -1879,12 +1879,51 @@
       : 0;
     lootItem.lvlReq = Math.floor(0.75 * maxAffixIlvl);
 
-    // Název: prefix + base + suffix
-    const prefixName = chosenAffixes.filter(a => a.type === 'prefix').map(a => a.name).join(' ');
-    const suffixName = chosenAffixes.filter(a => a.type === 'suffix').map(a => a.name).join(' ');
-    lootItem.name = [prefixName, baseItem.name, suffixName].filter(Boolean).join(' ');
+    // Název: pro rare itemy náhodný D2-style název, jinak prefix + base + suffix
+    if (quality === 'rare') {
+      lootItem.name = generateRareItemName(baseItem.type);
+    } else {
+      const prefixName = chosenAffixes.filter(a => a.type === 'prefix').map(a => a.name).join(' ');
+      const suffixName = chosenAffixes.filter(a => a.type === 'suffix').map(a => a.name).join(' ');
+      lootItem.name = [prefixName, baseItem.name, suffixName].filter(Boolean).join(' ');
+    }
 
     return lootItem;
+  }
+
+  // === D2-style Rare Item Name Generation ===
+  // First word — náhodný, nezávislý na typu itemu (44 slov, přesně podle D2)
+  const RARE_FIRST_WORDS = [
+    'Armageddon','Beast','Bitter','Blackhorn','Blood','Bone','Bramble','Brimstone',
+    'Carrion','Chaos','Corpse','Corruption','Cruel','Dire','Death','Demon','Doom','Dread',
+    'Eagle','Entropy','Fiend','Gale','Ghoul','Glyph','Grim','Hailstone','Havoc','Imp',
+    'Loath','Order','Pain','Plague','Raven','Rule','Rune','Shadow','Skull','Stone',
+    'Storm','Soul','Spirit','Viper','Wraith'
+  ];
+
+  // Second word — podle slotu itemu (autentické D2 názvy)
+  const RARE_SECOND_WORDS = {
+    helmet: ['Crown','Mask','Veil','Visage','Hood','Brow','Halo','Horn','Temple','Stare'],
+    armor:  ['Hide','Shell','Carapace','Flesh','Husk','Pelt','Mantle','Cloak','Cape','Wrap','Sway','Whorl'],
+    gloves: ['Grip','Fist','Grasp','Claw','Hand','Knuckle','Touch'],
+    boots:  ['Tread','Track','Spur','Stride','Heel'],
+    belt:   ['Girdle','Strap','Cord','Sash','Cinch'],
+    ring:   ['Band','Loop','Circle','Coil','Spiral','Eye'],
+    amulet: ['Heart','Fang','Star','Eye','Talisman','Scarab'],
+    weapon: ['Blade','Edge','Fang','Razor','Point','Sting','Bite','Hack','Mace','Club','Maul',
+             'Wand','Rod','Scepter','Pike','Lance','Spear','Staff','Spire','Pillar','Reach',
+             'Dart','Needle','Shank','Skewer','Reaver','Brand','Scar','Knell','Song','Howl',
+             'Yell','Call','Hymn','Rune','Glyph','Sign','Mark','Star','Crescent','Moon',
+             'Storm','Wind','Rage','Fury','Wrath','Havoc','Doom','Death','Bane','Curse',
+             'Plague','Venom','Blight','Pest','Sorrow','Woe','Grief','Pain','Agony','Torment'],
+    shield: ['Aegis','Ward','Guard','Targe','Crest','Bulwark','Rampart','Wall','Bastion','Barrier']
+  };
+
+  function generateRareItemName(itemType) {
+    const first = RARE_FIRST_WORDS[Math.floor(Math.random() * RARE_FIRST_WORDS.length)];
+    const pool = RARE_SECOND_WORDS[itemType] || RARE_SECOND_WORDS.weapon;
+    const second = pool[Math.floor(Math.random() * pool.length)];
+    return first + ' ' + second;
   }
 
   function generateUniqueItem(uniqueDef) {
