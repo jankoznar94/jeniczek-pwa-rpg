@@ -567,6 +567,19 @@
   </div>
 </div>
 
+<!-- ===== WAYPOINT / TOWN PORTAL CONFLICT MODAL ===== -->
+<div id="waypointPortalModal" class="waypoint-portal-modal hidden">
+  <div class="waypoint-portal-modal-content">
+    <div class="waypoint-portal-modal-title">⚠️ Waypoint or Town Portal?</div>
+    <div class="waypoint-portal-modal-text">You have an open Town Portal back to the wilderness. Using a Waypoint will close it and you will lose that portal.</div>
+    <div class="waypoint-portal-modal-buttons">
+      <button class="btn btn-secondary" onclick="game.waypointPortalModalUsePortal()">Use Town Portal</button>
+      <button class="btn" onclick="game.waypointPortalModalProceed()">Use Waypoint</button>
+    </div>
+    <div class="waypoint-portal-modal-cancel" onclick="game.waypointPortalModalCancel()">Cancel</div>
+  </div>
+</div>
+
 <!-- ===== TRANSITION SCREEN (waypoint / portal scroll) ===== -->
 <div id="transitionScreen" class="transition-screen hidden">
   <div class="transition-content">
