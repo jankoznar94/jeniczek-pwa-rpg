@@ -1268,6 +1268,27 @@ body.no-scroll { overflow: hidden; }
 .surrender-modal-buttons { display:flex; gap:10px; justify-content:center; }
 .surrender-modal-buttons .btn { flex:1; }
 
+/* Waypoint / Town portal conflict modal */
+.waypoint-portal-modal {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.7); display:flex;
+  align-items:center; justify-content:center;
+  z-index:310;
+}
+.waypoint-portal-modal-content {
+  background:#000; border:1px solid #333; border-radius:12px;
+  padding:24px; max-width:320px; width:90%;
+  text-align:center;
+}
+.waypoint-portal-modal-title { font-size:18px; font-weight:bold; margin-bottom:12px; }
+.waypoint-portal-modal-text { font-size:14px; color:#888; margin-bottom:20px; line-height:1.4; }
+.waypoint-portal-modal-buttons { display:flex; gap:10px; justify-content:center; margin-bottom:12px; }
+.waypoint-portal-modal-buttons .btn { flex:1; }
+.waypoint-portal-modal-cancel {
+  font-size:13px; color:#666; cursor:pointer; padding:6px;
+}
+.waypoint-portal-modal-cancel:hover { color:#aaa; }
+
 /* Gem select modal (socket insert) */
 .gem-select-modal {
   position:fixed; top:0; left:0; width:100%; height:100%;

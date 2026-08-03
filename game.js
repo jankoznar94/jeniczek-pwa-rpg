@@ -2541,6 +2541,7 @@
       waypoints:[[],[],[],[],[]], // waypoints[actId] = [zoneId, ...] — odemčené waypointy
       townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
       townPortalCount: 0, // počet town portal scrollů (stack)
+      _waypointPending: null, // {actId, areaId} — čekající waypoint pro conflict modal
       rage:0, maxRage:100, // Barbar resource
       rageMultiplier:1, // Bloodrage buff
       _bloodrageTimer:0,
@@ -3228,12 +3229,53 @@
   }
 
   function continueFromWaypoint(actId, areaId) {
+    // Pokud má hráč otevřený town portal, zeptat se, co chce skutečně udělat
+    if (state.townPortalReturn) {
+      openWaypointPortalModal(actId, areaId);
+      return;
+    }
+    doContinueFromWaypoint(actId, areaId);
+  }
+
+  function doContinueFromWaypoint(actId, areaId) {
     showTransition('waypoint', actId, () => {
       state.locationProgress[actId] = areaId;
       state.areaFightProgress[actId] = 0;
       state._waypointFloor = false;
       startLocation(actId);
     });
+  }
+
+  // ===== Waypoint / Town portal conflict modal =====
+  function openWaypointPortalModal(actId, areaId) {
+    state._waypointPending = { actId, areaId };
+    const modal = $('waypointPortalModal');
+    if (modal) modal.classList.remove('hidden');
+  }
+
+  function waypointPortalModalCancel() {
+    state._waypointPending = null;
+    const modal = $('waypointPortalModal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function waypointPortalModalUsePortal() {
+    const modal = $('waypointPortalModal');
+    if (modal) modal.classList.add('hidden');
+    state._waypointPending = null;
+    useTownPortal();
+  }
+
+  function waypointPortalModalProceed() {
+    const modal = $('waypointPortalModal');
+    if (modal) modal.classList.add('hidden');
+    const pending = state._waypointPending;
+    state._waypointPending = null;
+    if (!pending) return;
+    // Použití waypointu zavře otevřený town portal
+    state.townPortalReturn = null;
+    saveGame();
+    doContinueFromWaypoint(pending.actId, pending.areaId);
   }
 
   function continueFromWaypointResult(actId, areaId) {
@@ -12310,6 +12352,7 @@
     townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
     continueFromWaypoint, continueFromWaypointResult, returnToTownFromWaypoint,
+    waypointPortalModalCancel, waypointPortalModalUsePortal, waypointPortalModalProceed,
     renderChest,
     renderGamble, switchGambleCategory, buyGambleItem
   };
