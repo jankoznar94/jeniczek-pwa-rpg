@@ -1040,8 +1040,6 @@
       types:['weapon','ring'], stats:{ attackRating:[11,20] }, tint:'#f1c40f' },
     { id:'ofPerfection', name:'of Perfection', type:'suffix', group:105, minIlvl:25, weight:3,
       types:['weapon','ring'], stats:{ attackRating:[21,30] }, tint:'#f1c40f' },
-    { id:'ofSpeed', name:'of Speed', type:'suffix', group:106, minIlvl:10, weight:5,
-      types:['weapon'], stats:{ swingMs:[-200,-100] }, tint:'#1abc9c' },
     { id:'ofCritical', name:'of Critical', type:'suffix', group:107, minIlvl:8, weight:6,
       types:['weapon','ring','amulet'], stats:{ critChance:[3,8] }, tint:'#e67e22' },
     { id:'ofWisdom', name:'of Wisdom', type:'suffix', group:108, minIlvl:1, weight:6,
@@ -1136,13 +1134,16 @@
       types:['armor','shield','helmet','belt','gloves','boots'], stats:{ enhancedDefense:[25,45] }, tint:'#888' },
     { id:'ofSlaughter', name:'of Slaughter', type:'suffix', group:117, minIlvl:5, weight:8,
       types:['weapon'], stats:{ enhancedDmg:[10,30] }, tint:'#e94560' },
-    // === RYCHLOST ÚTOKU A KOUZLENÍ ===
-    { id:'swift', name:'Swift', type:'prefix', group:18, minIlvl:8, weight:5,
-      types:['weapon','gloves'], stats:{ swingMs:[-300,-150] }, tint:'#1abc9c' },
-    { id:'ofSpeed', name:'of Speed', type:'suffix', group:106, minIlvl:10, weight:5,
-      types:['weapon','gloves'], stats:{ swingMs:[-200,-100] }, tint:'#1abc9c' },
-    { id:'ofAlacrity', name:'of Alacrity', type:'suffix', group:140, minIlvl:20, weight:3,
-      types:['weapon','gloves'], stats:{ swingMs:[-400,-250] }, tint:'#1abc9c' },
+    // === INCREASED ATTACK SPEED (IAS — D2 styl: procenta + diminishing returns) ===
+    // D2: jen prefixy — Readiness 10%, Alacrity 20%, Swiftness 30%, Quickness 40%
+    { id:'readiness', name:'Readiness', type:'prefix', group:18, minIlvl:5, weight:5,
+      types:['weapon','gloves'], stats:{ ias:[10,10] }, tint:'#1abc9c' },
+    { id:'alacrity', name:'Alacrity', type:'prefix', group:18, minIlvl:25, weight:3,
+      types:['weapon','gloves'], stats:{ ias:[20,20] }, tint:'#1abc9c' },
+    { id:'swiftness', name:'Swiftness', type:'prefix', group:18, minIlvl:34, weight:3,
+      types:['weapon'], stats:{ ias:[30,30] }, tint:'#1abc9c' },
+    { id:'quickness', name:'Quickness', type:'prefix', group:18, minIlvl:46, weight:2,
+      types:['weapon'], stats:{ ias:[40,40] }, tint:'#1abc9c' },
     { id:'ofCasting', name:'of Casting', type:'suffix', group:120, minIlvl:10, weight:5,
       types:['weapon','ring','amulet'], stats:{ castSpeed:[10,25] }, tint:'#9b59b6' },
     // === ELEMENTÁRNÍ REZISTENCE (D2 styl) ===
@@ -1239,7 +1240,7 @@
       iconImg:'assets/items/staff_wooden.png', icon:'🪄',
       uniqueProp:{ type:'skillDmgBonus', value:15, desc:'+15% ice skill damage' } },
     { id:'unique_staff_lichWand', name:'Blackhand Key', baseId:'staff_lichWand',
-      affixIds:['ar_keen','ofSpeed'], minLevel:3, tier:4,
+      affixIds:['ar_keen','readiness'], minLevel:3, tier:4,
       iconImg:'assets/items/staff_wooden.png', icon:'🪄',
       uniqueProp:{ type:'castSpeed', value:10, desc:'+10% cast speed' } },
     { id:'unique_staff_petrifiedWand', name:'Tomb Wand', baseId:'staff_petrifiedWand',
@@ -1265,7 +1266,7 @@
       iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
       uniqueProp:{ type:'fireProc', value:15, desc:'15% chance to add fire dmg' } },
     { id:'unique_blade_dimBlade', name:'Ginther\u2019s Rift', baseId:'blade_dimBlade',
-      affixIds:['ar_keen','ofSpeed'], minLevel:2, tier:3,
+      affixIds:['ar_keen','readiness'], minLevel:2, tier:3,
       iconImg:'assets/items/weapon_iron_sword.png', icon:'⚔️',
       uniqueProp:{ type:'attackSpeed', value:10, desc:'+10% attack speed' } },
     { id:'unique_blade_falcata', name:'Coldsteel', baseId:'blade_falcata',
@@ -1825,6 +1826,8 @@
       // +Skills
       allSkills: 0,
       classSkills: 0,
+      // Increased Attack Speed (IAS) — procento
+      ias: 0,
     };
 
     // Aplikovat affix staty
@@ -1959,6 +1962,8 @@
       enhancedDefense: 0, enhancedDmg: 0,
       str: 0, vit: 0, int: 0, dex: 0,
       skillDmg: 0, manaRegen: 0, poisonDmg: 0, poisonDur: 0, lightningDmg: 0,
+      // Increased Attack Speed (IAS) — procento
+      ias: 0,
     };
 
     affixes.forEach(a => {
@@ -2128,7 +2133,7 @@
     if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
     if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
     if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
-    if (item.swingMs && item.swingMs < 0) addRow('Swing Speed', `${item.swingMs}ms${affixRange('swingMs')}`);
+    if (item.ias) addRow('Increased Attack Speed', `+${item.ias}%${affixRange('ias')}`);
     if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
     if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
     if (item.str) addRow('Strength', `+${item.str}${affixRange('str')}`);
@@ -3602,6 +3607,16 @@
     const eqAttrs = getEquipAttrs();
     const dex = (h.attrDex || 0) + eqAttrs.dex;
     let ms = Math.max(600, Math.round(base * (1 - dex * 0.01)));
+    // IAS (Increased Attack Speed) — D2 styl: procenta s diminishing returns
+    // Sčítá se z nasazené zbraně + rukavic (obojí může nést IAS affixy)
+    let ias = (w.ias || 0);
+    const gloves = ITEM_MAP[h.equip.gloves];
+    if (gloves) ias += (gloves.ias || 0);
+    if (ias > 0) {
+      // D2: efektivní IAS s diminishing returns — každé další % je méně efektivní
+      const eias = Math.round(ias * 100 / (ias + 120));
+      ms = Math.max(400, Math.round(ms * 100 / (100 + eias)));
+    }
     // Speed boost (assassin) — +20% rychlost = -20% času
     if (state._speedBoostPct > 0) {
       ms = Math.max(400, Math.round(ms * (1 - state._speedBoostPct / 100)));
