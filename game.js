@@ -366,6 +366,8 @@
     $('resultTitle').textContent = 'Forfeit';
     $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
     $('resultLootList').innerHTML = '';
+    // Defeat — potion sloty nedávají smysl, jde se zpět do města. Vyčistit status z předchozí Victory.
+    $('resultStatus').innerHTML = '';
     $('resultScreen').classList.add('centered');
     const resultBtn = $('resultBtn');
     if (resultBtn) resultBtn.innerHTML = '';
@@ -9818,6 +9820,8 @@
       $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
       $('resultLootList').innerHTML = '';
       $('resultActions').innerHTML = '';
+      // Defeat — potion sloty nedávají smysl, jde se zpět do města. Vyčistit status z předchozí Victory.
+      $('resultStatus').innerHTML = '';
       $('resultScreen').classList.add('centered');
       const resultBtn = $('resultBtn');
       if (resultBtn) resultBtn.innerHTML = '';
