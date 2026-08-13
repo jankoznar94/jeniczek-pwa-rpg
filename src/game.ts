@@ -9,6 +9,7 @@ import { AFFIXES } from './data/affixes';
 import { QUALITY_COLORS, SOCKET_CHANCE_NORMAL, GEMS, GEM_QUALITIES } from './data/gems';
 import { CLASSES, CLASS_SKILLS } from './data/classes';
 import { LOOT_NAMES, LOOT_ICONS, ATTR_KEYS, ATTR_NAMES, RARITY } from './data/loot';
+import { ATTR_COST, HERO_FACES } from './data/hero';
 
 export function initGame() {
   'use strict';
@@ -9349,7 +9350,6 @@ export function initGame() {
     const bonus = (weapon.bonusMana||0) + (armor ? armor.bonusMana||0 : 0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0) + (gloves ? gloves.bonusMana||0 : 0) + (boots ? boots.bonusMana||0 : 0);
     return Math.max(10, baseMana + ((h.attrInt||0) + getEquipAttrs().int) * 5 + bonus);
   }
-  const ATTR_COST = [5, 10, 20, 35, 55, 80, 110, 150, 200, 260, 330, 410, 500];
   function renderHero() {
     const h = state.hero;
     const cls = getClassSkillTree();
@@ -9427,18 +9427,6 @@ export function initGame() {
     }
   }
 
-  const HERO_FACES = [
-    {id:'hero'},
-    {id:'hero_warrior_f'},
-    {id:'hero_mage_m'},
-    {id:'hero_mage_f'},
-    {id:'hero_barbarian_m'},
-    {id:'hero_barbarian_f'},
-    {id:'hero_rogue_m'},
-    {id:'hero_rogue_f'},
-    {id:'hero_paladin_m'},
-    {id:'hero_paladin_f'},
-  ];
 
   function showFaceSelect() {
     const overlay = $('faceSelectOverlay');
