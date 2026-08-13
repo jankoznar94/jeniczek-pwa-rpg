@@ -5,6 +5,8 @@ import { rand, shuffle, clamp, hexToRgb } from './core/utils';
 import { getWeaponElementColor, getWeaponTotalDmgMin, getWeaponTotalDmgMax, getWeaponDmg } from './core/weapon';
 import { removeFromInventory, getStackCount, getQualityColor, pickWeighted, rollStat, rollSockets, getItemSocketName } from './core/loot';
 import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity } from './core/progression';
+import { applyGemStats, buildGemStatsHtml } from './core/gems';
+import { getMonsterFace, getMonsterName } from './core/monsters';
 import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
@@ -640,67 +642,7 @@ export function initGame() {
 
 
 
-  function applyGemStats(item, gemType, gemQuality) {
-    const gem = GEMS[gemType];
-    if (!gem) return;
-    const qData = gem.qualities[gemQuality];
-    if (!qData) return;
-    const isWeapon = item.type === 'weapon';
-    const stats = isWeapon ? qData.weapon : qData.armor;
-    if (!stats) return;
-    const dmgStats = ['fireDmg', 'coldDmg', 'lightningDmg', 'poisonDmg'];
-    Object.keys(stats).forEach(stat => {
-      const val = stats[stat];
-      if (Array.isArray(val)) {
-        if (dmgStats.includes(stat)) {
-          // Damage staty — uložit jako rozsah [min, max]
-          if (Array.isArray(item[stat])) {
-            item[stat][0] += val[0];
-            item[stat][1] += val[1];
-          } else {
-            const existing = item[stat] || 0;
-            item[stat] = [existing + val[0], existing + val[1]];
-          }
-        } else {
-          // Ostatní staty (HP, Mana, AR, MF) — přesná hodnota (maximum)
-          item[stat] = (item[stat] || 0) + val[1];
-        }
-      } else {
-        item[stat] = (item[stat] || 0) + val;
-      }
-    });
-  }
 
-  function buildGemStatsHtml(gemType, gemQuality) {
-    const gem = GEMS[gemType];
-    if (!gem) return '';
-    const qData = gem.qualities[gemQuality];
-    if (!qData) return '';
-    const lines = [];
-    // Weapon stats
-    if (qData.weapon) {
-      lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Weapon:</div>');
-      Object.keys(qData.weapon).forEach(stat => {
-        const val = qData.weapon[stat];
-        const label = stat === 'fireDmg' ? 'Fire Dmg' : stat === 'coldDmg' ? 'Cold Dmg' : stat === 'lightningDmg' ? 'Lightning Dmg' : stat === 'poisonDmg' ? 'Poison Dmg' : stat === 'poisonDur' ? 'Duration' : stat;
-        if (Array.isArray(val)) {
-          lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val[0]}-${val[1]}</div>`);
-        } else {
-          lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
-        }
-      });
-    }
-    // Armor stats
-    if (qData.armor) {
-      lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Armor/Helm/Shield:</div>');
-      Object.keys(qData.armor).forEach(stat => {
-        const val = qData.armor[stat];
-        const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Hit Rating' : stat === 'magicFind' ? 'MF' : stat;
-        lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
-      });
-    }
-    return lines.join('');
-  }
 
 
   function generateLootItemWithAffixes(baseItem, quality, monsterLevel) {
@@ -883,12 +825,6 @@ export function initGame() {
 
   // Second word — podle slotu itemu (autentické D2 názvy)
 
-  function generateRareItemName(itemType) {
-    const first = RARE_FIRST_WORDS[Math.floor(Math.random() * RARE_FIRST_WORDS.length)];
-    const pool = RARE_SECOND_WORDS[itemType] || RARE_SECOND_WORDS.weapon;
-    const second = pool[Math.floor(Math.random() * pool.length)];
-    return first + ' ' + second;
-  }
 
   function generateUniqueItem(uniqueDef) {
     const baseItem = ITEM_MAP[uniqueDef.baseId];
@@ -1125,14 +1061,6 @@ export function initGame() {
     return rows.join('');
   }
 
-  function getMonsterFace(theme, floor) {
-    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
-    return pool[rand(0, pool.length - 1)].face;
-  }
-  function getMonsterName(theme) {
-    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
-    return pool[rand(0, pool.length - 1)].name;
-  }
   function getFloorMonsterSet(theme, floor) {
     const pool = (MONSTER_DB[theme] || MONSTER_DB[0]).filter(m => (m.minArea || 0) <= floor);
     const result = [];
