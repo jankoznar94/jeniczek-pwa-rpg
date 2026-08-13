@@ -1,7 +1,8 @@
 // src/render/battle/battleScene.ts — PixiJS canvas vrstva bitevní scény.
 // Fáze 3 (strangler): canvas běží POD DOM prvky arény (dungeon pozadí + efekty).
 // UI prvky (timer ringy, šipky, tlačítka) zůstávají DOM — canvas je čistě vizuální vrstva.
-import { Application, Container, Sprite, Assets, Graphics } from 'pixi.js';
+// Fáze 5: pixi.js se načítá DYNAMICKY (code-splitting) — jen při vstupu do bitvy.
+import type { Application, Container, Sprite, Graphics } from 'pixi.js';
 
 let app: Application | null = null;
 let bgSprite: Sprite | null = null;
@@ -21,20 +22,23 @@ const THEME_BG: Record<number, string> = {
   4: 'assets/dungeons/frost.png',
 };
 
-/** Přednačte dungeon pozadí do cache (volá se při startu hry, aby bitva neměla zpoždění). */
+/** Přednačte dungeon pozadí do cache (volá se při startu hry, aby bitva neměla zpoždění).
+ *  Používá prostý Image — nezávisí na pixi.js, takže se pixi nenačítá při startu hry. */
 export async function preloadDungeonAssets(): Promise<void> {
   const urls = Object.values(THEME_BG);
-  try {
-    await Promise.all(urls.map(u => Assets.load(u)));
-  } catch (e) {
-    console.warn('Preload dungeon assetů selhal:', e);
-  }
+  await Promise.all(urls.map(u => new Promise<void>((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = u;
+  })));
 }
 
 /** Inicializuje PixiJS canvas do arény. Volá se jednou při startu bitvy. */
 export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
   if (app) return; // už inicializováno
   try {
+    const { Application, Container } = await import('pixi.js');
     app = new Application();
     await app.init({
       background: '#121212',
@@ -96,6 +100,7 @@ export async function setDungeonBackground(theme: number): Promise<void> {
   currentTheme = theme;
   const url = THEME_BG[theme] || THEME_BG[0];
   try {
+    const { Assets, Sprite } = await import('pixi.js');
     const tex = await Assets.load(url);
     if (bgSprite) bgSprite.destroy();
     bgSprite = new Sprite(tex);
@@ -110,11 +115,12 @@ export async function setDungeonBackground(theme: number): Promise<void> {
 }
 
 /** Zapne/vypne pulzující boss auru (jemné glow za monstrem). */
-export function setBossAura(active: boolean): void {
+export async function setBossAura(active: boolean): Promise<void> {
   auraActive = active;
   if (!app || !fxContainer) return;
   if (active) {
     if (!aura) {
+      const { Graphics } = await import('pixi.js');
       aura = new Graphics();
       aura.circle(0, 0, 60).fill({ color: 0xe74c3c, alpha: 0.25 });
       fxContainer.addChild(aura);
@@ -128,8 +134,9 @@ export function setBossAura(active: boolean): void {
 }
 
 /** Vypustí jiskry na canvas (kritický zásah / element útok). Aditivní, pod DOM. */
-export function spawnImpactBurst(x: number, y: number, colorHex: number, isCrit: boolean): void {
+export async function spawnImpactBurst(x: number, y: number, colorHex: number, isCrit: boolean): Promise<void> {
   if (!app || !fxContainer) return;
+  const { Graphics } = await import('pixi.js');
   const count = isCrit ? 22 : 12;
   for (let i = 0; i < count; i++) {
     const g = new Graphics();
