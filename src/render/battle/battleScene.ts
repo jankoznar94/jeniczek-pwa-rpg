@@ -1,15 +1,16 @@
 // src/render/battle/battleScene.ts — PixiJS canvas vrstva bitevní scény.
-// Fáze 3 (strangler): canvas běží POD DOM prvky arény (dungeon pozadí + monster sprite).
+// Fáze 3 (strangler): canvas běží POD DOM prvky arény (dungeon pozadí + efekty).
 // UI prvky (timer ringy, šipky, tlačítka) zůstávají DOM — canvas je čistě vizuální vrstva.
-import { Application, Container, Sprite, Assets } from 'pixi.js';
+import { Application, Container, Sprite, Assets, Graphics } from 'pixi.js';
 
 let app: Application | null = null;
 let bgSprite: Sprite | null = null;
-let monsterSprite: Sprite | null = null;
 let bgContainer: Container | null = null;
-let monsterContainer: Container | null = null;
+let fxContainer: Container | null = null;
+let aura: Graphics | null = null;
 let currentTheme: number | null = null;
-let currentFace: string | null = null;
+let auraActive = false;
+let driftTime = 0;
 
 const THEME_BG: Record<number, string> = {
   0: 'assets/dungeons/forest.png',
@@ -40,9 +41,22 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
     containerEl.appendChild(app.canvas);
 
     bgContainer = new Container();
-    monsterContainer = new Container();
+    fxContainer = new Container();
     app.stage.addChild(bgContainer);
-    app.stage.addChild(monsterContainer);
+    app.stage.addChild(fxContainer);
+
+    // Jemný parallax drift pozadí (pomalý sinusový pohyb)
+    app.ticker.add(() => {
+      driftTime += 0.0015;
+      if (bgSprite) {
+        bgSprite.x = app!.screen.width / 2 + Math.sin(driftTime) * 8;
+      }
+      if (aura && auraActive) {
+        const pulse = 0.5 + 0.5 * Math.sin(driftTime * 3);
+        aura.alpha = 0.18 + pulse * 0.12;
+        aura.scale.set(1 + pulse * 0.15);
+      }
+    });
   } catch (e) {
     console.warn('PixiJS init selhal, bitva běží bez canvas vrstvy:', e);
     app = null;
@@ -69,29 +83,22 @@ export async function setDungeonBackground(theme: number): Promise<void> {
   }
 }
 
-/** Nastaví monster sprite podle cesty k obrázku (assets/monsters/...). */
-export async function setMonsterSprite(face: string): Promise<void> {
-  if (!app || !monsterContainer) return;
-  if (face === currentFace) return;
-  currentFace = face;
-  try {
-    const tex = await Assets.load(face);
-    if (monsterSprite) monsterSprite.destroy();
-    monsterSprite = new Sprite(tex);
-    monsterSprite.anchor.set(0.5);
-    monsterSprite.scale.set(0.5);
-    monsterContainer.removeChildren();
-    monsterContainer.addChild(monsterSprite);
-    positionMonster();
-  } catch (e) {
-    console.warn('Monster sprite se nenačetl:', face, e);
+/** Zapne/vypne pulzující boss auru (jemné glow za monstrem). */
+export function setBossAura(active: boolean): void {
+  auraActive = active;
+  if (!app || !fxContainer) return;
+  if (active) {
+    if (!aura) {
+      aura = new Graphics();
+      aura.circle(0, 0, 60).fill({ color: 0xe74c3c, alpha: 0.25 });
+      fxContainer.addChild(aura);
+    }
+    aura.x = app.screen.width / 2;
+    aura.y = app.screen.height * 0.42;
+    aura.visible = true;
+  } else if (aura) {
+    aura.visible = false;
   }
-}
-
-/** Zobrazí/skryje monster sprite (např. při smrti). */
-export function setMonsterVisible(visible: boolean): void {
-  if (!monsterContainer) return;
-  monsterContainer.visible = visible;
 }
 
 /** Zničí canvas vrstvu (při opuštění bitvy). */
@@ -101,11 +108,12 @@ export function destroyBattleScene(): void {
     app = null;
   }
   bgSprite = null;
-  monsterSprite = null;
   bgContainer = null;
-  monsterContainer = null;
+  fxContainer = null;
+  aura = null;
   currentTheme = null;
-  currentFace = null;
+  auraActive = false;
+  driftTime = 0;
 }
 
 function positionBg(): void {
@@ -115,10 +123,4 @@ function positionBg(): void {
   // Cover: vyplnit celou arénu
   const scale = Math.max(app.screen.width / bgSprite.texture.width, app.screen.height / bgSprite.texture.height);
   bgSprite.scale.set(scale);
-}
-
-function positionMonster(): void {
-  if (!app || !monsterSprite) return;
-  monsterSprite.x = app.screen.width / 2;
-  monsterSprite.y = app.screen.height * 0.42;
 }

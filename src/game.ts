@@ -13,7 +13,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, setDungeonBackground, setMonsterSprite, setMonsterVisible, destroyBattleScene } from './render/battle/battleScene';
+import { initBattleScene, setDungeonBackground, setBossAura, destroyBattleScene } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -2437,6 +2437,7 @@ export function initGame() {
     if (arenaEl) {
       initBattleScene(arenaEl).then(() => {
         setDungeonBackground(mapBattleState.monsterTheme);
+        setBossAura(!!mapBattleState.isBoss);
       });
     }
     // Animace příchodu
