@@ -15,6 +15,12 @@ let driftTime = 0;
 let particles: { g: Graphics; vx: number; vy: number; life: number; maxLife: number; size: number; gravity: number; grow: boolean }[] = [];
 let rings: { g: Graphics; life: number; maxLife: number; maxR: number; color: number }[] = [];
 
+// Foreground melee vrstva — samostatný PixiJS canvas NAD monstrem (z-index 17),
+// kam se kreslí úderové animace zbraní (meč, sekera, dýka, pěst, tupá zbraň, drápy).
+let meleeApp: Application | null = null;
+let meleeContainer: Container | null = null;
+let meleeFx: { g: Graphics; life: number; maxLife: number; update: (g: Graphics, t: number) => void }[] = [];
+
 const THEME_BG: Record<number, string> = {
   0: 'assets/dungeons/forest.png',
   1: 'assets/dungeons/desert.png',
@@ -110,6 +116,49 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
   } catch (e) {
     console.warn('PixiJS init selhal, bitva běží bez canvas vrstvy:', e);
     app = null;
+  }
+}
+
+/** Inicializuje foreground melee vrstvu (PixiJS canvas NAD monstrem, z-index 17).
+ *  Volá se jednou při startu bitvy. Úderové animace zbraní se kreslí sem. */
+export async function initMeleeLayer(containerEl: HTMLElement): Promise<void> {
+  if (meleeApp) return;
+  try {
+    const { Application, Container } = await import('pixi.js');
+    meleeApp = new Application();
+    await meleeApp.init({
+      background: 'transparent',
+      resizeTo: containerEl,
+      antialias: true,
+      autoDensity: true,
+      resolution: Math.min(window.devicePixelRatio || 1, 2),
+    });
+    meleeApp.canvas.style.position = 'absolute';
+    meleeApp.canvas.style.top = '0';
+    meleeApp.canvas.style.left = '0';
+    meleeApp.canvas.style.zIndex = '17';
+    meleeApp.canvas.style.pointerEvents = 'none';
+    containerEl.appendChild(meleeApp.canvas);
+
+    meleeContainer = new Container();
+    meleeApp.stage.addChild(meleeContainer);
+
+    meleeApp.ticker.add(() => {
+      if (meleeFx.length === 0) return;
+      for (let i = meleeFx.length - 1; i >= 0; i--) {
+        const fx = meleeFx[i];
+        fx.life -= 1;
+        const t = 1 - fx.life / fx.maxLife;
+        fx.update(fx.g, Math.max(0, Math.min(1, t)));
+        if (fx.life <= 0) {
+          fx.g.destroy();
+          meleeFx.splice(i, 1);
+        }
+      }
+    });
+  } catch (e) {
+    console.warn('PixiJS melee vrstva selhala, údery běží bez canvas vrstvy:', e);
+    meleeApp = null;
   }
 }
 
@@ -257,11 +306,213 @@ export async function spawnParticleSlash(
   }
 }
 
+/**
+ * Vypustí úderovou animaci zbraně na foreground melee vrstvě (PixiJS, z-index 17).
+ * Zachovává charakter každé zbraně, ale kreslí se moderním WebGL enginem.
+ * weaponType: 'blade' | 'axe' | 'dagger' | 'fists' | 'blunt' | 'claws'
+ */
+export async function spawnMeleeStrike(
+  weaponType: string,
+  x: number, y: number,
+  colorHex: number,
+  isCrit: boolean,
+  angleOffset: number
+): Promise<void> {
+  if (!meleeApp || !meleeContainer) return;
+  const { Graphics } = await import('pixi.js');
+  const s = isCrit ? 1.8 : 1.0;
+  const g = new Graphics();
+  g.x = x;
+  g.y = y;
+  meleeContainer.addChild(g);
+
+  const angle = angleOffset + Math.random() * Math.PI * 0.6;
+  const cos = Math.cos(angle), sin = Math.sin(angle);
+
+  // Každá zbraň má vlastní update funkci (charakter), kreslí se per-frame na Graphics.
+  let update: (gr: Graphics, t: number) => void;
+  let maxLife: number;
+
+  if (weaponType === 'blade') {
+    // Meč — dlouhé jednolité seknutí s motion-blur stopou
+    const len = 180 * s;
+    const midX = cos * len * 0.1, midY = sin * len * 0.1;
+    const perpX = -sin * len * 0.2, perpY = cos * len * 0.2;
+    const cpX = midX + perpX, cpY = midY + perpY;
+    const startX = -cos * len * 0.5, startY = -sin * len * 0.5;
+    const endX = cos * len * 0.5, endY = sin * len * 0.5;
+    const approxLen = len * 1.3;
+    maxLife = isCrit ? 30 : 20;
+    update = (gr, t) => {
+      gr.clear();
+      const drawProgress = Math.min(t * 1.5, 1);
+      const fade = Math.max(0, (t - 0.3) / 0.7);
+      const alpha = 1 - fade;
+      const dashOffset = approxLen * (1 - drawProgress);
+      // 3 vrstvy motion-blur
+      for (let layer = 2; layer >= 0; layer--) {
+        gr.moveTo(startX, startY);
+        gr.quadraticCurveTo(cpX, cpY, endX, endY);
+        gr.stroke({
+          width: 3 * (1 + layer * 0.9),
+          color: colorHex,
+          alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
+        });
+      }
+    };
+  } else if (weaponType === 'axe') {
+    // Sekera — kratší, tlustší, rovnější čára
+    const len = 120 * s;
+    const startX = -cos * len * 0.5, startY = -sin * len * 0.5;
+    const endX = cos * len * 0.5, endY = sin * len * 0.5;
+    maxLife = isCrit ? 30 : 20;
+    update = (gr, t) => {
+      gr.clear();
+      const fade = Math.max(0, (t - 0.2) / 0.8);
+      const alpha = 1 - fade;
+      for (let layer = 2; layer >= 0; layer--) {
+        gr.moveTo(startX, startY);
+        gr.lineTo(endX, endY);
+        gr.stroke({
+          width: 5 * (1 + layer * 0.9),
+          color: colorHex,
+          alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
+        });
+      }
+    };
+  } else if (weaponType === 'dagger') {
+    // Dýka — kratší seknutí
+    const len = 100 * s;
+    const midX = cos * len * 0.1, midY = sin * len * 0.1;
+    const perpX = -sin * len * 0.15, perpY = cos * len * 0.15;
+    const cpX = midX + perpX, cpY = midY + perpY;
+    const startX = -cos * len * 0.5, startY = -sin * len * 0.5;
+    const endX = cos * len * 0.5, endY = sin * len * 0.5;
+    const approxLen = len * 1.2;
+    maxLife = isCrit ? 30 : 20;
+    update = (gr, t) => {
+      gr.clear();
+      const drawProgress = Math.min(t * 1.5, 1);
+      const fade = Math.max(0, (t - 0.3) / 0.7);
+      const alpha = 1 - fade;
+      const dashOffset = approxLen * (1 - drawProgress);
+      for (let layer = 2; layer >= 0; layer--) {
+        gr.moveTo(startX, startY);
+        gr.quadraticCurveTo(cpX, cpY, endX, endY);
+        gr.stroke({
+          width: 2 * (1 + layer * 0.9),
+          color: colorHex,
+          alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
+        });
+      }
+    };
+  } else if (weaponType === 'fists') {
+    // Pěst — expandující kruh
+    maxLife = isCrit ? 30 : 20;
+    update = (gr, t) => {
+      gr.clear();
+      const r = 10 + t * 60 * s;
+      const alpha = 1 - t;
+      gr.circle(0, 0, r).stroke({ width: 6 * s, color: colorHex, alpha });
+      gr.circle(0, 0, r).fill({ color: 0xffffff, alpha: alpha * 0.3 });
+    };
+  } else if (weaponType === 'blunt') {
+    // Tupá zbraň — pavučina/prasklina jako rozbité sklo (charakter zachován)
+    const lineCount = 3 + Math.floor(Math.random() * 3);
+    const lines: { x: number; y: number }[][] = [];
+    for (let i = 0; i < lineCount; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const l = (25 + Math.random() * 50) * s;
+      const segments: { x: number; y: number }[] = [];
+      const segCount = 1 + Math.floor(Math.random() * 2);
+      for (let j = 0; j < segCount; j++) {
+        const frac = (j + 1) / (segCount + 1);
+        const dx = Math.cos(a + (Math.random() - 0.5) * 0.6) * l * frac;
+        const dy = Math.sin(a + (Math.random() - 0.5) * 0.6) * l * frac;
+        segments.push({ x: dx, y: dy });
+      }
+      const endAngle = a + (Math.random() - 0.5) * 0.4;
+      segments.push({ x: Math.cos(endAngle) * l, y: Math.sin(endAngle) * l });
+      lines.push(segments);
+    }
+    const crossLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
+    const crossCount = 1 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < crossCount; i++) {
+      const a1 = Math.random() * Math.PI * 2;
+      const a2 = a1 + 0.3 + Math.random() * 0.8;
+      const r1 = (15 + Math.random() * 30) * s;
+      const r2 = (15 + Math.random() * 30) * s;
+      crossLines.push({
+        x1: Math.cos(a1) * r1, y1: Math.sin(a1) * r1,
+        x2: Math.cos(a2) * r2, y2: Math.sin(a2) * r2,
+      });
+    }
+    maxLife = isCrit ? 70 : 60;
+    update = (gr, t) => {
+      gr.clear();
+      if (t >= 1) return;
+      const alpha = 1;
+      lines.forEach(segments => {
+        gr.moveTo(0, 0);
+        for (const seg of segments) gr.lineTo(seg.x, seg.y);
+        gr.stroke({ width: 2, color: colorHex, alpha });
+      });
+      crossLines.forEach(cl => {
+        gr.moveTo(cl.x1, cl.y1);
+        gr.lineTo(cl.x2, cl.y2);
+        gr.stroke({ width: 2, color: colorHex, alpha });
+      });
+    };
+  } else {
+    // claws — tři rovnoběžné sečné rány
+    const len = 120 * s;
+    const spacing = 20 * s;
+    const perpX = -sin * spacing, perpY = cos * spacing;
+    const midX = cos * len * 0.1, midY = sin * len * 0.1;
+    const curveX = -sin * len * 0.2, curveY = cos * len * 0.2;
+    const startX = -cos * len * 0.5, startY = -sin * len * 0.5;
+    const endX = cos * len * 0.5, endY = sin * len * 0.5;
+    const approxLen = len * 1.3;
+    const slashes = [
+      { sx: startX - perpX, sy: startY - perpY, cpX: midX - perpX + curveX, cpY: midY - perpY + curveY, ex: endX - perpX, ey: endY - perpY },
+      { sx: startX, sy: startY, cpX: midX + curveX, cpY: midY + curveY, ex: endX, ey: endY },
+      { sx: startX + perpX, sy: startY + perpY, cpX: midX + perpX + curveX, cpY: midY + perpY + curveY, ex: endX + perpX, ey: endY + perpY },
+    ];
+    maxLife = isCrit ? 30 : 20;
+    update = (gr, t) => {
+      gr.clear();
+      const drawProgress = Math.min(t * 1.5, 1);
+      const fade = Math.max(0, (t - 0.3) / 0.7);
+      const alpha = 1 - fade;
+      slashes.forEach((sl, idx) => {
+        const offset = idx * 0.05;
+        const slProgress = Math.max(0, Math.min((drawProgress - offset) / (1 - offset), 1));
+        const dashOffset = approxLen * (1 - slProgress);
+        for (let layer = 2; layer >= 0; layer--) {
+          gr.moveTo(sl.sx, sl.sy);
+          gr.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
+          gr.stroke({
+            width: 2 * (1 + layer * 0.9),
+            color: colorHex,
+            alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
+          });
+        }
+      });
+    };
+  }
+
+  meleeFx.push({ g, life: maxLife, maxLife, update });
+}
+
 /** Zničí canvas vrstvu (při opuštění bitvy). */
 export function destroyBattleScene(): void {
   if (app) {
     try { app.destroy(true, { children: true }); } catch (e) { /* ignore */ }
     app = null;
+  }
+  if (meleeApp) {
+    try { meleeApp.destroy(true, { children: true }); } catch (e) { /* ignore */ }
+    meleeApp = null;
   }
   bgSprite = null;
   bgContainer = null;
@@ -272,6 +523,8 @@ export function destroyBattleScene(): void {
   driftTime = 0;
   particles = [];
   rings = [];
+  meleeContainer = null;
+  meleeFx = [];
 }
 
 function positionBg(): void {

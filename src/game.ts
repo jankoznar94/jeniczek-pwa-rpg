@@ -19,7 +19,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
+import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, spawnMeleeStrike, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -2275,6 +2275,8 @@ export function initGame() {
         setDungeonBackground(mapBattleState.monsterTheme);
         setBossAura(!!mapBattleState.isBoss);
       });
+      // Fáze 4: foreground melee vrstva (PixiJS, z-index 17) — úderové animace zbraní
+      initMeleeLayer(arenaEl);
     }
     // Animace příchodu
     const newFig = $('mbFigure');
@@ -5692,17 +5694,6 @@ export function initGame() {
       by = br.top + br.height/2 - aRect.top;
     }
     const isOffhand = angleOffset !== 0;
-    const canvasId = isOffhand ? 'mbProjectileCanvasOffhand' : 'mbProjectileCanvas';
-    const canvas = $(canvasId);
-    if (!canvas) return;
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    const ctx = canvas.getContext('2d');
-    const s = isCrit ? 1.8 : 1.0;
-    let duration = isCrit ? 300 : 200;
-    // Blunt weapon — delší trvání, aby byla pavučina lépe vidět
-    if (weaponType === 'blunt') duration = isCrit ? 700 : 600;
-    const startTime = performance.now();
 
     if (weaponType === 'staff') {
       spawnBasicImpact(bx, by, isCrit, '168,85,247');
@@ -5711,297 +5702,25 @@ export function initGame() {
 
     // Element color override — pokud zbraň má elementární poškození
     const mainColor = elementColor || (isCrit ? '#e74c3c' : '#fff');
-    let glowColor;
+    let colorHex;
     if (elementColor) {
       const r = parseInt(elementColor.slice(1,3), 16);
       const g = parseInt(elementColor.slice(3,5), 16);
       const b = parseInt(elementColor.slice(5,7), 16);
-      glowColor = `rgba(${r},${g},${b},0.7)`;
+      colorHex = (r << 16) | (g << 8) | b;
     } else {
-      glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
+      colorHex = isCrit ? 0xe74c3c : 0xdddddd;
     }
 
-    // Fáze 4: motion-blur trail — kreslí čáru jako vrstvenou stopu (rozmazaná záře + ostré jádro).
-    // pathFn() jen nastaví cestu (beginPath/moveTo/...curveTo) — stroke se provede uvnitř per vrstva.
-    function trailStroke(pathFn, baseWidth, alpha, dashLen, dashOffset) {
-      for (let layer = 2; layer >= 0; layer--) {
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = (layer === 0 ? 4 : 18) * s;
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = baseWidth * (1 + layer * 0.9);
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = layer === 0 ? alpha : alpha * (0.35 - layer * 0.08);
-        ctx.beginPath();
-        pathFn();
-        if (dashLen) { ctx.setLineDash([dashLen, dashLen]); ctx.lineDashOffset = dashOffset; }
-        ctx.stroke();
-        ctx.restore();
-      }
-    }
+    // Fáze 4: úderová animace na foreground PixiJS melee vrstvě (z-index 17, nad monstrem).
+    // Zachovává charakter každé zbraně (meč/sekera/dýka/pěst/tupá zbraň/drápy), ale kreslí se WebGL.
+    spawnMeleeStrike(weaponType, bx, by, colorHex, isCrit, angleOffset);
 
-    if (weaponType === 'blade') {
-      // Meč — dlouhé jednolité seknutí s motion-blur stopou
-      const angle = angleOffset + Math.random() * Math.PI * 0.6;
-      const len = 180 * s;
-      const midX = bx + Math.cos(angle) * len * 0.1;
-      const midY = by + Math.sin(angle) * len * 0.1;
-      const perpX = -Math.sin(angle) * len * 0.2;
-      const perpY = Math.cos(angle) * len * 0.2;
-      const cpX = midX + perpX;
-      const cpY = midY + perpY;
-      const startX = bx - Math.cos(angle) * len * 0.5;
-      const startY = by - Math.sin(angle) * len * 0.5;
-      const endX = bx + Math.cos(angle) * len * 0.5;
-      const endY = by + Math.sin(angle) * len * 0.5;
-      const approxLen = len * 1.3;
-
-      function animate(ts) {
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const drawProgress = Math.min(progress * 1.5, 1);
-        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
-        const alpha = 1 - fadeProgress;
-        const dashOffset = approxLen * (1 - drawProgress);
-        trailStroke(() => {
-          ctx.moveTo(startX, startY);
-          ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-        }, 3, alpha, approxLen, dashOffset);
-        if (progress < 1) requestAnimationFrame(animate);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      requestAnimationFrame(animate);
-
-    } else if (weaponType === 'axe') {
-      // Sekera — kratší, tlustší, rovnější čára, objeví se najednou
-      const angle = angleOffset + Math.random() * Math.PI * 0.6;
-      const len = 120 * s;
-      const startX = bx - Math.cos(angle) * len * 0.5;
-      const startY = by - Math.sin(angle) * len * 0.5;
-      const endX = bx + Math.cos(angle) * len * 0.5;
-      const endY = by + Math.sin(angle) * len * 0.5;
-
-      function animate(ts) {
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const fadeProgress = Math.max(0, (progress - 0.2) / 0.8);
-        const alpha = 1 - fadeProgress;
-        trailStroke(() => {
-          ctx.moveTo(startX, startY);
-          ctx.lineTo(endX, endY);
-        }, 5, alpha, 0, 0);
-        if (progress < 1) requestAnimationFrame(animate);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      requestAnimationFrame(animate);
-
-    } else if (weaponType === 'dagger') {
-      // Dýka — kratší seknutí, podobný styl
-      const angle = angleOffset + Math.random() * Math.PI * 0.6;
-      const len = 100 * s;
-      const midX = bx + Math.cos(angle) * len * 0.1;
-      const midY = by + Math.sin(angle) * len * 0.1;
-      const perpX = -Math.sin(angle) * len * 0.15;
-      const perpY = Math.cos(angle) * len * 0.15;
-      const cpX = midX + perpX;
-      const cpY = midY + perpY;
-      const startX = bx - Math.cos(angle) * len * 0.5;
-      const startY = by - Math.sin(angle) * len * 0.5;
-      const endX = bx + Math.cos(angle) * len * 0.5;
-      const endY = by + Math.sin(angle) * len * 0.5;
-      const approxLen = len * 1.2;
-
-      function animate(ts) {
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const drawProgress = Math.min(progress * 1.5, 1);
-        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
-        const alpha = 1 - fadeProgress;
-        const dashOffset = approxLen * (1 - drawProgress);
-        trailStroke(() => {
-          ctx.moveTo(startX, startY);
-          ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-        }, 2, alpha, approxLen, dashOffset);
-        if (progress < 1) requestAnimationFrame(animate);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      requestAnimationFrame(animate);
-
-    } else if (weaponType === 'fists') {
-      // Pěst — expandující kruh
-      function animate(ts) {
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const r = 10 + progress * 60 * s;
-        const alpha = 1 - progress;
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 12 * s;
-        ctx.beginPath();
-        ctx.arc(bx, by, r, 0, Math.PI * 2);
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 6 * s;
-        ctx.globalAlpha = alpha;
-        ctx.stroke();
-        const grad = ctx.createRadialGradient(bx, by, 0, bx, by, r);
-        grad.addColorStop(0, `rgba(255,255,255,${alpha * 0.6})`);
-        grad.addColorStop(0.3, `rgba(255,255,255,${alpha * 0.2})`);
-        grad.addColorStop(1, 'rgba(255,255,255,0)');
-        ctx.beginPath();
-        ctx.arc(bx, by, r, 0, Math.PI * 2);
-        ctx.fillStyle = grad;
-        ctx.fill();
-        ctx.restore();
-        if (progress < 1) requestAnimationFrame(animate);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      requestAnimationFrame(animate);
-
-    } else if (weaponType === 'blunt') {
-      // Tupá zbraň — pavučina/prasklina jako rozbité sklo
-      // Méně čar, menší
-      const lineCount = 3 + Math.floor(Math.random() * 3);
-      const lines = [];
-      for (let i = 0; i < lineCount; i++) {
-        const a = Math.random() * Math.PI * 2;
-        const l = (25 + Math.random() * 50) * s;
-        // Každá čára má 1-2 zlomy (nepravidelnost)
-        const segments = [];
-        let cx2 = bx, cy2 = by;
-        const segCount = 1 + Math.floor(Math.random() * 2);
-        for (let j = 0; j < segCount; j++) {
-          const frac = (j + 1) / (segCount + 1);
-          const dx = Math.cos(a + (Math.random() - 0.5) * 0.6) * l * frac;
-          const dy = Math.sin(a + (Math.random() - 0.5) * 0.6) * l * frac;
-          segments.push({ x: bx + dx, y: by + dy });
-        }
-        // Konec
-        const endAngle = a + (Math.random() - 0.5) * 0.4;
-        segments.push({ x: bx + Math.cos(endAngle) * l, y: by + Math.sin(endAngle) * l });
-        lines.push(segments);
-      }
-      // Pár náhodných spojovacích čar (pavučina mezi prasklinami)
-      const crossLines = [];
-      const crossCount = 1 + Math.floor(Math.random() * 2);
-      for (let i = 0; i < crossCount; i++) {
-        const a1 = Math.random() * Math.PI * 2;
-        const a2 = a1 + 0.3 + Math.random() * 0.8;
-        const r1 = (15 + Math.random() * 30) * s;
-        const r2 = (15 + Math.random() * 30) * s;
-        crossLines.push({
-          x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
-          x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
-        });
-      }
-
-      function animate(ts) {
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Blunt — statický obrázek, objeví se celý najednou, zmizí celý najednou
-        if (progress >= 1) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
-        const alpha = 1;
-
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 6 * s;
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = alpha;
-
-        // Kreslit všechny praskliny najednou
-        lines.forEach(segments => {
-          ctx.beginPath();
-          ctx.moveTo(bx, by);
-          for (const seg of segments) {
-            ctx.lineTo(seg.x, seg.y);
-          }
-          ctx.stroke();
-        });
-
-        // Spojovací čáry
-        crossLines.forEach(cl => {
-          ctx.beginPath();
-          ctx.moveTo(cl.x1, cl.y1);
-          ctx.lineTo(cl.x2, cl.y2);
-          ctx.stroke();
-        });
-        ctx.restore();
-        requestAnimationFrame(animate);
-      }
-      requestAnimationFrame(animate);
-
-    } else if (weaponType === 'claws') {
-      // Drápy — tři rovnoběžné sečné rány
-      const angle = angleOffset + Math.random() * Math.PI * 0.6;
-      const len = 120 * s;
-      const spacing = 20 * s;
-      // Kolmý vektor pro posun
-      const perpX = -Math.sin(angle) * spacing;
-      const perpY = Math.cos(angle) * spacing;
-      const midX = bx + Math.cos(angle) * len * 0.1;
-      const midY = by + Math.sin(angle) * len * 0.1;
-      const curveX = -Math.sin(angle) * len * 0.2;
-      const curveY = Math.cos(angle) * len * 0.2;
-      const startX = bx - Math.cos(angle) * len * 0.5;
-      const startY = by - Math.sin(angle) * len * 0.5;
-      const endX = bx + Math.cos(angle) * len * 0.5;
-      const endY = by + Math.sin(angle) * len * 0.5;
-      const approxLen = len * 1.3;
-
-      // Tři rány s posunem
-      const slashes = [
-        { sx: startX - perpX, sy: startY - perpY, cpX: midX - perpX + curveX, cpY: midY - perpY + curveY, ex: endX - perpX, ey: endY - perpY },
-        { sx: startX, sy: startY, cpX: midX + curveX, cpY: midY + curveY, ex: endX, ey: endY },
-        { sx: startX + perpX, sy: startY + perpY, cpX: midX + perpX + curveX, cpY: midY + perpY + curveY, ex: endX + perpX, ey: endY + perpY }
-      ];
-
-      function animate(ts) {
-        const elapsed = ts - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const drawProgress = Math.min(progress * 1.5, 1);
-        const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
-        const alpha = 1 - fadeProgress;
-        slashes.forEach((sl, idx) => {
-          const offset = idx * 0.05; // mírné zpoždění mezi ranami
-          const slProgress = Math.max(0, Math.min((drawProgress - offset) / (1 - offset), 1));
-          const dashOffset = approxLen * (1 - slProgress);
-          trailStroke(() => {
-            ctx.moveTo(sl.sx, sl.sy);
-            ctx.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
-          }, 2, alpha, approxLen, dashOffset);
-        });
-        if (progress < 1) requestAnimationFrame(animate);
-        else ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      requestAnimationFrame(animate);
-    }
-
-    // Fáze 4: canvas particle burst s element barvou (aditivní, pod DOM)
-    // Staff útoky už burst spouští přes spawnBasicImpact; melee dostane burst zde.
-    if (elementColor) {
-      const er = parseInt(elementColor.slice(1,3), 16);
-      const eg = parseInt(elementColor.slice(3,5), 16);
-      const eb = parseInt(elementColor.slice(5,7), 16);
-      const hex = (er << 16) | (eg << 8) | eb;
-      spawnImpactBurst(bx, by, hex, isCrit);
-      // Fáze 4: shockwave ring + particle slash (moderní úder)
-      spawnShockwave(bx, by, hex, isCrit);
-      const slashAngle = angleOffset + Math.random() * Math.PI;
-      spawnParticleSlash(bx, by, hex, isCrit, slashAngle);
-    } else {
-      // Fyzický úder bez elementu — stříbrno-bílý slash + shockwave
-      const hex = isCrit ? 0xe74c3c : 0xdddddd;
-      spawnShockwave(bx, by, hex, isCrit);
-      const slashAngle = angleOffset + Math.random() * Math.PI;
-      spawnParticleSlash(bx, by, hex, isCrit, slashAngle);
-    }
+    // Fáze 4: canvas particle burst + shockwave ring + particle slash (aditivní, pod DOM)
+    spawnImpactBurst(bx, by, colorHex, isCrit);
+    spawnShockwave(bx, by, colorHex, isCrit);
+    const slashAngle = angleOffset + Math.random() * Math.PI;
+    spawnParticleSlash(bx, by, colorHex, isCrit, slashAngle);
   }
 
   // ===== SPELL ANIMATIONS =====
