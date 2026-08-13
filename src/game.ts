@@ -13,7 +13,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, destroyBattleScene } from './render/battle/battleScene';
+import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -10938,6 +10938,8 @@ export function initGame() {
     state = loadSave();
     initUniqueItems();
     initGemItems();
+    // Fáze 3: přednačíst dungeon pozadí do cache, aby bitva neměla zpoždění
+    preloadDungeonAssets();
 
     // Nav-bar schovat hned na začátku — splash ho překrývá, ale po fade by prosvítal
     const navBar = document.querySelector('.nav-bar');

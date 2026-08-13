@@ -21,6 +21,16 @@ const THEME_BG: Record<number, string> = {
   4: 'assets/dungeons/frost.png',
 };
 
+/** Přednačte dungeon pozadí do cache (volá se při startu hry, aby bitva neměla zpoždění). */
+export async function preloadDungeonAssets(): Promise<void> {
+  const urls = Object.values(THEME_BG);
+  try {
+    await Promise.all(urls.map(u => Assets.load(u)));
+  } catch (e) {
+    console.warn('Preload dungeon assetů selhal:', e);
+  }
+}
+
 /** Inicializuje PixiJS canvas do arény. Volá se jednou při startu bitvy. */
 export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
   if (app) return; // už inicializováno
