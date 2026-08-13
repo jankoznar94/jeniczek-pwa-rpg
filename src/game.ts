@@ -10,6 +10,8 @@ import { QUALITY_COLORS, SOCKET_CHANCE_NORMAL, GEMS, GEM_QUALITIES } from './dat
 import { CLASSES, CLASS_SKILLS } from './data/classes';
 import { LOOT_NAMES, LOOT_ICONS, ATTR_KEYS, ATTR_NAMES, RARITY } from './data/loot';
 import { ATTR_COST, HERO_FACES } from './data/hero';
+import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
+import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 
 export function initGame() {
   'use strict';
@@ -1236,17 +1238,6 @@ export function initGame() {
       passivePoisonWeapon: pool[idx].passivePoisonWeapon || false});
     return result;
   }
-  const DIRECTIONS = ['⬆️','⬇️','⬅️','➡️'];
-  const DUNGEON_THEME_FILTERS = [
-    '', '', '', '', '', '', '', '', '', '', '', '',
-  ];
-  const DUNGEON_THEMES = [
-    { bg:'#0d2d0d', border:'#2ecc71', borderGlow:'rgba(46,204,113,0.3)' },   // 0 Act 1: Enchanted Forest — zelená
-    { bg:'#2a1a08', border:'#e67e22', borderGlow:'rgba(230,126,34,0.3)' },   // 1 Act 2: Desert Realm — pískově oranžová
-    { bg:'#1a0d2a', border:'#b07cd8', borderGlow:'rgba(176,124,216,0.3)' },  // 2 Act 4: Undead Lands — fialová
-    { bg:'#2d0d0d', border:'#e74c3c', borderGlow:'rgba(231,76,60,0.3)' },    // 3 Act 5: Hellish Wastes — červená jako láva
-    { bg:'#0d122d', border:'#4a9eff', borderGlow:'rgba(74,158,255,0.3)' },  // 4 Act 3: Frost Peaks — ledově modrá
-  ];
 
   // Násobitel obtížnosti podle zóny a obtížnosti
   // Normal: Act 1 zóna 0 = ×1.0, Act 5 zóna 9 = ×5.5
@@ -10898,9 +10889,6 @@ export function initGame() {
   function trainingLose() { trainingState.playerHp=0; sfxPlayerHit(); endTraining(false); }
 
   // ===== MINIGAMES =====
-  const SIMON_SYMBOLS = ['⚡','🔥','💧','🌿','💎','☀️','🌙','🍀','🌀','⭐','🌈','🦋','🍄','🌊','❄️','🎯'];
-  const SIMON_COLORS = ['#e94560','#f1c40f','#4a7dff','#2ecc71','#9b59b6','#e67e22','#1abc9c','#2c3e50','#d35400','#f39c12','#16a085','#c0392b','#8e44ad','#2980b9','#bdc3c7','#7f8c8d'];
-  const SIMON_FREQS = [73.42*4,87.31*4,110.0*4,146.84*2,164.81*2,196.0*2,220.0*2,246.94*2,73.42*5,87.31*5,110.0*5,146.84*3,164.81*3,196.0*3,220.0*3,246.94*3];
   function startSimon() {
     const level=trainingState.level,gridSize=Math.min(2+Math.floor(level/3),4),nc=gridSize*gridSize,seqLen=5+Math.floor(level/2);
     const sym=shuffle([...SIMON_SYMBOLS]).slice(0,nc),cols=SIMON_COLORS.slice(0,nc);
