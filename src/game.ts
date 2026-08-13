@@ -2,6 +2,7 @@
 // TypeScript ho zatím neanalyzuje; rozsekaní na moduly probíhá postupně.
 // Odebíráme @ts-nocheck až po kompletní extrakci do modulů.
 import { rand, shuffle, clamp, hexToRgb } from './core/utils';
+import { getWeaponElementColor, getWeaponTotalDmgMin, getWeaponTotalDmgMax, getWeaponDmg } from './core/weapon';
 import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
@@ -149,11 +150,6 @@ export function initGame() {
     requestAnimationFrame(animate);
   }
 
-  function getWeaponDmg(weapon) {
-    const min = getWeaponTotalDmgMin(weapon);
-    const max = getWeaponTotalDmgMax(weapon);
-    return min + Math.floor(Math.random() * (max - min + 1));
-  }
 
   const healSfx = (() => { const a = new Audio('heal.mp3'); a.volume = 0.70; return a; })();
   const treasureSfx = (() => { const a = new Audio('treasure.mp3'); a.volume = 0.70; return a; })();
@@ -436,23 +432,6 @@ export function initGame() {
   function getWeaponType() {
     const w = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     return w.weaponType || 'fists';
-  }
-  function getWeaponElementColor(weapon) {
-    if (!weapon) return null;
-    function hasDmg(v) { return Array.isArray(v) ? v[1] > 0 : (v > 0); }
-    if (hasDmg(weapon.fireDmg)) return '#e67e22';
-    if (hasDmg(weapon.coldDmg)) return '#4a7dff';
-    if (weapon.poisonDmg) return '#2ecc71';
-    if (hasDmg(weapon.lightningDmg)) return '#8b5cf6';
-    return null;
-  }
-  function getWeaponTotalDmgMin(weapon) {
-    function getMin(v) { return Array.isArray(v) ? v[0] : (v || 0); }
-    return (weapon.baseDmgMin || 0) + getMin(weapon.fireDmg) + getMin(weapon.coldDmg) + getMin(weapon.lightningDmg);
-  }
-  function getWeaponTotalDmgMax(weapon) {
-    function getMax(v) { return Array.isArray(v) ? v[1] : (v || 0); }
-    return (weapon.baseDmgMax || 0) + getMax(weapon.fireDmg) + getMax(weapon.coldDmg) + getMax(weapon.lightningDmg);
   }
   // ===== RESIST MULT =====
   function getLocAffix(key) {
