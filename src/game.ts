@@ -19,7 +19,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
+import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -2761,6 +2761,11 @@ export function initGame() {
     const fill = document.getElementById('mbEnemyHpFill');
     if (!fill) return;
     const pct = mb.maxBossHp > 0 ? Math.max(0, Math.min(100, (mb.bossHp / mb.maxBossHp) * 100)) : 0;
+    // Fáze 4: damage ghost — stará hodnota doznívá pomaleji (0.6s tween) než fill (0.2s)
+    const ghost = document.getElementById('mbEnemyHpGhost');
+    if (ghost) {
+      ghost.style.width = pct + '%';
+    }
     fill.style.width = pct + '%';
   }
 
@@ -5650,6 +5655,8 @@ export function initGame() {
     }
     // Exploze částic — jediný efekt, žádné skrývání figure
     const count = 20;
+    // Fáze 4: jemný kouř na canvas vrstvě (stoupá a rozpíná se)
+    spawnDeathSmoke(bx, by);
     for (let i = 0; i < count; i++) {
       const p = document.createElement('div');
       const size = 4 + Math.random() * 12;
@@ -5993,6 +6000,15 @@ export function initGame() {
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       requestAnimationFrame(animate);
+    }
+
+    // Fáze 4: canvas particle burst s element barvou (aditivní, pod DOM)
+    // Staff útoky už burst spouští přes spawnBasicImpact; melee dostane burst zde.
+    if (elementColor) {
+      const er = parseInt(elementColor.slice(1,3), 16);
+      const eg = parseInt(elementColor.slice(3,5), 16);
+      const eb = parseInt(elementColor.slice(5,7), 16);
+      spawnImpactBurst(bx, by, (er << 16) | (eg << 8) | eb, isCrit);
     }
   }
 
@@ -7732,6 +7748,17 @@ export function initGame() {
     mb._skipMeleeImpact = false;
 
     mb.bossHp -= dmg;
+
+    // Fáze 4: hit-flash — jemné rozzáření monstra při zásahu (bez agresivního glow)
+    const hitFig = $('mbFigure');
+    if (hitFig) {
+      hitFig.style.transition = 'filter 0.08s';
+      hitFig.style.filter = 'brightness(1.6) saturate(1.2)';
+      setTimeout(() => {
+        hitFig.style.filter = 'brightness(1)';
+        setTimeout(() => { hitFig.style.transition = ''; }, 80);
+      }, 80);
+    }
 
     // Monster rage gain za obdržení poškození (Troll, Medvěd)
     if (mb.monsterResource === 'rage') {
