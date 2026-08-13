@@ -1,5 +1,7 @@
 // src/core/progression.ts — čisté výpočty progrese a obtížnosti.
 // Extrahováno z src/game.ts (Fáze 2). Žádné DOM, žádný stav — jen parametry.
+import { DIRECTIONS } from '../data/dungeons';
+import { rand } from './utils';
 
 /** Násobitel obtížnosti podle zóny a obtížnosti (Normal/Nightmare/Hell). */
 export function getZoneMult(progress: number, difficulty: number): number {
@@ -86,4 +88,35 @@ export function getRarity(bossDrop: boolean): string {
     if (r < 0.35) return 'magic';
     return 'common';
   }
+}
+
+/** Vygeneruje útok podle šancí dungeonu (typ, směr, okno). */
+export function generateAttack(chances: any, prevType: string, locId: number, floor: number): any {
+  const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0);
+  const randNum = Math.random() * randTotal;
+  let type = 'grey';
+  if (randNum < chances.inverted) { type = 'inverted'; }
+  else if (randNum < chances.inverted + chances.green) { type = 'green'; }
+  else if (randNum < chances.inverted + chances.green + chances.yellow) { type = 'yellow'; }
+  else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue) { type = 'blue'; }
+  else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0)) { type = 'rapid'; }
+  else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0)) { type = 'truth'; }
+  else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0)) { type = 'lie'; }
+  else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0)) { type = 'freeze'; }
+  const mult = getFloorTimerMultiplier(floor || 0, locId);
+  const baseTime = Math.round(1500 * mult);
+  const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
+  const windowTime = (type === 'yellow' || type === 'blue') ? Math.round(jitter * 1.5) : (type === 'rapid' ? Math.round(jitter * 3.0) : jitter);
+  const dir = DIRECTIONS[rand(0,3)];
+  if (type === 'blue') {
+    const pairs = [['⬆️','⬇️'], ['⬅️','➡️']];
+    const pair = pairs[rand(0,1)];
+    const dirA = pair[0], dirB = pair[1];
+    return { type, dir: dirA, twinDir: dirB, windowTime };
+  }
+  if (type === 'rapid') {
+    const rapidTarget = Math.min(20 + Math.floor((floor||0) * 4), 35);
+    return { type, dir, windowTime, rapidTarget };
+  }
+  return { dir, type, windowTime };
 }

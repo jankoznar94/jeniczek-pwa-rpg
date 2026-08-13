@@ -4,7 +4,7 @@
 import { rand, shuffle, clamp, hexToRgb } from './core/utils';
 import { getWeaponElementColor, getWeaponTotalDmgMin, getWeaponTotalDmgMax, getWeaponDmg } from './core/weapon';
 import { removeFromInventory, getStackCount, getQualityColor, pickWeighted, rollStat, rollSockets, getItemSocketName } from './core/loot';
-import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity } from './core/progression';
+import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity, generateAttack } from './core/progression';
 import { applyGemStats, buildGemStatsHtml } from './core/gems';
 import { getMonsterFace, getMonsterName } from './core/monsters';
 import { getDungeonResistIcons } from './core/dungeons';
@@ -4250,39 +4250,6 @@ export function initGame() {
     return icons;
   }
 
-  function generateAttack(chances, prevType, locId, floor) {
-    const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0);
-    const randNum = Math.random() * randTotal;
-    let type = 'grey';
-    if (randNum < chances.inverted) { type = 'inverted'; }
-    else if (randNum < chances.inverted + chances.green) { type = 'green'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow) { type = 'yellow'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue) { type = 'blue'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0)) { type = 'rapid'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0)) { type = 'truth'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0)) { type = 'lie'; }
-    else if (randNum < chances.inverted + chances.green + chances.yellow + chances.blue + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0)) { type = 'freeze'; }
-    // Timer: base 1500ms, floor multiplikátor (P1=1500, P10=~900ms)
-    const mult = getFloorTimerMultiplier(floor || 0, locId);
-    const baseTime = Math.round(1500 * mult);
-    // Malá náhoda ±10% pro pestrost
-    const jitter = Math.round(baseTime * (0.9 + Math.random() * 0.2));
-    const windowTime = (type === 'yellow' || type === 'blue') ? Math.round(jitter * 1.5) : (type === 'rapid' ? Math.round(jitter * 3.0) : jitter);
-    const dir = DIRECTIONS[rand(0,3)];
-    if (type === 'blue') {
-      // Dvojitá šipka: vyber protichůdný pár (nahoru-dolů nebo vlevo-vpravo)
-      const pairs = [['⬆️','⬇️'], ['⬅️','➡️']];
-      const pair = pairs[rand(0,1)];
-      const dirA = pair[0], dirB = pair[1];
-      return { type, dir: dirA, twinDir: dirB, windowTime };
-    }
-    if (type === 'rapid') {
-      // Rapid: náhodný cíl 20-35 podle patra (+25%)
-      const rapidTarget = Math.min(20 + Math.floor((floor||0) * 4), 35);
-      return { type, dir, windowTime, rapidTarget };
-    }
-    return { dir, type, windowTime };
-  }
 
 
   function resetTimerRing() {
