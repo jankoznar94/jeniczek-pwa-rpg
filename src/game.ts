@@ -5862,77 +5862,27 @@ export function initGame() {
       requestAnimationFrame(animate);
 
     } else if (weaponType === 'blunt') {
-      // Tupá zbraň — pavučina/prasklina jako rozbité sklo
-      // Méně čar, menší
-      const lineCount = 3 + Math.floor(Math.random() * 3);
-      const lines = [];
-      for (let i = 0; i < lineCount; i++) {
-        const a = Math.random() * Math.PI * 2;
-        const l = (25 + Math.random() * 50) * s;
-        // Každá čára má 1-2 zlomy (nepravidelnost)
-        const segments = [];
-        let cx2 = bx, cy2 = by;
-        const segCount = 1 + Math.floor(Math.random() * 2);
-        for (let j = 0; j < segCount; j++) {
-          const frac = (j + 1) / (segCount + 1);
-          const dx = Math.cos(a + (Math.random() - 0.5) * 0.6) * l * frac;
-          const dy = Math.sin(a + (Math.random() - 0.5) * 0.6) * l * frac;
-          segments.push({ x: bx + dx, y: by + dy });
-        }
-        // Konec
-        const endAngle = a + (Math.random() - 0.5) * 0.4;
-        segments.push({ x: bx + Math.cos(endAngle) * l, y: by + Math.sin(endAngle) * l });
-        lines.push(segments);
-      }
-      // Pár náhodných spojovacích čar (pavučina mezi prasklinami)
-      const crossLines = [];
-      const crossCount = 1 + Math.floor(Math.random() * 2);
-      for (let i = 0; i < crossCount; i++) {
-        const a1 = Math.random() * Math.PI * 2;
-        const a2 = a1 + 0.3 + Math.random() * 0.8;
-        const r1 = (15 + Math.random() * 30) * s;
-        const r2 = (15 + Math.random() * 30) * s;
-        crossLines.push({
-          x1: bx + Math.cos(a1) * r1, y1: by + Math.sin(a1) * r1,
-          x2: bx + Math.cos(a2) * r2, y2: by + Math.sin(a2) * r2
-        });
-      }
+      // Tupá zbraň — silný krátký úder s motion-blur stopou (tlustá rána, ne řez)
+      const angle = angleOffset + Math.random() * Math.PI * 0.6;
+      const len = 90 * s;
+      const startX = bx - Math.cos(angle) * len * 0.5;
+      const startY = by - Math.sin(angle) * len * 0.5;
+      const endX = bx + Math.cos(angle) * len * 0.5;
+      const endY = by + Math.sin(angle) * len * 0.5;
 
       function animate(ts) {
         const elapsed = ts - startTime;
         const progress = Math.min(elapsed / duration, 1);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Blunt — statický obrázek, objeví se celý najednou, zmizí celý najednou
-        if (progress >= 1) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
-        const alpha = 1;
-
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 6 * s;
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = alpha;
-
-        // Kreslit všechny praskliny najednou
-        lines.forEach(segments => {
-          ctx.beginPath();
-          ctx.moveTo(bx, by);
-          for (const seg of segments) {
-            ctx.lineTo(seg.x, seg.y);
-          }
-          ctx.stroke();
-        });
-
-        // Spojovací čáry
-        crossLines.forEach(cl => {
-          ctx.beginPath();
-          ctx.moveTo(cl.x1, cl.y1);
-          ctx.lineTo(cl.x2, cl.y2);
-          ctx.stroke();
-        });
-        ctx.restore();
-        requestAnimationFrame(animate);
+        const fadeProgress = Math.max(0, (progress - 0.2) / 0.8);
+        const alpha = 1 - fadeProgress;
+        // Tlustá rána — široká stopa, ostré jádro
+        trailStroke(() => {
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(endX, endY);
+        }, 7, alpha, 0, 0);
+        if (progress < 1) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       requestAnimationFrame(animate);
 
