@@ -4,6 +4,7 @@
 import { rand, shuffle, clamp, hexToRgb } from './core/utils';
 import { getWeaponElementColor, getWeaponTotalDmgMin, getWeaponTotalDmgMax, getWeaponDmg } from './core/weapon';
 import { removeFromInventory, getStackCount, getQualityColor, pickWeighted, rollStat, rollSockets, getItemSocketName } from './core/loot';
+import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity } from './core/progression';
 import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
@@ -1169,26 +1170,8 @@ export function initGame() {
   // Normal: Act 1 zóna 0 = ×1.0, Act 5 zóna 9 = ×5.5
   // Nightmare: Act 1 zóna 0 = ×5.5 (navazuje na Act 5 Normal), Act 5 zóna 9 = ×12.0
   // Hell: Act 1 zóna 0 = ×12.0 (navazuje na Act 5 Nightmare), Act 5 zóna 9 = ×20.0
-  function getZoneMult(progress, difficulty) {
-    const configs = [
-      { base: 1.0, step: 0.50 },   // Normal
-      { base: 5.5, step: 0.72 },  // Nightmare
-      { base: 12.0, step: 0.89 },  // Hell
-    ];
-    const cfg = configs[difficulty] || configs[0];
-    return cfg.base + (progress || 0) * cfg.step;
-  }
 
   // ===== LEVEL / HIT / DODGE / XP HELPERS =====
-  function getMonsterLevel(mb) {
-    const loc = mb.loc;
-    if (!loc || loc.minLevel === undefined) return 1;
-    // Level se lineárně zvyšuje od minLevel do maxLevel podle progresu v zóně
-    const totalZones = loc.zones || 10;
-    const zonePct = totalZones > 0 ? (mb.progress || 0) / totalZones : 0;
-    const range = loc.maxLevel - loc.minLevel;
-    return loc.minLevel + Math.round(range * zonePct);
-  }
 
   function getLevelDiff(mb) {
     const monsterLv = getMonsterLevel(mb);
@@ -2400,15 +2383,6 @@ export function initGame() {
     return ms;
   }
 
-  function getEnemySwingTime(mb) {
-    // Použít fixní attackSpeed monstra
-    let swingMs = mb.monsterAttackSpeed || 2000;
-    // Aplikovat zpomalení z ledových kouzel
-    if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
-      swingMs = Math.round(swingMs / (1 - mb._enemySlowPct / 100));
-    }
-    return swingMs;
-  }
 
   function pickEnemySpell(mb) {
     // Vybere kouzlo podle seznamu kouzel monstra
@@ -4302,42 +4276,7 @@ export function initGame() {
     setupTap('mbTapRight');
   }
 
-  function getFloorTimerMultiplier(floor, locId) {
-    // D2 (Poušť) — base je o něco pomalejší, ale bude kolísat v rAF
-    if (locId === 1) return Math.pow(0.95, floor) * 1.15;
-    // Other dungeony: 1200ms base, každé patro -5%
-    return Math.pow(0.95, floor);
-  }
 
-  function getDungeonAttackChances(locId, floor) {
-    // D1, D2: jen šedé šipky
-    if (locId === 0 || locId === 1) return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth: 0, lie: 0, freeze: 0 };
-    // D3 (Nemrtvá země): truth (zelená=normální), lie (červená=opačný), freeze (modrá=nic)
-    if (locId === 2) {
-      const f = floor || 0;
-      const truth = Math.max(30, 70 - f * 4);
-      const lie = Math.min(35, 15 + f * 2);
-      const freeze = Math.min(35, 15 + f * 2);
-      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
-    }
-    // D4 (Pekelné výspy): truth/lie/freeze + přehřívání
-    if (locId === 3) {
-      const f = floor || 0;
-      const truth = Math.max(20, 60 - f * 4);
-      const lie = Math.min(40, 20 + f * 2);
-      const freeze = Math.min(40, 20 + f * 2);
-      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
-    }
-    // D5 (Mrazivé štíty): truth/lie/freeze + přehřívání + timer freeze
-    if (locId === 4) {
-      const f = floor || 0;
-      const truth = Math.max(20, 60 - f * 4);
-      const lie = Math.min(40, 20 + f * 2);
-      const freeze = Math.min(40, 20 + f * 2);
-      return { grey: 0, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth, lie, freeze };
-    }
-    return { grey: 85, yellow: 0, blue: 0, green: 0, inverted: 0, rapid: 0, truth: 0, lie: 0, freeze: 0 };
-  }
 
   const _arrowSvg = (fill, extra = '') => {
     // Tmavší border — odečíst 60 od každé RGB složky
@@ -4432,19 +4371,6 @@ export function initGame() {
     return { dir, type, windowTime };
   }
 
-  function getAttackHint(attack) {
-    const dir = attack.dir;
-    if (attack.type === 'grey') return `${dir} ⚪ Útok — swipni!`;
-    if (attack.type === 'yellow') return `${dir} 🟡 Silný útok — 2× ${dir}!`;
-    if (attack.type === 'blue') return `${dir}↔${attack.twinDir} 🔷 Dvojitý útok — oba směry!`;
-    if (attack.type === 'green') return `${dir} 🟢 Léčení — swipni pro HP!`;
-    if (attack.type === 'inverted') return `${dir} 🟢 Inverzní — udělej OPAK!`;
-    if (attack.type === 'rapid') return `🔮 Ťukej! ${attack.rapidTarget}× na plošky!`;
-    if (attack.type === 'truth') return `${dir} 🟢 Pravda — swipni jak šipka!`;
-    if (attack.type === 'lie') return `${dir} 🔴 Lež — udělej OPAK!`;
-    if (attack.type === 'freeze') return `${dir} 🔵 Zmrzni — NESMÍŠ swipnout!`;
-    return `${dir} útok!`;
-  }
 
   function resetTimerRing() {
     const circle = document.querySelector('.timer-circle');
@@ -8168,20 +8094,6 @@ export function initGame() {
   // ===== LOOT SYSTEM =====
   // Šablony pro názvy itemů podle typu a tieru
 
-  function getRarity(bossDrop) {
-    const r = Math.random();
-    if (bossDrop) {
-      if (r < 0.15) return 'unique';
-      if (r < 0.40) return 'rare';
-      if (r < 0.70) return 'magic';
-      return 'common';
-    } else {
-      if (r < 0.01) return 'unique';
-      if (r < 0.06) return 'rare';
-      if (r < 0.35) return 'magic';
-      return 'common';
-    }
-  }
 
   function generateLootItem(locId, floor, bossDrop) {
     // Tier podle dungeonu: D1=1, D2=1-2, D3=1-3, D4=1-4, D5=1-5
