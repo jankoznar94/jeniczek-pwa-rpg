@@ -13,6 +13,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
+import { initBattleScene, setDungeonBackground, setMonsterSprite, setMonsterVisible, destroyBattleScene } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -1516,6 +1517,10 @@ export function initGame() {
         arena._mbHandlers = null;
       }
     }
+    // Fáze 3: zničit PixiJS canvas vrstvu při opuštění bitvy (uvolnit GPU)
+    if (name !== 'mapBattle' && name !== 'result') {
+      destroyBattleScene();
+    }
     
     Object.values(SCREEN_IDS).forEach(id => {
       const el = $(id);
@@ -2426,6 +2431,14 @@ export function initGame() {
     updateMapBattleUI();
     setupMapBattleInput();
     applySchoolColors();
+    // Fáze 3: PixiJS canvas vrstva (dungeon pozadí pod DOM prvky arény)
+    // Monster sprite zůstává v DOM (mbFigure) — má animace (enemy-enter, monster-dying, filter).
+    const arenaEl = $('mbArena');
+    if (arenaEl) {
+      initBattleScene(arenaEl).then(() => {
+        setDungeonBackground(mapBattleState.monsterTheme);
+      });
+    }
     // Animace příchodu
     const newFig = $('mbFigure');
     if (newFig && !mapBattleState.isBoss && mapBattleState.progress > 0) {
