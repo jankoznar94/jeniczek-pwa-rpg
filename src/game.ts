@@ -13,7 +13,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, setDungeonBackground, setBossAura, destroyBattleScene } from './render/battle/battleScene';
+import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, destroyBattleScene } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -5842,6 +5842,10 @@ export function initGame() {
   function spawnBasicImpact(x, y, isCrit, rgbStr) {
     const arena = $('mbArena');
     if (!arena) return;
+    // Fáze 3: canvas particle burst (aditivní, pod DOM) — jiskry s gravitací
+    const rgb = rgbStr.split(',').map(Number);
+    const colorHex = (rgb[0] << 16) | (rgb[1] << 8) | rgb[2];
+    spawnImpactBurst(x, y, colorHex, isCrit);
     // Pokud je rgbStr šedá (výchozí), použít arcánní fialovou pro kouzelníka
     if (rgbStr === '187,187,187' || rgbStr === '180,180,200') {
       rgbStr = '168,85,247';

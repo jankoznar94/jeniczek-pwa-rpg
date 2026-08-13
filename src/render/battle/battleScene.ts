@@ -11,6 +11,7 @@ let aura: Graphics | null = null;
 let currentTheme: number | null = null;
 let auraActive = false;
 let driftTime = 0;
+let particles: { g: Graphics; vx: number; vy: number; life: number; maxLife: number; size: number }[] = [];
 
 const THEME_BG: Record<number, string> = {
   0: 'assets/dungeons/forest.png',
@@ -55,6 +56,21 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
         const pulse = 0.5 + 0.5 * Math.sin(driftTime * 3);
         aura.alpha = 0.18 + pulse * 0.12;
         aura.scale.set(1 + pulse * 0.15);
+      }
+      // Particle update (jiskry)
+      if (particles.length > 0) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.life -= 1;
+          p.g.x += p.vx;
+          p.g.y += p.vy;
+          p.vy += 0.15; // gravitace
+          p.g.alpha = Math.max(0, p.life / p.maxLife);
+          if (p.life <= 0) {
+            p.g.destroy();
+            particles.splice(i, 1);
+          }
+        }
       }
     });
   } catch (e) {
@@ -101,6 +117,30 @@ export function setBossAura(active: boolean): void {
   }
 }
 
+/** Vypustí jiskry na canvas (kritický zásah / element útok). Aditivní, pod DOM. */
+export function spawnImpactBurst(x: number, y: number, colorHex: number, isCrit: boolean): void {
+  if (!app || !fxContainer) return;
+  const count = isCrit ? 22 : 12;
+  for (let i = 0; i < count; i++) {
+    const g = new Graphics();
+    const size = isCrit ? 3 + Math.random() * 4 : 2 + Math.random() * 3;
+    g.circle(0, 0, size).fill({ color: colorHex, alpha: 0.9 });
+    g.x = x;
+    g.y = y;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = (isCrit ? 2.5 : 1.5) + Math.random() * 2;
+    fxContainer.addChild(g);
+    particles.push({
+      g,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 1,
+      life: isCrit ? 40 : 28,
+      maxLife: isCrit ? 40 : 28,
+      size,
+    });
+  }
+}
+
 /** Zničí canvas vrstvu (při opuštění bitvy). */
 export function destroyBattleScene(): void {
   if (app) {
@@ -114,6 +154,7 @@ export function destroyBattleScene(): void {
   currentTheme = null;
   auraActive = false;
   driftTime = 0;
+  particles = [];
 }
 
 function positionBg(): void {
