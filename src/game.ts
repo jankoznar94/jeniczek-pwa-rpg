@@ -3,6 +3,7 @@
 // Odebíráme @ts-nocheck až po kompletní extrakci do modulů.
 import { rand, shuffle, clamp, hexToRgb } from './core/utils';
 import { getWeaponElementColor, getWeaponTotalDmgMin, getWeaponTotalDmgMax, getWeaponDmg } from './core/weapon';
+import { removeFromInventory, getStackCount, getQualityColor, pickWeighted, rollStat, rollSockets, getItemSocketName } from './core/loot';
 import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
@@ -553,29 +554,6 @@ export function initGame() {
     }
     inventory.push({ id: itemId, count: count || 1 });
   }
-  function removeFromInventory(inventory, itemId, count) {
-    for (let i = 0; i < inventory.length; i++) {
-      const entry = inventory[i];
-      const eid = typeof entry === 'object' ? entry.id : entry;
-      if (eid === itemId) {
-        if (typeof entry === 'object') {
-          entry.count -= count || 1;
-          if (entry.count <= 0) inventory.splice(i, 1);
-        } else {
-          inventory.splice(i, 1);
-        }
-        return;
-      }
-    }
-  }
-  function getStackCount(inventory, itemId) {
-    for (let i = 0; i < inventory.length; i++) {
-      const entry = inventory[i];
-      const eid = typeof entry === 'object' ? entry.id : entry;
-      if (eid === itemId) return typeof entry === 'object' ? (entry.count || 1) : 1;
-    }
-    return 0;
-  }
 
   // ===== LOOT GENERATION =====
   // Quality podle počtu affixů: normal(0), magic(1-2), rare(3-4), unique(5+)
@@ -591,14 +569,6 @@ export function initGame() {
 
   // Gem quality levels (D2 style: chipped → flawed → normal → flawless → perfect)
 
-  function getQualityColor(item) {
-    if (item.unique) return QUALITY_COLORS.unique;
-    // Použít quality/rarity místo počítání affixů — rare bez affixů je pořád rare
-    const q = item.quality || item.rarity;
-    if (q === 'rare') return QUALITY_COLORS.rare;
-    if (q === 'magic') return QUALITY_COLORS.magic;
-    return QUALITY_COLORS.normal;
-  }
 
   function getMagicFind() {
     let mf = 0;
@@ -666,29 +636,8 @@ export function initGame() {
     return 'normal';
   }
 
-  function pickWeighted(arr, weightKey) {
-    const total = arr.reduce((s, a) => s + a[weightKey], 0);
-    let r = Math.random() * total;
-    for (const a of arr) {
-      r -= a[weightKey];
-      if (r <= 0) return a;
-    }
-    return arr[arr.length - 1];
-  }
 
-  function rollStat(statRange) {
-    return statRange[0] + Math.floor(Math.random() * (statRange[1] - statRange[0] + 1));
-  }
 
-  function rollSockets(itemType, quality, baseItem) {
-    // D2: Jen normal quality itemy můžou mít sockety jako base
-    if (quality !== 'normal') return 0;
-    // Jen kontaktní itemy můžou mít sockety
-    if (!baseItem || !baseItem.maxSockets) return 0;
-    if (Math.random() >= SOCKET_CHANCE_NORMAL) return 0;
-    // Roll 1 až maxSockets (stejně jako v D2 — náhodný počet do maxima)
-    return 1 + Math.floor(Math.random() * baseItem.maxSockets);
-  }
 
   function applyGemStats(item, gemType, gemQuality) {
     const gem = GEMS[gemType];
@@ -752,10 +701,6 @@ export function initGame() {
     return lines.join('');
   }
 
-  function getItemSocketName(item) {
-    if (!item.sockets || item.sockets <= 0) return item.name;
-    return item.name + ' (' + item.sockets + ')';
-  }
 
   function generateLootItemWithAffixes(baseItem, quality, monsterLevel) {
     const ilvl = monsterLevel;
