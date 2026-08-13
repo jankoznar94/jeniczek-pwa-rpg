@@ -7,6 +7,7 @@ import { removeFromInventory, getStackCount, getQualityColor, pickWeighted, roll
 import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity } from './core/progression';
 import { applyGemStats, buildGemStatsHtml } from './core/gems';
 import { getMonsterFace, getMonsterName } from './core/monsters';
+import { getDungeonResistIcons } from './core/dungeons';
 import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
@@ -4247,22 +4248,6 @@ export function initGame() {
       icons.push('<span style="font-size:24px;display:inline-flex;align-items:center;vertical-align:middle">❄️</span>'); // timer freeze
     }
     return icons;
-  }
-  function getDungeonResistIcons(locId) {
-    const loc = ACTS[locId];
-    if (!loc || !loc.resists) return '';
-    const r = loc.resists;
-    let weak = [], strong = [];
-    if (r.fire > 1.0) weak.push('🔥');
-    else if (r.fire < 1.0) strong.push('🔥');
-    if (r.ice > 1.0) weak.push('❄️');
-    else if (r.ice < 1.0) strong.push('❄️');
-    if (r.nature > 1.0) weak.push('🌿');
-    else if (r.nature < 1.0) strong.push('🌿');
-    let parts = [];
-    if (weak.length) parts.push('⚔️' + weak.join(''));
-    if (strong.length) parts.push('🛡️' + strong.join(''));
-    return parts.length ? parts.join(' ') : '';
   }
 
   function generateAttack(chances, prevType, locId, floor) {
