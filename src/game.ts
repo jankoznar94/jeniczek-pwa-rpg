@@ -12,6 +12,7 @@ import { LOOT_NAMES, LOOT_ICONS, ATTR_KEYS, ATTR_NAMES, RARITY } from './data/lo
 import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
+import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
 
 export function initGame() {
   'use strict';
@@ -1473,10 +1474,7 @@ export function initGame() {
     renderTown();
   }
 
-  // ===== SCREENS =====
-  const SCREEN_IDS = { classSelect:'classSelectScreen', map:'mapScreen', mapBattle:'mapBattleScreen', talents:'talentsScreen', hero:'heroScreen', result:'resultScreen', shop:'shopScreen', inventory:'inventoryScreen', bestiary:'bestiaryScreen', spellbook:'spellbookScreen', items:'itemsScreen', town:'townScreen', chest:'chestScreen', gamble:'gambleScreen' };
-  // Screens that are full-page (not modal)
-  const FULL_SCREENS = ['classSelect','map','mapBattle','result','town','shop','hero','bestiary','spellbook','items','chest','gamble'];
+  // ===== SCREENS (SCREEN_IDS / FULL_SCREENS — data v core/screens.ts) =====
   // Track which screen is currently shown (for modal return)
   let _currentScreen = null;
 
