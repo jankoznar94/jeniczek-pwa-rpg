@@ -13,6 +13,7 @@ let currentTheme: number | null = null;
 let auraActive = false;
 let driftTime = 0;
 let particles: { g: Graphics; vx: number; vy: number; life: number; maxLife: number; size: number; gravity: number; grow: boolean }[] = [];
+let rings: { g: Graphics; life: number; maxLife: number; maxR: number; color: number }[] = [];
 
 const THEME_BG: Record<number, string> = {
   0: 'assets/dungeons/forest.png',
@@ -87,6 +88,21 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
           if (p.life <= 0) {
             p.g.destroy();
             particles.splice(i, 1);
+          }
+        }
+      }
+      // Shockwave ring update (expandující kruh)
+      if (rings.length > 0) {
+        for (let i = rings.length - 1; i >= 0; i--) {
+          const r = rings[i];
+          r.life -= 1;
+          const t = 1 - r.life / r.maxLife;
+          const radius = t * r.maxR;
+          r.g.clear();
+          r.g.circle(0, 0, radius).stroke({ width: 3, color: r.color, alpha: Math.max(0, 1 - t) });
+          if (r.life <= 0) {
+            r.g.destroy();
+            rings.splice(i, 1);
           }
         }
       }
@@ -193,6 +209,54 @@ export async function spawnDeathSmoke(x: number, y: number): Promise<void> {
   }
 }
 
+/** Vypustí expandující shockwave ring při dopadu úderu. Jemné, element barva. */
+export async function spawnShockwave(x: number, y: number, colorHex: number, isCrit: boolean): Promise<void> {
+  if (!app || !fxContainer) return;
+  const { Graphics } = await import('pixi.js');
+  const g = new Graphics();
+  g.x = x;
+  g.y = y;
+  fxContainer.addChild(g);
+  rings.push({
+    g,
+    life: isCrit ? 26 : 20,
+    maxLife: isCrit ? 26 : 20,
+    maxR: isCrit ? 110 : 75,
+    color: colorHex,
+  });
+}
+
+/** Vypustí particle slash — jiskry letí po oblouku úderu (moderní particle úder). */
+export async function spawnParticleSlash(
+  x: number, y: number, colorHex: number, isCrit: boolean, angle: number
+): Promise<void> {
+  if (!app || !fxContainer) return;
+  const { Graphics } = await import('pixi.js');
+  const count = isCrit ? 26 : 16;
+  for (let i = 0; i < count; i++) {
+    const g = new Graphics();
+    const size = isCrit ? 2.5 + Math.random() * 3 : 1.5 + Math.random() * 2.5;
+    g.circle(0, 0, size).fill({ color: colorHex, alpha: 0.9 });
+    g.x = x;
+    g.y = y;
+    // Rozptyl kolem osy úderu (úhel), letí dopředu po oblouku
+    const spread = (Math.random() - 0.5) * 1.2;
+    const a = angle + spread;
+    const speed = (isCrit ? 2.8 : 1.8) + Math.random() * 2.2;
+    fxContainer.addChild(g);
+    particles.push({
+      g,
+      vx: Math.cos(a) * speed,
+      vy: Math.sin(a) * speed - 0.3,
+      life: isCrit ? 34 : 24,
+      maxLife: isCrit ? 34 : 24,
+      size,
+      gravity: 0.12,
+      grow: false,
+    });
+  }
+}
+
 /** Zničí canvas vrstvu (při opuštění bitvy). */
 export function destroyBattleScene(): void {
   if (app) {
@@ -207,6 +271,7 @@ export function destroyBattleScene(): void {
   auraActive = false;
   driftTime = 0;
   particles = [];
+  rings = [];
 }
 
 function positionBg(): void {

@@ -19,7 +19,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
+import { initBattleScene, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -5989,7 +5989,18 @@ export function initGame() {
       const er = parseInt(elementColor.slice(1,3), 16);
       const eg = parseInt(elementColor.slice(3,5), 16);
       const eb = parseInt(elementColor.slice(5,7), 16);
-      spawnImpactBurst(bx, by, (er << 16) | (eg << 8) | eb, isCrit);
+      const hex = (er << 16) | (eg << 8) | eb;
+      spawnImpactBurst(bx, by, hex, isCrit);
+      // Fáze 4: shockwave ring + particle slash (moderní úder)
+      spawnShockwave(bx, by, hex, isCrit);
+      const slashAngle = angleOffset + Math.random() * Math.PI;
+      spawnParticleSlash(bx, by, hex, isCrit, slashAngle);
+    } else {
+      // Fyzický úder bez elementu — stříbrno-bílý slash + shockwave
+      const hex = isCrit ? 0xe74c3c : 0xdddddd;
+      spawnShockwave(bx, by, hex, isCrit);
+      const slashAngle = angleOffset + Math.random() * Math.PI;
+      spawnParticleSlash(bx, by, hex, isCrit, slashAngle);
     }
   }
 
@@ -7739,6 +7750,17 @@ export function initGame() {
         hitFig.style.filter = 'brightness(1)';
         setTimeout(() => { hitFig.style.transition = ''; }, 80);
       }, 80);
+      // Fáze 4: impact bump — krátký "náraz" (iluze hit-stopu) bez zásahu do herní logiky
+      const arena = $('mbArena');
+      if (arena) {
+        arena.style.transition = 'transform 0.05s';
+        arena.style.transform = 'scale(0.995)';
+        setTimeout(() => {
+          arena.style.transition = 'transform 0.12s ease-out';
+          arena.style.transform = 'scale(1)';
+          setTimeout(() => { arena.style.transition = ''; arena.style.transform = ''; }, 130);
+        }, 50);
+      }
     }
 
     // Monster rage gain za obdržení poškození (Troll, Medvěd)
