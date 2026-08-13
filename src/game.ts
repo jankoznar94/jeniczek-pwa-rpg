@@ -8,6 +8,7 @@ import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data
 import { AFFIXES } from './data/affixes';
 import { QUALITY_COLORS, SOCKET_CHANCE_NORMAL, GEMS, GEM_QUALITIES } from './data/gems';
 import { CLASSES, CLASS_SKILLS } from './data/classes';
+import { LOOT_NAMES, LOOT_ICONS, ATTR_KEYS, ATTR_NAMES, RARITY } from './data/loot';
 
 export function initGame() {
   'use strict';
@@ -8234,28 +8235,6 @@ export function initGame() {
 
   // ===== LOOT SYSTEM =====
   // Šablony pro názvy itemů podle typu a tieru
-  const LOOT_NAMES = {
-    weapon: {
-      staff: ['Dřevěná hůlka','Ohnivá hůlka','Ledová hůl','Blesková hůl','Hvězdná hůl','Plamená hůl','Měsíční hůl','Arcimágova hůl'],
-      blade: ['Železný meč','Široký meč','Bojová sekera','Obouruční meč','Temný meč','Dračí sekera','Arcimágův meč']
-    },
-    armor: ['Lněný hábit','Kožený hábit','Šupinový hábit','Vyšívaný hábit','Kroužkový hábit','Dračí hábit','Arcimágův hábit'],
-    helmet: ['Lněná kápě','Kožená čapka','Železná helma','Ocelová helma','Stříbrná přilba','Arcimágova koruna'],
-    shield: ['Dřevěný štít','Kožený štít','Železný štít','Ocelový štít','Stříbrný štít','Paladinův štít'],
-    ring: ['Měděný prsten','Cínový prsten','Stříbrný prsten','Zlatý prsten','Platinový prsten','Drahokamový prsten'],
-    amulet: ['Kostěný amulet','Měděný amulet','Stříbrný amulet','Zlatý amulet','Rubínový amulet','Arcánní amulet'],
-    gloves: ['Kožené rukavice','Těžké rukavice','Řetězové rukavice','Lehké pláty','Plátové rukavice','Démonické rukavice','Žraločí rukavice','Těžké nápažníky','Bojové pláty','Válečné pláty','Bramble rukavice','Upíří rukavice','Vambrace','Kruté pláty','Hydraskin rukavice'],
-    boots: ['Boty','Těžké boty','Řetězové boty','Lehké plátované boty','Nákoleníky','Démonické boty','Žraločí boty','Síťované boty','Bojové boty','Válečné boty','Wyrmhide boty','Scarabshell boty','Kostěné boty','Zrcadlové boty','Myrmidon nákoleníky']
-  };
-  const LOOT_ICONS = { weapon_staff:'🪄', weapon_blade:'⚔️', armor:'👘', helmet:'⛑️', shield:'🛡️', ring:'💍', amulet:'📿', gloves:'🧤', boots:'👢' };
-  const ATTR_KEYS = ['str','vit','dex','int'];
-  const ATTR_NAMES = { str:'💪 Síla', vit:'❤️ Vitalita', dex:'🎯 Obratnost', int:'🧠 Intelekt' };
-  const RARITY = {
-    common: { name:'Common', color:'#e8e0e8', border:'#888' },
-    magic: { name:'Magic', color:'#4a7dff', border:'#4a7dff' },
-    rare: { name:'Rare', color:'#ffd700', border:'#ffd700' },
-    unique: { name:'Unique', color:'#b8860b', border:'#b8860b' }
-  };
 
   function getRarity(bossDrop) {
     const r = Math.random();
