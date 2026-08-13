@@ -5721,8 +5721,27 @@ export function initGame() {
       glowColor = isCrit ? 'rgba(231,76,60,0.7)' : 'rgba(255,255,255,0.5)';
     }
 
+    // Fáze 4: motion-blur trail — kreslí čáru jako vrstvenou stopu (rozmazaná záře + ostré jádro).
+    // pathFn() jen nastaví cestu (beginPath/moveTo/...curveTo) — stroke se provede uvnitř per vrstva.
+    function trailStroke(pathFn, baseWidth, alpha, dashLen, dashOffset) {
+      for (let layer = 2; layer >= 0; layer--) {
+        ctx.save();
+        ctx.shadowColor = glowColor;
+        ctx.shadowBlur = (layer === 0 ? 4 : 18) * s;
+        ctx.strokeStyle = mainColor;
+        ctx.lineWidth = baseWidth * (1 + layer * 0.9);
+        ctx.lineCap = 'round';
+        ctx.globalAlpha = layer === 0 ? alpha : alpha * (0.35 - layer * 0.08);
+        ctx.beginPath();
+        pathFn();
+        if (dashLen) { ctx.setLineDash([dashLen, dashLen]); ctx.lineDashOffset = dashOffset; }
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+
     if (weaponType === 'blade') {
-      // Meč — dlouhé jednolité seknutí
+      // Meč — dlouhé jednolité seknutí s motion-blur stopou
       const angle = angleOffset + Math.random() * Math.PI * 0.6;
       const len = 180 * s;
       const midX = bx + Math.cos(angle) * len * 0.1;
@@ -5744,20 +5763,11 @@ export function initGame() {
         const drawProgress = Math.min(progress * 1.5, 1);
         const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
         const alpha = 1 - fadeProgress;
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 12 * s;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 3;
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = alpha;
-        ctx.setLineDash([approxLen, approxLen]);
-        ctx.lineDashOffset = approxLen * (1 - drawProgress);
-        ctx.stroke();
-        ctx.restore();
+        const dashOffset = approxLen * (1 - drawProgress);
+        trailStroke(() => {
+          ctx.moveTo(startX, startY);
+          ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+        }, 3, alpha, approxLen, dashOffset);
         if (progress < 1) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
@@ -5778,18 +5788,10 @@ export function initGame() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const fadeProgress = Math.max(0, (progress - 0.2) / 0.8);
         const alpha = 1 - fadeProgress;
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 10 * s;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.lineTo(endX, endY);
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 5;
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = alpha;
-        ctx.stroke();
-        ctx.restore();
+        trailStroke(() => {
+          ctx.moveTo(startX, startY);
+          ctx.lineTo(endX, endY);
+        }, 5, alpha, 0, 0);
         if (progress < 1) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
@@ -5818,20 +5820,11 @@ export function initGame() {
         const drawProgress = Math.min(progress * 1.5, 1);
         const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
         const alpha = 1 - fadeProgress;
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 8 * s;
-        ctx.beginPath();
-        ctx.moveTo(startX, startY);
-        ctx.quadraticCurveTo(cpX, cpY, endX, endY);
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = alpha;
-        ctx.setLineDash([approxLen, approxLen]);
-        ctx.lineDashOffset = approxLen * (1 - drawProgress);
-        ctx.stroke();
-        ctx.restore();
+        const dashOffset = approxLen * (1 - drawProgress);
+        trailStroke(() => {
+          ctx.moveTo(startX, startY);
+          ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+        }, 2, alpha, approxLen, dashOffset);
         if (progress < 1) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
@@ -5975,27 +5968,15 @@ export function initGame() {
         const drawProgress = Math.min(progress * 1.5, 1);
         const fadeProgress = Math.max(0, (progress - 0.3) / 0.7);
         const alpha = 1 - fadeProgress;
-
-        ctx.save();
-        ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 8 * s;
-        ctx.strokeStyle = mainColor;
-        ctx.lineWidth = 2;
-        ctx.lineCap = 'round';
-        ctx.globalAlpha = alpha;
-
         slashes.forEach((sl, idx) => {
           const offset = idx * 0.05; // mírné zpoždění mezi ranami
           const slProgress = Math.max(0, Math.min((drawProgress - offset) / (1 - offset), 1));
-          ctx.beginPath();
-          ctx.moveTo(sl.sx, sl.sy);
-          ctx.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
-          ctx.setLineDash([approxLen, approxLen]);
-          ctx.lineDashOffset = approxLen * (1 - slProgress);
-          ctx.stroke();
+          const dashOffset = approxLen * (1 - slProgress);
+          trailStroke(() => {
+            ctx.moveTo(sl.sx, sl.sy);
+            ctx.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
+          }, 2, alpha, approxLen, dashOffset);
         });
-
-        ctx.restore();
         if (progress < 1) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
