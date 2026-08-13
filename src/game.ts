@@ -1,4 +1,7 @@
-(function() {
+// @ts-nocheck — Fáze 2 přechod: tento soubor je převedený monolit (12K řádků).
+// TypeScript ho zatím neanalyzuje; rozsekaní na moduly probíhá postupně.
+// Odebíráme @ts-nocheck až po kompletní extrakci do modulů.
+export function initGame() {
   'use strict';
   const $ = id => document.getElementById(id);
   const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -12376,4 +12379,4 @@
     renderGamble, switchGambleCategory, buyGambleItem
   };
   init();
-})();
+}

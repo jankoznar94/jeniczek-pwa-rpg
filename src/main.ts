@@ -1,11 +1,10 @@
 /**
- * Vstupní bod aplikace — Fáze 1 (infrastruktura).
+ * Vstupní bod aplikace — Fáze 2.
  *
- * POZNÁMKA (Fáze 1): Hra se zatím načítá přímo z `public/game.js` (IIFE, non-module),
- * který je v `index.html` odkazovaný přes `<script src="game.js">`. Tento modul je prozatím
- * prázdný placeholder, aby existovala struktura `src/` pro Fázi 2 (rozsekání logiky do modulů).
- *
- * Ve Fázi 2 bude `main.ts` importovat herní moduly a inicializovat hru. V tuto chvíli
- * se sem herní logika NEimportuje, aby nedošlo k duplicitnímu spuštění IIFE.
+ * Importuje monolitní herní logiku (src/game.ts, převedený z IIFE na ES modul)
+ * a spouští initGame(). Hra zatím zůstává jeden velký soubor (@ts-nocheck);
+ * rozsekaní do modulů probíhá postupně v této fázi.
  */
-export {};
+import { initGame } from './game';
+
+initGame();
