@@ -434,51 +434,104 @@ export async function spawnMeleeStrike(
       gr.circle(0, 0, r).fill({ color: 0xffffff, alpha: alpha * 0.3 });
     };
   } else if (weaponType === 'blunt') {
-    // Tupá zbraň — pavučina/prasklina jako rozbité sklo (charakter zachován)
-    const lineCount = 3 + Math.floor(Math.random() * 3);
-    const lines: { x: number; y: number }[][] = [];
-    for (let i = 0; i < lineCount; i++) {
-      const a = Math.random() * Math.PI * 2;
-      const l = (25 + Math.random() * 50) * s;
-      const segments: { x: number; y: number }[] = [];
-      const segCount = 1 + Math.floor(Math.random() * 2);
+    // Tupá zbraň — kombinace šokové vlny + skleněné praskliny (rozbité sklo)
+    const sLocal = s;
+    // Radiální praskliny z bodu nárazu — každá je lomená čára z více úseků
+    const crackCount = 6 + Math.floor(Math.random() * 3); // 6-8 radiál
+    const cracks: { points: { x: number; y: number }[]; len: number }[] = [];
+    for (let i = 0; i < crackCount; i++) {
+      const baseAngle = (i / crackCount) * Math.PI * 2 + (Math.random() - 0.5) * 0.5;
+      const len = (45 + Math.random() * 60) * sLocal;
+      const segCount = 2 + Math.floor(Math.random() * 2); // 2-3 úseky
+      const points: { x: number; y: number }[] = [{ x: 0, y: 0 }];
+      let a = baseAngle;
       for (let j = 0; j < segCount; j++) {
-        const frac = (j + 1) / (segCount + 1);
-        const dx = Math.cos(a + (Math.random() - 0.5) * 0.6) * l * frac;
-        const dy = Math.sin(a + (Math.random() - 0.5) * 0.6) * l * frac;
-        segments.push({ x: dx, y: dy });
+        const frac = (j + 1) / segCount;
+        a += (Math.random() - 0.5) * 0.9; // lomení směru po každém úseku
+        points.push({ x: Math.cos(a) * len * frac, y: Math.sin(a) * len * frac });
       }
-      const endAngle = a + (Math.random() - 0.5) * 0.4;
-      segments.push({ x: Math.cos(endAngle) * l, y: Math.sin(endAngle) * l });
-      lines.push(segments);
+      cracks.push({ points, len });
     }
-    const crossLines: { x1: number; y1: number; x2: number; y2: number }[] = [];
-    const crossCount = 1 + Math.floor(Math.random() * 2);
-    for (let i = 0; i < crossCount; i++) {
-      const a1 = Math.random() * Math.PI * 2;
-      const a2 = a1 + 0.3 + Math.random() * 0.8;
-      const r1 = (15 + Math.random() * 30) * s;
-      const r2 = (15 + Math.random() * 30) * s;
-      crossLines.push({
-        x1: Math.cos(a1) * r1, y1: Math.sin(a1) * r1,
-        x2: Math.cos(a2) * r2, y2: Math.sin(a2) * r2,
-      });
+    // Bod na lomené čáře ve frakci celkové délky f (0..1)
+    const segLenOf = (p1: { x: number; y: number }, p2: { x: number; y: number }) =>
+      Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+    const pointAt = (cr: { points: { x: number; y: number }[]; len: number }, f: number) => {
+      const target = cr.len * Math.min(1, Math.max(0, f));
+      let acc = 0;
+      for (let k = 0; k < cr.points.length - 1; k++) {
+        const p1 = cr.points[k], p2 = cr.points[k + 1];
+        const segLen = segLenOf(p1, p2);
+        if (acc + segLen >= target) {
+          const frac = segLen === 0 ? 0 : (target - acc) / segLen;
+          return { x: p1.x + (p2.x - p1.x) * frac, y: p1.y + (p2.y - p1.y) * frac };
+        }
+        acc += segLen;
+      }
+      return cr.points[cr.points.length - 1];
+    };
+    // Skleněné spojovací oblouky mezi sousedními radiálami (to dělá sklo sklem)
+    const arcs: { i1: number; i2: number; f1: number; f2: number }[] = [];
+    const arcCount = 2 + Math.floor(Math.random() * 2); // 2-3 oblouky
+    for (let k = 0; k < arcCount; k++) {
+      const i1 = Math.floor(Math.random() * crackCount);
+      const i2 = (i1 + 1) % crackCount;
+      arcs.push({ i1, i2, f1: 0.3 + Math.random() * 0.5, f2: 0.3 + Math.random() * 0.5 });
     }
-    maxLife = isCrit ? 70 : 60;
+    maxLife = isCrit ? 85 : 75;
     update = (gr, t) => {
       gr.clear();
       if (t >= 1) return;
-      const alpha = 1;
-      lines.forEach(segments => {
-        gr.moveTo(0, 0);
-        for (const seg of segments) gr.lineTo(seg.x, seg.y);
-        gr.stroke({ width: 2, color: colorHex, alpha });
-      });
-      crossLines.forEach(cl => {
-        gr.moveTo(cl.x1, cl.y1);
-        gr.lineTo(cl.x2, cl.y2);
-        gr.stroke({ width: 2, color: colorHex, alpha });
-      });
+      const fade = Math.max(0, (t - 0.68) / 0.32); // fade v poslední ~1/3
+      const alpha = 1 - fade;
+
+      // FÁZE 1: šoková vlna (t 0 → 0.15) — kruh rozpínající se z bodu nárazu
+      const shockT = t / 0.15;
+      if (shockT < 1) {
+        const r = 8 + shockT * 85 * sLocal;
+        const swAlpha = (1 - shockT) * 0.75 * alpha;
+        if (swAlpha > 0) {
+          gr.circle(0, 0, r)
+            .stroke({ width: 4 * sLocal * (1 - shockT * 0.5) + 1, color: colorHex, alpha: swAlpha });
+        }
+      }
+
+      // FÁZE 2: praskliny rostou od středu (t 0.1 → 0.68)
+      const crackProg = Math.max(0, Math.min(1, (t - 0.1) / 0.58));
+      if (crackProg > 0) {
+        // Radiální praskliny — kreslené od středu, klip na drawLen
+        cracks.forEach(cr => {
+          const drawLen = cr.len * crackProg;
+          let acc = 0;
+          let prev = cr.points[0];
+          for (let k = 0; k < cr.points.length - 1; k++) {
+            const p2 = cr.points[k + 1];
+            const segLen = segLenOf(prev, p2);
+            if (acc >= drawLen) break;
+            const avail = drawLen - acc;
+            const frac = segLen === 0 ? 0 : Math.min(1, avail / segLen);
+            const ex = prev.x + (p2.x - prev.x) * frac;
+            const ey = prev.y + (p2.y - prev.y) * frac;
+            gr.moveTo(prev.x, prev.y).lineTo(ex, ey);
+            gr.stroke({ width: 2, color: colorHex, alpha: alpha * 0.95 });
+            acc += segLen * frac;
+            prev = { x: ex, y: ey };
+            if (frac < 1) break;
+          }
+        });
+        // Skleněné oblouky — zobrazí se, až obě radiály dosáhnou své frakce
+        arcs.forEach(arc => {
+          const need = Math.max(arc.f1, arc.f2);
+          const arcAlpha = Math.min(1, crackProg / need) * alpha * 0.85;
+          if (arcAlpha <= 0) return;
+          const p1 = pointAt(cracks[arc.i1], arc.f1);
+          const p2 = pointAt(cracks[arc.i2], arc.f2);
+          // Lehké prohnutí oblouku ven od středu
+          const midX = (p1.x + p2.x) / 2 + (p1.y - p2.y) * 0.18;
+          const midY = (p1.y + p2.y) / 2 + (p2.x - p1.x) * 0.18;
+          gr.moveTo(p1.x, p1.y).quadraticCurveTo(midX, midY, p2.x, p2.y);
+          gr.stroke({ width: 2, color: colorHex, alpha: arcAlpha });
+        });
+      }
     };
   } else {
     // claws — tři rovnoběžné sečné rány
