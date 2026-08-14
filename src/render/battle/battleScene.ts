@@ -30,19 +30,20 @@ const THEME_BG: Record<number, string> = {
 };
 
 /** Přednačte dungeon pozadí do cache (volá se při startu hry, aby bitva neměla zpoždění).
- *  Používá prostý Image — nezávisí na pixi.js, takže se pixi nenačítá při startu hry.
- *  Zároveň prefetchuje pixi.js bundle, aby první bitva neměla zpoždění při vstupu. */
-export async function preloadDungeonAssets(): Promise<void> {
-  const urls = Object.values(THEME_BG);
-  await Promise.all(urls.map(u => new Promise<void>((resolve) => {
+ *  Používá prostý Image — nezávisí na pixi.js. Zároveň vzápětí (paralelně, bez čekání)
+ *  prefetchuje pixi.js bundle, aby první bitva neměla zpoždění při vstupu. */
+export function preloadDungeonAssets(): void {
+  // Prefetch pixi.js do browser cache hned na startu — NEčeká na obrázky,
+  // jinak by se na pomalejším internetu začal stahovat až po všech dungeon PNG.
+  // Všechny bitvy (background i melee vrstva) sdílí stejný import, stačí jednou.
+  import('pixi.js').catch(() => { /* bitva se obejde bez canvas vrstvy */ });
+  // Dungeon pozadí načteme paralelně, fire-and-forget.
+  Object.values(THEME_BG).forEach((u) => {
     const img = new Image();
-    img.onload = () => resolve();
-    img.onerror = () => resolve();
+    img.onload = () => {};
+    img.onerror = () => {};
     img.src = u;
-  })));
-  // Prefetch pixi.js do browser cache — první bitva pak startuje okamžitě.
-  // Všechny bitvy (background i melee vrstva) používají stejný import, takže stačí jednou.
-  try { await import('pixi.js'); } catch (e) { /* bitva se obejde bez canvas vrstvy */ }
+  });
 }
 
 /** Inicializuje PixiJS canvas do arény. Volá se jednou při startu bitvy. */
