@@ -7813,9 +7813,11 @@ export function initGame() {
     item.cost = 10 + tier * 20 + (item.affixes || []).length * 15;
 
     // 5. HitRating a ExpertiseRating podle rarity
+    // ⚠️ Attack rating už přichází z affixu "Hit Rating" — přidat znovu jen pokud
+    //    ho item nemá, aby nedocházelo ke zdvojení hodnoty.
     if (item.rarity !== 'common') {
       const hitChance = item.rarity === 'magic' ? 0.3 : 0.6;
-      if (Math.random() < hitChance) item.attackRating = (item.attackRating || 0) + 1 + rand(0, Math.ceil(tier * 0.5));
+      if (Math.random() < hitChance && !item.attackRating) item.attackRating = 1 + rand(0, Math.ceil(tier * 0.5));
       const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
       if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil(tier * 0.4));
     }
@@ -9490,9 +9492,11 @@ export function initGame() {
       item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
       item.cost = price;
       // HitRating a ExpertiseRating
+      // ⚠️ Attack rating už přichází z affixu "Hit Rating" — přidat znovu jen pokud
+      //    ho item nemá, aby nedocházelo ke zdvojení hodnoty.
       if (item.rarity !== 'common') {
         const hitChance = item.rarity === 'magic' ? 0.3 : 0.6;
-        if (Math.random() < hitChance) item.attackRating = (item.attackRating || 0) + 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.5));
+        if (Math.random() < hitChance && !item.attackRating) item.attackRating = 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.5));
         const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
         if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.4));
       }
