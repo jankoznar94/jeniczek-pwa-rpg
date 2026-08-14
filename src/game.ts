@@ -8394,7 +8394,9 @@ export function initGame() {
     let html = '';
     MONSTER_DB.forEach((themeMonsters, themeIdx) => {
       const theme = DUNGEON_THEMES[themeIdx] || DUNGEON_THEMES[0];
-      const loc = ACTS[themeIdx];
+      // ACT hledáme podle theme indexu (MONSTER_DB a ACTS nemají stejné pořadí —
+      // MONSTER_DB je [forest,desert,undead,hell,frost], ACTS je [forest,desert,frost,undead,hell]).
+      const loc = ACTS.find(a => a.theme === themeIdx);
       const locName = loc ? loc.name : `Oblast ${themeIdx+1}`;
       html += `<div class="bestiary-section"><div class="bestiary-section-title" style="color:${theme.border}">${locName}</div>`;
       // Normální monstra — první
