@@ -477,26 +477,26 @@ export async function spawnMeleeStrike(
       const i2 = (i1 + 1) % crackCount;
       arcs.push({ i1, i2, f1: 0.3 + Math.random() * 0.5, f2: 0.3 + Math.random() * 0.5 });
     }
-    maxLife = isCrit ? 45 : 38;
+    maxLife = isCrit ? 34 : 28;
     update = (gr, t) => {
       gr.clear();
       if (t >= 1) return;
-      const fade = Math.max(0, (t - 0.5) / 0.5); // fade v poslední polovině
+      const fade = Math.max(0, (t - 0.42) / 0.58); // fade v poslední polovině
       const alpha = 1 - fade;
 
-      // FÁZE 1: šoková vlna (t 0 → 0.1) — kruh rozpínající se z bodu nárazu
-      const shockT = t / 0.1;
+      // FÁZE 1: šoková vlna (t 0 → 0.08) — kruh rozpínající se z bodu nárazu
+      const shockT = t / 0.08;
       if (shockT < 1) {
-        const r = 8 + shockT * 100 * sLocal;
-        const swAlpha = (1 - shockT) * 0.85 * alpha;
+        const r = 8 + shockT * 105 * sLocal;
+        const swAlpha = (1 - shockT) * 0.9 * alpha;
         if (swAlpha > 0) {
           gr.circle(0, 0, r)
             .stroke({ width: 4 * sLocal * (1 - shockT * 0.5) + 1, color: colorHex, alpha: swAlpha });
         }
       }
 
-      // FÁZE 2: praskliny rostou od středu (t 0.06 → 0.5)
-      const crackProg = Math.max(0, Math.min(1, (t - 0.06) / 0.44));
+      // FÁZE 2: praskliny rostou od středu (t 0.05 → 0.42)
+      const crackProg = Math.max(0, Math.min(1, (t - 0.05) / 0.37));
       if (crackProg > 0) {
         // Radiální praskliny — kreslené od středu, klip na drawLen
         cracks.forEach(cr => {
