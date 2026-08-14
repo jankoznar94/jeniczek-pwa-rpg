@@ -1623,11 +1623,11 @@ export function initGame() {
 
       let badgeHtml;
       if (completed) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">✔</div><div class="badge-count">Done</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-count">Done</div></div>`;
       } else if (!unlocked) {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">🔒</div><div class="badge-count">Locked</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-count">Locked</div></div>`;
       } else {
-        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-floor">▶</div><div class="badge-count">Play</div></div>`;
+        badgeHtml = `<div class="map-loc-badge" style="background:${theme.border};color:${theme.bg}"><div class="badge-count">Play</div></div>`;
       }
 
       html += `<div class="map-location-wrap">
@@ -1635,7 +1635,7 @@ export function initGame() {
           <div class="map-loc-bg" style="background-image:url(assets/dungeons/${themeName}.webp)"></div>
           ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${themeName}.webp)"></div>` : ''}
           <div class="map-loc-info">
-            <div class="map-loc-name">${loc.icon} ${loc.name}</div>
+            <div class="map-loc-name">${loc.name}</div>
           </div>
           ${badgeHtml}
         </div>
