@@ -19,7 +19,7 @@ import { ATTR_COST, HERO_FACES } from './data/hero';
 import { DIRECTIONS, DUNGEON_THEME_FILTERS, DUNGEON_THEMES } from './data/dungeons';
 import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
-import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, spawnMeleeStrike, destroyBattleScene, preloadDungeonAssets } from './render/battle/battleScene';
+import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, spawnMeleeStrike, preloadDungeonAssets } from './render/battle/battleScene';
 
 export function initGame() {
   'use strict';
@@ -1347,10 +1347,10 @@ export function initGame() {
         arena._mbHandlers = null;
       }
     }
-    // Fáze 3: zničit PixiJS canvas vrstvu při opuštění bitvy (uvolnit GPU)
-    if (name !== 'mapBattle' && name !== 'result') {
-      destroyBattleScene();
-    }
+    // Fáze 3+: canvas vrstvy se mezi bitvami NEničí — držíme je po celou session,
+    // aby pixi.js i dungeon pozadí zůstaly připravené (první bitva je pak okamžitá).
+    // (Vrstvy se inicializují v init() na startu hry a self-heal v tickeru
+    //  je přepočítává na velikost arény, jakmile se zobrazí.)
     
     Object.values(SCREEN_IDS).forEach(id => {
       const el = $(id);
@@ -10409,6 +10409,15 @@ export function initGame() {
     initGemItems();
     // Fáze 3: přednačíst dungeon pozadí do cache, aby bitva neměla zpoždění
     preloadDungeonAssets();
+
+    // Preinit canvas vrstev hned při startu hry — pixi.js se načte a vrstvy se
+    // vytvoří už teď (na skryté aréně; self-heal v tickeru je přepočítá, jakmile
+    // se aréna zobrazí). První bitva pak má dungeon pozadí okamžitě.
+    const arenaPreinit = document.getElementById('mbArena');
+    if (arenaPreinit) {
+      initBattleScene(arenaPreinit);
+      initMeleeLayer(arenaPreinit);
+    }
 
     // Nav-bar schovat hned na začátku — splash ho překrývá, ale po fade by prosvítal
     const navBar = document.querySelector('.nav-bar');

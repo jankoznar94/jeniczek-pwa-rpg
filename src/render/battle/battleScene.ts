@@ -74,6 +74,12 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
 
     // Jemný parallax drift pozadí (pomalý sinusový pohyb)
     app.ticker.add(() => {
+      // Self-heal velikosti — aréna je při startu schovaná (0×0), takže resizeTo
+      // na ní nefunguje; jakmile se zobrazí, přepočteme canvas na skutečnou velikost.
+      const _cw = containerEl.clientWidth, _ch = containerEl.clientHeight;
+      if (_cw > 0 && (app!.screen.width !== _cw || app!.screen.height !== _ch)) {
+        app!.renderer.resize(_cw, _ch);
+      }
       driftTime += 0.0015;
       if (bgSprite) {
         bgSprite.x = app!.screen.width / 2 + Math.sin(driftTime) * 8;
@@ -150,6 +156,11 @@ export async function initMeleeLayer(containerEl: HTMLElement): Promise<void> {
     meleeApp.stage.addChild(meleeContainer);
 
     meleeApp.ticker.add(() => {
+      // Self-heal velikosti (stejný důvod jako u background vrstvy — aréna je při startu schovaná).
+      const _cw = containerEl.clientWidth, _ch = containerEl.clientHeight;
+      if (_cw > 0 && (meleeApp!.screen.width !== _cw || meleeApp!.screen.height !== _ch)) {
+        meleeApp!.renderer.resize(_cw, _ch);
+      }
       if (meleeFx.length === 0) return;
       for (let i = meleeFx.length - 1; i >= 0; i--) {
         const fx = meleeFx[i];
