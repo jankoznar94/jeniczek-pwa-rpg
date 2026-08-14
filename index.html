@@ -230,16 +230,12 @@
       <div class="cast-spell-icon hidden" id="mbCastSpellIcon"></div>
       <div class="victory-skull hidden" id="mbVictorySkull">💀</div>
       <div class="monster-ring-overlay"></div>
-      <div class="enemy-hp-bar" id="mbEnemyHpBar">
-        <div class="enemy-hp-fill" id="mbEnemyHpFill"></div>
-        <div class="enemy-hp-ghost" id="mbEnemyHpGhost"></div>
-        <div class="enemy-hp-seg-overlay">
-          <div class="enemy-hp-segment" data-seg="0"></div>
-          <div class="enemy-hp-segment" data-seg="1"></div>
-          <div class="enemy-hp-segment" data-seg="2"></div>
-          <div class="enemy-hp-segment" data-seg="3"></div>
-          <div class="enemy-hp-segment" data-seg="4"></div>
-        </div>
+      <div class="enemy-hp-ring" id="mbEnemyHpBar">
+        <svg viewBox="0 0 200 200" width="200" height="200" style="transform:rotate(-90deg)">
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#2a0a0a" stroke-width="5"/>
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#8a1f1f" stroke-width="5" stroke-dasharray="578" stroke-dashoffset="578" id="mbEnemyHpGhost" class="enemy-hp-ghost-ring"/>
+          <circle cx="100" cy="100" r="92" fill="none" stroke="#e74c3c" stroke-width="5" stroke-dasharray="578" stroke-dashoffset="578" id="mbEnemyHpFill" class="enemy-hp-fill-ring"/>
+        </svg>
       </div>
       <div class="hp-ring-label" id="mbHpLabel">0/0</div>
       <div class="arena-class-spells" id="mbClassSpells"></div>
@@ -253,9 +249,11 @@
     </div>
     <div class="debuff-overlay" id="mbDebuffs"></div>
     <div class="enemy-buff-overlay" id="mbEnemyBuffs"></div>
-    <div class="enemy-mana-bar hidden" id="mbEnemyManaBar">
-      <span class="resource-icon">💧</span>
-      <div class="enemy-mana-fill" id="mbEnemyManaFill"></div>
+    <div class="enemy-mana-ring hidden" id="mbEnemyManaBar">
+      <svg viewBox="0 0 200 200" width="200" height="200" style="transform:rotate(-90deg)">
+        <circle cx="100" cy="100" r="82" fill="none" stroke="#0a0a2a" stroke-width="3"/>
+        <circle cx="100" cy="100" r="82" fill="none" stroke="#4a7dff" stroke-width="3" stroke-dasharray="515" stroke-dashoffset="515" id="mbEnemyManaFill" class="enemy-mana-fill-ring"/>
+      </svg>
     </div>
     <div class="player-debuff-overlay" id="mbPlayerDebuffs"></div>
     </div>

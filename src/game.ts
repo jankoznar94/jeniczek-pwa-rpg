@@ -2768,12 +2768,15 @@ export function initGame() {
     const fill = document.getElementById('mbEnemyHpFill');
     if (!fill) return;
     const pct = mb.maxBossHp > 0 ? Math.max(0, Math.min(100, (mb.bossHp / mb.maxBossHp) * 100)) : 0;
+    // Kruhový HP ring — stroke-dashoffset (obvod r=92 je ~578)
+    const CIRC = 578;
+    const offset = CIRC * (1 - pct / 100);
     // Fáze 4: damage ghost — stará hodnota doznívá pomaleji (0.6s tween) než fill (0.2s)
     const ghost = document.getElementById('mbEnemyHpGhost');
     if (ghost) {
-      ghost.style.width = pct + '%';
+      ghost.style.strokeDashoffset = offset + '';
     }
-    fill.style.width = pct + '%';
+    fill.style.strokeDashoffset = offset + '';
   }
 
   function onAutoPlayerAttack() {
@@ -3274,18 +3277,13 @@ export function initGame() {
       if (mb.maxEnemyMana > 0 && !mb.isBoss) {
         manaBar.classList.remove('hidden');
         const mpPct = Math.round((mb.enemyMana / mb.maxEnemyMana) * 100);
-        manaFill.style.width = mpPct + '%';
-        // Resource icon
-        const iconEl = manaBar.querySelector('.resource-icon');
-        if (iconEl) {
-          if (mb.monsterResource === 'rage') iconEl.textContent = '💢';
-          else if (mb.monsterResource === 'energy') iconEl.textContent = '⚡';
-          else iconEl.textContent = '💧';
-        }
+        // Kruhový mana ring — obvod r=82 je ~515
+        const MANA_CIRC = 515;
+        manaFill.style.strokeDashoffset = (MANA_CIRC * (1 - mpPct / 100)) + '';
         // Bar color podle resource
-        if (mb.monsterResource === 'rage') manaFill.style.background = 'linear-gradient(90deg, #e74c3c, #c0392b)';
-        else if (mb.monsterResource === 'energy') manaFill.style.background = 'linear-gradient(90deg, #f1c40f, #e67e22)';
-        else manaFill.style.background = 'linear-gradient(90deg, #3498db, #2980b9)';
+        if (mb.monsterResource === 'rage') manaFill.style.stroke = '#e74c3c';
+        else if (mb.monsterResource === 'energy') manaFill.style.stroke = '#f1c40f';
+        else manaFill.style.stroke = '#4a7dff';
       } else {
         manaBar.classList.add('hidden');
       }
