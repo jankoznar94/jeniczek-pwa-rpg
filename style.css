@@ -278,7 +278,7 @@ body.no-scroll { overflow: hidden; }
   stroke-width:9;
 }
 .enemy-timer-circle {
-  stroke:#e74c3c;
+  stroke:#e67e22;
   stroke-width:7;
 }
 @keyframes timer-ring-shrink {
