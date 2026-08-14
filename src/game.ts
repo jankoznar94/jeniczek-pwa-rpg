@@ -2748,7 +2748,7 @@ export function initGame() {
         enemyCircle.style.stroke = '#3498db';
       } else if (mb._enemySwingReady) {
         enemyCircle.style.strokeDashoffset = '0';
-        enemyCircle.style.stroke = '#e74c3c';
+        enemyCircle.style.stroke = '#e67e22';
       } else if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
         // Zpomalení — modrý ring (jiný odstín než cast)
         const offset = Math.round(597 * (1 - mb._enemySwingPct));
@@ -2757,7 +2757,7 @@ export function initGame() {
       } else {
         const offset = Math.round(597 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#e74c3c';
+        enemyCircle.style.stroke = '#e67e22';
       }
     }
     // Nepřítelův HP bar — segmenty
