@@ -220,21 +220,15 @@ export function initGame() {
     testMode = !testMode;
     const btn = document.getElementById('testToggle');
     if (testMode) {
-      state.hero.gold = 5000;
+      state.hero.gold = 100000;
       state.talentPoints = 50;
       state.hero.attrPoints = 150;
+      // Odemknout VŠECHNY akty ve všech obtížnostech (celá hra přístupná).
       state.bossesDefeated = ACTS.map(() => ACTS.map(() => true));
-      state.bossesDefeated[state.difficulty][0] = false;
-      // bossesDefeated musí být 2D — opravit pokud test mode nastavil flat array
-      if (!Array.isArray(state.bossesDefeated[0])) {
-        state.bossesDefeated = [state.bossesDefeated.map(() => false), state.bossesDefeated.map(() => false), state.bossesDefeated.map(() => false)];
-        state.bossesDefeated.forEach((diffArr, di) => {
-          ACTS.forEach((loc, i) => { diffArr[i] = true; });
-        });
-      }
       state.floorProgress = ACTS.map(() => 5);
-      state.locationProgress = ACTS.map(() => 5);
-      state.areaFightProgress = ACTS.map(() => 5);
+      // locationProgress=999 → všechny area a fighty jsou odemčené a přístupné.
+      state.locationProgress = ACTS.map(() => 999);
+      state.areaFightProgress = ACTS.map(() => 0);
       // Odemknout waypointy pro všechny acty (area 1-9)
       state.waypoints = ACTS.map((_, actId) => {
         const wps = [];
@@ -1645,7 +1639,7 @@ export function initGame() {
           </div>
           ${badgeHtml}
         </div>
-        ${!completed && unlocked ? `<div class="map-loc-dot-scroll-wrap ${state._expandedAct === actId ? '' : 'hidden'}" id="mapDotScrollWrap_${actId}">
+        ${(!completed || testMode) && unlocked ? `<div class="map-loc-dot-scroll-wrap ${state._expandedAct === actId ? '' : 'hidden'}" id="mapDotScrollWrap_${actId}">
           <div class="map-loc-dot-scroll" id="mapDotScroll_${actId}">
             ${buildDotPath(actId, curArea, curFight, totalZones, theme)}
           </div>
