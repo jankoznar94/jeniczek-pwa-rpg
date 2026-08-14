@@ -1632,8 +1632,8 @@ export function initGame() {
 
       html += `<div class="map-location-wrap">
         <div class="map-location ${completed?'completed':!unlocked?'locked':''}" style="--theme-glow:${theme.borderGlow};background:linear-gradient(135deg,${theme.bg}cc,${theme.bg}99 80%);border-color:${theme.border};${completed?'opacity:0.7':''}" onclick="${!unlocked?'':`game.toggleActExpand(${actId})`}">
-          <div class="map-loc-bg" style="background-image:url(assets/dungeons/${themeName}.png)"></div>
-          ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${themeName}.png)"></div>` : ''}
+          <div class="map-loc-bg" style="background-image:url(assets/dungeons/${themeName}.webp)"></div>
+          ${!unlocked ? `<div class="map-loc-gate" style="background-image:url(assets/gates/gate_${themeName}.webp)"></div>` : ''}
           <div class="map-loc-info">
             <div class="map-loc-name">${loc.icon} ${loc.name}</div>
           </div>

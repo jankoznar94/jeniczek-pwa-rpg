@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v130';
-const ASSET_CACHE = 'boss-slayer-assets-v23';
+const CODE_CACHE = 'boss-slayer-code-v131';
+const ASSET_CACHE = 'boss-slayer-assets-v24';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=130', '/manifest.json'];
 
@@ -9,7 +9,7 @@ const ASSET_FILES = [
   '/hit.mp3', '/crit.mp3', '/melee_hit.mp3', '/melee_crit.mp3', '/heal.mp3',
   '/treasure.mp3', '/strong_strike.mp3', '/fist_hit.mp3', '/fist_crit.mp3',
   '/fire_spell.mp3', '/ice_spell.mp3',
-  '/assets/dungeons/forest.png',
+  '/assets/dungeons/forest.webp',
   '/assets/monsters/troll_test_small.png', '/assets/monsters/ent.png',
   '/assets/monsters/forest_lord.png', '/assets/monsters/hero.png',
   '/assets/monsters/moc_alova_prisera.png', '/assets/monsters/satyr.png',
@@ -58,8 +58,8 @@ const ASSET_FILES = [
   '/assets/items/weapon_giant_hammer.png', '/assets/items/amulet_bone.png',
   '/assets/items/amulet_silver.png', '/assets/items/amulet_gold.png',
   '/assets/items/amulet_ruby.png', '/assets/items/amulet_arcane.png',
-  '/assets/gates/gate_desert.png', '/assets/gates/gate_undead.png',
-  '/assets/gates/gate_hell.png', '/assets/gates/gate_frost.png',
+  '/assets/gates/gate_desert.webp', '/assets/gates/gate_undead.webp',
+  '/assets/gates/gate_hell.webp', '/assets/gates/gate_frost.webp',
   '/assets/menu-icons/mapa.png', '/assets/menu-icons/talenty.png',
   '/assets/menu-icons/inventar.png', '/assets/menu-icons/obchod.png',
   '/assets/menu-icons/navod.png', '/assets/menu-icons/bestiar.png',

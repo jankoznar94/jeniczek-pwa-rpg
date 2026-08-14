@@ -22,11 +22,11 @@ let meleeContainer: Container | null = null;
 let meleeFx: { g: Graphics; life: number; maxLife: number; update: (g: Graphics, t: number) => void }[] = [];
 
 const THEME_BG: Record<number, string> = {
-  0: 'assets/dungeons/forest.png',
-  1: 'assets/dungeons/desert.png',
-  2: 'assets/dungeons/undead.png',
-  3: 'assets/dungeons/hell.png',
-  4: 'assets/dungeons/frost.png',
+  0: 'assets/dungeons/forest.webp',
+  1: 'assets/dungeons/desert.webp',
+  2: 'assets/dungeons/undead.webp',
+  3: 'assets/dungeons/hell.webp',
+  4: 'assets/dungeons/frost.webp',
 };
 
 /** Přednačte dungeon pozadí do cache (volá se při startu hry, aby bitva neměla zpoždění).
