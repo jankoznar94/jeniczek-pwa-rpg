@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v131';
-const ASSET_CACHE = 'boss-slayer-assets-v24';
+const ASSET_CACHE = 'boss-slayer-assets-v25';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=130', '/manifest.json'];
 
