@@ -30,7 +30,8 @@ const THEME_BG: Record<number, string> = {
 };
 
 /** Přednačte dungeon pozadí do cache (volá se při startu hry, aby bitva neměla zpoždění).
- *  Používá prostý Image — nezávisí na pixi.js, takže se pixi nenačítá při startu hry. */
+ *  Používá prostý Image — nezávisí na pixi.js, takže se pixi nenačítá při startu hry.
+ *  Zároveň prefetchuje pixi.js bundle, aby první bitva neměla zpoždění při vstupu. */
 export async function preloadDungeonAssets(): Promise<void> {
   const urls = Object.values(THEME_BG);
   await Promise.all(urls.map(u => new Promise<void>((resolve) => {
@@ -39,6 +40,9 @@ export async function preloadDungeonAssets(): Promise<void> {
     img.onerror = () => resolve();
     img.src = u;
   })));
+  // Prefetch pixi.js do browser cache — první bitva pak startuje okamžitě.
+  // Všechny bitvy (background i melee vrstva) používají stejný import, takže stačí jednou.
+  try { await import('pixi.js'); } catch (e) { /* bitva se obejde bez canvas vrstvy */ }
 }
 
 /** Inicializuje PixiJS canvas do arény. Volá se jednou při startu bitvy. */
@@ -128,6 +132,7 @@ export async function initMeleeLayer(containerEl: HTMLElement): Promise<void> {
     meleeApp = new Application();
     await meleeApp.init({
       background: 'transparent',
+      backgroundAlpha: 0,
       resizeTo: containerEl,
       antialias: true,
       autoDensity: true,
