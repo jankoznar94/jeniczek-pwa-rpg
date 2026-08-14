@@ -3277,8 +3277,8 @@ export function initGame() {
       if (mb.maxEnemyMana > 0 && !mb.isBoss) {
         manaBar.classList.remove('hidden');
         const mpPct = Math.round((mb.enemyMana / mb.maxEnemyMana) * 100);
-        // Kruhový mana ring — obvod r=82 je ~515
-        const MANA_CIRC = 515;
+        // Kruhový mana ring — obvod r=88 je ~553
+        const MANA_CIRC = 553;
         manaFill.style.strokeDashoffset = (MANA_CIRC * (1 - mpPct / 100)) + '';
         // Bar color podle resource
         if (mb.monsterResource === 'rage') manaFill.style.stroke = '#e74c3c';

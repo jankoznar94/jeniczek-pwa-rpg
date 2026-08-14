@@ -279,7 +279,7 @@ body.no-scroll { overflow: hidden; }
 }
 .enemy-timer-circle {
   stroke:#e67e22;
-  stroke-width:7;
+  stroke-width:12;
 }
 @keyframes timer-ring-shrink {
   0%   { stroke-dashoffset: 691; }
