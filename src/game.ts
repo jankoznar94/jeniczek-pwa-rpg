@@ -957,6 +957,7 @@ export function initGame() {
       const elemColor = getWeaponElementColor(item);
       const dmgColor = elemColor || '#e8e0e8';
       addRow('Damage', `<span style="color:${dmgColor}">${dmgMin}-${dmgMax}</span> (${handLabel}) [${dps} DPS]`);
+      addRow('Speed', `${swingSec.toFixed(2)}s per attack (${(1/swingSec).toFixed(2)}/s)`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
       if (item.attackRating) addRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
     }
