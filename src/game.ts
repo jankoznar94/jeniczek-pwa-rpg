@@ -1607,10 +1607,20 @@ export function initGame() {
     // Build act sections with dot paths
     let html = `<div class="diff-selector">${diffBtns}</div>`;
 
+    // Zobrazit jen: dokončené akty + aktuální odemčený + první následující zamčený.
+    // Vzdálené zamčené akty se vůbec nevykreslí → nestáhnou se ani jejich pozadí/brány,
+    // čímž se výrazně sníží nápor stahování při startu hry.
+    const firstLockedAct = ACTS.findIndex((_, actId) => {
+      const prevDone = actId === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][actId-1]);
+      return !(actId === 0 || prevDone);
+    });
+
     ACTS.forEach((loc, actId) => {
       const prevDone = actId === 0 || (state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][actId-1]);
       const unlocked = actId === 0 || prevDone;
       const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][actId];
+      // Zamčený act vykreslit jen pokud je to první zamčený (následuje hned za aktuálním).
+      if (!unlocked && actId !== firstLockedAct) return;
       const theme = DUNGEON_THEMES[loc.theme] || DUNGEON_THEMES[0];
       const totalZones = loc.zones || 10;
       const curArea = state.locationProgress[actId] || 0;
