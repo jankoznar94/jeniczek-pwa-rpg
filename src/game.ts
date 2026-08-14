@@ -5724,8 +5724,11 @@ export function initGame() {
     // Fáze 4: canvas particle burst + shockwave ring + particle slash (aditivní, pod DOM)
     spawnImpactBurst(bx, by, colorHex, isCrit);
     spawnShockwave(bx, by, colorHex, isCrit);
-    const slashAngle = angleOffset + Math.random() * Math.PI;
-    spawnParticleSlash(bx, by, colorHex, isCrit, slashAngle);
+    // Particle slash (obloukové seknutí jisker) jen pro sečné zbraně — blunt má vlastní praskliny
+    if (weaponType !== 'blunt' && weaponType !== 'fists' && weaponType !== 'staff') {
+      const slashAngle = angleOffset + Math.random() * Math.PI;
+      spawnParticleSlash(bx, by, colorHex, isCrit, slashAngle);
+    }
   }
 
   // ===== SPELL ANIMATIONS =====
