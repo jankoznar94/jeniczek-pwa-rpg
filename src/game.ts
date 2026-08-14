@@ -3791,7 +3791,7 @@ export function initGame() {
       _sessionDebuffs['thunderClap'] = { icon: '🌊', name: `Thunder Clap (slow ${slowPct}%)`, ticks: slowTicks, maxTicks: slowTicks };
       spawnThunderClapAnim(mb);
       playSFX(thunderClapSfx);
-      spawnFloatingText(`🌊 -${finalDmg}`, 'right', '#f39c12', 32, 'assets/spells/thunderClap.png');
+      spawnFloatingText(`🌊 -${finalDmg}`, 'right', '#f39c12', 32, 2000, 'assets/spells/thunderClap.png');
     } else if (spellId === 'bloodrage') {
       // -15% HP, +100% zisk Rage na 10s
       const hpCost = Math.round(mb.playerHp * 0.15);
@@ -3825,7 +3825,7 @@ export function initGame() {
       playSFX(thunderBoltSfx);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
-      spawnFloatingText(`⚡ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/thunderBolt.png');
+      spawnFloatingText(`⚡ -${dmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/thunderBolt.png');
     } else if (spellId === 'shieldBash') {
       // Shield Bash — pouze se štítem
       const shield = ITEM_MAP[state.hero.equip.shield];
@@ -3851,7 +3851,7 @@ export function initGame() {
       spawnShieldBashAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
-      spawnFloatingText(`🛡️ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/shield_bash.png');
+      spawnFloatingText(`🛡️ -${dmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/shield_bash.png');
     } else if (spellId === 'battleShout') {
       // +5+lv*5% dmg na 60s (dle talentu)
       const lv = getSpellLv('battleShout');
@@ -3865,7 +3865,7 @@ export function initGame() {
       renderBuffs();
       // Animace
       spawnShoutRings(mb, '#e74c3c', 'rgba(231,76,60,0.6)');
-      spawnFloatingText(`📯 +${dmgPct}% dmg`, 'left', '#f39c12', 32, 'assets/spells/battleShout.png');
+      spawnFloatingText(`📯 +${dmgPct}% dmg`, 'left', '#f39c12', 32, 2000, 'assets/spells/battleShout.png');
     } else if (spellId === 'defensiveShout') {
       const lv = getSpellLv('defensiveShout');
       const armorPct = [50, 75, 100, 125, 150][Math.min(lv - 1, 4)];
@@ -3908,7 +3908,7 @@ export function initGame() {
       mb._offhandSwingPct = 0;
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
-      spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 'assets/spells/doubleSwing.png');
+      spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/doubleSwing.png');
       // Pokud smrtelná rána, ukončit boj hned
       if (mb.bossHp <= 0) { endMapBattle(true); return; }
     } else if (spellId === 'whirlwind') {
@@ -3926,7 +3926,7 @@ export function initGame() {
       playSFX(whirlwindSfx);
       // Animace
       spawnWhirlwindAnim(mb);
-      spawnFloatingText(`🌀 -${totalDmg}`, 'right', '#f1c40f', 32, 'assets/spells/whirlwind.png');
+      spawnFloatingText(`🌀 -${totalDmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/whirlwind.png');
     } else if (spellId === 'sinisterStrike') {
       // 150% dmg + 1 combo point
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -3937,7 +3937,7 @@ export function initGame() {
       state.comboPoints = Math.min(5, (state.comboPoints || 0) + 1);
       // Canvas melee impact
       spawnMeleeImpact(mb, false, getWeaponType(), 0, getWeaponElementColor(weapon));
-      spawnFloatingText(`🗡️ -${dmg}`, 'right', '#f1c40f', 32, 'assets/spells/shadowStrike.png');
+      spawnFloatingText(`🗡️ -${dmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/shadowStrike.png');
     } else if (spellId === 'eviscerate') {
       const cp = state.comboPoints || 0;
       if (cp < 1) return; // nelze použít bez combo pointů
