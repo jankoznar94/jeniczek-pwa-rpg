@@ -2737,17 +2737,17 @@ export function initGame() {
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
       if (mb._enemyStunned) {
-        // Stun — tmavě šedý ring, od prázdného (offset=597) do plného (offset=0)
+        // Stun — tmavě šedý ring, od prázdného (offset=553) do plného (offset=0)
         const stunMax = mb._enemyStunMax > 0 ? mb._enemyStunMax : 300;
         const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
-        const offset = Math.round(597 * stunPct);
-        enemyCircle.style.strokeDasharray = '597';
+        const offset = Math.round(553 * stunPct);
+        enemyCircle.style.strokeDasharray = '553';
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#555';
       } else if (mb._enemyCasting) {
         // Castování — světle modrý ring
         const castPct = mb._enemyCastTime > 0 ? Math.min(1, (performance.now() - mb._enemyCastStart) / mb._enemyCastTime) : 0;
-        const offset = Math.round(597 * (1 - castPct));
+        const offset = Math.round(553 * (1 - castPct));
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#3498db';
       } else if (mb._enemySwingReady) {
@@ -2755,11 +2755,11 @@ export function initGame() {
         enemyCircle.style.stroke = '#c0c0c0';
       } else if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
         // Zpomalení — modrý ring (jiný odstín než cast)
-        const offset = Math.round(597 * (1 - mb._enemySwingPct));
+        const offset = Math.round(553 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#3b82f6';
       } else {
-        const offset = Math.round(597 * (1 - mb._enemySwingPct));
+        const offset = Math.round(553 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
         enemyCircle.style.stroke = '#999';
       }
@@ -2772,8 +2772,8 @@ export function initGame() {
     const fill = document.getElementById('mbEnemyHpFill');
     if (!fill) return;
     const pct = mb.maxBossHp > 0 ? Math.max(0, Math.min(100, (mb.bossHp / mb.maxBossHp) * 100)) : 0;
-    // Kruhový HP ring — stroke-dashoffset (obvod r=92 je ~578)
-    const CIRC = 578;
+    // Kruhový HP ring — stroke-dashoffset (obvod r=95 je ~597)
+    const CIRC = 597;
     const offset = CIRC * (1 - pct / 100);
     // Fáze 4: damage ghost — stará hodnota doznívá pomaleji (0.6s tween) než fill (0.2s)
     const ghost = document.getElementById('mbEnemyHpGhost');
@@ -3283,8 +3283,8 @@ export function initGame() {
       if (mb.maxEnemyMana > 0 && !mb.isBoss) {
         manaBar.classList.remove('hidden');
         const mpPct = Math.round((mb.enemyMana / mb.maxEnemyMana) * 100);
-        // Kruhový mana ring — obvod r=88 je ~553
-        const MANA_CIRC = 553;
+        // Kruhový mana ring — obvod r=92 je ~578
+        const MANA_CIRC = 578;
         manaFill.style.strokeDashoffset = (MANA_CIRC * (1 - mpPct / 100)) + '';
         // Bar color podle resource
         if (mb.monsterResource === 'rage') manaFill.style.stroke = '#e74c3c';
