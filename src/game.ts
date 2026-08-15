@@ -2810,10 +2810,10 @@ export function initGame() {
         enemyCircle.style.strokeDashoffset = '0';
         enemyCircle.style.stroke = '#c0c0c0';
       } else if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
-        // Zpomalení — modrý ring (jiný odstín než cast)
+        // Zpomalení / chill — světle modrý ring (jasně odlišený od cast a mana)
         const offset = Math.round(553 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#3b82f6';
+        enemyCircle.style.stroke = '#8ec9ff';
       } else {
         const offset = Math.round(553 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
@@ -2879,21 +2879,24 @@ export function initGame() {
 
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
-      cleanupTimers();
-      dimTimers();
-      const arena = $('mbArena');
-      if (arena) {
-        arena.style.transition = 'background 0.15s';
-        arena.style.background = 'rgba(200,0,0,0.3)';
-        setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
-        setTimeout(() => { arena.style.background = ''; }, 250);
-      }
+      // Naplánovat endMapBattle co nejdřív — aby ho nemohlo zrušit nic níže
       setTimeout(() => {
         if (!mapBattleState.ended) {
-          spawnDeathEffect(mb);
           endMapBattle(true);
+          try { spawnDeathEffect(mb); } catch (e) {}
         }
       }, 300);
+      try {
+        cleanupTimers();
+        dimTimers();
+        const arena = $('mbArena');
+        if (arena) {
+          arena.style.transition = 'background 0.15s';
+          arena.style.background = 'rgba(200,0,0,0.3)';
+          setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+          setTimeout(() => { arena.style.background = ''; }, 250);
+        }
+      } catch (e) { console.error('kill path 1:', e); }
       return;
     }
   }
@@ -2903,22 +2906,25 @@ export function initGame() {
     const mb = mapBattleState;
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
-      updateMapBattleUI();
-      cleanupTimers();
-      dimTimers();
-      const arena = $('mbArena');
-      if (arena) {
-        arena.style.transition = 'background 0.15s';
-        arena.style.background = 'rgba(200,0,0,0.3)';
-        setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
-        setTimeout(() => { arena.style.background = ''; }, 250);
-      }
+      // Naplánovat endMapBattle co nejdřív — aby ho nemohlo zrušit nic níže
       setTimeout(() => {
         if (!mapBattleState.ended) {
-          spawnDeathEffect(mb);
           endMapBattle(true);
+          try { spawnDeathEffect(mb); } catch (e) {}
         }
       }, 300);
+      try {
+        updateMapBattleUI();
+        cleanupTimers();
+        dimTimers();
+        const arena = $('mbArena');
+        if (arena) {
+          arena.style.transition = 'background 0.15s';
+          arena.style.background = 'rgba(200,0,0,0.3)';
+          setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+          setTimeout(() => { arena.style.background = ''; }, 250);
+        }
+      } catch (e) { console.error('kill path 2:', e); }
       return;
     }
     // Reset offhand swingu PŘED útokem
@@ -4133,24 +4139,27 @@ export function initGame() {
       // Smrtelná rána — kouzlo musí zabít stejně jako melee
       if (mb.bossHp <= 0 && !mb._pendingKill) {
         mb._pendingKill = true;
-        spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
-        spawnFloatingText(`-${finalDmg}`, 'right', '#f1c40f', 32);
-        updateMapBattleUI();
-        cleanupTimers();
-        dimTimers();
-        const arena = $('mbArena');
-        if (arena) {
-          arena.style.transition = 'background 0.15s';
-          arena.style.background = 'rgba(200,0,0,0.3)';
-          setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
-          setTimeout(() => { arena.style.background = ''; }, 250);
-        }
+        // Naplánovat endMapBattle co nejdřív — aby ho nemohlo zrušit nic níže
         setTimeout(() => {
           if (!mapBattleState.ended) {
-            spawnDeathEffect(mb);
             endMapBattle(true);
+            try { spawnDeathEffect(mb); } catch (e) {}
           }
         }, 300);
+        try {
+          spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER, spellId);
+          spawnFloatingText(`-${finalDmg}`, 'right', '#f1c40f', 32);
+          updateMapBattleUI();
+          cleanupTimers();
+          dimTimers();
+          const arena = $('mbArena');
+          if (arena) {
+            arena.style.transition = 'background 0.15s';
+            arena.style.background = 'rgba(200,0,0,0.3)';
+            setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+            setTimeout(() => { arena.style.background = ''; }, 250);
+          }
+        } catch (e) { console.error('kill path 4:', e); }
         return;
       }
       // Ledová kouzla — zpomalení nepřítele
@@ -4214,8 +4223,8 @@ export function initGame() {
       spawnFloatingText(`-${finalDmg}`, 'right', '#f39c12', 32);
       if (mb.bossHp <= 0 && !mb._pendingKill) {
         mb._pendingKill = true;
-        spawnDeathEffect(mb);
         endMapBattle(true);
+        try { spawnDeathEffect(mb); } catch (e) {}
         return;
       }
     }
@@ -7589,8 +7598,8 @@ export function initGame() {
       // Zajistit, že se endMapBattle vždy naplánuje, i kdyby níže něco hodilo výjimku
       setTimeout(() => {
         if (!mapBattleState.ended) {
-          spawnDeathEffect(mb);
           endMapBattle(true);
+          try { spawnDeathEffect(mb); } catch (e) {}
         }
       }, 300);
       try {
