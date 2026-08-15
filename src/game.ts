@@ -2881,6 +2881,8 @@ export function initGame() {
   function onAutoEnemyAttack() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+    // Nepřítel už byl zabit (pendingKill) — nezpracovávat jeho útok/cast
+    if (mb._pendingKill) return;
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
 
     // Caster spell — zpracovat kouzlo místo melee útoku
