@@ -2096,6 +2096,8 @@ export function initGame() {
     // Reset GCD a combo points per fight (session state zůstává)
     state._gcdTimer = 0;
     state.comboPoints = 0;
+    // Buffy nepřítele se NEpřenášejí do dalšího souboje — každý souboj je nový nepřítel
+    _enemyBuffs = {};
     const loc = ACTS[actId];
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
