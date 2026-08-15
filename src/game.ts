@@ -1094,6 +1094,36 @@ export function initGame() {
     return result;
   }
 
+  // Spell pool daného actu (theme) — všechna kouzla, která mají monstra v tomto poolu
+  function getActSpellPool(theme) {
+    const pool = MONSTER_DB[theme] || MONSTER_DB[0];
+    const spellIds = [];
+    pool.forEach(m => (m.spells || []).forEach(s => {
+      if (!spellIds.includes(s)) spellIds.push(s);
+    }));
+    return spellIds;
+  }
+
+  // Náhodné kouzlo ze spell poolu actu, které odpovídá resource monstra
+  // a které monstrum ještě nemá nasazené
+  function rollEliteSpell(theme, resource, existingSpells) {
+    const spellIds = getActSpellPool(theme);
+    const candidates = spellIds.filter(id => {
+      if (existingSpells && existingSpells.includes(id)) return false;
+      const sp = ENEMY_SPELLS[id];
+      if (!sp) return false;
+      if (resource === 'rage') return (sp.rageCost || 0) > 0;
+      return (sp.manaCost || 0) > 0;
+    });
+    if (candidates.length === 0) return null;
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  }
+
+  // Náhodný elitní affix (HP/dmg bonus)
+  function rollEliteAffix() {
+    return ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
+  }
+
   // Násobitel obtížnosti podle zóny a obtížnosti
   // Normal: Act 1 zóna 0 = ×1.0, Act 5 zóna 9 = ×5.5
   // Nightmare: Act 1 zóna 0 = ×5.5 (navazuje na Act 5 Normal), Act 5 zóna 9 = ×12.0
@@ -2089,9 +2119,13 @@ export function initGame() {
     state._floorMonsters = isBoss ? [] : getFloorMonsterSet(loc.theme, progress);
     const floorMonsters = state._floorMonsters;
 
+    // Elitní monstrum = poslední fight v patře (fight 10/10), kromě boss patra
+    const isElite = !isBoss && areaFight >= 9;
+
     // Fixní staty monstra
     let monsterHp, monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance;
     let monsterResource, monsterMaxResource, monsterSpells;
+    let eliteAffix = null;
     if (isBoss) {
       const b = loc.boss;
       monsterHp = (b.hp || 500) * diffMultOverall;
@@ -2112,6 +2146,16 @@ export function initGame() {
       monsterResource = m.resource || 'mana';
       monsterMaxResource = m.maxResource || 50;
       monsterSpells = m.spells || [];
+      // Elitní monstrum — vylepšené staty + náhodné kouzlo + affix
+      if (isElite) {
+        monsterHp = Math.round(monsterHp * 2.5);
+        monsterDmgMin = Math.round(monsterDmgMin * 1.5);
+        monsterDmgMax = Math.round(monsterDmgMax * 1.5);
+        monsterMaxResource = Math.round(monsterMaxResource * 1.5);
+        const extraSpell = rollEliteSpell(loc.theme, monsterResource, monsterSpells);
+        if (extraSpell) monsterSpells = monsterSpells.concat([extraSpell]);
+        eliteAffix = rollEliteAffix();
+      }
     }
 
     // Boss affixy
@@ -2133,6 +2177,16 @@ export function initGame() {
       });
     }
 
+    // Aplikovat elitní affix na staty
+    if (isElite && eliteAffix) {
+      if (eliteAffix.name === 'Swift') {
+        monsterAttackSpeed = Math.round(monsterAttackSpeed * 0.7);
+      } else {
+        monsterDmgMin = Math.round(monsterDmgMin * 1.3);
+        monsterDmgMax = Math.round(monsterDmgMax * 1.3);
+      }
+    }
+
     const baseHp = isBoss ? Math.round(monsterHp * 4.0) : Math.round(monsterHp);
 
     // Zaznamenat setkání s monstry do bestiáře
@@ -2152,7 +2206,7 @@ export function initGame() {
     }
 
     mapBattleState = {
-      locId: actId, loc, isBoss, progress, areaFight,
+      locId: actId, loc, isBoss, isElite, eliteAffix, progress, areaFight,
       bossHp: Math.round(baseHp * bossHpMult), maxBossHp: Math.round(baseHp * bossHpMult),
       bossDmgMult: bossDmgMult,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
@@ -3226,8 +3280,9 @@ export function initGame() {
         mb.monsterType === MONSTER_TYPES.CRITMASTER ? '🎯' :
         mb.monsterType === MONSTER_TYPES.POISON ? '☠️' : '';
       const atkIcon = mb.monsterAttackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
-      $('mbEnemyName').textContent = `${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
-      $('mbLocation').textContent = `${mb.loc.name} — ${floorStr}`;
+      const eliteTag = mb.isElite && mb.eliteAffix ? `${mb.eliteAffix.icon} ` : '';
+      $('mbEnemyName').textContent = `${eliteTag}${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
+      $('mbLocation').textContent = `${mb.loc.name} — ${floorStr}${mb.isElite ? ' · ELITE' : ''}`;
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
