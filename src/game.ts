@@ -91,15 +91,15 @@ export function initGame() {
     (() => { const a = new Audio('assets/sfx/hurt3.mp3'); a.volume = 0.70; return a; })(),
   ];
   function getHurtSfx() { return hurtSfx[Math.floor(Math.random() * hurtSfx.length)]; }
-  function getHitSfx() {
-    const wt = getWeaponType();
+  function getHitSfx(wtOverride) {
+    const wt = wtOverride || getWeaponType();
     if (wt === 'fists') return fistHitSfx;
     if (wt === 'blunt') return bluntHitSfx;
     if (wt === 'staff') return hitSfx;
     return meleeHitSfxPool[Math.floor(Math.random() * meleeHitSfxPool.length)];
   }
-  function getCritSfx() {
-    const wt = getWeaponType();
+  function getCritSfx(wtOverride) {
+    const wt = wtOverride || getWeaponType();
     if (wt === 'fists') return fistCritSfx;
     if (wt === 'blunt') return bluntCritSfx;
     return wt === 'staff' ? critSfx : meleeCritSfx;
@@ -7464,8 +7464,8 @@ export function initGame() {
       isCrit = true;
     }
     
-    // Zvuk — crit má vlastní zvuk, jinak normální
-    playSFX(isCrit ? getCritSfx() : getHitSfx());
+    // Zvuk — crit má vlastní zvuk, jinak normální (off-hand hraje zvuk své zbraně)
+    playSFX(isCrit ? getCritSfx(isOffhand ? weapon.weaponType : undefined) : getHitSfx(isOffhand ? weapon.weaponType : undefined));
     // Občasný zásahový zvuk (30% šance)
     playSFX(getEnemyHitSfx());
 
