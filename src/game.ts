@@ -2728,18 +2728,18 @@ export function initGame() {
         offhandCircle.style.opacity = '0';
       }
     }
-    // Nepřítelův ring (malý, červený / modrý při castu / šedý při stunu)
+    // Nepřítelův ring (šedý / modrý při castu a slowu / tmavě šedý při stunu)
     const enemyCircle = document.getElementById('mbEnemyTimerCircle');
     if (enemyCircle) {
       enemyCircle.style.opacity = '1';
       if (mb._enemyStunned) {
-        // Stun — šedý ring, od prázdného (offset=597) do plného (offset=0)
+        // Stun — tmavě šedý ring, od prázdného (offset=597) do plného (offset=0)
         const stunMax = mb._enemyStunMax > 0 ? mb._enemyStunMax : 300;
         const stunPct = Math.min(1, mb._enemyStunTimer / stunMax);
         const offset = Math.round(597 * stunPct);
         enemyCircle.style.strokeDasharray = '597';
         enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#666';
+        enemyCircle.style.stroke = '#555';
       } else if (mb._enemyCasting) {
         // Castování — světle modrý ring
         const castPct = mb._enemyCastTime > 0 ? Math.min(1, (performance.now() - mb._enemyCastStart) / mb._enemyCastTime) : 0;
@@ -2748,7 +2748,7 @@ export function initGame() {
         enemyCircle.style.stroke = '#3498db';
       } else if (mb._enemySwingReady) {
         enemyCircle.style.strokeDashoffset = '0';
-        enemyCircle.style.stroke = '#e67e22';
+        enemyCircle.style.stroke = '#c0c0c0';
       } else if (mb._enemySlowPct && mb._enemySlowTimer > 0) {
         // Zpomalení — modrý ring (jiný odstín než cast)
         const offset = Math.round(597 * (1 - mb._enemySwingPct));
@@ -2757,7 +2757,7 @@ export function initGame() {
       } else {
         const offset = Math.round(597 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#e67e22';
+        enemyCircle.style.stroke = '#999';
       }
     }
     // Nepřítelův HP bar — segmenty
