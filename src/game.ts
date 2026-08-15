@@ -494,21 +494,6 @@ export function initGame() {
     }
     return base;
   }
-  function getSpellLv(spellId) {
-    if (spellId === 'fireball') return getTalentLv('fire_fireball');
-    if (spellId === 'fireblast') return getTalentLv('fire_fireblast');
-    if (spellId === 'firebolt') return getTalentLv('fire_firebolt');
-    if (spellId === 'blizzard') return getTalentLv('ice_blizzard');
-    if (spellId === 'icebolt') return getTalentLv('ice_icebolt');
-    if (spellId === 'frostbolt') return getTalentLv('ice_frostbolt');
-    if (spellId === 'lightningBolt') return getTalentLv('lightning_lightningBolt');
-    if (spellId === 'chainLightning') return getTalentLv('lightning_chainLightning');
-    if (spellId === 'thunderStorm') return getTalentLv('lightning_thunderStorm');
-    if (spellId === 'strongStrike') return getTalentLv('physical_strongStrike');
-    if (spellId === 'slash') return getTalentLv('physical_slash');
-    if (spellId === 'whirlwind') return getTalentLv('physical_whirlwind');
-    return 0;
-  }
   function getRegrowthHeal() {
     if (state.activeSchool !== 'nature') return 0;
     const lv = getTalentLv('nature_regrowth');
