@@ -3287,7 +3287,7 @@ export function initGame() {
         const MANA_CIRC = 578;
         manaFill.style.strokeDashoffset = (MANA_CIRC * (1 - mpPct / 100)) + '';
         // Bar color podle resource
-        if (mb.monsterResource === 'rage') manaFill.style.stroke = '#e74c3c';
+        if (mb.monsterResource === 'rage') manaFill.style.stroke = '#e67e22';
         else if (mb.monsterResource === 'energy') manaFill.style.stroke = '#f1c40f';
         else manaFill.style.stroke = '#4a7dff';
       } else {
@@ -9596,10 +9596,11 @@ export function initGame() {
           weaponEntries.forEach(({label, weapon: w}) => {
             if (!w || w.id === item.id) return;
             const eqColor = getQualityColor(w);
-            bothHtml += `<div style="color:#888;font-size:11px;margin-bottom:2px">${label}</div>`;
-            bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${w.name}</div>`;
+            bothHtml += `<div class="inv-compare-weapon-block">`;
+            bothHtml += `<div class="inv-compare-weapon-header">${label}</div>`;
+            bothHtml += `<div class="inv-compare-weapon-name" style="color:${eqColor}">${w.name}</div>`;
             bothHtml += buildItemStatsHtml(w);
-            bothHtml += '<div style="height:4px"></div>';
+            bothHtml += `</div>`;
           });
           if (bothHtml) {
             $('invItemOverlayCompareIcon').innerHTML = '';

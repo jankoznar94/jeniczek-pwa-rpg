@@ -827,6 +827,18 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-compare-stats .stat-row:last-child { border-bottom:none; }
 .inv-item-overlay-compare-stats .stat-label { color:#888; }
 .inv-item-overlay-compare-stats .stat-value { color:#e8e0e8; }
+/* Compare bloky zbraní — zřetelné oddělení Main/Off Hand */
+.inv-compare-weapon-block {
+  width:100%;border:1px solid #3a3a3a;border-radius:6px;
+  padding:6px 8px;margin-bottom:8px;background:#141414;
+}
+.inv-compare-weapon-block:last-child { margin-bottom:0; }
+.inv-compare-weapon-header {
+  font-size:10px;font-weight:bold;letter-spacing:1px;color:#aaa;
+  text-transform:uppercase;padding-bottom:3px;margin-bottom:4px;
+  border-bottom:1px solid #2a2a2a;
+}
+.inv-compare-weapon-name { font-weight:bold;font-size:13px;margin-bottom:4px; }
 .inv-item-overlay-btn {
   margin-top:0;padding:8px 16px;font-size:13px;font-weight:bold;
   background:#2a2a2a;border:1px solid #555;border-radius:6px;
