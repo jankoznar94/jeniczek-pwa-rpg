@@ -279,7 +279,7 @@ body.no-scroll { overflow: hidden; }
 }
 .enemy-timer-circle {
   stroke:#e67e22;
-  stroke-width:12;
+  stroke-width:7;
 }
 .zone-divider {
   stroke:#9a9a9a;
