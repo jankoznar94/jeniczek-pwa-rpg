@@ -432,6 +432,25 @@ export function initGame() {
     const w = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     return w.weaponType || 'fists';
   }
+  // ===== PASSIVE WEAPON SPECIALIZATIONS (barbarian) =====
+  // One-Hand / Two-Hand Specialization — +10%/lv dmg, +10%/lv hit rating, +1%/lv crit.
+  // Off-hand penalty 0.5 → 1.0 (100%) roste s One-Hand Spec (lvl5 = bez penalizace).
+  function getWeaponSpecBonus(weapon, isOffhand = false) {
+    if (!weapon || state.heroClass !== 'barbarian') {
+      return { dmgMult: 1, arMult: 1, critBonus: 0, offHandMult: 0.5 };
+    }
+    const is2H = weapon.twoHand === true;
+    const lv = is2H ? getTalentLv('barbarian_twoHandSpec') : getTalentLv('barbarian_oneHandSpec');
+    const oneHandLv = getTalentLv('barbarian_oneHandSpec');
+    if (lv <= 0) {
+      // I bez bonusů platí off-hand penalizace (jen pokud je to off-hand útok)
+      return { dmgMult: 1, arMult: 1, critBonus: 0, offHandMult: 0.5 + 0.1 * oneHandLv };
+    }
+    const dmgMult = 1 + 0.10 * lv;
+    const arMult = 1 + 0.10 * lv;
+    const critBonus = lv; // +1% crit / lvl
+    return { dmgMult, arMult, critBonus, offHandMult: 0.5 + 0.1 * oneHandLv };
+  }
   // ===== RESIST MULT =====
   function getLocAffix(key) {
     const mb = mapBattleState;
@@ -2868,7 +2887,7 @@ export function initGame() {
     // Offhand útok — 50% damage hlavní zbraně, zpožděný o 200ms aby se nepřekrýval s main hand textem
     setTimeout(() => {
       if (mapBattleState.ended) return;
-      dealPlayerDamage(mb, 0.5, true);
+      dealPlayerDamage(mb, 1.0, true);
       updateMapBattleUI();
       if (mb.bossHp <= 0) { endMapBattle(true); return; }
     }, 200);
@@ -7333,9 +7352,11 @@ export function initGame() {
       ? (ITEM_MAP[state.hero.equip.shield] || ITEM_MAP['fists'])
       : (ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists']);
     const isStaff = weapon.weaponType === 'staff';
+    // Passive weapon specialization bonus (barbarian)
+    const spec = getWeaponSpecBonus(weapon, isOffhand);
     // 🎲 ATTACK TABLE — D2 formule (pouze pro fyzické útoky, ne pro kouzla)
     if (!isStaff) {
-      const at = getPlayerAttackTable(mb);
+      const at = getPlayerAttackTable(mb, spec.arMult);
       const roll = Math.random() * 100;
       if (roll >= at.hitChance) {
         // MISS!
@@ -7369,7 +7390,7 @@ export function initGame() {
     } else {
       baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.3);
     }
-    let dmg = Math.round(baseDmg * mult);
+    let dmg = Math.round(baseDmg * mult * spec.dmgMult * (isOffhand ? spec.offHandMult : 1));
     // Rozptyl ±1 — každá rána je jiná
     dmg += Math.floor(Math.random() * 3) - 1; // -1, 0, +1
     dmg = Math.max(1, dmg);
@@ -7384,8 +7405,8 @@ export function initGame() {
       mb._heatLevel = Math.min((mb._heatLevel || 0) + 1, 10);
     }
     
-    // 🎯 Crit chance ze zbraně — náhodná šance na 2.0× poškození
-    const critChance = weapon.critChance || 0;
+    // 🎯 Crit chance ze zbraně + passive specialization — náhodná šance na 2.0× poškození
+    const critChance = (weapon.critChance || 0) + spec.critBonus;
     let isCrit = false;
     if (critChance > 0 && Math.random() * 100 < critChance) {
       dmg = Math.round(dmg * 2.0);

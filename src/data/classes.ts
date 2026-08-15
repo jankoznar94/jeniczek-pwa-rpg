@@ -84,7 +84,11 @@
             { choices: [
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% hit rating` },
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
+              { k:'oneHandSpec', name:'One-Hand Specialization', icon:'🗡️', maxLv:5, desc:lv=>`+${10*lv}% 1H dmg, +${10*lv}% hit rating, +${lv}% crit; lvl5: off-hand 100% dmg` },
+              { k:'twoHandSpec', name:'Two-Hand Specialization', icon:'🪓', maxLv:5, desc:lv=>`+${10*lv}% 2H dmg, +${10*lv}% hit rating, +${lv}% crit` },
+            ]},
+            { choices: [
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
             ]}
           ]
         },
