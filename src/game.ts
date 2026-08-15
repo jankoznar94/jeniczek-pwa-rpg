@@ -1102,7 +1102,7 @@ export function initGame() {
     return (state.hero.level || 1) - monsterLv;
   }
 
-  function getPlayerAttackTable(mb) {
+  function getPlayerAttackTable(mb, arMult = 1) {
     // D2 formule: Chance to Hit = 200% × AR / (AR + DR) × Alvl / (Alvl + Dlvl)
     const monsterLv = getMonsterLevel(mb);
     const heroLv = state.hero.level || 1;
@@ -1125,7 +1125,7 @@ export function initGame() {
       const item = ITEM_MAP[eq[slot]];
       if (item) totalAR += item.attackRating || 0;
     });
-    const ar = Math.max(1, baseAR + totalAR);
+    const ar = Math.max(1, (baseAR + totalAR) * arMult);
 
     // Defense monstra (per-monster, ne lokace)
     const monsterDef = mb.monsterDefense || 0;
@@ -3881,29 +3881,37 @@ export function initGame() {
       playSFX(shoutSfx);
       _sessionBuffs['skillShout'] = { icon: '📣', name: 'Skill Shout', iconImg:'skillShout.png', ticks: 1800, maxTicks: 1800, onExpire: function() { state.skillShoutBonus = 0; } };
     } else if (spellId === 'doubleSwing') {
-      // Double Swing — scaling podle levelu: (60+lv*20)% + (30+lv*15)% dmg
+      // Double Swing — zásah oběma zbraněmi zaráz
+      // LvL: dmg bonus = 25*lv %, hit rating bonus = 10*lv %
       const lv = getSpellLv('doubleSwing');
-      const mainPct = (60 + lv * 20) / 100; // lv1=80%, lv2=100%, lv3=120%...
-      const offPct = (30 + lv * 15) / 100;  // lv1=45%, lv2=60%, lv3=75%...
+      const dmgBonus = 25 * lv;   // lv1=25%, lv2=50%, lv3=75%, lv4=100%, lv5=125%
+      const arBonus = 10 * lv;    // lv1=10%, lv2=20%, lv3=30%, lv4=40%, lv5=50%
       const offhandWeapon = (mb.offhandSwingMs > 0 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
       if (!offhandWeapon) {
         showMessage('⚔️ Potřebuješ dvě zbraně!');
         return;
       }
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+      // Hit check s bonusem k Attack Ratingu
+      const at = getPlayerAttackTable(mb, 1 + arBonus / 100);
+      const roll = Math.random() * 100;
+      if (roll >= at.hitChance) {
+        // MISS
+        spawnFloatingText('MISS!', 'right', '#888', 32);
+        playSFX(dodgeSfx);
+        resetDoubleSwingTimers(mb);
+        return;
+      }
       const eqAttrs = getEquipAttrs();
-      const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * mainPct));
-      const offDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(offhandWeapon)) * offPct));
+      const baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + ((state.hero.attrStr||0) + eqAttrs.str)*0.3);
+      const dmgMult = 1 + dmgBonus / 100;
+      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * dmgMult));
+      const offDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(offhandWeapon)) * dmgMult));
       const totalDmg = mainDmg + offDmg;
       mb.bossHp -= totalDmg;
+      playSFX(getHitSfx());
       // Reset obou swing timerů
-      mb._playerSwingStart = performance.now();
-      mb._playerSwingReady = false;
-      mb._playerSwingPct = 0;
-      mb._offhandSwingStart = performance.now();
-      mb._offhandSwingReady = false;
-      mb._offhandSwingPct = 0;
+      resetDoubleSwingTimers(mb);
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
       spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/doubleSwing.png');
@@ -6011,6 +6019,16 @@ export function initGame() {
       }
       requestAnimationFrame(animate);
     }
+  }
+
+  function resetDoubleSwingTimers(mb) {
+    // Reset obou swing timerů hráče (main + offhand)
+    mb._playerSwingStart = performance.now();
+    mb._playerSwingReady = false;
+    mb._playerSwingPct = 0;
+    mb._offhandSwingStart = performance.now();
+    mb._offhandSwingReady = false;
+    mb._offhandSwingPct = 0;
   }
 
   function spawnDoubleSwingAnim(mb) {

@@ -83,7 +83,7 @@
           tiers: [
             { choices: [
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
-              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, desc:lv=>`Dual wield attack: ${60+lv*20}% + ${30+lv*15}% dmg` },
+              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% hit rating` },
               { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
             ]}
           ]
