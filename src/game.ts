@@ -7507,24 +7507,29 @@ export function initGame() {
     // Smrtelný zásah — okamžitě zastavit timery, červený záblesk, pak death exploze
     if (mb.bossHp <= 0 && !mb._pendingKill) {
       mb._pendingKill = true;
-      switchBGM('win');
-      updateMapBattleUI();
-      cleanupTimers();
-      dimTimers();
-      // Červený záblesk arény
-      const arena = $('mbArena');
-      if (arena) {
-        arena.style.transition = 'background 0.15s';
-        arena.style.background = 'rgba(200,0,0,0.3)';
-        setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
-        setTimeout(() => { arena.style.background = ''; }, 250);
-      }
+      // Zajistit, že se endMapBattle vždy naplánuje, i kdyby níže něco hodilo výjimku
       setTimeout(() => {
         if (!mapBattleState.ended) {
           spawnDeathEffect(mb);
           endMapBattle(true);
         }
       }, 300);
+      try {
+        switchBGM('win');
+        updateMapBattleUI();
+        cleanupTimers();
+        dimTimers();
+        // Červený záblesk arény
+        const arena = $('mbArena');
+        if (arena) {
+          arena.style.transition = 'background 0.15s';
+          arena.style.background = 'rgba(200,0,0,0.3)';
+          setTimeout(() => { arena.style.background = 'rgba(200,0,0,0.6)'; }, 100);
+          setTimeout(() => { arena.style.background = ''; }, 250);
+        }
+      } catch (e) {
+        console.error('Chyba v kill cestě (hra pokračuje k výsledku):', e);
+      }
       return;
     }
 
