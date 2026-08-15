@@ -1745,6 +1745,8 @@ export function initGame() {
     state.hero.hp = state.hero.maxHp;
     state.hero.mana = getHeroMaxMana();
     saveGame();
+    // Reset shop cache — při každém příchodu do města se nabídka obnoví
+    _resetShopCache();
 
     // Divočina tlačítko — ukázat jen pokud má hráč nějaký progress
     const wildernessBtn = $('townWildernessBtn');
