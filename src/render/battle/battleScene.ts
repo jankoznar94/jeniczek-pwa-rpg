@@ -328,6 +328,31 @@ export async function spawnParticleSlash(
  * Zachovává charakter každé zbraně, ale kreslí se moderním WebGL enginem.
  * weaponType: 'blade' | 'axe' | 'dagger' | 'fists' | 'blunt' | 'claws'
  */
+
+// Vykreslí POUZE část quad Bézier křivky (parametr 0..prog) jako polyline.
+// Sečné zbraně se tak vykreslují postupně od začátku ke konci (ne instantně).
+// prog = 1 → celá křivka, prog < 1 → jen začátek.
+function strokeQuadBezier(
+  gr: any,
+  sx: number, sy: number,
+  cpx: number, cpy: number,
+  ex: number, ey: number,
+  prog: number,
+  style: { width: number; color: number; alpha: number }
+): void {
+  const N = 14;
+  gr.moveTo(sx, sy);
+  for (let i = 1; i <= N; i++) {
+    const u = i / N;
+    if (u > prog) break;
+    const inv = 1 - u;
+    const x = inv * inv * sx + 2 * inv * u * cpx + u * u * ex;
+    const y = inv * inv * sy + 2 * inv * u * cpy + u * u * ey;
+    gr.lineTo(x, y);
+  }
+  gr.stroke(style);
+}
+
 export async function spawnMeleeStrike(
   weaponType: string,
   x: number, y: number,
@@ -365,12 +390,9 @@ export async function spawnMeleeStrike(
       const drawProgress = Math.min(t * 1.5, 1);
       const fade = Math.max(0, (t - 0.3) / 0.7);
       const alpha = 1 - fade;
-      const dashOffset = approxLen * (1 - drawProgress);
-      // 3 vrstvy motion-blur
+      // 3 vrstvy motion-blur — seknutí se vykresluje postupně od začátku ke konci
       for (let layer = 2; layer >= 0; layer--) {
-        gr.moveTo(startX, startY);
-        gr.quadraticCurveTo(cpX, cpY, endX, endY);
-        gr.stroke({
+        strokeQuadBezier(gr, startX, startY, cpX, cpY, endX, endY, drawProgress, {
           width: 3 * (1 + layer * 0.9),
           color: colorHex,
           alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
@@ -412,11 +434,9 @@ export async function spawnMeleeStrike(
       const drawProgress = Math.min(t * 1.5, 1);
       const fade = Math.max(0, (t - 0.3) / 0.7);
       const alpha = 1 - fade;
-      const dashOffset = approxLen * (1 - drawProgress);
+      // 3 vrstvy motion-blur — dýka se vykresluje postupně od začátku ke konci
       for (let layer = 2; layer >= 0; layer--) {
-        gr.moveTo(startX, startY);
-        gr.quadraticCurveTo(cpX, cpY, endX, endY);
-        gr.stroke({
+        strokeQuadBezier(gr, startX, startY, cpX, cpY, endX, endY, drawProgress, {
           width: 2 * (1 + layer * 0.9),
           color: colorHex,
           alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
@@ -557,11 +577,8 @@ export async function spawnMeleeStrike(
       slashes.forEach((sl, idx) => {
         const offset = idx * 0.05;
         const slProgress = Math.max(0, Math.min((drawProgress - offset) / (1 - offset), 1));
-        const dashOffset = approxLen * (1 - slProgress);
         for (let layer = 2; layer >= 0; layer--) {
-          gr.moveTo(sl.sx, sl.sy);
-          gr.quadraticCurveTo(sl.cpX, sl.cpY, sl.ex, sl.ey);
-          gr.stroke({
+          strokeQuadBezier(gr, sl.sx, sl.sy, sl.cpX, sl.cpY, sl.ex, sl.ey, slProgress, {
             width: 2 * (1 + layer * 0.9),
             color: colorHex,
             alpha: layer === 0 ? alpha : alpha * (0.35 - layer * 0.08),
