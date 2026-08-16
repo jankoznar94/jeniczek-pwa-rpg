@@ -820,10 +820,12 @@ export function initGame() {
   }
 
   // === D2-style Rare Item Name Generation ===
-  // First word — náhodný, nezávislý na typu itemu (44 slov, přesně podle D2)
-
-  // Second word — podle slotu itemu (autentické D2 názvy)
-
+  function generateRareItemName(itemType) {
+    const first = RARE_FIRST_WORDS[Math.floor(Math.random() * RARE_FIRST_WORDS.length)];
+    const pool = RARE_SECOND_WORDS[itemType] || RARE_SECOND_WORDS.weapon;
+    const second = pool[Math.floor(Math.random() * pool.length)];
+    return first + ' ' + second;
+  }
 
   function generateUniqueItem(uniqueDef) {
     const baseItem = ITEM_MAP[uniqueDef.baseId];
@@ -9773,6 +9775,12 @@ export function initGame() {
       ov.classList.remove('hidden');
     }
 
+  function clearSelection() {
+    window._invSelectedIdx = null;
+    window._invSelectedSlot = null;
+    document.querySelectorAll('.chest-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
+  }
+
   function renderInventory() {
     // Reset scroll pozice batohu při každém otevření
     const gridWrap = $('invGridWrap');
@@ -9890,11 +9898,6 @@ export function initGame() {
     }
     // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
     const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet', invSlotBelt:'belt', invSlotGloves:'gloves', invSlotBoots:'boots' };
-    function clearSelection() {
-      window._invSelectedIdx = null;
-      window._invSelectedSlot = null;
-      document.querySelectorAll('.chest-cell.selected, .inv-equip-slot.selected').forEach(el => el.classList.remove('selected'));
-    }
     // Delegace handler je nastaven dříve v init() — tady jen clearujeme
     const invScreen = $('inventoryScreen');
     if (invScreen._invDelegationHandler) {
