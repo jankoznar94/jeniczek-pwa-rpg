@@ -931,6 +931,11 @@ export function initGame() {
       if (value === undefined || value === null || value === '' || value === 0) return;
       rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
     }
+    // Rollované módy (affixy) — hodnota modrá, odlišená od fixních statů (Damage, Defense...)
+    function addModRow(label, value) {
+      if (value === undefined || value === null || value === '' || value === 0) return;
+      rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value mod">${value}</span></div>`);
+    }
     // Sestavit mapu rozsahů z affixů — statName → [min, max] (součet všech výskytů)
     const affixRangeMap = {};
     if (item.affixes) {
@@ -965,34 +970,34 @@ export function initGame() {
       addRow('Damage', `<span style="color:${dmgColor}">${dmgMin}-${dmgMax}</span> (${handLabel}) [${dps} DPS]`);
       addRow('Speed', `${swingSec.toFixed(2)}s per attack (${(1/swingSec).toFixed(2)}/s)`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
-      if (item.attackRating) addRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
+      if (item.attackRating) addModRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
     }
     // Armor/helmet
     else if (item.type === 'armor' || item.type === 'helmet') {
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Gloves
     else if (item.type === 'gloves') {
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Boots
     else if (item.type === 'boots') {
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Shield
     else if (item.type === 'shield') {
       if (item.blockChance) addRow('Block', `${item.blockChance}%`);
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Belt
     else if (item.type === 'belt') {
       const rows = item.beltRows || 0;
       addRow('Potion Slots', rows > 0 ? `${rows} rows (${rows * 4} slots)` : '0');
-      if (item.bonusHp) addRow('+HP', `+${item.bonusHp}`);
+      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Consumable
     else if (item.type === 'consumable') {
@@ -1020,41 +1025,41 @@ export function initGame() {
         });
       }
     }
-    // Affix staty
+    // Affix staty — rollované módy (modré)
     function fmtDmg(v) { return Array.isArray(v) ? `${v[0]}-${v[1]}` : v; }
-    if (item.fireDmg) addRow('Fire Dmg', `+${fmtDmg(item.fireDmg)}${affixRange('fireDmg')}`);
-    if (item.coldDmg) addRow('Cold Dmg', `+${fmtDmg(item.coldDmg)}${affixRange('coldDmg')}`);
-    if (item.poisonDmg) addRow('Poison Dmg', `+${fmtDmg(item.poisonDmg)} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
-    if (item.lightningDmg) addRow('Lightning Dmg', `+${fmtDmg(item.lightningDmg)}${affixRange('lightningDmg')}`);
-    if (item.lifesteal) addRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
-    if (item.manaSteal) addRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
-    if (item.attackRating) addRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
-    if (item.skillDmg) addRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
-    if (item.manaRegen) addRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
-    if (item.bonusMana) addRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
-    if (item.ias) addRow('Increased Attack Speed', `+${item.ias}%${affixRange('ias')}`);
-    if (item.enhancedDefense) addRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
-    if (item.enhancedDmg) addRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
-    if (item.str) addRow('Strength', `+${item.str}${affixRange('str')}`);
-    if (item.vit) addRow('Vitality', `+${item.vit}${affixRange('vit')}`);
-    if (item.int) addRow('Intellect', `+${item.int}${affixRange('int')}`);
-    if (item.dex) addRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
-    if (item.magicFind) addRow('Magic Find', `+${item.magicFind}%${affixRange('magicFind')}`);
-    if (item.goldFind) addRow('Gold Find', `+${item.goldFind}%${affixRange('goldFind')}`);
-    if (item.fireRes) addRow('Fire Resist', `+${item.fireRes}%${affixRange('fireRes')}`);
-    if (item.coldRes) addRow('Cold Resist', `+${item.coldRes}%${affixRange('coldRes')}`);
-    if (item.lightningRes) addRow('Lightning Resist', `+${item.lightningRes}%${affixRange('lightningRes')}`);
-    if (item.poisonRes) addRow('Poison Resist', `+${item.poisonRes}%${affixRange('poisonRes')}`);
-    if (item.allRes) addRow('All Resists', `+${item.allRes}%${affixRange('allRes')}`);
-    if (item.allSkills) addRow('All Skills', `+${item.allSkills}${affixRange('allSkills')}`);
+    if (item.fireDmg) addModRow('Fire Dmg', `+${fmtDmg(item.fireDmg)}${affixRange('fireDmg')}`);
+    if (item.coldDmg) addModRow('Cold Dmg', `+${fmtDmg(item.coldDmg)}${affixRange('coldDmg')}`);
+    if (item.poisonDmg) addModRow('Poison Dmg', `+${fmtDmg(item.poisonDmg)} (${item.poisonDur||2}s)${affixRange('poisonDmg')}`);
+    if (item.lightningDmg) addModRow('Lightning Dmg', `+${fmtDmg(item.lightningDmg)}${affixRange('lightningDmg')}`);
+    if (item.lifesteal) addModRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
+    if (item.manaSteal) addModRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
+    if (item.attackRating) addModRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
+    if (item.skillDmg) addModRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
+    if (item.manaRegen) addModRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
+    if (item.bonusMana) addModRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
+    if (item.ias) addModRow('Increased Attack Speed', `+${item.ias}%${affixRange('ias')}`);
+    if (item.enhancedDefense) addModRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
+    if (item.enhancedDmg) addModRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
+    if (item.str) addModRow('Strength', `+${item.str}${affixRange('str')}`);
+    if (item.vit) addModRow('Vitality', `+${item.vit}${affixRange('vit')}`);
+    if (item.int) addModRow('Intellect', `+${item.int}${affixRange('int')}`);
+    if (item.dex) addModRow('Dexterity', `+${item.dex}${affixRange('dex')}`);
+    if (item.magicFind) addModRow('Magic Find', `+${item.magicFind}%${affixRange('magicFind')}`);
+    if (item.goldFind) addModRow('Gold Find', `+${item.goldFind}%${affixRange('goldFind')}`);
+    if (item.fireRes) addModRow('Fire Resist', `+${item.fireRes}%${affixRange('fireRes')}`);
+    if (item.coldRes) addModRow('Cold Resist', `+${item.coldRes}%${affixRange('coldRes')}`);
+    if (item.lightningRes) addModRow('Lightning Resist', `+${item.lightningRes}%${affixRange('lightningRes')}`);
+    if (item.poisonRes) addModRow('Poison Resist', `+${item.poisonRes}%${affixRange('poisonRes')}`);
+    if (item.allRes) addModRow('All Resists', `+${item.allRes}%${affixRange('allRes')}`);
+    if (item.allSkills) addModRow('All Skills', `+${item.allSkills}${affixRange('allSkills')}`);
     if (item.classSkills) {
       const className = item._classSkillsClass || 'unknown';
-      addRow(className.charAt(0).toUpperCase() + className.slice(1) + ' Skills', `+${item.classSkills}${affixRange('classSkills')}`);
+      addModRow(className.charAt(0).toUpperCase() + className.slice(1) + ' Skills', `+${item.classSkills}${affixRange('classSkills')}`);
     }
     if (item.attrs) {
       Object.keys(item.attrs).forEach(k => {
         const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
-        addRow(names[k] || k, `+${item.attrs[k]}`);
+        addModRow(names[k] || k, `+${item.attrs[k]}`);
       });
     }
     if (item.sockets > 0) {

@@ -552,6 +552,7 @@ body.no-scroll { overflow: hidden; }
   display:flex; justify-content:space-between; gap:12px;
   padding:2px 0; border-bottom:1px solid #1a1a1a;
 }
+.shop-item .shop-item-stats .stat-value.mod { color:#4a90d9; }
 .shop-item .shop-item-actions { display:flex; justify-content:flex-end; align-items:center; padding-top:6px; border-top:1px solid #2a2a2a; }
 .btn-shop-buy {
   display:inline-flex; align-items:center; gap:6px;
@@ -810,6 +811,7 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-stats .stat-row:last-child { border-bottom:none; }
 .inv-item-overlay-stats .stat-label { color:#888; }
 .inv-item-overlay-stats .stat-value { color:#e8e0e8; }
+.inv-item-overlay-stats .stat-value.mod { color:#4a90d9; }
 .inv-item-overlay-compare {
   width:100%;margin-top:8px;padding-top:0;
   display:flex;flex-direction:column;align-items:flex-start;gap:6px;
@@ -827,6 +829,7 @@ body.no-scroll { overflow: hidden; }
 .inv-item-overlay-compare-stats .stat-row:last-child { border-bottom:none; }
 .inv-item-overlay-compare-stats .stat-label { color:#888; }
 .inv-item-overlay-compare-stats .stat-value { color:#e8e0e8; }
+.inv-item-overlay-compare-stats .stat-value.mod { color:#4a90d9; }
 /* Compare bloky zbraní — zřetelné oddělení Main/Off Hand */
 .inv-compare-weapon-block {
   width:100%;border:1px solid #3a3a3a;border-radius:6px;
