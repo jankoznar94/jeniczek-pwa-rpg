@@ -931,10 +931,10 @@ export function initGame() {
       if (value === undefined || value === null || value === '' || value === 0) return;
       rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${value}</span></div>`);
     }
-    // Rollované módy (affixy) — hodnota modrá, odlišená od fixních statů (Damage, Defense...)
+    // Rollované módy (affixy) — hodnota i název modré, odlišené od fixních statů (Damage, Defense...)
     function addModRow(label, value) {
       if (value === undefined || value === null || value === '' || value === 0) return;
-      rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value mod">${value}</span></div>`);
+      rows.push(`<div class="stat-row"><span class="stat-label mod">${label}</span><span class="stat-value mod">${value}</span></div>`);
     }
     // Sestavit mapu rozsahů z affixů — statName → [min, max] (součet všech výskytů)
     const affixRangeMap = {};
