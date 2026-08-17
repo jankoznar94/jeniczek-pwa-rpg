@@ -2283,6 +2283,7 @@ export function initGame() {
       enemyMana: 0, maxEnemyMana: 0,
       _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
       _enemyCastProcessed: false,
+      _enemyCastAfterSwing: null,
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
     };
@@ -2568,15 +2569,10 @@ export function initGame() {
             if (spell) {
               const cost = mb.monsterResource === 'rage' ? (spell.rageCost || 0) : (spell.manaCost || 0);
               if (mb.enemyMana >= cost) {
-                // Začít castovat
-                mb._enemyCasting = true;
-                mb._enemyCastStart = now;
-                mb._enemyCastTime = spell.castTime;
-                mb._enemyCastSpell = spell.id;
-                mb._enemyCastManaCost = cost; // Resource se strhne až po dokončení castu
-                // Reset normálního swing timeru — čekáme na cast
-                mb._enemySwingStart = now;
-                updateMapBattleUI();
+                // Nejdřív provést melee útok (neplýtvat swing), kouzlo začne po něm
+                mb._enemyCastAfterSwing = { id: spell.id, castTime: spell.castTime, cost: cost };
+                mb._enemySwingReady = true;
+                mb._enemyAttackProcessed = false;
               } else {
                 // Málo many — normální melee útok
                 mb._enemySwingReady = true;
@@ -3138,6 +3134,7 @@ export function initGame() {
       mb._enemySwingReady = false;
       // Vizuální feedback
       spawnFloatingText('💨 Dodge!', 'left', '#f1c40f', 32);
+      startEnemyCastAfterSwing(mb);
       return;
     }
 
@@ -3265,12 +3262,32 @@ export function initGame() {
 
     updateMapBattleUI();
 
+    // Pokud mělo monstrum po tomto swingu začít kouzlit — spustit cast
+    startEnemyCastAfterSwing(mb);
+
     // Reset nepřítelova swingu
     mb._enemySwingStart = performance.now();
     mb._enemySwingReady = false;
     mb._enemySwingPct = 0;
 
     if (mb.playerHp <= 0) { endMapBattle(false); return; }
+  }
+
+  // Spustí cast kouzla, které mělo monstrum provést po melee útoku (uloženo v _enemyCastAfterSwing)
+  function startEnemyCastAfterSwing(mb) {
+    const pending = mb._enemyCastAfterSwing;
+    if (!pending) return;
+    mb._enemyCastAfterSwing = null;
+    if (mapBattleState.ended || mb._pendingKill) return;
+    const spell = ENEMY_SPELLS[pending.id];
+    if (!spell) return;
+    mb._enemyCasting = true;
+    mb._enemyCastStart = performance.now();
+    mb._enemyCastTime = pending.castTime;
+    mb._enemyCastSpell = pending.id;
+    mb._enemyCastManaCost = pending.cost; // Resource se strhne až po dokončení castu
+    mb._enemySwingStart = performance.now();
+    updateMapBattleUI();
   }
 
   function updateMapBattleUI() {
