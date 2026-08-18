@@ -2860,6 +2860,12 @@ export function initGame() {
     mb._playerSwingStart = performance.now();
     mb._playerSwingReady = false;
     mb._playerSwingPct = 0;
+    // Střídání rukou: když udeří main hand, offhand se resetuje a začne od nuly
+    if (mb.offhandSwingMs > 0) {
+      mb._offhandSwingStart = performance.now();
+      mb._offhandSwingReady = false;
+      mb._offhandSwingPct = 0;
+    }
 
     // Heroic Strike — scaling podle levelu: 100 + lv*100 % weapon dmg
     let dmgMult = 1.0;
@@ -2937,6 +2943,10 @@ export function initGame() {
     mb._offhandSwingStart = performance.now();
     mb._offhandSwingReady = false;
     mb._offhandSwingPct = 0;
+    // Střídání rukou: když udeří offhand, main hand se resetuje a začne od nuly
+    mb._playerSwingStart = performance.now();
+    mb._playerSwingReady = false;
+    mb._playerSwingPct = 0;
     // Offhand útok — 50% damage hlavní zbraně, zpožděný o 200ms aby se nepřekrýval s main hand textem
     setTimeout(() => {
       if (mapBattleState.ended) return;
