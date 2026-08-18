@@ -21,8 +21,7 @@
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + stun 5s' },
         { id:'battleShout', name:'Battle Shout', icon:'📯', cost:20, cooldown:10, gcd:0.5, desc:'+15% dmg for 30s' },
         { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:20, cooldown:10, gcd:0.5, desc:'+50% armor for 30s' },
-        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0, desc:'150% dmg with both weapons + reset swing timers' },
-        { id:'whirlwind', name:'Whirlwind', icon:'🌀', cost:50, cooldown:12, gcd:0.5, desc:'3× fast attacks with both weapons' }
+        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:35, cooldown:0, gcd:0, desc:'150% dmg with both weapons + reset swing timers' }
       ]
     },
     assassin: {
@@ -87,9 +86,6 @@
             ]},
             { choices: [
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_heroicStrike', requiresLv:1, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% hit rating` },
-            ]},
-            { choices: [
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:5, requires:'barbarian_doubleSwing', requiresLv:1, desc:lv=>`${50+lv*30}% dmg, 3 attacks in a row` },
             ]}
           ]
         },

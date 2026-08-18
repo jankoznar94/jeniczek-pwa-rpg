@@ -169,7 +169,6 @@ export function initGame() {
   const potionSfx = (() => { const a = new Audio('assets/sfx/potion.mp3'); a.volume = 0.70; return a; })();
   const levelupSfx = (() => { const a = new Audio('assets/sfx/levelup.mp3'); a.volume = 0.70; return a; })();
   const clickSfx = (() => { const a = new Audio('assets/sfx/click.mp3'); a.volume = 0.70; return a; })();
-  const whirlwindSfx = (() => { const a = new Audio('assets/sfx/whirlwind.mp3'); a.volume = 0.70; return a; })();
 
   // ===== BACKGROUND MUSIC (MP3) =====
   const bgmAudio = new Audio('bgm.mp3');
@@ -397,7 +396,6 @@ export function initGame() {
       if (spellId === 'battleShout') return getSkillLv('barbarian_battleShout');
       if (spellId === 'thunderClap') return getSkillLv('barbarian_thunderClap');
       if (spellId === 'doubleSwing') return getSkillLv('barbarian_doubleSwing');
-      if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
       if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
       if (spellId === 'skillShout') return getSkillLv('barbarian_skillShout');
       if (spellId === 'thunderBolt') return getSkillLv('barbarian_thunderBolt');
@@ -3944,22 +3942,6 @@ export function initGame() {
       spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/doubleSwing.png');
       // Pokud smrtelná rána, ukončit boj hned
       if (mb.bossHp <= 0) { endMapBattle(true); return; }
-    } else if (spellId === 'whirlwind') {
-      // Whirlwind — scaling podle levelu: (50+lv*30)% dmg, 3 attacks
-      const lv = getSpellLv('whirlwind');
-      const pct = (50 + lv * 30) / 100; // lv1=80%, lv2=110%, lv3=140%...
-      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-      const offhandWeapon = (mb._isDualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? ITEM_MAP[state.hero.equip.shield] : null;
-      const eqAttrs = getEquipAttrs();
-      const baseDmg = 10 + Math.floor(state.hero.level * 3) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * pct));
-      const offDmg = offhandWeapon ? Math.max(1, Math.round((baseDmg + getWeaponDmg(offhandWeapon)) * pct)) : 0;
-      const totalDmg = mainDmg + offDmg;
-      mb.bossHp -= totalDmg;
-      playSFX(whirlwindSfx);
-      // Animace
-      spawnWhirlwindAnim(mb);
-      spawnFloatingText(`🌀 -${totalDmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/whirlwind.png');
     } else if (spellId === 'sinisterStrike') {
       // 150% dmg + 1 combo point
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
@@ -6072,31 +6054,6 @@ export function initGame() {
     if (offhandWeapon) {
       spawnMeleeImpact(mb, false, offhandWeapon.weaponType, Math.PI, offElemColor);
     }
-  }
-
-  function spawnWhirlwindAnim(mb) {
-    // Whirlwind — 3× rychlé útoky za sebou, střídavě MH/OH
-    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-    const hasOffhand = state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
-    const offhandWeapon = hasOffhand ? ITEM_MAP[state.hero.equip.shield] : null;
-    const wt = weapon.weaponType || 'fists';
-    const owt = offhandWeapon ? offhandWeapon.weaponType : null;
-    const elemColor = getWeaponElementColor(weapon);
-    const offElemColor = offhandWeapon ? getWeaponElementColor(offhandWeapon) : null;
-    const sequence = hasOffhand
-      ? [0, Math.PI, 0, Math.PI, 0, Math.PI]
-      : [0, 0, 0];
-    let idx = 0;
-    function nextHit() {
-      if (idx >= sequence.length) return;
-      const angleOff = sequence[idx];
-      const wType = angleOff === 0 ? wt : owt;
-      const color = angleOff === 0 ? elemColor : offElemColor;
-      spawnMeleeImpact(mb, false, wType, angleOff, color);
-      idx++;
-      setTimeout(nextHit, 100);
-    }
-    nextHit();
   }
 
   function spawnShoutRings(mb, color, glowColor) {

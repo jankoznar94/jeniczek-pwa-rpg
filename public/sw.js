@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v135';
-const ASSET_CACHE = 'boss-slayer-assets-v29';
+const ASSET_CACHE = 'boss-slayer-assets-v30';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=132', '/manifest.json'];
 
@@ -75,7 +75,6 @@ const ASSET_FILES = [
   '/assets/sfx/levelup.mp3',
   '/assets/sfx/lightning_spell2.mp3',
   '/assets/sfx/click.mp3',
-  '/assets/sfx/whirlwind.mp3',
   '/assets/sfx/enemy_hit.mp3',
   '/assets/sfx/enemy_hit1.mp3', '/assets/sfx/enemy_hit2.mp3', '/assets/sfx/enemy_hit3.mp3',
   '/assets/sfx/enemy_hit4.mp3', '/assets/sfx/enemy_hit5.mp3', '/assets/sfx/enemy_hit6.mp3',
@@ -91,7 +90,7 @@ const ASSET_FILES = [
   '/assets/spells/icebolt.png', '/assets/spells/frostbolt.png', '/assets/spells/blizzard.png',
   '/assets/spells/lightningBolt.png', '/assets/spells/chainLightning.png', '/assets/spells/thunderStorm.png',
   '/assets/spells/regrowth.png', '/assets/spells/naturesBoon.png', '/assets/spells/revitalize.png',
-  '/assets/spells/whirlwind.png', '/assets/spells/oneHandSpec.png', '/assets/spells/twoHandSpec.png',
+  '/assets/spells/oneHandSpec.png', '/assets/spells/twoHandSpec.png',
   '/assets/spells/speedBoost.png', '/assets/spells/skillShout.png',
   '/assets/spells/poison_bolt.png', '/assets/spells/drain_life.png', '/assets/spells/mana_drain.png',
   '/assets/spells/empower.png', '/assets/spells/shadow_bolt.png', '/assets/spells/heal.png',
