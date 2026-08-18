@@ -2459,9 +2459,10 @@ export function initGame() {
     const offMs = hasOffhand ? getSwingTime(state.hero.equip.shield) : 0;
     // D2 styl dual wield: JEDEN sdílený timer na průměrné rychlosti obou zbraní.
     // Obě ruce útočí na stejném rytmu (střídají se), takže se timery nikdy nerozcházejí.
+    // D2 bonus: dual wield útočí o 15% rychleji (každý střídavý útok = 85% průměru).
     mb._isDualWield = offMs > 0;
     mb._dualWieldTurn = 0;
-    mb.playerSwingMs = offMs > 0 ? Math.round((mainMs + offMs) / 2) : mainMs;
+    mb.playerSwingMs = offMs > 0 ? Math.round((mainMs + offMs) / 2 * 0.85) : mainMs;
     mb.offhandSwingMs = 0; // offhand už nemá vlastní timer — sdílí hlavní
     mb.enemySwingMs = getEnemySwingTime(mb);
     mb._playerSwingStart = performance.now();
@@ -3659,7 +3660,9 @@ export function initGame() {
       let btnClass = 'arena-class-spell-btn';
       if (canUseFinal) btnClass += ' active';
       if (isQueued) btnClass += ' queued';
-      html += `<button class="${btnClass}" onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
+      // Double Swing podporuje hold-to-repeat (držení = opakování, dokud je mana)
+      const holdAttr = spell.id === 'doubleSwing' ? ` data-hold="${spell.id}"` : '';
+      html += `<button class="${btnClass}"${holdAttr} onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
         <img class="spell-icon-img" src="assets/spells/${spell.id}.png" alt="${spell.name}">
         <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
         ${onCooldown ? `<span class="spell-cd-num">${cdRemaining}</span>` : ''}
@@ -3667,6 +3670,51 @@ export function initGame() {
       </button>`;
     });
     container.innerHTML = html;
+    // Hold-to-repeat: delegované pointerdown/up na container (přidá se jen jednou)
+    if (!container._holdBound) {
+      container._holdBound = true;
+      container.addEventListener('pointerdown', (e) => {
+        const btn = e.target.closest('[data-hold]');
+        if (!btn) return;
+        const spellId = btn.getAttribute('data-hold');
+        e.preventDefault();
+        // První provedení hned, pak opakovat dokud držíš a máš manu
+        if (game.castClassSpell(spellId)) {
+          startHoldRepeat(spellId);
+        }
+      });
+      container.addEventListener('pointerup', stopHoldRepeat);
+      container.addEventListener('pointercancel', stopHoldRepeat);
+      container.addEventListener('pointerleave', stopHoldRepeat);
+    }
+  }
+
+  // ===== HOLD-TO-REPEAT (Double Swing) =====
+  // Držení tlačítka = opakované provedení, dokud hráč drží a má manu.
+  // Pustíš nebo dojde mana → zastaví se a rozjede se normální střídání.
+  let _holdRepeatTimer = null;
+  let _holdRepeatSpell = null;
+  function startHoldRepeat(spellId) {
+    stopHoldRepeat();
+    _holdRepeatSpell = spellId;
+    const tick = () => {
+      if (!_holdRepeatSpell) return;
+      const mb = mapBattleState;
+      if (!mb || mb.ended) { stopHoldRepeat(); return; }
+      // Zkusit provést znovu — pokud selže (došla mana / GCD / cooldown), zastavit
+      if (!game.castClassSpell(_holdRepeatSpell)) {
+        stopHoldRepeat();
+        return;
+      }
+      // Double swing se opakuje na rychlosti swingu (85% průměru), ne každých 50ms
+      const interval = mb.playerSwingMs > 0 ? mb.playerSwingMs : 1000;
+      _holdRepeatTimer = setTimeout(tick, interval);
+    };
+    _holdRepeatTimer = setTimeout(tick, 50);
+  }
+  function stopHoldRepeat() {
+    if (_holdRepeatTimer) { clearTimeout(_holdRepeatTimer); _holdRepeatTimer = null; }
+    _holdRepeatSpell = null;
   }
 
   function renderDebuffs() {
@@ -3751,21 +3799,21 @@ export function initGame() {
 
   function castClassSpell(spellId) {
     const cls = CLASSES[state.heroClass];
-    if (!cls) return;
+    if (!cls) return false;
     const spell = cls.spells.find(s => s.id === spellId);
-    if (!spell) return;
+    if (!spell) return false;
     const mb = mapBattleState;
-    if (!mb || mb.ended) return;
+    if (!mb || mb.ended) return false;
 
     // GCD check
-    if (state._gcdTimer > 0) return;
+    if (state._gcdTimer > 0) return false;
     // Už kouzlíš — blokovat nové kouzlo
-    if (mb._playerCasting) return;
+    if (mb._playerCasting) return false;
     // Resource check (mana — všechny classy, D2 styl)
     const resourceKey = 'mana';
-    if ((state[resourceKey] || 0) < spell.cost) return;
+    if ((state[resourceKey] || 0) < spell.cost) return false;
     // Per-spell cooldown check
-    if (_sessionSpellCooldowns[spellId] > 0) return;
+    if (_sessionSpellCooldowns[spellId] > 0) return false;
 
     // Odečíst resource
     state[resourceKey] = Math.max(0, (state[resourceKey] || 0) - spell.cost);
@@ -3994,12 +4042,12 @@ export function initGame() {
       state.comboPoints = 0; // spotřebovat combo pointy
       // Buff ikona
       _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', iconImg:'speedBoost.png', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
-      // Přepočítat swing timer (dual wield: průměr obou zbraní)
+      // Přepočítat swing timer (dual wield: průměr obou zbraní × 0.85 D2 bonus)
       const cls2 = CLASSES[state.heroClass];
       const dw2 = cls2 && cls2.dualWield;
       const m2 = getSwingTime(state.hero.equip.weapon);
       const o2 = (dw2 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? getSwingTime(state.hero.equip.shield) : 0;
-      mb.playerSwingMs = o2 > 0 ? Math.round((m2 + o2) / 2) : m2;
+      mb.playerSwingMs = o2 > 0 ? Math.round((m2 + o2) / 2 * 0.85) : m2;
       spawnFloatingText(`⚡ Speed +${duration}s`, 'left', '#f1c40f', 32);
     } else if (spellId === 'poisonExplosion') {
       const cp = state.comboPoints || 0;
@@ -4037,6 +4085,7 @@ export function initGame() {
 
     updateMapBattleUI();
     saveGame();
+    return true;
   }
 
   function executePlayerSpell(spellId) {
