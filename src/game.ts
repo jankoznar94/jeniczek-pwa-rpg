@@ -2776,39 +2776,59 @@ export function initGame() {
   function updateSwingRings(mb) {
     // Pokud bitva skončila, neaktualizovat — cleanupTimers už obstaral zešednutí
     if (mb.ended || mb._pendingKill) return;
-    // Hráčův ring (velký, žlutý)
+    // Hráčův ring (velký, žlutý) + offhand ring (tmavě žlutý) — při dual wieldu běží JEN JEDEN,
+    // střídavě podle aktivní ruky (main → offhand → main...).
     const playerCircle = document.getElementById('mbPlayerTimerCircle');
-    if (playerCircle) {
-      playerCircle.style.opacity = '1';
-      if (mb._playerSwingReady) {
-        playerCircle.style.strokeDashoffset = '0';
-        playerCircle.style.stroke = '#2ecc71'; // zelená = připraven
-      } else if (mb._playerCasting) {
-        const offset = Math.round(691 * (1 - mb._playerSwingPct));
-        playerCircle.style.strokeDashoffset = offset;
-        playerCircle.style.stroke = '#60a5fa'; // světle modrá = castování
-      } else {
-        const offset = Math.round(691 * (1 - mb._playerSwingPct));
-        playerCircle.style.strokeDashoffset = offset;
-        playerCircle.style.stroke = '#f1c40f';
-      }
-    }
-    // Offhand ring (větší, světlejší — nad hlavním). Při dual wieldu sdílí hlavní timer (střídá se).
     const offhandCircle = document.getElementById('mbOffhandTimerCircle');
-    if (offhandCircle) {
-      if (mb._isDualWield) {
-        offhandCircle.style.opacity = '0.5';
+    if (mb._isDualWield) {
+      // Aktivní ruka: _dualWieldTurn === 0 → main, 1 → offhand
+      const isMain = mb._dualWieldTurn === 0;
+      // Hlavní ring
+      if (playerCircle) {
+        playerCircle.style.opacity = isMain ? '1' : '0';
+        if (mb._playerSwingReady) {
+          playerCircle.style.strokeDashoffset = '0';
+          playerCircle.style.stroke = '#2ecc71';
+        } else if (mb._playerCasting) {
+          const offset = Math.round(691 * (1 - mb._playerSwingPct));
+          playerCircle.style.strokeDashoffset = offset;
+          playerCircle.style.stroke = '#60a5fa';
+        } else {
+          const offset = Math.round(691 * (1 - mb._playerSwingPct));
+          playerCircle.style.strokeDashoffset = offset;
+          playerCircle.style.stroke = isMain ? '#f1c40f' : '#c9a227'; // main žlutá, offhand tmavě žlutá
+        }
+      }
+      // Offhand ring
+      if (offhandCircle) {
+        offhandCircle.style.opacity = isMain ? '0' : '1';
         if (mb._playerSwingReady) {
           offhandCircle.style.strokeDashoffset = '0';
           offhandCircle.style.stroke = '#2ecc71';
         } else {
           const offset = Math.round(754 * (1 - mb._playerSwingPct));
           offhandCircle.style.strokeDashoffset = offset;
-          offhandCircle.style.stroke = '#f1c40f';
+          offhandCircle.style.stroke = '#c9a227'; // tmavě žlutá
         }
-      } else {
-        offhandCircle.style.opacity = '0';
       }
+    } else {
+      // Single wield — jen hlavní ring
+      if (playerCircle) {
+        playerCircle.style.opacity = '1';
+        if (mb._playerSwingReady) {
+          playerCircle.style.strokeDashoffset = '0';
+          playerCircle.style.stroke = '#2ecc71';
+        } else if (mb._playerCasting) {
+          const offset = Math.round(691 * (1 - mb._playerSwingPct));
+          playerCircle.style.strokeDashoffset = offset;
+          playerCircle.style.stroke = '#60a5fa';
+        } else {
+          const offset = Math.round(691 * (1 - mb._playerSwingPct));
+          playerCircle.style.strokeDashoffset = offset;
+          playerCircle.style.stroke = '#f1c40f';
+        }
+      }
+      if (offhandCircle) offhandCircle.style.opacity = '0';
     }
     // Nepřítelův ring (šedý / modrý při castu a slowu / tmavě šedý při stunu)
     const enemyCircle = document.getElementById('mbEnemyTimerCircle');
