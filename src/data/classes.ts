@@ -4,21 +4,20 @@
   export const CLASSES = {
     barbarian: {
       id:'barbarian', name:'Barbarian', icon:'🪓',
-      resource:'rage', resourceName:'💢 Rage', maxResource:100, startResource:0,
-      resourceRegen:0,
-      desc:'Builds rage from damage taken and dealt.',
+      resource:'mana', resourceName:'💧 Mana', maxResource:100, startResource:100,
+      resourceRegen:0.3,
+      desc:'Mana scales with INT and gear. Strong physical attacks and battle cries.',
       allowedWeapons:['blade','fists','blunt','axe','claws'],
       allowedShield:true,
       allowedOffhand:true,
       dualWield:true,
       primaryAttr:'str',
       talentSchool:'physical',
-      baseHp:40, baseDmg:5, baseMana:0,
+      baseHp:40, baseDmg:5, baseMana:10, manaPerLevel:1,
       attrBonus:{str:20, vit:25, dex:15, int:10},
       spells: [
         { id:'heroicStrike', name:'Heroic Strike', icon:'⚡', cost:20, cooldown:0, gcd:0.5, desc:'150% dmg on next swing' },
         { id:'thunderClap', name:'Thunder Clap', icon:'🌊', cost:25, cooldown:15, gcd:0.5, desc:'30% dmg + slow enemy 10% for 10s' },
-        { id:'bloodrage', name:'Bloodrage', icon:'🩸', cost:0, cooldown:30, gcd:0.5, desc:'-15% HP, +100% Rage gain for 10s' },
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:40, cooldown:30, gcd:0.5, desc:'120% dmg + stun 5s' },
         { id:'battleShout', name:'Battle Shout', icon:'📯', cost:20, cooldown:10, gcd:0.5, desc:'+15% dmg for 30s' },
         { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:20, cooldown:10, gcd:0.5, desc:'+50% armor for 30s' },
@@ -28,16 +27,16 @@
     },
     assassin: {
       id:'assassin', name:'Assassin', icon:'🗡️',
-      resource:'energy', resourceName:'⚡ Energy', maxResource:100, startResource:100,
-      resourceRegen:10,
-      desc:'Energy regenerates over time. Fast precise attacks.',
+      resource:'mana', resourceName:'💧 Mana', maxResource:100, startResource:100,
+      resourceRegen:0.3,
+      desc:'Mana scales with INT and gear. Fast precise attacks.',
       allowedWeapons:['blade','fists','claws'],
       allowedShield:false,
       allowedOffhand:false,
       dualWield:true,
       primaryAttr:'dex',
       talentSchool:'physical',
-      baseHp:30, baseDmg:4, baseMana:0,
+      baseHp:30, baseDmg:4, baseMana:25, manaPerLevel:1.5,
       attrBonus:{str:15, vit:20, dex:25, int:10},
       spells: [
         { id:'sinisterStrike', name:'Sinister Strike', icon:'🗡️', cost:40, cooldown:0, gcd:0.5, desc:'150% dmg + 1 combo point' },
@@ -51,7 +50,7 @@
     mage: {
       id:'mage', name:'Mage', icon:'🪄',
       resource:'mana', resourceName:'💧 Mana', maxResource:30, startResource:30,
-      resourceRegen:1,
+      resourceRegen:0.3,
       desc:'Mana scales with INT and gear. Powerful ranged spells.',
       allowedWeapons:['staff','fists'],
       allowedShield:true,
@@ -59,7 +58,7 @@
       dualWield:false,
       primaryAttr:'int',
       talentSchool:'fire',
-      baseHp:25, baseDmg:6, baseMana:30,
+      baseHp:25, baseDmg:6, baseMana:35, manaPerLevel:2,
       attrBonus:{str:15, vit:15, dex:15, int:25},
       spells: [
         { id:'firebolt', name:'Firebolt', icon:'🔥', cost:20, cooldown:0, gcd:0.5, castTime:1.5, desc:'Fire: medium dmg, medium spread' },
@@ -99,7 +98,6 @@
             { choices: [
               { k:'battleShout', name:'Battle Shout', icon:'📯', iconImg:'battleShout.png', maxLv:5, desc:lv=>`+${5+lv*5}% dmg for 30s` },
               { k:'defensiveShout', name:'Defensive Shout', icon:'🛡️', iconImg:'defensiveShout.png', maxLv:5, desc:lv=>`+${[50,75,100,125,150][lv-1]}% armor for 30s` },
-              { k:'bloodrage', name:'Bloodrage', icon:'🩸', iconImg:'bloodrage.png', maxLv:5, desc:lv=>`+${10+lv*10}% dmg, +${10+lv*5}% rage gain for 10s` },
             ]}
           ]
         },

@@ -396,7 +396,6 @@ export function initGame() {
       if (spellId === 'heroicStrike') return getSkillLv('barbarian_heroicStrike');
       if (spellId === 'battleShout') return getSkillLv('barbarian_battleShout');
       if (spellId === 'thunderClap') return getSkillLv('barbarian_thunderClap');
-      if (spellId === 'bloodrage') return getSkillLv('barbarian_bloodrage');
       if (spellId === 'doubleSwing') return getSkillLv('barbarian_doubleSwing');
       if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
       if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
@@ -1261,10 +1260,6 @@ export function initGame() {
       townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
       townPortalCount: 0, // počet town portal scrollů (stack)
       _waypointPending: null, // {actId, areaId} — čekající waypoint pro conflict modal
-      rage:0, maxRage:100, // Barbar resource
-      rageMultiplier:1, // Bloodrage buff
-      _bloodrageTimer:0,
-      energy:100, maxEnergy:100, // Assassin resource
       comboPoints:0, // Assassin combo points (0-5)
       _dodgeBuffTimer:0, // Evasion buff (ticky)
       _speedBoostTimer:0, // Speed boost (ticky)
@@ -2078,16 +2073,12 @@ export function initGame() {
     _playerDebuffs = {};
     _sessionSpellCooldowns = {};
     state.comboPoints = 0;
-    state.energy = state.maxEnergy || 100;
-    state.rage = 0;
     state.maxMana = getHeroMaxMana();
     state.mana = state.maxMana;
     state._dodgeBuffTimer = 0;
     state._speedBoostTimer = 0;
     state._speedBoostPct = 0;
     state._gcdTimer = 0;
-    state.rageMultiplier = 1;
-    state._bloodrageTimer = 0;
     state.battleShoutTimer = 0;
     state.battleShoutDmgPct = 0;
     state.defensiveShoutTimer = 0;
@@ -2699,26 +2690,11 @@ export function initGame() {
       state.thunderClapTimer--;
       if (state.thunderClapTimer <= 0) state.thunderClapSlowPct = 0;
     }
-    // Bloodrage — tick řeší _sessionBuffs
-    if (state._bloodrageTimer > 0) {
-      state._bloodrageTimer--;
-      if (state._bloodrageTimer <= 0) state.rageMultiplier = 1;
-    }
-    // Energy regen (assassin) — 10/s = 10/60 za tick při 60fps
-    if (state.heroClass === 'assassin') {
-      const cls = CLASSES.assassin;
-      const regen = (cls.resourceRegen || 0) / 60; // 10/s → ~0.167/tick
-      if (regen > 0 && (state.energy || 0) < (state.maxEnergy || 100)) {
-        state.energy = Math.min(state.maxEnergy || 100, (state.energy || 0) + regen);
-      }
-    }
-    // Mana regen (mage) — zanedbatelná, 0.2/s + 0.1 per 10 INT
-    if (state.heroClass === 'mage') {
-      const intBonus = (state.hero.attrInt || 0) * 0.01;
-      const regen = 0.2 / 60 + intBonus / 60;
-      if (regen > 0 && (state.mana || 0) < (state.maxMana || 100)) {
-        state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + regen);
-      }
+    // Mana regen (všechny classy) — 0.3/s + 0.1 per 10 INT (D2 styl, pomalá regen)
+    const intBonus = (state.hero.attrInt || 0) * 0.01;
+    const regen = 0.3 / 60 + intBonus / 60;
+    if (regen > 0 && (state.mana || 0) < (state.maxMana || 100)) {
+      state.mana = Math.min(state.maxMana || 100, (state.mana || 0) + regen);
     }
     // Dodge buff (Evasion)
     if (state._dodgeBuffTimer > 0) {
@@ -2854,12 +2830,6 @@ export function initGame() {
     mb._playerSwingStart = performance.now();
     mb._playerSwingReady = false;
     mb._playerSwingPct = 0;
-
-    // Rage gain za útok (barbar)
-    if (state.heroClass === 'barbarian') {
-      const rageGain = Math.round(8 * state.rageMultiplier);
-      state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
-    }
 
     // Heroic Strike — scaling podle levelu: 100 + lv*100 % weapon dmg
     let dmgMult = 1.0;
@@ -3108,9 +3078,6 @@ export function initGame() {
         }
         if (amount > 0) {
           mb.playerHp -= amount;
-          if (state.heroClass === 'barbarian') {
-            state.rage = Math.min(state.maxRage, (state.rage || 0) + Math.round(3 * state.rageMultiplier));
-          }
         }
       }
 
@@ -3204,11 +3171,6 @@ export function initGame() {
 
     if (!blocked) {
       mb.playerHp -= amount;
-      // Rage gain za utržené poškození (barbar)
-      if (state.heroClass === 'barbarian') {
-        const rageGain = Math.round(3 * state.rageMultiplier);
-        state.rage = Math.min(state.maxRage, (state.rage || 0) + rageGain);
-      }
       // Monster rage gain za útok na hráče (Troll, Medvěd)
       if (mb.monsterResource === 'rage') {
         mb.enemyMana = Math.min(mb.maxEnemyMana, (mb.enemyMana || 0) + 5);
@@ -3349,29 +3311,25 @@ export function initGame() {
       const fill = $('mbPlayerArenaHpFill');
       if (fill) fill.style.width = Math.max(0, pHpPct) + '%';
     }
-    // Stamina bar — schovat, nahrazeno rage/mana/energy
+    // Stamina bar — schovat, nahrazeno mana barem
     const arenaStamina = $('mbPlayerArenaStamina');
     if (arenaStamina) arenaStamina.classList.add('hidden');
-    // Rage bar (barbar)
-    const rageBar = $('mbPlayerArenaRage');
-    if (rageBar) {
-      if (state.heroClass === 'barbarian') {
-        rageBar.classList.remove('hidden');
-        const span = rageBar.querySelector('span');
-        if (span) span.textContent = `${state.rage || 0}/${state.maxRage || 100}`;
-        const fill = $('mbPlayerArenaRageFill');
-        if (fill) fill.style.width = Math.max(0, Math.round(((state.rage || 0) / (state.maxRage || 100)) * 100)) + '%';
-      } else {
-        rageBar.classList.add('hidden');
-      }
+    // Mana bar (všechny classy — D2 styl)
+    const manaBar = $('mbPlayerArenaMana');
+    if (manaBar) {
+      manaBar.classList.remove('hidden');
+      const span = manaBar.querySelector('span');
+      if (span) span.textContent = `${Math.round(state.mana || 0)}/${state.maxMana || 100}`;
+      const fill = $('mbPlayerArenaManaFill');
+      if (fill) fill.style.width = Math.max(0, Math.round(((state.mana || 0) / (state.maxMana || 100)) * 100)) + '%';
     }
     const emoji = mb.isBoss ? mb.loc.boss.face : mb.monsterFace;
     // Enemy resource bar (mana/rage/energy)
-    const manaBar = $('mbEnemyManaBar');
+    const manaBar2 = $('mbEnemyManaBar');
     const manaFill = $('mbEnemyManaFill');
-    if (manaBar && manaFill) {
+    if (manaBar2 && manaFill) {
       if (mb.maxEnemyMana > 0 && !mb.isBoss) {
-        manaBar.classList.remove('hidden');
+        manaBar2.classList.remove('hidden');
         const mpPct = Math.round((mb.enemyMana / mb.maxEnemyMana) * 100);
         // Kruhový mana ring — obvod r=92 je ~578
         const MANA_CIRC = 578;
@@ -3381,7 +3339,7 @@ export function initGame() {
         else if (mb.monsterResource === 'energy') manaFill.style.stroke = '#f1c40f';
         else manaFill.style.stroke = '#4a7dff';
       } else {
-        manaBar.classList.add('hidden');
+        manaBar2.classList.add('hidden');
       }
     }
     // D4 heat indicator
@@ -3597,9 +3555,7 @@ export function initGame() {
       // Znovu vykreslit status
       const hpPct = Math.round(h.hp / h.maxHp * 100);
       let resourceHtml = '';
-      if (state.rage !== undefined) resourceHtml = `Rage: <span class="result-status-resource">${Math.round(state.rage)}</span>`;
-      else if (state.energy !== undefined) resourceHtml = `Energy: <span class="result-status-resource">${Math.round(state.energy)}</span>`;
-      else if (state.mana !== undefined) resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
+      resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
       let buffsHtml = '';
       Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = b.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
       Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = d.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
@@ -3632,21 +3588,8 @@ export function initGame() {
     // V auto-combatu není potřeba — dodge tlačítko odstraněno
   }
 
-  // ===== RESOURCE BARS (energy, combo) =====
+  // ===== RESOURCE BARS (mana, combo) =====
   function updateResourceBars() {
-    // Energy bar (assassin)
-    const energyBar = $('mbPlayerArenaEnergy');
-    if (energyBar) {
-      if (state.heroClass === 'assassin') {
-        energyBar.classList.remove('hidden');
-        const span = energyBar.querySelector('span');
-        if (span) span.textContent = `⚡ ${Math.round(state.energy || 0)}/${state.maxEnergy || 100}`;
-        const fill = $('mbPlayerArenaEnergyFill');
-        if (fill) fill.style.width = Math.max(0, Math.round(((state.energy || 0) / (state.maxEnergy || 100)) * 100)) + '%';
-      } else {
-        energyBar.classList.add('hidden');
-      }
-    }
     // Combo point indikátor (assassin)
     const comboEl = document.getElementById('mbComboIndicator');
     if (comboEl) {
@@ -3662,18 +3605,14 @@ export function initGame() {
         comboEl.classList.add('hidden');
       }
     }
-    // Mana bar (mage)
+    // Mana bar (všechny classy — D2 styl)
     const manaBar = $('mbPlayerArenaMana');
     if (manaBar) {
-      if (state.heroClass === 'mage') {
-        manaBar.classList.remove('hidden');
-        const span = manaBar.querySelector('span');
-        if (span) span.textContent = `${Math.round(state.mana || 0)}/${state.maxMana || 100}`;
-        const fill = $('mbPlayerArenaManaFill');
-        if (fill) fill.style.width = Math.max(0, Math.round(((state.mana || 0) / (state.maxMana || 100)) * 100)) + '%';
-      } else {
-        manaBar.classList.add('hidden');
-      }
+      manaBar.classList.remove('hidden');
+      const span = manaBar.querySelector('span');
+      if (span) span.textContent = `${Math.round(state.mana || 0)}/${state.maxMana || 100}`;
+      const fill = $('mbPlayerArenaManaFill');
+      if (fill) fill.style.width = Math.max(0, Math.round(((state.mana || 0) / (state.maxMana || 100)) * 100)) + '%';
     }
   }
 
@@ -3693,10 +3632,8 @@ export function initGame() {
     investedSpells.forEach(spell => {
       const onGcd = state._gcdTimer > 0;
       const clsDef = CLASSES[state.heroClass];
-      let resourceKey, maxResource;
-      if (clsDef.resource === 'energy') { resourceKey = 'energy'; maxResource = state.maxEnergy || 100; }
-      else if (clsDef.resource === 'mana') { resourceKey = 'mana'; maxResource = state.maxMana || 100; }
-      else { resourceKey = 'rage'; maxResource = state.maxRage || 100; }
+      const resourceKey = 'mana';
+      const maxResource = state.maxMana || 100;
       const hasResource = (state[resourceKey] || 0) >= spell.cost;
       const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
       const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
@@ -3817,11 +3754,8 @@ export function initGame() {
     if (state._gcdTimer > 0) return;
     // Už kouzlíš — blokovat nové kouzlo
     if (mb._playerCasting) return;
-    // Resource check (rage, energy nebo mana)
-    let resourceKey;
-    if (cls.resource === 'energy') resourceKey = 'energy';
-    else if (cls.resource === 'mana') resourceKey = 'mana';
-    else resourceKey = 'rage';
+    // Resource check (mana — všechny classy, D2 styl)
+    const resourceKey = 'mana';
     if ((state[resourceKey] || 0) < spell.cost) return;
     // Per-spell cooldown check
     if (_sessionSpellCooldowns[spellId] > 0) return;
@@ -3886,18 +3820,6 @@ export function initGame() {
       spawnThunderClapAnim(mb);
       playSFX(thunderClapSfx);
       spawnFloatingText(`🌊 -${finalDmg}`, 'right', '#f39c12', 32, 2000, 'assets/spells/thunderClap.png');
-    } else if (spellId === 'bloodrage') {
-      // -15% HP, +100% zisk Rage na 10s
-      const hpCost = Math.round(mb.playerHp * 0.15);
-      mb.playerHp = Math.max(1, mb.playerHp - hpCost);
-      state.rageMultiplier = 2;
-      state._bloodrageTimer = 600; // 10s
-      // Buff ikona hráče
-      _sessionBuffs['bloodrage'] = { icon: '🩸', name: 'Bloodrage', iconImg:'bloodrage.png', ticks: 600, maxTicks: 600, onExpire: function() { state.rageMultiplier = 1; } };
-      // Animace
-      spawnBloodrageAnim(mb);
-      playSFX(shoutSfx);
-      spawnFloatingText(`🩸 -${hpCost} HP`, 'right', '#e74c3c', 32);
     } else if (spellId === 'thunderBolt') {
       const lv = getSpellLv('thunderBolt');
       const pct = 80 + lv * 20; // 100% @ lv1, 120% @ lv2, ... 180% @ lv5
@@ -6223,50 +6145,6 @@ export function initGame() {
     requestAnimationFrame(animate);
   }
 
-  function spawnBloodrageAnim(mb) {
-    // Rudý expandující kruh na canvasu, jako shout rings ale jen jeden
-    const arena = $('mbArena');
-    if (!arena) return;
-    const rect = arena.getBoundingClientRect();
-    const canvas = $('mbProjectileCanvasOffhand');
-    if (!canvas) return;
-    canvas.width = rect.width;
-    canvas.height = rect.height;
-    const ctx = canvas.getContext('2d');
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-    const startTime = performance.now();
-    const duration = 600;
-
-    function animate(ts) {
-      const elapsed = ts - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const r = 10 + progress * 200;
-      const alpha = 1 - progress;
-      ctx.save();
-      ctx.shadowColor = 'rgba(231,76,60,0.8)';
-      ctx.shadowBlur = 30;
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(231,76,60,${alpha})`;
-      ctx.lineWidth = 6;
-      ctx.stroke();
-      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
-      grad.addColorStop(0, `rgba(231,76,60,${alpha * 0.4})`);
-      grad.addColorStop(0.5, `rgba(231,76,60,${alpha * 0.15})`);
-      grad.addColorStop(1, 'rgba(231,76,60,0)');
-      ctx.beginPath();
-      ctx.arc(cx, cy, r, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-      ctx.restore();
-      if (progress < 1) requestAnimationFrame(animate);
-      else ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    requestAnimationFrame(animate);
-  }
-
   function spawnThunderClapAnim(mb) {
     // Výrazný bleskový efekt — bílý záblesk + tlusté modré praskliny přes celou arénu
     const arena = $('mbArena');
@@ -7959,19 +7837,13 @@ export function initGame() {
       const hpPct = Math.round(h.hp / h.maxHp * 100);
       const hpColor = hpPct > 50 ? '#e74c3c' : hpPct > 20 ? '#e67e22' : '#ff4444';
       let resourceHtml = '';
-      if (state.rage !== undefined) {
-        resourceHtml = `Rage: <span class="result-status-resource">${Math.round(state.rage)}</span>`;
-      } else if (state.energy !== undefined) {
-        resourceHtml = `Energy: <span class="result-status-resource">${Math.round(state.energy)}</span>`;
-      } else if (state.mana !== undefined) {
-        resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
-      }
+      resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
       // Buffy
       let buffsHtml = '';
       Object.keys(_sessionBuffs).forEach(k => {
         const b = _sessionBuffs[k];
         if (b && b.ticks > 0) {
-          const hasImg = k === 'bloodrage' || k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout';
+          const hasImg = k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout';
           buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`;
         }
       });
@@ -8442,7 +8314,7 @@ export function initGame() {
     if (subtitle) subtitle.textContent = `Kouzla povolání: ${cls.name}`;
     let html = '';
     cls.spells.forEach(spell => {
-      const costKey = cls.resource === 'energy' ? '⚡ Energy' : '💢 Rage';
+      const costKey = '💧 Mana';
       const cdText = spell.cooldown > 0 ? `${spell.cooldown}s` : '—';
       const gcdText = spell.gcd > 0 ? `${spell.gcd}s` : '—';
       html += `<div class="spellbook-card">
@@ -8774,6 +8646,7 @@ export function initGame() {
     const h = state.hero;
     const cls = CLASSES[state.heroClass];
     const baseMana = cls ? cls.baseMana : 50;
+    const manaPerLevel = cls ? (cls.manaPerLevel || 0) : 0;
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const armor = ITEM_MAP[h.equip.armor];
     const helmet = ITEM_MAP[h.equip.helmet];
@@ -8785,7 +8658,8 @@ export function initGame() {
     const gloves = ITEM_MAP[h.equip.gloves];
     const boots = ITEM_MAP[h.equip.boots];
     const bonus = (weapon.bonusMana||0) + (armor ? armor.bonusMana||0 : 0) + (helmet ? helmet.bonusMana||0 : 0) + (shield ? shield.bonusMana||0 : 0) + (ring1 ? ring1.bonusMana||0 : 0) + (ring2 ? ring2.bonusMana||0 : 0) + (amulet ? amulet.bonusMana||0 : 0) + (belt ? belt.bonusMana||0 : 0) + (gloves ? gloves.bonusMana||0 : 0) + (boots ? boots.bonusMana||0 : 0);
-    return Math.max(10, baseMana + ((h.attrInt||0) + getEquipAttrs().int) * 5 + bonus);
+    // D2 styl: baseMana + level*manaPerLevel + INT*2 + gear bonus
+    return Math.max(10, baseMana + Math.floor((h.level - 1) * manaPerLevel) + ((h.attrInt||0) + getEquipAttrs().int) * 2 + bonus);
   }
   function renderHero() {
     const h = state.hero;
@@ -10472,10 +10346,6 @@ export function initGame() {
     state.hero.maxMana = getHeroMaxMana();
     if (state.hero.hp === undefined) state.hero.hp = state.hero.maxHp;
     if (state.heroClass === undefined) state.heroClass = null;
-    // Migrace: staré savy (bez resource polí) musí projít class selectem
-    if (state.heroClass && state.rage === undefined && state.energy === undefined) {
-      state.heroClass = null;
-    }
     // Migrace: staré savy bez portrétu — nastavit podle classy
     if (state.heroClass && (!state.hero.face || state.hero.face === 'hero')) {
       const classFaces = { barbarian:'hero_barbarian_m', assassin:'hero_rogue_m', mage:'hero_mage_m' };

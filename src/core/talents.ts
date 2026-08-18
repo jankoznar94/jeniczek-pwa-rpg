@@ -24,7 +24,6 @@ export function getSpellLv(state: any, spellId: string): number {
     if (spellId === 'heroicStrike') return getSkillLv(state, 'barbarian_heroicStrike');
     if (spellId === 'battleShout') return getSkillLv(state, 'barbarian_battleShout');
     if (spellId === 'thunderClap') return getSkillLv(state, 'barbarian_thunderClap');
-    if (spellId === 'bloodrage') return getSkillLv(state, 'barbarian_bloodrage');
     if (spellId === 'doubleSwing') return getSkillLv(state, 'barbarian_doubleSwing');
     if (spellId === 'whirlwind') return getSkillLv(state, 'barbarian_whirlwind');
     if (spellId === 'defensiveShout') return getSkillLv(state, 'barbarian_defensiveShout');
