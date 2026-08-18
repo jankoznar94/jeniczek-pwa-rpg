@@ -433,6 +433,16 @@ export function initGame() {
     }
     return 0;
   }
+  // Skutečná cena kouzla v maně. Double Swing: cost klesá s levelem talentu
+  // (lvl1=2, lvl2=1.5, lvl3=1.0, lvl4=0.5, lvl5=0). Ostatní kouzla: base cost.
+  function getSpellCost(spellId, baseCost) {
+    if (spellId === 'doubleSwing') {
+      const lv = getSpellLv('doubleSwing');
+      const costs = [2, 1.5, 1.0, 0.5, 0];
+      return costs[Math.min(Math.max(lv, 1), 5) - 1];
+    }
+    return baseCost;
+  }
   function getWeaponType() {
     const w = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
     return w.weaponType || 'fists';
@@ -3650,7 +3660,8 @@ export function initGame() {
       const clsDef = CLASSES[state.heroClass];
       const resourceKey = 'mana';
       const maxResource = state.maxMana || 100;
-      const hasResource = (state[resourceKey] || 0) >= spell.cost;
+      const spellCost = getSpellCost(spell.id, spell.cost);
+      const hasResource = (state[resourceKey] || 0) >= spellCost;
       const onCooldown = _sessionSpellCooldowns[spell.id] > 0;
       const cdRemaining = onCooldown ? Math.ceil(_sessionSpellCooldowns[spell.id] / 60) : 0;
       const canUse = hasResource && !onGcd && !onCooldown;
@@ -3672,7 +3683,7 @@ export function initGame() {
       const holdAttr = spell.id === 'doubleSwing' ? ` data-hold="${spell.id}"` : '';
       html += `<button class="${btnClass}"${holdAttr} onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
         <img class="spell-icon-img" src="assets/spells/${spell.id}.png" alt="${spell.name}">
-        <span class="spell-cost">${spell.cost > 0 ? spell.cost : ''}</span>
+        <span class="spell-cost">${spellCost > 0 ? spellCost : ''}</span>
         ${onCooldown ? `<span class="spell-cd-num">${cdRemaining}</span>` : ''}
         ${gcdActive ? `<div class="spell-gcd-overlay" style="background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) ${gcdDeg}deg, transparent ${gcdDeg}deg, transparent 360deg)"></div>` : ''}
       </button>`;
@@ -3694,6 +3705,10 @@ export function initGame() {
       container.addEventListener('pointerup', stopHoldRepeat);
       container.addEventListener('pointercancel', stopHoldRepeat);
       container.addEventListener('pointerleave', stopHoldRepeat);
+      // Zabránit kontextové nabídce prohlížeče při držení (dlouhý stisk / pravý klik)
+      container.addEventListener('contextmenu', (e) => {
+        if (e.target.closest('[data-hold]')) e.preventDefault();
+      });
     }
   }
 
@@ -3819,12 +3834,13 @@ export function initGame() {
     if (mb._playerCasting) return false;
     // Resource check (mana — všechny classy, D2 styl)
     const resourceKey = 'mana';
-    if ((state[resourceKey] || 0) < spell.cost) return false;
+    const spellCost = getSpellCost(spellId, spell.cost);
+    if ((state[resourceKey] || 0) < spellCost) return false;
     // Per-spell cooldown check
     if (_sessionSpellCooldowns[spellId] > 0) return false;
 
     // Odečíst resource
-    state[resourceKey] = Math.max(0, (state[resourceKey] || 0) - spell.cost);
+    state[resourceKey] = Math.max(0, (state[resourceKey] || 0) - spellCost);
     // Nastavit GCD (0.5s = ~30 ticků při 60fps)
     state._gcdTimer = Math.round(spell.gcd * 60);
     // Nastavit per-spell cooldown (session persistent)
@@ -8347,7 +8363,7 @@ export function initGame() {
           <div class="spellbook-name">${spell.name}</div>
           <div class="spellbook-desc">${spell.desc}</div>
           <div class="spellbook-stats">
-            <span>${costKey}: ${spell.cost}</span>
+            <span>${costKey}: ${getSpellCost(spell.id, spell.cost)}</span>
             <span>⏱️ CD: ${cdText}</span>
             <span>⚡ GCD: ${gcdText}</span>
             ${spell.needsCombo ? '<span>🔗 Combo: ✅</span>' : ''}
