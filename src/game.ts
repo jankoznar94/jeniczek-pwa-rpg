@@ -2469,16 +2469,18 @@ export function initGame() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
-    // Inicializovat swing timery — DVA nezávislé timery (main + offhand), každý s vlastní rychlostí.
-    // Každá zbraň útočí, když je její timer ready — hráč vidí, která zbraň zrovna útočí.
+    // Inicializovat swing timery — DVA timery (main + offhand), oba na PRŮMĚRNÉ rychlosti.
+    // D2 styl: obě ruce útočí na stejném rytmu (průměr obou zbraní) a střídají se.
+    // D2 bonus: dual wield útočí o 15% rychleji (průměr × 0.85).
     const cls = CLASSES[state.heroClass];
     const isDualWield = cls && cls.dualWield;
     const mainMs = getSwingTime(state.hero.equip.weapon);
     const hasOffhand = isDualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
     const offMs = hasOffhand ? getSwingTime(state.hero.equip.shield) : 0;
     mb._isDualWield = offMs > 0;
-    mb.playerSwingMs = mainMs;
-    mb.offhandSwingMs = offMs; // offhand má vlastní nezávislý timer
+    const avgMs = offMs > 0 ? Math.round((mainMs + offMs) / 2 * 0.85) : mainMs;
+    mb.playerSwingMs = avgMs;
+    mb.offhandSwingMs = offMs > 0 ? avgMs : 0; // offhand má stejnou (průměrnou) rychlost
     mb.enemySwingMs = getEnemySwingTime(mb);
     mb._playerSwingStart = performance.now();
     mb._offhandSwingStart = performance.now();
@@ -4093,13 +4095,14 @@ export function initGame() {
       state.comboPoints = 0; // spotřebovat combo pointy
       // Buff ikona
       _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', iconImg:'speedBoost.png', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
-      // Přepočítat swing timery (main + offhand, každý vlastní)
+      // Přepočítat swing timery (main + offhand, oba na průměrné rychlosti × 0.85 D2 bonus)
       const cls2 = CLASSES[state.heroClass];
       const dw2 = cls2 && cls2.dualWield;
       const m2 = getSwingTime(state.hero.equip.weapon);
       const o2 = (dw2 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? getSwingTime(state.hero.equip.shield) : 0;
-      mb.playerSwingMs = m2;
-      mb.offhandSwingMs = o2;
+      const avg2 = o2 > 0 ? Math.round((m2 + o2) / 2 * 0.85) : m2;
+      mb.playerSwingMs = avg2;
+      mb.offhandSwingMs = o2 > 0 ? avg2 : 0;
       spawnFloatingText(`⚡ Speed +${duration}s`, 'left', '#f1c40f', 32);
     } else if (spellId === 'poisonExplosion') {
       const cp = state.comboPoints || 0;
