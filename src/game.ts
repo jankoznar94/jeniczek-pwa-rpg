@@ -1281,7 +1281,8 @@ export function initGame() {
       _playerDot:0, // Jed na hráči — damage per tick
       _playerDotTicksLeft:0, // Zbývající ticky jedu
       _expandedAct: -1, // Který act je rozbalený na mapě (-1 = žádný)
-      chest: new Array(25).fill(null) // Truhla — 25 slotů, itemId nebo null
+      chest: new Array(25).fill(null), // Truhla — 25 slotů, itemId nebo null
+      _pointsMigrated: true // Flag: dopočítání bodů z levelu proběhlo (migrace starých saveů)
     };
     return s;
   }
@@ -3992,7 +3993,7 @@ export function initGame() {
       const roll = Math.random() * 100;
       if (roll >= at.hitChance) {
         // MISS
-        spawnFloatingText('MISS!', 'right', '#888', 32);
+        spawnFloatingText('MISS!', 'right', '#fff', 32);
         playSFX(dodgeSfx);
         resetDoubleSwingTimers(mb);
         return;
@@ -7435,7 +7436,7 @@ export function initGame() {
       const roll = Math.random() * 100;
       if (roll >= at.hitChance) {
         // MISS!
-        spawnFloatingText('MISS!', 'right', '#888', 32);
+        spawnFloatingText('MISS!', 'right', '#fff', 32);
         playSFX(dodgeSfx);
         if (!mb._combatLoop) advanceSequence();
         return;
@@ -10445,17 +10446,22 @@ export function initGame() {
     if (state.hero.mana === undefined) state.hero.mana = 50;
     if (state.hero.maxMana === undefined) state.hero.maxMana = 50;
     if (state.hero.attrPoints === undefined) state.hero.attrPoints = 0;
-    // Dopočítat chybějící atributové body podle levelu (5/level, level 1 = 0)
-    const expectedAttrPoints = (state.hero.level - 1) * 5;
-    if (state.hero.attrPoints < expectedAttrPoints) {
-      state.hero.attrPoints = expectedAttrPoints;
-      saveGame(); // uložit, aby body přetrvaly refresh
-    }
-    // Dopočítat chybějící talent pointy (1/level od lvl 2)
-    const expectedTalentPoints = Math.max(0, state.hero.level - 1);
-    if ((state.talentPoints || 0) < expectedTalentPoints) {
-      state.talentPoints = expectedTalentPoints;
-      saveGame();
+    // MIGRACE (JEN JEDNOU): dopočítat chybějící body podle levelu pouze pro staré
+    // savy, které body nikdy nedostaly. Flag _pointsMigrated zabrání opakovanému
+    // přidávání bodů při každém loadu (dřív se body hráči vracely, i když je utratil).
+    if (!state._pointsMigrated) {
+      // Dopočítat chybějící atributové body podle levelu (5/level, level 1 = 0)
+      const expectedAttrPoints = (state.hero.level - 1) * 5;
+      if (state.hero.attrPoints < expectedAttrPoints) {
+        state.hero.attrPoints = expectedAttrPoints;
+      }
+      // Dopočítat chybějící talent pointy (1/level od lvl 2)
+      const expectedTalentPoints = Math.max(0, state.hero.level - 1);
+      if ((state.talentPoints || 0) < expectedTalentPoints) {
+        state.talentPoints = expectedTalentPoints;
+      }
+      state._pointsMigrated = true;
+      saveGame(); // uložit, aby se body už znovu nepřidávaly
     }
     // Vždy aktualizovat maxHp/maxMana podle aktuálního levelu a itemů
     state.hero.maxHp = getHeroMaxHp();
