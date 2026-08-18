@@ -7761,7 +7761,11 @@ export function initGame() {
     const item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
     item.tier = tier;
     item.subtype = subtype;
-    item.rarity = quality === 'normal' ? 'common' : quality === 'magic' ? 'magic' : 'rare';
+    // Rarity odvodit z finálního item.quality (mohlo být degradováno na normal,
+    // když pro daný level neexistuje affix — viz generateLootItemWithAffixes).
+    // Dřív se používal původní parametr quality, takže item byl vnitřně common,
+    // ale na victory page zářil jako rare. To je ten rozpor.
+    item.rarity = item.quality === 'normal' ? 'common' : item.quality === 'magic' ? 'magic' : 'rare';
     item.icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
     item.cost = 10 + tier * 20 + (item.affixes || []).length * 15;
 
@@ -9441,7 +9445,7 @@ export function initGame() {
     if (!item) {
       item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
       item.tier = baseItem.tier || 1;
-      item.rarity = quality === 'normal' ? 'common' : quality === 'magic' ? 'magic' : 'rare';
+      item.rarity = item.quality === 'normal' ? 'common' : item.quality === 'magic' ? 'magic' : 'rare';
       item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
       item.cost = price;
       // HitRating a ExpertiseRating
