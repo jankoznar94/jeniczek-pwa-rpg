@@ -1318,6 +1318,13 @@ export function initGame() {
     }
     // Migrace: truhla
     if (!s.chest) s.chest = new Array(25).fill(null);
+    // Rekalibrovat maxHp/maxMana podle aktuálního vybavení (staty z itemů)
+    if (s.hero) {
+      s.hero.maxHp = getHeroMaxHp();
+      s.hero.hp = Math.min(s.hero.hp, s.hero.maxHp);
+      s.hero.maxMana = getHeroMaxMana();
+      s.hero.mana = Math.min(s.hero.mana, s.hero.maxMana);
+    }
     return s; } } catch {} return defaultState(); }
   function saveGame() { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); }
   function resetGame() { state = defaultState(); saveGame(); showScreen('map'); }
@@ -8699,11 +8706,11 @@ export function initGame() {
       const itemId = h.equip[slot];
       if (!itemId || itemId === defaults[slot]) return;
       const item = ITEM_MAP[itemId];
-      if (item && item.attrs) {
-        Object.keys(item.attrs).forEach(k => {
-          total[k] = (total[k] || 0) + item.attrs[k];
-        });
-      }
+      if (!item) return;
+      // Affix staty jsou přímo na itemu (item.str, item.vit, ...)
+      ['str','vit','dex','int','castSpeed'].forEach(k => {
+        if (item[k]) total[k] = (total[k] || 0) + item[k];
+      });
     });
     return total;
   }
