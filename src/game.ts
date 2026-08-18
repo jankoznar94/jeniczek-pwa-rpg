@@ -2469,19 +2469,16 @@ export function initGame() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
 
-    // Inicializovat swing timery
+    // Inicializovat swing timery — DVA nezávislé timery (main + offhand), každý s vlastní rychlostí.
+    // Každá zbraň útočí, když je její timer ready — hráč vidí, která zbraň zrovna útočí.
     const cls = CLASSES[state.heroClass];
     const isDualWield = cls && cls.dualWield;
     const mainMs = getSwingTime(state.hero.equip.weapon);
     const hasOffhand = isDualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
     const offMs = hasOffhand ? getSwingTime(state.hero.equip.shield) : 0;
-    // D2 styl dual wield: JEDEN sdílený timer na průměrné rychlosti obou zbraní.
-    // Obě ruce útočí na stejném rytmu (střídají se), takže se timery nikdy nerozcházejí.
-    // D2 bonus: dual wield útočí o 15% rychleji (každý střídavý útok = 85% průměru).
     mb._isDualWield = offMs > 0;
-    mb._dualWieldTurn = 0;
-    mb.playerSwingMs = offMs > 0 ? Math.round((mainMs + offMs) / 2 * 0.85) : mainMs;
-    mb.offhandSwingMs = 0; // offhand už nemá vlastní timer — sdílí hlavní
+    mb.playerSwingMs = mainMs;
+    mb.offhandSwingMs = offMs; // offhand má vlastní nezávislý timer
     mb.enemySwingMs = getEnemySwingTime(mb);
     mb._playerSwingStart = performance.now();
     mb._offhandSwingStart = performance.now();
@@ -2492,6 +2489,7 @@ export function initGame() {
     mb._playerAttackProcessed = false;
     mb._offhandAttackProcessed = false;
     mb._enemyAttackProcessed = false;
+    mb._doubleSwingCd = 0;
 
     // Spustit rAF loop
     updateEnemyHpBar(mb);
@@ -2549,8 +2547,22 @@ export function initGame() {
         mb._playerAttackProcessed = false;
       }
     }
-    // Offhand už nemá vlastní timer — při dual wieldu sdílí hlavní (D2 styl).
-    // Střídání rukou se řeší v bloku zpracování útoků níže.
+
+    // Offhand swing (dual wield) — vlastní nezávislý timer
+    if (mb.offhandSwingMs > 0 && !mb._offhandSwingReady) {
+      const offhandElapsed = now - mb._offhandSwingStart;
+      mb._offhandSwingPct = Math.min(offhandElapsed / mb.offhandSwingMs, 1);
+      if (offhandElapsed >= mb.offhandSwingMs) {
+        mb._offhandSwingReady = true;
+        mb._offhandAttackProcessed = false;
+      }
+    }
+
+    // Double Swing cooldown tick (rychlost pomalejší zbraně)
+    if (mb._doubleSwingCd > 0) {
+      mb._doubleSwingCd = Math.max(0, mb._doubleSwingCd - (now - (mb._lastDsTick || now)));
+      mb._lastDsTick = now;
+    }
 
     // Nepřítelův swing / cast — pokud není omráčený
     if (!mb._enemySwingReady && !mb._enemyStunned) {
@@ -2605,18 +2617,11 @@ export function initGame() {
     // Zpracovat útoky — hráč první, aby mohl zabít bosse dřív, než nepřítel stihne zabít jeho
     if (mb._playerSwingReady && !mb._playerAttackProcessed) {
       mb._playerAttackProcessed = true;
-      if (mb._isDualWield) {
-        // D2 styl: jeden sdílený rytmus, ruce se střídají (main → offhand → main → ...)
-        if (mb._dualWieldTurn === 0) {
-          mb._dualWieldTurn = 1;
-          onAutoPlayerAttack();
-        } else {
-          mb._dualWieldTurn = 0;
-          onAutoOffhandAttack();
-        }
-      } else {
-        onAutoPlayerAttack();
-      }
+      onAutoPlayerAttack();
+    }
+    if (mb._offhandSwingReady && !mb._offhandAttackProcessed) {
+      mb._offhandAttackProcessed = true;
+      onAutoOffhandAttack();
     }
     if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
       mb._enemyAttackProcessed = true;
@@ -2778,17 +2783,16 @@ export function initGame() {
         playerCircle.style.stroke = '#f1c40f';
       }
     }
-    // Offhand ring (větší, světlejší — nad hlavním). Při dual wieldu sdílí hlavní timer (D2 styl),
-    // takže zrcadlí stejný průběh jako hlavní ring.
+    // Offhand ring (větší, světlejší — nad hlavním). Ukazuje vlastní offhand timer.
     const offhandCircle = document.getElementById('mbOffhandTimerCircle');
     if (offhandCircle) {
-      if (mb._isDualWield) {
+      if (mb.offhandSwingMs > 0) {
         offhandCircle.style.opacity = '0.5';
-        if (mb._playerSwingReady) {
+        if (mb._offhandSwingReady) {
           offhandCircle.style.strokeDashoffset = '0';
           offhandCircle.style.stroke = '#2ecc71';
         } else {
-          const offset = Math.round(754 * (1 - mb._playerSwingPct));
+          const offset = Math.round(754 * (1 - mb._offhandSwingPct));
           offhandCircle.style.strokeDashoffset = offset;
           offhandCircle.style.stroke = '#f1c40f';
         }
@@ -2929,10 +2933,10 @@ export function initGame() {
       } catch (e) { console.error('kill path 2:', e); }
       return;
     }
-    // Reset sdíleného swingu PŘED útokem — offhand sdílí hlavní timer (D2 styl)
-    mb._playerSwingStart = performance.now();
-    mb._playerSwingReady = false;
-    mb._playerSwingPct = 0;
+    // Reset offhand swingu PŘED útokem
+    mb._offhandSwingStart = performance.now();
+    mb._offhandSwingReady = false;
+    mb._offhandSwingPct = 0;
     // Offhand útok — 50% damage hlavní zbraně, zpožděný o 200ms aby se nepřekrýval s main hand textem
     setTimeout(() => {
       if (mapBattleState.ended) return;
@@ -3724,13 +3728,19 @@ export function initGame() {
       if (!_holdRepeatSpell) return;
       const mb = mapBattleState;
       if (!mb || mb.ended) { stopHoldRepeat(); return; }
-      // Zkusit provést znovu — pokud selže (došla mana / GCD / cooldown), zastavit
-      if (!game.castClassSpell(_holdRepeatSpell)) {
-        stopHoldRepeat();
+      // Zkusit provést. Pokud selže kvůli cooldownu, počkat a zkusit znovu (držíš dál).
+      // Pokud selže kvůli maně, zastavit.
+      const ok = game.castClassSpell(_holdRepeatSpell);
+      if (!ok) {
+        const spell = (CLASSES[state.heroClass] || {}).spells.find(s => s.id === _holdRepeatSpell);
+        const cost = spell ? getSpellCost(_holdRepeatSpell, spell.cost) : 0;
+        if ((state.mana || 0) < cost) { stopHoldRepeat(); return; } // došla mana
+        // jinak cooldown — počkat a zkusit znovu
+        _holdRepeatTimer = setTimeout(tick, 50);
         return;
       }
-      // Double swing se opakuje na rychlosti swingu (85% průměru), ne každých 50ms
-      const interval = mb.playerSwingMs > 0 ? mb.playerSwingMs : 1000;
+      // Double swing se opakuje na rychlosti pomalejší zbraně (cooldown)
+      const interval = Math.max(mb.playerSwingMs, mb.offhandSwingMs) || 1000;
       _holdRepeatTimer = setTimeout(tick, interval);
     };
     _holdRepeatTimer = setTimeout(tick, 50);
@@ -3988,6 +3998,8 @@ export function initGame() {
         showMessage('⚔️ Potřebuješ dvě zbraně!');
         return;
       }
+      // Cooldown = rychlost pomalejší zbraně — zabrání spamu, respektuje rychlosti zbraní
+      if (mb._doubleSwingCd > 0) return;
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       // Hit check s bonusem k Attack Ratingu
       const at = getPlayerAttackTable(mb, 1 + arBonus / 100);
@@ -3997,6 +4009,8 @@ export function initGame() {
         spawnFloatingText('MISS!', 'right', '#fff', 32);
         playSFX(dodgeSfx);
         resetDoubleSwingTimers(mb);
+        mb._doubleSwingCd = Math.max(mb.playerSwingMs, mb.offhandSwingMs);
+        mb._lastDsTick = performance.now();
         return;
       }
       const eqAttrs = getEquipAttrs();
@@ -4009,6 +4023,9 @@ export function initGame() {
       playSFX(getHitSfx());
       // Reset obou swing timerů
       resetDoubleSwingTimers(mb);
+      // Cooldown = rychlost pomalejší zbraně (respektuje rychlosti zbraní)
+      mb._doubleSwingCd = Math.max(mb.playerSwingMs, mb.offhandSwingMs);
+      mb._lastDsTick = performance.now();
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
       spawnFloatingText(`⚔️ -${totalDmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/doubleSwing.png');
@@ -4066,12 +4083,13 @@ export function initGame() {
       state.comboPoints = 0; // spotřebovat combo pointy
       // Buff ikona
       _sessionBuffs['speedBoost'] = { icon: '⚡', name: 'Speed Boost', iconImg:'speedBoost.png', ticks: duration * 60, maxTicks: duration * 60, onExpire: function() { state._speedBoostPct = 0; } };
-      // Přepočítat swing timer (dual wield: průměr obou zbraní × 0.85 D2 bonus)
+      // Přepočítat swing timery (main + offhand, každý vlastní)
       const cls2 = CLASSES[state.heroClass];
       const dw2 = cls2 && cls2.dualWield;
       const m2 = getSwingTime(state.hero.equip.weapon);
       const o2 = (dw2 && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType) ? getSwingTime(state.hero.equip.shield) : 0;
-      mb.playerSwingMs = o2 > 0 ? Math.round((m2 + o2) / 2 * 0.85) : m2;
+      mb.playerSwingMs = m2;
+      mb.offhandSwingMs = o2;
       spawnFloatingText(`⚡ Speed +${duration}s`, 'left', '#f1c40f', 32);
     } else if (spellId === 'poisonExplosion') {
       const cp = state.comboPoints || 0;
@@ -6111,10 +6129,13 @@ export function initGame() {
   }
 
   function resetDoubleSwingTimers(mb) {
-    // Reset sdíleného swingu hráče (main + offhand sdílí jeden timer — D2 styl)
+    // Reset obou swing timerů hráče (main + offhand)
     mb._playerSwingStart = performance.now();
     mb._playerSwingReady = false;
     mb._playerSwingPct = 0;
+    mb._offhandSwingStart = performance.now();
+    mb._offhandSwingReady = false;
+    mb._offhandSwingPct = 0;
   }
 
   function spawnDoubleSwingAnim(mb) {
