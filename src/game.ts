@@ -10429,6 +10429,21 @@ export function initGame() {
       showSurrenderModal();
     });
 
+    // Globální preventDefault na všech tlačítkách a klikatelných prvcích —
+    // zabrání kontextové nabídce prohlížeče a text selectionu při držení.
+    document.addEventListener('pointerdown', (e) => {
+      const t = e.target;
+      if (t && t.closest && t.closest('button, [onclick], .btn, .talent-btn, .map-location, .dot-wrap, .waypoint-btn, .result-tile, .mb-potion-btn, .shop-item, .grid-card, .color-lane, .simon-cell, .tree-tab, .shop-cat-tab, .diff-btn, .modal-close, .combined-tab, .nav-bar a')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+    document.addEventListener('contextmenu', (e) => {
+      const t = e.target;
+      if (t && t.closest && t.closest('button, [onclick], .btn, .talent-btn, .map-location, .dot-wrap, .waypoint-btn, .result-tile, .mb-potion-btn, .shop-item, .grid-card, .color-lane, .simon-cell, .tree-tab, .shop-cat-tab, .diff-btn, .modal-close, .combined-tab, .nav-bar a')) {
+        e.preventDefault();
+      }
+    });
+
     // Spustit BGM při první user interakci
     let _firstInteraction = true;
     function firstUserInteraction() {
