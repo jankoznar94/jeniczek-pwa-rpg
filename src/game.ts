@@ -222,6 +222,14 @@ export function initGame() {
       state.hero.gold = 100000;
       state.talentPoints = 50;
       state.hero.attrPoints = 150;
+      // Testovací mód: nastavit level postavy na 50 a přepočítat odvozené staty.
+      state.hero.level = 50;
+      state.hero.xp = 0;
+      state.hero.maxHp = getHeroMaxHp();
+      state.hero.maxMana = getHeroMaxMana();
+      state.hero.baseDmg = Math.round((getHeroDmg().min + getHeroDmg().max) / 2);
+      state.hero.hp = state.hero.maxHp;
+      state.hero.mana = state.hero.maxMana;
       // Odemknout VŠECHNY akty ve všech obtížnostech (celá hra přístupná).
       state.bossesDefeated = ACTS.map(() => ACTS.map(() => true));
       state.floorProgress = ACTS.map(() => 5);
