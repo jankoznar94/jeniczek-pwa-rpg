@@ -2111,8 +2111,9 @@ export function initGame() {
     // Reset GCD a combo points per fight (session state zůstává)
     state._gcdTimer = 0;
     state.comboPoints = 0;
-    // Buffy nepřítele se NEpřenášejí do dalšího souboje — každý souboj je nový nepřítel
+    // Buffy a debuffy nepřítele se NEpřenášejí do dalšího souboje — každý souboj je nový nepřítel
     _enemyBuffs = {};
+    _sessionDebuffs = {};
     const loc = ACTS[actId];
     if (!loc) return;
     const diff = DIFFICULTIES[state.difficulty] || DIFFICULTIES[0];
@@ -2973,13 +2974,10 @@ export function initGame() {
     mb._playerSwingStart = performance.now();
     mb._playerSwingReady = false;
     mb._playerSwingPct = 0;
-    // Offhand útok — 50% damage hlavní zbraně, zpožděný o 200ms aby se nepřekrýval s main hand textem
-    setTimeout(() => {
-      if (mapBattleState.ended) return;
-      dealPlayerDamage(mb, 1.0, true);
-      updateMapBattleUI();
-      if (mb.bossHp <= 0) { endMapBattle(true); return; }
-    }, 200);
+    // Offhand útok — 50% damage hlavní zbraně, okamžitě (žádné zpoždění — ruce se střídají na sdíleném timeru)
+    dealPlayerDamage(mb, 1.0, true);
+    updateMapBattleUI();
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
 
   function onAutoEnemyAttack() {
