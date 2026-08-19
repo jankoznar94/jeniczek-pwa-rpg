@@ -3480,26 +3480,29 @@ export function initGame() {
     const belt = ITEM_MAP[h.equip.belt];
     if (!belt) { container.innerHTML = ''; return; }
     const bpSlots = h.equip.beltPotionSlots || [];
-    // Spočítat healing a mana potiony + najít nejsilnější potion daného typu
-    let healCount = 0, manaCount = 0, healBest = null, manaBest = null;
+    // Spočítat kusy pro každý konkrétní potion id přítomný v opasku
+    const potCounts = {};
     bpSlots.forEach(potId => {
       if (!potId) return;
       const pot = ITEM_MAP[potId];
       if (!pot) return;
-      if (pot.subtype === 'heal') { healCount++; if (!healBest || (pot.tier||1) > (healBest.tier||1)) healBest = pot; }
-      else if (pot.subtype === 'mana') { manaCount++; if (!manaBest || (pot.tier||1) > (manaBest.tier||1)) manaBest = pot; }
+      if (pot.subtype !== 'heal' && pot.subtype !== 'mana') return;
+      potCounts[potId] = (potCounts[potId] || 0) + 1;
     });
-    const healPot = healBest || ITEM_MAP['healingPotion'];
-    const manaPot = manaBest || ITEM_MAP['manaPotion'];
-    container.innerHTML = `
-      <div class="mb-potion-btn ${healCount > 0 ? '' : 'empty'}" onclick="game.usePotion('heal')" title="Healing Potion (${healCount})">
-        ${healCount > 0 ? renderItemIcon(healPot, 0) : '<img src="assets/items/potion_healing_light.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">'}
-        ${healCount > 0 ? `<span class="potion-stack-count">${healCount}</span>` : ''}
-      </div>
-      <div class="mb-potion-btn ${manaCount > 0 ? '' : 'empty'}" onclick="game.usePotion('mana')" title="Mana Potion (${manaCount})">
-        ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana_light.png" alt="" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:4px;filter:grayscale(1)">'}
-        ${manaCount > 0 ? `<span class="potion-stack-count">${manaCount}</span>` : ''}
-      </div>`;
+    // Tlačítka ve fixním pořadí: heal potiony (Light→Godly), pak mana potiony (Light→Godly)
+    const order = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
+      'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
+    const html = order
+      .filter(id => potCounts[id])
+      .map(id => {
+        const pot = ITEM_MAP[id];
+        const count = potCounts[id];
+        return `<div class="mb-potion-btn" onclick="game.usePotion('${id}')" title="${pot.name} (${count})">
+          ${renderItemIcon(pot, 0)}
+          <span class="potion-stack-count">${count}</span>
+        </div>`;
+      }).join('');
+    container.innerHTML = html;
   }
 
   function addPotionToBelt(potionId) {
@@ -3544,19 +3547,16 @@ export function initGame() {
     return false; // není místo v opasku
   }
 
-  function usePotion(potionType) {
+  function usePotion(potionId) {
     const h = state.hero;
     const bpSlots = h.equip.beltPotionSlots || [];
-    // Najít NEJSILNĚJŠÍ potion daného typu (tier), ne první nalezený
-    let potIdx = -1, potId = null, potBestTier = 0;
+    // Najít slot s tímto konkrétním potion id
+    let potIdx = -1;
     for (let i = 0; i < bpSlots.length; i++) {
-      const pid = bpSlots[i];
-      if (!pid) continue;
-      const p = ITEM_MAP[pid];
-      if (p && p.subtype === potionType && (p.tier || 1) > potBestTier) { potIdx = i; potId = pid; potBestTier = p.tier || 1; }
+      if (bpSlots[i] === potionId) { potIdx = i; break; }
     }
-    if (potIdx === -1 || !potId) return;
-    const pot = ITEM_MAP[potId];
+    if (potIdx === -1) return;
+    const pot = ITEM_MAP[potionId];
     if (!pot || pot.type !== 'consumable') return;
     playSFX(potionSfx);
     const mb = mapBattleState;
@@ -3590,18 +3590,15 @@ export function initGame() {
     updateMapBattleUI();
   }
 
-  function usePotionFromResult(potionType) {
+  function usePotionFromResult(potionId) {
     const h = state.hero;
     const bpSlots = h.equip.beltPotionSlots || [];
-    let potIdx = -1, potId = null, potBestTier = 0;
+    let potIdx = -1;
     for (let i = 0; i < bpSlots.length; i++) {
-      const pid = bpSlots[i];
-      if (!pid) continue;
-      const p = ITEM_MAP[pid];
-      if (p && p.subtype === potionType && (p.tier || 1) > potBestTier) { potIdx = i; potId = pid; potBestTier = p.tier || 1; }
+      if (bpSlots[i] === potionId) { potIdx = i; break; }
     }
-    if (potIdx === -1 || !potId) return;
-    const pot = ITEM_MAP[potId];
+    if (potIdx === -1) return;
+    const pot = ITEM_MAP[potionId];
     if (!pot || pot.type !== 'consumable') return;
     playSFX(potionSfx);
     if (pot.subtype === 'heal') {
@@ -3630,20 +3627,19 @@ export function initGame() {
       let buffsHtml = '';
       Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = b.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
       Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = d.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
-      let healCount = 0, manaCount = 0, healBest = null, manaBest = null;
-      bpSlots.forEach(pid => { const p = ITEM_MAP[pid]; if (p && p.subtype === 'heal') { healCount++; if (!healBest || (p.tier||1) > (healBest.tier||1)) healBest = p; } else if (p && p.subtype === 'mana') { manaCount++; if (!manaBest || (p.tier||1) > (manaBest.tier||1)) manaBest = p; } });
-      const healPot = healBest || ITEM_MAP['healingPotion'];
-      const manaPot = manaBest || ITEM_MAP['manaPotion'];
-      const potionsHtml = `<div class="result-status-potions">
-        <div class="result-status-potion ${healCount > 0 ? '' : 'empty'}" onclick="${healCount > 0 ? `game.usePotionFromResult('heal')` : ''}" title="Healing Potion (${healCount})">
-          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<img src="assets/items/potion_healing_light.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
-          ${healCount > 0 ? `<span class="result-status-potion-count">${healCount}</span>` : ''}
-        </div>
-        <div class="result-status-potion ${manaCount > 0 ? '' : 'empty'}" onclick="${manaCount > 0 ? `game.usePotionFromResult('mana')` : ''}" title="Mana Potion (${manaCount})">
-          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana_light.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
-          ${manaCount > 0 ? `<span class="result-status-potion-count">${manaCount}</span>` : ''}
-        </div>
-      </div>`;
+      const potCounts = {};
+      bpSlots.forEach(pid => { if (pid) { const p = ITEM_MAP[pid]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[pid] = (potCounts[pid] || 0) + 1; } });
+      const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
+        'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
+      const potionsHtml = `<div class="result-status-potions">` + potOrder
+        .filter(id => potCounts[id])
+        .map(id => {
+          const p = ITEM_MAP[id];
+          return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
+          ${renderItemIcon(p, 0)}
+          <span class="result-status-potion-count">${potCounts[id]}</span>
+        </div>`;
+        }).join('') + `</div>`;
       $('resultStatus').innerHTML = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
         ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
         ${potionsHtml}`;
@@ -7967,20 +7963,19 @@ export function initGame() {
       });
       // Potiony v opasku
       const bpSlots = h.equip.beltPotionSlots || [];
-      let healCount = 0, manaCount = 0, healBest = null, manaBest = null;
-      bpSlots.forEach(potId => { const p = ITEM_MAP[potId]; if (p && p.subtype === 'heal') { healCount++; if (!healBest || (p.tier||1) > (healBest.tier||1)) healBest = p; } else if (p && p.subtype === 'mana') { manaCount++; if (!manaBest || (p.tier||1) > (manaBest.tier||1)) manaBest = p; } });
-      const healPot = healBest || ITEM_MAP['healingPotion'];
-      const manaPot = manaBest || ITEM_MAP['manaPotion'];
-      const potionsHtml = `<div class="result-status-potions">
-        <div class="result-status-potion ${healCount > 0 ? '' : 'empty'}" onclick="${healCount > 0 ? `game.usePotionFromResult('heal')` : ''}" title="Healing Potion (${healCount})">
-          ${healCount > 0 ? renderItemIcon(healPot, 0) : '<img src="assets/items/potion_healing_light.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
-          ${healCount > 0 ? `<span class="result-status-potion-count">${healCount}</span>` : ''}
-        </div>
-        <div class="result-status-potion ${manaCount > 0 ? '' : 'empty'}" onclick="${manaCount > 0 ? `game.usePotionFromResult('mana')` : ''}" title="Mana Potion (${manaCount})">
-          ${manaCount > 0 ? renderItemIcon(manaPot, 0) : '<img src="assets/items/potion_mana_light.png" alt="" style="width:100%;height:100%;object-fit:contain;display:block;border-radius:4px;filter:grayscale(1)">'}
-          ${manaCount > 0 ? `<span class="result-status-potion-count">${manaCount}</span>` : ''}
-        </div>
-      </div>`;
+      const potCounts = {};
+      bpSlots.forEach(potId => { if (potId) { const p = ITEM_MAP[potId]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[potId] = (potCounts[potId] || 0) + 1; } });
+      const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
+        'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
+      const potionsHtml = `<div class="result-status-potions">` + potOrder
+        .filter(id => potCounts[id])
+        .map(id => {
+          const p = ITEM_MAP[id];
+          return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
+          ${renderItemIcon(p, 0)}
+          <span class="result-status-potion-count">${potCounts[id]}</span>
+        </div>`;
+        }).join('') + `</div>`;
       const statusHtml = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
         ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
         ${potionsHtml}`;
