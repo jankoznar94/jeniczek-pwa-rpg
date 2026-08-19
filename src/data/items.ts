@@ -181,8 +181,17 @@
     { id:'belt_heavyBelt_hell', name:'Troll Belt', type:'belt', baseDmg:0, beltRows:4, defense:115, cost:300, icon:'🎗️', iconImg:'assets/items/belt_steel.png', tier:7 },
     { id:'belt_platedBelt_hell', name:'Colossus Girdle', type:'belt', baseDmg:0, beltRows:4, defense:140, cost:380, icon:'🎗️', iconImg:'assets/items/belt_mithril.png', tier:7 },
     // === POTIONY (consumable) ===
-    { id:'healingPotion', name:'Healing Potion', type:'consumable', subtype:'heal', effectValue:50, cost:15, icon:'🧪', iconImg:'assets/items/potion_healing.png', tier:1 },
-    { id:'manaPotion', name:'Mana Potion', type:'consumable', subtype:'mana', effectValue:30, cost:15, icon:'🧪', iconImg:'assets/items/potion_mana.png', tier:1 },
+    // Tier potionů se odemyká s acty: Act1=Light, Act2=Healing, Act3=Greater, Act4=Super, Act5=Godly
+    { id:'healingPotion',  name:'Light Healing Potion',   type:'consumable', subtype:'heal', effectValue:50,   cost:15, icon:'🧪', iconImg:'assets/items/potion_healing_light.png',   tier:1 },
+    { id:'healingPotion2', name:'Healing Potion',         type:'consumable', subtype:'heal', effectValue:100,  cost:25, icon:'🧪', iconImg:'assets/items/potion_healing_healing.png',  tier:2 },
+    { id:'healingPotion3', name:'Greater Healing Potion', type:'consumable', subtype:'heal', effectValue:250,  cost:50, icon:'🧪', iconImg:'assets/items/potion_healing_greater.png',  tier:3 },
+    { id:'healingPotion4', name:'Super Healing Potion',   type:'consumable', subtype:'heal', effectValue:500,  cost:100, icon:'🧪', iconImg:'assets/items/potion_healing_super.png',     tier:4 },
+    { id:'healingPotion5', name:'Godly Healing Potion',   type:'consumable', subtype:'heal', effectValue:1000, cost:200, icon:'🧪', iconImg:'assets/items/potion_healing_godly.png',     tier:5 },
+    { id:'manaPotion',     name:'Light Mana Potion',      type:'consumable', subtype:'mana', effectValue:30,   cost:15, icon:'🧪', iconImg:'assets/items/potion_mana_light.png',      tier:1 },
+    { id:'manaPotion2',    name:'Mana Potion',            type:'consumable', subtype:'mana', effectValue:60,   cost:25, icon:'🧪', iconImg:'assets/items/potion_mana_mana.png',        tier:2 },
+    { id:'manaPotion3',    name:'Greater Mana Potion',    type:'consumable', subtype:'mana', effectValue:150,  cost:50, icon:'🧪', iconImg:'assets/items/potion_mana_greater.png',     tier:3 },
+    { id:'manaPotion4',    name:'Super Mana Potion',      type:'consumable', subtype:'mana', effectValue:300,  cost:100, icon:'🧪', iconImg:'assets/items/potion_mana_super.png',        tier:4 },
+    { id:'manaPotion5',    name:'Godly Mana Potion',      type:'consumable', subtype:'mana', effectValue:600,  cost:200, icon:'🧪', iconImg:'assets/items/potion_mana_godly.png',        tier:5 },
     { id:'townPortalScroll', name:'Town Portal Scroll', type:'consumable', subtype:'townPortal', effectValue:0, cost:25, icon:'📜', iconImg:'assets/items/town_portal_scroll.png', tier:1 },
   ];
 
