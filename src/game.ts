@@ -8147,12 +8147,13 @@ export function initGame() {
   function renderItemsReference() {
     const c = $('itemsContent');
     if (!c) return;
-    const TYPE_LABELS = { weapon:'Zbraň', armor:'Brnění', helmet:'Helma', shield:'Štít', ring:'Prsten', amulet:'Amulet' };
-    const TYPE_ICONS = { weapon:'⚔️', armor:'👘', helmet:'⛑️', shield:'🛡️', ring:'💍', amulet:'📿' };
-    const TYPE_ORDER = ['weapon','armor','helmet','shield','ring','amulet'];
+    const TYPE_LABELS = { weapon:'Zbraň', armor:'Brnění', helmet:'Helma', shield:'Štít', ring:'Prsten', amulet:'Amulet', gloves:'Rukavice', boots:'Boty', belt:'Opasek', consumable:'Spotřební' };
+    const TYPE_ICONS = { weapon:'⚔️', armor:'👘', helmet:'⛑️', shield:'🛡️', ring:'💍', amulet:'📿', gloves:'🧤', boots:'👢', belt:'🎗️', consumable:'🧪' };
+    const TYPE_ORDER = ['weapon','armor','helmet','shield','ring','amulet','gloves','boots','belt','consumable'];
+    const WEAPON_LABELS = { blade:'1H meče', blade2h:'2H meče', axe:'1H sekery', axe2h:'2H sekery', blunt:'1H palice', blunt2h:'2H palice', claws:'Drápy', staff:'1H hůlky', staff2h:'2H hůlky', fists:'Pěsti' };
 
     function typeTag(t) {
-      const colors = { weapon:'#e67e22', armor:'#2ecc71', helmet:'#9b59b6', shield:'#1abc9c', ring:'#f1c40f', amulet:'#e94560' };
+      const colors = { weapon:'#e67e22', armor:'#2ecc71', helmet:'#9b59b6', shield:'#1abc9c', ring:'#f1c40f', amulet:'#e94560', gloves:'#e67e22', boots:'#a1887f', belt:'#ce93d8', consumable:'#80deea' };
       return `<span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:11px;background:${colors[t]}33;color:${colors[t]}">${TYPE_ICONS[t]} ${TYPE_LABELS[t]}</span>`;
     }
 
@@ -8163,22 +8164,38 @@ export function initGame() {
       return `<span style="font-size:24px">${item.icon}</span>`;
     }
 
+    function weaponSub(i) {
+      if (i.weaponType === 'fists') return 'Pěsti';
+      const base = WEAPON_LABELS[i.weaponType] || i.weaponType;
+      return i.twoHand ? base + ' (2H)' : base;
+    }
+
+    function buildStats(i) {
+      const parts = [];
+      if (i.type === 'weapon') {
+        if (i.baseDmgMin !== undefined && i.baseDmgMax !== undefined) parts.push(`⚔️ ${i.baseDmgMin}-${i.baseDmgMax}`);
+        else if (i.baseDmg !== undefined) parts.push(`⚔️ ${i.baseDmg}`);
+        if (i.swingMs) parts.push(`⏱️ ${i.swingMs}ms`);
+      }
+      if (i.bonusHp) parts.push(`❤️ +${i.bonusHp} HP`);
+      if (i.bonusMana) parts.push(`💧 +${i.bonusMana} mana`);
+      if (i.defense) parts.push(`🛡️ +${i.defense} def`);
+      if (i.blockChance) parts.push(`🛡️ ${i.blockChance}% block`);
+      if (i.critChance) parts.push(`🎯 ${i.critChance}% crit`);
+      if (i.beltRows) parts.push(`🔗 ${i.beltRows} řady`);
+      if (i.effectValue) parts.push(`💊 ${i.effectValue}`);
+      return parts.join(' · ');
+    }
+
     function renderItemRow(i) {
-      const other = [];
-      if (i.critChance) other.push(`Crit ${i.critChance}%`);
-      if (i.blockChance) other.push(`Block ${i.blockChance}%`);
-      if (i.weaponType) other.push(i.weaponType);
-      if (i.twoHand) other.push('2H');
+      const sub = i.type === 'weapon' ? weaponSub(i) : (i.subtype ? i.subtype : '');
       return `<tr style="border-bottom:1px solid #1a1a3a">
         <td style="padding:4px 6px">${renderIcon(i)}</td>
         <td style="padding:4px 6px"><strong>${i.name}</strong></td>
         <td style="padding:4px 6px;text-align:center">${i.tier || '-'}</td>
-        <td style="padding:4px 6px;text-align:center">${i.baseDmg || 0}</td>
-        <td style="padding:4px 6px;text-align:center">${i.bonusHp || 0}</td>
-        <td style="padding:4px 6px;text-align:center">${i.bonusMana || 0}</td>
-        <td style="padding:4px 6px;text-align:center">${i.defense || 0}</td>
-        <td style="padding:4px 6px;text-align:center">${i.swingMs ? i.swingMs+'ms' : '-'}</td>
-        <td style="padding:4px 6px;color:#aaa;font-size:11px">${other.join(', ')}</td>
+        <td style="padding:4px 6px;color:#aaa;font-size:11px">${sub}</td>
+        <td style="padding:4px 6px;font-size:12px">${buildStats(i)}</td>
+        <td style="padding:4px 6px;text-align:center;color:#8888aa;font-size:11px">${i.cost ? i.cost+'g' : 'start'}</td>
       </tr>`;
     }
 
@@ -8186,103 +8203,40 @@ export function initGame() {
 
     // === BASE ITEMS ===
     html += `<div class="card"><div class="card-title">🏗️ Base itemy</div>
-    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Each base item has a fixed name and stats. Affixes are rolled on loot.</p>`;
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Každý base item má fixní staty. Affixy se nabalují při lootu.</p>`;
 
-    // Zbraně rozdělené do podskupin
-    html += `<div style="margin-top:12px"><strong>⚔️ Weapons</strong></div>`;
-
-    // Hole (staff) — magické
-    const staves = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'staff');
-    if (staves.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪄 Staves (magical, one-handed)</div>`;
-      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
-      staves.forEach(i => { html += renderItemRow(i); });
-      html += `</table></div>`;
-    }
-
-    // Nože / dýky (blade, tier 1-2, krátké zbraně)
-    // Nože a šavle (dagger)
-    const knives = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'dagger');
-    if (knives.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🗡️ Knives & Sabres (one-handed)</div>`;
-      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
-      knives.forEach(i => { html += renderItemRow(i); });
-      html += `</table></div>`;
-    }
-
-    // Meče (blade, jednoruční i obouruční)
-    const swords = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blade');
-    if (swords.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">⚔️ Swords (one-handed & two-handed)</div>`;
-      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
-      swords.forEach(i => { html += renderItemRow(i); });
-      html += `</table></div>`;
-    }
-
-    // Sekery (axe)
-    const axes = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'axe');
-    if (axes.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🪓 Axes (two-handed)</div>`;
-      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
-      axes.forEach(i => { html += renderItemRow(i); });
-      html += `</table></div>`;
-    }
-
-    // Kladiva (blunt)
-    const hammers = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'blunt');
-    if (hammers.length > 0) {
-      html += `<div style="margin:6px 0 2px;font-size:12px;color:#8888aa">🔨 Hammers (two-handed)</div>`;
-      html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:2px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
-      hammers.forEach(i => { html += renderItemRow(i); });
-      html += `</table></div>`;
-    }
-
-    // Drápy (claws)
-    const claws = ITEMS.filter(i => i.type === 'weapon' && i.weaponType === 'claws');
-    if (claws.length > 0) {
-      html += `<div style=\"margin:6px 0 2px;font-size:12px;color:#8888aa\">🦅 Claws (one-handed)</div>`;
-      html += `<div style=\"overflow-x:auto;max-width:100%\"><table style=\"width:100%;border-collapse:collapse;font-size:12px;margin-top:2px\">
-        <tr style=\"background:#12122a;color:#8888aa\"><th style=\"padding:4px 6px\"></th><th style=\"padding:4px 6px;text-align:left\">Name</th><th style=\"padding:4px 6px\">Tier</th><th style=\"padding:4px 6px\">DMG</th><th style=\"padding:4px 6px\">HP</th><th style=\"padding:4px 6px\">Mana</th><th style=\"padding:4px 6px\">Def</th><th style=\"padding:4px 6px\">Speed</th><th style=\"padding:4px 6px\">Other</th></tr>`;
-      claws.forEach(i => { html += renderItemRow(i); });
-      html += `</table></div>`;
-    }
-
-    // Other sloty (armor, helmet, shield, ring, amulet)
-    ['armor','helmet','shield','ring','amulet'].forEach(type => {
-      const items = ITEMS.filter(i => i.type === type);
+    TYPE_ORDER.forEach(type => {
+      const items = ITEMS.filter(i => i.type === type && i.id !== 'fists' && i.id !== 'rags');
       if (items.length === 0) return;
       html += `<div style="margin-top:12px"><strong>${TYPE_ICONS[type]} ${TYPE_LABELS[type]}y</strong></div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">DMG</th><th style="padding:4px 6px">HP</th><th style="padding:4px 6px">Mana</th><th style="padding:4px 6px">Def</th><th style="padding:4px 6px">Speed</th><th style="padding:4px 6px">Other</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px"></th><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Tier</th><th style="padding:4px 6px">Typ</th><th style="padding:4px 6px">Staty</th><th style="padding:4px 6px">Cena</th></tr>`;
       items.forEach(i => { html += renderItemRow(i); });
       html += `</table></div>`;
     });
     html += `</div>`;
 
     // === AFFIXES ===
-    html += `<div class="card"><div class="card-title">🔧 Affixes (mods)</div>
-    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Prefixes (before name) and suffixes (after name). Same <strong>group</strong> = mutually exclusive. <strong>minIlvl</strong> = minimum monster level. <strong>Weight</strong> = relative probability.</p>`;
+    html += `<div class="card"><div class="card-title">🔧 Affixy (módy)</div>
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Prefixy (před jménem) a suffixy (za jménem). Stejná <strong>group</strong> = vzájemně se vylučují. <strong>minIlvl</strong> = minimální monster level. <strong>Weight</strong> = relativní pravděpodobnost.</p>`;
 
     ['prefix','suffix'].forEach(type => {
-      const label = type === 'prefix' ? '🔷 Prefixes' : '🔶 Suffixes';
+      const label = type === 'prefix' ? '🔷 Prefixy' : '🔶 Suffixy';
       const items = AFFIXES.filter(a => a.type === type);
       html += `<div style="margin-top:12px"><strong>${label}</strong></div>`;
       html += `<div style="overflow-x:auto;max-width:100%"><table style="width:100%;border-collapse:collapse;font-size:12px;margin-top:4px">
-        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Group</th><th style="padding:4px 6px">minIlvl</th><th style="padding:4px 6px">Wt</th><th style="padding:4px 6px">Types</th><th style="padding:4px 6px">Stat</th><th style="padding:4px 6px">Range</th><th style="padding:4px 6px">Color</th></tr>`;
+        <tr style="background:#12122a;color:#8888aa"><th style="padding:4px 6px;text-align:left">Name</th><th style="padding:4px 6px">Group</th><th style="padding:4px 6px">minIlvl</th><th style="padding:4px 6px">Wt</th><th style="padding:4px 6px">Typy</th><th style="padding:4px 6px">Stat</th><th style="padding:4px 6px">Barva</th></tr>`;
       items.forEach(a => {
-        const statStr = Object.entries(a.stats).map(([k,v]) => `${k}: ${v[0]}-${v[1]}`).join(', ');
+        const statStr = Object.entries(a.stats || {}).map(([k,v]) => `${k}: ${Array.isArray(v) ? v.join('-') : v}`).join(', ');
+        let extra = '';
+        if (a.sockets) extra += `, +${a.sockets} sockety`;
+        if (a.magicOnly) extra += ', jen magic';
         html += `<tr style="border-bottom:1px solid #1a1a3a"><td style="padding:4px 6px"><strong>${a.name}</strong></td>
           <td style="padding:4px 6px;text-align:center">${a.group}</td>
           <td style="padding:4px 6px;text-align:center">${a.minIlvl}</td>
           <td style="padding:4px 6px;text-align:center">${a.weight}</td>
-          <td style="padding:4px 6px">${a.types.map(t => typeTag(t)).join(' ')}</td>
-          <td style="padding:4px 6px;font-size:11px">${statStr}</td>
-          <td style="padding:4px 6px;font-size:11px">${a.stats[Object.keys(a.stats)[0]][0]}-${a.stats[Object.keys(a.stats)[0]][1]}</td>
+          <td style="padding:4px 6px">${(a.types||[]).map(t => typeTag(t)).join(' ')}</td>
+          <td style="padding:4px 6px;font-size:11px">${statStr}${extra}</td>
           <td style="padding:4px 6px"><span style="display:inline-block;width:12px;height:12px;border-radius:2px;background:${a.tint};vertical-align:middle;margin-right:2px"></span>${a.tint}</td></tr>`;
       });
       html += `</table></div>`;
@@ -8294,16 +8248,17 @@ export function initGame() {
     <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Fixní sada affixů, vlastní jméno. Objevují se jako boss dropy.</p>`;
     UNIQUE_ITEMS.forEach(u => {
       const base = ITEMS.find(i => i.id === u.baseId);
-      const affixNames = u.affixIds.map(id => {
+      const affixNames = (u.affixIds || []).map(id => {
         const a = AFFIXES.find(x => x.id === id);
         return a ? a.name : id;
       }).join(' + ');
       const iconHtml = u.iconImg ? `<img src="${u.iconImg}" alt="" style="width:36px;height:36px;border-radius:4px;object-fit:cover">` : `<span style="font-size:28px">${u.icon}</span>`;
+      const propDesc = u.uniqueProp ? `<div style="font-size:12px;color:#e94560;margin-top:2px">✨ ${u.uniqueProp.desc}</div>` : '';
       html += `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border:1px solid #2a2a4a;border-radius:6px;margin-bottom:6px">
         <div style="min-width:40px;text-align:center">${iconHtml}</div>
         <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#e94560">${u.name}</div>
         <div style="font-size:12px;color:#8888aa">Base: ${base ? base.name : u.baseId} · Tier ${u.tier} · Min lvl ${u.minLevel}</div>
-        <div style="font-size:12px;color:#aaa">Affixy: ${affixNames}</div></div></div>`;
+        <div style="font-size:12px;color:#aaa">Affixy: ${affixNames}</div>${propDesc}</div></div>`;
     });
     html += `</div>`;
 
