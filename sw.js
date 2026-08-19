@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v135';
-const ASSET_CACHE = 'boss-slayer-assets-v30';
+const CODE_CACHE = 'boss-slayer-code-v136';
+const ASSET_CACHE = 'boss-slayer-assets-v31';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=132', '/manifest.json'];
 
@@ -100,8 +100,11 @@ const ASSET_FILES = [
   '/assets/result_win.png', '/assets/result_defeat.png',
   '/assets/items/belt_cloth.png', '/assets/items/belt_leather.png',
   '/assets/items/belt_iron.png', '/assets/items/belt_steel.png',
-  '/assets/items/belt_mithril.png', '/assets/items/potion_healing.png',
-  '/assets/items/potion_mana.png',
+  '/assets/items/belt_mithril.png',
+  '/assets/items/potion_healing_light.png', '/assets/items/potion_healing_healing.png',
+  '/assets/items/potion_healing_greater.png', '/assets/items/potion_healing_super.png', '/assets/items/potion_healing_godly.png',
+  '/assets/items/potion_mana_light.png', '/assets/items/potion_mana_mana.png',
+  '/assets/items/potion_mana_greater.png', '/assets/items/potion_mana_super.png', '/assets/items/potion_mana_godly.png',
   '/assets/items/town_portal_scroll.png',
   '/assets/items/gloves_leather.png', '/assets/items/gloves_heavy.png',
   '/assets/items/gloves_chain.png', '/assets/items/gloves_lightGauntlets.png',
