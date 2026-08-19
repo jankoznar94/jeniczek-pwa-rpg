@@ -17,11 +17,11 @@
     { id:'blade2h_dacianFalx', name:'Dacian Falx', type:'weapon', baseDmgMin:26, baseDmgMax:61, bonusHp:0, critChance:10, cost:130, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:4, swingMs:2750, twoHand:true, maxSockets:3 },
     { id:'blade2h_highlandBlade', name:'Highland Blade', type:'weapon', baseDmgMin:67, baseDmgMax:96, bonusHp:0, critChance:10, cost:220, icon:'⚔️', iconImg:'assets/items/weapon_claymore.png', weaponType:'blade', tier:5, swingMs:2750, twoHand:true, maxSockets:3 },
     // === 1H AXE (axe) ===
-    { id:'axe_handAxe', name:'Hand Axe', type:'weapon', baseDmgMin:3, baseDmgMax:6, bonusHp:0, cost:15, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:1, swingMs:2200, maxSockets:2 },
-    { id:'axe_doubleAxe', name:'Double Axe', type:'weapon', baseDmgMin:5, baseDmgMax:13, bonusHp:0, critChance:5, cost:30, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:2, swingMs:2200, maxSockets:2 },
-    { id:'axe_hatchet', name:'Hatchet', type:'weapon', baseDmgMin:8, baseDmgMax:20, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:3, swingMs:2200, maxSockets:2 },
-    { id:'axe_twinAxe', name:'Twin Axe', type:'weapon', baseDmgMin:13, baseDmgMax:38, bonusHp:0, critChance:10, cost:90, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:4, swingMs:2200, maxSockets:2 },
-    { id:'axe_tomahawk', name:'Tomahawk', type:'weapon', baseDmgMin:33, baseDmgMax:58, bonusHp:0, critChance:10, cost:160, icon:'🪓', iconImg:'assets/items/weapon_battle_axe.png', weaponType:'axe', tier:5, swingMs:2200, maxSockets:2 },
+    { id:'axe_handAxe', name:'Hand Axe', type:'weapon', baseDmgMin:3, baseDmgMax:6, bonusHp:0, cost:15, icon:'🪓', iconImg:'assets/items/weapon_axe_hand.png', weaponType:'axe', tier:1, swingMs:2200, maxSockets:2 },
+    { id:'axe_doubleAxe', name:'Double Axe', type:'weapon', baseDmgMin:5, baseDmgMax:13, bonusHp:0, critChance:5, cost:30, icon:'🪓', iconImg:'assets/items/weapon_axe_double.png', weaponType:'axe', tier:2, swingMs:2200, maxSockets:2 },
+    { id:'axe_hatchet', name:'Hatchet', type:'weapon', baseDmgMin:8, baseDmgMax:20, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_axe_hatchet.png', weaponType:'axe', tier:3, swingMs:2200, maxSockets:2 },
+    { id:'axe_twinAxe', name:'Twin Axe', type:'weapon', baseDmgMin:13, baseDmgMax:38, bonusHp:0, critChance:10, cost:90, icon:'🪓', iconImg:'assets/items/weapon_axe_twin.png', weaponType:'axe', tier:4, swingMs:2200, maxSockets:2 },
+    { id:'axe_tomahawk', name:'Tomahawk', type:'weapon', baseDmgMin:33, baseDmgMax:58, bonusHp:0, critChance:10, cost:160, icon:'🪓', iconImg:'assets/items/weapon_axe_tomahawk.png', weaponType:'axe', tier:5, swingMs:2200, maxSockets:2 },
     // === 2H AXE (axe, twoHand) ===
     { id:'axe2h_largeAxe', name:'Large Axe', type:'weapon', baseDmgMin:6, baseDmgMax:13, bonusHp:0, cost:25, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:1, swingMs:2750, twoHand:true, maxSockets:3 },
     { id:'axe2h_battleAxe', name:'Battle Axe', type:'weapon', baseDmgMin:14, baseDmgMax:34, bonusHp:0, critChance:5, cost:55, icon:'🪓', iconImg:'assets/items/weapon_war_axe.png', weaponType:'axe', tier:2, swingMs:2750, twoHand:true, maxSockets:3 },
@@ -257,7 +257,7 @@
     // === 1H AXE ===
     { id:'unique_axe_handAxe', name:'The Gnasher', baseId:'axe_handAxe',
       affixIds:['ed_sharp','ofStrength'], minLevel:1, tier:2,
-      iconImg:'assets/items/weapon_battle_axe.png', icon:'🪓',
+      iconImg:'assets/items/weapon_axe_hand.png', icon:'🪓',
       uniqueProp:{ type:'doubleHit', value:20, desc:'20% chance for double hit' } },
 
     // === 2H AXE ===

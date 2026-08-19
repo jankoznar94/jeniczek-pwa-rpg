@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v140';
-const ASSET_CACHE = 'boss-slayer-assets-v32';
+const CODE_CACHE = 'boss-slayer-code-v141';
+const ASSET_CACHE = 'boss-slayer-assets-v33';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=132', '/manifest.json', '/item-reference.html'];
 
@@ -47,6 +47,9 @@ const ASSET_FILES = [
   '/assets/items/weapon_sword_short.png', '/assets/items/weapon_sword_broad.png',
   '/assets/items/weapon_sword_gladius.png', '/assets/items/weapon_sword_dim.png',
   '/assets/items/weapon_sword_falcata.png',
+  '/assets/items/weapon_axe_hand.png', '/assets/items/weapon_axe_double.png',
+  '/assets/items/weapon_axe_hatchet.png', '/assets/items/weapon_axe_twin.png',
+  '/assets/items/weapon_axe_tomahawk.png',
   '/assets/items/weapon_battle_axe.png', '/assets/items/weapon_claymore.png',
   '/assets/items/weapon_war_hammer.png', '/assets/items/staff_wooden.png',
   '/assets/items/staff_fire.png', '/assets/items/staff_ice.png',
