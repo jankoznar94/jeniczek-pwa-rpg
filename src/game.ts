@@ -2225,7 +2225,9 @@ export function initGame() {
     const areaFight = state.areaFightProgress[actId] || 0;
 
     const totalZones = loc.zones || 10;
-    const isBoss = progress >= totalZones;
+    // Boss je na POSLEDNÍM patře (progress 0..totalZones-1). Původně `>= totalZones`
+    // nikdy neplatilo (progress se po bossovi resetuje na 0), takže se boss nespouštěl.
+    const isBoss = progress >= totalZones - 1;
 
     const playerMaxHp = getHeroMaxHp();
     state.hero.maxHp = playerMaxHp;
