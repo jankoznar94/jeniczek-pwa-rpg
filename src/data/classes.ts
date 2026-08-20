@@ -97,12 +97,15 @@
             ]}
           ]
         },
-        control: { name:'Control', icon:'⚡',
+        defense: { name:'Defense', icon:'🛡️',
           tiers: [
             { choices: [
+              { k:'shieldSpec', name:'Shield Specialization', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, desc:lv=>`+${20*lv}% main-hand weapon dmg, +${5*lv}% block chance` },
               { k:'thunderClap', name:'Thunder Clap', icon:'🌩️', iconImg:'thunderClap.png', maxLv:5, desc:lv=>`${50+lv*30}% dmg + slow 20% for ${1+lv}s` },
               { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, desc:lv=>`${80+lv*20}% dmg + stun ${3+(lv-1)*0.5}s` },
-              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, desc:lv=>`${60+lv*20}% dmg + interrupt casting` },
+            ]},
+            { choices: [
+              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:5, desc:lv=>`${60+lv*20}% dmg + interrupt casting` },
             ]}
           ]
         }

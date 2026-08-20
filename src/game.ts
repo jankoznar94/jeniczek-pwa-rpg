@@ -733,7 +733,7 @@ export function initGame() {
       baseDmg: baseItem.type === 'weapon' ? Math.round(((baseItem.baseDmgMin||0) + (baseItem.baseDmgMax||0)) / 2) : (baseItem.baseDmg || 0),
       bonusHp: baseItem.bonusHp || 0,
       bonusMana: baseItem.bonusMana || 0,
-      defense: baseItem.defense || 0,
+      defense: baseItem.defenseMin != null ? (baseItem.defenseMin + Math.floor(Math.random() * (baseItem.defenseMax - baseItem.defenseMin + 1))) : (baseItem.defense || 0),
       critChance: baseItem.critChance || 0,
       attackRating: baseItem.attackRating || 0,
       swingMs: baseItem.swingMs || 0,
@@ -867,7 +867,7 @@ export function initGame() {
       baseDmg: baseItem.type === 'weapon' ? Math.round(((baseItem.baseDmgMin||0) + (baseItem.baseDmgMax||0)) / 2) : (baseItem.baseDmg || 0),
       bonusHp: baseItem.bonusHp || 0,
       bonusMana: baseItem.bonusMana || 0,
-      defense: baseItem.defense || 0,
+      defense: baseItem.defenseMin != null ? (baseItem.defenseMin + Math.floor(Math.random() * (baseItem.defenseMax - baseItem.defenseMin + 1))) : (baseItem.defense || 0),
       critChance: baseItem.critChance || 0,
       attackRating: baseItem.attackRating || 0,
       swingMs: baseItem.swingMs || 0,
@@ -1206,6 +1206,27 @@ export function initGame() {
     const totalDex = (h.attrDex || 0) + eqAttrs.dex;
     const dexDodge = Math.floor(totalDex / 10);
     return Math.min(baseDodge + dexDodge, 50);
+  }
+
+  function getPlayerBlockChance() {
+    // Block šance hráče: base 25% ze štítu + bonus z Obratnosti (DEX) + Shield Specialization.
+    // Každých 10 DEX = +1% block (stejný vzorec jako dodge).
+    const h = state.hero;
+    const shieldItem = ITEM_MAP[h.equip.shield];
+    if (!shieldItem || shieldItem.type !== 'shield') return 0;
+    const baseBlock = shieldItem.blockChance || 0;
+    const eqAttrs = getEquipAttrs();
+    const totalDex = (h.attrDex || 0) + eqAttrs.dex;
+    const dexBlock = Math.floor(totalDex / 10);
+    const shieldSpecLv = getSkillLv('barbarian_shieldSpec');
+    const specBlock = shieldSpecLv * 5;
+    return Math.min(baseBlock + dexBlock + specBlock, 75);
+  }
+
+  function getShieldSpecDmgMult() {
+    // Shield Specialization (Barbar): +20% main-hand weapon dmg per level.
+    const lv = getSkillLv('barbarian_shieldSpec');
+    return 1 + lv * 0.20;
   }
 
   function getXpModifier(mb) {
@@ -3142,7 +3163,7 @@ export function initGame() {
         }
         // Block — pouze pokud je v shield slotu skutečně štít
         const shieldItem = ITEM_MAP[state.hero.equip.shield];
-        if (shieldItem && shieldItem.type === 'shield' && shieldItem.blockChance > 0 && Math.random() * 100 < shieldItem.blockChance) {
+        if (shieldItem && shieldItem.type === 'shield' && getPlayerBlockChance() > 0 && Math.random() * 100 < getPlayerBlockChance()) {
           amount = 0;
           spellText = spellIcon + ' 🛡️ BLOCK!';
           playSFX(blockSfx);
@@ -3230,8 +3251,8 @@ export function initGame() {
     // Pasivní blok ze štítu — pouze pokud je v shield slotu skutečně štít
     let blocked = false;
     const shieldItem = ITEM_MAP[state.hero.equip.shield];
-    if (shieldItem && shieldItem.type === 'shield' && shieldItem.blockChance > 0) {
-      if (Math.random() * 100 < shieldItem.blockChance) {
+    if (shieldItem && shieldItem.type === 'shield' && getPlayerBlockChance() > 0) {
+      if (Math.random() * 100 < getPlayerBlockChance()) {
         blocked = true;
         amount = 0;
         playSFX(blockSfx);
@@ -4053,7 +4074,7 @@ export function initGame() {
       const eqAttrs = getEquipAttrs();
       const baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + ((state.hero.attrStr||0) + eqAttrs.str)*0.3);
       const dmgMult = 1 + dmgBonus / 100;
-      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * dmgMult));
+      const mainDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(weapon)) * dmgMult * getShieldSpecDmgMult()));
       const offDmg = Math.max(1, Math.round((baseDmg + getWeaponDmg(offhandWeapon)) * dmgMult));
       const totalDmg = mainDmg + offDmg;
       mb.bossHp -= totalDmg;
@@ -7249,8 +7270,8 @@ export function initGame() {
     // Pasivní blok — pokud má hráč štít, šance na vyblokování damage
     let blocked = false;
     const shieldItem = ITEM_MAP[state.hero.equip.shield];
-    if (shieldItem && shieldItem.blockChance > 0) {
-      if (Math.random() * 100 < shieldItem.blockChance) {
+    if (shieldItem && getPlayerBlockChance() > 0) {
+      if (Math.random() * 100 < getPlayerBlockChance()) {
         blocked = true;
         amount = 0;
         playSFX(blockSfx);
@@ -7443,7 +7464,7 @@ export function initGame() {
     } else {
       baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.3);
     }
-    let dmg = Math.round(baseDmg * mult * spec.dmgMult * (isOffhand ? spec.offHandMult : 1));
+    let dmg = Math.round(baseDmg * mult * spec.dmgMult * (isOffhand ? spec.offHandMult : getShieldSpecDmgMult()));
     // Rozptyl ±1 — každá rána je jiná
     dmg += Math.floor(Math.random() * 3) - 1; // -1, 0, +1
     dmg = Math.max(1, dmg);
@@ -7755,14 +7776,8 @@ export function initGame() {
       const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
       if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil(tier * 0.4));
     }
-    // Crit chance pro blade zbraně
-    if (type === 'weapon' && subtype === 'blade') {
-      item.critChance = (item.critChance || 0) + Math.min(25, 5 + tier * 3 + rand(0, 5));
-    }
-    // Block chance pro štíty
-    if (type === 'shield') {
-      item.blockChance = Math.min(45, 15 + tier * 4 + rand(0, 5));
-    }
+    // Crit chance se generuje JEN z modů (affixů) — žádný base crit na zbraních.
+    // Block chance štítů je 25% (base) + bonus z obratnosti (dex) — viz výpočet obrany.
 
     ITEM_MAP[item.id] = item;
     state.lootItems = state.lootItems || {};
@@ -8680,9 +8695,9 @@ export function initGame() {
     const lvBonus = Math.floor(h.level * 1);
     const wMin = getWeaponTotalDmgMin(weapon);
     const wMax = getWeaponTotalDmgMax(weapon);
-    const dmgMin = Math.max(1, 2 + lvBonus + wMin + strBonus);
-    const dmgMax = Math.max(1, 2 + lvBonus + wMax + strBonus);
-    return { min: Math.round(dmgMin), max: Math.round(dmgMax) };
+    const dmgMin = Math.max(1, Math.round((2 + lvBonus + wMin + strBonus) * getShieldSpecDmgMult()));
+    const dmgMax = Math.max(1, Math.round((2 + lvBonus + wMax + strBonus) * getShieldSpecDmgMult()));
+    return { min: dmgMin, max: dmgMax };
   }
   function getHeroMaxHp() {
     const h = state.hero;
@@ -8747,7 +8762,7 @@ export function initGame() {
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
     const critChance = weapon.critChance || 0;
     const shieldItem = ITEM_MAP[h.equip.shield];
-    const blockChance = shieldItem ? (shieldItem.blockChance || 0) : 0;
+    const blockChance = getPlayerBlockChance();
     const armorDef = (ITEM_MAP[h.equip.armor] ? ITEM_MAP[h.equip.armor].defense || 0 : 0);
     const helmetDef = ITEM_MAP[h.equip.helmet]?.defense || 0;
     const shieldDef = ITEM_MAP[h.equip.shield]?.defense || 0;
