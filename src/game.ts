@@ -8174,7 +8174,7 @@ export function initGame() {
 
     function renderIcon(item) {
       if (item.iconImg) {
-        return `<img src="${item.iconImg}" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:cover;vertical-align:middle">`;
+        return `<img src="${item.iconImg}" alt="" style="width:32px;height:32px;border-radius:4px;object-fit:contain;vertical-align:middle">`;
       }
       return `<span style="font-size:24px">${item.icon}</span>`;
     }
@@ -8267,7 +8267,7 @@ export function initGame() {
         const a = AFFIXES.find(x => x.id === id);
         return a ? a.name : id;
       }).join(' + ');
-      const iconHtml = u.iconImg ? `<img src="${u.iconImg}" alt="" style="width:36px;height:36px;border-radius:4px;object-fit:cover">` : `<span style="font-size:28px">${u.icon}</span>`;
+      const iconHtml = u.iconImg ? `<img src="${u.iconImg}" alt="" style="width:36px;height:36px;border-radius:4px;object-fit:contain">` : `<span style="font-size:28px">${u.icon}</span>`;
       const propDesc = u.uniqueProp ? `<div style="font-size:12px;color:#e94560;margin-top:2px">✨ ${u.uniqueProp.desc}</div>` : '';
       html += `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border:1px solid #2a2a4a;border-radius:6px;margin-bottom:6px">
         <div style="min-width:40px;text-align:center">${iconHtml}</div>
