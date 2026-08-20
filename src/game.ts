@@ -877,9 +877,7 @@ export function initGame() {
   function generateUniqueItem(uniqueDef) {
     const baseItem = ITEM_MAP[uniqueDef.baseId];
     if (!baseItem) return null;
-
     const affixes = uniqueDef.affixIds.map(id => AFFIXES.find(a => a.id === id)).filter(Boolean);
-
     const item = {
       ...baseItem,
       id: uniqueDef.id,
@@ -907,6 +905,15 @@ export function initGame() {
       enhancedDefense: 0, enhancedDmg: 0,
       str: 0, vit: 0, int: 0, dex: 0,
       skillDmg: 0, manaRegen: 0, poisonDmg: 0, poisonDur: 0, lightningDmg: 0,
+      // Resist staty
+      fireRes: 0, coldRes: 0, lightningRes: 0, poisonRes: 0, allRes: 0,
+      // Gold/Magic Find
+      goldFind: 0, magicFind: 0,
+      // +Skills
+      allSkills: 0, classSkills: 0,
+      // Nové D2 mechaniky
+      thorns: 0, dmgReduction: 0, lifeRegen: 0, knockback: 0, preventHeal: 0,
+      castSpeed: 0,
       // Increased Attack Speed (IAS) — procento
       ias: 0,
     };
@@ -918,6 +925,18 @@ export function initGame() {
         else item[stat] += val;
       });
     });
+
+    // Přímé staty unique itemu (přesné D2 hodnoty) — aplikují se stejně jako affixy
+    if (uniqueDef.stats) {
+      Object.keys(uniqueDef.stats).forEach(stat => {
+        const val = uniqueDef.stats[stat];
+        if (Array.isArray(val)) {
+          item[stat] += val[0] + Math.floor(Math.random() * (val[1] - val[0] + 1));
+        } else {
+          item[stat] += val;
+        }
+      });
+    }
 
     // Procentuální bonusy pro unikáty
     if (item.enhancedDefense > 0 && item.defense > 0) {
@@ -937,6 +956,13 @@ export function initGame() {
       const item = generateUniqueItem(u);
       if (item) ITEM_MAP[item.id] = item;
     });
+  }
+
+  // Vybere náhodný unique item pro daný base item (podporuje víc unique na jeden base)
+  function pickUniqueForBase(baseId) {
+    const candidates = UNIQUE_ITEMS.filter(u => u.baseId === baseId);
+    if (candidates.length === 0) return null;
+    return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
   function renderItemIcon(item, size) {
@@ -7816,7 +7842,7 @@ export function initGame() {
 
     // 3. Unique — najít unikát pro tento base item
     if (quality === 'unique') {
-      const uniqueDef = UNIQUE_ITEMS.find(u => u.baseId === baseItem.id);
+      const uniqueDef = pickUniqueForBase(baseItem.id);
       if (uniqueDef) {
         const item = generateUniqueItem(uniqueDef);
         if (item) {
@@ -9459,7 +9485,7 @@ export function initGame() {
 
     let item;
     if (quality === 'unique') {
-      const uniqueDef = UNIQUE_ITEMS.find(u => u.baseId === baseItem.id);
+      const uniqueDef = pickUniqueForBase(baseItem.id);
       if (uniqueDef) {
         item = generateUniqueItem(uniqueDef);
         if (item) {

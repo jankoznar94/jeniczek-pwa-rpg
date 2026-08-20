@@ -1,0 +1,3050 @@
+[
+ {
+  "name_base": "The GnasherHand Axe",
+  "name": "The Gnasher",
+  "base": "Hand Axe",
+  "level": "5",
+  "stats": [
+   "+60–70% Enhanced Damage",
+   "+20% Chance of Crushing Blow",
+   "+50% Chance of Open Wounds",
+   "+8 to Strength"
+  ],
+  "gameid": "axe_handAxe"
+ },
+ {
+  "name_base": "DeathspadeAxe",
+  "name": "Deathspade",
+  "base": "Axe",
+  "level": "9",
+  "stats": [
+   "+60–70% Enhanced Damage",
+   "+8 to Minimum Damage",
+   "15% Bonus to Attack Rating",
+   "Hit Blinds Target",
+   "+4 to Mana after each Kill"
+  ],
+  "gameid": "axe_axe"
+ },
+ {
+  "name_base": "BladeboneDouble Axe",
+  "name": "Bladebone",
+  "base": "Double Axe",
+  "level": "15",
+  "stats": [
+   "+20% Increased Attack Speed",
+   "+30–50% Enhanced Damage",
+   "+100% Damage to Undead",
+   "+40 to Attack Rating against Undead",
+   "Adds 8-12 fire damage",
+   "+20 Defense"
+  ],
+  "gameid": "axe_doubleAxe"
+ },
+ {
+  "name_base": "Skull SplitterMilitary Pick",
+  "name": "Skull Splitter",
+  "base": "Military Pick",
+  "level": "21",
+  "stats": [
+   "+60–100% Enhanced Damage",
+   "50–100 to Attack Rating",
+   "Adds 1-12–15 lightning damage",
+   "+15% Chance of Open Wounds",
+   "Hit Blinds Target +2",
+   "Regenerate Mana 20%"
+  ],
+  "gameid": "axe_militaryPick"
+ },
+ {
+  "name_base": "RakescarWar Axe",
+  "name": "Rakescar",
+  "base": "War Axe",
+  "level": "27",
+  "stats": [
+   "+30% Increased Attack Speed",
+   "+75–150% Enhanced Damage",
+   "+50 to Attack Rating",
+   "+38 poison damage over 3 seconds",
+   "Poison Resist +50%"
+  ],
+  "gameid": "axe_warAxe"
+ },
+ {
+  "name_base": "Axe of FechmarLarge Axe",
+  "name": "Axe of Fechmar",
+  "base": "Large Axe",
+  "level": "8",
+  "stats": [
+   "+70–90% Enhanced Damage",
+   "Freezes target +3",
+   "Cold Resist +50%",
+   "+2 to Light Radius"
+  ],
+  "gameid": "axe2h_largeAxe"
+ },
+ {
+  "name_base": "GoreshovelBroad Axe",
+  "name": "Goreshovel",
+  "base": "Broad Axe",
+  "level": "14",
+  "stats": [
+   "+30% Increased Attack Speed",
+   "+40–50% Enhanced Damage",
+   "+9 to Maximum Damage",
+   "+60% Chance of Open Wounds",
+   "+25 to Strength"
+  ],
+  "gameid": "axe2h_broadAxe"
+ },
+ {
+  "name_base": "The ChieftainBattle Axe",
+  "name": "The Chieftain",
+  "base": "Battle Axe",
+  "level": "19",
+  "stats": [
+   "+20% Increased Attack Speed",
+   "+100% Enhanced Damage",
+   "Adds 1-40 lightning damage",
+   "All Resistances +10–20",
+   "+6 to Mana after each Kill"
+  ],
+  "gameid": "axe2h_battleAxe"
+ },
+ {
+  "name_base": "BrainhewGreat Axe",
+  "name": "Brainhew",
+  "base": "Great Axe",
+  "level": "25",
+  "stats": [
+   "+50–80% Enhanced Damage",
+   "+14 to Minimum Damage",
+   "Adds 15-35 fire damage",
+   "10–13% Mana stolen per hit",
+   "+25 to Mana",
+   "+4 to Light Radius"
+  ],
+  "gameid": "axe2h_greatAxe"
+ },
+ {
+  "name_base": "HumongousGiant Axe",
+  "name": "Humongous",
+  "base": "Giant Axe",
+  "level": "29",
+  "stats": [
+   "+80–120% Enhanced Damage",
+   "Adds 8-15–25 damage",
+   "+33% Chance of Crushing Blow",
+   "20–30 to Strength",
+   "Requirements +20%"
+  ],
+  "gameid": "axe2h_giantAxe"
+ },
+ {
+  "name_base": "FelloakClub",
+  "name": "Felloak",
+  "base": "Club",
+  "level": "3",
+  "stats": [
+   "+70–80% Enhanced Damage",
+   "Adds 6-8 fire damage",
+   "Knockback",
+   "Lightning Resist +60%",
+   "Fire Resist +20%",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_club"
+ },
+ {
+  "name_base": "StoutnailSpiked Club",
+  "name": "Stoutnail",
+  "base": "Spiked Club",
+  "level": "5",
+  "stats": [
+   "+100% Enhanced Damage",
+   "+7 to Vitality",
+   "Magic Damage Reduced by 2",
+   "Attacker Takes Damage of 3–10",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_spikedClub"
+ },
+ {
+  "name_base": "BloodriseMorning Star",
+  "name": "Bloodrise",
+  "base": "Morning Star",
+  "level": "15",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "+120% Enhanced Damage",
+   "50% Bonus to Attack Rating",
+   "5% Life stolen per hit",
+   "+25% Chance of Open Wounds",
+   "+3 to Sacrifice (Paladin Only)",
+   "+2 to Light Radius",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_morningStar"
+ },
+ {
+  "name_base": "The General's Tan Do Li GaFlail",
+  "name": "The General's Tan Do Li Ga",
+  "base": "Flail",
+  "level": "21",
+  "stats": [
+   "+20% Increased Attack Speed",
+   "+50–60% Enhanced Damage",
+   "Adds 1-20 damage",
+   "5% Mana stolen per hit",
+   "Slows Target by 50%",
+   "+25 Defense",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_flail"
+ },
+ {
+  "name_base": "IronstoneWar Hammer",
+  "name": "Ironstone",
+  "base": "War Hammer",
+  "level": "27",
+  "stats": [
+   "+100–150% Enhanced Damage",
+   "100–150 to Attack Rating",
+   "Adds 1-10 lightning damage",
+   "+10 to Strength",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_warHammer"
+ },
+ {
+  "name_base": "BonesnapMaul",
+  "name": "Bonesnap",
+  "base": "Maul",
+  "level": "24",
+  "stats": [
+   "+200–300% Enhanced Damage",
+   "+50% Damage to Undead",
+   "+40% Chance of Crushing Blow",
+   "Cold Resist +30%",
+   "Fire Resist +30%"
+  ],
+  "gameid": "blunt2h_maul"
+ },
+ {
+  "name_base": "SteeldriverGreat Maul",
+  "name": "Steeldriver",
+  "base": "Great Maul",
+  "level": "29",
+  "stats": [
+   "+40% Increased Attack Speed",
+   "+150–250% Enhanced Damage",
+   "Heal Stamina Plus 25%",
+   "Requirements -50%",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt2h_greatMaul"
+ },
+ {
+  "name_base": "Rixot's KeenShort Sword",
+  "name": "Rixot's Keen",
+  "base": "Short Sword",
+  "level": "2",
+  "stats": [
+   "+100% Enhanced Damage",
+   "+5 to Minimum Damage",
+   "20% Bonus to Attack Rating",
+   "+25% Chance of Crushing Blow",
+   "+25 Defense",
+   "+2 to Light Radius"
+  ],
+  "gameid": "blade_shortSword"
+ },
+ {
+  "name_base": "Blood CrescentScimitar",
+  "name": "Blood Crescent",
+  "base": "Scimitar",
+  "level": "7",
+  "stats": [
+   "+15% Increased Attack Speed",
+   "+60–80% Enhanced Damage",
+   "15% Life stolen per hit",
+   "+33% Chance of Open Wounds",
+   "+15 to Life",
+   "All Resistances +15",
+   "+4 to Light Radius"
+  ],
+  "gameid": "blade_scimitar"
+ },
+ {
+  "name_base": "AzurewrathCrystal Sword",
+  "name": "Azurewrath",
+  "base": "Crystal Sword",
+  "level": "13",
+  "stats": [
+   "+100% Enhanced Damage",
+   "Adds 5-10 magic damage",
+   "Adds 3-6 cold damage",
+   "+50% Deadly Strike",
+   "10% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "blade_crystalSword"
+ },
+ {
+  "name_base": "Griswold's EdgeBroad Sword",
+  "name": "Griswold's Edge",
+  "base": "Broad Sword",
+  "level": "17",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "+80–120% Enhanced Damage",
+   "+100 to Attack Rating",
+   "Adds 10–12-15–25 fire damage",
+   "Knockback",
+   "+12 to Strength"
+  ],
+  "gameid": "blade_broadSword"
+ },
+ {
+  "name_base": "Culwen's PointWar Sword",
+  "name": "Culwen's Point",
+  "base": "War Sword",
+  "level": "29",
+  "stats": [
+   "+1 to All Skills",
+   "+20% Increased Attack Speed",
+   "+20% Faster Hit Recovery",
+   "+70–80% Enhanced Damage",
+   "+60 to Attack Rating",
+   "Poison Length Reduced by 50%"
+  ],
+  "gameid": "blade_warSword"
+ },
+ {
+  "name_base": "ShadowfangTwo-Handed Sword",
+  "name": "Shadowfang",
+  "base": "Two-Handed Sword",
+  "level": "12",
+  "stats": [
+   "+100% Enhanced Damage",
+   "Adds 10-30 cold damage",
+   "9% Mana stolen per hit",
+   "9% Life stolen per hit",
+   "Cold Resist +20%",
+   "-2 to Light Radius"
+  ],
+  "gameid": "blade2h_twoHandedSword"
+ },
+ {
+  "name_base": "SoulflayClaymore",
+  "name": "Soulflay",
+  "base": "Claymore",
+  "level": "19",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "+70–100% Enhanced Damage",
+   "4–10% Mana stolen per hit",
+   "4% Life stolen per hit",
+   "All Resistances +5"
+  ],
+  "gameid": "blade2h_claymore"
+ },
+ {
+  "name_base": "BlacktongueBastard Sword",
+  "name": "Blacktongue",
+  "base": "Bastard Sword",
+  "level": "26",
+  "stats": [
+   "+50–60% Enhanced Damage",
+   "+50 to Attack Rating",
+   "+113 poison damage over 6 seconds",
+   "Prevent Monster Heal",
+   "Poison Resist +50%"
+  ],
+  "gameid": "blade2h_bastardSword"
+ },
+ {
+  "name_base": "RipsawFlamberge",
+  "name": "Ripsaw",
+  "base": "Flamberge",
+  "level": "26",
+  "stats": [
+   "+80–100% Enhanced Damage",
+   "+15 to Maximum Damage",
+   "6% Mana stolen per hit",
+   "+80% Chance of Open Wounds"
+  ],
+  "gameid": "blade2h_flamberge"
+ },
+ {
+  "name_base": "The PatriarchGreat Sword",
+  "name": "The Patriarch",
+  "base": "Great Sword",
+  "level": "29",
+  "stats": [
+   "+100–120% Enhanced Damage",
+   "Hit Blinds Target",
+   "+10 to Strength",
+   "Damage Reduced by 3",
+   "Magic Damage Reduced by 3",
+   "100% Extra Gold from Monsters"
+  ],
+  "gameid": "blade2h_greatSword"
+ },
+ {
+  "name_base": "Biggin's BonnetCap",
+  "name": "Biggin's Bonnet",
+  "base": "Cap",
+  "level": "3",
+  "stats": [
+   "+30% Enhanced Damage",
+   "+30 to Attack Rating",
+   "+14 Defense",
+   "+15 to Life",
+   "+15 to Mana"
+  ],
+  "gameid": "helm_cap"
+ },
+ {
+  "name_base": "TarnhelmSkull Cap",
+  "name": "Tarnhelm",
+  "base": "Skull Cap",
+  "level": "15",
+  "stats": [
+   "+1 to All Skills",
+   "75% Extra Gold from Monsters",
+   "25–50% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "helm_cap"
+ },
+ {
+  "name_base": "Coif of GloryHelm",
+  "name": "Coif of Glory",
+  "base": "Helm",
+  "level": "14",
+  "stats": [
+   "Hit Blinds Target",
+   "+10 Defense",
+   "+100 Defense vs. Missile",
+   "Lightning Resist +15%",
+   "Attacker Takes Lightning Damage of 7"
+  ],
+  "gameid": "helm_helm"
+ },
+ {
+  "name_base": "DuskdeepFull Helm",
+  "name": "Duskdeep",
+  "base": "Full Helm",
+  "level": "17",
+  "stats": [
+   "+8 to Maximum Damage",
+   "30–50% Enhanced Defense",
+   "10–20 Defense",
+   "All Resistances +15",
+   "Damage Reduced by 7",
+   "-2 to Light Radius"
+  ],
+  "gameid": "helm_fullHelm"
+ },
+ {
+  "name_base": "WormskullBone Helm",
+  "name": "Wormskull",
+  "base": "Bone Helm",
+  "level": "21",
+  "stats": [
+   "+1 to Necromancer Skill Levels",
+   "+80 poison damage over 8 seconds",
+   "5% Life stolen per hit",
+   "+10 to Mana",
+   "Poison Resist +25%"
+  ],
+  "gameid": "helm_boneHelm"
+ },
+ {
+  "name_base": "HowltuskGreat Helm",
+  "name": "Howltusk",
+  "base": "Great Helm",
+  "level": "25",
+  "stats": [
+   "Hit Causes Monster to Flee +25%",
+   "Knockback",
+   "+80% Enhanced Defense",
+   "Magic Damage Reduced by 2",
+   "Attacker Takes Damage of 3",
+   "+35% Damage Taken Goes To Mana"
+  ],
+  "gameid": "helm_helm"
+ },
+ {
+  "name_base": "The Face of HorrorMask",
+  "name": "The Face of Horror",
+  "base": "Mask",
+  "level": "20",
+  "stats": [
+   "+50% Damage to Undead",
+   "Hit Causes Monster to Flee +50%",
+   "+25 Defense",
+   "+20 to Strength",
+   "All Resistances +10"
+  ],
+  "gameid": "helm_mask"
+ },
+ {
+  "name_base": "Blinkbat's FormLeather Armor",
+  "name": "Blinkbat's Form",
+  "base": "Leather Armor",
+  "level": "12",
+  "stats": [
+   "+10% Faster Run/Walk",
+   "+40% Faster Hit Recovery",
+   "Adds 3-6 fire damage",
+   "+25 Defense",
+   "+50 Defense vs. Missile"
+  ],
+  "gameid": "armor_leather"
+ },
+ {
+  "name_base": "The CenturionHard Leather Armor",
+  "name": "The Centurion",
+  "base": "Hard Leather Armor",
+  "level": "14",
+  "stats": [
+   "+50 to Attack Rating",
+   "+30 Defense",
+   "+15 to Life",
+   "Replenish Life +5",
+   "+15 to Mana",
+   "+15 Maximum Stamina",
+   "25% Slower Stamina Drain",
+   "Damage Reduced by 2"
+  ],
+  "gameid": "armor_leather"
+ },
+ {
+  "name_base": "DarkglowRing Mail",
+  "name": "Darkglow",
+  "base": "Ring Mail",
+  "level": "14",
+  "stats": [
+   "+20 to Attack Rating",
+   "70–100% Enhanced Defense",
+   "+50 Defense vs. Melee",
+   "+5% to Maximum Poison Resist",
+   "+5% to Maximum Cold Resist",
+   "+5% to Maximum Lightning Resist",
+   "+5% to Maximum Fire Resist",
+   "All Resistances +10",
+   "+3 to Light Radius"
+  ],
+  "gameid": "armor_ringMail"
+ },
+ {
+  "name_base": "GoldskinFull Plate Mail",
+  "name": "Goldskin",
+  "base": "Full Plate Mail",
+  "level": "28",
+  "stats": [
+   "120–150% Enhanced Defense",
+   "All Resistances +35",
+   "Attacker Takes Damage of 10",
+   "100% Extra Gold from Monsters",
+   "+2 to Light Radius"
+  ],
+  "gameid": "armor_fullPlate"
+ },
+ {
+  "name_base": "Silks of the VictorAncient Armor",
+  "name": "Silks of the Victor",
+  "base": "Ancient Armor",
+  "level": "28",
+  "stats": [
+   "+1 to All Skills",
+   "5% Mana stolen per hit",
+   "100–120% Enhanced Defense",
+   "+2 to Light Radius"
+  ],
+  "gameid": "armor_ancient"
+ },
+ {
+  "name_base": "Heavenly GarbLight Plate",
+  "name": "Heavenly Garb",
+  "base": "Light Plate",
+  "level": "29",
+  "stats": [
+   "+50% Damage to Undead",
+   "+100 to Attack Rating against Undead",
+   "+100% Enhanced Defense",
+   "+15 to Energy",
+   "Regenerate Mana 25%",
+   "All Resistances +10"
+  ],
+  "gameid": "armor_lightPlate"
+ },
+ {
+  "name_base": "Pelta LunataBuckler",
+  "name": "Pelta Lunata",
+  "base": "Buckler",
+  "level": "2",
+  "stats": [
+   "+40% Faster Block Rate",
+   "20% Increased Chance of Blocking",
+   "30–40% Enhanced Defense",
+   "+30 Defense",
+   "+2 to Strength",
+   "+10 to Vitality",
+   "+10 to Energy"
+  ],
+  "gameid": "shield_buckler"
+ },
+ {
+  "name_base": "Umbral DiskSmall Shield",
+  "name": "Umbral Disk",
+  "base": "Small Shield",
+  "level": "9",
+  "stats": [
+   "30% Increased Chance of Blocking",
+   "Hit Blinds Target",
+   "40–50% Enhanced Defense",
+   "+30 Defense",
+   "+10 to Dexterity",
+   "+20 to Life",
+   "-2 to Light Radius"
+  ],
+  "gameid": "shield_smallShield"
+ },
+ {
+  "name_base": "StormguildLarge Shield",
+  "name": "Stormguild",
+  "base": "Large Shield",
+  "level": "13",
+  "stats": [
+   "30% Increased Chance of Blocking",
+   "Adds 1-6 lightning damage",
+   "50–60% Enhanced Defense",
+   "+30 Defense",
+   "Lightning Resist +25%",
+   "Magic Damage Reduced by 1",
+   "Attacker Takes Lightning Damage of 3"
+  ],
+  "gameid": "shield_largeShield"
+ },
+ {
+  "name_base": "The WardGothic Shield",
+  "name": "The Ward",
+  "base": "Gothic Shield",
+  "level": "26",
+  "stats": [
+   "10% Increased Chance of Blocking",
+   "+100% Enhanced Defense",
+   "+40 Defense",
+   "+10 to Strength",
+   "All Resistances +30–50",
+   "Magic Damage Reduced by 2"
+  ],
+  "gameid": "shield_gothicShield"
+ },
+ {
+  "name_base": "The Hand of BrocLeather Gloves",
+  "name": "The Hand of Broc",
+  "base": "Leather Gloves",
+  "level": "5",
+  "stats": [
+   "3% Mana stolen per hit",
+   "3% Life stolen per hit",
+   "10–20% Enhanced Defense",
+   "+10 Defense",
+   "+20 to Mana",
+   "Poison Resist +10%"
+  ],
+  "gameid": "gloves_leather"
+ },
+ {
+  "name_base": "BloodfistHeavy Gloves",
+  "name": "Bloodfist",
+  "base": "Heavy Gloves",
+  "level": "9",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "+30% Faster Hit Recovery",
+   "+5 to Minimum Damage",
+   "10–20% Enhanced Defense",
+   "+10 Defense",
+   "+40 to Life"
+  ],
+  "gameid": "gloves_heavy"
+ },
+ {
+  "name_base": "Chance GuardsChain Gloves",
+  "name": "Chance Guards",
+  "base": "Chain Gloves",
+  "level": "15",
+  "stats": [
+   "+25 to Attack Rating",
+   "20–30% Enhanced Defense",
+   "+15 Defense",
+   "200% Extra Gold from Monsters",
+   "25–40% Better Chance of Getting Magic Items",
+   "+2 to Light Radius"
+  ],
+  "gameid": "gloves_chain"
+ },
+ {
+  "name_base": "MagefistLight Gauntlets",
+  "name": "Magefist",
+  "base": "Light Gauntlets",
+  "level": "23",
+  "stats": [
+   "+1 to Fire Skills",
+   "+20% Faster Cast Rate",
+   "Adds 1-6 fire damage",
+   "20–30% Enhanced Defense",
+   "+10 Defense",
+   "Regenerate Mana 25%"
+  ],
+  "gameid": "gloves_lightGauntlets"
+ },
+ {
+  "name_base": "FrostburnGauntlets",
+  "name": "Frostburn",
+  "base": "Gauntlets",
+  "level": "29",
+  "stats": [
+   "+5% Enhanced Damage",
+   "Adds 1-6 cold damage",
+   "10–20% Enhanced Defense",
+   "+30 Defense",
+   "Increase Maximum Mana 40%"
+  ],
+  "gameid": "gloves_gauntlets"
+ },
+ {
+  "name_base": "HotspurBoots",
+  "name": "Hotspur",
+  "base": "Boots",
+  "level": "5",
+  "stats": [
+   "Adds 3-6 fire damage",
+   "10–20% Enhanced Defense",
+   "+6 Defense",
+   "+15 to Life",
+   "+15% to Maximum Fire Resist",
+   "Fire Resist +45%"
+  ],
+  "gameid": "boots_boots"
+ },
+ {
+  "name_base": "GorefootHeavy Boots",
+  "name": "Gorefoot",
+  "base": "Heavy Boots",
+  "level": "9",
+  "stats": [
+   "+20% Faster Run/Walk",
+   "2% Mana stolen per hit",
+   "+2 to Leap (Barbarian Only)",
+   "20–30% Enhanced Defense",
+   "+12 Defense",
+   "Attacker Takes Damage of 2"
+  ],
+  "gameid": "boots_heavy"
+ },
+ {
+  "name_base": "Treads of CthonChain Boots",
+  "name": "Treads of Cthon",
+  "base": "Chain Boots",
+  "level": "15",
+  "stats": [
+   "+30% Faster Run/Walk",
+   "30–40% Enhanced Defense",
+   "+12 Defense",
+   "+50 Defense vs. Missile",
+   "+10 to Life",
+   "50% Slower Stamina Drain"
+  ],
+  "gameid": "boots_chain"
+ },
+ {
+  "name_base": "Goblin ToeLight Plated Boots",
+  "name": "Goblin Toe",
+  "base": "Light Plated Boots",
+  "level": "22",
+  "stats": [
+   "+25% Chance of Crushing Blow",
+   "50–60% Enhanced Defense",
+   "+15 Defense",
+   "Damage Reduced by 1",
+   "Magic Damage Reduced by 1",
+   "-1 to Light Radius"
+  ],
+  "gameid": "boots_lightPlated"
+ },
+ {
+  "name_base": "TearhaunchGreaves",
+  "name": "Tearhaunch",
+  "base": "Greaves",
+  "level": "29",
+  "stats": [
+   "+20% Faster Run/Walk",
+   "+2 to Vigor (Paladin Only)",
+   "60–80% Enhanced Defense",
+   "+35 Defense",
+   "+5 to Strength",
+   "+5 to Dexterity",
+   "All Resistances +10"
+  ],
+  "gameid": "boots_greaves"
+ },
+ {
+  "name_base": "LenymoSash",
+  "name": "Lenymo",
+  "base": "Sash",
+  "level": "7",
+  "stats": [
+   "+15 to Mana",
+   "Regenerate Mana 30%",
+   "All Resistances +5",
+   "+1 to Light Radius"
+  ],
+  "gameid": "belt_sash"
+ },
+ {
+  "name_base": "SnakecordLight Belt",
+  "name": "Snakecord",
+  "base": "Light Belt",
+  "level": "12",
+  "stats": [
+   "+12 poison damage over 3 seconds",
+   "20–30% Enhanced Defense",
+   "+10 Defense",
+   "Replenish Life +5",
+   "Poison Resist +25%",
+   "Poison Length Reduced by 50%"
+  ],
+  "gameid": "belt_lightBelt"
+ },
+ {
+  "name_base": "NightsmokeBelt",
+  "name": "Nightsmoke",
+  "base": "Belt",
+  "level": "20",
+  "stats": [
+   "30–50% Enhanced Defense",
+   "+15 Defense",
+   "+20 to Mana",
+   "All Resistances +10",
+   "Damage Reduced by 2",
+   "+50% Damage Taken Goes To Mana"
+  ],
+  "gameid": "belt_belt"
+ },
+ {
+  "name_base": "GoldwrapHeavy Belt",
+  "name": "Goldwrap",
+  "base": "Heavy Belt",
+  "level": "27",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "40–60% Enhanced Defense",
+   "+25 Defense",
+   "50–80% Extra Gold from Monsters",
+   "30% Better Chance of Getting Magic Items",
+   "+2 to Light Radius"
+  ],
+  "gameid": "belt_heavyBelt"
+ },
+ {
+  "name_base": "BladebucklePlated Belt",
+  "name": "Bladebuckle",
+  "base": "Plated Belt",
+  "level": "29",
+  "stats": [
+   "+30% Faster Hit Recovery",
+   "80–100% Enhanced Defense",
+   "+30 Defense",
+   "+5 to Strength",
+   "+10 to Dexterity",
+   "Damage Reduced by 3",
+   "Attacker Takes Damage of 8"
+  ],
+  "gameid": "belt_platedBelt"
+ },
+ {
+  "name_base": "Nokozan RelicAmulet",
+  "name": "Nokozan Relic",
+  "base": "Amulet",
+  "level": "10",
+  "stats": [
+   "+20% Faster Hit Recovery",
+   "Adds 3-6 fire damage",
+   "+10% to Maximum Fire Resist",
+   "Fire Resist +50%",
+   "+3 to Light Radius"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "The Eye of EtlichAmulet",
+  "name": "The Eye of Etlich",
+  "base": "Amulet",
+  "level": "15",
+  "stats": [
+   "+1 to All Skills",
+   "Adds 1–2-3–5 cold damage",
+   "3–7% Life stolen per hit",
+   "10–40 Defense vs. Missile",
+   "1–5 to Light Radius"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "The Mahim-Oak CurioAmulet",
+  "name": "The Mahim-Oak Curio",
+  "base": "Amulet",
+  "level": "25",
+  "stats": [
+   "10% Bonus to Attack Rating",
+   "+10% Enhanced Defense",
+   "+10 Defense",
+   "+10 to all Attributes",
+   "All Resistances +10"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "NagelringRing",
+  "name": "Nagelring",
+  "base": "Ring",
+  "level": "7",
+  "stats": [
+   "50–75 to Attack Rating",
+   "Magic Damage Reduced by 3",
+   "Attacker Takes Damage of 3",
+   "15–30% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Manald HealRing",
+  "name": "Manald Heal",
+  "base": "Ring",
+  "level": "15",
+  "stats": [
+   "4–7% Mana stolen per hit",
+   "+20 to Life",
+   "Replenish Life 5–8",
+   "Regenerate Mana 20%"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "The Stone of JordanRing",
+  "name": "The Stone of Jordan",
+  "base": "Ring",
+  "level": "29",
+  "stats": [
+   "+1 to All Skills",
+   "Adds 1-12 lightning damage",
+   "+20 to Mana",
+   "Increase Maximum Mana 25%"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Khalim's FlailKhalim's Flail",
+  "name": "Khalim's Flail",
+  "base": "Khalim's Flail",
+  "level": "0",
+  "stats": [
+   "+50% Increased Attack Speed",
+   "+40 to Attack Rating",
+   "Adds 1-20 lightning damage",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_flail"
+ },
+ {
+  "name_base": "ColdkillHatchet",
+  "name": "Coldkill",
+  "base": "Hatchet",
+  "level": "36",
+  "stats": [
+   "10% Chance to cast level 5 Frost Nova when struck",
+   "10% Chance to cast level 10 Ice Blast on striking",
+   "+30% Increased Attack Speed",
+   "+150–190% Enhanced Damage",
+   "+40 cold damage",
+   "+15% to Maximum Cold Resist",
+   "Cold Resist +15%"
+  ],
+  "gameid": "axe_handAxe_nm"
+ },
+ {
+  "name_base": "Butcher's PupilCleaver",
+  "name": "Butcher's Pupil",
+  "base": "Cleaver",
+  "level": "39",
+  "stats": [
+   "Indestructible",
+   "+30% Increased Attack Speed",
+   "+150–200% Enhanced Damage",
+   "Adds 30-50 damage",
+   "+35% Deadly Strike",
+   "+25% Chance of Open Wounds"
+  ],
+  "gameid": "axe_axe_nm"
+ },
+ {
+  "name_base": "IslestrikeTwin Axe",
+  "name": "Islestrike",
+  "base": "Twin Axe",
+  "level": "43",
+  "stats": [
+   "+2 to Druid Skill Levels",
+   "+170–190% Enhanced Damage",
+   "+25% Chance of Crushing Blow",
+   "+1 to Fury (Druid Only)",
+   "+1 to Maul (Druid Only)",
+   "+50 Defense vs. Missile",
+   "+10 to all Attributes"
+  ],
+  "gameid": "axe_doubleAxe_nm"
+ },
+ {
+  "name_base": "Pompeii's WrathCrowbill",
+  "name": "Pompeii's Wrath",
+  "base": "Crowbill",
+  "level": "45",
+  "stats": [
+   "4% Chance to cast level 8 Volcano on striking",
+   "+140–170% Enhanced Damage",
+   "Adds 35-150 fire damage",
+   "Slows Target by 50%",
+   "Knockback"
+  ],
+  "gameid": "axe_militaryPick_nm"
+ },
+ {
+  "name_base": "Guardian NagaNaga",
+  "name": "Guardian Naga",
+  "base": "Naga",
+  "level": "48",
+  "stats": [
+   "5% Chance to cast level 8 Poison Nova on striking",
+   "+150–180% Enhanced Damage",
+   "+20 to Maximum Damage",
+   "+250 poison damage over 10 seconds",
+   "Poison Resist +30%",
+   "Attacker Takes Damage of 15"
+  ],
+  "gameid": "axe_warAxe_nm"
+ },
+ {
+  "name_base": "Warlord's TrustMilitary Axe",
+  "name": "Warlord's Trust",
+  "base": "Military Axe",
+  "level": "35",
+  "stats": [
+   "+175% Enhanced Damage",
+   "+75 Defense",
+   "+49 to Vitality (Based on Character Level)",
+   "Replenish Life +20",
+   "All Resistances +10",
+   "Repairs 1 durability in 4 seconds"
+  ],
+  "gameid": "axe2h_largeAxe_nm"
+ },
+ {
+  "name_base": "SpellsteelBearded Axe",
+  "name": "Spellsteel",
+  "base": "Bearded Axe",
+  "level": "39",
+  "stats": [
+   "+10% Faster Cast Rate",
+   "+165% Enhanced Damage",
+   "+100 to Mana",
+   "Regenerate Mana 25%",
+   "Magic Damage Reduced by 12–15",
+   "Level 12 Firestorm (60/60 Charges)",
+   "Level 10 Holy Bolt (100/100 Charges)",
+   "Level 3 Decrepify (30/30 Charges)",
+   "Level 1 Teleport (20/20 Charges)",
+   "Requirements -60%"
+  ],
+  "gameid": "axe2h_broadAxe_nm"
+ },
+ {
+  "name_base": "StormriderTabar",
+  "name": "Stormrider",
+  "base": "Tabar",
+  "level": "41",
+  "stats": [
+   "15% Chance to cast level 5 Charged Bolt when struck",
+   "5% Chance to cast level 10 Chain Lightning on striking",
+   "10% Chance to cast level 25 Charged Bolt on striking",
+   "+100% Enhanced Damage",
+   "Adds 35-75 damage",
+   "Adds 1-200 lightning damage",
+   "Attacker Takes Lightning Damage of 15"
+  ],
+  "gameid": "axe2h_battleAxe_nm"
+ },
+ {
+  "name_base": "Boneslayer BladeGothic Axe",
+  "name": "Boneslayer Blade",
+  "base": "Gothic Axe",
+  "level": "42",
+  "stats": [
+   "50% Chance to cast level 24 Holy Bolt when struck",
+   "+20% Increased Attack Speed",
+   "+180–220% Enhanced Damage",
+   "35% Bonus to Attack Rating",
+   "+247% Damage to Undead (Based on Character Level)",
+   "+495 to Attack Rating against Undead (Based on Character Level)",
+   "+8 to Strength",
+   "Level 20 Holy Bolt (200/200 Charges)"
+  ],
+  "gameid": "axe2h_greatAxe_nm"
+ },
+ {
+  "name_base": "The MinotaurAncient Axe",
+  "name": "The Minotaur",
+  "base": "Ancient Axe",
+  "level": "45",
+  "stats": [
+   "+140–200% Enhanced Damage",
+   "Adds 20-30 damage",
+   "+30% Chance of Crushing Blow",
+   "Hit Blinds Target +2",
+   "Slows Target by 50%",
+   "15–20 to Strength",
+   "Half Freeze Duration"
+  ],
+  "gameid": "axe2h_giantAxe_nm"
+ },
+ {
+  "name_base": "Dark Clan CrusherCudgel",
+  "name": "Dark Clan Crusher",
+  "base": "Cudgel",
+  "level": "34",
+  "stats": [
+   "+2 to Druid Skill Levels",
+   "+195% Enhanced Damage",
+   "20–25% Bonus to Attack Rating",
+   "+200% Damage to Demons",
+   "+200 to Attack Rating against Demons",
+   "+15 Life after each Demon Kill",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_club_nm"
+ },
+ {
+  "name_base": "FleshrenderBarbed Club",
+  "name": "Fleshrender",
+  "base": "Barbed Club",
+  "level": "38",
+  "stats": [
+   "+2 to Shape Shifting Skills (Druid Only)",
+   "+1 to Druid Skill Levels",
+   "+130–200% Enhanced Damage",
+   "Adds 35-50 damage",
+   "+20% Chance of Crushing Blow",
+   "+20% Deadly Strike",
+   "+25% Chance of Open Wounds",
+   "Prevent Monster Heal",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_spikedClub_nm"
+ },
+ {
+  "name_base": "MoonfallJagged Star",
+  "name": "Moonfall",
+  "base": "Jagged Star",
+  "level": "42",
+  "stats": [
+   "5% Chance to cast level 6 Meteor on striking",
+   "+120–150% Enhanced Damage",
+   "Adds 10-15 damage",
+   "Adds 55-115 fire damage",
+   "Magic Damage Reduced by 9–12",
+   "+2 to Light Radius",
+   "Level 11 Meteor (60/60 Charges)",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_morningStar_nm"
+ },
+ {
+  "name_base": "Baezil's VortexKnout",
+  "name": "Baezil's Vortex",
+  "base": "Knout",
+  "level": "45",
+  "stats": [
+   "5% Chance to cast level 8 Nova on striking",
+   "+20% Increased Attack Speed",
+   "+160–200% Enhanced Damage",
+   "Adds 1-150 lightning damage",
+   "+100 to Mana",
+   "Lightning Resist +25%",
+   "Level 15 Nova (80/80 Charges)",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_flail_nm"
+ },
+ {
+  "name_base": "EarthshakerBattle Hammer",
+  "name": "Earthshaker",
+  "base": "Battle Hammer",
+  "level": "43",
+  "stats": [
+   "5% Chance to cast level 7 Fissure on striking",
+   "+3 to Elemental Skills (Druid Only)",
+   "+30% Increased Attack Speed",
+   "+180% Enhanced Damage",
+   "Hit Blinds Target",
+   "Knockback",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_warHammer_nm"
+ },
+ {
+  "name_base": "Bloodtree StumpWar Club",
+  "name": "Bloodtree Stump",
+  "base": "War Club",
+  "level": "48",
+  "stats": [
+   "+2 to Masteries (Barbarian Only)",
+   "+180–220% Enhanced Damage",
+   "+50% Chance of Crushing Blow",
+   "+3 to Mace Mastery (Barbarian Only)",
+   "+25 to Strength",
+   "All Resistances +20",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt2h_maul_nm"
+ },
+ {
+  "name_base": "The Gavel of PainMartel de Fer",
+  "name": "The Gavel of Pain",
+  "base": "Martel de Fer",
+  "level": "45",
+  "stats": [
+   "Indestructible",
+   "5% Chance to cast level 1 Iron Maiden when struck",
+   "5% Chance to cast level 1 Amplify Damage on striking",
+   "+130–160% Enhanced Damage",
+   "Adds 12-30 damage",
+   "Attacker Takes Damage of 26",
+   "Level 8 Amplify Damage (3/3 Charges)",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt2h_greatMaul_nm"
+ },
+ {
+  "name_base": "BloodletterGladius",
+  "name": "Bloodletter",
+  "base": "Gladius",
+  "level": "30",
+  "stats": [
+   "+20% Increased Attack Speed",
+   "+140% Enhanced Damage",
+   "Adds 12-45 damage",
+   "+90 to Attack Rating",
+   "8% Life stolen per hit",
+   "1–3 to Whirlwind (Barbarian Only)",
+   "2–4 to Blade Mastery (Barbarian Only)",
+   "10% Slower Stamina Drain"
+  ],
+  "gameid": "blade_shortSword_nm"
+ },
+ {
+  "name_base": "Coldsteel EyeCutlass",
+  "name": "Coldsteel Eye",
+  "base": "Cutlass",
+  "level": "31",
+  "stats": [
+   "+20% Increased Attack Speed",
+   "+200–250% Enhanced Damage",
+   "6% Mana stolen per hit",
+   "+50% Deadly Strike",
+   "Hit Blinds Target",
+   "Slows Target by 30%"
+  ],
+  "gameid": "blade_scimitar_nm"
+ },
+ {
+  "name_base": "Ginther's RiftDimensional Blade",
+  "name": "Ginther's Rift",
+  "base": "Dimensional Blade",
+  "level": "37",
+  "stats": [
+   "+30% Increased Attack Speed",
+   "+100–150% Enhanced Damage",
+   "Adds 50-120 magic damage",
+   "Magic Damage Reduced by 7–12",
+   "Repairs 1 durability in 5 seconds"
+  ],
+  "gameid": "blade_crystalSword_nm"
+ },
+ {
+  "name_base": "HeadstrikerBattle Sword",
+  "name": "Headstriker",
+  "base": "Battle Sword",
+  "level": "39",
+  "stats": [
+   "+150% Enhanced Damage",
+   "+99 to Maximum Damage (Based on Character Level)",
+   "+148% Deadly Strike (Based on Character Level)",
+   "Prevent Monster Heal",
+   "+15 to Strength"
+  ],
+  "gameid": "blade_broadSword_nm"
+ },
+ {
+  "name_base": "The AtlanteanAncient Sword",
+  "name": "The Atlantean",
+  "base": "Ancient Sword",
+  "level": "42",
+  "stats": [
+   "+2 to Paladin Skill Levels",
+   "+200–250% Enhanced Damage",
+   "50% Bonus to Attack Rating",
+   "+75 Defense",
+   "+16 to Strength",
+   "+12 to Dexterity",
+   "+8 to Vitality"
+  ],
+  "gameid": "blade_warSword_nm"
+ },
+ {
+  "name_base": "Crainte VomirEspandon",
+  "name": "Crainte Vomir",
+  "base": "Espandon",
+  "level": "42",
+  "stats": [
+   "+20% Faster Run/Walk",
+   "+50% Increased Attack Speed",
+   "+160–200% Enhanced Damage",
+   "Slows Target by 35%",
+   "-70 to Monster Defense Per Hit",
+   "Physical Damage Received Reduced by 10%"
+  ],
+  "gameid": "blade2h_twoHandedSword_nm"
+ },
+ {
+  "name_base": "Bing Sz WangDacian Falx",
+  "name": "Bing Sz Wang",
+  "base": "Dacian Falx",
+  "level": "43",
+  "stats": [
+   "5% Chance to cast level 3 Frozen Orb on striking",
+   "+130–160% Enhanced Damage",
+   "Adds 50-140 cold damage",
+   "Freezes target +2",
+   "+20 to Strength",
+   "Requirements -30%"
+  ],
+  "gameid": "blade2h_claymore_nm"
+ },
+ {
+  "name_base": "CloudcrackGothic Sword",
+  "name": "Cloudcrack",
+  "base": "Gothic Sword",
+  "level": "45",
+  "stats": [
+   "6% Chance to cast level 7 Fist of the Heavens on striking",
+   "+2 to Defensive Auras (Paladin Only)",
+   "+2 to Offensive Auras (Paladin Only)",
+   "+150–200% Enhanced Damage",
+   "Adds 1-240 lightning damage",
+   "+30 Defense",
+   "+10% to Maximum Lightning Resist",
+   "Attacker Takes Lightning Damage of 15",
+   "+2 to Light Radius"
+  ],
+  "gameid": "blade2h_bastardSword_nm"
+ },
+ {
+  "name_base": "Todesfaelle FlammeZweihander",
+  "name": "Todesfaelle Flamme",
+  "base": "Zweihander",
+  "level": "46",
+  "stats": [
+   "10% Chance to cast level 6 Fire Ball on attack",
+   "+120–160% Enhanced Damage",
+   "Adds 50-200 fire damage",
+   "Fire Resist +40%",
+   "+10 Fire Absorb",
+   "Level 10 Enchant (45/45 Charges)",
+   "Level 10 Fire Wall (20/20 Charges)"
+  ],
+  "gameid": "blade2h_flamberge_nm"
+ },
+ {
+  "name_base": "SwordguardExecutioner Sword",
+  "name": "Swordguard",
+  "base": "Executioner Sword",
+  "level": "48",
+  "stats": [
+   "+20% Faster Hit Recovery",
+   "20% Increased Chance of Blocking",
+   "+170–180% Enhanced Damage",
+   "+495 Defense (Based on Character Level)",
+   "+200 Defense vs. Melee",
+   "+100 Defense vs. Missile",
+   "All Resistances +10–20",
+   "+30% Damage Taken Goes To Mana",
+   "Requirements -50%"
+  ],
+  "gameid": "blade2h_greatSword_nm"
+ },
+ {
+  "name_base": "The Meat ScraperLochaber Axe",
+  "name": "The Meat Scraper",
+  "base": "Lochaber Axe",
+  "level": "41",
+  "stats": [
+   "+3 to Masteries (Barbarian Only)",
+   "+30% Increased Attack Speed",
+   "+150–200% Enhanced Damage",
+   "10% Life stolen per hit",
+   "+50% Chance of Open Wounds",
+   "25% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "axe_axe"
+ },
+ {
+  "name_base": "Peasant CrownWar Hat",
+  "name": "Peasant Crown",
+  "base": "War Hat",
+  "level": "28",
+  "stats": [
+   "+1 to All Skills",
+   "+15% Faster Run/Walk",
+   "+100% Enhanced Defense",
+   "+20 to Vitality",
+   "+20 to Energy",
+   "Replenish Life 6–12"
+  ],
+  "gameid": "helm_cap_nm"
+ },
+ {
+  "name_base": "StealskullCasque",
+  "name": "Stealskull",
+  "base": "Casque",
+  "level": "35",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "+10% Faster Hit Recovery",
+   "5% Mana stolen per hit",
+   "5% Life stolen per hit",
+   "200–240% Enhanced Defense",
+   "30–50% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "helm_helm_nm"
+ },
+ {
+  "name_base": "Darksight HelmBasinet",
+  "name": "Darksight Helm",
+  "base": "Basinet",
+  "level": "38",
+  "stats": [
+   "6% Chance to cast level 3 Dim Vision when struck",
+   "5% Mana stolen per hit",
+   "+198 Defense (Based on Character Level)",
+   "Fire Resist 20–40%",
+   "Cannot Be Frozen",
+   "-4 to Light Radius",
+   "Level 5 Cloak of Shadows (30/30 Charges)"
+  ],
+  "gameid": "helm_fullHelm_nm"
+ },
+ {
+  "name_base": "Valkyrie WingWinged Helm",
+  "name": "Valkyrie Wing",
+  "base": "Winged Helm",
+  "level": "44",
+  "stats": [
+   "+1–2 to Amazon Skill Levels",
+   "+20% Faster Run/Walk",
+   "+20% Faster Hit Recovery",
+   "150–200% Enhanced Defense",
+   "2–4 to Mana after each Kill"
+  ],
+  "gameid": "helm_helm"
+ },
+ {
+  "name_base": "Blackhorn's FaceDeath Mask",
+  "name": "Blackhorn's Face",
+  "base": "Death Mask",
+  "level": "41",
+  "stats": [
+   "Prevent Monster Heal",
+   "Slows Target by 20%",
+   "180–220% Enhanced Defense",
+   "Lightning Resist +15%",
+   "+20 Lightning Absorb",
+   "Attacker Takes Lightning Damage of 25"
+  ],
+  "gameid": "helm_mask_nm"
+ },
+ {
+  "name_base": "Vampire GazeGrim Helm",
+  "name": "Vampire Gaze",
+  "base": "Grim Helm",
+  "level": "41",
+  "stats": [
+   "Adds 6-22 cold damage",
+   "6–8% Mana stolen per hit",
+   "6–8% Life stolen per hit",
+   "+100% Enhanced Defense",
+   "15% Slower Stamina Drain",
+   "Physical Damage Received Reduced by 15–20%",
+   "Magic Damage Reduced by 10–15"
+  ],
+  "gameid": "helm_boneHelm_nm"
+ },
+ {
+  "name_base": "Skin of the VipermagiSerpentskin Armor",
+  "name": "Skin of the Vipermagi",
+  "base": "Serpentskin Armor",
+  "level": "29",
+  "stats": [
+   "+1 to All Skills",
+   "+30% Faster Cast Rate",
+   "+120% Enhanced Defense",
+   "All Resistances +20–35",
+   "Magic Damage Reduced by 9–13"
+  ],
+  "gameid": "armor_leather_nm"
+ },
+ {
+  "name_base": "Spirit ForgeLinked Mail",
+  "name": "Spirit Forge",
+  "base": "Linked Mail",
+  "level": "35",
+  "stats": [
+   "Adds 20-65 fire damage",
+   "120–160% Enhanced Defense",
+   "+15 to Strength",
+   "+123 to Life (Based on Character Level)",
+   "Fire Resist +5%",
+   "+4 to Light Radius",
+   "Socketed (2)"
+  ],
+  "gameid": "armor_ringMail_nm"
+ },
+ {
+  "name_base": "Black HadesChaos Armor",
+  "name": "Black Hades",
+  "base": "Chaos Armor",
+  "level": "53",
+  "stats": [
+   "30–60% Damage to Demons",
+   "200–250 to Attack Rating against Demons",
+   "140–200% Enhanced Defense",
+   "Half Freeze Duration",
+   "-2 to Light Radius",
+   "Socketed (3)"
+  ],
+  "gameid": "armor_fullPlate_nm"
+ },
+ {
+  "name_base": "CorpsemournOrnate Plate",
+  "name": "Corpsemourn",
+  "base": "Ornate Plate",
+  "level": "55",
+  "stats": [
+   "6% Chance to cast level 2 Iron Maiden when struck",
+   "Adds 12-36 fire damage",
+   "150–180% Enhanced Defense",
+   "+8 to Strength",
+   "+10 to Vitality",
+   "Cold Resist +35%",
+   "Level 5 Corpse Explosion (40/40 Charges)"
+  ],
+  "gameid": "armor_ancient_nm"
+ },
+ {
+  "name_base": "Que-Hegan's WisdomMage Plate",
+  "name": "Que-Hegan's Wisdom",
+  "base": "Mage Plate",
+  "level": "51",
+  "stats": [
+   "+1 to All Skills",
+   "+20% Faster Cast Rate",
+   "+20% Faster Hit Recovery",
+   "140–160% Enhanced Defense",
+   "+15 to Energy",
+   "Magic Damage Reduced by 6–10",
+   "+3 to Mana after each Kill"
+  ],
+  "gameid": "armor_lightPlate_nm"
+ },
+ {
+  "name_base": "VisceratuantDefender",
+  "name": "Visceratuant",
+  "base": "Defender",
+  "level": "28",
+  "stats": [
+   "+1 to Sorceress Skill Levels",
+   "+30% Faster Block Rate",
+   "30% Increased Chance of Blocking",
+   "100–150% Enhanced Defense",
+   "Attacker Takes Lightning Damage of 10"
+  ],
+  "gameid": "shield_buckler_nm"
+ },
+ {
+  "name_base": "Moser's Blessed CircleRound Shield",
+  "name": "Moser's Blessed Circle",
+  "base": "Round Shield",
+  "level": "31",
+  "stats": [
+   "+30% Faster Block Rate",
+   "25% Increased Chance of Blocking",
+   "180–220% Enhanced Defense",
+   "All Resistances +25",
+   "Socketed (2)"
+  ],
+  "gameid": "shield_smallShield_nm"
+ },
+ {
+  "name_base": "StormchaserScutum",
+  "name": "Stormchaser",
+  "base": "Scutum",
+  "level": "35",
+  "stats": [
+   "4% Chance to cast level 5 Tornado when struck",
+   "4% Chance to cast level 6 Blizzard when struck",
+   "+10% Faster Block Rate",
+   "20% Increased Chance of Blocking",
+   "+150 to Attack Rating",
+   "Adds 1-60 lightning damage",
+   "160–220% Enhanced Defense",
+   "Lightning Resist +50%",
+   "Half Freeze Duration"
+  ],
+  "gameid": "shield_largeShield_nm"
+ },
+ {
+  "name_base": "Radament's SphereAncient Shield",
+  "name": "Radament's Sphere",
+  "base": "Ancient Shield",
+  "level": "50",
+  "stats": [
+   "5% Chance to cast level 5 Poison Nova when struck",
+   "+20% Faster Block Rate",
+   "20% Increased Chance of Blocking",
+   "+80 poison damage over 4 seconds",
+   "160–200% Enhanced Defense",
+   "Poison Resist +75%",
+   "Level 6 Poison Explosion (40/40 Charges)"
+  ],
+  "gameid": "shield_gothicShield_nm"
+ },
+ {
+  "name_base": "Venom GripDemonhide Gloves",
+  "name": "Venom Grip",
+  "base": "Demonhide Gloves",
+  "level": "29",
+  "stats": [
+   "+60 poison damage over 4 seconds",
+   "5% Life stolen per hit",
+   "+5% Chance of Crushing Blow",
+   "130–160% Enhanced Defense",
+   "15–25 Defense",
+   "+5% to Maximum Poison Resist",
+   "Poison Resist +30%"
+  ],
+  "gameid": "gloves_leather_nm"
+ },
+ {
+  "name_base": "GravepalmSharkskin Gloves",
+  "name": "Gravepalm",
+  "base": "Sharkskin Gloves",
+  "level": "32",
+  "stats": [
+   "100–200% Damage to Undead",
+   "100–200 to Attack Rating against Undead",
+   "140–180% Enhanced Defense",
+   "+10 to Strength",
+   "+10 to Energy"
+  ],
+  "gameid": "gloves_heavy_nm"
+ },
+ {
+  "name_base": "GhoulhideHeavy Bracers",
+  "name": "Ghoulhide",
+  "base": "Heavy Bracers",
+  "level": "36",
+  "stats": [
+   "+198% Damage to Undead (Based on Character Level)",
+   "+792 to Attack Rating against Undead (Based on Character Level)",
+   "4–5% Mana stolen per hit",
+   "150–190% Enhanced Defense",
+   "+20 to Life"
+  ],
+  "gameid": "gloves_chain_nm"
+ },
+ {
+  "name_base": "Lava GoutBattle Gauntlets",
+  "name": "Lava Gout",
+  "base": "Battle Gauntlets",
+  "level": "42",
+  "stats": [
+   "2% Chance to cast level 10 Enchant on striking",
+   "+20% Increased Attack Speed",
+   "Adds 13-46 fire damage",
+   "150–200% Enhanced Defense",
+   "Fire Resist +24%",
+   "Half Freeze Duration"
+  ],
+  "gameid": "gloves_lightGauntlets_nm"
+ },
+ {
+  "name_base": "HellmouthWar Gauntlets",
+  "name": "Hellmouth",
+  "base": "War Gauntlets",
+  "level": "47",
+  "stats": [
+   "4% Chance to cast level 12 Firestorm on striking",
+   "2% Chance to cast level 4 Meteor on striking",
+   "Adds 15-72 fire damage",
+   "150–200% Enhanced Defense",
+   "+15 Fire Absorb"
+  ],
+  "gameid": "gloves_gauntlets_nm"
+ },
+ {
+  "name_base": "InfernostrideDemonhide Boots",
+  "name": "Infernostride",
+  "base": "Demonhide Boots",
+  "level": "29",
+  "stats": [
+   "5% Chance to cast level 8 Blaze when struck",
+   "+20% Faster Run/Walk",
+   "Adds 12-33 fire damage",
+   "120–150% Enhanced Defense",
+   "+15 Defense",
+   "+10% to Maximum Fire Resist",
+   "Fire Resist +30%",
+   "40–70% Extra Gold from Monsters",
+   "+2 to Light Radius"
+  ],
+  "gameid": "boots_boots_nm"
+ },
+ {
+  "name_base": "WaterwalkSharkskin Boots",
+  "name": "Waterwalk",
+  "base": "Sharkskin Boots",
+  "level": "32",
+  "stats": [
+   "+20% Faster Run/Walk",
+   "180–210% Enhanced Defense",
+   "+100 Defense vs. Missile",
+   "+15 to Dexterity",
+   "45–65 to Life",
+   "+40 Maximum Stamina",
+   "Heal Stamina Plus 50%",
+   "+5% to Maximum Fire Resist"
+  ],
+  "gameid": "boots_heavy_nm"
+ },
+ {
+  "name_base": "SilkweaveMesh Boots",
+  "name": "Silkweave",
+  "base": "Mesh Boots",
+  "level": "36",
+  "stats": [
+   "+30% Faster Run/Walk",
+   "150–190% Enhanced Defense",
+   "+200 Defense vs. Missile",
+   "Increase Maximum Mana 10%",
+   "+5 to Mana after each Kill"
+  ],
+  "gameid": "boots_chain_nm"
+ },
+ {
+  "name_base": "War TravelerBattle Boots",
+  "name": "War Traveler",
+  "base": "Battle Boots",
+  "level": "42",
+  "stats": [
+   "+25% Faster Run/Walk",
+   "Adds 15-25 damage",
+   "150–190% Enhanced Defense",
+   "+10 to Strength",
+   "+10 to Vitality",
+   "40% Slower Stamina Drain",
+   "Attacker Takes Damage of 5–10",
+   "30–50% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "boots_lightPlated_nm"
+ },
+ {
+  "name_base": "Gore RiderWar Boots",
+  "name": "Gore Rider",
+  "base": "War Boots",
+  "level": "47",
+  "stats": [
+   "+30% Faster Run/Walk",
+   "+15% Chance of Crushing Blow",
+   "+15% Deadly Strike",
+   "+10% Chance of Open Wounds",
+   "160–200% Enhanced Defense",
+   "+20 Maximum Stamina",
+   "Requirements -25%"
+  ],
+  "gameid": "boots_greaves_nm"
+ },
+ {
+  "name_base": "String of EarsDemonhide Sash",
+  "name": "String of Ears",
+  "base": "Demonhide Sash",
+  "level": "29",
+  "stats": [
+   "6–8% Life stolen per hit",
+   "150–180% Enhanced Defense",
+   "+15 Defense",
+   "Physical Damage Received Reduced by 10–15%",
+   "Magic Damage Reduced by 10–15"
+  ],
+  "gameid": "belt_sash_nm"
+ },
+ {
+  "name_base": "RazortailSharkskin Belt",
+  "name": "Razortail",
+  "base": "Sharkskin Belt",
+  "level": "32",
+  "stats": [
+   "+33% Piercing Attack",
+   "+10 to Maximum Damage",
+   "120–150% Enhanced Defense",
+   "+15 Defense",
+   "+15 to Dexterity",
+   "Attacker Takes Damage of 99 (Based on Character Level)"
+  ],
+  "gameid": "belt_lightBelt_nm"
+ },
+ {
+  "name_base": "Gloom's TrapMesh Belt",
+  "name": "Gloom's Trap",
+  "base": "Mesh Belt",
+  "level": "36",
+  "stats": [
+   "5% Mana stolen per hit",
+   "120–150% Enhanced Defense",
+   "+15 to Vitality",
+   "Increase Maximum Mana 15%",
+   "Regenerate Mana 15%",
+   "-3 to Light Radius"
+  ],
+  "gameid": "belt_belt_nm"
+ },
+ {
+  "name_base": "SnowclashBattle Belt",
+  "name": "Snowclash",
+  "base": "Battle Belt",
+  "level": "42",
+  "stats": [
+   "5% Chance to cast level 19 Blizzard when struck",
+   "Adds 13-21 cold damage",
+   "+2 to Chilling Armor (Sorceress Only)",
+   "+2 to Blizzard (Sorceress Only)",
+   "+3 to Glacial Spike (Sorceress Only)",
+   "130–170% Enhanced Defense",
+   "+15% to Maximum Cold Resist",
+   "+15 Cold Absorb"
+  ],
+  "gameid": "belt_heavyBelt_nm"
+ },
+ {
+  "name_base": "Thundergod's VigorWar Belt",
+  "name": "Thundergod's Vigor",
+  "base": "War Belt",
+  "level": "47",
+  "stats": [
+   "5% Chance to cast level 7 Fist of the Heavens when struck",
+   "Adds 1-50 lightning damage",
+   "+3 to Lightning Fury (Amazon Only)",
+   "+3 to Lightning Strike (Amazon Only)",
+   "160–200% Enhanced Defense",
+   "+20 to Strength",
+   "+20 to Vitality",
+   "+10% to Maximum Lightning Resist",
+   "+20 Lightning Absorb"
+  ],
+  "gameid": "belt_platedBelt_nm"
+ },
+ {
+  "name_base": "Harlequin CrestShako",
+  "name": "Harlequin Crest",
+  "base": "Shako",
+  "level": "62",
+  "stats": [
+   "+2 to All Skills",
+   "+2 to all Attributes",
+   "+148 to Life (Based on Character Level)",
+   "+148 to Mana (Based on Character Level)",
+   "Physical Damage Received Reduced by 10%",
+   "50% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "helm_cap_hell"
+ },
+ {
+  "name_base": "Veil of SteelSpired Helm",
+  "name": "Veil of Steel",
+  "base": "Spired Helm",
+  "level": "73",
+  "stats": [
+   "+60% Enhanced Defense",
+   "+140 Defense",
+   "+15 to Strength",
+   "+15 to Vitality",
+   "All Resistances +50",
+   "-4 to Light Radius"
+  ],
+  "gameid": "helm_helm"
+ },
+ {
+  "name_base": "Blackoak ShieldLuna",
+  "name": "Blackoak Shield",
+  "base": "Luna",
+  "level": "61",
+  "stats": [
+   "4% Chance to cast level 5 Weaken when struck",
+   "+50% Faster Block Rate",
+   "160–200% Enhanced Defense",
+   "+49 to Dexterity (Based on Character Level)",
+   "+123 to Life (Based on Character Level)",
+   "+61 Absorbs Cold Damage (Based on Character Level)",
+   "Half Freeze Duration"
+  ],
+  "gameid": "shield_smallShield_hell"
+ },
+ {
+  "name_base": "HellslayerDecapitator",
+  "name": "Hellslayer",
+  "base": "Decapitator",
+  "level": "66",
+  "stats": [
+   "10% Chance to cast level 23 Fire Ball on attack",
+   "+100% Enhanced Damage",
+   "+297% Enhanced Maximum Damage (Based on Character Level)",
+   "Adds 150-250 fire damage",
+   "+49 to Strength (Based on Character Level)",
+   "+49 to Vitality (Based on Character Level)",
+   "+25 to Life"
+  ],
+  "gameid": "axe2h_battleAxe_hell"
+ },
+ {
+  "name_base": "Messerschmidt's ReaverChampion Axe",
+  "name": "Messerschmidt's Reaver",
+  "base": "Champion Axe",
+  "level": "70",
+  "stats": [
+   "+200% Enhanced Damage",
+   "+247% Enhanced Maximum Damage (Based on Character Level)",
+   "100% Bonus to Attack Rating",
+   "Adds 20-240 fire damage",
+   "+15 to all Attributes"
+  ],
+  "gameid": "axe2h_greatAxe_hell"
+ },
+ {
+  "name_base": "Baranar's StarDevil Star",
+  "name": "Baranar's Star",
+  "base": "Devil Star",
+  "level": "65",
+  "stats": [
+   "+50% Increased Attack Speed",
+   "+200% Enhanced Damage",
+   "200% Bonus to Attack Rating",
+   "Adds 1-200 fire damage",
+   "Adds 1-200 lightning damage",
+   "Adds 1-200 cold damage",
+   "+15 to Strength",
+   "+15 to Dexterity",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_morningStar_hell"
+ },
+ {
+  "name_base": "Schaefer's HammerLegendary Mallet",
+  "name": "Schaefer's Hammer",
+  "base": "Legendary Mallet",
+  "level": "79",
+  "stats": [
+   "Indestructible",
+   "20% Chance to cast level 10 Static Field on striking",
+   "+20% Increased Attack Speed",
+   "+100–130% Enhanced Damage",
+   "+198 to Maximum Damage (Based on Character Level)",
+   "+792 to Attack Rating (Based on Character Level)",
+   "Adds 50-200 lightning damage",
+   "+50 to Life",
+   "Lightning Resist +75%",
+   "+1 to Light Radius",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_warHammer_hell"
+ },
+ {
+  "name_base": "The Cranium BasherThunder Maul",
+  "name": "The Cranium Basher",
+  "base": "Thunder Maul",
+  "level": "87",
+  "stats": [
+   "Indestructible",
+   "4% Chance to cast level 1 Amplify Damage on striking",
+   "+20% Increased Attack Speed",
+   "+200–240% Enhanced Damage",
+   "+20 damage",
+   "+75% Chance of Crushing Blow",
+   "+25 to Strength",
+   "All Resistances +25",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt2h_greatMaul_hell"
+ },
+ {
+  "name_base": "LightsabrePhase Blade",
+  "name": "Lightsabre",
+  "base": "Phase Blade",
+  "level": "58",
+  "stats": [
+   "5% Chance to cast level 21 Chain Lightning on attack",
+   "+20% Increased Attack Speed",
+   "+150–200% Enhanced Damage",
+   "Adds 10-30 damage",
+   "Ignore Target's Defense",
+   "Adds 60-120 magic damage",
+   "Adds 1-200 lightning damage",
+   "5–7% Mana stolen per hit",
+   "Lightning Absorb +25%",
+   "+7 to Light Radius"
+  ],
+  "gameid": "blade_crystalSword_hell"
+ },
+ {
+  "name_base": "DoombringerChampion Sword",
+  "name": "Doombringer",
+  "base": "Champion Sword",
+  "level": "69",
+  "stats": [
+   "Indestructible",
+   "8% Chance to cast level 3 Weaken on striking",
+   "+180–250% Enhanced Damage",
+   "Adds 30-100 damage",
+   "40% Bonus to Attack Rating",
+   "5–7% Life stolen per hit",
+   "Increase Maximum Life 20%"
+  ],
+  "gameid": "blade2h_bastardSword_hell"
+ },
+ {
+  "name_base": "The GrandfatherColossus Blade",
+  "name": "The Grandfather",
+  "base": "Colossus Blade",
+  "level": "81",
+  "stats": [
+   "Indestructible",
+   "+150–250% Enhanced Damage",
+   "+247 to Maximum Damage (Based on Character Level)",
+   "50% Bonus to Attack Rating",
+   "+20 to all Attributes",
+   "+80 to Life"
+  ],
+  "gameid": "blade2h_greatSword_hell"
+ },
+ {
+  "name_base": "Constricting RingRing",
+  "name": "Constricting Ring",
+  "base": "Ring",
+  "level": "95",
+  "stats": [
+   "Drain Life -30",
+   "+15% to Maximum Poison Resist",
+   "+15% to Maximum Cold Resist",
+   "+15% to Maximum Lightning Resist",
+   "+15% to Maximum Fire Resist",
+   "All Resistances +100",
+   "100% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Bul-Kathos' Wedding BandRing",
+  "name": "Bul-Kathos' Wedding Band",
+  "base": "Ring",
+  "level": "58",
+  "stats": [
+   "+1 to All Skills",
+   "3–5% Life stolen per hit",
+   "+49 to Life (Based on Character Level)",
+   "+50 Maximum Stamina"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "The Cat's EyeAmulet",
+  "name": "The Cat's Eye",
+  "base": "Amulet",
+  "level": "50",
+  "stats": [
+   "+30% Faster Run/Walk",
+   "+20% Increased Attack Speed",
+   "+100 Defense",
+   "+100 Defense vs. Missile",
+   "+25 to Dexterity"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "The Rising SunAmulet",
+  "name": "The Rising Sun",
+  "base": "Amulet",
+  "level": "65",
+  "stats": [
+   "2% Chance to cast level 19 Meteor when struck",
+   "+2 to Fire Skills",
+   "Adds 24-48 fire damage",
+   "Replenish Life +10",
+   "+74 Absorbs Fire Damage (Based on Character Level)",
+   "+4 to Light Radius"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Crescent MoonAmulet",
+  "name": "Crescent Moon",
+  "base": "Amulet",
+  "level": "50",
+  "stats": [
+   "11–15% Mana stolen per hit",
+   "3–6% Life stolen per hit",
+   "+45 to Mana",
+   "Magic Damage Reduced by 10",
+   "+10% Damage Taken Goes To Mana",
+   "-2 to Light Radius"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Mara's KaleidoscopeAmulet",
+  "name": "Mara's Kaleidoscope",
+  "base": "Amulet",
+  "level": "67",
+  "stats": [
+   "+2 to All Skills",
+   "+5 to all Attributes",
+   "All Resistances +20–30"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Atma's ScarabAmulet",
+  "name": "Atma's Scarab",
+  "base": "Amulet",
+  "level": "60",
+  "stats": [
+   "5% Chance to cast level 2 Amplify Damage on striking",
+   "20% Bonus to Attack Rating",
+   "+40 poison damage over 4 seconds",
+   "Poison Resist +75%",
+   "Attacker Takes Damage of 5",
+   "+3 to Light Radius"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Dwarf StarRing",
+  "name": "Dwarf Star",
+  "base": "Ring",
+  "level": "45",
+  "stats": [
+   "+40 to Life",
+   "+40 Maximum Stamina",
+   "Heal Stamina Plus 15%",
+   "Fire Absorb +15%",
+   "Magic Damage Reduced by 12–15",
+   "100% Extra Gold from Monsters"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Raven FrostRing",
+  "name": "Raven Frost",
+  "base": "Ring",
+  "level": "45",
+  "stats": [
+   "150–250 to Attack Rating",
+   "Adds 15-45 cold damage",
+   "15–20 to Dexterity",
+   "+40 to Mana",
+   "Cold Absorb +20%",
+   "Cannot Be Frozen"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Highlord's WrathAmulet",
+  "name": "Highlord's Wrath",
+  "base": "Amulet",
+  "level": "65",
+  "stats": [
+   "+1 to All Skills",
+   "+20% Increased Attack Speed",
+   "Adds 1-30 lightning damage",
+   "+37% Deadly Strike (Based on Character Level)",
+   "Lightning Resist +35%",
+   "Attacker Takes Lightning Damage of 15"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Saracen's ChanceAmulet",
+  "name": "Saracen's Chance",
+  "base": "Amulet",
+  "level": "47",
+  "stats": [
+   "10% Chance to cast level 2 Iron Maiden when struck",
+   "+12 to all Attributes",
+   "All Resistances +15–25"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Bartuc's Cut-ThroatGreater Talons",
+  "name": "Bartuc's Cut-Throat",
+  "base": "Greater Talons",
+  "level": "42",
+  "stats": [
+   "+1 to Martial Arts (Assassin Only)",
+   "+2 to Assassin Skill Levels",
+   "+30% Faster Hit Recovery",
+   "+150–200% Enhanced Damage",
+   "Adds 25-50 damage",
+   "20% Bonus to Attack Rating",
+   "5–9% Life stolen per hit",
+   "+20 to Strength",
+   "+20 to Dexterity"
+  ],
+  "gameid": "claws_bladeTalons_nm"
+ },
+ {
+  "name_base": "Jalal's ManeTotemic Mask",
+  "name": "Jalal's Mane",
+  "base": "Totemic Mask",
+  "level": "42",
+  "stats": [
+   "+2 to Shape Shifting Skills (Druid Only)",
+   "+2 to Druid Skill Levels",
+   "+30% Faster Hit Recovery",
+   "20% Bonus to Attack Rating",
+   "150–200% Enhanced Defense",
+   "+20 to Strength",
+   "+20 to Energy",
+   "All Resistances +30",
+   "+5 to Mana after each Kill"
+  ],
+  "gameid": "helm_mask"
+ },
+ {
+  "name_base": "Djinn SlayerAtaghan",
+  "name": "Djinn Slayer",
+  "base": "Ataghan",
+  "level": "65",
+  "stats": [
+   "+190–240% Enhanced Damage",
+   "100–150% Damage to Demons",
+   "200–300 to Attack Rating against Demons",
+   "Adds 250-500 fire damage",
+   "3–6% Mana stolen per hit",
+   "3–7 Lightning Absorb"
+  ],
+  "gameid": "blade_scimitar_hell"
+ },
+ {
+  "name_base": "Razor's EdgeTomahawk",
+  "name": "Razor's Edge",
+  "base": "Tomahawk",
+  "level": "67",
+  "stats": [
+   "+40% Increased Attack Speed",
+   "+175–225% Enhanced Damage",
+   "-33% Target Defense",
+   "+50% Deadly Strike",
+   "+50% Chance of Open Wounds"
+  ],
+  "gameid": "axe_handAxe_hell"
+ },
+ {
+  "name_base": "Demon LimbTyrant Club",
+  "name": "Demon Limb",
+  "base": "Tyrant Club",
+  "level": "63",
+  "stats": [
+   "+180–230% Enhanced Damage",
+   "+123% Damage to Demons",
+   "Adds 222-333 fire damage",
+   "7–13% Life stolen per hit",
+   "Fire Resist 15–20%",
+   "Level 23 Enchant (20/20 Charges)",
+   "Repairs 1 durability in 20 seconds",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_spikedClub_hell"
+ },
+ {
+  "name_base": "Steel ShadeArmet",
+  "name": "Steel Shade",
+  "base": "Armet",
+  "level": "62",
+  "stats": [
+   "4–8% Mana stolen per hit",
+   "100–130% Enhanced Defense",
+   "Replenish Life 10–18",
+   "5–11 Fire Absorb"
+  ],
+  "gameid": "helm_helm_hell"
+ },
+ {
+  "name_base": "Tomb ReaverCryptic Axe",
+  "name": "Tomb Reaver",
+  "base": "Cryptic Axe",
+  "level": "84",
+  "stats": [
+   "+60% Increased Attack Speed",
+   "+200–280% Enhanced Damage",
+   "150–230% Damage to Undead",
+   "250–350 to Attack Rating against Undead",
+   "All Resistances +30–50",
+   "10% Reanimate as: Returned",
+   "10–14 Life after each Kill",
+   "50–80% Better Chance of Getting Magic Items",
+   "+4 to Light Radius"
+  ],
+  "gameid": "axe_axe"
+ },
+ {
+  "name_base": "Nature's PeaceRing",
+  "name": "Nature's Peace",
+  "base": "Ring",
+  "level": "69",
+  "stats": [
+   "Slain Monsters Rest in Peace",
+   "Prevent Monster Heal",
+   "Poison Resist 20–30%",
+   "Damage Reduced by 7–11",
+   "Level 5 Oak Sage (27/27 Charges)"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "AzurewrathPhase Blade",
+  "name": "Azurewrath",
+  "base": "Phase Blade",
+  "level": "85",
+  "stats": [
+   "Level 10–13 Sanctuary Aura When Equipped",
+   "+1 to All Skills",
+   "+30% Increased Attack Speed",
+   "+230–270% Enhanced Damage",
+   "Adds 250-500 magic damage",
+   "Adds 250-500 cold damage",
+   "+5–10 to all Attributes",
+   "+3 to Light Radius"
+  ],
+  "gameid": "blade_crystalSword_hell"
+ },
+ {
+  "name_base": "Seraph's HymnAmulet",
+  "name": "Seraph's Hymn",
+  "base": "Amulet",
+  "level": "65",
+  "stats": [
+   "+2 to All Skills",
+   "1–2 to Defensive Auras (Paladin Only)",
+   "25–50% Damage to Demons",
+   "150–250 to Attack Rating against Demons",
+   "25–50% Damage to Undead",
+   "150–250 to Attack Rating against Undead",
+   "+2 to Light Radius"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Horizon's TornadoScourge",
+  "name": "Horizon's Tornado",
+  "base": "Scourge",
+  "level": "64",
+  "stats": [
+   "20% Chance to cast level 15 Tornado on striking",
+   "+50% Increased Attack Speed",
+   "+230–280% Enhanced Damage",
+   "Slows Target by 20%",
+   "Requirements -20%",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_flail_hell"
+ },
+ {
+  "name_base": "Stone CrusherLegendary Mallet",
+  "name": "Stone Crusher",
+  "base": "Legendary Mallet",
+  "level": "68",
+  "stats": [
+   "+280–320% Enhanced Damage",
+   "Damage 10–30",
+   "-25% Target Defense",
+   "+40% Chance of Crushing Blow",
+   "-100 to Monster Defense Per Hit",
+   "20–30 to Strength",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_warHammer_hell"
+ },
+ {
+  "name_base": "Jade TalonWrist Sword",
+  "name": "Jade Talon",
+  "base": "Wrist Sword",
+  "level": "66",
+  "stats": [
+   "1–2 to Martial Arts (Assassin Only)",
+   "1–2 to Shadow Disciplines (Assassin Only)",
+   "+30% Faster Hit Recovery",
+   "+190–240% Enhanced Damage",
+   "10–15% Mana stolen per hit",
+   "All Resistances +40–50"
+  ],
+  "gameid": "claws_wristBlade_hell"
+ },
+ {
+  "name_base": "Shadow DancerMyrmidon Greaves",
+  "name": "Shadow Dancer",
+  "base": "Myrmidon Greaves",
+  "level": "71",
+  "stats": [
+   "1–2 to Shadow Disciplines (Assassin Only)",
+   "+30% Faster Run/Walk",
+   "+30% Faster Hit Recovery",
+   "70–100% Enhanced Defense",
+   "15–25 to Dexterity",
+   "Requirements -20%"
+  ],
+  "gameid": "boots_greaves_hell"
+ },
+ {
+  "name_base": "Tyrael's MightSacred Armor",
+  "name": "Tyrael's Might",
+  "base": "Sacred Armor",
+  "level": "84",
+  "stats": [
+   "Indestructible",
+   "+20% Faster Run/Walk",
+   "50–100% Damage to Demons",
+   "Slain Monsters Rest in Peace",
+   "120–150% Enhanced Defense",
+   "20–30 to Strength",
+   "All Resistances +20–30",
+   "Cannot Be Frozen",
+   "Requirements -100%"
+  ],
+  "gameid": "armor_ancient_hell"
+ },
+ {
+  "name_base": "Soul DrainerVambraces",
+  "name": "Soul Drainer",
+  "base": "Vambraces",
+  "level": "74",
+  "stats": [
+   "8% Chance to cast level 3 Weaken on striking",
+   "4–7% Mana stolen per hit",
+   "4–7% Life stolen per hit",
+   "-50 to Monster Defense Per Hit",
+   "90–120% Enhanced Defense"
+  ],
+  "gameid": "gloves_chain_hell"
+ },
+ {
+  "name_base": "Rune MasterEttin Axe",
+  "name": "Rune Master",
+  "base": "Ettin Axe",
+  "level": "72",
+  "stats": [
+   "+220–270% Enhanced Damage",
+   "+5% to Maximum Cold Resist",
+   "Cannot Be Frozen"
+  ],
+  "gameid": "axe_doubleAxe_hell"
+ },
+ {
+  "name_base": "Death CleaverBerserker Axe",
+  "name": "Death Cleaver",
+  "base": "Berserker Axe",
+  "level": "70",
+  "stats": [
+   "+40% Increased Attack Speed",
+   "+230–280% Enhanced Damage",
+   "-33% Target Defense",
+   "+66% Deadly Strike",
+   "6–9 Life after each Kill"
+  ],
+  "gameid": "axe_warAxe_hell"
+ },
+ {
+  "name_base": "Executioner's JusticeGlorious Axe",
+  "name": "Executioner's Justice",
+  "base": "Glorious Axe",
+  "level": "75",
+  "stats": [
+   "50% Chance to cast level 6 Decrepify when you Kill an Enemy",
+   "+30% Increased Attack Speed",
+   "+240–290% Enhanced Damage",
+   "-33% Target Defense",
+   "+25% Chance of Crushing Blow"
+  ],
+  "gameid": "axe2h_giantAxe_hell"
+ },
+ {
+  "name_base": "Wisp ProjectorRing",
+  "name": "Wisp Projector",
+  "base": "Ring",
+  "level": "76",
+  "stats": [
+   "10% Chance to cast level 16 Lightning on striking",
+   "Lightning Absorb 10–20%",
+   "10–20% Better Chance of Getting Magic Items",
+   "Level 7 Spirit of Barbs (11/11 Charges)",
+   "Level 5 Heart of Wolverine (13/13 Charges)",
+   "Level 2 Oak Sage (15/15 Charges)"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "LaceratorWinged Axe",
+  "name": "Lacerator",
+  "base": "Winged Axe",
+  "level": "68",
+  "stats": [
+   "33% Chance to cast level 3 Amplify Damage on striking",
+   "+30% Increased Attack Speed",
+   "+150–210% Enhanced Damage",
+   "+33% Chance of Open Wounds",
+   "Prevent Monster Heal",
+   "Hit Causes Monster to Flee +50%",
+   "Replenishes quantity [1 in 4 sec.]"
+  ],
+  "gameid": "axe_axe"
+ },
+ {
+  "name_base": "Ethereal EdgeSilver-edged Axe",
+  "name": "Ethereal Edge",
+  "base": "Silver-edged Axe",
+  "level": "74",
+  "stats": [
+   "Indestructible",
+   "+25% Increased Attack Speed",
+   "+150–180% Enhanced Damage",
+   "270–350 to Attack Rating",
+   "150–200% Damage to Demons",
+   "10–12 Fire Absorb",
+   "5–10 Life after each Demon Kill",
+   "Ethereal (Cannot be Repaired)"
+  ],
+  "gameid": "axe2h_broadAxe_hell"
+ },
+ {
+  "name_base": "Demonhorn's EdgeDestroyer Helm",
+  "name": "Demonhorn's Edge",
+  "base": "Destroyer Helm",
+  "level": "61",
+  "stats": [
+   "1–3 to Warcries (Barbarian Only)",
+   "1–3 to Masteries (Barbarian Only)",
+   "1–3 to Combat Skills (Barbarian Only)",
+   "+10% Increased Attack Speed",
+   "3–6% Life stolen per hit",
+   "120–160% Enhanced Defense",
+   "Attacker Takes Damage of 55–77"
+  ],
+  "gameid": "helm_helm"
+ },
+ {
+  "name_base": "GimmershredFlying Axe",
+  "name": "Gimmershred",
+  "base": "Flying Axe",
+  "level": "70",
+  "stats": [
+   "+30% Increased Attack Speed",
+   "+160–210% Enhanced Damage",
+   "Adds 218-483 fire damage",
+   "Adds 29-501 lightning damage",
+   "Adds 176-397 cold damage",
+   "Increased Stack Size +60"
+  ],
+  "gameid": "axe_axe"
+ },
+ {
+  "name_base": "WindhammerOgre Maul",
+  "name": "Windhammer",
+  "base": "Ogre Maul",
+  "level": "68",
+  "stats": [
+   "33% Chance to cast level 22 Twister on striking",
+   "+60% Increased Attack Speed",
+   "+180–230% Enhanced Damage",
+   "+50% Chance of Crushing Blow",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt2h_maul_hell"
+ },
+ {
+  "name_base": "Nightwing's VeilSpired Helm",
+  "name": "Nightwing's Veil",
+  "base": "Spired Helm",
+  "level": "67",
+  "stats": [
+   "+2 to All Skills",
+   "8–15% to Cold Skill Damage",
+   "90–120% Enhanced Defense",
+   "10–20 to Dexterity",
+   "5–9 Cold Absorb",
+   "Half Freeze Duration",
+   "Requirements -50%"
+  ],
+  "gameid": "helm_helm"
+ },
+ {
+  "name_base": "Andariel's VisageDemonhead",
+  "name": "Andariel's Visage",
+  "base": "Demonhead",
+  "level": "83",
+  "stats": [
+   "15% Chance to cast level 15 Poison Nova when struck",
+   "+2 to All Skills",
+   "+20% Increased Attack Speed",
+   "8–10% Life stolen per hit",
+   "100–150% Enhanced Defense",
+   "25–30 to Strength",
+   "+10% to Maximum Poison Resist",
+   "Fire Resist -30%",
+   "Poison Resist +70%",
+   "Level 3 Venom (20/20 Charges)"
+  ],
+  "gameid": "helm_mask_hell"
+ },
+ {
+  "name_base": "Steel CarapaceShadow Plate",
+  "name": "Steel Carapace",
+  "base": "Shadow Plate",
+  "level": "66",
+  "stats": [
+   "8% Chance to cast level 6 Iron Maiden when struck",
+   "+20% Faster Hit Recovery",
+   "190–220% Enhanced Defense",
+   "Regenerate Mana 10–15%",
+   "Cold Resist 40–60%",
+   "Damage Reduced by 9–14",
+   "Repairs 1 durability in 20 seconds"
+  ],
+  "gameid": "armor_fullPlate_hell"
+ },
+ {
+  "name_base": "Spirit WardWard",
+  "name": "Spirit Ward",
+  "base": "Ward",
+  "level": "68",
+  "stats": [
+   "5% Chance to cast level 8 Fade when struck",
+   "+25% Faster Block Rate",
+   "20–30% Increased Chance of Blocking",
+   "130–180% Enhanced Defense",
+   "All Resistances +30–40",
+   "6–11 Cold Absorb"
+  ],
+  "gameid": "shield_gothicShield_hell"
+ },
+ {
+  "name_base": "StormlashScourge",
+  "name": "Stormlash",
+  "base": "Scourge",
+  "level": "82",
+  "stats": [
+   "20% Chance to cast level 18 Tornado on striking",
+   "15% Chance to cast level 10 Static Field on striking",
+   "+30% Increased Attack Speed",
+   "+240–300% Enhanced Damage",
+   "Adds 1-473 lightning damage",
+   "+33% Chance of Crushing Blow",
+   "3–9 Lightning Absorb",
+   "Attacker Takes Lightning Damage of 30",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_flail_hell"
+ },
+ {
+  "name_base": "Dracul's GraspVampirebone Gloves",
+  "name": "Dracul's Grasp",
+  "base": "Vampirebone Gloves",
+  "level": "76",
+  "stats": [
+   "5% Chance to cast level 10 Life Tap on striking",
+   "7–10% Life stolen per hit",
+   "+25% Chance of Open Wounds",
+   "90–120% Enhanced Defense",
+   "10–15 to Strength",
+   "5–10 Life after each Kill"
+  ],
+  "gameid": "gloves_heavy_hell"
+ },
+ {
+  "name_base": "Templar's MightSacred Armor",
+  "name": "Templar's Might",
+  "base": "Sacred Armor",
+  "level": "74",
+  "stats": [
+   "1–2 to Offensive Auras (Paladin Only)",
+   "+20% Faster Hit Recovery",
+   "170–220% Enhanced Defense",
+   "250–300 Defense vs. Missile",
+   "10–15 to Strength",
+   "10–15 to Vitality",
+   "40–50 Maximum Stamina"
+  ],
+  "gameid": "armor_ancient_hell"
+ },
+ {
+  "name_base": "Firelizard's TalonsFeral Claws",
+  "name": "Firelizard's Talons",
+  "base": "Feral Claws",
+  "level": "67",
+  "stats": [
+   "1–3 to Martial Arts (Assassin Only)",
+   "+15% Increased Attack Speed",
+   "+200–270% Enhanced Damage",
+   "Adds 236-480 fire damage",
+   "1–2 to Wake of Inferno (Assassin Only)",
+   "1–2 to Wake of Fire (Assassin Only)",
+   "Fire Resist 40–70%"
+  ],
+  "gameid": "claws_claws_hell"
+ },
+ {
+  "name_base": "Sandstorm TrekScarabshell Boots",
+  "name": "Sandstorm Trek",
+  "base": "Scarabshell Boots",
+  "level": "64",
+  "stats": [
+   "+20% Faster Run/Walk",
+   "+20% Faster Hit Recovery",
+   "140–170% Enhanced Defense",
+   "10–15 to Strength",
+   "10–15 to Vitality",
+   "+99 Maximum Stamina (Based on Character Level)",
+   "50% Slower Stamina Drain",
+   "Poison Resist 40–70%",
+   "Repairs 1 durability in 20 seconds"
+  ],
+  "gameid": "boots_heavy_hell"
+ },
+ {
+  "name_base": "MarrowwalkBoneweave Boots",
+  "name": "Marrowwalk",
+  "base": "Boneweave Boots",
+  "level": "66",
+  "stats": [
+   "+20% Faster Run/Walk",
+   "1–2 to Skeleton Mastery (Necromancer Only)",
+   "170–200% Enhanced Defense",
+   "10–20 to Strength",
+   "+17 to Dexterity",
+   "Regenerate Mana 10%",
+   "Heal Stamina Plus 10%",
+   "Half Freeze Duration",
+   "Level 33 Bone Prison (13/13 Charges)",
+   "Level 12 Life Tap (10/10 Charges)"
+  ],
+  "gameid": "boots_chain_hell"
+ },
+ {
+  "name_base": "Arachnid MeshSpiderweb Sash",
+  "name": "Arachnid Mesh",
+  "base": "Spiderweb Sash",
+  "level": "80",
+  "stats": [
+   "+1 to All Skills",
+   "+20% Faster Cast Rate",
+   "Slows Target by 10%",
+   "90–120% Enhanced Defense",
+   "Increase Maximum Mana 5%",
+   "Level 3 Venom (11/11 Charges)"
+  ],
+  "gameid": "belt_sash_hell"
+ },
+ {
+  "name_base": "Nosferatu's CoilVampirefang Belt",
+  "name": "Nosferatu's Coil",
+  "base": "Vampirefang Belt",
+  "level": "51",
+  "stats": [
+   "+10% Increased Attack Speed",
+   "5–7% Life stolen per hit",
+   "Slows Target by 10%",
+   "+15 to Strength",
+   "+2 to Mana after each Kill",
+   "-3 to Light Radius"
+  ],
+  "gameid": "belt_lightBelt_hell"
+ },
+ {
+  "name_base": "MetalgridAmulet",
+  "name": "Metalgrid",
+  "base": "Amulet",
+  "level": "81",
+  "stats": [
+   "400–450 to Attack Rating",
+   "300–350 Defense",
+   "All Resistances +25–35",
+   "Level 22 Iron Golem (11/11 Charges)",
+   "Level 12 Iron Maiden (20/20 Charges)"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Verdungo's Hearty CordMithril Coil",
+  "name": "Verdungo's Hearty Cord",
+  "base": "Mithril Coil",
+  "level": "63",
+  "stats": [
+   "+10% Faster Hit Recovery",
+   "90–140% Enhanced Defense",
+   "30–40 to Vitality",
+   "Replenish Life 10–13",
+   "100–120 Maximum Stamina",
+   "Physical Damage Received Reduced by 10–15%"
+  ],
+  "gameid": "belt_belt_hell"
+ },
+ {
+  "name_base": "Carrion WindRing",
+  "name": "Carrion Wind",
+  "base": "Ring",
+  "level": "60",
+  "stats": [
+   "10% Chance to cast level 10 Poison Nova when struck",
+   "8% Chance to cast level 13 Twister on striking",
+   "6–9% Life stolen per hit",
+   "100–160 Defense vs. Missile",
+   "Poison Resist +55%",
+   "+10% Damage Taken Goes To Mana",
+   "Level 21 Poison Creeper (15/15 Charges)"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Giant SkullBone Visage",
+  "name": "Giant Skull",
+  "base": "Bone Visage",
+  "level": "65",
+  "stats": [
+   "+10% Chance of Crushing Blow",
+   "Knockback",
+   "250–320 Defense",
+   "25–35 to Strength"
+  ],
+  "gameid": "helm_boneHelm_hell"
+ },
+ {
+  "name_base": "CranebeakWar Spike",
+  "name": "Cranebeak",
+  "base": "War Spike",
+  "level": "63",
+  "stats": [
+   "+40% Increased Attack Speed",
+   "+240–300% Enhanced Damage",
+   "-25% Target Defense",
+   "Adds 1-305 lightning damage",
+   "20–50% Better Chance of Getting Magic Items",
+   "Level 8 Raven (15/15 Charges)"
+  ],
+  "gameid": "axe_militaryPick_hell"
+ },
+ {
+  "name_base": "Nord's TenderizerTruncheon",
+  "name": "Nord's Tenderizer",
+  "base": "Truncheon",
+  "level": "68",
+  "stats": [
+   "+25% Increased Attack Speed",
+   "+270–330% Enhanced Damage",
+   "150–180% Bonus to Attack Rating",
+   "Adds 205-455 cold damage",
+   "Freezes target +2–4",
+   "Cold Absorb 5–15%",
+   "Level 16 Blizzard (12/12 Charges)",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt_club_hell"
+ },
+ {
+  "name_base": "Earth ShifterThunder Maul",
+  "name": "Earth Shifter",
+  "base": "Thunder Maul",
+  "level": "69",
+  "stats": [
+   "25% Chance to cast level 14 Fissure on striking",
+   "+7 to Elemental Skills (Druid Only)",
+   "+10% Increased Attack Speed",
+   "+10% Faster Cast Rate",
+   "+250–300% Enhanced Damage",
+   "+33% Chance of Crushing Blow",
+   "Level 14 Volcano (30/30 Charges)",
+   "+50% Damage to Undead"
+  ],
+  "gameid": "blunt2h_greatMaul_hell"
+ },
+ {
+  "name_base": "BonehewOgre Axe",
+  "name": "Bonehew",
+  "base": "Ogre Axe",
+  "level": "64",
+  "stats": [
+   "50% Chance to cast level 16 Bone Spear on striking",
+   "+30% Increased Attack Speed",
+   "+270–320% Enhanced Damage",
+   "Prevent Monster Heal",
+   "Level 14 Corpse Explosion (30/30 Charges)",
+   "Socketed (2)"
+  ],
+  "gameid": "axe_axe"
+ },
+ {
+  "name_base": "SteelrendOgre Gauntlets",
+  "name": "Steelrend",
+  "base": "Ogre Gauntlets",
+  "level": "70",
+  "stats": [
+   "+30–60% Enhanced Damage",
+   "+10% Chance of Crushing Blow",
+   "170–210 Defense",
+   "15–20 to Strength"
+  ],
+  "gameid": "gloves_gauntlets_hell"
+ },
+ {
+  "name_base": "DreadfangLegend Sword",
+  "name": "Dreadfang",
+  "base": "Legend Sword",
+  "level": "61",
+  "stats": [
+   "33% Chance to cast level 3 Amplify Damage on striking",
+   "+33% Increased Attack Speed",
+   "+133–166% Enhanced Damage",
+   "33% Bonus to Attack Rating",
+   "3–6% Mana stolen per hit",
+   "+33% Deadly Strike",
+   "+3 to Mirrored Blades (Warlock Only)",
+   "Requirements -33%"
+  ],
+  "gameid": "blade2h_twoHandedSword_hell"
+ },
+ {
+  "name_base": "WraithstepMirrored Boots",
+  "name": "Wraithstep",
+  "base": "Mirrored Boots",
+  "level": "67",
+  "stats": [
+   "+30% Faster Run/Walk",
+   "+20% Faster Hit Recovery",
+   "40–60 Defense",
+   "10–15 to Dexterity",
+   "10–15 to Energy",
+   "+1 to Demon Skills (Warlock Only)",
+   "+1 to Eldritch Skills (Warlock Only)",
+   "+1 to Chaos Skills (Warlock Only)"
+  ],
+  "gameid": "boots_lightPlated_hell"
+ },
+ {
+  "name_base": "SlingRing",
+  "name": "Sling",
+  "base": "Ring",
+  "level": "50",
+  "stats": [
+   "+10% Faster Cast Rate",
+   "-3–5% to Enemy Magic Resistance",
+   "+1 to Town Portal",
+   "Slows Target by 15%",
+   "10–15 to Energy",
+   "10–20% Better Chance of Getting Magic Items"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "OpalveinRing",
+  "name": "Opalvein",
+  "base": "Ring",
+  "level": "50",
+  "stats": [
+   "2% Chance to cast level 15 Flame Wave on attack",
+   "+10% Faster Cast Rate",
+   "All Resistances +6–8",
+   "1–3 to Mana after each Kill",
+   "1–3 Life after each Kill",
+   "3–5% to Magic Skill Damage",
+   "+20–40% Enhanced Damage",
+   "3–5% to Fire Skill Damage",
+   "3–5% to Cold Skill Damage",
+   "3–5% to Lightning Skill Damage",
+   "3–5% to Poison Skill Damage"
+  ],
+  "gameid": "copperRing"
+ },
+ {
+  "name_base": "Entropy LocketAmulet",
+  "name": "Entropy Locket",
+  "base": "Amulet",
+  "level": "54",
+  "stats": [
+   "4% Chance to cast level 19 Miasma Chain on striking",
+   "5–10% Faster Cast Rate",
+   "5–10% to Magic Skill Damage",
+   "Increase Maximum Mana 10–15%",
+   "Lightning Resist 25–40%",
+   "Magic Damage Reduced by 8–12"
+  ],
+  "gameid": "boneAmulet"
+ },
+ {
+  "name_base": "Gheed's WagerTroll Belt",
+  "name": "Gheed's Wager",
+  "base": "Troll Belt",
+  "level": "71",
+  "stats": [
+   "10–20% Faster Run/Walk",
+   "10–20% Faster Cast Rate",
+   "10–20% Faster Hit Recovery",
+   "-3–7% to Enemy Magic Resistance",
+   "90–150% Enhanced Defense",
+   "All Resistances +5–15",
+   "44–75% Extra Gold from Monsters"
+  ],
+  "gameid": "belt_heavyBelt_hell"
+ },
+ {
+  "name_base": "Hellwarden's WillDeath Mask",
+  "name": "Hellwarden's Will",
+  "base": "Death Mask",
+  "level": "50",
+  "stats": [
+   "+1 to All Skills",
+   "+20% Increased Attack Speed",
+   "+20% Faster Cast Rate",
+   "-5–8% to Enemy Magic Resistance",
+   "-5–8% to Enemy Fire Resistance",
+   "150–215% Enhanced Defense",
+   "4–6 to Mana after each Kill"
+  ],
+  "gameid": "helm_mask_nm"
+ }
+]

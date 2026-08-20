@@ -1,0 +1,3394 @@
+[
+ {
+  "gameid": "axe_handAxe",
+  "name": "The Gnasher",
+  "base": "Hand Axe",
+  "level": "5",
+  "stats": {
+   "enhancedDmg": [
+    60,
+    70
+   ],
+   "critChance": 20,
+   "poisonDmg": 50,
+   "str": 8
+  }
+ },
+ {
+  "gameid": "axe_axe",
+  "name": "Deathspade",
+  "base": "Axe",
+  "level": "9",
+  "stats": {
+   "enhancedDmg": [
+    60,
+    70
+   ],
+   "baseDmgMin": 8,
+   "attackRating": 15
+  }
+ },
+ {
+  "gameid": "axe_doubleAxe",
+  "name": "Bladebone",
+  "base": "Double Axe",
+  "level": "15",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    30,
+    50
+   ],
+   "fireDmg": [
+    8,
+    12
+   ],
+   "defense": 20
+  }
+ },
+ {
+  "gameid": "axe_militaryPick",
+  "name": "Skull Splitter",
+  "base": "Military Pick",
+  "level": "21",
+  "stats": {
+   "enhancedDmg": [
+    60,
+    100
+   ],
+   "attackRating": [
+    50,
+    100
+   ],
+   "lightningDmg": [
+    1,
+    12
+   ],
+   "poisonDmg": 15,
+   "manaRegen": 20
+  }
+ },
+ {
+  "gameid": "axe_warAxe",
+  "name": "Rakescar",
+  "base": "War Axe",
+  "level": "27",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    75,
+    150
+   ],
+   "attackRating": 50,
+   "poisonDmg": 38,
+   "poisonDur": 3,
+   "poisonRes": 50
+  }
+ },
+ {
+  "gameid": "axe2h_largeAxe",
+  "name": "Axe of Fechmar",
+  "base": "Large Axe",
+  "level": "8",
+  "stats": {
+   "enhancedDmg": [
+    70,
+    90
+   ],
+   "coldRes": 50
+  }
+ },
+ {
+  "gameid": "axe2h_broadAxe",
+  "name": "Goreshovel",
+  "base": "Broad Axe",
+  "level": "14",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    40,
+    50
+   ],
+   "baseDmgMax": 9,
+   "poisonDmg": 60,
+   "str": 25
+  }
+ },
+ {
+  "gameid": "axe2h_battleAxe",
+  "name": "The Chieftain",
+  "base": "Battle Axe",
+  "level": "19",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": 100,
+   "lightningDmg": [
+    1,
+    40
+   ],
+   "allRes": [
+    10,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "axe2h_greatAxe",
+  "name": "Brainhew",
+  "base": "Great Axe",
+  "level": "25",
+  "stats": {
+   "enhancedDmg": [
+    50,
+    80
+   ],
+   "baseDmgMin": 14,
+   "fireDmg": [
+    15,
+    35
+   ],
+   "manaSteal": [
+    10,
+    13
+   ],
+   "bonusMana": 25
+  }
+ },
+ {
+  "gameid": "axe2h_giantAxe",
+  "name": "Humongous",
+  "base": "Giant Axe",
+  "level": "29",
+  "stats": {
+   "enhancedDmg": [
+    80,
+    120
+   ],
+   "baseDmgMin": [
+    8,
+    15
+   ],
+   "critChance": 33,
+   "str": [
+    20,
+    30
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_club",
+  "name": "Felloak",
+  "base": "Club",
+  "level": "3",
+  "stats": {
+   "enhancedDmg": [
+    70,
+    80
+   ],
+   "fireDmg": [
+    6,
+    8
+   ],
+   "knockback": 1,
+   "lightningRes": 60,
+   "fireRes": 20
+  }
+ },
+ {
+  "gameid": "blunt_spikedClub",
+  "name": "Stoutnail",
+  "base": "Spiked Club",
+  "level": "5",
+  "stats": {
+   "enhancedDmg": 100,
+   "vit": 7,
+   "dmgReduction": 2,
+   "thorns": [
+    3,
+    10
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_morningStar",
+  "name": "Bloodrise",
+  "base": "Morning Star",
+  "level": "15",
+  "stats": {
+   "ias": 10,
+   "enhancedDmg": 120,
+   "attackRating": 50,
+   "lifesteal": 5,
+   "poisonDmg": 25
+  }
+ },
+ {
+  "gameid": "blunt_flail",
+  "name": "The General's Tan Do Li Ga",
+  "base": "Flail",
+  "level": "21",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    50,
+    60
+   ],
+   "baseDmgMin": [
+    1,
+    20
+   ],
+   "manaSteal": 5,
+   "defense": 25
+  }
+ },
+ {
+  "gameid": "blunt_warHammer",
+  "name": "Ironstone",
+  "base": "War Hammer",
+  "level": "27",
+  "stats": {
+   "enhancedDmg": [
+    100,
+    150
+   ],
+   "attackRating": [
+    100,
+    150
+   ],
+   "lightningDmg": [
+    1,
+    10
+   ],
+   "str": 10
+  }
+ },
+ {
+  "gameid": "blunt2h_maul",
+  "name": "Bonesnap",
+  "base": "Maul",
+  "level": "24",
+  "stats": {
+   "enhancedDmg": [
+    200,
+    300
+   ],
+   "critChance": 40,
+   "coldRes": 30,
+   "fireRes": 30
+  }
+ },
+ {
+  "gameid": "blunt2h_greatMaul",
+  "name": "Steeldriver",
+  "base": "Great Maul",
+  "level": "29",
+  "stats": {
+   "ias": 40,
+   "enhancedDmg": [
+    150,
+    250
+   ]
+  }
+ },
+ {
+  "gameid": "blade_shortSword",
+  "name": "Rixot's Keen",
+  "base": "Short Sword",
+  "level": "2",
+  "stats": {
+   "enhancedDmg": 100,
+   "baseDmgMin": 5,
+   "attackRating": 20,
+   "critChance": 25,
+   "defense": 25
+  }
+ },
+ {
+  "gameid": "blade_scimitar",
+  "name": "Blood Crescent",
+  "base": "Scimitar",
+  "level": "7",
+  "stats": {
+   "ias": 15,
+   "enhancedDmg": [
+    60,
+    80
+   ],
+   "lifesteal": 15,
+   "poisonDmg": 33,
+   "bonusHp": 15,
+   "allRes": 15
+  }
+ },
+ {
+  "gameid": "blade_crystalSword",
+  "name": "Azurewrath",
+  "base": "Crystal Sword",
+  "level": "13",
+  "stats": {
+   "enhancedDmg": 100,
+   "lightningDmg": [
+    5,
+    10
+   ],
+   "coldDmg": [
+    3,
+    6
+   ],
+   "critChance": 50,
+   "magicFind": 10
+  }
+ },
+ {
+  "gameid": "blade_broadSword",
+  "name": "Griswold's Edge",
+  "base": "Broad Sword",
+  "level": "17",
+  "stats": {
+   "ias": 10,
+   "enhancedDmg": [
+    80,
+    120
+   ],
+   "attackRating": 100,
+   "fireDmg": [
+    10,
+    12
+   ],
+   "knockback": 1,
+   "str": 12
+  }
+ },
+ {
+  "gameid": "blade_warSword",
+  "name": "Culwen's Point",
+  "base": "War Sword",
+  "level": "29",
+  "stats": {
+   "allSkills": 1,
+   "ias": 20,
+   "enhancedDmg": [
+    70,
+    80
+   ],
+   "attackRating": 60
+  }
+ },
+ {
+  "gameid": "blade2h_twoHandedSword",
+  "name": "Shadowfang",
+  "base": "Two-Handed Sword",
+  "level": "12",
+  "stats": {
+   "enhancedDmg": 100,
+   "coldDmg": [
+    10,
+    30
+   ],
+   "manaSteal": 9,
+   "lifesteal": 9,
+   "coldRes": 20
+  }
+ },
+ {
+  "gameid": "blade2h_claymore",
+  "name": "Soulflay",
+  "base": "Claymore",
+  "level": "19",
+  "stats": {
+   "ias": 10,
+   "enhancedDmg": [
+    70,
+    100
+   ],
+   "manaSteal": [
+    4,
+    10
+   ],
+   "lifesteal": 4,
+   "allRes": 5
+  }
+ },
+ {
+  "gameid": "blade2h_bastardSword",
+  "name": "Blacktongue",
+  "base": "Bastard Sword",
+  "level": "26",
+  "stats": {
+   "enhancedDmg": [
+    50,
+    60
+   ],
+   "attackRating": 50,
+   "poisonDmg": 113,
+   "poisonDur": 6,
+   "preventHeal": 1,
+   "poisonRes": 50
+  }
+ },
+ {
+  "gameid": "blade2h_flamberge",
+  "name": "Ripsaw",
+  "base": "Flamberge",
+  "level": "26",
+  "stats": {
+   "enhancedDmg": [
+    80,
+    100
+   ],
+   "baseDmgMax": 15,
+   "manaSteal": 6,
+   "poisonDmg": 80
+  }
+ },
+ {
+  "gameid": "blade2h_greatSword",
+  "name": "The Patriarch",
+  "base": "Great Sword",
+  "level": "29",
+  "stats": {
+   "enhancedDmg": [
+    100,
+    120
+   ],
+   "str": 10,
+   "dmgReduction": 6,
+   "goldFind": 100
+  }
+ },
+ {
+  "gameid": "helm_cap",
+  "name": "Biggin's Bonnet",
+  "base": "Cap",
+  "level": "3",
+  "stats": {
+   "enhancedDmg": 30,
+   "attackRating": 30,
+   "defense": 14,
+   "bonusHp": 15,
+   "bonusMana": 15
+  }
+ },
+ {
+  "gameid": "helm_cap",
+  "name": "Tarnhelm",
+  "base": "Skull Cap",
+  "level": "15",
+  "stats": {
+   "allSkills": 1,
+   "goldFind": 75,
+   "magicFind": [
+    25,
+    50
+   ]
+  }
+ },
+ {
+  "gameid": "helm_helm",
+  "name": "Coif of Glory",
+  "base": "Helm",
+  "level": "14",
+  "stats": {
+   "defense": 10,
+   "lightningRes": 15
+  }
+ },
+ {
+  "gameid": "helm_fullHelm",
+  "name": "Duskdeep",
+  "base": "Full Helm",
+  "level": "17",
+  "stats": {
+   "baseDmgMax": 8,
+   "enhancedDefense": [
+    30,
+    50
+   ],
+   "defense": [
+    10,
+    20
+   ],
+   "allRes": 15,
+   "dmgReduction": 7
+  }
+ },
+ {
+  "gameid": "helm_boneHelm",
+  "name": "Wormskull",
+  "base": "Bone Helm",
+  "level": "21",
+  "stats": {
+   "allSkills": 1,
+   "poisonDmg": 80,
+   "poisonDur": 8,
+   "lifesteal": 5,
+   "bonusMana": 10,
+   "poisonRes": 25
+  }
+ },
+ {
+  "gameid": "helm_helm",
+  "name": "Howltusk",
+  "base": "Great Helm",
+  "level": "25",
+  "stats": {
+   "knockback": 1,
+   "enhancedDefense": 80,
+   "dmgReduction": 2,
+   "thorns": 3
+  }
+ },
+ {
+  "gameid": "helm_mask",
+  "name": "The Face of Horror",
+  "base": "Mask",
+  "level": "20",
+  "stats": {
+   "defense": 25,
+   "str": 20,
+   "allRes": 10
+  }
+ },
+ {
+  "gameid": "armor_leather",
+  "name": "Blinkbat's Form",
+  "base": "Leather Armor",
+  "level": "12",
+  "stats": {
+   "fireDmg": [
+    3,
+    6
+   ],
+   "defense": 25
+  }
+ },
+ {
+  "gameid": "armor_leather",
+  "name": "The Centurion",
+  "base": "Hard Leather Armor",
+  "level": "14",
+  "stats": {
+   "attackRating": 50,
+   "defense": 30,
+   "bonusHp": 15,
+   "lifeRegen": 5,
+   "bonusMana": 15,
+   "dmgReduction": 2
+  }
+ },
+ {
+  "gameid": "armor_ringMail",
+  "name": "Darkglow",
+  "base": "Ring Mail",
+  "level": "14",
+  "stats": {
+   "attackRating": 20,
+   "enhancedDefense": [
+    70,
+    100
+   ],
+   "allRes": 10
+  }
+ },
+ {
+  "gameid": "armor_fullPlate",
+  "name": "Goldskin",
+  "base": "Full Plate Mail",
+  "level": "28",
+  "stats": {
+   "enhancedDefense": [
+    120,
+    150
+   ],
+   "allRes": 35,
+   "thorns": 10,
+   "goldFind": 100
+  }
+ },
+ {
+  "gameid": "armor_ancient",
+  "name": "Silks of the Victor",
+  "base": "Ancient Armor",
+  "level": "28",
+  "stats": {
+   "allSkills": 1,
+   "manaSteal": 5,
+   "enhancedDefense": [
+    100,
+    120
+   ]
+  }
+ },
+ {
+  "gameid": "armor_lightPlate",
+  "name": "Heavenly Garb",
+  "base": "Light Plate",
+  "level": "29",
+  "stats": {
+   "enhancedDefense": 100,
+   "int": 15,
+   "manaRegen": 25,
+   "allRes": 10
+  }
+ },
+ {
+  "gameid": "shield_buckler",
+  "name": "Pelta Lunata",
+  "base": "Buckler",
+  "level": "2",
+  "stats": {
+   "enhancedDefense": [
+    30,
+    40
+   ],
+   "defense": 30,
+   "str": 2,
+   "vit": 10,
+   "int": 10
+  }
+ },
+ {
+  "gameid": "shield_smallShield",
+  "name": "Umbral Disk",
+  "base": "Small Shield",
+  "level": "9",
+  "stats": {
+   "enhancedDefense": [
+    40,
+    50
+   ],
+   "defense": 30,
+   "dex": 10,
+   "bonusHp": 20
+  }
+ },
+ {
+  "gameid": "shield_largeShield",
+  "name": "Stormguild",
+  "base": "Large Shield",
+  "level": "13",
+  "stats": {
+   "lightningDmg": [
+    1,
+    6
+   ],
+   "enhancedDefense": [
+    50,
+    60
+   ],
+   "defense": 30,
+   "lightningRes": 25,
+   "dmgReduction": 1
+  }
+ },
+ {
+  "gameid": "shield_gothicShield",
+  "name": "The Ward",
+  "base": "Gothic Shield",
+  "level": "26",
+  "stats": {
+   "enhancedDefense": 100,
+   "defense": 40,
+   "str": 10,
+   "allRes": [
+    30,
+    50
+   ],
+   "dmgReduction": 2
+  }
+ },
+ {
+  "gameid": "gloves_leather",
+  "name": "The Hand of Broc",
+  "base": "Leather Gloves",
+  "level": "5",
+  "stats": {
+   "manaSteal": 3,
+   "lifesteal": 3,
+   "enhancedDefense": [
+    10,
+    20
+   ],
+   "defense": 10,
+   "bonusMana": 20,
+   "poisonRes": 10
+  }
+ },
+ {
+  "gameid": "gloves_heavy",
+  "name": "Bloodfist",
+  "base": "Heavy Gloves",
+  "level": "9",
+  "stats": {
+   "ias": 10,
+   "baseDmgMin": 5,
+   "enhancedDefense": [
+    10,
+    20
+   ],
+   "defense": 10,
+   "bonusHp": 40
+  }
+ },
+ {
+  "gameid": "gloves_chain",
+  "name": "Chance Guards",
+  "base": "Chain Gloves",
+  "level": "15",
+  "stats": {
+   "attackRating": 25,
+   "enhancedDefense": [
+    20,
+    30
+   ],
+   "defense": 15,
+   "goldFind": 200,
+   "magicFind": [
+    25,
+    40
+   ]
+  }
+ },
+ {
+  "gameid": "gloves_lightGauntlets",
+  "name": "Magefist",
+  "base": "Light Gauntlets",
+  "level": "23",
+  "stats": {
+   "allSkills": 1,
+   "castSpeed": 20,
+   "fireDmg": [
+    1,
+    6
+   ],
+   "enhancedDefense": [
+    20,
+    30
+   ],
+   "defense": 10,
+   "manaRegen": 25
+  }
+ },
+ {
+  "gameid": "gloves_gauntlets",
+  "name": "Frostburn",
+  "base": "Gauntlets",
+  "level": "29",
+  "stats": {
+   "enhancedDmg": 5,
+   "coldDmg": [
+    1,
+    6
+   ],
+   "enhancedDefense": [
+    10,
+    20
+   ],
+   "defense": 30,
+   "bonusMana": 40
+  }
+ },
+ {
+  "gameid": "boots_boots",
+  "name": "Hotspur",
+  "base": "Boots",
+  "level": "5",
+  "stats": {
+   "fireDmg": [
+    3,
+    6
+   ],
+   "enhancedDefense": [
+    10,
+    20
+   ],
+   "defense": 6,
+   "bonusHp": 15,
+   "fireRes": 45
+  }
+ },
+ {
+  "gameid": "boots_heavy",
+  "name": "Gorefoot",
+  "base": "Heavy Boots",
+  "level": "9",
+  "stats": {
+   "manaSteal": 2,
+   "enhancedDefense": [
+    20,
+    30
+   ],
+   "defense": 12,
+   "thorns": 2
+  }
+ },
+ {
+  "gameid": "boots_chain",
+  "name": "Treads of Cthon",
+  "base": "Chain Boots",
+  "level": "15",
+  "stats": {
+   "enhancedDefense": [
+    30,
+    40
+   ],
+   "defense": 12,
+   "bonusHp": 10
+  }
+ },
+ {
+  "gameid": "boots_lightPlated",
+  "name": "Goblin Toe",
+  "base": "Light Plated Boots",
+  "level": "22",
+  "stats": {
+   "critChance": 25,
+   "enhancedDefense": [
+    50,
+    60
+   ],
+   "defense": 15,
+   "dmgReduction": 2
+  }
+ },
+ {
+  "gameid": "boots_greaves",
+  "name": "Tearhaunch",
+  "base": "Greaves",
+  "level": "29",
+  "stats": {
+   "enhancedDefense": [
+    60,
+    80
+   ],
+   "defense": 35,
+   "str": 5,
+   "dex": 5,
+   "allRes": 10
+  }
+ },
+ {
+  "gameid": "belt_sash",
+  "name": "Lenymo",
+  "base": "Sash",
+  "level": "7",
+  "stats": {
+   "bonusMana": 15,
+   "manaRegen": 30,
+   "allRes": 5
+  }
+ },
+ {
+  "gameid": "belt_lightBelt",
+  "name": "Snakecord",
+  "base": "Light Belt",
+  "level": "12",
+  "stats": {
+   "poisonDmg": 12,
+   "poisonDur": 3,
+   "enhancedDefense": [
+    20,
+    30
+   ],
+   "defense": 10,
+   "lifeRegen": 5,
+   "poisonRes": 25
+  }
+ },
+ {
+  "gameid": "belt_belt",
+  "name": "Nightsmoke",
+  "base": "Belt",
+  "level": "20",
+  "stats": {
+   "enhancedDefense": [
+    30,
+    50
+   ],
+   "defense": 15,
+   "bonusMana": 20,
+   "allRes": 10,
+   "dmgReduction": 2
+  }
+ },
+ {
+  "gameid": "belt_heavyBelt",
+  "name": "Goldwrap",
+  "base": "Heavy Belt",
+  "level": "27",
+  "stats": {
+   "ias": 10,
+   "enhancedDefense": [
+    40,
+    60
+   ],
+   "defense": 25,
+   "goldFind": [
+    50,
+    80
+   ],
+   "magicFind": 30
+  }
+ },
+ {
+  "gameid": "belt_platedBelt",
+  "name": "Bladebuckle",
+  "base": "Plated Belt",
+  "level": "29",
+  "stats": {
+   "enhancedDefense": [
+    80,
+    100
+   ],
+   "defense": 30,
+   "str": 5,
+   "dex": 10,
+   "dmgReduction": 3,
+   "thorns": 8
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Nokozan Relic",
+  "base": "Amulet",
+  "level": "10",
+  "stats": {
+   "fireDmg": [
+    3,
+    6
+   ],
+   "fireRes": 50
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "The Eye of Etlich",
+  "base": "Amulet",
+  "level": "15",
+  "stats": {
+   "allSkills": 1,
+   "coldDmg": [
+    1,
+    2
+   ],
+   "lifesteal": [
+    3,
+    7
+   ]
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "The Mahim-Oak Curio",
+  "base": "Amulet",
+  "level": "25",
+  "stats": {
+   "attackRating": 10,
+   "enhancedDefense": 10,
+   "defense": 10,
+   "str": 10,
+   "vit": 10,
+   "dex": 10,
+   "int": 10,
+   "allRes": 10
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Nagelring",
+  "base": "Ring",
+  "level": "7",
+  "stats": {
+   "attackRating": [
+    50,
+    75
+   ],
+   "dmgReduction": 3,
+   "thorns": 3,
+   "magicFind": [
+    15,
+    30
+   ]
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Manald Heal",
+  "base": "Ring",
+  "level": "15",
+  "stats": {
+   "manaSteal": [
+    4,
+    7
+   ],
+   "bonusHp": 20,
+   "lifeRegen": [
+    5,
+    8
+   ],
+   "manaRegen": 20
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "The Stone of Jordan",
+  "base": "Ring",
+  "level": "29",
+  "stats": {
+   "allSkills": 1,
+   "lightningDmg": [
+    1,
+    12
+   ],
+   "bonusMana": 45
+  }
+ },
+ {
+  "gameid": "blunt_flail",
+  "name": "Khalim's Flail",
+  "base": "Khalim's Flail",
+  "level": "0",
+  "stats": {
+   "ias": 50,
+   "attackRating": 40,
+   "lightningDmg": [
+    1,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "axe_handAxe_nm",
+  "name": "Coldkill",
+  "base": "Hatchet",
+  "level": "36",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    150,
+    190
+   ],
+   "coldRes": 15
+  }
+ },
+ {
+  "gameid": "axe_axe_nm",
+  "name": "Butcher's Pupil",
+  "base": "Cleaver",
+  "level": "39",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    150,
+    200
+   ],
+   "baseDmgMin": [
+    30,
+    50
+   ],
+   "critChance": 35,
+   "poisonDmg": 25
+  }
+ },
+ {
+  "gameid": "axe_doubleAxe_nm",
+  "name": "Islestrike",
+  "base": "Twin Axe",
+  "level": "43",
+  "stats": {
+   "allSkills": 2,
+   "enhancedDmg": [
+    170,
+    190
+   ],
+   "critChance": 25,
+   "str": 10,
+   "vit": 10,
+   "dex": 10,
+   "int": 10
+  }
+ },
+ {
+  "gameid": "axe_militaryPick_nm",
+  "name": "Pompeii's Wrath",
+  "base": "Crowbill",
+  "level": "45",
+  "stats": {
+   "enhancedDmg": [
+    140,
+    170
+   ],
+   "fireDmg": [
+    35,
+    150
+   ],
+   "knockback": 1
+  }
+ },
+ {
+  "gameid": "axe_warAxe_nm",
+  "name": "Guardian Naga",
+  "base": "Naga",
+  "level": "48",
+  "stats": {
+   "enhancedDmg": [
+    150,
+    180
+   ],
+   "baseDmgMax": 20,
+   "poisonDmg": 250,
+   "poisonDur": 10,
+   "poisonRes": 30,
+   "thorns": 15
+  }
+ },
+ {
+  "gameid": "axe2h_largeAxe_nm",
+  "name": "Warlord's Trust",
+  "base": "Military Axe",
+  "level": "35",
+  "stats": {
+   "enhancedDmg": 175,
+   "defense": 75,
+   "vit": 49,
+   "lifeRegen": 20,
+   "allRes": 10
+  }
+ },
+ {
+  "gameid": "axe2h_broadAxe_nm",
+  "name": "Spellsteel",
+  "base": "Bearded Axe",
+  "level": "39",
+  "stats": {
+   "castSpeed": 10,
+   "enhancedDmg": 165,
+   "bonusMana": 100,
+   "manaRegen": 25,
+   "dmgReduction": [
+    12,
+    15
+   ]
+  }
+ },
+ {
+  "gameid": "axe2h_battleAxe_nm",
+  "name": "Stormrider",
+  "base": "Tabar",
+  "level": "41",
+  "stats": {
+   "enhancedDmg": 100,
+   "baseDmgMin": [
+    35,
+    75
+   ],
+   "lightningDmg": [
+    1,
+    200
+   ]
+  }
+ },
+ {
+  "gameid": "axe2h_greatAxe_nm",
+  "name": "Boneslayer Blade",
+  "base": "Gothic Axe",
+  "level": "42",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    180,
+    220
+   ],
+   "attackRating": 35,
+   "str": 8
+  }
+ },
+ {
+  "gameid": "axe2h_giantAxe_nm",
+  "name": "The Minotaur",
+  "base": "Ancient Axe",
+  "level": "45",
+  "stats": {
+   "enhancedDmg": [
+    140,
+    200
+   ],
+   "baseDmgMin": [
+    20,
+    30
+   ],
+   "critChance": 30,
+   "str": [
+    15,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_club_nm",
+  "name": "Dark Clan Crusher",
+  "base": "Cudgel",
+  "level": "34",
+  "stats": {
+   "allSkills": 2,
+   "enhancedDmg": 195,
+   "attackRating": [
+    20,
+    25
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_spikedClub_nm",
+  "name": "Fleshrender",
+  "base": "Barbed Club",
+  "level": "38",
+  "stats": {
+   "allSkills": 1,
+   "enhancedDmg": [
+    130,
+    200
+   ],
+   "baseDmgMin": [
+    35,
+    50
+   ],
+   "critChance": 40,
+   "poisonDmg": 25,
+   "preventHeal": 1
+  }
+ },
+ {
+  "gameid": "blunt_morningStar_nm",
+  "name": "Moonfall",
+  "base": "Jagged Star",
+  "level": "42",
+  "stats": {
+   "enhancedDmg": [
+    120,
+    150
+   ],
+   "baseDmgMin": [
+    10,
+    15
+   ],
+   "fireDmg": [
+    55,
+    115
+   ],
+   "dmgReduction": [
+    9,
+    12
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_flail_nm",
+  "name": "Baezil's Vortex",
+  "base": "Knout",
+  "level": "45",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    160,
+    200
+   ],
+   "lightningDmg": [
+    1,
+    150
+   ],
+   "bonusMana": 100,
+   "lightningRes": 25
+  }
+ },
+ {
+  "gameid": "blunt_warHammer_nm",
+  "name": "Earthshaker",
+  "base": "Battle Hammer",
+  "level": "43",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": 180,
+   "knockback": 1
+  }
+ },
+ {
+  "gameid": "blunt2h_maul_nm",
+  "name": "Bloodtree Stump",
+  "base": "War Club",
+  "level": "48",
+  "stats": {
+   "enhancedDmg": [
+    180,
+    220
+   ],
+   "critChance": 50,
+   "str": 25,
+   "allRes": 20
+  }
+ },
+ {
+  "gameid": "blunt2h_greatMaul_nm",
+  "name": "The Gavel of Pain",
+  "base": "Martel de Fer",
+  "level": "45",
+  "stats": {
+   "enhancedDmg": [
+    130,
+    160
+   ],
+   "baseDmgMin": [
+    12,
+    30
+   ],
+   "thorns": 26
+  }
+ },
+ {
+  "gameid": "blade_shortSword_nm",
+  "name": "Bloodletter",
+  "base": "Gladius",
+  "level": "30",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": 140,
+   "baseDmgMin": [
+    12,
+    45
+   ],
+   "attackRating": 90,
+   "lifesteal": 8
+  }
+ },
+ {
+  "gameid": "blade_scimitar_nm",
+  "name": "Coldsteel Eye",
+  "base": "Cutlass",
+  "level": "31",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    200,
+    250
+   ],
+   "manaSteal": 6,
+   "critChance": 50
+  }
+ },
+ {
+  "gameid": "blade_crystalSword_nm",
+  "name": "Ginther's Rift",
+  "base": "Dimensional Blade",
+  "level": "37",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    100,
+    150
+   ],
+   "lightningDmg": [
+    50,
+    120
+   ],
+   "dmgReduction": [
+    7,
+    12
+   ]
+  }
+ },
+ {
+  "gameid": "blade_broadSword_nm",
+  "name": "Headstriker",
+  "base": "Battle Sword",
+  "level": "39",
+  "stats": {
+   "enhancedDmg": 150,
+   "preventHeal": 1,
+   "str": 15
+  }
+ },
+ {
+  "gameid": "blade_warSword_nm",
+  "name": "The Atlantean",
+  "base": "Ancient Sword",
+  "level": "42",
+  "stats": {
+   "allSkills": 2,
+   "enhancedDmg": [
+    200,
+    250
+   ],
+   "attackRating": 50,
+   "defense": 75,
+   "str": 16,
+   "dex": 12,
+   "vit": 8
+  }
+ },
+ {
+  "gameid": "blade2h_twoHandedSword_nm",
+  "name": "Crainte Vomir",
+  "base": "Espandon",
+  "level": "42",
+  "stats": {
+   "ias": 50,
+   "enhancedDmg": [
+    160,
+    200
+   ],
+   "dmgReduction": 10
+  }
+ },
+ {
+  "gameid": "blade2h_claymore_nm",
+  "name": "Bing Sz Wang",
+  "base": "Dacian Falx",
+  "level": "43",
+  "stats": {
+   "enhancedDmg": [
+    130,
+    160
+   ],
+   "coldDmg": [
+    50,
+    140
+   ],
+   "str": 20
+  }
+ },
+ {
+  "gameid": "blade2h_bastardSword_nm",
+  "name": "Cloudcrack",
+  "base": "Gothic Sword",
+  "level": "45",
+  "stats": {
+   "enhancedDmg": [
+    150,
+    200
+   ],
+   "lightningDmg": [
+    1,
+    240
+   ],
+   "defense": 30
+  }
+ },
+ {
+  "gameid": "blade2h_flamberge_nm",
+  "name": "Todesfaelle Flamme",
+  "base": "Zweihander",
+  "level": "46",
+  "stats": {
+   "enhancedDmg": [
+    120,
+    160
+   ],
+   "fireDmg": [
+    50,
+    200
+   ],
+   "fireRes": 40
+  }
+ },
+ {
+  "gameid": "blade2h_greatSword_nm",
+  "name": "Swordguard",
+  "base": "Executioner Sword",
+  "level": "48",
+  "stats": {
+   "enhancedDmg": [
+    170,
+    180
+   ],
+   "allRes": [
+    10,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "axe_axe",
+  "name": "The Meat Scraper",
+  "base": "Lochaber Axe",
+  "level": "41",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    150,
+    200
+   ],
+   "lifesteal": 10,
+   "poisonDmg": 50,
+   "magicFind": 25
+  }
+ },
+ {
+  "gameid": "helm_cap_nm",
+  "name": "Peasant Crown",
+  "base": "War Hat",
+  "level": "28",
+  "stats": {
+   "allSkills": 1,
+   "enhancedDefense": 100,
+   "vit": 20,
+   "int": 20,
+   "lifeRegen": [
+    6,
+    12
+   ]
+  }
+ },
+ {
+  "gameid": "helm_helm_nm",
+  "name": "Stealskull",
+  "base": "Casque",
+  "level": "35",
+  "stats": {
+   "ias": 10,
+   "manaSteal": 5,
+   "lifesteal": 5,
+   "enhancedDefense": [
+    200,
+    240
+   ],
+   "magicFind": [
+    30,
+    50
+   ]
+  }
+ },
+ {
+  "gameid": "helm_fullHelm_nm",
+  "name": "Darksight Helm",
+  "base": "Basinet",
+  "level": "38",
+  "stats": {
+   "manaSteal": 5,
+   "fireRes": [
+    20,
+    40
+   ]
+  }
+ },
+ {
+  "gameid": "helm_helm",
+  "name": "Valkyrie Wing",
+  "base": "Winged Helm",
+  "level": "44",
+  "stats": {
+   "allSkills": [
+    1,
+    2
+   ],
+   "enhancedDefense": [
+    150,
+    200
+   ]
+  }
+ },
+ {
+  "gameid": "helm_mask_nm",
+  "name": "Blackhorn's Face",
+  "base": "Death Mask",
+  "level": "41",
+  "stats": {
+   "preventHeal": 1,
+   "enhancedDefense": [
+    180,
+    220
+   ],
+   "lightningRes": 15
+  }
+ },
+ {
+  "gameid": "helm_boneHelm_nm",
+  "name": "Vampire Gaze",
+  "base": "Grim Helm",
+  "level": "41",
+  "stats": {
+   "coldDmg": [
+    6,
+    22
+   ],
+   "manaSteal": [
+    6,
+    8
+   ],
+   "lifesteal": [
+    6,
+    8
+   ],
+   "enhancedDefense": 100,
+   "dmgReduction": [
+    25,
+    35
+   ]
+  }
+ },
+ {
+  "gameid": "armor_leather_nm",
+  "name": "Skin of the Vipermagi",
+  "base": "Serpentskin Armor",
+  "level": "29",
+  "stats": {
+   "allSkills": 1,
+   "castSpeed": 30,
+   "enhancedDefense": 120,
+   "allRes": [
+    20,
+    35
+   ],
+   "dmgReduction": [
+    9,
+    13
+   ]
+  }
+ },
+ {
+  "gameid": "armor_ringMail_nm",
+  "name": "Spirit Forge",
+  "base": "Linked Mail",
+  "level": "35",
+  "stats": {
+   "fireDmg": [
+    20,
+    65
+   ],
+   "enhancedDefense": [
+    120,
+    160
+   ],
+   "str": 15,
+   "bonusHp": 123,
+   "fireRes": 5
+  }
+ },
+ {
+  "gameid": "armor_fullPlate_nm",
+  "name": "Black Hades",
+  "base": "Chaos Armor",
+  "level": "53",
+  "stats": {
+   "enhancedDefense": [
+    140,
+    200
+   ]
+  }
+ },
+ {
+  "gameid": "armor_ancient_nm",
+  "name": "Corpsemourn",
+  "base": "Ornate Plate",
+  "level": "55",
+  "stats": {
+   "fireDmg": [
+    12,
+    36
+   ],
+   "enhancedDefense": [
+    150,
+    180
+   ],
+   "str": 8,
+   "vit": 10,
+   "coldRes": 35
+  }
+ },
+ {
+  "gameid": "armor_lightPlate_nm",
+  "name": "Que-Hegan's Wisdom",
+  "base": "Mage Plate",
+  "level": "51",
+  "stats": {
+   "allSkills": 1,
+   "castSpeed": 20,
+   "enhancedDefense": [
+    140,
+    160
+   ],
+   "int": 15,
+   "dmgReduction": [
+    6,
+    10
+   ]
+  }
+ },
+ {
+  "gameid": "shield_buckler_nm",
+  "name": "Visceratuant",
+  "base": "Defender",
+  "level": "28",
+  "stats": {
+   "allSkills": 1,
+   "enhancedDefense": [
+    100,
+    150
+   ]
+  }
+ },
+ {
+  "gameid": "shield_smallShield_nm",
+  "name": "Moser's Blessed Circle",
+  "base": "Round Shield",
+  "level": "31",
+  "stats": {
+   "enhancedDefense": [
+    180,
+    220
+   ],
+   "allRes": 25
+  }
+ },
+ {
+  "gameid": "shield_largeShield_nm",
+  "name": "Stormchaser",
+  "base": "Scutum",
+  "level": "35",
+  "stats": {
+   "attackRating": 150,
+   "lightningDmg": [
+    1,
+    60
+   ],
+   "enhancedDefense": [
+    160,
+    220
+   ],
+   "lightningRes": 50
+  }
+ },
+ {
+  "gameid": "shield_gothicShield_nm",
+  "name": "Radament's Sphere",
+  "base": "Ancient Shield",
+  "level": "50",
+  "stats": {
+   "poisonDmg": 80,
+   "poisonDur": 4,
+   "enhancedDefense": [
+    160,
+    200
+   ],
+   "poisonRes": 75
+  }
+ },
+ {
+  "gameid": "gloves_leather_nm",
+  "name": "Venom Grip",
+  "base": "Demonhide Gloves",
+  "level": "29",
+  "stats": {
+   "poisonDmg": 60,
+   "poisonDur": 4,
+   "lifesteal": 5,
+   "critChance": 5,
+   "enhancedDefense": [
+    130,
+    160
+   ],
+   "defense": [
+    15,
+    25
+   ],
+   "poisonRes": 30
+  }
+ },
+ {
+  "gameid": "gloves_heavy_nm",
+  "name": "Gravepalm",
+  "base": "Sharkskin Gloves",
+  "level": "32",
+  "stats": {
+   "enhancedDefense": [
+    140,
+    180
+   ],
+   "str": 10,
+   "int": 10
+  }
+ },
+ {
+  "gameid": "gloves_chain_nm",
+  "name": "Ghoulhide",
+  "base": "Heavy Bracers",
+  "level": "36",
+  "stats": {
+   "manaSteal": [
+    4,
+    5
+   ],
+   "enhancedDefense": [
+    150,
+    190
+   ],
+   "bonusHp": 20
+  }
+ },
+ {
+  "gameid": "gloves_lightGauntlets_nm",
+  "name": "Lava Gout",
+  "base": "Battle Gauntlets",
+  "level": "42",
+  "stats": {
+   "ias": 20,
+   "fireDmg": [
+    13,
+    46
+   ],
+   "enhancedDefense": [
+    150,
+    200
+   ],
+   "fireRes": 24
+  }
+ },
+ {
+  "gameid": "gloves_gauntlets_nm",
+  "name": "Hellmouth",
+  "base": "War Gauntlets",
+  "level": "47",
+  "stats": {
+   "fireDmg": [
+    15,
+    72
+   ],
+   "enhancedDefense": [
+    150,
+    200
+   ]
+  }
+ },
+ {
+  "gameid": "boots_boots_nm",
+  "name": "Infernostride",
+  "base": "Demonhide Boots",
+  "level": "29",
+  "stats": {
+   "fireDmg": [
+    12,
+    33
+   ],
+   "enhancedDefense": [
+    120,
+    150
+   ],
+   "defense": 15,
+   "fireRes": 30,
+   "goldFind": [
+    40,
+    70
+   ]
+  }
+ },
+ {
+  "gameid": "boots_heavy_nm",
+  "name": "Waterwalk",
+  "base": "Sharkskin Boots",
+  "level": "32",
+  "stats": {
+   "enhancedDefense": [
+    180,
+    210
+   ],
+   "dex": 15,
+   "bonusHp": [
+    45,
+    65
+   ]
+  }
+ },
+ {
+  "gameid": "boots_chain_nm",
+  "name": "Silkweave",
+  "base": "Mesh Boots",
+  "level": "36",
+  "stats": {
+   "enhancedDefense": [
+    150,
+    190
+   ],
+   "bonusMana": 10
+  }
+ },
+ {
+  "gameid": "boots_lightPlated_nm",
+  "name": "War Traveler",
+  "base": "Battle Boots",
+  "level": "42",
+  "stats": {
+   "baseDmgMin": [
+    15,
+    25
+   ],
+   "enhancedDefense": [
+    150,
+    190
+   ],
+   "str": 10,
+   "vit": 10,
+   "thorns": [
+    5,
+    10
+   ],
+   "magicFind": [
+    30,
+    50
+   ]
+  }
+ },
+ {
+  "gameid": "boots_greaves_nm",
+  "name": "Gore Rider",
+  "base": "War Boots",
+  "level": "47",
+  "stats": {
+   "critChance": 30,
+   "poisonDmg": 10,
+   "enhancedDefense": [
+    160,
+    200
+   ]
+  }
+ },
+ {
+  "gameid": "belt_sash_nm",
+  "name": "String of Ears",
+  "base": "Demonhide Sash",
+  "level": "29",
+  "stats": {
+   "lifesteal": [
+    6,
+    8
+   ],
+   "enhancedDefense": [
+    150,
+    180
+   ],
+   "defense": 15,
+   "dmgReduction": [
+    20,
+    30
+   ]
+  }
+ },
+ {
+  "gameid": "belt_lightBelt_nm",
+  "name": "Razortail",
+  "base": "Sharkskin Belt",
+  "level": "32",
+  "stats": {
+   "baseDmgMax": 10,
+   "enhancedDefense": [
+    120,
+    150
+   ],
+   "defense": 15,
+   "dex": 15
+  }
+ },
+ {
+  "gameid": "belt_belt_nm",
+  "name": "Gloom's Trap",
+  "base": "Mesh Belt",
+  "level": "36",
+  "stats": {
+   "manaSteal": 5,
+   "enhancedDefense": [
+    120,
+    150
+   ],
+   "vit": 15,
+   "bonusMana": 15,
+   "manaRegen": 15
+  }
+ },
+ {
+  "gameid": "belt_heavyBelt_nm",
+  "name": "Snowclash",
+  "base": "Battle Belt",
+  "level": "42",
+  "stats": {
+   "coldDmg": [
+    13,
+    21
+   ],
+   "enhancedDefense": [
+    130,
+    170
+   ]
+  }
+ },
+ {
+  "gameid": "belt_platedBelt_nm",
+  "name": "Thundergod's Vigor",
+  "base": "War Belt",
+  "level": "47",
+  "stats": {
+   "lightningDmg": [
+    1,
+    50
+   ],
+   "enhancedDefense": [
+    160,
+    200
+   ],
+   "str": 20,
+   "vit": 20
+  }
+ },
+ {
+  "gameid": "helm_cap_hell",
+  "name": "Harlequin Crest",
+  "base": "Shako",
+  "level": "62",
+  "stats": {
+   "allSkills": 2,
+   "str": 2,
+   "vit": 2,
+   "dex": 2,
+   "int": 2,
+   "bonusHp": 148,
+   "bonusMana": 148,
+   "dmgReduction": 10,
+   "magicFind": 50
+  }
+ },
+ {
+  "gameid": "helm_helm",
+  "name": "Veil of Steel",
+  "base": "Spired Helm",
+  "level": "73",
+  "stats": {
+   "enhancedDefense": 60,
+   "defense": 140,
+   "str": 15,
+   "vit": 15,
+   "allRes": 50
+  }
+ },
+ {
+  "gameid": "shield_smallShield_hell",
+  "name": "Blackoak Shield",
+  "base": "Luna",
+  "level": "61",
+  "stats": {
+   "enhancedDefense": [
+    160,
+    200
+   ],
+   "dex": 49,
+   "bonusHp": 123
+  }
+ },
+ {
+  "gameid": "axe2h_battleAxe_hell",
+  "name": "Hellslayer",
+  "base": "Decapitator",
+  "level": "66",
+  "stats": {
+   "enhancedDmg": 397,
+   "fireDmg": [
+    150,
+    250
+   ],
+   "str": 49,
+   "vit": 49,
+   "bonusHp": 25
+  }
+ },
+ {
+  "gameid": "axe2h_greatAxe_hell",
+  "name": "Messerschmidt's Reaver",
+  "base": "Champion Axe",
+  "level": "70",
+  "stats": {
+   "enhancedDmg": 447,
+   "attackRating": 100,
+   "fireDmg": [
+    20,
+    240
+   ],
+   "str": 15,
+   "vit": 15,
+   "dex": 15,
+   "int": 15
+  }
+ },
+ {
+  "gameid": "blunt_morningStar_hell",
+  "name": "Baranar's Star",
+  "base": "Devil Star",
+  "level": "65",
+  "stats": {
+   "ias": 50,
+   "enhancedDmg": 200,
+   "attackRating": 200,
+   "fireDmg": [
+    1,
+    200
+   ],
+   "lightningDmg": [
+    1,
+    200
+   ],
+   "coldDmg": [
+    1,
+    200
+   ],
+   "str": 15,
+   "dex": 15
+  }
+ },
+ {
+  "gameid": "blunt_warHammer_hell",
+  "name": "Schaefer's Hammer",
+  "base": "Legendary Mallet",
+  "level": "79",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    100,
+    130
+   ],
+   "lightningDmg": [
+    50,
+    200
+   ],
+   "bonusHp": 50,
+   "lightningRes": 75
+  }
+ },
+ {
+  "gameid": "blunt2h_greatMaul_hell",
+  "name": "The Cranium Basher",
+  "base": "Thunder Maul",
+  "level": "87",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    200,
+    240
+   ],
+   "critChance": 75,
+   "str": 25,
+   "allRes": 25
+  }
+ },
+ {
+  "gameid": "blade_crystalSword_hell",
+  "name": "Lightsabre",
+  "base": "Phase Blade",
+  "level": "58",
+  "stats": {
+   "ias": 20,
+   "enhancedDmg": [
+    150,
+    200
+   ],
+   "baseDmgMin": [
+    10,
+    30
+   ],
+   "lightningDmg": [
+    61,
+    320
+   ],
+   "manaSteal": [
+    5,
+    7
+   ]
+  }
+ },
+ {
+  "gameid": "blade2h_bastardSword_hell",
+  "name": "Doombringer",
+  "base": "Champion Sword",
+  "level": "69",
+  "stats": {
+   "enhancedDmg": [
+    180,
+    250
+   ],
+   "baseDmgMin": [
+    30,
+    100
+   ],
+   "attackRating": 40,
+   "lifesteal": [
+    5,
+    7
+   ],
+   "bonusHp": 20
+  }
+ },
+ {
+  "gameid": "blade2h_greatSword_hell",
+  "name": "The Grandfather",
+  "base": "Colossus Blade",
+  "level": "81",
+  "stats": {
+   "enhancedDmg": [
+    150,
+    250
+   ],
+   "attackRating": 50,
+   "str": 20,
+   "vit": 20,
+   "dex": 20,
+   "int": 20,
+   "bonusHp": 80
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Constricting Ring",
+  "base": "Ring",
+  "level": "95",
+  "stats": {
+   "allRes": 100,
+   "magicFind": 100
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Bul-Kathos' Wedding Band",
+  "base": "Ring",
+  "level": "58",
+  "stats": {
+   "allSkills": 1,
+   "lifesteal": [
+    3,
+    5
+   ],
+   "bonusHp": 49
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "The Cat's Eye",
+  "base": "Amulet",
+  "level": "50",
+  "stats": {
+   "ias": 20,
+   "defense": 100,
+   "dex": 25
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "The Rising Sun",
+  "base": "Amulet",
+  "level": "65",
+  "stats": {
+   "allSkills": 2,
+   "fireDmg": [
+    24,
+    48
+   ],
+   "lifeRegen": 10
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Crescent Moon",
+  "base": "Amulet",
+  "level": "50",
+  "stats": {
+   "manaSteal": [
+    11,
+    15
+   ],
+   "lifesteal": [
+    3,
+    6
+   ],
+   "bonusMana": 45,
+   "dmgReduction": 10
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Mara's Kaleidoscope",
+  "base": "Amulet",
+  "level": "67",
+  "stats": {
+   "allSkills": 2,
+   "str": 5,
+   "vit": 5,
+   "dex": 5,
+   "int": 5,
+   "allRes": [
+    20,
+    30
+   ]
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Atma's Scarab",
+  "base": "Amulet",
+  "level": "60",
+  "stats": {
+   "attackRating": 20,
+   "poisonDmg": 40,
+   "poisonDur": 4,
+   "poisonRes": 75,
+   "thorns": 5
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Dwarf Star",
+  "base": "Ring",
+  "level": "45",
+  "stats": {
+   "bonusHp": 40,
+   "dmgReduction": [
+    12,
+    15
+   ],
+   "goldFind": 100
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Raven Frost",
+  "base": "Ring",
+  "level": "45",
+  "stats": {
+   "attackRating": [
+    150,
+    250
+   ],
+   "coldDmg": [
+    15,
+    45
+   ],
+   "dex": [
+    15,
+    20
+   ],
+   "bonusMana": 40
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Highlord's Wrath",
+  "base": "Amulet",
+  "level": "65",
+  "stats": {
+   "allSkills": 1,
+   "ias": 20,
+   "lightningDmg": [
+    1,
+    30
+   ],
+   "lightningRes": 35
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Saracen's Chance",
+  "base": "Amulet",
+  "level": "47",
+  "stats": {
+   "str": 12,
+   "vit": 12,
+   "dex": 12,
+   "int": 12,
+   "allRes": [
+    15,
+    25
+   ]
+  }
+ },
+ {
+  "gameid": "claws_bladeTalons_nm",
+  "name": "Bartuc's Cut-Throat",
+  "base": "Greater Talons",
+  "level": "42",
+  "stats": {
+   "allSkills": 2,
+   "enhancedDmg": [
+    150,
+    200
+   ],
+   "baseDmgMin": [
+    25,
+    50
+   ],
+   "attackRating": 20,
+   "lifesteal": [
+    5,
+    9
+   ],
+   "str": 20,
+   "dex": 20
+  }
+ },
+ {
+  "gameid": "helm_mask",
+  "name": "Jalal's Mane",
+  "base": "Totemic Mask",
+  "level": "42",
+  "stats": {
+   "allSkills": 2,
+   "attackRating": 20,
+   "enhancedDefense": [
+    150,
+    200
+   ],
+   "str": 20,
+   "int": 20,
+   "allRes": 30
+  }
+ },
+ {
+  "gameid": "blade_scimitar_hell",
+  "name": "Djinn Slayer",
+  "base": "Ataghan",
+  "level": "65",
+  "stats": {
+   "enhancedDmg": [
+    190,
+    240
+   ],
+   "fireDmg": [
+    250,
+    500
+   ],
+   "manaSteal": [
+    3,
+    6
+   ]
+  }
+ },
+ {
+  "gameid": "axe_handAxe_hell",
+  "name": "Razor's Edge",
+  "base": "Tomahawk",
+  "level": "67",
+  "stats": {
+   "ias": 40,
+   "enhancedDmg": [
+    175,
+    225
+   ],
+   "critChance": 50,
+   "poisonDmg": 50
+  }
+ },
+ {
+  "gameid": "blunt_spikedClub_hell",
+  "name": "Demon Limb",
+  "base": "Tyrant Club",
+  "level": "63",
+  "stats": {
+   "enhancedDmg": [
+    180,
+    230
+   ],
+   "fireDmg": [
+    222,
+    333
+   ],
+   "lifesteal": [
+    7,
+    13
+   ],
+   "fireRes": [
+    15,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "helm_helm_hell",
+  "name": "Steel Shade",
+  "base": "Armet",
+  "level": "62",
+  "stats": {
+   "manaSteal": [
+    4,
+    8
+   ],
+   "enhancedDefense": [
+    100,
+    130
+   ],
+   "lifeRegen": [
+    10,
+    18
+   ]
+  }
+ },
+ {
+  "gameid": "axe_axe",
+  "name": "Tomb Reaver",
+  "base": "Cryptic Axe",
+  "level": "84",
+  "stats": {
+   "ias": 60,
+   "enhancedDmg": [
+    200,
+    280
+   ],
+   "allRes": [
+    30,
+    50
+   ],
+   "magicFind": [
+    50,
+    80
+   ]
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Nature's Peace",
+  "base": "Ring",
+  "level": "69",
+  "stats": {
+   "preventHeal": 1,
+   "poisonRes": [
+    20,
+    30
+   ],
+   "dmgReduction": [
+    7,
+    11
+   ]
+  }
+ },
+ {
+  "gameid": "blade_crystalSword_hell",
+  "name": "Azurewrath",
+  "base": "Phase Blade",
+  "level": "85",
+  "stats": {
+   "allSkills": 1,
+   "ias": 30,
+   "enhancedDmg": [
+    230,
+    270
+   ],
+   "lightningDmg": [
+    250,
+    500
+   ],
+   "coldDmg": [
+    250,
+    500
+   ],
+   "str": [
+    5,
+    10
+   ],
+   "vit": [
+    5,
+    10
+   ],
+   "dex": [
+    5,
+    10
+   ],
+   "int": [
+    5,
+    10
+   ]
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Seraph's Hymn",
+  "base": "Amulet",
+  "level": "65",
+  "stats": {
+   "allSkills": 2
+  }
+ },
+ {
+  "gameid": "blunt_flail_hell",
+  "name": "Horizon's Tornado",
+  "base": "Scourge",
+  "level": "64",
+  "stats": {
+   "ias": 50,
+   "enhancedDmg": [
+    230,
+    280
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_warHammer_hell",
+  "name": "Stone Crusher",
+  "base": "Legendary Mallet",
+  "level": "68",
+  "stats": {
+   "enhancedDmg": [
+    280,
+    320
+   ],
+   "critChance": 40,
+   "str": [
+    20,
+    30
+   ]
+  }
+ },
+ {
+  "gameid": "claws_wristBlade_hell",
+  "name": "Jade Talon",
+  "base": "Wrist Sword",
+  "level": "66",
+  "stats": {
+   "enhancedDmg": [
+    190,
+    240
+   ],
+   "manaSteal": [
+    10,
+    15
+   ],
+   "allRes": [
+    40,
+    50
+   ]
+  }
+ },
+ {
+  "gameid": "boots_greaves_hell",
+  "name": "Shadow Dancer",
+  "base": "Myrmidon Greaves",
+  "level": "71",
+  "stats": {
+   "enhancedDefense": [
+    70,
+    100
+   ],
+   "dex": [
+    15,
+    25
+   ]
+  }
+ },
+ {
+  "gameid": "armor_ancient_hell",
+  "name": "Tyrael's Might",
+  "base": "Sacred Armor",
+  "level": "84",
+  "stats": {
+   "enhancedDefense": [
+    120,
+    150
+   ],
+   "str": [
+    20,
+    30
+   ],
+   "allRes": [
+    20,
+    30
+   ]
+  }
+ },
+ {
+  "gameid": "gloves_chain_hell",
+  "name": "Soul Drainer",
+  "base": "Vambraces",
+  "level": "74",
+  "stats": {
+   "manaSteal": [
+    4,
+    7
+   ],
+   "lifesteal": [
+    4,
+    7
+   ],
+   "enhancedDefense": [
+    90,
+    120
+   ]
+  }
+ },
+ {
+  "gameid": "axe_doubleAxe_hell",
+  "name": "Rune Master",
+  "base": "Ettin Axe",
+  "level": "72",
+  "stats": {
+   "enhancedDmg": [
+    220,
+    270
+   ]
+  }
+ },
+ {
+  "gameid": "axe_warAxe_hell",
+  "name": "Death Cleaver",
+  "base": "Berserker Axe",
+  "level": "70",
+  "stats": {
+   "ias": 40,
+   "enhancedDmg": [
+    230,
+    280
+   ],
+   "critChance": 66
+  }
+ },
+ {
+  "gameid": "axe2h_giantAxe_hell",
+  "name": "Executioner's Justice",
+  "base": "Glorious Axe",
+  "level": "75",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    240,
+    290
+   ],
+   "critChance": 25
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Wisp Projector",
+  "base": "Ring",
+  "level": "76",
+  "stats": {
+   "magicFind": [
+    10,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "axe_axe",
+  "name": "Lacerator",
+  "base": "Winged Axe",
+  "level": "68",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    150,
+    210
+   ],
+   "poisonDmg": 33,
+   "preventHeal": 1
+  }
+ },
+ {
+  "gameid": "axe2h_broadAxe_hell",
+  "name": "Ethereal Edge",
+  "base": "Silver-edged Axe",
+  "level": "74",
+  "stats": {
+   "ias": 25,
+   "enhancedDmg": [
+    150,
+    180
+   ],
+   "attackRating": [
+    270,
+    350
+   ]
+  }
+ },
+ {
+  "gameid": "helm_helm",
+  "name": "Demonhorn's Edge",
+  "base": "Destroyer Helm",
+  "level": "61",
+  "stats": {
+   "ias": 10,
+   "lifesteal": [
+    3,
+    6
+   ],
+   "enhancedDefense": [
+    120,
+    160
+   ],
+   "thorns": [
+    55,
+    77
+   ]
+  }
+ },
+ {
+  "gameid": "axe_axe",
+  "name": "Gimmershred",
+  "base": "Flying Axe",
+  "level": "70",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    160,
+    210
+   ],
+   "fireDmg": [
+    218,
+    483
+   ],
+   "lightningDmg": [
+    29,
+    501
+   ],
+   "coldDmg": [
+    176,
+    397
+   ]
+  }
+ },
+ {
+  "gameid": "blunt2h_maul_hell",
+  "name": "Windhammer",
+  "base": "Ogre Maul",
+  "level": "68",
+  "stats": {
+   "ias": 60,
+   "enhancedDmg": [
+    180,
+    230
+   ],
+   "critChance": 50
+  }
+ },
+ {
+  "gameid": "helm_helm",
+  "name": "Nightwing's Veil",
+  "base": "Spired Helm",
+  "level": "67",
+  "stats": {
+   "allSkills": 2,
+   "enhancedDefense": [
+    90,
+    120
+   ],
+   "dex": [
+    10,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "helm_mask_hell",
+  "name": "Andariel's Visage",
+  "base": "Demonhead",
+  "level": "83",
+  "stats": {
+   "allSkills": 2,
+   "ias": 20,
+   "lifesteal": [
+    8,
+    10
+   ],
+   "enhancedDefense": [
+    100,
+    150
+   ],
+   "str": [
+    25,
+    30
+   ],
+   "poisonRes": 70
+  }
+ },
+ {
+  "gameid": "armor_fullPlate_hell",
+  "name": "Steel Carapace",
+  "base": "Shadow Plate",
+  "level": "66",
+  "stats": {
+   "enhancedDefense": [
+    190,
+    220
+   ],
+   "manaRegen": [
+    10,
+    15
+   ],
+   "coldRes": [
+    40,
+    60
+   ],
+   "dmgReduction": [
+    9,
+    14
+   ]
+  }
+ },
+ {
+  "gameid": "shield_gothicShield_hell",
+  "name": "Spirit Ward",
+  "base": "Ward",
+  "level": "68",
+  "stats": {
+   "enhancedDefense": [
+    130,
+    180
+   ],
+   "allRes": [
+    30,
+    40
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_flail_hell",
+  "name": "Stormlash",
+  "base": "Scourge",
+  "level": "82",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    240,
+    300
+   ],
+   "lightningDmg": [
+    1,
+    473
+   ],
+   "critChance": 33
+  }
+ },
+ {
+  "gameid": "gloves_heavy_hell",
+  "name": "Dracul's Grasp",
+  "base": "Vampirebone Gloves",
+  "level": "76",
+  "stats": {
+   "lifesteal": [
+    7,
+    10
+   ],
+   "poisonDmg": 25,
+   "enhancedDefense": [
+    90,
+    120
+   ],
+   "str": [
+    10,
+    15
+   ]
+  }
+ },
+ {
+  "gameid": "armor_ancient_hell",
+  "name": "Templar's Might",
+  "base": "Sacred Armor",
+  "level": "74",
+  "stats": {
+   "enhancedDefense": [
+    170,
+    220
+   ],
+   "str": [
+    10,
+    15
+   ],
+   "vit": [
+    10,
+    15
+   ]
+  }
+ },
+ {
+  "gameid": "claws_claws_hell",
+  "name": "Firelizard's Talons",
+  "base": "Feral Claws",
+  "level": "67",
+  "stats": {
+   "ias": 15,
+   "enhancedDmg": [
+    200,
+    270
+   ],
+   "fireDmg": [
+    236,
+    480
+   ],
+   "fireRes": [
+    40,
+    70
+   ]
+  }
+ },
+ {
+  "gameid": "boots_heavy_hell",
+  "name": "Sandstorm Trek",
+  "base": "Scarabshell Boots",
+  "level": "64",
+  "stats": {
+   "enhancedDefense": [
+    140,
+    170
+   ],
+   "str": [
+    10,
+    15
+   ],
+   "vit": [
+    10,
+    15
+   ],
+   "poisonRes": [
+    40,
+    70
+   ]
+  }
+ },
+ {
+  "gameid": "boots_chain_hell",
+  "name": "Marrowwalk",
+  "base": "Boneweave Boots",
+  "level": "66",
+  "stats": {
+   "enhancedDefense": [
+    170,
+    200
+   ],
+   "str": [
+    10,
+    20
+   ],
+   "dex": 17,
+   "manaRegen": 10
+  }
+ },
+ {
+  "gameid": "belt_sash_hell",
+  "name": "Arachnid Mesh",
+  "base": "Spiderweb Sash",
+  "level": "80",
+  "stats": {
+   "allSkills": 1,
+   "castSpeed": 20,
+   "enhancedDefense": [
+    90,
+    120
+   ],
+   "bonusMana": 5
+  }
+ },
+ {
+  "gameid": "belt_lightBelt_hell",
+  "name": "Nosferatu's Coil",
+  "base": "Vampirefang Belt",
+  "level": "51",
+  "stats": {
+   "ias": 10,
+   "lifesteal": [
+    5,
+    7
+   ],
+   "str": 15
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Metalgrid",
+  "base": "Amulet",
+  "level": "81",
+  "stats": {
+   "attackRating": [
+    400,
+    450
+   ],
+   "defense": [
+    300,
+    350
+   ],
+   "allRes": [
+    25,
+    35
+   ]
+  }
+ },
+ {
+  "gameid": "belt_belt_hell",
+  "name": "Verdungo's Hearty Cord",
+  "base": "Mithril Coil",
+  "level": "63",
+  "stats": {
+   "enhancedDefense": [
+    90,
+    140
+   ],
+   "vit": [
+    30,
+    40
+   ],
+   "lifeRegen": [
+    10,
+    13
+   ],
+   "dmgReduction": [
+    10,
+    15
+   ]
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Carrion Wind",
+  "base": "Ring",
+  "level": "60",
+  "stats": {
+   "lifesteal": [
+    6,
+    9
+   ],
+   "poisonRes": 55
+  }
+ },
+ {
+  "gameid": "helm_boneHelm_hell",
+  "name": "Giant Skull",
+  "base": "Bone Visage",
+  "level": "65",
+  "stats": {
+   "critChance": 10,
+   "knockback": 1,
+   "defense": [
+    250,
+    320
+   ],
+   "str": [
+    25,
+    35
+   ]
+  }
+ },
+ {
+  "gameid": "axe_militaryPick_hell",
+  "name": "Cranebeak",
+  "base": "War Spike",
+  "level": "63",
+  "stats": {
+   "ias": 40,
+   "enhancedDmg": [
+    240,
+    300
+   ],
+   "lightningDmg": [
+    1,
+    305
+   ],
+   "magicFind": [
+    20,
+    50
+   ]
+  }
+ },
+ {
+  "gameid": "blunt_club_hell",
+  "name": "Nord's Tenderizer",
+  "base": "Truncheon",
+  "level": "68",
+  "stats": {
+   "ias": 25,
+   "enhancedDmg": [
+    270,
+    330
+   ],
+   "attackRating": [
+    150,
+    180
+   ],
+   "coldDmg": [
+    205,
+    455
+   ]
+  }
+ },
+ {
+  "gameid": "blunt2h_greatMaul_hell",
+  "name": "Earth Shifter",
+  "base": "Thunder Maul",
+  "level": "69",
+  "stats": {
+   "ias": 10,
+   "castSpeed": 10,
+   "enhancedDmg": [
+    250,
+    300
+   ],
+   "critChance": 33
+  }
+ },
+ {
+  "gameid": "axe_axe",
+  "name": "Bonehew",
+  "base": "Ogre Axe",
+  "level": "64",
+  "stats": {
+   "ias": 30,
+   "enhancedDmg": [
+    270,
+    320
+   ],
+   "preventHeal": 1
+  }
+ },
+ {
+  "gameid": "gloves_gauntlets_hell",
+  "name": "Steelrend",
+  "base": "Ogre Gauntlets",
+  "level": "70",
+  "stats": {
+   "enhancedDmg": [
+    30,
+    60
+   ],
+   "critChance": 10,
+   "defense": [
+    170,
+    210
+   ],
+   "str": [
+    15,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "blade2h_twoHandedSword_hell",
+  "name": "Dreadfang",
+  "base": "Legend Sword",
+  "level": "61",
+  "stats": {
+   "ias": 33,
+   "enhancedDmg": [
+    133,
+    166
+   ],
+   "attackRating": 33,
+   "manaSteal": [
+    3,
+    6
+   ],
+   "critChance": 33
+  }
+ },
+ {
+  "gameid": "boots_lightPlated_hell",
+  "name": "Wraithstep",
+  "base": "Mirrored Boots",
+  "level": "67",
+  "stats": {
+   "defense": [
+    40,
+    60
+   ],
+   "dex": [
+    10,
+    15
+   ],
+   "int": [
+    10,
+    15
+   ]
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Sling",
+  "base": "Ring",
+  "level": "50",
+  "stats": {
+   "castSpeed": 10,
+   "int": [
+    10,
+    15
+   ],
+   "magicFind": [
+    10,
+    20
+   ]
+  }
+ },
+ {
+  "gameid": "copperRing",
+  "name": "Opalvein",
+  "base": "Ring",
+  "level": "50",
+  "stats": {
+   "castSpeed": 10,
+   "allRes": [
+    6,
+    8
+   ],
+   "enhancedDmg": [
+    20,
+    40
+   ]
+  }
+ },
+ {
+  "gameid": "boneAmulet",
+  "name": "Entropy Locket",
+  "base": "Amulet",
+  "level": "54",
+  "stats": {
+   "castSpeed": [
+    5,
+    10
+   ],
+   "bonusMana": [
+    10,
+    15
+   ],
+   "lightningRes": [
+    25,
+    40
+   ],
+   "dmgReduction": [
+    8,
+    12
+   ]
+  }
+ },
+ {
+  "gameid": "belt_heavyBelt_hell",
+  "name": "Gheed's Wager",
+  "base": "Troll Belt",
+  "level": "71",
+  "stats": {
+   "castSpeed": [
+    10,
+    20
+   ],
+   "enhancedDefense": [
+    90,
+    150
+   ],
+   "allRes": [
+    5,
+    15
+   ],
+   "goldFind": [
+    44,
+    75
+   ]
+  }
+ },
+ {
+  "gameid": "helm_mask_nm",
+  "name": "Hellwarden's Will",
+  "base": "Death Mask",
+  "level": "50",
+  "stats": {
+   "allSkills": 1,
+   "ias": 20,
+   "castSpeed": 20,
+   "enhancedDefense": [
+    150,
+    215
+   ]
+  }
+ }
+]

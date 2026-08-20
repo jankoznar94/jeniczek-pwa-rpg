@@ -1,0 +1,2117 @@
+[
+ {
+  "name_base": "The GnasherHand Axe",
+  "level": "5",
+  "stats": "+60–70% Enhanced Damage+20% Chance of Crushing Blow+50% Chance of Open Wounds+8 to Strength"
+ },
+ {
+  "name_base": "DeathspadeAxe",
+  "level": "9",
+  "stats": "+60–70% Enhanced Damage+8 to Minimum Damage15% Bonus to Attack RatingHit Blinds Target+4 to Mana after each Kill"
+ },
+ {
+  "name_base": "BladeboneDouble Axe",
+  "level": "15",
+  "stats": "+20% Increased Attack Speed+30–50% Enhanced Damage+100% Damage to Undead+40 to Attack Rating against UndeadAdds 8-12 fire damage+20 Defense"
+ },
+ {
+  "name_base": "Skull SplitterMilitary Pick",
+  "level": "21",
+  "stats": "+60–100% Enhanced Damage50–100 to Attack RatingAdds 1-12–15 lightning damage+15% Chance of Open WoundsHit Blinds Target +2Regenerate Mana 20%"
+ },
+ {
+  "name_base": "RakescarWar Axe",
+  "level": "27",
+  "stats": "+30% Increased Attack Speed+75–150% Enhanced Damage+50 to Attack Rating+38 poison damage over 3 secondsPoison Resist +50%"
+ },
+ {
+  "name_base": "Axe of FechmarLarge Axe",
+  "level": "8",
+  "stats": "+70–90% Enhanced DamageFreezes target +3Cold Resist +50%+2 to Light Radius"
+ },
+ {
+  "name_base": "GoreshovelBroad Axe",
+  "level": "14",
+  "stats": "+30% Increased Attack Speed+40–50% Enhanced Damage+9 to Maximum Damage+60% Chance of Open Wounds+25 to Strength"
+ },
+ {
+  "name_base": "The ChieftainBattle Axe",
+  "level": "19",
+  "stats": "+20% Increased Attack Speed+100% Enhanced DamageAdds 1-40 lightning damageAll Resistances +10–20+6 to Mana after each Kill"
+ },
+ {
+  "name_base": "BrainhewGreat Axe",
+  "level": "25",
+  "stats": "+50–80% Enhanced Damage+14 to Minimum DamageAdds 15-35 fire damage10–13% Mana stolen per hit+25 to Mana+4 to Light Radius"
+ },
+ {
+  "name_base": "HumongousGiant Axe",
+  "level": "29",
+  "stats": "+80–120% Enhanced DamageAdds 8-15–25 damage+33% Chance of Crushing Blow20–30 to StrengthRequirements +20%"
+ },
+ {
+  "name_base": "Torch of IroWand",
+  "level": "5",
+  "stats": "+1 to Necromancer Skill LevelsAdds 5-9 fire damage6% Life stolen per hit+10 to EnergyRegenerate Mana 5%+3 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "MaelstromYew Wand",
+  "level": "14",
+  "stats": "+30% Faster Cast RateAdds 1-9 lightning damage1–3 to Terror (Necromancer Only)1–3 to Iron Maiden (Necromancer Only)1–3 to Corpse Explosion (Necromancer Only)1–3 to Amplify Damage (Necromancer Only)+13 to ManaLightning Resist +40%+50% Damage to Undead"
+ },
+ {
+  "name_base": "GravenspineBone Wand",
+  "level": "20",
+  "stats": "+2 to Necromancer Skill LevelsAdds 4-8 cold damage5% Mana stolen per hit+10 to Strength+10 to Dexterity25–50 to Mana+50% Damage to Undead"
+ },
+ {
+  "name_base": "Ume's LamentGrim Wand",
+  "level": "28",
+  "stats": "+2 to Necromancer Skill Levels+20% Faster Cast Rate+2 to Decrepify (Necromancer Only)+3 to Terror (Necromancer Only)Hit Causes Monster to Flee +50%+40 to Mana+50% Damage to Undead"
+ },
+ {
+  "name_base": "FelloakClub",
+  "level": "3",
+  "stats": "+70–80% Enhanced DamageAdds 6-8 fire damageKnockbackLightning Resist +60%Fire Resist +20%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Knell StrikerScepter",
+  "level": "5",
+  "stats": "+70–80% Enhanced Damage+35 to Attack Rating+25% Chance of Crushing Blow+15 to ManaFire Resist +20%Poison Resist +20%+50% Damage to Undead"
+ },
+ {
+  "name_base": "RusthandleGrand Scepter",
+  "level": "17",
+  "stats": "+1 to Paladin Skill Levels+50–60% Enhanced DamageAdds 3-7 damage50–60% Damage to Undead8% Life stolen per hit1–3 to Vengeance (Paladin Only)+3 to Thorns (Paladin Only)Magic Damage Reduced by 1"
+ },
+ {
+  "name_base": "StormeyeWar Scepter",
+  "level": "23",
+  "stats": "+80–120% Enhanced DamageAdds 1-6 lightning damageAdds 3-5 cold damage+1 to Fist of the Heavens (Paladin Only)+3 to Holy Shock (Paladin Only)3–5 to Resist Lightning (Paladin Only)Replenish Life +10+50% Damage to Undead"
+ },
+ {
+  "name_base": "StoutnailSpiked Club",
+  "level": "5",
+  "stats": "+100% Enhanced Damage+7 to VitalityMagic Damage Reduced by 2Attacker Takes Damage of 3–10+50% Damage to Undead"
+ },
+ {
+  "name_base": "CrushflangeMace",
+  "level": "9",
+  "stats": "+50–60% Enhanced Damage+33% Chance of Crushing BlowKnockback+15 to StrengthFire Resist +50%+2 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "BloodriseMorning Star",
+  "level": "15",
+  "stats": "+10% Increased Attack Speed+120% Enhanced Damage50% Bonus to Attack Rating5% Life stolen per hit+25% Chance of Open Wounds+3 to Sacrifice (Paladin Only)+2 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "The General's Tan Do Li GaFlail",
+  "level": "21",
+  "stats": "+20% Increased Attack Speed+50–60% Enhanced DamageAdds 1-20 damage5% Mana stolen per hitSlows Target by 50%+25 Defense+50% Damage to Undead"
+ },
+ {
+  "name_base": "IronstoneWar Hammer",
+  "level": "27",
+  "stats": "+100–150% Enhanced Damage100–150 to Attack RatingAdds 1-10 lightning damage+10 to Strength+50% Damage to Undead"
+ },
+ {
+  "name_base": "BonesnapMaul",
+  "level": "24",
+  "stats": "+200–300% Enhanced Damage+50% Damage to Undead+40% Chance of Crushing BlowCold Resist +30%Fire Resist +30%"
+ },
+ {
+  "name_base": "SteeldriverGreat Maul",
+  "level": "29",
+  "stats": "+40% Increased Attack Speed+150–250% Enhanced DamageHeal Stamina Plus 25%Requirements -50%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Rixot's KeenShort Sword",
+  "level": "2",
+  "stats": "+100% Enhanced Damage+5 to Minimum Damage20% Bonus to Attack Rating+25% Chance of Crushing Blow+25 Defense+2 to Light Radius"
+ },
+ {
+  "name_base": "Blood CrescentScimitar",
+  "level": "7",
+  "stats": "+15% Increased Attack Speed+60–80% Enhanced Damage15% Life stolen per hit+33% Chance of Open Wounds+15 to LifeAll Resistances +15+4 to Light Radius"
+ },
+ {
+  "name_base": "Skewer of KrintizSabre",
+  "level": "10",
+  "stats": "+50% Enhanced DamageAdds 3-7 damageIgnore Target's Defense7% Mana stolen per hit+10 to Strength+10 to Dexterity"
+ },
+ {
+  "name_base": "GleamscytheFalchion",
+  "level": "13",
+  "stats": "+20% Increased Attack Speed+60–100% Enhanced DamageAdds 3-5 cold damage+20 Defense+30 to Mana+3 to Light Radius"
+ },
+ {
+  "name_base": "AzurewrathCrystal Sword",
+  "level": "13",
+  "stats": "+100% Enhanced DamageAdds 5-10 magic damageAdds 3-6 cold damage+50% Deadly Strike10% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Griswold's EdgeBroad Sword",
+  "level": "17",
+  "stats": "+10% Increased Attack Speed+80–120% Enhanced Damage+100 to Attack RatingAdds 10–12-15–25 fire damageKnockback+12 to Strength"
+ },
+ {
+  "name_base": "HellplagueLong Sword",
+  "level": "22",
+  "stats": "+2 to Fire Skills+70–80% Enhanced DamageAdds 25-75 fire damageAdds 28-56 poison damage over 6 seconds5% Mana stolen per hit5% Life stolen per hit"
+ },
+ {
+  "name_base": "Culwen's PointWar Sword",
+  "level": "29",
+  "stats": "+1 to All Skills+20% Increased Attack Speed+20% Faster Hit Recovery+70–80% Enhanced Damage+60 to Attack RatingPoison Length Reduced by 50%"
+ },
+ {
+  "name_base": "ShadowfangTwo-Handed Sword",
+  "level": "12",
+  "stats": "+100% Enhanced DamageAdds 10-30 cold damage9% Mana stolen per hit9% Life stolen per hitCold Resist +20%-2 to Light Radius"
+ },
+ {
+  "name_base": "SoulflayClaymore",
+  "level": "19",
+  "stats": "+10% Increased Attack Speed+70–100% Enhanced Damage4–10% Mana stolen per hit4% Life stolen per hitAll Resistances +5"
+ },
+ {
+  "name_base": "Kinemil's AwlGiant Sword",
+  "level": "23",
+  "stats": "+80–100% Enhanced Damage100–150 to Attack RatingAdds 6-20–40 fire damage+6 to Holy Fire (Paladin Only)+20 to Mana"
+ },
+ {
+  "name_base": "BlacktongueBastard Sword",
+  "level": "26",
+  "stats": "+50–60% Enhanced Damage+50 to Attack Rating+113 poison damage over 6 secondsPrevent Monster HealPoison Resist +50%"
+ },
+ {
+  "name_base": "RipsawFlamberge",
+  "level": "26",
+  "stats": "+80–100% Enhanced Damage+15 to Maximum Damage6% Mana stolen per hit+80% Chance of Open Wounds"
+ },
+ {
+  "name_base": "The PatriarchGreat Sword",
+  "level": "29",
+  "stats": "+100–120% Enhanced DamageHit Blinds Target+10 to StrengthDamage Reduced by 3Magic Damage Reduced by 3100% Extra Gold from Monsters"
+ },
+ {
+  "name_base": "GullDagger",
+  "level": "4",
+  "stats": "Adds 1-15 damage-5 to Mana100% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "The DigglerDirk",
+  "level": "11",
+  "stats": "+30% Increased Attack Speed+50% Enhanced DamageIgnore Target's Defense+10 to DexterityCold Resist +25%Fire Resist +25%"
+ },
+ {
+  "name_base": "The Jade Tan DoKris",
+  "level": "19",
+  "stats": "100–150 to Attack Rating+180 poison damage over 4 seconds+20% to Maximum Poison ResistPoison Resist +95%Cannot Be Frozen"
+ },
+ {
+  "name_base": "Spectral ShardBlade",
+  "level": "25",
+  "stats": "+50% Faster Cast Rate+55 to Attack Rating+50 to ManaAll Resistances +10"
+ },
+ {
+  "name_base": "The Dragon ChangSpear",
+  "level": "8",
+  "stats": "+10 to Minimum Damage+35 to Attack Rating+100% Damage to UndeadAdds 3-6 fire damage+2 to Light Radius"
+ },
+ {
+  "name_base": "RazortineTrident",
+  "level": "12",
+  "stats": "+30% Increased Attack Speed+30–50% Enhanced Damage-50% Target DefenseSlows Target by 25%+15 to Strength+8 to Dexterity"
+ },
+ {
+  "name_base": "BloodthiefBrandistock",
+  "level": "17",
+  "stats": "+50–70% Enhanced Damage8–12% Life stolen per hit+35% Chance of Open Wounds+10 to Strength+26 to Life"
+ },
+ {
+  "name_base": "Lance of YaggaiSpetum",
+  "level": "22",
+  "stats": "+40% Increased Attack SpeedAdds 1-60 lightning damageAll Resistances +15Attacker Takes Damage of 8"
+ },
+ {
+  "name_base": "The Tannr GorerodPike",
+  "level": "27",
+  "stats": "+80–100% Enhanced Damage+60 to Attack RatingAdds 23-54 fire damage+30 to Life+15% to Maximum Fire ResistFire Resist +15%+3 to Light Radius"
+ },
+ {
+  "name_base": "Dimoak's HewBardiche",
+  "level": "8",
+  "stats": "+20% Increased Attack Speed+100% Enhanced Damage-8 Defense+15 to Dexterity"
+ },
+ {
+  "name_base": "SteelgoadVoulge",
+  "level": "14",
+  "stats": "+60–80% Enhanced Damage+30 to Attack Rating+30% Deadly StrikeHit Causes Monster to Flee +75%All Resistances +5"
+ },
+ {
+  "name_base": "Soul HarvestScythe",
+  "level": "19",
+  "stats": "+50–90% Enhanced Damage+45 to Attack Rating10% Mana stolen per hit+30% Chance of Open Wounds+5 to EnergyAll Resistances +20"
+ },
+ {
+  "name_base": "The BattlebranchPoleaxe",
+  "level": "25",
+  "stats": "+30% Increased Attack Speed+50–70% Enhanced Damage50–100 to Attack Rating7% Life stolen per hit+10 to Dexterity"
+ },
+ {
+  "name_base": "WoestaveHalberd",
+  "level": "28",
+  "stats": "+20–40% Enhanced Damage+50% Chance of Open WoundsPrevent Monster HealHit Blinds Target +3Freezes targetSlows Target by 50%-50 to Monster Defense Per Hit-3 to Light Radius"
+ },
+ {
+  "name_base": "The Grim ReaperWar Scythe",
+  "level": "29",
+  "stats": "+20% Enhanced Damage+15 to Minimum Damage5% Mana stolen per hit+100% Deadly StrikePrevent Monster Heal"
+ },
+ {
+  "name_base": "Bane AshShort Staff",
+  "level": "5",
+  "stats": "+20% Increased Attack Speed+50–60% Enhanced DamageAdds 4-6 fire damage+2 to Warmth (Sorceress Only)+5 to Fire Bolt (Sorceress Only)+30 to ManaFire Resist +50%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Serpent LordLong Staff",
+  "level": "9",
+  "stats": "+30–40% Enhanced Damage-50% Target Defense+12 poison damage over 3 seconds100% Mana stolen per hit+10 to ManaPoison Resist +50%-1 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "Spire of LazarusGnarled Staff",
+  "level": "18",
+  "stats": "+1 to Sorceress Skill LevelsAdds 1-28 lightning damage+1 to Chain Lightning (Sorceress Only)+2 to Lightning (Sorceress Only)+3 to Static Field (Sorceress Only)+15 to EnergyRegenerate Mana 43%Lightning Resist +75%Damage Reduced by 5+50% Damage to Undead"
+ },
+ {
+  "name_base": "The SalamanderBattle Staff",
+  "level": "21",
+  "stats": "+2 to Fire SkillsAdds 15-32 fire damage+1 to Fire Wall (Sorceress Only)+2 to Fire Ball (Sorceress Only)+3 to Warmth (Sorceress Only)Fire Resist +30%+50% Damage to Undead"
+ },
+ {
+  "name_base": "The Iron Jang BongWar Staff",
+  "level": "28",
+  "stats": "+2 to Sorceress Skill Levels+20% Faster Cast Rate+100% Enhanced Damage50% Bonus to Attack Rating+2 to Nova (Sorceress Only)+2 to Blaze (Sorceress Only)+3 to Frost Nova (Sorceress Only)+30 Defense+50% Damage to Undead"
+ },
+ {
+  "name_base": "PluckeyeShort Bow",
+  "level": "7",
+  "stats": "+100% Enhanced Damage+28 to Attack Rating3% Mana stolen per hit+10 to Life+2 to Mana after each Kill+2 to Light Radius"
+ },
+ {
+  "name_base": "WitherstringHunter's Bow",
+  "level": "13",
+  "stats": "+30% Increased Attack SpeedFires Magic Arrows+40–50% Enhanced DamageAdds 1-3 damage+50 to Attack Rating"
+ },
+ {
+  "name_base": "Raven ClawLong Bow",
+  "level": "15",
+  "stats": "Fires Explosive Arrows or Bolts+60–70% Enhanced Damage50% Bonus to Attack Rating+3 to Strength+3 to Dexterity"
+ },
+ {
+  "name_base": "Rogue's BowComposite Bow",
+  "level": "20",
+  "stats": "+50% Increased Attack Speed+40–60% Enhanced Damage+60 to Attack Rating+100% Damage to Undead+30% Deadly StrikeAll Resistances +10"
+ },
+ {
+  "name_base": "StormstrikeShort Battle Bow",
+  "level": "25",
+  "stats": "+25% Piercing Attack+70–90% Enhanced Damage+28 to Attack RatingAdds 1-30 lightning damage+8 to StrengthLightning Resist +25%"
+ },
+ {
+  "name_base": "WizendrawLong Battle Bow",
+  "level": "26",
+  "stats": "+20% Increased Attack SpeedFires Magic Arrows+70–80% Enhanced Damage50–100 to Attack Rating-20–35% to Enemy Cold Resistance+15 to Energy+30 to ManaCold Resist +26%"
+ },
+ {
+  "name_base": "HellclapShort War Bow",
+  "level": "27",
+  "stats": "+1 to Fire Skills+10% Increased Attack Speed+70–90% Enhanced Damage50–75 to Attack RatingAdds 15-30–50 fire damage+12 to DexterityFire Resist +40%"
+ },
+ {
+  "name_base": "BlastbarkLong War Bow",
+  "level": "28",
+  "stats": "+1 to Amazon Skill Levels+70–130% Enhanced Damage3% Mana stolen per hit+2 to Exploding Arrow (Amazon Only)+5 to Strength"
+ },
+ {
+  "name_base": "LeadcrowLight Crossbow",
+  "level": "9",
+  "stats": "+70% Enhanced Damage+40 to Attack Rating+25% Deadly Strike+10 to Dexterity+10 to LifePoison Resist +30%"
+ },
+ {
+  "name_base": "IchorstingCrossbow",
+  "level": "18",
+  "stats": "+20% Increased Attack Speed+50% Piercing Attack+50% Enhanced Damage+50 to Attack Rating+30 poison damage over 3 seconds+20 to Dexterity"
+ },
+ {
+  "name_base": "HellcastHeavy Crossbow",
+  "level": "27",
+  "stats": "+20% Increased Attack SpeedFires Explosive Arrows or Bolts+70–80% Enhanced Damage+70 to Attack RatingAdds 15-35 fire damage+15% to Maximum Fire ResistFire Resist +15%"
+ },
+ {
+  "name_base": "DoomslingerRepeating Crossbow",
+  "level": "28",
+  "stats": "+1 to Amazon Skill Levels+30% Increased Attack Speed+35% Piercing Attack+60–100% Enhanced Damage+15 to Life"
+ },
+ {
+  "name_base": "Biggin's BonnetCap",
+  "level": "3",
+  "stats": "+30% Enhanced Damage+30 to Attack Rating+14 Defense+15 to Life+15 to Mana"
+ },
+ {
+  "name_base": "TarnhelmSkull Cap",
+  "level": "15",
+  "stats": "+1 to All Skills75% Extra Gold from Monsters25–50% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Coif of GloryHelm",
+  "level": "14",
+  "stats": "Hit Blinds Target+10 Defense+100 Defense vs. MissileLightning Resist +15%Attacker Takes Lightning Damage of 7"
+ },
+ {
+  "name_base": "DuskdeepFull Helm",
+  "level": "17",
+  "stats": "+8 to Maximum Damage30–50% Enhanced Defense10–20 DefenseAll Resistances +15Damage Reduced by 7-2 to Light Radius"
+ },
+ {
+  "name_base": "WormskullBone Helm",
+  "level": "21",
+  "stats": "+1 to Necromancer Skill Levels+80 poison damage over 8 seconds5% Life stolen per hit+10 to ManaPoison Resist +25%"
+ },
+ {
+  "name_base": "HowltuskGreat Helm",
+  "level": "25",
+  "stats": "Hit Causes Monster to Flee +25%Knockback+80% Enhanced DefenseMagic Damage Reduced by 2Attacker Takes Damage of 3+35% Damage Taken Goes To Mana"
+ },
+ {
+  "name_base": "Undead CrownCrown",
+  "level": "29",
+  "stats": "+50% Damage to Undead50–100 to Attack Rating against Undead5% Life stolen per hit+3 to Skeleton Mastery (Necromancer Only)30–60% Enhanced Defense+40 DefensePoison Resist +50%Half Freeze Duration"
+ },
+ {
+  "name_base": "The Face of HorrorMask",
+  "level": "20",
+  "stats": "+50% Damage to UndeadHit Causes Monster to Flee +50%+25 Defense+20 to StrengthAll Resistances +10"
+ },
+ {
+  "name_base": "GreyformQuilted Armor",
+  "level": "7",
+  "stats": "5% Life stolen per hit+20 Defense+10 to DexterityCold Resist +20%Fire Resist +20%Magic Damage Reduced by 3"
+ },
+ {
+  "name_base": "Blinkbat's FormLeather Armor",
+  "level": "12",
+  "stats": "+10% Faster Run/Walk+40% Faster Hit RecoveryAdds 3-6 fire damage+25 Defense+50 Defense vs. Missile"
+ },
+ {
+  "name_base": "The CenturionHard Leather Armor",
+  "level": "14",
+  "stats": "+50 to Attack Rating+30 Defense+15 to LifeReplenish Life +5+15 to Mana+15 Maximum Stamina25% Slower Stamina DrainDamage Reduced by 2"
+ },
+ {
+  "name_base": "TwitchthroeStudded Leather",
+  "level": "16",
+  "stats": "+20% Increased Attack Speed+20% Faster Hit Recovery25% Increased Chance of Blocking+25 Defense+10 to Strength+10 to Dexterity"
+ },
+ {
+  "name_base": "DarkglowRing Mail",
+  "level": "14",
+  "stats": "+20 to Attack Rating70–100% Enhanced Defense+50 Defense vs. Melee+5% to Maximum Poison Resist+5% to Maximum Cold Resist+5% to Maximum Lightning Resist+5% to Maximum Fire ResistAll Resistances +10+3 to Light Radius"
+ },
+ {
+  "name_base": "HawkmailScale Mail",
+  "level": "15",
+  "stats": "+10% Faster Run/Walk80–100% Enhanced Defense+15% to Maximum Cold ResistCold Resist +15%Cannot Be Frozen"
+ },
+ {
+  "name_base": "Sparking MailChain Mail",
+  "level": "17",
+  "stats": "Adds 1-20 lightning damage75–85% Enhanced DefenseLightning Resist +30%Attacker Takes Lightning Damage of 10–14"
+ },
+ {
+  "name_base": "Venom WardBreast Plate",
+  "level": "20",
+  "stats": "60–100% Enhanced Defense+15% to Maximum Poison ResistPoison Resist +90%Poison Length Reduced by 50%+2 to Light Radius"
+ },
+ {
+  "name_base": "IceblinkSplint Mail",
+  "level": "22",
+  "stats": "Freezes target70–80% Enhanced DefenseCold Resist +30%Magic Damage Reduced by 1+4 to Light Radius"
+ },
+ {
+  "name_base": "BonefleshPlate Mail",
+  "level": "26",
+  "stats": "+35 to Attack Rating5% Life stolen per hit+25% Chance of Open Wounds100–120% Enhanced Defense"
+ },
+ {
+  "name_base": "RockfleeceField Plate",
+  "level": "28",
+  "stats": "100–130% Enhanced Defense+5 to StrengthPhysical Damage Received Reduced by 10%Damage Reduced by 5Requirements -10%"
+ },
+ {
+  "name_base": "RattlecageGothic Plate",
+  "level": "29",
+  "stats": "+45 to Attack Rating+25% Chance of Crushing BlowHit Causes Monster to Flee +40%+200 Defense"
+ },
+ {
+  "name_base": "GoldskinFull Plate Mail",
+  "level": "28",
+  "stats": "120–150% Enhanced DefenseAll Resistances +35Attacker Takes Damage of 10100% Extra Gold from Monsters+2 to Light Radius"
+ },
+ {
+  "name_base": "Silks of the VictorAncient Armor",
+  "level": "28",
+  "stats": "+1 to All Skills5% Mana stolen per hit100–120% Enhanced Defense+2 to Light Radius"
+ },
+ {
+  "name_base": "Heavenly GarbLight Plate",
+  "level": "29",
+  "stats": "+50% Damage to Undead+100 to Attack Rating against Undead+100% Enhanced Defense+15 to EnergyRegenerate Mana 25%All Resistances +10"
+ },
+ {
+  "name_base": "Pelta LunataBuckler",
+  "level": "2",
+  "stats": "+40% Faster Block Rate20% Increased Chance of Blocking30–40% Enhanced Defense+30 Defense+2 to Strength+10 to Vitality+10 to Energy"
+ },
+ {
+  "name_base": "Umbral DiskSmall Shield",
+  "level": "9",
+  "stats": "30% Increased Chance of BlockingHit Blinds Target40–50% Enhanced Defense+30 Defense+10 to Dexterity+20 to Life-2 to Light Radius"
+ },
+ {
+  "name_base": "StormguildLarge Shield",
+  "level": "13",
+  "stats": "30% Increased Chance of BlockingAdds 1-6 lightning damage50–60% Enhanced Defense+30 DefenseLightning Resist +25%Magic Damage Reduced by 1Attacker Takes Lightning Damage of 3"
+ },
+ {
+  "name_base": "Wall of the EyelessBone Shield",
+  "level": "20",
+  "stats": "+20% Faster Cast Rate3% Mana stolen per hit30–40% Enhanced Defense+10 DefensePoison Resist +20%+5 to Mana after each Kill"
+ },
+ {
+  "name_base": "Swordback HoldSpiked Shield",
+  "level": "15",
+  "stats": "20% Increased Chance of Blocking+50% Chance of Open Wounds30–60% Enhanced Defense+10 DefenseAttacker Takes Damage of 10"
+ },
+ {
+  "name_base": "SteelclashKite Shield",
+  "level": "17",
+  "stats": "+1 to Paladin Skill Levels+20% Faster Block Rate25% Increased Chance of Blocking60–100% Enhanced Defense+20 DefenseAll Resistances +15Damage Reduced by 3+3 to Light Radius"
+ },
+ {
+  "name_base": "Bverrit KeepTower Shield",
+  "level": "19",
+  "stats": "10% Increased Chance of Blocking80–120% Enhanced Defense+30 Defense+5 to StrengthFire Resist +75%Magic Damage Reduced by 5"
+ },
+ {
+  "name_base": "The WardGothic Shield",
+  "level": "26",
+  "stats": "10% Increased Chance of Blocking+100% Enhanced Defense+40 Defense+10 to StrengthAll Resistances +30–50Magic Damage Reduced by 2"
+ },
+ {
+  "name_base": "The Hand of BrocLeather Gloves",
+  "level": "5",
+  "stats": "3% Mana stolen per hit3% Life stolen per hit10–20% Enhanced Defense+10 Defense+20 to ManaPoison Resist +10%"
+ },
+ {
+  "name_base": "BloodfistHeavy Gloves",
+  "level": "9",
+  "stats": "+10% Increased Attack Speed+30% Faster Hit Recovery+5 to Minimum Damage10–20% Enhanced Defense+10 Defense+40 to Life"
+ },
+ {
+  "name_base": "Chance GuardsChain Gloves",
+  "level": "15",
+  "stats": "+25 to Attack Rating20–30% Enhanced Defense+15 Defense200% Extra Gold from Monsters25–40% Better Chance of Getting Magic Items+2 to Light Radius"
+ },
+ {
+  "name_base": "MagefistLight Gauntlets",
+  "level": "23",
+  "stats": "+1 to Fire Skills+20% Faster Cast RateAdds 1-6 fire damage20–30% Enhanced Defense+10 DefenseRegenerate Mana 25%"
+ },
+ {
+  "name_base": "FrostburnGauntlets",
+  "level": "29",
+  "stats": "+5% Enhanced DamageAdds 1-6 cold damage10–20% Enhanced Defense+30 DefenseIncrease Maximum Mana 40%"
+ },
+ {
+  "name_base": "HotspurBoots",
+  "level": "5",
+  "stats": "Adds 3-6 fire damage10–20% Enhanced Defense+6 Defense+15 to Life+15% to Maximum Fire ResistFire Resist +45%"
+ },
+ {
+  "name_base": "GorefootHeavy Boots",
+  "level": "9",
+  "stats": "+20% Faster Run/Walk2% Mana stolen per hit+2 to Leap (Barbarian Only)20–30% Enhanced Defense+12 DefenseAttacker Takes Damage of 2"
+ },
+ {
+  "name_base": "Treads of CthonChain Boots",
+  "level": "15",
+  "stats": "+30% Faster Run/Walk30–40% Enhanced Defense+12 Defense+50 Defense vs. Missile+10 to Life50% Slower Stamina Drain"
+ },
+ {
+  "name_base": "Goblin ToeLight Plated Boots",
+  "level": "22",
+  "stats": "+25% Chance of Crushing Blow50–60% Enhanced Defense+15 DefenseDamage Reduced by 1Magic Damage Reduced by 1-1 to Light Radius"
+ },
+ {
+  "name_base": "TearhaunchGreaves",
+  "level": "29",
+  "stats": "+20% Faster Run/Walk+2 to Vigor (Paladin Only)60–80% Enhanced Defense+35 Defense+5 to Strength+5 to DexterityAll Resistances +10"
+ },
+ {
+  "name_base": "LenymoSash",
+  "level": "7",
+  "stats": "+15 to ManaRegenerate Mana 30%All Resistances +5+1 to Light Radius"
+ },
+ {
+  "name_base": "SnakecordLight Belt",
+  "level": "12",
+  "stats": "+12 poison damage over 3 seconds20–30% Enhanced Defense+10 DefenseReplenish Life +5Poison Resist +25%Poison Length Reduced by 50%"
+ },
+ {
+  "name_base": "NightsmokeBelt",
+  "level": "20",
+  "stats": "30–50% Enhanced Defense+15 Defense+20 to ManaAll Resistances +10Damage Reduced by 2+50% Damage Taken Goes To Mana"
+ },
+ {
+  "name_base": "GoldwrapHeavy Belt",
+  "level": "27",
+  "stats": "+10% Increased Attack Speed40–60% Enhanced Defense+25 Defense50–80% Extra Gold from Monsters30% Better Chance of Getting Magic Items+2 to Light Radius"
+ },
+ {
+  "name_base": "BladebucklePlated Belt",
+  "level": "29",
+  "stats": "+30% Faster Hit Recovery80–100% Enhanced Defense+30 Defense+5 to Strength+10 to DexterityDamage Reduced by 3Attacker Takes Damage of 8"
+ },
+ {
+  "name_base": "Nokozan RelicAmulet",
+  "level": "10",
+  "stats": "+20% Faster Hit RecoveryAdds 3-6 fire damage+10% to Maximum Fire ResistFire Resist +50%+3 to Light Radius"
+ },
+ {
+  "name_base": "The Eye of EtlichAmulet",
+  "level": "15",
+  "stats": "+1 to All SkillsAdds 1–2-3–5 cold damage3–7% Life stolen per hit10–40 Defense vs. Missile1–5 to Light Radius"
+ },
+ {
+  "name_base": "The Mahim-Oak CurioAmulet",
+  "level": "25",
+  "stats": "10% Bonus to Attack Rating+10% Enhanced Defense+10 Defense+10 to all AttributesAll Resistances +10"
+ },
+ {
+  "name_base": "NagelringRing",
+  "level": "7",
+  "stats": "50–75 to Attack RatingMagic Damage Reduced by 3Attacker Takes Damage of 315–30% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Manald HealRing",
+  "level": "15",
+  "stats": "4–7% Mana stolen per hit+20 to LifeReplenish Life 5–8Regenerate Mana 20%"
+ },
+ {
+  "name_base": "The Stone of JordanRing",
+  "level": "29",
+  "stats": "+1 to All SkillsAdds 1-12 lightning damage+20 to ManaIncrease Maximum Mana 25%"
+ },
+ {
+  "name_base": "Amulet of the ViperTop of the Horadric Staff",
+  "level": "0",
+  "stats": "+10 to Life+10 to ManaPoison Resist +25%"
+ },
+ {
+  "name_base": "Staff of KingsShaft of the Horadric Staff",
+  "level": "0",
+  "stats": "+50% Increased Attack SpeedAll Resistances +10+50% Damage to Undead"
+ },
+ {
+  "name_base": "Horadric StaffHoradric Staff",
+  "level": "0",
+  "stats": "+50% Increased Attack Speed+10 to Life+10 to ManaCold Resist +10%Lightning Resist +10%Fire Resist +10%Poison Resist +35%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Hell Forge HammerHell Forge Hammer",
+  "level": "0",
+  "stats": "Adds 5-20 fire damage+35 DefenseFire Resist +40%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Khalim's FlailKhalim's Flail",
+  "level": "0",
+  "stats": "+50% Increased Attack Speed+40 to Attack RatingAdds 1-20 lightning damage+50% Damage to Undead"
+ },
+ {
+  "name_base": "Khalim's WillKhalim's Will",
+  "level": "0",
+  "stats": "+50% Increased Attack Speed+40 to Attack RatingAdds 1-40 lightning damage6% Mana stolen per hit6% Life stolen per hit+50% Damage to Undead"
+ },
+ {
+  "name_base": "ColdkillHatchet",
+  "level": "36",
+  "stats": "10% Chance to cast level 5 Frost Nova when struck10% Chance to cast level 10 Ice Blast on striking+30% Increased Attack Speed+150–190% Enhanced Damage+40 cold damage+15% to Maximum Cold ResistCold Resist +15%"
+ },
+ {
+  "name_base": "Butcher's PupilCleaver",
+  "level": "39",
+  "stats": "Indestructible+30% Increased Attack Speed+150–200% Enhanced DamageAdds 30-50 damage+35% Deadly Strike+25% Chance of Open Wounds"
+ },
+ {
+  "name_base": "IslestrikeTwin Axe",
+  "level": "43",
+  "stats": "+2 to Druid Skill Levels+170–190% Enhanced Damage+25% Chance of Crushing Blow+1 to Fury (Druid Only)+1 to Maul (Druid Only)+50 Defense vs. Missile+10 to all Attributes"
+ },
+ {
+  "name_base": "Pompeii's WrathCrowbill",
+  "level": "45",
+  "stats": "4% Chance to cast level 8 Volcano on striking+140–170% Enhanced DamageAdds 35-150 fire damageSlows Target by 50%Knockback"
+ },
+ {
+  "name_base": "Guardian NagaNaga",
+  "level": "48",
+  "stats": "5% Chance to cast level 8 Poison Nova on striking+150–180% Enhanced Damage+20 to Maximum Damage+250 poison damage over 10 secondsPoison Resist +30%Attacker Takes Damage of 15"
+ },
+ {
+  "name_base": "Warlord's TrustMilitary Axe",
+  "level": "35",
+  "stats": "+175% Enhanced Damage+75 Defense+49 to Vitality (Based on Character Level)Replenish Life +20All Resistances +10Repairs 1 durability in 4 seconds"
+ },
+ {
+  "name_base": "SpellsteelBearded Axe",
+  "level": "39",
+  "stats": "+10% Faster Cast Rate+165% Enhanced Damage+100 to ManaRegenerate Mana 25%Magic Damage Reduced by 12–15Level 12 Firestorm (60/60 Charges)Level 10 Holy Bolt (100/100 Charges)Level 3 Decrepify (30/30 Charges)Level 1 Teleport (20/20 Charges)Requirements -60%"
+ },
+ {
+  "name_base": "StormriderTabar",
+  "level": "41",
+  "stats": "15% Chance to cast level 5 Charged Bolt when struck5% Chance to cast level 10 Chain Lightning on striking10% Chance to cast level 25 Charged Bolt on striking+100% Enhanced DamageAdds 35-75 damageAdds 1-200 lightning damageAttacker Takes Lightning Damage of 15"
+ },
+ {
+  "name_base": "Boneslayer BladeGothic Axe",
+  "level": "42",
+  "stats": "50% Chance to cast level 24 Holy Bolt when struck+20% Increased Attack Speed+180–220% Enhanced Damage35% Bonus to Attack Rating+247% Damage to Undead (Based on Character Level)+495 to Attack Rating against Undead (Based on Character Level)+8 to StrengthLevel 20 Holy Bolt (200/200 Charges)"
+ },
+ {
+  "name_base": "The MinotaurAncient Axe",
+  "level": "45",
+  "stats": "+140–200% Enhanced DamageAdds 20-30 damage+30% Chance of Crushing BlowHit Blinds Target +2Slows Target by 50%15–20 to StrengthHalf Freeze Duration"
+ },
+ {
+  "name_base": "Suicide BranchBurnt Wand",
+  "level": "33",
+  "stats": "+1 to All Skills+50% Faster Cast Rate+40 to LifeIncrease Maximum Mana 10%All Resistances +10Attacker Takes Damage of 25+50% Damage to Undead"
+ },
+ {
+  "name_base": "Carin ShardPetrified Wand",
+  "level": "35",
+  "stats": "+2 to Summoning Skills (Necromancer Only)+1 to Necromancer Skill Levels+10% Faster Cast Rate+30% Faster Hit Recovery+123 to Life (Based on Character Level)Replenish Life +5+123 to Mana (Based on Character Level)+50% Damage to Undead"
+ },
+ {
+  "name_base": "Arm of King LeoricTomb Wand",
+  "level": "36",
+  "stats": "5% Chance to cast level 10 Bone Spirit when struck10% Chance to cast level 2 Bone Prison when struck+2 to Summoning Skills (Necromancer Only)+2 to Poison and Bone Skills (Necromancer Only)+10% Faster Cast Rate+2 to Raise Skeletal Mage (Necromancer Only)+2 to Terror (Necromancer Only)+3 to Raise Skeleton (Necromancer Only)+3 to Skeleton Mastery (Necromancer Only)+123 to Mana (Based on Character Level)+50% Damage to Undead"
+ },
+ {
+  "name_base": "Blackhand KeyGrave Wand",
+  "level": "41",
+  "stats": "+1 to Curses (Necromancer Only)+2 to Necromancer Skill Levels+30% Faster Cast Rate+50 to LifeFire Resist +37%+20% Damage Taken Goes To Mana-2 to Light RadiusLevel 13 Grim Ward (30/30 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "Dark Clan CrusherCudgel",
+  "level": "34",
+  "stats": "+2 to Druid Skill Levels+195% Enhanced Damage20–25% Bonus to Attack Rating+200% Damage to Demons+200 to Attack Rating against Demons+15 Life after each Demon Kill+50% Damage to Undead"
+ },
+ {
+  "name_base": "Zakarum's HandRune Scepter",
+  "level": "37",
+  "stats": "6% Chance to cast level 5 Blizzard on striking+30% Increased Attack Speed+180–220% Enhanced DamageIgnore Target's Defense8% Mana stolen per hit+2 to Holy Shock (Paladin Only)+2 to Holy Freeze (Paladin Only)Regenerate Mana 10%Heal Stamina Plus 15%+50% Damage to Undead"
+ },
+ {
+  "name_base": "The Fetid SprinklerHoly Water Sprinkler",
+  "level": "38",
+  "stats": "5% Chance to cast level 1 Decrepify on striking10% Chance to cast level 1 Confuse on striking+2 to Paladin Skill Levels+160–190% Enhanced DamageAdds 15-25 damage150–200 to Attack Rating+160 poison damage over 4 seconds+50% Damage to Undead"
+ },
+ {
+  "name_base": "Hand of Blessed LightDivine Scepter",
+  "level": "42",
+  "stats": "5% Chance to cast level 4 Fist of the Heavens on striking+2 to Paladin Skill Levels+130–160% Enhanced DamageAdds 20-45 damage100% Bonus to Attack Rating+2 to Fist of the Heavens (Paladin Only)+4 to Holy Bolt (Paladin Only)+50 DefenseRegenerate Mana 15%+4 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "FleshrenderBarbed Club",
+  "level": "38",
+  "stats": "+2 to Shape Shifting Skills (Druid Only)+1 to Druid Skill Levels+130–200% Enhanced DamageAdds 35-50 damage+20% Chance of Crushing Blow+20% Deadly Strike+25% Chance of Open WoundsPrevent Monster Heal+50% Damage to Undead"
+ },
+ {
+  "name_base": "Sureshrill FrostFlanged Mace",
+  "level": "39",
+  "stats": "+150–180% Enhanced DamageAdds 5-10 damageAdds 63-112 cold damageFreezes target +3Cannot Be FrozenLevel 9 Frozen Orb (50/50 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "MoonfallJagged Star",
+  "level": "42",
+  "stats": "5% Chance to cast level 6 Meteor on striking+120–150% Enhanced DamageAdds 10-15 damageAdds 55-115 fire damageMagic Damage Reduced by 9–12+2 to Light RadiusLevel 11 Meteor (60/60 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "Baezil's VortexKnout",
+  "level": "45",
+  "stats": "5% Chance to cast level 8 Nova on striking+20% Increased Attack Speed+160–200% Enhanced DamageAdds 1-150 lightning damage+100 to ManaLightning Resist +25%Level 15 Nova (80/80 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "EarthshakerBattle Hammer",
+  "level": "43",
+  "stats": "5% Chance to cast level 7 Fissure on striking+3 to Elemental Skills (Druid Only)+30% Increased Attack Speed+180% Enhanced DamageHit Blinds TargetKnockback+50% Damage to Undead"
+ },
+ {
+  "name_base": "Bloodtree StumpWar Club",
+  "level": "48",
+  "stats": "+2 to Masteries (Barbarian Only)+180–220% Enhanced Damage+50% Chance of Crushing Blow+3 to Mace Mastery (Barbarian Only)+25 to StrengthAll Resistances +20+50% Damage to Undead"
+ },
+ {
+  "name_base": "The Gavel of PainMartel de Fer",
+  "level": "45",
+  "stats": "Indestructible5% Chance to cast level 1 Iron Maiden when struck5% Chance to cast level 1 Amplify Damage on striking+130–160% Enhanced DamageAdds 12-30 damageAttacker Takes Damage of 26Level 8 Amplify Damage (3/3 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "BloodletterGladius",
+  "level": "30",
+  "stats": "+20% Increased Attack Speed+140% Enhanced DamageAdds 12-45 damage+90 to Attack Rating8% Life stolen per hit1–3 to Whirlwind (Barbarian Only)2–4 to Blade Mastery (Barbarian Only)10% Slower Stamina Drain"
+ },
+ {
+  "name_base": "Coldsteel EyeCutlass",
+  "level": "31",
+  "stats": "+20% Increased Attack Speed+200–250% Enhanced Damage6% Mana stolen per hit+50% Deadly StrikeHit Blinds TargetSlows Target by 30%"
+ },
+ {
+  "name_base": "HexfireShamshir",
+  "level": "33",
+  "stats": "+3 to Fire Skills+140–160% Enhanced DamageAdds 35-40 damageIgnore Target's Defense+10% to Maximum Fire ResistFire Resist +25%Level 6 Hydra (36/36 Charges)"
+ },
+ {
+  "name_base": "Blade of Ali BabaTulwar",
+  "level": "35",
+  "stats": "+60–120% Enhanced Damage5–15 to Dexterity+15 to Mana247% Extra Gold from Monsters (Based on Character Level)99% Better Chance of Getting Magic Items (Based on Character Level)Socketed (2)"
+ },
+ {
+  "name_base": "Ginther's RiftDimensional Blade",
+  "level": "37",
+  "stats": "+30% Increased Attack Speed+100–150% Enhanced DamageAdds 50-120 magic damageMagic Damage Reduced by 7–12Repairs 1 durability in 5 seconds"
+ },
+ {
+  "name_base": "HeadstrikerBattle Sword",
+  "level": "39",
+  "stats": "+150% Enhanced Damage+99 to Maximum Damage (Based on Character Level)+148% Deadly Strike (Based on Character Level)Prevent Monster Heal+15 to Strength"
+ },
+ {
+  "name_base": "Plague BearerRune Sword",
+  "level": "41",
+  "stats": "5% Chance to cast level 4 Poison Nova on striking+150% Enhanced DamageAdds 10-45 damage+300 poison damage over 8 seconds+5 to Rabies (Druid Only)Poison Resist +45%"
+ },
+ {
+  "name_base": "The AtlanteanAncient Sword",
+  "level": "42",
+  "stats": "+2 to Paladin Skill Levels+200–250% Enhanced Damage50% Bonus to Attack Rating+75 Defense+16 to Strength+12 to Dexterity+8 to Vitality"
+ },
+ {
+  "name_base": "Crainte VomirEspandon",
+  "level": "42",
+  "stats": "+20% Faster Run/Walk+50% Increased Attack Speed+160–200% Enhanced DamageSlows Target by 35%-70 to Monster Defense Per HitPhysical Damage Received Reduced by 10%"
+ },
+ {
+  "name_base": "Bing Sz WangDacian Falx",
+  "level": "43",
+  "stats": "5% Chance to cast level 3 Frozen Orb on striking+130–160% Enhanced DamageAdds 50-140 cold damageFreezes target +2+20 to StrengthRequirements -30%"
+ },
+ {
+  "name_base": "The Vile HuskTusk Sword",
+  "level": "44",
+  "stats": "6% Chance to cast level 1 Amplify Damage on striking+150–200% Enhanced Damage+742% Damage to Undead (Based on Character Level)+990 to Attack Rating against Undead (Based on Character Level)+250 poison damage over 6 secondsPoison Resist +50%"
+ },
+ {
+  "name_base": "CloudcrackGothic Sword",
+  "level": "45",
+  "stats": "6% Chance to cast level 7 Fist of the Heavens on striking+2 to Defensive Auras (Paladin Only)+2 to Offensive Auras (Paladin Only)+150–200% Enhanced DamageAdds 1-240 lightning damage+30 Defense+10% to Maximum Lightning ResistAttacker Takes Lightning Damage of 15+2 to Light Radius"
+ },
+ {
+  "name_base": "Todesfaelle FlammeZweihander",
+  "level": "46",
+  "stats": "10% Chance to cast level 6 Fire Ball on attack+120–160% Enhanced DamageAdds 50-200 fire damageFire Resist +40%+10 Fire AbsorbLevel 10 Enchant (45/45 Charges)Level 10 Fire Wall (20/20 Charges)"
+ },
+ {
+  "name_base": "SwordguardExecutioner Sword",
+  "level": "48",
+  "stats": "+20% Faster Hit Recovery20% Increased Chance of Blocking+170–180% Enhanced Damage+495 Defense (Based on Character Level)+200 Defense vs. Melee+100 Defense vs. MissileAll Resistances +10–20+30% Damage Taken Goes To ManaRequirements -50%"
+ },
+ {
+  "name_base": "SpineripperPoignard",
+  "level": "32",
+  "stats": "+1 to Necromancer Skill Levels+15% Increased Attack Speed+200–240% Enhanced DamageAdds 15-27 damageIgnore Target's Defense8% Life stolen per hitPrevent Monster Heal+10 to Dexterity"
+ },
+ {
+  "name_base": "Heart CarverRondel",
+  "level": "36",
+  "stats": "+190–240% Enhanced DamageAdds 15-35 damageIgnore Target's Defense+35% Deadly Strike+4 to Grim Ward (Barbarian Only)+4 to Find Item (Barbarian Only)+4 to Find Potion (Barbarian Only)"
+ },
+ {
+  "name_base": "Blackbog's SharpCinquedeas",
+  "level": "38",
+  "stats": "+30% Increased Attack SpeedAdds 15-45 damage+488 poison damage over 10 seconds+4 to Poison Nova (Necromancer Only)+4 to Poison Explosion (Necromancer Only)+5 to Poison Dagger (Necromancer Only)Slows Target by 50%+50 Defense"
+ },
+ {
+  "name_base": "StormspikeStiletto",
+  "level": "41",
+  "stats": "25% Chance to cast level 3 Charged Bolt when struck+150% Enhanced DamageAdds 1-120 lightning damageLightning Resist +99% (Based on Character Level)Attacker Takes Lightning Damage of 20"
+ },
+ {
+  "name_base": "The ImpalerWar Spear",
+  "level": "31",
+  "stats": "+20% Increased Attack Speed+140–170% Enhanced DamageIgnore Target's Defense+150 to Attack Rating+40% Chance of Open Wounds+5 to Impale (Amazon Only)+3 to Power Strike (Amazon Only)Prevent Monster Heal"
+ },
+ {
+  "name_base": "Kelpie SnareFuscina",
+  "level": "33",
+  "stats": "+140–180% Enhanced DamageAdds 30-50 damageSlows Target by 75%+10 to Strength+123 to Life (Based on Character Level)Fire Resist +50%"
+ },
+ {
+  "name_base": "Soulfeast TineWar Fork",
+  "level": "35",
+  "stats": "+150–190% Enhanced Damage150–250 to Attack Rating7% Mana stolen per hit7% Life stolen per hit20% Slower Stamina DrainRequirements -20%"
+ },
+ {
+  "name_base": "Hone SundanYari",
+  "level": "37",
+  "stats": "+160–200% Enhanced DamageAdds 20-40 damage+45% Chance of Crushing BlowRepairs 1 durability in 10 secondsSocketed (3)"
+ },
+ {
+  "name_base": "Spire of HonorLance",
+  "level": "39",
+  "stats": "+3 to Combat Skills (Paladin Only)+20% Faster Hit Recovery+150–200% Enhanced DamageAdds 20-40 damage25% Bonus to Attack Rating+148% Damage to Demons (Based on Character Level)+25% Enhanced DefenseReplenish Life +20+3 to Light Radius"
+ },
+ {
+  "name_base": "The Meat ScraperLochaber Axe",
+  "level": "41",
+  "stats": "+3 to Masteries (Barbarian Only)+30% Increased Attack Speed+150–200% Enhanced Damage10% Life stolen per hit+50% Chance of Open Wounds25% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Blackleach BladeBill",
+  "level": "42",
+  "stats": "5% Chance to cast level 5 Weaken on striking+100–140% Enhanced Damage+123 to Maximum Damage (Based on Character Level)8% Life stolen per hit-2 to Light RadiusRequirements -25%"
+ },
+ {
+  "name_base": "Athena's WrathBattle Scythe",
+  "level": "42",
+  "stats": "+1–3 to Druid Skill Levels+30% Increased Attack Speed+150–180% Enhanced Damage+99 to Maximum Damage (Based on Character Level)+15 to Dexterity+99 to Life (Based on Character Level)"
+ },
+ {
+  "name_base": "Pierre Tombale CouantPartizan",
+  "level": "43",
+  "stats": "+3 to Barbarian Skill Levels+30% Faster Hit Recovery+160–220% Enhanced DamageAdds 12-20 damage100–200 to Attack Rating6% Mana stolen per hit+55% Deadly Strike"
+ },
+ {
+  "name_base": "Husoldal EvoBec-de-Corbin",
+  "level": "44",
+  "stats": "+20% Increased Attack Speed+160–200% Enhanced DamageAdds 20-32 damage200–250 to Attack RatingPrevent Monster HealReplenish Life +20"
+ },
+ {
+  "name_base": "Grim's Burning DeadGrim Scythe",
+  "level": "45",
+  "stats": "+3 to Necromancer Skill Levels+140–180% Enhanced Damage-50% Target Defense200–250 to Attack RatingAdds 131-232 fire damage+20% Enhanced DefenseFire Resist +45%Attacker Takes Damage of 8Requirements -50%"
+ },
+ {
+  "name_base": "RazorswitchJo Staff",
+  "level": "28",
+  "stats": "+1 to All Skills+30% Faster Cast Rate+80 to Life+175 to ManaAll Resistances +50Magic Damage Reduced by 15Attacker Takes Damage of 15+50% Damage to Undead"
+ },
+ {
+  "name_base": "RibcrackerQuarterstaff",
+  "level": "31",
+  "stats": "+50% Increased Attack Speed+50% Faster Hit Recovery+200–300% Enhanced DamageAdds 30-65 damage+50% Chance of Crushing Blow+100% Enhanced Defense+100 Defense+15 to Dexterity+50% Damage to Undead"
+ },
+ {
+  "name_base": "Chromatic IreCedar Staff",
+  "level": "35",
+  "stats": "+3 to Sorceress Skill Levels+20% Faster Cast Rate+1 to Cold Mastery (Sorceress Only)+1 to Lightning Mastery (Sorceress Only)+1 to Fire Mastery (Sorceress Only)Increase Maximum Life 20–25%All Resistances +20–40Attacker Takes Lightning Damage of 20+50% Damage to Undead"
+ },
+ {
+  "name_base": "WarpspearGothic Staff",
+  "level": "39",
+  "stats": "+3 to Sorceress Skill LevelsIgnore Target's Defense+3 to Energy Shield (Sorceress Only)+3 to Teleport (Sorceress Only)+3 to Telekinesis (Sorceress Only)+250 Defense vs. Missile+50% Damage to Undead"
+ },
+ {
+  "name_base": "Skull CollectorRune Staff",
+  "level": "41",
+  "stats": "+2 to All SkillsIncrease Maximum Mana 20%+20 to Mana after each Kill99% Better Chance of Getting Magic Items (Based on Character Level)+50% Damage to Undead"
+ },
+ {
+  "name_base": "SkystrikeEdge Bow",
+  "level": "28",
+  "stats": "2% Chance to cast level 6 Meteor on striking+1 to Amazon Skill Levels+30% Increased Attack Speed+150–200% Enhanced Damage+100 to Attack RatingAdds 1-250 lightning damage+10 to Energy"
+ },
+ {
+  "name_base": "RiphookRazor Bow",
+  "level": "31",
+  "stats": "+30% Increased Attack Speed+180–220% Enhanced Damage7–10% Life stolen per hit+30% Chance of Open WoundsSlows Target by 30%+35 to Mana"
+ },
+ {
+  "name_base": "Kuko ShakakuCedar Bow",
+  "level": "33",
+  "stats": "+3 to Bow and Crossbow Skills (Amazon Only)Fires Explosive Arrows or Bolts+50% Piercing Attack+150–180% Enhanced DamageAdds 40-180 fire damage+3 to Immolation Arrow (Amazon Only)"
+ },
+ {
+  "name_base": "EndlesshailDouble Bow",
+  "level": "36",
+  "stats": "+180–220% Enhanced DamageAdds 15-30 cold damage3–5 to Strafe (Amazon Only)+50 Defense vs. Missile+40 to ManaCold Resist +35%"
+ },
+ {
+  "name_base": "Witchwild StringShort Siege Bow",
+  "level": "39",
+  "stats": "2% Chance to cast level 5 Amplify Damage on strikingFires Magic Arrows+150–170% Enhanced Damage+99% Deadly Strike (Based on Character Level)All Resistances +40Socketed (2)"
+ },
+ {
+  "name_base": "CliffkillerLarge Siege Bow",
+  "level": "41",
+  "stats": "+2 to Amazon Skill Levels+190–230% Enhanced DamageAdds 5–10-20–30 damageKnockback+80 Defense vs. Missile+50 to Life"
+ },
+ {
+  "name_base": "MagewrathRune Bow",
+  "level": "43",
+  "stats": "+1 to Amazon Skill Levels+120–150% Enhanced DamageAdds 25-50 damage200–250 to Attack Rating15% Mana stolen per hit+3 to Guided Arrow (Amazon Only)Hit Blinds Target+10 to DexterityMagic Damage Reduced by 9–13"
+ },
+ {
+  "name_base": "Goldstrike ArchGothic Bow",
+  "level": "46",
+  "stats": "5% Chance to cast level 7 Fist of the Heavens on striking+50% Increased Attack Speed+200–250% Enhanced Damage100–150% Bonus to Attack Rating100–200% Damage to Demons100–200% Damage to UndeadReplenish Life +12"
+ },
+ {
+  "name_base": "Langer BriserArbalest",
+  "level": "32",
+  "stats": "+170–200% Enhanced Damage10–30 to Maximum DamageAdds 1-212 lightning damage+33% Chance of Open WoundsKnockback+30 to Life30–60% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Pus SpitterSiege Crossbow",
+  "level": "36",
+  "stats": "9% Chance to cast level 6 Poison Nova when struck4% Chance to cast level 1 Lower Resist on striking+2 to Necromancer Skill Levels+10% Increased Attack Speed+150–220% Enhanced Damage+495 to Attack Rating (Based on Character Level)+150 poison damage over 8 secondsRequirements -60%"
+ },
+ {
+  "name_base": "Buriza-Do KyanonBallista",
+  "level": "41",
+  "stats": "+80% Increased Attack Speed+100% Piercing Attack+150–200% Enhanced Damage+247 to Maximum Damage (Based on Character Level)Adds 32-196 cold damageFreezes target +375–150 Defense+35 to Dexterity"
+ },
+ {
+  "name_base": "Demon MachineChu-Ko-Nu",
+  "level": "49",
+  "stats": "Fires Explosive Arrows or Bolts+66% Piercing Attack+123% Enhanced Damage+66 to Maximum Damage+632 to Attack Rating+321 Defense+36 to Mana"
+ },
+ {
+  "name_base": "Peasant CrownWar Hat",
+  "level": "28",
+  "stats": "+1 to All Skills+15% Faster Run/Walk+100% Enhanced Defense+20 to Vitality+20 to EnergyReplenish Life 6–12"
+ },
+ {
+  "name_base": "RockstopperSallet",
+  "level": "31",
+  "stats": "+30% Faster Hit Recovery160–220% Enhanced Defense+15 to VitalityCold Resist 20–40%Lightning Resist 20–40%Fire Resist 20–50%Physical Damage Received Reduced by 10%"
+ },
+ {
+  "name_base": "StealskullCasque",
+  "level": "35",
+  "stats": "+10% Increased Attack Speed+10% Faster Hit Recovery5% Mana stolen per hit5% Life stolen per hit200–240% Enhanced Defense30–50% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Darksight HelmBasinet",
+  "level": "38",
+  "stats": "6% Chance to cast level 3 Dim Vision when struck5% Mana stolen per hit+198 Defense (Based on Character Level)Fire Resist 20–40%Cannot Be Frozen-4 to Light RadiusLevel 5 Cloak of Shadows (30/30 Charges)"
+ },
+ {
+  "name_base": "Valkyrie WingWinged Helm",
+  "level": "44",
+  "stats": "+1–2 to Amazon Skill Levels+20% Faster Run/Walk+20% Faster Hit Recovery150–200% Enhanced Defense2–4 to Mana after each Kill"
+ },
+ {
+  "name_base": "Crown of ThievesGrand Crown",
+  "level": "49",
+  "stats": "9–12% Life stolen per hit160–200% Enhanced Defense+25 to Dexterity+50 to Life+35 to ManaFire Resist +33%80–100% Extra Gold from Monsters"
+ },
+ {
+  "name_base": "Blackhorn's FaceDeath Mask",
+  "level": "41",
+  "stats": "Prevent Monster HealSlows Target by 20%180–220% Enhanced DefenseLightning Resist +15%+20 Lightning AbsorbAttacker Takes Lightning Damage of 25"
+ },
+ {
+  "name_base": "Vampire GazeGrim Helm",
+  "level": "41",
+  "stats": "Adds 6-22 cold damage6–8% Mana stolen per hit6–8% Life stolen per hit+100% Enhanced Defense15% Slower Stamina DrainPhysical Damage Received Reduced by 15–20%Magic Damage Reduced by 10–15"
+ },
+ {
+  "name_base": "The Spirit ShroudGhost Armor",
+  "level": "28",
+  "stats": "+1 to All Skills+150% Enhanced DefenseReplenish Life +10Magic Damage Reduced by 7–11Cannot Be Frozen"
+ },
+ {
+  "name_base": "Skin of the VipermagiSerpentskin Armor",
+  "level": "29",
+  "stats": "+1 to All Skills+30% Faster Cast Rate+120% Enhanced DefenseAll Resistances +20–35Magic Damage Reduced by 9–13"
+ },
+ {
+  "name_base": "Skin of the Flayed OneDemonhide Armor",
+  "level": "31",
+  "stats": "5–7% Life stolen per hit150–190% Enhanced DefenseReplenish Life 15–25Attacker Takes Damage of 15Repairs 1 durability in 10 seconds"
+ },
+ {
+  "name_base": "Iron PeltTrellised Armor",
+  "level": "33",
+  "stats": "50–100% Enhanced Defense+297 Defense (Based on Character Level)+25 to LifeDamage Reduced by 15–20Magic Damage Reduced by 10–16"
+ },
+ {
+  "name_base": "Spirit ForgeLinked Mail",
+  "level": "35",
+  "stats": "Adds 20-65 fire damage120–160% Enhanced Defense+15 to Strength+123 to Life (Based on Character Level)Fire Resist +5%+4 to Light RadiusSocketed (2)"
+ },
+ {
+  "name_base": "Crow CawTigulated Mail",
+  "level": "37",
+  "stats": "+15% Increased Attack Speed+15% Faster Hit Recovery+35% Chance of Open Wounds150–180% Enhanced Defense+15 to Dexterity"
+ },
+ {
+  "name_base": "ShaftstopMesh Armor",
+  "level": "38",
+  "stats": "180–220% Enhanced Defense+250 Defense vs. Missile+60 to LifePhysical Damage Received Reduced by 30%"
+ },
+ {
+  "name_base": "Duriel's ShellCuirass",
+  "level": "41",
+  "stats": "160–200% Enhanced Defense+123 Defense (Based on Character Level)+15 to Strength+99 to Life (Based on Character Level)Cold Resist +50%Lightning Resist +20%Fire Resist +20%Poison Resist +20%Cannot Be Frozen"
+ },
+ {
+  "name_base": "Skullder's IreRusset Armor",
+  "level": "42",
+  "stats": "+1 to All Skills160–200% Enhanced DefenseMagic Damage Reduced by 10123% Better Chance of Getting Magic Items (Based on Character Level)Repairs 1 durability in 5 seconds"
+ },
+ {
+  "name_base": "Guardian AngelTemplar Coat",
+  "level": "45",
+  "stats": "+1 to Paladin Skill Levels+30% Faster Block Rate20% Increased Chance of Blocking+247 to Attack Rating against Demons (Based on Character Level)180–200% Enhanced Defense+15% to Maximum Poison Resist+15% to Maximum Cold Resist+15% to Maximum Lightning Resist+15% to Maximum Fire Resist+4 to Light Radius"
+ },
+ {
+  "name_base": "ToothrowSharktooth Armor",
+  "level": "48",
+  "stats": "+40% Chance of Open Wounds160–220% Enhanced Defense40–60 Defense+10 to StrengthFire Resist +15%Attacker Takes Damage of 20–40"
+ },
+ {
+  "name_base": "Atma's WailEmbossed Plate",
+  "level": "51",
+  "stats": "+30% Faster Hit Recovery120–160% Enhanced Defense+198 Defense (Based on Character Level)+15 to DexterityReplenish Life +10Increase Maximum Mana 15%20% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Black HadesChaos Armor",
+  "level": "53",
+  "stats": "30–60% Damage to Demons200–250 to Attack Rating against Demons140–200% Enhanced DefenseHalf Freeze Duration-2 to Light RadiusSocketed (3)"
+ },
+ {
+  "name_base": "CorpsemournOrnate Plate",
+  "level": "55",
+  "stats": "6% Chance to cast level 2 Iron Maiden when struckAdds 12-36 fire damage150–180% Enhanced Defense+8 to Strength+10 to VitalityCold Resist +35%Level 5 Corpse Explosion (40/40 Charges)"
+ },
+ {
+  "name_base": "Que-Hegan's WisdomMage Plate",
+  "level": "51",
+  "stats": "+1 to All Skills+20% Faster Cast Rate+20% Faster Hit Recovery140–160% Enhanced Defense+15 to EnergyMagic Damage Reduced by 6–10+3 to Mana after each Kill"
+ },
+ {
+  "name_base": "VisceratuantDefender",
+  "level": "28",
+  "stats": "+1 to Sorceress Skill Levels+30% Faster Block Rate30% Increased Chance of Blocking100–150% Enhanced DefenseAttacker Takes Lightning Damage of 10"
+ },
+ {
+  "name_base": "Moser's Blessed CircleRound Shield",
+  "level": "31",
+  "stats": "+30% Faster Block Rate25% Increased Chance of Blocking180–220% Enhanced DefenseAll Resistances +25Socketed (2)"
+ },
+ {
+  "name_base": "StormchaserScutum",
+  "level": "35",
+  "stats": "4% Chance to cast level 5 Tornado when struck4% Chance to cast level 6 Blizzard when struck+10% Faster Block Rate20% Increased Chance of Blocking+150 to Attack RatingAdds 1-60 lightning damage160–220% Enhanced DefenseLightning Resist +50%Half Freeze Duration"
+ },
+ {
+  "name_base": "Tiamat's RebukeDragon Shield",
+  "level": "38",
+  "stats": "3% Chance to cast level 6 Hydra when struck5% Chance to cast level 7 Nova when struck5% Chance to cast level 9 Frost Nova when struckAdds 35-95 fire damageAdds 1-120 lightning damageAdds 27-53 cold damage140–200% Enhanced DefenseAll Resistances +25–35"
+ },
+ {
+  "name_base": "Gerke's SanctuaryPavise",
+  "level": "44",
+  "stats": "30% Increased Chance of Blocking180–240% Enhanced DefenseReplenish Life +15All Resistances +20–30Damage Reduced by 11–16Magic Damage Reduced by 14–18"
+ },
+ {
+  "name_base": "Radament's SphereAncient Shield",
+  "level": "50",
+  "stats": "5% Chance to cast level 5 Poison Nova when struck+20% Faster Block Rate20% Increased Chance of Blocking+80 poison damage over 4 seconds160–200% Enhanced DefensePoison Resist +75%Level 6 Poison Explosion (40/40 Charges)"
+ },
+ {
+  "name_base": "Lidless WallGrim Shield",
+  "level": "41",
+  "stats": "+1 to All Skills+20% Faster Cast Rate80–130% Enhanced Defense+10 to EnergyIncrease Maximum Mana 10%3–5 to Mana after each Kill+1 to Light Radius"
+ },
+ {
+  "name_base": "Lance GuardBarbed Shield",
+  "level": "35",
+  "stats": "+30% Faster Hit Recovery+20% Deadly Strike70–120% Enhanced Defense+50 to LifeAttacker Takes Damage of 47+15% Damage Taken Goes To Mana"
+ },
+ {
+  "name_base": "Venom GripDemonhide Gloves",
+  "level": "29",
+  "stats": "+60 poison damage over 4 seconds5% Life stolen per hit+5% Chance of Crushing Blow130–160% Enhanced Defense15–25 Defense+5% to Maximum Poison ResistPoison Resist +30%"
+ },
+ {
+  "name_base": "GravepalmSharkskin Gloves",
+  "level": "32",
+  "stats": "100–200% Damage to Undead100–200 to Attack Rating against Undead140–180% Enhanced Defense+10 to Strength+10 to Energy"
+ },
+ {
+  "name_base": "GhoulhideHeavy Bracers",
+  "level": "36",
+  "stats": "+198% Damage to Undead (Based on Character Level)+792 to Attack Rating against Undead (Based on Character Level)4–5% Mana stolen per hit150–190% Enhanced Defense+20 to Life"
+ },
+ {
+  "name_base": "Lava GoutBattle Gauntlets",
+  "level": "42",
+  "stats": "2% Chance to cast level 10 Enchant on striking+20% Increased Attack SpeedAdds 13-46 fire damage150–200% Enhanced DefenseFire Resist +24%Half Freeze Duration"
+ },
+ {
+  "name_base": "HellmouthWar Gauntlets",
+  "level": "47",
+  "stats": "4% Chance to cast level 12 Firestorm on striking2% Chance to cast level 4 Meteor on strikingAdds 15-72 fire damage150–200% Enhanced Defense+15 Fire Absorb"
+ },
+ {
+  "name_base": "InfernostrideDemonhide Boots",
+  "level": "29",
+  "stats": "5% Chance to cast level 8 Blaze when struck+20% Faster Run/WalkAdds 12-33 fire damage120–150% Enhanced Defense+15 Defense+10% to Maximum Fire ResistFire Resist +30%40–70% Extra Gold from Monsters+2 to Light Radius"
+ },
+ {
+  "name_base": "WaterwalkSharkskin Boots",
+  "level": "32",
+  "stats": "+20% Faster Run/Walk180–210% Enhanced Defense+100 Defense vs. Missile+15 to Dexterity45–65 to Life+40 Maximum StaminaHeal Stamina Plus 50%+5% to Maximum Fire Resist"
+ },
+ {
+  "name_base": "SilkweaveMesh Boots",
+  "level": "36",
+  "stats": "+30% Faster Run/Walk150–190% Enhanced Defense+200 Defense vs. MissileIncrease Maximum Mana 10%+5 to Mana after each Kill"
+ },
+ {
+  "name_base": "War TravelerBattle Boots",
+  "level": "42",
+  "stats": "+25% Faster Run/WalkAdds 15-25 damage150–190% Enhanced Defense+10 to Strength+10 to Vitality40% Slower Stamina DrainAttacker Takes Damage of 5–1030–50% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Gore RiderWar Boots",
+  "level": "47",
+  "stats": "+30% Faster Run/Walk+15% Chance of Crushing Blow+15% Deadly Strike+10% Chance of Open Wounds160–200% Enhanced Defense+20 Maximum StaminaRequirements -25%"
+ },
+ {
+  "name_base": "String of EarsDemonhide Sash",
+  "level": "29",
+  "stats": "6–8% Life stolen per hit150–180% Enhanced Defense+15 DefensePhysical Damage Received Reduced by 10–15%Magic Damage Reduced by 10–15"
+ },
+ {
+  "name_base": "RazortailSharkskin Belt",
+  "level": "32",
+  "stats": "+33% Piercing Attack+10 to Maximum Damage120–150% Enhanced Defense+15 Defense+15 to DexterityAttacker Takes Damage of 99 (Based on Character Level)"
+ },
+ {
+  "name_base": "Gloom's TrapMesh Belt",
+  "level": "36",
+  "stats": "5% Mana stolen per hit120–150% Enhanced Defense+15 to VitalityIncrease Maximum Mana 15%Regenerate Mana 15%-3 to Light Radius"
+ },
+ {
+  "name_base": "SnowclashBattle Belt",
+  "level": "42",
+  "stats": "5% Chance to cast level 19 Blizzard when struckAdds 13-21 cold damage+2 to Chilling Armor (Sorceress Only)+2 to Blizzard (Sorceress Only)+3 to Glacial Spike (Sorceress Only)130–170% Enhanced Defense+15% to Maximum Cold Resist+15 Cold Absorb"
+ },
+ {
+  "name_base": "Thundergod's VigorWar Belt",
+  "level": "47",
+  "stats": "5% Chance to cast level 7 Fist of the Heavens when struckAdds 1-50 lightning damage+3 to Lightning Fury (Amazon Only)+3 to Lightning Strike (Amazon Only)160–200% Enhanced Defense+20 to Strength+20 to Vitality+10% to Maximum Lightning Resist+20 Lightning Absorb"
+ },
+ {
+  "name_base": "Harlequin CrestShako",
+  "level": "62",
+  "stats": "+2 to All Skills+2 to all Attributes+148 to Life (Based on Character Level)+148 to Mana (Based on Character Level)Physical Damage Received Reduced by 10%50% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Veil of SteelSpired Helm",
+  "level": "73",
+  "stats": "+60% Enhanced Defense+140 Defense+15 to Strength+15 to VitalityAll Resistances +50-4 to Light Radius"
+ },
+ {
+  "name_base": "The Gladiator's BaneWire Fleece",
+  "level": "85",
+  "stats": "+30% Faster Hit Recovery150–200% Enhanced Defense+50 DefenseDamage Reduced by 15–20Magic Damage Reduced by 15–20Cannot Be FrozenPoison Length Reduced by 50%Attacker Takes Damage of 20"
+ },
+ {
+  "name_base": "Arkaine's ValorBalrog Skin",
+  "level": "85",
+  "stats": "1–2 to All Skills+30% Faster Hit Recovery150–180% Enhanced Defense+49 to Vitality (Based on Character Level)Damage Reduced by 10–15"
+ },
+ {
+  "name_base": "Blackoak ShieldLuna",
+  "level": "61",
+  "stats": "4% Chance to cast level 5 Weaken when struck+50% Faster Block Rate160–200% Enhanced Defense+49 to Dexterity (Based on Character Level)+123 to Life (Based on Character Level)+61 Absorbs Cold Damage (Based on Character Level)Half Freeze Duration"
+ },
+ {
+  "name_base": "StormshieldMonarch",
+  "level": "73",
+  "stats": "Indestructible+35% Faster Block Rate25% Increased Chance of Blocking+371 Defense (Based on Character Level)+30 to StrengthCold Resist +60%Lightning Resist +25%Physical Damage Received Reduced by 35%Attacker Takes Lightning Damage of 10"
+ },
+ {
+  "name_base": "HellslayerDecapitator",
+  "level": "66",
+  "stats": "10% Chance to cast level 23 Fire Ball on attack+100% Enhanced Damage+297% Enhanced Maximum Damage (Based on Character Level)Adds 150-250 fire damage+49 to Strength (Based on Character Level)+49 to Vitality (Based on Character Level)+25 to Life"
+ },
+ {
+  "name_base": "Messerschmidt's ReaverChampion Axe",
+  "level": "70",
+  "stats": "+200% Enhanced Damage+247% Enhanced Maximum Damage (Based on Character Level)100% Bonus to Attack RatingAdds 20-240 fire damage+15 to all Attributes"
+ },
+ {
+  "name_base": "Baranar's StarDevil Star",
+  "level": "65",
+  "stats": "+50% Increased Attack Speed+200% Enhanced Damage200% Bonus to Attack RatingAdds 1-200 fire damageAdds 1-200 lightning damageAdds 1-200 cold damage+15 to Strength+15 to Dexterity+50% Damage to Undead"
+ },
+ {
+  "name_base": "Schaefer's HammerLegendary Mallet",
+  "level": "79",
+  "stats": "Indestructible20% Chance to cast level 10 Static Field on striking+20% Increased Attack Speed+100–130% Enhanced Damage+198 to Maximum Damage (Based on Character Level)+792 to Attack Rating (Based on Character Level)Adds 50-200 lightning damage+50 to LifeLightning Resist +75%+1 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "The Cranium BasherThunder Maul",
+  "level": "87",
+  "stats": "Indestructible4% Chance to cast level 1 Amplify Damage on striking+20% Increased Attack Speed+200–240% Enhanced Damage+20 damage+75% Chance of Crushing Blow+25 to StrengthAll Resistances +25+50% Damage to Undead"
+ },
+ {
+  "name_base": "LightsabrePhase Blade",
+  "level": "58",
+  "stats": "5% Chance to cast level 21 Chain Lightning on attack+20% Increased Attack Speed+150–200% Enhanced DamageAdds 10-30 damageIgnore Target's DefenseAdds 60-120 magic damageAdds 1-200 lightning damage5–7% Mana stolen per hitLightning Absorb +25%+7 to Light Radius"
+ },
+ {
+  "name_base": "DoombringerChampion Sword",
+  "level": "69",
+  "stats": "Indestructible8% Chance to cast level 3 Weaken on striking+180–250% Enhanced DamageAdds 30-100 damage40% Bonus to Attack Rating5–7% Life stolen per hitIncrease Maximum Life 20%"
+ },
+ {
+  "name_base": "The GrandfatherColossus Blade",
+  "level": "81",
+  "stats": "Indestructible+150–250% Enhanced Damage+247 to Maximum Damage (Based on Character Level)50% Bonus to Attack Rating+20 to all Attributes+80 to Life"
+ },
+ {
+  "name_base": "WizardspikeBone Knife",
+  "level": "61",
+  "stats": "Indestructible+50% Faster Cast RateIncrease Maximum Mana 15%+198 to Mana (Based on Character Level)Regenerate Mana 15%All Resistances +75"
+ },
+ {
+  "name_base": "Constricting RingRing",
+  "level": "95",
+  "stats": "Drain Life -30+15% to Maximum Poison Resist+15% to Maximum Cold Resist+15% to Maximum Lightning Resist+15% to Maximum Fire ResistAll Resistances +100100% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "StormspireGiant Thresher",
+  "level": "70",
+  "stats": "Indestructible5% Chance to cast level 5 Chain Lightning when struck2% Chance to cast level 25 Charged Bolt when struck+30% Increased Attack Speed+150–250% Enhanced DamageAdds 1-237 lightning damage+10 to StrengthLightning Resist +50%Attacker Takes Lightning Damage of 27"
+ },
+ {
+  "name_base": "EaglehornCrusader Bow",
+  "level": "69",
+  "stats": "+1 to Amazon Skill Levels+200% Enhanced Damage+198% Enhanced Maximum Damage (Based on Character Level)Ignore Target's Defense+594 to Attack Rating (Based on Character Level)+25 to Dexterity"
+ },
+ {
+  "name_base": "WindforceHydra Bow",
+  "level": "73",
+  "stats": "+20% Increased Attack Speed+250% Enhanced Damage+309 to Maximum Damage (Based on Character Level)6–8% Mana stolen per hitKnockback+10 to Strength+5 to DexterityHeal Stamina Plus 30%"
+ },
+ {
+  "name_base": "Bul-Kathos' Wedding BandRing",
+  "level": "58",
+  "stats": "+1 to All Skills3–5% Life stolen per hit+49 to Life (Based on Character Level)+50 Maximum Stamina"
+ },
+ {
+  "name_base": "The Cat's EyeAmulet",
+  "level": "50",
+  "stats": "+30% Faster Run/Walk+20% Increased Attack Speed+100 Defense+100 Defense vs. Missile+25 to Dexterity"
+ },
+ {
+  "name_base": "The Rising SunAmulet",
+  "level": "65",
+  "stats": "2% Chance to cast level 19 Meteor when struck+2 to Fire SkillsAdds 24-48 fire damageReplenish Life +10+74 Absorbs Fire Damage (Based on Character Level)+4 to Light Radius"
+ },
+ {
+  "name_base": "Crescent MoonAmulet",
+  "level": "50",
+  "stats": "11–15% Mana stolen per hit3–6% Life stolen per hit+45 to ManaMagic Damage Reduced by 10+10% Damage Taken Goes To Mana-2 to Light Radius"
+ },
+ {
+  "name_base": "Mara's KaleidoscopeAmulet",
+  "level": "67",
+  "stats": "+2 to All Skills+5 to all AttributesAll Resistances +20–30"
+ },
+ {
+  "name_base": "Atma's ScarabAmulet",
+  "level": "60",
+  "stats": "5% Chance to cast level 2 Amplify Damage on striking20% Bonus to Attack Rating+40 poison damage over 4 secondsPoison Resist +75%Attacker Takes Damage of 5+3 to Light Radius"
+ },
+ {
+  "name_base": "Dwarf StarRing",
+  "level": "45",
+  "stats": "+40 to Life+40 Maximum StaminaHeal Stamina Plus 15%Fire Absorb +15%Magic Damage Reduced by 12–15100% Extra Gold from Monsters"
+ },
+ {
+  "name_base": "Raven FrostRing",
+  "level": "45",
+  "stats": "150–250 to Attack RatingAdds 15-45 cold damage15–20 to Dexterity+40 to ManaCold Absorb +20%Cannot Be Frozen"
+ },
+ {
+  "name_base": "Highlord's WrathAmulet",
+  "level": "65",
+  "stats": "+1 to All Skills+20% Increased Attack SpeedAdds 1-30 lightning damage+37% Deadly Strike (Based on Character Level)Lightning Resist +35%Attacker Takes Lightning Damage of 15"
+ },
+ {
+  "name_base": "Saracen's ChanceAmulet",
+  "level": "47",
+  "stats": "10% Chance to cast level 2 Iron Maiden when struck+12 to all AttributesAll Resistances +15–25"
+ },
+ {
+  "name_base": "Arreat's FaceSlayer Guard",
+  "level": "42",
+  "stats": "+2 to Combat Skills (Barbarian Only)+2 to Barbarian Skill Levels+30% Faster Hit Recovery20% Bonus to Attack Rating3–6% Life stolen per hit150–200% Enhanced Defense+20 to Strength+20 to DexterityAll Resistances +30"
+ },
+ {
+  "name_base": "HomunculusHierophant Trophy",
+  "level": "42",
+  "stats": "+2 to Curses (Necromancer Only)+2 to Necromancer Skill Levels+30% Faster Block Rate40% Increased Chance of Blocking150–200% Enhanced Defense+20 to EnergyRegenerate Mana 33%All Resistances +40+5 to Mana after each Kill"
+ },
+ {
+  "name_base": "Titan's RevengeCeremonial Javelin",
+  "level": "42",
+  "stats": "+2 to Javelin and Spear Skills (Amazon Only)+2 to Amazon Skill Levels+30% Faster Run/Walk+150–200% Enhanced DamageAdds 25-50 damage5–9% Life stolen per hit+20 to Strength+20 to DexterityIncreased Stack Size +60Replenishes quantity [1 in 3 sec.]"
+ },
+ {
+  "name_base": "Lycander's AimCeremonial Bow",
+  "level": "42",
+  "stats": "+2 to Bow and Crossbow Skills (Amazon Only)+2 to Amazon Skill Levels+20% Increased Attack Speed+150–200% Enhanced DamageAdds 25-50 damage5–8% Mana stolen per hit+20% Enhanced Defense+20 to Dexterity+20 to Energy"
+ },
+ {
+  "name_base": "Lycander's FlankCeremonial Pike",
+  "level": "42",
+  "stats": "+2 to Javelin and Spear Skills (Amazon Only)+2 to Amazon Skill Levels+30% Increased Attack Speed+150–200% Enhanced DamageAdds 25-50 damage5–9% Life stolen per hit+20% Enhanced Defense+20 to Strength+20 to Vitality"
+ },
+ {
+  "name_base": "The OculusSwirling Crystal",
+  "level": "42",
+  "stats": "25% Chance to cast level 1 Teleport when struck+3 to Sorceress Skill Levels+30% Faster Cast Rate+20% Enhanced Defense+20 to Vitality+20 to EnergyAll Resistances +20+5 to Mana after each Kill50% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Herald of ZakarumGilded Shield",
+  "level": "42",
+  "stats": "+2 to Combat Skills (Paladin Only)+2 to Paladin Skill Levels+30% Faster Block Rate30% Increased Chance of Blocking20% Bonus to Attack Rating150–200% Enhanced Defense+20 to Strength+20 to VitalityAll Resistances +50"
+ },
+ {
+  "name_base": "Bartuc's Cut-ThroatGreater Talons",
+  "level": "42",
+  "stats": "+1 to Martial Arts (Assassin Only)+2 to Assassin Skill Levels+30% Faster Hit Recovery+150–200% Enhanced DamageAdds 25-50 damage20% Bonus to Attack Rating5–9% Life stolen per hit+20 to Strength+20 to Dexterity"
+ },
+ {
+  "name_base": "Jalal's ManeTotemic Mask",
+  "level": "42",
+  "stats": "+2 to Shape Shifting Skills (Druid Only)+2 to Druid Skill Levels+30% Faster Hit Recovery20% Bonus to Attack Rating150–200% Enhanced Defense+20 to Strength+20 to EnergyAll Resistances +30+5 to Mana after each Kill"
+ },
+ {
+  "name_base": "The ScalperFrancisca",
+  "level": "57",
+  "stats": "+20% Increased Attack Speed+150–200% Enhanced Damage25% Bonus to Attack Rating4–6% Life stolen per hit+33% Chance of Open Wounds+4 to Mana after each KillReplenishes quantity [1 in 3 sec.]"
+ },
+ {
+  "name_base": "BloodmoonElegant Blade",
+  "level": "61",
+  "stats": "+210–260% Enhanced Damage10–15% Life stolen per hit+50% Chance of Open Wounds7–13 Life after each KillLevel 15 Blood Golem (9/9 Charges)"
+ },
+ {
+  "name_base": "Djinn SlayerAtaghan",
+  "level": "65",
+  "stats": "+190–240% Enhanced Damage100–150% Damage to Demons200–300 to Attack Rating against DemonsAdds 250-500 fire damage3–6% Mana stolen per hit3–7 Lightning Absorb"
+ },
+ {
+  "name_base": "DeathbitBattle Dart",
+  "level": "44",
+  "stats": "+130–180% Enhanced Damage200–450 to Attack Rating4–6% Mana stolen per hit7–9% Life stolen per hit+40% Deadly StrikeReplenishes quantity [1 in 4 sec.]"
+ },
+ {
+  "name_base": "WarshrikeWinged Knife",
+  "level": "75",
+  "stats": "25% Chance to cast level 9 Nova on striking+30% Increased Attack Speed+50% Piercing Attack+200–250% Enhanced Damage+50% Deadly StrikeReplenishes quantity [1 in 3 sec.]"
+ },
+ {
+  "name_base": "Gut SiphonDemon Crossbow",
+  "level": "71",
+  "stats": "+33% Piercing Attack+160–220% Enhanced Damage12–18% Life stolen per hit+33% Chance of Open WoundsSlows Target by 25%"
+ },
+ {
+  "name_base": "Razor's EdgeTomahawk",
+  "level": "67",
+  "stats": "+40% Increased Attack Speed+175–225% Enhanced Damage-33% Target Defense+50% Deadly Strike+50% Chance of Open Wounds"
+ },
+ {
+  "name_base": "Demon LimbTyrant Club",
+  "level": "63",
+  "stats": "+180–230% Enhanced Damage+123% Damage to DemonsAdds 222-333 fire damage7–13% Life stolen per hitFire Resist 15–20%Level 23 Enchant (20/20 Charges)Repairs 1 durability in 20 seconds+50% Damage to Undead"
+ },
+ {
+  "name_base": "Steel ShadeArmet",
+  "level": "62",
+  "stats": "4–8% Mana stolen per hit100–130% Enhanced DefenseReplenish Life 10–185–11 Fire Absorb"
+ },
+ {
+  "name_base": "Tomb ReaverCryptic Axe",
+  "level": "84",
+  "stats": "+60% Increased Attack Speed+200–280% Enhanced Damage150–230% Damage to Undead250–350 to Attack Rating against UndeadAll Resistances +30–5010% Reanimate as: Returned10–14 Life after each Kill50–80% Better Chance of Getting Magic Items+4 to Light Radius"
+ },
+ {
+  "name_base": "Death's WebUnearthed Wand",
+  "level": "66",
+  "stats": "+2 to All Skills1–2 to Poison and Bone Skills (Necromancer Only)-40–50% to Enemy Poison Resistance7–12 to Mana after each Kill7–12 Life after each Kill+50% Damage to Undead"
+ },
+ {
+  "name_base": "Nature's PeaceRing",
+  "level": "69",
+  "stats": "Slain Monsters Rest in PeacePrevent Monster HealPoison Resist 20–30%Damage Reduced by 7–11Level 5 Oak Sage (27/27 Charges)"
+ },
+ {
+  "name_base": "AzurewrathPhase Blade",
+  "level": "85",
+  "stats": "Level 10–13 Sanctuary Aura When Equipped+1 to All Skills+30% Increased Attack Speed+230–270% Enhanced DamageAdds 250-500 magic damageAdds 250-500 cold damage+5–10 to all Attributes+3 to Light Radius"
+ },
+ {
+  "name_base": "Seraph's HymnAmulet",
+  "level": "65",
+  "stats": "+2 to All Skills1–2 to Defensive Auras (Paladin Only)25–50% Damage to Demons150–250 to Attack Rating against Demons25–50% Damage to Undead150–250 to Attack Rating against Undead+2 to Light Radius"
+ },
+ {
+  "name_base": "FleshripperFanged Knife",
+  "level": "68",
+  "stats": "+200–300% Enhanced Damage-50% Target Defense+25% Chance of Crushing Blow+33% Deadly Strike+50% Chance of Open WoundsPrevent Monster HealSlows Target by 20%"
+ },
+ {
+  "name_base": "Horizon's TornadoScourge",
+  "level": "64",
+  "stats": "20% Chance to cast level 15 Tornado on striking+50% Increased Attack Speed+230–280% Enhanced DamageSlows Target by 20%Requirements -20%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Stone CrusherLegendary Mallet",
+  "level": "68",
+  "stats": "+280–320% Enhanced DamageDamage 10–30-25% Target Defense+40% Chance of Crushing Blow-100 to Monster Defense Per Hit20–30 to Strength+50% Damage to Undead"
+ },
+ {
+  "name_base": "Jade TalonWrist Sword",
+  "level": "66",
+  "stats": "1–2 to Martial Arts (Assassin Only)1–2 to Shadow Disciplines (Assassin Only)+30% Faster Hit Recovery+190–240% Enhanced Damage10–15% Mana stolen per hitAll Resistances +40–50"
+ },
+ {
+  "name_base": "Shadow DancerMyrmidon Greaves",
+  "level": "71",
+  "stats": "1–2 to Shadow Disciplines (Assassin Only)+30% Faster Run/Walk+30% Faster Hit Recovery70–100% Enhanced Defense15–25 to DexterityRequirements -20%"
+ },
+ {
+  "name_base": "Cerebus' BiteBlood Spirit",
+  "level": "63",
+  "stats": "2–4 to Shape Shifting Skills (Druid Only)60–120% Bonus to Attack Rating7–10% Life stolen per hit+33% Chance of Open Wounds1–2 to Feral Rage (Druid Only)130–140% Enhanced Defense"
+ },
+ {
+  "name_base": "Tyrael's MightSacred Armor",
+  "level": "84",
+  "stats": "Indestructible+20% Faster Run/Walk50–100% Damage to DemonsSlain Monsters Rest in Peace120–150% Enhanced Defense20–30 to StrengthAll Resistances +20–30Cannot Be FrozenRequirements -100%"
+ },
+ {
+  "name_base": "Soul DrainerVambraces",
+  "level": "74",
+  "stats": "8% Chance to cast level 3 Weaken on striking4–7% Mana stolen per hit4–7% Life stolen per hit-50 to Monster Defense Per Hit90–120% Enhanced Defense"
+ },
+ {
+  "name_base": "Rune MasterEttin Axe",
+  "level": "72",
+  "stats": "+220–270% Enhanced Damage+5% to Maximum Cold ResistCannot Be Frozen"
+ },
+ {
+  "name_base": "Death CleaverBerserker Axe",
+  "level": "70",
+  "stats": "+40% Increased Attack Speed+230–280% Enhanced Damage-33% Target Defense+66% Deadly Strike6–9 Life after each Kill"
+ },
+ {
+  "name_base": "Executioner's JusticeGlorious Axe",
+  "level": "75",
+  "stats": "50% Chance to cast level 6 Decrepify when you Kill an Enemy+30% Increased Attack Speed+240–290% Enhanced Damage-33% Target Defense+25% Chance of Crushing Blow"
+ },
+ {
+  "name_base": "StoneravenMatriarchal Spear",
+  "level": "64",
+  "stats": "1–3 to Javelin and Spear Skills (Amazon Only)+230–280% Enhanced DamageAdds 101-187 magic damage400–600 DefenseAll Resistances +30–50"
+ },
+ {
+  "name_base": "LeviathanKraken Shell",
+  "level": "65",
+  "stats": "Indestructible170–200% Enhanced Defense100–150 Defense40–50 to StrengthPhysical Damage Received Reduced by 15–25%"
+ },
+ {
+  "name_base": "Wisp ProjectorRing",
+  "level": "76",
+  "stats": "10% Chance to cast level 16 Lightning on strikingLightning Absorb 10–20%10–20% Better Chance of Getting Magic ItemsLevel 7 Spirit of Barbs (11/11 Charges)Level 5 Heart of Wolverine (13/13 Charges)Level 2 Oak Sage (15/15 Charges)"
+ },
+ {
+  "name_base": "Gargoyle's BiteWinged Harpoon",
+  "level": "70",
+  "stats": "+180–230% Enhanced Damage+293 poison damage over 10 seconds9–15% Life stolen per hitReplenishes quantity [1 in 3 sec.]Level 11 Plague Javelin (60/60 Charges)"
+ },
+ {
+  "name_base": "LaceratorWinged Axe",
+  "level": "68",
+  "stats": "33% Chance to cast level 3 Amplify Damage on striking+30% Increased Attack Speed+150–210% Enhanced Damage+33% Chance of Open WoundsPrevent Monster HealHit Causes Monster to Flee +50%Replenishes quantity [1 in 4 sec.]"
+ },
+ {
+  "name_base": "Mang Song's LessonArchon Staff",
+  "level": "82",
+  "stats": "+5 to All Skills+30% Faster Cast Rate-7–15% to Enemy Cold Resistance-7–15% to Enemy Lightning Resistance-7–15% to Enemy Fire ResistanceRegenerate Mana 10%+50% Damage to Undead"
+ },
+ {
+  "name_base": "ViperforkMancatcher",
+  "level": "71",
+  "stats": "15% Chance to cast level 9 Poison Explosion on striking+50% Increased Attack Speed+190–240% Enhanced Damage200–250 to Attack Rating+325 poison damage over 10 secondsPoison Resist 30–50%"
+ },
+ {
+  "name_base": "Ethereal EdgeSilver-edged Axe",
+  "level": "74",
+  "stats": "Indestructible+25% Increased Attack Speed+150–180% Enhanced Damage270–350 to Attack Rating150–200% Damage to Demons10–12 Fire Absorb5–10 Life after each Demon KillEthereal (Cannot be Repaired)"
+ },
+ {
+  "name_base": "Demonhorn's EdgeDestroyer Helm",
+  "level": "61",
+  "stats": "1–3 to Warcries (Barbarian Only)1–3 to Masteries (Barbarian Only)1–3 to Combat Skills (Barbarian Only)+10% Increased Attack Speed3–6% Life stolen per hit120–160% Enhanced DefenseAttacker Takes Damage of 55–77"
+ },
+ {
+  "name_base": "The Reaper's TollThresher",
+  "level": "75",
+  "stats": "33% Chance to cast level 1 Decrepify on striking+190–240% Enhanced DamageIgnore Target's DefenseAdds 4-44 cold damage11–15% Life stolen per hit+33% Deadly StrikeRequirements -25%"
+ },
+ {
+  "name_base": "Spirit KeeperEarth Spirit",
+  "level": "67",
+  "stats": "+1–2 to Druid Skill Levels+20% Faster Hit Recovery170–190% Enhanced Defense+10% to Maximum Poison ResistFire Resist 30–40%9–14 Lightning AbsorbCold Absorb 15–25%"
+ },
+ {
+  "name_base": "HellrackColossus Crossbow",
+  "level": "76",
+  "stats": "+20% Increased Attack Speed+180–230% Enhanced Damage100–150% Bonus to Attack RatingAdds 63-324 fire damageAdds 63-324 lightning damageAdds 63-324 cold damageLevel 18 Immolation Arrow (150/150 Charges)Socketed (2)"
+ },
+ {
+  "name_base": "Alma NegraSacred Rondache",
+  "level": "77",
+  "stats": "+1–2 to Paladin Skill Levels+30% Faster Block Rate20% Increased Chance of Blocking+40–75% Enhanced Damage40–75% Bonus to Attack Rating180–210% Enhanced DefenseMagic Damage Reduced by 5–9"
+ },
+ {
+  "name_base": "Darkforce SpawnBloodlord Skull",
+  "level": "65",
+  "stats": "+1–3 to Summoning Skills (Necromancer Only)1–3 to Poison and Bone Skills (Necromancer Only)1–3 to Curses (Necromancer Only)+30% Faster Cast Rate140–180% Enhanced DefenseIncrease Maximum Mana 10%"
+ },
+ {
+  "name_base": "WidowmakerWard Bow",
+  "level": "65",
+  "stats": "Fires Magic Arrows+150–200% Enhanced DamageIgnore Target's Defense+33% Deadly Strike3–5 to Guided Arrow"
+ },
+ {
+  "name_base": "Blood Raven's ChargeMatriarchal Bow",
+  "level": "71",
+  "stats": "2–4 to Bow and Crossbow Skills (Amazon Only)Fires Explosive Arrows or Bolts+180–230% Enhanced Damage200–300% Bonus to Attack RatingLevel 5 Revive (30/30 Charges)"
+ },
+ {
+  "name_base": "GhostflameLegend Spike",
+  "level": "66",
+  "stats": "Indestructible+190–240% Enhanced DamageIgnore Target's Defense+108 magic damage10–15% Mana stolen per hit+2 to Light RadiusEthereal (Cannot be Repaired)"
+ },
+ {
+  "name_base": "Shadow KillerBattle Cestus",
+  "level": "78",
+  "stats": "Indestructible33% Chance to cast level 8 Frost Nova on striking+170–220% Enhanced Damage-25% Target DefenseFreezes target +210–15 to Mana after each KillEthereal (Cannot be Repaired)"
+ },
+ {
+  "name_base": "GimmershredFlying Axe",
+  "level": "70",
+  "stats": "+30% Increased Attack Speed+160–210% Enhanced DamageAdds 218-483 fire damageAdds 29-501 lightning damageAdds 176-397 cold damageIncreased Stack Size +60"
+ },
+ {
+  "name_base": "Griffon's EyeDiadem",
+  "level": "76",
+  "stats": "+1 to All Skills+25% Faster Cast Rate-15–20% to Enemy Lightning Resistance10–15% to Lightning Skill Damage100–200 Defense"
+ },
+ {
+  "name_base": "WindhammerOgre Maul",
+  "level": "68",
+  "stats": "33% Chance to cast level 22 Twister on striking+60% Increased Attack Speed+180–230% Enhanced Damage+50% Chance of Crushing Blow+50% Damage to Undead"
+ },
+ {
+  "name_base": "ThunderstrokeMatriarchal Javelin",
+  "level": "69",
+  "stats": "20% Chance to cast level 14 Lightning on striking2–4 to Javelin and Spear Skills (Amazon Only)+15% Increased Attack Speed+150–200% Enhanced DamageAdds 1-511 lightning damage-15% to Enemy Lightning Resistance+3 to Lightning Bolt (Amazon Only)"
+ },
+ {
+  "name_base": "Demon's ArchBalrog Spear",
+  "level": "68",
+  "stats": "+30% Increased Attack Speed+160–210% Enhanced DamageAdds 232-323 fire damageAdds 23-333 lightning damage6–12% Life stolen per hitReplenishes quantity [1 in 3 sec.]"
+ },
+ {
+  "name_base": "BoneflameSuccubus Skull",
+  "level": "72",
+  "stats": "15% Chance to cast level 3 Terror when struck+2–3 to Necromancer Skill Levels+20% Faster Run/Walk120–150% Enhanced DefenseAll Resistances +20–30"
+ },
+ {
+  "name_base": "Steel PillarWar Pike",
+  "level": "69",
+  "stats": "Indestructible+25% Increased Attack Speed+210–260% Enhanced Damage-20% Target Defense+25% Chance of Crushing Blow50–80% Enhanced Defense"
+ },
+ {
+  "name_base": "Nightwing's VeilSpired Helm",
+  "level": "67",
+  "stats": "+2 to All Skills8–15% to Cold Skill Damage90–120% Enhanced Defense10–20 to Dexterity5–9 Cold AbsorbHalf Freeze DurationRequirements -50%"
+ },
+ {
+  "name_base": "Crown of AgesCorona",
+  "level": "82",
+  "stats": "Indestructible+1 to All Skills+30% Faster Hit Recovery+50% Enhanced Defense100–150 DefenseAll Resistances +20–30Physical Damage Received Reduced by 10–15%"
+ },
+ {
+  "name_base": "Andariel's VisageDemonhead",
+  "level": "83",
+  "stats": "15% Chance to cast level 15 Poison Nova when struck+2 to All Skills+20% Increased Attack Speed8–10% Life stolen per hit100–150% Enhanced Defense25–30 to Strength+10% to Maximum Poison ResistFire Resist -30%Poison Resist +70%Level 3 Venom (20/20 Charges)"
+ },
+ {
+  "name_base": "DragonscaleZakarum Shield",
+  "level": "80",
+  "stats": "Adds 211-371 fire damage+15% to Fire Skill Damage+10 to Hydra170–200% Enhanced Defense15–25 to Strength+5% to Maximum Fire ResistFire Absorb 10–20%"
+ },
+ {
+  "name_base": "Steel CarapaceShadow Plate",
+  "level": "66",
+  "stats": "8% Chance to cast level 6 Iron Maiden when struck+20% Faster Hit Recovery190–220% Enhanced DefenseRegenerate Mana 10–15%Cold Resist 40–60%Damage Reduced by 9–14Repairs 1 durability in 20 seconds"
+ },
+ {
+  "name_base": "Medusa's GazeAegis",
+  "level": "76",
+  "stats": "10% Chance to cast level 7 Lower Resist when struck100% Chance to cast level 44 Nova when you Die5–9% Life stolen per hitSlows Target by 20%150–180% Enhanced DefenseCold Resist 40–80%"
+ },
+ {
+  "name_base": "RavenloreSky Spirit",
+  "level": "74",
+  "stats": "+3 to Elemental Skills (Druid Only)-10–20% to Enemy Fire Resistance+7 to Raven (Druid Only)120–150% Enhanced Defense20–30 to EnergyAll Resistances +15–25"
+ },
+ {
+  "name_base": "BoneshadeLich Wand",
+  "level": "79",
+  "stats": "+2 to Necromancer Skill Levels+25% Faster Cast Rate1–2 to Bone Spirit (Necromancer Only)2–3 to Bone Spear (Necromancer Only)2–3 to Bone Wall (Necromancer Only)4–5 to Bone Armor (Necromancer Only)4–5 to Teeth (Necromancer Only)+50% Damage to Undead"
+ },
+ {
+  "name_base": "FlamebellowBalrog Blade",
+  "level": "71",
+  "stats": "12% Chance to cast level 16 Firestorm on striking+3 to Fire Skills+170–240% Enhanced DamageAdds 233-482 fire damage12–18 to Inferno10–20 to Strength5–10 to VitalityFire Absorb 20–30%"
+ },
+ {
+  "name_base": "Death's FathomDimensional Shard",
+  "level": "73",
+  "stats": "+3 to Sorceress Skill Levels+20% Faster Cast Rate15–30% to Cold Skill DamageLightning Resist 25–40%Fire Resist 25–40%"
+ },
+ {
+  "name_base": "WolfhowlFury Visor",
+  "level": "79",
+  "stats": "2–3 to Warcries (Barbarian Only)3–6 to Feral Rage3–6 to Lycanthropy3–6 to Werewolf120–150% Enhanced Defense8–15 to Strength8–15 to Dexterity8–15 to VitalityLevel 15 Summon Dire Wolf (18/18 Charges)"
+ },
+ {
+  "name_base": "Spirit WardWard",
+  "level": "68",
+  "stats": "5% Chance to cast level 8 Fade when struck+25% Faster Block Rate20–30% Increased Chance of Blocking130–180% Enhanced DefenseAll Resistances +30–406–11 Cold Absorb"
+ },
+ {
+  "name_base": "Kira's GuardianTiara",
+  "level": "77",
+  "stats": "+20% Faster Hit Recovery50–120 DefenseAll Resistances +50–70Cannot Be Frozen"
+ },
+ {
+  "name_base": "Ormus' RobesDusk Shroud",
+  "level": "75",
+  "stats": "+20% Faster Cast Rate10–15% to Cold Skill Damage10–15% to Lightning Skill Damage10–15% to Fire Skill Damage+3 to <skill> (<class> Only)10–20 DefenseRegenerate Mana 10–15%"
+ },
+ {
+  "name_base": "Gheed's FortuneGrand Charm",
+  "level": "62",
+  "stats": "80–160% Extra Gold from Monsters20–40% Better Chance of Getting Magic ItemsReduces all Vendor Prices 10–15%"
+ },
+ {
+  "name_base": "StormlashScourge",
+  "level": "82",
+  "stats": "20% Chance to cast level 18 Tornado on striking15% Chance to cast level 10 Static Field on striking+30% Increased Attack Speed+240–300% Enhanced DamageAdds 1-473 lightning damage+33% Chance of Crushing Blow3–9 Lightning AbsorbAttacker Takes Lightning Damage of 30+50% Damage to Undead"
+ },
+ {
+  "name_base": "Halaberd's ReignConqueror Crown",
+  "level": "77",
+  "stats": "+1 to Masteries (Barbarian Only)+2 to Barbarian Skill Levels+20% Faster Hit Recovery1–2 to Battle Command (Barbarian Only)1–2 to Battle Orders (Barbarian Only)140–170% Enhanced DefenseReplenish Life 15–23"
+ },
+ {
+  "name_base": "Spike ThornBlade Barrier",
+  "level": "70",
+  "stats": "+30% Faster Hit Recovery120–150% Enhanced DefensePhysical Damage Received Reduced by 15–20%Attacker Takes Damage of 136 (Based on Character Level)Socketed (1)"
+ },
+ {
+  "name_base": "Dracul's GraspVampirebone Gloves",
+  "level": "76",
+  "stats": "5% Chance to cast level 10 Life Tap on striking7–10% Life stolen per hit+25% Chance of Open Wounds90–120% Enhanced Defense10–15 to Strength5–10 Life after each Kill"
+ },
+ {
+  "name_base": "FrostwindCryptic Sword",
+  "level": "70",
+  "stats": "+25% Increased Attack Speed+180–230% Enhanced DamageAdds 237-486 cold damage7–14 to Arctic BlastFreezes target +4Cold Absorb 7–15%Half Freeze Duration"
+ },
+ {
+  "name_base": "Templar's MightSacred Armor",
+  "level": "74",
+  "stats": "1–2 to Offensive Auras (Paladin Only)+20% Faster Hit Recovery170–220% Enhanced Defense250–300 Defense vs. Missile10–15 to Strength10–15 to Vitality40–50 Maximum Stamina"
+ },
+ {
+  "name_base": "Eschuta's TemperEldritch Orb",
+  "level": "72",
+  "stats": "+1–3 to Sorceress Skill Levels+40% Faster Cast Rate10–20% to Lightning Skill Damage10–20% to Fire Skill Damage20–30 to Energy"
+ },
+ {
+  "name_base": "Firelizard's TalonsFeral Claws",
+  "level": "67",
+  "stats": "1–3 to Martial Arts (Assassin Only)+15% Increased Attack Speed+200–270% Enhanced DamageAdds 236-480 fire damage1–2 to Wake of Inferno (Assassin Only)1–2 to Wake of Fire (Assassin Only)Fire Resist 40–70%"
+ },
+ {
+  "name_base": "Sandstorm TrekScarabshell Boots",
+  "level": "64",
+  "stats": "+20% Faster Run/Walk+20% Faster Hit Recovery140–170% Enhanced Defense10–15 to Strength10–15 to Vitality+99 Maximum Stamina (Based on Character Level)50% Slower Stamina DrainPoison Resist 40–70%Repairs 1 durability in 20 seconds"
+ },
+ {
+  "name_base": "MarrowwalkBoneweave Boots",
+  "level": "66",
+  "stats": "+20% Faster Run/Walk1–2 to Skeleton Mastery (Necromancer Only)170–200% Enhanced Defense10–20 to Strength+17 to DexterityRegenerate Mana 10%Heal Stamina Plus 10%Half Freeze DurationLevel 33 Bone Prison (13/13 Charges)Level 12 Life Tap (10/10 Charges)"
+ },
+ {
+  "name_base": "Heaven's LightMighty Scepter",
+  "level": "61",
+  "stats": "+2–3 to Paladin Skill Levels+20% Increased Attack Speed+250–300% Enhanced Damage-33% Target Defense+33% Chance of Crushing Blow15–20 Life after each Demon Kill+3 to Light Radius+50% Damage to Undead"
+ },
+ {
+  "name_base": "Arachnid MeshSpiderweb Sash",
+  "level": "80",
+  "stats": "+1 to All Skills+20% Faster Cast RateSlows Target by 10%90–120% Enhanced DefenseIncrease Maximum Mana 5%Level 3 Venom (11/11 Charges)"
+ },
+ {
+  "name_base": "Nosferatu's CoilVampirefang Belt",
+  "level": "51",
+  "stats": "+10% Increased Attack Speed5–7% Life stolen per hitSlows Target by 10%+15 to Strength+2 to Mana after each Kill-3 to Light Radius"
+ },
+ {
+  "name_base": "MetalgridAmulet",
+  "level": "81",
+  "stats": "400–450 to Attack Rating300–350 DefenseAll Resistances +25–35Level 22 Iron Golem (11/11 Charges)Level 12 Iron Maiden (20/20 Charges)"
+ },
+ {
+  "name_base": "Verdungo's Hearty CordMithril Coil",
+  "level": "63",
+  "stats": "+10% Faster Hit Recovery90–140% Enhanced Defense30–40 to VitalityReplenish Life 10–13100–120 Maximum StaminaPhysical Damage Received Reduced by 10–15%"
+ },
+ {
+  "name_base": "Carrion WindRing",
+  "level": "60",
+  "stats": "10% Chance to cast level 10 Poison Nova when struck8% Chance to cast level 13 Twister on striking6–9% Life stolen per hit100–160 Defense vs. MissilePoison Resist +55%+10% Damage Taken Goes To ManaLevel 21 Poison Creeper (15/15 Charges)"
+ },
+ {
+  "name_base": "Giant SkullBone Visage",
+  "level": "65",
+  "stats": "+10% Chance of Crushing BlowKnockback250–320 Defense25–35 to Strength"
+ },
+ {
+  "name_base": "Astreon's Iron WardCaduceus",
+  "level": "66",
+  "stats": "2–4 to Combat Skills (Paladin Only)+10% Increased Attack Speed+240–290% Enhanced DamageDamage 40–85150–200% Bonus to Attack RatingAdds 80-240 magic damage+33% Chance of Crushing BlowSlows Target by 25%Damage Reduced by 4–7+50% Damage to Undead"
+ },
+ {
+  "name_base": "AnnihilusSmall Charm",
+  "level": "70",
+  "stats": "+1 to All Skills+10–20 to all AttributesAll Resistances +10–205–10% to Experience Gained"
+ },
+ {
+  "name_base": "Arioc's NeedleHyperion Spear",
+  "level": "81",
+  "stats": "2–4 to All Skills+30% Increased Attack Speed+180–230% Enhanced DamageIgnore Target's Defense+394 poison damage over 10 seconds+50% Deadly Strike"
+ },
+ {
+  "name_base": "CranebeakWar Spike",
+  "level": "63",
+  "stats": "+40% Increased Attack Speed+240–300% Enhanced Damage-25% Target DefenseAdds 1-305 lightning damage20–50% Better Chance of Getting Magic ItemsLevel 8 Raven (15/15 Charges)"
+ },
+ {
+  "name_base": "Nord's TenderizerTruncheon",
+  "level": "68",
+  "stats": "+25% Increased Attack Speed+270–330% Enhanced Damage150–180% Bonus to Attack RatingAdds 205-455 cold damageFreezes target +2–4Cold Absorb 5–15%Level 16 Blizzard (12/12 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "Earth ShifterThunder Maul",
+  "level": "69",
+  "stats": "25% Chance to cast level 14 Fissure on striking+7 to Elemental Skills (Druid Only)+10% Increased Attack Speed+10% Faster Cast Rate+250–300% Enhanced Damage+33% Chance of Crushing BlowLevel 14 Volcano (30/30 Charges)+50% Damage to Undead"
+ },
+ {
+  "name_base": "Wraith FlightGhost Glaive",
+  "level": "76",
+  "stats": "+150–190% Enhanced Damage9–13% Life stolen per hit+15 to Mana after each KillReplenishes quantity [1 in 2 sec.]Ethereal (Cannot be Repaired)"
+ },
+ {
+  "name_base": "BonehewOgre Axe",
+  "level": "64",
+  "stats": "50% Chance to cast level 16 Bone Spear on striking+30% Increased Attack Speed+270–320% Enhanced DamagePrevent Monster HealLevel 14 Corpse Explosion (30/30 Charges)Socketed (2)"
+ },
+ {
+  "name_base": "Ondal's WisdomElder Staff",
+  "level": "66",
+  "stats": "2–4 to All Skills+45% Faster Cast Rate450–550 Defense40–50 to EnergyMagic Damage Reduced by 5–8+5% to Experience Gained+50% Damage to Undead"
+ },
+ {
+  "name_base": "The RedeemerMighty Scepter",
+  "level": "72",
+  "stats": "+2 to Paladin Skill Levels+250–300% Enhanced DamageDamage 60–120-33% Target Defense200–250% Damage to Demons2–4 to Redemption (Paladin Only)2–4 to Holy Bolt (Paladin Only)+3 to Light RadiusRequirements -60%+50% Damage to Undead"
+ },
+ {
+  "name_base": "Head Hunter's GloryTroll Nest",
+  "level": "75",
+  "stats": "320–420 Defense300–350 Defense vs. MissileFire Resist 20–30%Poison Resist 30–40%5–7 Life after each Kill"
+ },
+ {
+  "name_base": "SteelrendOgre Gauntlets",
+  "level": "70",
+  "stats": "+30–60% Enhanced Damage+10% Chance of Crushing Blow170–210 Defense15–20 to Strength"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 47 Chain Lightning when you DieAdds 1-74 lightning damage-3–5% to Enemy Lightning Resistance3–5% to Lightning Skill Damage"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 37 Blizzard when you DieAdds 24-38 cold damage3–5% to Cold Skill Damage-3–5% to Enemy Cold Resistance"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 31 Meteor when you DieAdds 17-45 fire damage-3–5% to Enemy Fire Resistance3–5% to Fire Skill Damage"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 51 Poison Nova when you Die+37 poison damage over 2 seconds3–5% to Poison Skill Damage-3–5% to Enemy Poison Resistance"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 41 Nova when you Level-UpAdds 1-74 lightning damage-3–5% to Enemy Lightning Resistance3–5% to Lightning Skill Damage"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 43 Frost Nova when you Level-UpAdds 24-38 cold damage3–5% to Cold Skill Damage-3–5% to Enemy Cold Resistance"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 29 Blaze when you Level-UpAdds 17-45 fire damage-3–5% to Enemy Fire Resistance3–5% to Fire Skill Damage"
+ },
+ {
+  "name_base": "Rainbow FacetJewel",
+  "level": "49",
+  "stats": "100% Chance to cast level 23 Venom when you Level-Up+37 poison damage over 2 seconds3–5% to Poison Skill Damage-3–5% to Enemy Poison Resistance"
+ },
+ {
+  "name_base": "Hellfire TorchLarge Charm",
+  "level": "75",
+  "stats": "5% Chance to cast level 10 Firestorm on striking+3 to <class> Skill Levels+10–20 to all AttributesAll Resistances +10–20+8 to Light RadiusLevel 30 Hydra (10/10 Charges)"
+ },
+ {
+  "name_base": "Cold RuptureGrand Charm",
+  "level": "75",
+  "stats": "Monster Cold Immunity is SunderedCold Resist -(70–90)%"
+ },
+ {
+  "name_base": "Flame RiftGrand Charm",
+  "level": "75",
+  "stats": "Monster Fire Immunity is SunderedFire Resist -(70–90)%"
+ },
+ {
+  "name_base": "Crack of the HeavensGrand Charm",
+  "level": "75",
+  "stats": "Monster Lightning Immunity is SunderedLightning Resist -(70–90)%"
+ },
+ {
+  "name_base": "Rotting FissureGrand Charm",
+  "level": "75",
+  "stats": "Monster Poison Immunity is SunderedPoison Resist -(70–90)%"
+ },
+ {
+  "name_base": "Bone BreakGrand Charm",
+  "level": "75",
+  "stats": "Monster Physical Immunity is SunderedPhysical Damage Received Reduced by -(10–20)%"
+ },
+ {
+  "name_base": "Black CleftGrand Charm",
+  "level": "75",
+  "stats": "Monster Magic Immunity is SunderedMagic Resist -(45–65)%"
+ },
+ {
+  "name_base": "Ars Al'DiabolosBlasphemous Grimoire",
+  "level": "80",
+  "stats": "15% Chance to cast level 1 Terror when struck+2 to Chaos Skills (Warlock Only)+25% Faster Cast Rate15–25% to Fire Skill Damage3–5 to Apocalypse (Warlock Only)170–200% Enhanced DefenseFire Resist 20–30%5–10 to Mana after each Kill5–10 to Light Radius"
+ },
+ {
+  "name_base": "Ars Tor'BaalosBlasphemous Compendium",
+  "level": "73",
+  "stats": "15% Chance to cast level 1 Decrepify when struck+2 to Demon Skills (Warlock Only)2–3 to Consume (Warlock Only)2–4 to Blood Boil (Warlock Only)2–3 to Engorge (Warlock Only)2–3 to Demonic Mastery (Warlock Only)120–150% Enhanced Defense+148 to Life (Based on Character Level)Physical Damage Received Reduced by 5–10%"
+ },
+ {
+  "name_base": "Ars Dul'MephistosOccult Tome",
+  "level": "78",
+  "stats": "15% Chance to cast level 28 Blizzard when struck+2 to Warlock Skills20–30% Faster Cast Rate+30% Faster Hit Recovery+70–115% Enhanced Damage50–70% Bonus to Attack Rating-10–20% to Enemy Magic Resistance140–170% Enhanced Defense10–25% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Measured WrathBurnt Text",
+  "level": "52",
+  "stats": "5% Chance to cast level 25 Ring of Fire when struck+1 to Warlock Skills+25% Faster Cast Rate1–3 to Flame Wave (Warlock Only)1–3 to Ring of Fire (Warlock Only)1–3 to Summon Tainted (Warlock Only)130–180% Enhanced Defense10–20 to VitalityAll Resistances +20–303–5 Life after each Kill"
+ },
+ {
+  "name_base": "DreadfangLegend Sword",
+  "level": "61",
+  "stats": "33% Chance to cast level 3 Amplify Damage on striking+33% Increased Attack Speed+133–166% Enhanced Damage33% Bonus to Attack Rating3–6% Mana stolen per hit+33% Deadly Strike+3 to Mirrored Blades (Warlock Only)Requirements -33%"
+ },
+ {
+  "name_base": "WraithstepMirrored Boots",
+  "level": "67",
+  "stats": "+30% Faster Run/Walk+20% Faster Hit Recovery40–60 Defense10–15 to Dexterity10–15 to EnergyOne of the following:+1 to Demon Skills (Warlock Only)+1 to Eldritch Skills (Warlock Only)+1 to Chaos Skills (Warlock Only)"
+ },
+ {
+  "name_base": "Bloodpact ShardMithril Point",
+  "level": "67",
+  "stats": "+1 to All Skills+30% Faster Cast Rate1–3 to Bind Demon (Warlock Only)2–3 to Blood Boil (Warlock Only)2–3 to Blood Oath (Warlock Only)Slows Target by 25%Increase Maximum Life 10–15%20–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "SlingRing",
+  "level": "50",
+  "stats": "+10% Faster Cast Rate-3–5% to Enemy Magic Resistance+1 to Town PortalSlows Target by 15%10–15 to Energy10–20% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "OpalveinRing",
+  "level": "50",
+  "stats": "2% Chance to cast level 15 Flame Wave on attack+10% Faster Cast RateAll Resistances +6–81–3 to Mana after each Kill1–3 Life after each KillOne of the following:3–5% to Magic Skill Damage+20–40% Enhanced Damage3–5% to Fire Skill Damage3–5% to Cold Skill Damage3–5% to Lightning Skill Damage3–5% to Poison Skill Damage"
+ },
+ {
+  "name_base": "Entropy LocketAmulet",
+  "level": "54",
+  "stats": "4% Chance to cast level 19 Miasma Chain on striking5–10% Faster Cast Rate5–10% to Magic Skill DamageIncrease Maximum Mana 10–15%Lightning Resist 25–40%Magic Damage Reduced by 8–12"
+ },
+ {
+  "name_base": "Gheed's WagerTroll Belt",
+  "level": "71",
+  "stats": "10–20% Faster Run/Walk10–20% Faster Cast Rate10–20% Faster Hit Recovery-3–7% to Enemy Magic Resistance90–150% Enhanced DefenseAll Resistances +5–1544–75% Extra Gold from Monsters"
+ },
+ {
+  "name_base": "Hellwarden's WillDeath Mask",
+  "level": "50",
+  "stats": "+1 to All Skills+20% Increased Attack Speed+20% Faster Cast Rate-5–8% to Enemy Magic Resistance-5–8% to Enemy Fire Resistance150–215% Enhanced Defense4–6 to Mana after each Kill"
+ },
+ {
+  "name_base": "Defender's BileJewel",
+  "level": "75",
+  "stats": "1% Chance to cast level 25 Bone Armor when struck+95 poison damage over 1 seconds5–10% to Poison Skill Damage-5–10% to Enemy Poison Resistance3–5% to Experience Gained25–50% Extra Gold from Monsters15–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Guardian's ThunderJewel",
+  "level": "75",
+  "stats": "1% Chance to cast level 25 Cyclone Armor when struckAdds 1-75 lightning damage-5–10% to Enemy Lightning Resistance5–10% to Lightning Skill Damage3–5% to Experience Gained25–50% Extra Gold from Monsters15–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Protector's FrostJewel",
+  "level": "75",
+  "stats": "1% Chance to cast level 25 Frozen Armor when struckAdds 10-30 cold damage5–10% to Cold Skill Damage-5–10% to Enemy Cold Resistance3–5% to Experience Gained25–50% Extra Gold from Monsters15–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Defender's FireJewel",
+  "level": "75",
+  "stats": "1% Chance to cast level 25 Blaze when struckAdds 20-60 fire damage-5–10% to Enemy Fire Resistance5–10% to Fire Skill Damage3–5% to Experience Gained25–50% Extra Gold from Monsters15–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Protector's StoneJewel",
+  "level": "75",
+  "stats": "1% Chance to cast level 15 Fade when struck+30–50% Enhanced DamageAdds 10-30 damage-5–10% to Enemy Physical Damage Resistance3–5% to Experience Gained25–50% Extra Gold from Monsters15–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Guardian's LightJewel",
+  "level": "75",
+  "stats": "1% Chance to cast level 25 Psychic Ward when struckAdds 15-35 magic damage-5–10% to Enemy Magic Resistance5–10% to Magic Skill Damage3–5% to Experience Gained25–50% Extra Gold from Monsters15–35% Better Chance of Getting Magic Items"
+ },
+ {
+  "name_base": "Latent Cold RuptureGrand Charm",
+  "level": "75",
+  "stats": "Monster Cold Immunity is SunderedCold Resist -(70–90)%"
+ },
+ {
+  "name_base": "Renewed Cold RuptureGrand Charm",
+  "level": "75",
+  "stats": "Monster Cold Immunity is SunderedCold Resist -70%One of the following:5–15% to Cold Skill Damage-5–10% to Enemy Cold ResistanceOne of the following:14–25% Better Chance of Getting Magic Items20–55% Extra Gold from MonstersOne of the following:10–65 to Life10–75 to ManaOne of the following:5–10% Faster Run/Walk12–24% Faster Hit Recovery+3–8 to all AttributesOne of the following:Magic Damage Reduced by 5–10Damage Reduced by 5–10"
+ },
+ {
+  "name_base": "Latent Flame RiftGrand Charm",
+  "level": "75",
+  "stats": "Monster Fire Immunity is SunderedFire Resist -(70–90)%"
+ },
+ {
+  "name_base": "Latent Crack of the HeavensGrand Charm",
+  "level": "75",
+  "stats": "Monster Lightning Immunity is SunderedLightning Resist -(70–90)%"
+ },
+ {
+  "name_base": "Latent Rotting FissureGrand Charm",
+  "level": "75",
+  "stats": "Monster Poison Immunity is SunderedPoison Resist -(70–90)%"
+ },
+ {
+  "name_base": "Latent Bone BreakGrand Charm",
+  "level": "75",
+  "stats": "Monster Physical Immunity is SunderedPhysical Damage Received Reduced by -(10–20)%"
+ },
+ {
+  "name_base": "Latent Black CleftGrand Charm",
+  "level": "75",
+  "stats": "Monster Magic Immunity is SunderedMagic Resist -(45–65)%"
+ },
+ {
+  "name_base": "Renewed Flame RiftGrand Charm",
+  "level": "75",
+  "stats": "Monster Fire Immunity is SunderedFire Resist -70%One of the following:5–15% to Fire Skill Damage-5–10% to Enemy Fire ResistanceOne of the following:14–25% Better Chance of Getting Magic Items20–55% Extra Gold from MonstersOne of the following:10–65 to Life10–75 to ManaOne of the following:5–10% Faster Run/Walk12–24% Faster Hit Recovery+3–8 to all AttributesOne of the following:Magic Damage Reduced by 5–10Damage Reduced by 5–10"
+ },
+ {
+  "name_base": "Renewed Crack of the HeavensGrand Charm",
+  "level": "75",
+  "stats": "Monster Lightning Immunity is SunderedLightning Resist -70%One of the following:5–15% to Lightning Skill Damage-5–10% to Enemy Lightning ResistanceOne of the following:14–25% Better Chance of Getting Magic Items20–55% Extra Gold from MonstersOne of the following:10–65 to Life10–75 to ManaOne of the following:5–10% Faster Run/Walk12–24% Faster Hit Recovery+3–8 to all AttributesOne of the following:Magic Damage Reduced by 5–10Damage Reduced by 5–10"
+ },
+ {
+  "name_base": "Renewed Rotting FissureGrand Charm",
+  "level": "75",
+  "stats": "Monster Poison Immunity is SunderedPoison Resist -70%One of the following:5–15% to Poison Skill Damage-5–10% to Enemy Poison ResistanceOne of the following:14–25% Better Chance of Getting Magic Items20–55% Extra Gold from MonstersOne of the following:10–65 to Life10–75 to ManaOne of the following:5–10% Faster Run/Walk12–24% Faster Hit Recovery+3–8 to all AttributesOne of the following:Magic Damage Reduced by 5–10Damage Reduced by 5–10"
+ },
+ {
+  "name_base": "Renewed Bone BreakGrand Charm",
+  "level": "75",
+  "stats": "Monster Physical Immunity is SunderedPhysical Damage Received Increased by 10%One of the following:+75–100% Enhanced Damage-5–10% to Enemy Physical Damage ResistanceOne of the following:14–25% Better Chance of Getting Magic Items20–55% Extra Gold from MonstersOne of the following:10–65 to Life10–75 to ManaOne of the following:5–10% Faster Run/Walk12–24% Faster Hit Recovery+3–8 to all AttributesOne of the following:Magic Damage Reduced by 5–10Damage Reduced by 5–10"
+ },
+ {
+  "name_base": "Renewed Black CleftGrand Charm",
+  "level": "75",
+  "stats": "Monster Magic Immunity is SunderedMagic Resist -45%One of the following:10–15% to Magic Skill Damage-5–10% to Enemy Magic ResistanceOne of the following:14–25% Better Chance of Getting Magic Items20–55% Extra Gold from MonstersOne of the following:10–65 to Life10–75 to ManaOne of the following:5–10% Faster Run/Walk12–24% Faster Hit Recovery+3–8 to all AttributesOne of the following:Magic Damage Reduced by 5–10Damage Reduced by 5–10"
+ }
+]
