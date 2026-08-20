@@ -10202,6 +10202,11 @@ export function initGame() {
       addToInventory(h.inventory, itemId); // vrátit zpět
       return;
     }
+    // Už nasazený ve svém slotu — neduplikovat
+    if (item.type === 'weapon' && h.equip.weapon === itemId) return;
+    if (item.type === 'ring' && (h.equip.ring1 === itemId || h.equip.ring2 === itemId)) return;
+    const singleSlot = { armor:'armor', helmet:'helmet', belt:'belt', amulet:'amulet', gloves:'gloves', boots:'boots', shield:'shield' }[item.type];
+    if (singleSlot && h.equip[singleSlot] === itemId) return;
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     removeFromInventory(h.inventory, itemId);
     if (item.type === 'weapon') {
