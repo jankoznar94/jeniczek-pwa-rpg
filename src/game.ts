@@ -8888,7 +8888,8 @@ export function initGame() {
     // Detail grid
     const dmg = getHeroDmg();
     const weapon = ITEM_MAP[h.equip.weapon] || ITEM_MAP['fists'];
-    const critChance = weapon.critChance || 0;
+    const spec = getWeaponSpecBonus(weapon);
+    const critChance = (weapon.critChance || 0) + spec.critBonus;
     const shieldItem = ITEM_MAP[h.equip.shield];
     const blockChance = getPlayerBlockChance();
     const armorDef = (ITEM_MAP[h.equip.armor] ? ITEM_MAP[h.equip.armor].defense || 0 : 0);
