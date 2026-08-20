@@ -618,6 +618,22 @@ export function initGame() {
     return gf;
   }
 
+  // Generický getter pro nové affix staty (thorns, dmgReduction, lifeRegen, knockback, preventHeal)
+  function getEquipStat(stat) {
+    let total = 0;
+    const h = state.hero;
+    if (!h || !h.equip) return 0;
+    const slots = ['weapon', 'armor', 'helmet', 'shield', 'ring1', 'ring2', 'amulet', 'belt', 'gloves', 'boots'];
+    slots.forEach(slot => {
+      const itemId = h.equip[slot];
+      if (itemId) {
+        const item = ITEM_MAP[itemId];
+        if (item && item[stat]) total += item[stat];
+      }
+    });
+    return total;
+  }
+
   function getPlayerResist(school) {
     let res = 0;
     const h = state.hero;
@@ -768,6 +784,12 @@ export function initGame() {
       classSkills: 0,
       // Increased Attack Speed (IAS) — procento
       ias: 0,
+      // Nové D2 mechaniky
+      thorns: 0,
+      dmgReduction: 0,
+      lifeRegen: 0,
+      knockback: 0,
+      preventHeal: 0,
     };
 
     // Aplikovat affix staty
@@ -1071,6 +1093,11 @@ export function initGame() {
       const className = item._classSkillsClass || 'unknown';
       addModRow(className.charAt(0).toUpperCase() + className.slice(1) + ' Skills', `+${item.classSkills}${affixRange('classSkills')}`);
     }
+    if (item.thorns) addModRow('Thorns', `+${item.thorns}${affixRange('thorns')}`);
+    if (item.dmgReduction) addModRow('Damage Reduction', `+${item.dmgReduction}${affixRange('dmgReduction')}`);
+    if (item.lifeRegen) addModRow('Life Regen', `+${item.lifeRegen}/s${affixRange('lifeRegen')}`);
+    if (item.knockback) addModRow('Knockback', 'Knockback');
+    if (item.preventHeal) addModRow('Prevent Monster Heal', 'Prevent Monster Heal');
     if (item.attrs) {
       Object.keys(item.attrs).forEach(k => {
         const names = { str:'Strength', vit:'Vitality', dex:'Dexterity', int:'Intellect' };
@@ -3052,9 +3079,11 @@ export function initGame() {
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
         const healAmt = Math.round(amount * 0.6);
-        mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
-        // Heal text (zeleně u nepřítele)
-        spawnFloatingText(`+${healAmt}`, 'left', '#2ecc71', 32);
+        if (!mb._preventHealActive) {
+          mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
+          // Heal text (zeleně u nepřítele)
+          spawnFloatingText(`+${healAmt}`, 'left', '#2ecc71', 32);
+        }
         spellText = `🩸 -${amount}`;
       } else if (spellId === 'mana_drain') {
         amount = Math.round(baseDmg * 0.6);
@@ -3077,8 +3106,10 @@ export function initGame() {
       } else if (spellId === 'heal') {
         amount = 0;
         const healAmt = Math.round(mb.maxBossHp * 0.3);
-        mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
-        spawnFloatingText(`💚 +${healAmt}`, 'left', '#2ecc71', 32);
+        if (!mb._preventHealActive) {
+          mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + healAmt);
+          spawnFloatingText(`💚 +${healAmt}`, 'left', '#2ecc71', 32);
+        }
         spellText = '';
       } else if (spellId === 'defensive_shout') {
         amount = 0;
@@ -3159,6 +3190,11 @@ export function initGame() {
         if (state.defensiveShoutArmorPct > 0) totalDefense = Math.round(totalDefense * (1 + state.defensiveShoutArmorPct / 100));
         if (totalDefense > 0) {
           amount = Math.round(amount * (1 - totalDefense / (totalDefense + 300)));
+        }
+        // Damage Reduction (D2: of Health/Protection/Absorption/Life/Amicae) — plochá redukce
+        const dr = getEquipStat('dmgReduction');
+        if (dr > 0) {
+          amount = Math.max(0, amount - dr);
         }
         // Block — pouze pokud je v shield slotu skutečně štít
         const shieldItem = ITEM_MAP[state.hero.equip.shield];
@@ -3245,6 +3281,11 @@ export function initGame() {
     if (totalDefense > 0) {
       bossDmg = Math.round(bossDmg * (1 - totalDefense / (totalDefense + 300)));
     }
+    // Damage Reduction (D2: of Health/Protection/Absorption/Life/Amicae) — plochá redukce
+    const dr = getEquipStat('dmgReduction');
+    if (dr > 0) {
+      bossDmg = Math.max(0, bossDmg - dr);
+    }
     let amount = bossDmg;
 
     // Pasivní blok ze štítu — pouze pokud je v shield slotu skutečně štít
@@ -3281,7 +3322,7 @@ export function initGame() {
       spawnFloatingText('✨ Resist -50%', 'left', '#9b59b6', 28);
     }
     // Life steal / mana steal
-    if (!blocked && lifeStealAmt > 0) {
+    if (!blocked && lifeStealAmt > 0 && !mb._preventHealActive) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
       // Heal text (zeleně u nepřítele — vlevo) — zpožděný, aby se nepřekrýval s damage textem
       setTimeout(() => spawnFloatingText(`+${lifeStealAmt}`, 'left', '#2ecc71', 32), 300);
@@ -4923,6 +4964,11 @@ export function initGame() {
     if (mb.hotTicksLeft > 0) {
       mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + mb.hot);
       mb.hotTicksLeft--;
+    }
+    // Life Regen (D2: of Regeneration/Regrowth/Revivification) — replenish life za sekundu
+    const lifeRegenVal = getEquipStat('lifeRegen');
+    if (lifeRegenVal > 0 && mb.playerHp < mb.maxPlayerHp) {
+      mb.playerHp = Math.min(mb.maxPlayerHp, mb.playerHp + lifeRegenVal / 60);
     }
     // Pasivní regenerace (prozatím vypnuto — staré school passives smazány)
     // Mana regen
@@ -7281,7 +7327,7 @@ export function initGame() {
       mb.playerHp -= amount;
     }
     // Life steal — jen pokud nebylo blokováno
-    if (!blocked && lifeStealAmt > 0) {
+    if (!blocked && lifeStealAmt > 0 && !mb._preventHealActive) {
       mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + lifeStealAmt);
     }
     // Mana steal — jen pokud nebylo blokováno
@@ -7577,6 +7623,28 @@ export function initGame() {
     mb._skipMeleeImpact = false;
 
     mb.bossHp -= dmg;
+
+    // 🌵 Thorns (D2: of Thorns/Spikes/Razors/Swords) — nepřítel vrací dmg hráči při každém zásahu
+    const thornsVal = getEquipStat('thorns');
+    if (thornsVal > 0 && !isOffhand) {
+      const thornDmg = Math.max(1, Math.round(thornsVal * (0.5 + Math.random() * 0.5)));
+      mb.playerHp -= thornDmg;
+      if (mb.playerHp <= 0) { endMapBattle(false); return; }
+      setTimeout(() => spawnFloatingText(`🌵 -${thornDmg}`, 'right', '#f1c40f', 28), 300);
+    }
+
+    // 💥 Knockback (D2: of Bear) — přeruší útok nepřítele
+    if (getEquipStat('knockback') > 0 && !isOffhand) {
+      mb._enemySwingReady = false;
+      mb._enemySwingStart = performance.now();
+      mb.enemySwingMs = getEnemySwingTime(mb);
+      spawnFloatingText('💥 Knockback!', 'right', '#e67e22', 28);
+    }
+
+    // 🚫 Prevent Monster Heal (D2: of Vileness) — nepřítel se nemůže léčit
+    if (getEquipStat('preventHeal') > 0 && !isOffhand) {
+      mb._preventHealActive = true;
+    }
 
     // Fáze 4: hit-flash — jemné rozzáření monstra při zásahu (bez agresivního glow)
     const hitFig = $('mbFigure');
