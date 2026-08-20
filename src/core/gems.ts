@@ -44,7 +44,9 @@ export function buildGemStatsHtml(gemType: string, gemQuality: string): string {
     Object.keys(qData.weapon).forEach(stat => {
       const val = qData.weapon[stat];
       const label = stat === 'fireDmg' ? 'Fire Dmg' : stat === 'coldDmg' ? 'Cold Dmg' : stat === 'lightningDmg' ? 'Lightning Dmg' : stat === 'poisonDmg' ? 'Poison Dmg' : stat === 'poisonDur' ? 'Duration' : stat;
-      if (Array.isArray(val)) {
+      if (stat === 'poisonDmg' && qData.weapon.poisonDur) {
+        lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val[0]} over ${qData.weapon.poisonDur}s</div>`);
+      } else if (Array.isArray(val)) {
         lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val[0]}-${val[1]}</div>`);
       } else {
         lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
@@ -55,7 +57,7 @@ export function buildGemStatsHtml(gemType: string, gemQuality: string): string {
     lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Armor/Helm/Shield:</div>');
     Object.keys(qData.armor).forEach(stat => {
       const val = qData.armor[stat];
-      const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Hit Rating' : stat === 'magicFind' ? 'MF' : stat;
+      const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Hit Rating' : stat === 'magicFind' ? 'MF' : stat === 'dex' ? 'Dexterity' : stat;
       lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
     });
   }

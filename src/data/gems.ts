@@ -1,5 +1,6 @@
 // src/data/gems.ts — gemy, kvality a quality barvy.
 // Extrahováno z src/game.ts (Fáze 2). Čistá data bez closure závislostí.
+// Staty gemů dle D2 (tables/d2-gems.csv).
 
   export const QUALITY_COLORS = {
     normal: '#888',
@@ -16,44 +17,44 @@
       name: 'Ruby',
       icon: '🔴',
       qualities: {
-        chipped: { name: 'Chipped Ruby', weapon: { fireDmg: [1,3] }, armor: { bonusHp: 8 } },
-        flawed: { name: 'Flawed Ruby', weapon: { fireDmg: [2,5] }, armor: { bonusHp: 15 } },
-        normal: { name: 'Ruby', weapon: { fireDmg: [3,6] }, armor: { bonusHp: 20 } },
-        flawless: { name: 'Flawless Ruby', weapon: { fireDmg: [6,12] }, armor: { bonusHp: 40 } },
-        perfect: { name: 'Perfect Ruby', weapon: { fireDmg: [12,20] }, armor: { bonusHp: 80 } }
+        chipped: { name: 'Chipped Ruby', weapon: { fireDmg: [3,4] }, armor: { bonusHp: 10 } },
+        flawed: { name: 'Flawed Ruby', weapon: { fireDmg: [5,8] }, armor: { bonusHp: 17 } },
+        normal: { name: 'Ruby', weapon: { fireDmg: [8,12] }, armor: { bonusHp: 24 } },
+        flawless: { name: 'Flawless Ruby', weapon: { fireDmg: [10,16] }, armor: { bonusHp: 31 } },
+        perfect: { name: 'Perfect Ruby', weapon: { fireDmg: [15,20] }, armor: { bonusHp: 38 } }
       }
     },
     sapphire: {
       name: 'Sapphire',
       icon: '🔵',
       qualities: {
-        chipped: { name: 'Chipped Sapphire', weapon: { coldDmg: [1,3] }, armor: { bonusMana: 8 } },
-        flawed: { name: 'Flawed Sapphire', weapon: { coldDmg: [2,5] }, armor: { bonusMana: 15 } },
-        normal: { name: 'Sapphire', weapon: { coldDmg: [3,6] }, armor: { bonusMana: 20 } },
-        flawless: { name: 'Flawless Sapphire', weapon: { coldDmg: [6,12] }, armor: { bonusMana: 40 } },
-        perfect: { name: 'Perfect Sapphire', weapon: { coldDmg: [12,20] }, armor: { bonusMana: 80 } }
+        chipped: { name: 'Chipped Sapphire', weapon: { coldDmg: [1,3] }, armor: { bonusMana: 10 } },
+        flawed: { name: 'Flawed Sapphire', weapon: { coldDmg: [3,5] }, armor: { bonusMana: 17 } },
+        normal: { name: 'Sapphire', weapon: { coldDmg: [4,7] }, armor: { bonusMana: 24 } },
+        flawless: { name: 'Flawless Sapphire', weapon: { coldDmg: [6,10] }, armor: { bonusMana: 31 } },
+        perfect: { name: 'Perfect Sapphire', weapon: { coldDmg: [10,14] }, armor: { bonusMana: 38 } }
       }
     },
     emerald: {
       name: 'Emerald',
       icon: '🟢',
       qualities: {
-        chipped: { name: 'Chipped Emerald', weapon: { poisonDmg: [1,3], poisonDur: 2 }, armor: { attackRating: 8 } },
-        flawed: { name: 'Flawed Emerald', weapon: { poisonDmg: [2,5], poisonDur: 3 }, armor: { attackRating: 15 } },
-        normal: { name: 'Emerald', weapon: { poisonDmg: [3,6], poisonDur: 3 }, armor: { attackRating: 20 } },
-        flawless: { name: 'Flawless Emerald', weapon: { poisonDmg: [6,12], poisonDur: 4 }, armor: { attackRating: 40 } },
-        perfect: { name: 'Perfect Emerald', weapon: { poisonDmg: [12,20], poisonDur: 5 }, armor: { attackRating: 80 } }
+        chipped: { name: 'Chipped Emerald', weapon: { poisonDmg: [10,10], poisonDur: 3 }, armor: { dex: 3 } },
+        flawed: { name: 'Flawed Emerald', weapon: { poisonDmg: [20,20], poisonDur: 4 }, armor: { dex: 4 } },
+        normal: { name: 'Emerald', weapon: { poisonDmg: [40,40], poisonDur: 5 }, armor: { dex: 6 } },
+        flawless: { name: 'Flawless Emerald', weapon: { poisonDmg: [60,60], poisonDur: 6 }, armor: { dex: 8 } },
+        perfect: { name: 'Perfect Emerald', weapon: { poisonDmg: [100,100], poisonDur: 7 }, armor: { dex: 10 } }
       }
     },
     topaz: {
       name: 'Topaz',
       icon: '🟡',
       qualities: {
-        chipped: { name: 'Chipped Topaz', weapon: { lightningDmg: [1,3] }, armor: { magicFind: 5 } },
-        flawed: { name: 'Flawed Topaz', weapon: { lightningDmg: [2,5] }, armor: { magicFind: 8 } },
-        normal: { name: 'Topaz', weapon: { lightningDmg: [3,6] }, armor: { magicFind: 10 } },
-        flawless: { name: 'Flawless Topaz', weapon: { lightningDmg: [6,12] }, armor: { magicFind: 20 } },
-        perfect: { name: 'Perfect Topaz', weapon: { lightningDmg: [12,20] }, armor: { magicFind: 35 } }
+        chipped: { name: 'Chipped Topaz', weapon: { lightningDmg: [1,8] }, armor: { magicFind: 9 } },
+        flawed: { name: 'Flawed Topaz', weapon: { lightningDmg: [1,14] }, armor: { magicFind: 13 } },
+        normal: { name: 'Topaz', weapon: { lightningDmg: [1,22] }, armor: { magicFind: 16 } },
+        flawless: { name: 'Flawless Topaz', weapon: { lightningDmg: [1,30] }, armor: { magicFind: 20 } },
+        perfect: { name: 'Perfect Topaz', weapon: { lightningDmg: [1,40] }, armor: { magicFind: 24 } }
       }
     }
   };

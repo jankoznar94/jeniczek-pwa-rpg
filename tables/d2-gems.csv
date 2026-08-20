@@ -1,0 +1,36 @@
+Gem;Quality;Weapon;Armor;Helm;Shield
+Amethyst;Chipped;+40 to Attack Rating;+3 to Strength;+3 to Strength;+8 Defense
+Amethyst;Flawed;+60 to Attack Rating;+4 to Strength;+4 to Strength;+12 Defense
+Amethyst;Normal;+80 to Attack Rating;+6 to Strength;+6 to Strength;+18 Defense
+Amethyst;Flawless;+100 to Attack Rating;+8 to Strength;+8 to Strength;+24 Defense
+Amethyst;Perfect;+150 to Attack Rating;+10 to Strength;+10 to Strength;+30 Defense
+Topaz;Chipped;Adds 1-8 lightning damage;9% Better Chance of Getting Magic Items;9% Better Chance of Getting Magic Items;Lightning Resist +12%
+Topaz;Flawed;Adds 1-14 lightning damage;13% Better Chance of Getting Magic Items;13% Better Chance of Getting Magic Items;Lightning Resist +16%
+Topaz;Normal;Adds 1-22 lightning damage;16% Better Chance of Getting Magic Items;16% Better Chance of Getting Magic Items;Lightning Resist +22%
+Topaz;Flawless;Adds 1-30 lightning damage;20% Better Chance of Getting Magic Items;20% Better Chance of Getting Magic Items;Lightning Resist +28%
+Topaz;Perfect;Adds 1-40 lightning damage;24% Better Chance of Getting Magic Items;24% Better Chance of Getting Magic Items;Lightning Resist +40%
+Sapphire;Chipped;Adds 1-3 cold damage;+10 to Mana;+10 to Mana;Cold Resist +12%
+Sapphire;Flawed;Adds 3-5 cold damage;+17 to Mana;+17 to Mana;Cold Resist +16%
+Sapphire;Normal;Adds 4-7 cold damage;+24 to Mana;+24 to Mana;Cold Resist +22%
+Sapphire;Flawless;Adds 6-10 cold damage;+31 to Mana;+31 to Mana;Cold Resist +28%
+Sapphire;Perfect;Adds 10-14 cold damage;+38 to Mana;+38 to Mana;Cold Resist +40%
+Emerald;Chipped;+10 poison damage over 3 seconds;+3 to Dexterity;+3 to Dexterity;Poison Resist +12%
+Emerald;Flawed;+20 poison damage over 4 seconds;+4 to Dexterity;+4 to Dexterity;Poison Resist +16%
+Emerald;Normal;+40 poison damage over 5 seconds;+6 to Dexterity;+6 to Dexterity;Poison Resist +22%
+Emerald;Flawless;+60 poison damage over 6 seconds;+8 to Dexterity;+8 to Dexterity;Poison Resist +28%
+Emerald;Perfect;+100 poison damage over 7 seconds;+10 to Dexterity;+10 to Dexterity;Poison Resist +40%
+Ruby;Chipped;Adds 3-4 fire damage;+10 to Life;+10 to Life;Fire Resist +12%
+Ruby;Flawed;Adds 5-8 fire damage;+17 to Life;+17 to Life;Fire Resist +16%
+Ruby;Normal;Adds 8-12 fire damage;+24 to Life;+24 to Life;Fire Resist +22%
+Ruby;Flawless;Adds 10-16 fire damage;+31 to Life;+31 to Life;Fire Resist +28%
+Ruby;Perfect;Adds 15-20 fire damage;+38 to Life;+38 to Life;Fire Resist +40%
+Diamond;Chipped;+28% Damage to Undead;+20 to Attack Rating;+20 to Attack Rating;All Resistances +6
+Diamond;Flawed;+34% Damage to Undead;+40 to Attack Rating;+40 to Attack Rating;All Resistances +8
+Diamond;Normal;+44% Damage to Undead;+60 to Attack Rating;+60 to Attack Rating;All Resistances +11
+Diamond;Flawless;+54% Damage to Undead;+80 to Attack Rating;+80 to Attack Rating;All Resistances +14
+Diamond;Perfect;+68% Damage to Undead;+100 to Attack Rating;+100 to Attack Rating;All Resistances +19
+Skull;Chipped;2% Life stolen per hit, 1% Mana stolen per hit;Regenerate Mana 8%, Replenish Life +2;Regenerate Mana 8%, Replenish Life +2;Attacker Takes Damage of 4
+Skull;Flawed;2% Life stolen per hit, 2% Mana stolen per hit;Regenerate Mana 8%, Replenish Life +3;Regenerate Mana 8%, Replenish Life +3;Attacker Takes Damage of 8
+Skull;Normal;3% Life stolen per hit, 2% Mana stolen per hit;Regenerate Mana 12%, Replenish Life +3;Regenerate Mana 12%, Replenish Life +3;Attacker Takes Damage of 12
+Skull;Flawless;3% Life stolen per hit, 3% Mana stolen per hit;Regenerate Mana 12%, Replenish Life +4;Regenerate Mana 12%, Replenish Life +4;Attacker Takes Damage of 16
+Skull;Perfect;4% Life stolen per hit, 3% Mana stolen per hit;Regenerate Mana 19%, Replenish Life +5;Regenerate Mana 19%, Replenish Life +5;Attacker Takes Damage of 20
