@@ -1373,7 +1373,6 @@ export function initGame() {
     const startWeapons = {
       barbarian: 'blade_shortSword',  // Krátký meč
       assassin: 'claws_katar',        // Katar
-      mage: 'staff_wand',             // Hůlka
     };
     const startWpn = startWeapons[classId];
     if (startWpn && ITEM_MAP[startWpn]) {
@@ -7703,7 +7702,7 @@ export function initGame() {
     let type, subtype;
     if (typeRoll < 0.28) {
       type = 'weapon';
-      const weaponTypes = ['blade','blade','axe','axe','blunt','blunt','claws','staff','staff'];
+      const weaponTypes = ['blade','blade','axe','axe','blunt','blunt','claws','claws','blunt'];
       subtype = weaponTypes[rand(0, weaponTypes.length - 1)];
     }
     else if (typeRoll < 0.53) { type = 'armor'; subtype = null; }
@@ -7719,10 +7718,12 @@ export function initGame() {
       quality = 'magic';
     }
 
-    // 2. Najít base item z ITEMS podle typu a tieru — weighted výběr (vyšší tier = vyšší váha)
+    // 2. Najít base item z ITEMS podle typu a dropFloor — weighted výběr (vyšší tier = vyšší váha)
+    // Globální patro: obtížnost*50 + act*10 + patro (5 actů × 10 pater × 3 obtížnosti = 150)
+    const globalFloor = (state.difficulty || 0) * 50 + locId * 10 + floor;
     const candidates = ITEMS.filter(i => {
-      if (type === 'weapon') return i.type === 'weapon' && i.weaponType === subtype && i.tier <= tier;
-      return i.type === type && i.tier <= tier;
+      if (type === 'weapon') return i.type === 'weapon' && i.weaponType === subtype && (i.dropFloor ?? 0) <= globalFloor;
+      return i.type === type && (i.dropFloor ?? 0) <= globalFloor;
     });
     if (candidates.length === 0) return null;
     // Weighted výběr: váha = tier, takže vyšší tier je častější, ale nižší taky padá
@@ -8972,14 +8973,12 @@ export function initGame() {
   function _generateShopItems() {
     const h = state.hero;
     const playerLevel = h.level || 1;
-    const maxProgress = Math.max(...state.locationProgress);
-    const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
     const monsterLevel = 5 + playerLevel * 2;
 
     function _shopFindBases(type, weaponType, count) {
       const candidates = ITEMS.filter(i => {
-        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
-        return i.type === type && i.tier <= maxTier;
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.lvlReq ?? 0) <= playerLevel;
+        return i.type === type && (i.lvlReq ?? 0) <= playerLevel;
       });
       if (candidates.length === 0) return [];
       // Weighted výběr: vyšší tier = vyšší váha, ale nižší taky šance
@@ -9048,7 +9047,7 @@ export function initGame() {
     });
 
     // Weapons: 3-4 itemy z poolu všech weapon typů
-    const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
+    const weaponTypes = ['blade', 'axe', 'blunt', 'claws'];
     const weaponItems = [];
     weaponTypes.forEach(wt => {
       const bases = _shopFindBases('weapon', wt, 2); // 2 itemy na weapon typ
@@ -9225,14 +9224,12 @@ export function initGame() {
   function _generateGambleItems() {
     const h = state.hero;
     const playerLevel = h.level || 1;
-    const maxProgress = Math.max(...state.locationProgress);
-    const maxTier = Math.min(7, 1 + Math.floor(playerLevel / 5) + Math.floor(maxProgress / 2));
     const monsterLevel = 5 + playerLevel * 2;
 
     function _gambleFindBases(type, weaponType, count) {
       const candidates = ITEMS.filter(i => {
-        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && i.tier <= maxTier;
-        return i.type === type && i.tier <= maxTier;
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.lvlReq ?? 0) <= playerLevel;
+        return i.type === type && (i.lvlReq ?? 0) <= playerLevel;
       });
       if (candidates.length === 0) return [];
       const result = [];
@@ -9252,7 +9249,7 @@ export function initGame() {
     }
 
     // Weapons — 1 z každého typu
-    const weaponTypes = ['blade', 'axe', 'blunt', 'claws', 'staff'];
+    const weaponTypes = ['blade', 'axe', 'blunt', 'claws'];
     const weaponItems = [];
     weaponTypes.forEach(wt => {
       const bases = _gambleFindBases('weapon', wt, 1);
@@ -10004,6 +10001,8 @@ export function initGame() {
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
+    // Equip požadavek — hrdina musí mít dostatečný level
+    if ((item.lvlReq || 0) > (h.level || 1)) return;
     // Zjistit správný slot podle typu itemu
     const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet', gloves:'gloves', boots:'boots' };
     let correctSlot = typeToSlot[item.type];
@@ -10059,6 +10058,11 @@ export function initGame() {
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
+    // Equip požadavek — hrdina musí mít dostatečný level
+    if ((item.lvlReq || 0) > (h.level || 1)) {
+      addToInventory(h.inventory, itemId); // vrátit zpět
+      return;
+    }
     // Odstranit nový item z inventáře PRVNĚ (dřív než pushneme starý)
     removeFromInventory(h.inventory, itemId);
     if (item.type === 'weapon') {

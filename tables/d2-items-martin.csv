@@ -1,0 +1,187 @@
+Název;Treasure class;Quality level;Required level
+Short sword;3;1;1
+Gladius;30;30;18
+Falcata;57;56;42
+Scimitar;6;5;1
+Cutlass;45;43;25
+Ataghan;63;61;45
+Broad sword;15;15;1
+Battle sword;42;40;25
+Conquest sword;78;78;58
+Crystal sword;12;11;1
+Dimensional Blade;39;37;25
+Phase Blade;75;73;54
+War sword;27;27;1
+Ancient sword;51;49;25
+Mythical sword;87;85;66
+Hand axe;3;3;1
+Hatchet;33;31;19
+Tomahawk;54;54;40
+Axe;9;7;1
+Cleaver;36;34;22
+Small crescent;63;61;45
+Double axe;15;13;1
+Twin Axe;39;39;25
+Ettin axe;72;70;45
+Military pick;15;19;1
+Crowbill;45;43;25
+War spike;81;79;59
+War axe;27;25;1
+Naga;48;48;25
+Berserker axe;85;85;64
+Club;3;1;1
+Cudgel;30;30;18
+Truncheon;54;52;39
+Spiked club;6;4;1
+Barbed club;33;32;40
+Tyrant club;57;57;42
+Morning star;15;13;1
+Jagged star;39;39;25
+Devil star;72;70;52
+Flail;21;19;1
+Knout;45;43;25
+Scourge;78;76;57
+War hammer;27;25;1
+Battle hammer;48;48;25
+Legendary mallet;84;82;61
+Katar;3;1;1
+Quhab;30;28;21
+Suwayyah;60;59;44
+Wrist blade;9;9;1
+Wrist spike;33;32;24
+Wrist sword;63;62;46
+Claws;18;18;1
+Greater claws;45;45;33
+Feral claws;78;78;58
+Blade talons;21;21;1
+Greater talons;51;50;37
+Runic talons;81;81;60
+Scissors Katar;24;24;1
+Scissors quhab;54;54;40
+Scissors Suwayyah;87;85;64
+Two-handed sword;12;10;1
+Espandon;39;37;25
+Legend sword;60;59;44
+Claymore;18;17;1
+Dacian falx;42;42;25
+Highland blade;66;66;49
+Bastard sword;24;24;1
+Gothic sword;48;48;25
+Champion sword;78;77;57
+Flamberge;27;27;1
+Zweihander;51;49;25
+Colossus sword;81;80;60
+Great sword;33;33;1
+Executioner sword;54;54;25
+Colossus blade;87;85;63
+Large axe;6;6;1
+Military Axe;36;34;22
+Feral axe;63;61;42
+Broad axe;12;12;1
+Bearded axe;39;38;25
+Silver-edged axe;66;65;48
+Battle axe;18;17;1
+Tabar;42;42;25
+Decapitator;75;73;54
+Great axe;24;23;1
+Gothic axe;48;46;25
+Champion axe;84;82;61
+Giant axe;27;27;1
+Ancient axe;51;51;25
+Glorious axe;87;85;66
+Maul;21;21;1
+War club;45;45;25
+Ogre maul;69;69;51
+Great maul;33;32;1
+Martel de fer;54;53;25
+Thunder maul;87;85;65
+Cap;3;1;1
+War hat;36;34;22
+Shako;60;58;43
+Helm;12;11;1
+Casque;36;34;25
+Armet;69;68;51
+Full helm;15;15;1
+Basinet;45;45;25
+Giant conch;54;54;40
+Mask;21;19;1
+Death mask;48;48;25
+Demonhead;75;74;55
+Bone helm;24;22;1
+Grim helm;51;50;25
+Bone visage;84;84;63
+Leather armor;3;3;1
+Serpentskin armor;36;36;24
+Wyrmhide;69;67;50
+Ring mail;12;11;1
+Linked mail;42;42;25
+Diamond mail;72;72;54
+Light plate;36;35;1
+Mage plate;60;60;25
+Archon plate;84;84;63
+Full plate mail;39;37;1
+Chaos armor;63;61;25
+Shadow plate;84;83;64
+Ancient armor;42;40;1
+Ornate plate;66;64;25
+Sacred armor;87;85;66
+Leather gloves;3;3;1
+Demonhide gloves;33;33;21
+Bramble mitts;87;57;42
+Heavy gloves;9;7;1
+Sharkskin gloves;54;39;25
+Vampirebone gloves;63;63;47
+Chain gloves;12;12;1
+Heavy bracers;45;53;25
+Vambraces;69;69;51
+Light gauntlets;21;20;1
+Battle gauntlets;51;49;25
+Crusader gauntlets;78;76;57
+Gauntlets;27;27;1
+War gauntlets;54;54;25
+Ogre gauntlets;87;85;64
+Boots;3;3;1
+Demonhide boots;36;36;24
+Wyrmhide boots;87;85;45
+Heavy boots;9;7;1
+Sharkskin boots;;39;39;25
+Scarabshell boots;66;66;49
+Chain boots;12;12;1
+Mesh boots;45;43;25
+Boneweave boots;72;72;54
+Light plated boots;21;20;1
+Battle boots;51;49;25
+Mirrored boots;81;81;60
+Greaves;27;27;1
+War boots;54;54;25
+Myrmidon greaves;87;85;65
+Sash;3;3;1
+Demonhide sash;36;36;24
+Spiderweb sash;63;61;46
+Light belt;9;7;1
+Sharkskin belt;39;39;25
+Vampirefang belt;69;68;51
+Belt;12;12;1
+Mesh belt;45;43;25
+Mithril coil;75;75;56
+Heavy belt;21;20;1
+Battle belt;51;49;25
+Troll belt;84;82;62
+Plated belt;27;27;1
+War belt;54;54;25
+Colossus girdle;87;85;67
+Buckler;3;1;1
+Defender;36;34;22
+Heater;;60;58;43
+Small shield;6;5;1
+Round shield;39;37;25
+Luna;63;61;45
+Large shield;12;11;1
+Scutum;42;42;25
+Hyperion;66;64;48
+Tower shield;15;15;1
+Pavise;45;45;25
+Aegis;72;72;54
+Gothic shield;30;30;1
+Ancient shield;57;56;25
+Ward;84;84;63
