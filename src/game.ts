@@ -634,6 +634,16 @@ export function initGame() {
     return total;
   }
 
+  // Aktuální "town floor" (globální patro ve městě) — určuje, jaké itemy shop/gamble nabídne.
+  // Sleduje obtížnost a počet poražených bossů, ne level hráče (dropFloor = treasure class).
+  function getTownFloor() {
+    const diff = state.difficulty || 0;
+    const bosses = state.bossesDefeated[diff] || [];
+    let kills = 0;
+    while (kills < 5 && bosses[kills]) kills++;
+    return diff * 50 + Math.min(4, kills) * 10;
+  }
+
   function getPlayerResist(school) {
     let res = 0;
     const h = state.hero;
@@ -9042,11 +9052,13 @@ export function initGame() {
     const h = state.hero;
     const playerLevel = h.level || 1;
     const monsterLevel = 5 + playerLevel * 2;
+    // Shop nabízí itemy podle aktuálního postupu (treasure class), ne podle levelu hráče.
+    const townFloor = getTownFloor();
 
     function _shopFindBases(type, weaponType, count) {
       const candidates = ITEMS.filter(i => {
-        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.lvlReq ?? 0) <= playerLevel;
-        return i.type === type && (i.lvlReq ?? 0) <= playerLevel;
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.dropFloor ?? 0) <= townFloor;
+        return i.type === type && (i.dropFloor ?? 0) <= townFloor;
       });
       if (candidates.length === 0) return [];
       // Weighted výběr: vyšší tier = vyšší váha, ale nižší taky šance
@@ -9293,11 +9305,13 @@ export function initGame() {
     const h = state.hero;
     const playerLevel = h.level || 1;
     const monsterLevel = 5 + playerLevel * 2;
+    // Gamble nabízí itemy podle aktuálního postupu (treasure class), ne podle levelu hráče.
+    const townFloor = getTownFloor();
 
     function _gambleFindBases(type, weaponType, count) {
       const candidates = ITEMS.filter(i => {
-        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.lvlReq ?? 0) <= playerLevel;
-        return i.type === type && (i.lvlReq ?? 0) <= playerLevel;
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.dropFloor ?? 0) <= townFloor;
+        return i.type === type && (i.dropFloor ?? 0) <= townFloor;
       });
       if (candidates.length === 0) return [];
       const result = [];
