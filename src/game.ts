@@ -2436,7 +2436,7 @@ export function initGame() {
     const h = state.hero;
     const eqAttrs = getEquipAttrs();
     const dex = (h.attrDex || 0) + eqAttrs.dex;
-    let ms = Math.max(650, Math.round(base * (1 - dex * 0.01)));
+    let ms = Math.max(550, Math.round(base * (1 - dex * 0.01)));
     // IAS (Increased Attack Speed) — D2 styl: procenta s diminishing returns
     // Sčítá se z nasazené zbraně + rukavic (obojí může nést IAS affixy)
     let ias = (w.ias || 0);
@@ -2445,11 +2445,11 @@ export function initGame() {
     if (ias > 0) {
       // D2: efektivní IAS s diminishing returns — každé další % je méně efektivní
       const eias = Math.round(ias * 100 / (ias + 120));
-      ms = Math.max(600, Math.round(ms * 100 / (100 + eias)));
+      ms = Math.max(450, Math.round(ms * 100 / (100 + eias)));
     }
     // Speed boost (assassin) — +20% rychlost = -20% času
     if (state._speedBoostPct > 0) {
-      ms = Math.max(600, Math.round(ms * (1 - state._speedBoostPct / 100)));
+      ms = Math.max(450, Math.round(ms * (1 - state._speedBoostPct / 100)));
     }
     return ms;
   }
