@@ -10198,8 +10198,8 @@ export function initGame() {
     const item = ITEM_MAP[itemId];
     if (!item) return;
     // Equip požadavek — hrdina musí mít dostatečný level
+    // Pozor: item je STÁLE v batohu (removeFromInventory probíhá níže) — jen se vrátit, nic nepřidávat
     if ((item.lvlReq || 0) > (h.level || 1)) {
-      addToInventory(h.inventory, itemId); // vrátit zpět
       return;
     }
     // Už nasazený ve svém slotu — neduplikovat
