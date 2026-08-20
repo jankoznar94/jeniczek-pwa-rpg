@@ -1091,11 +1091,18 @@ export function initGame() {
             rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${v}</span></div>`);
           }
         });
-        rows.push('<div class="stat-row" style="color:#888;font-size:11px;font-weight:bold">Armor/Helm/Shield</div>');
+        rows.push('<div class="stat-row" style="color:#888;font-size:11px;font-weight:bold">Armor/Helm</div>');
         Object.entries(qData.armor || {}).forEach(([k,v]) => {
           const label = k === 'bonusHp' ? '+HP' : k === 'bonusMana' ? '+Mana' : k === 'attackRating' ? 'Hit Rating' : k === 'magicFind' ? 'MF' : k;
           rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${v}</span></div>`);
         });
+        if (qData.shield) {
+          rows.push('<div class="stat-row" style="color:#888;font-size:11px;font-weight:bold">Shield</div>');
+          Object.entries(qData.shield).forEach(([k,v]) => {
+            const label = k === 'fireRes' ? 'Fire Resist' : k === 'coldRes' ? 'Cold Resist' : k === 'lightningRes' ? 'Lightning Resist' : k === 'poisonRes' ? 'Poison Resist' : k;
+            rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">+${v}%</span></div>`);
+          });
+        }
       }
     }
     // Affix staty — rollované módy (modré)

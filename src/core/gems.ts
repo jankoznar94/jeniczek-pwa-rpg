@@ -9,7 +9,8 @@ export function applyGemStats(item: any, gemType: string, gemQuality: string): v
   const qData = gem.qualities[gemQuality];
   if (!qData) return;
   const isWeapon = item.type === 'weapon';
-  const stats = isWeapon ? qData.weapon : qData.armor;
+  const isShield = item.type === 'shield';
+  const stats = isWeapon ? qData.weapon : (isShield ? qData.shield : qData.armor);
   if (!stats) return;
   const dmgStats = ['fireDmg', 'coldDmg', 'lightningDmg', 'poisonDmg'];
   Object.keys(stats).forEach(stat => {
@@ -54,11 +55,19 @@ export function buildGemStatsHtml(gemType: string, gemQuality: string): string {
     });
   }
   if (qData.armor) {
-    lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Armor/Helm/Shield:</div>');
+    lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Armor/Helm:</div>');
     Object.keys(qData.armor).forEach(stat => {
       const val = qData.armor[stat];
       const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Hit Rating' : stat === 'magicFind' ? 'MF' : stat === 'dex' ? 'Dexterity' : stat;
       lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
+    });
+  }
+  if (qData.shield) {
+    lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Shield:</div>');
+    Object.keys(qData.shield).forEach(stat => {
+      const val = qData.shield[stat];
+      const label = stat === 'fireRes' ? 'Fire Resist' : stat === 'coldRes' ? 'Cold Resist' : stat === 'lightningRes' ? 'Lightning Resist' : stat === 'poisonRes' ? 'Poison Resist' : stat;
+      lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: +${val}%</div>`);
     });
   }
   return lines.join('');
