@@ -8365,20 +8365,43 @@ export function initGame() {
 
     // === UNIQUES ===
     html += `<div class="card"><div class="card-title">🌟 Unique itemy</div>
-    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Fixní sada affixů, vlastní jméno. Objevují se jako boss dropy.</p>`;
+    <p style="font-size:13px;color:#8888aa;margin-bottom:10px">Fixní sada statů, vlastní jméno. Objevují se jako boss dropy.</p>`;
+    const statLabels = {
+      enhancedDmg:'Enhanced Damage', enhancedDefense:'Enhanced Defense', ias:'Increased Attack Speed',
+      fireDmg:'Fire Dmg', coldDmg:'Cold Dmg', lightningDmg:'Lightning Dmg', poisonDmg:'Poison Dmg', poisonDur:'Poison Duration',
+      lifesteal:'Life Steal', manaSteal:'Mana Steal', attackRating:'Hit Rating', critChance:'Crit Chance',
+      skillDmg:'Skill Dmg', manaRegen:'Mana Regen', bonusHp:'+HP', bonusMana:'+Mana',
+      str:'Strength', vit:'Vitality', int:'Intellect', dex:'Dexterity',
+      magicFind:'Magic Find', goldFind:'Gold Find', allSkills:'All Skills', classSkills:'Class Skills',
+      fireRes:'Fire Resist', coldRes:'Cold Resist', lightningRes:'Lightning Resist', poisonRes:'Poison Resist', allRes:'All Resists',
+      thorns:'Thorns', dmgReduction:'Dmg Reduction', lifeRegen:'Life Regen',
+      knockback:'Knockback', preventHeal:'Prevent Heal', castSpeed:'Cast Speed',
+      baseDmgMin:'Min Dmg', baseDmgMax:'Max Dmg', defense:'Defense'
+    };
+    const fmtStat = (v) => Array.isArray(v) ? `${v[0]}-${v[1]}` : v;
+    const fmtUniqueStats = (stats) => {
+      if (!stats) return '';
+      return Object.entries(stats).map(([k,v]) => {
+        const label = statLabels[k] || k;
+        const suffix = (k === 'enhancedDmg' || k === 'enhancedDefense' || k === 'ias' || k === 'lifesteal' || k === 'manaSteal' || k === 'critChance' || k === 'skillDmg' || k === 'magicFind' || k === 'goldFind' || k === 'fireRes' || k === 'coldRes' || k === 'lightningRes' || k === 'poisonRes' || k === 'allRes' || k === 'castSpeed') ? '%' : '';
+        return `${label} +${fmtStat(v)}${suffix}`;
+      }).join('<br>');
+    };
     UNIQUE_ITEMS.forEach(u => {
       const base = ITEMS.find(i => i.id === u.baseId);
       const affixNames = (u.affixIds || []).map(id => {
         const a = AFFIXES.find(x => x.id === id);
         return a ? a.name : id;
       }).join(' + ');
+      const statHtml = fmtUniqueStats(u.stats);
+      const affixHtml = affixNames ? `<div style="font-size:12px;color:#aaa">Affixy: ${affixNames}</div>` : '';
       const iconHtml = u.iconImg ? `<img src="${u.iconImg}" alt="" style="width:36px;height:36px;border-radius:4px;object-fit:contain">` : `<span style="font-size:28px">${u.icon}</span>`;
       const propDesc = u.uniqueProp ? `<div style="font-size:12px;color:#e94560;margin-top:2px">✨ ${u.uniqueProp.desc}</div>` : '';
       html += `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px;border:1px solid #2a2a4a;border-radius:6px;margin-bottom:6px">
         <div style="min-width:40px;text-align:center">${iconHtml}</div>
         <div style="flex:1"><div style="font-size:14px;font-weight:600;color:#e94560">${u.name}</div>
         <div style="font-size:12px;color:#8888aa">Base: ${base ? base.name : u.baseId} · Tier ${u.tier} · Min lvl ${u.minLevel}</div>
-        <div style="font-size:12px;color:#aaa">Affixy: ${affixNames}</div>${propDesc}</div></div>`;
+        <div style="font-size:12px;color:#4a7dff">${statHtml}</div>${affixHtml}${propDesc}</div></div>`;
     });
     html += `</div>`;
 
