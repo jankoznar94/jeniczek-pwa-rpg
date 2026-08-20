@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v143';
-const ASSET_CACHE = 'boss-slayer-assets-v35';
+const CODE_CACHE = 'boss-slayer-code-v144';
+const ASSET_CACHE = 'boss-slayer-assets-v36';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=132', '/manifest.json', '/item-reference.html'];
 
@@ -40,7 +40,7 @@ const ASSET_FILES = [
   '/assets/monsters/frost_titan.png',
   '/assets/items/helmet_linen_hood.png', '/assets/items/helmet_iron_helm.png',
   '/assets/items/helmet_steel_helm.png', '/assets/items/helmet_silver_helm.png',
-  '/assets/items/helmet_crown.png', '/assets/items/armor_leather.png',
+  '/assets/items/helmet_crown.png', '/assets/items/helmet_bone_helm.png', '/assets/items/armor_leather.png',
   '/assets/items/armor_chainmail.png', '/assets/items/armor_scale.png',
   '/assets/items/armor_plate.png', '/assets/items/armor_dragon_scale.png',
   '/assets/items/weapon_iron_sword.png', '/assets/items/weapon_broad_sword.png',
