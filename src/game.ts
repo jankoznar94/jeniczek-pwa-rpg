@@ -877,7 +877,7 @@ export function initGame() {
   function generateUniqueItem(uniqueDef) {
     const baseItem = ITEM_MAP[uniqueDef.baseId];
     if (!baseItem) return null;
-    const affixes = uniqueDef.affixIds.map(id => AFFIXES.find(a => a.id === id)).filter(Boolean);
+    const affixes = (uniqueDef.affixIds || []).map(id => AFFIXES.find(a => a.id === id)).filter(Boolean);
     const item = {
       ...baseItem,
       id: uniqueDef.id,
