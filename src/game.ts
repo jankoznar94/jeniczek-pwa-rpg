@@ -3791,7 +3791,8 @@ export function initGame() {
       $('mbEnemyName').textContent = `${b.name} ${bossTypesHtml}${atkIcon}`;
       $('mbLocation').textContent = `👑 Boss — ${mb.loc.name}`;
     } else {
-      const floorStr = `M${mb.progress+1}`;
+      // Act 0 (Enchanted Forest) — reálný název zastávky v hlavičce, ne M{n}
+      const floorStr = mb.locId === 0 ? getStopName(0, mb.progress, true) : `M${mb.progress+1}`;
       const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :
         mb.monsterType === MONSTER_TYPES.MANASTEALER ? '💧' :
         mb.monsterType === MONSTER_TYPES.IMPROVER ? '📈' :
@@ -3805,9 +3806,9 @@ export function initGame() {
       // Ukázat affix popis pod jménem elity (tooltip/desc)
       const affixDesc = mb.isElite && mb.eliteAffix ? mb.eliteAffix.desc : null;
       if (affixDesc) {
-        $('mbLocation').textContent = `${mb.loc.name} — ${floorStr} · ${affixDesc}`;
+        $('mbLocation').textContent = `${floorStr} · ${affixDesc}`;
       } else {
-        $('mbLocation').textContent = `${mb.loc.name} — ${floorStr}${mb.isElite ? ' · ELITE' : ''}`;
+        $('mbLocation').textContent = `${floorStr}${mb.isElite ? ' · ELITE' : ''}`;
       }
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
@@ -8462,19 +8463,30 @@ export function initGame() {
       const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
       const areaNum = (state.locationProgress[locId] || 0) + 1;
       const fightNum = (state.areaFightProgress[locId] || 0);
+      const stopNameEn = locId === 0 ? getStopName(0, curStopIdx, true) : null;
       const winTitle = isWaypoint ? 'Waypoint Reached!' : 'Victory!';
-      const winSub = isWaypoint ? locName : `${locName} · ${curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum} · Fight ${fightNum}/10`;
+      const winSub = isWaypoint ? locName : `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum)} · Fight ${fightNum}/10`;
+      // Stav hráče — overlay dole na obrázku zastávky (HP, mana)
+      const oh = state.hero;
+      const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
+      const ohpColor = ohpPct > 50 ? '#e74c3c' : ohpPct > 20 ? '#e67e22' : '#ff4444';
+      const oManaHtml = `💧 ${Math.round(state.mana)}/${Math.round(state.maxMana)}`;
+      const statsOverlay = `<div class="stop-result-stats">
+        <span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
+        <span style="color:#4a7dff">${oManaHtml}</span>
+      </div>`;
       if (locId === 0 && !isWaypoint) {
-        // Obrázek zastávky s overlay textem (Victory!, název actu, zastávka, progress)
+        // Obrázek zastávky s overlay textem (Victory!, název actu, zastávka, progress) + staty dole
         $('resultIcon').innerHTML = `<div class="stop-result-wrap">
           <img class="result-icon-img stop-result" src="${getStopImage(0, curStopIdx)}" alt="Zastávka">
           <div class="stop-result-overlay">
             <div class="stop-result-title">${winTitle}</div>
             <div class="stop-result-sub">${winSub}</div>
           </div>
+          ${statsOverlay}
         </div>`;
       } else if (isWaypoint) {
-        $('resultIcon').innerHTML = '<div class="stop-result-wrap"><img class="result-icon-img stop-result-img" src="assets/menu-icons/waypoint.png" alt="Waypoint"><div class="stop-result-overlay"><div class="stop-result-title">' + winTitle + '</div><div class="stop-result-sub">' + winSub + '</div></div></div>';
+        $('resultIcon').innerHTML = `<div class="stop-result-wrap"><img class="result-icon-img stop-result-img" src="assets/menu-icons/waypoint.png" alt="Waypoint"><div class="stop-result-overlay"><div class="stop-result-title">${winTitle}</div><div class="stop-result-sub">${winSub}</div></div>${statsOverlay}</div>`;
       } else {
         $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
       }
@@ -8533,8 +8545,11 @@ export function initGame() {
           <span class="result-status-potion-count">${potCounts[id]}</span>
         </div>`;
         }).join('') + `</div>`;
-      const statusHtml = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
-        ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
+      // Staty (HP, mana) jsou overlay na obrázku zastávky (Act 0 / waypoint);
+      // pro ostatní victory bez obrázku zachováme status řádek.
+      const hasStatsOverlay = (locId === 0 && !isWaypoint) || isWaypoint;
+      const statusHtml = (hasStatsOverlay ? '' : `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>\n`) +
+        `${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
         ${potionsHtml}`;
       $('resultStatus').innerHTML = statusHtml;
 

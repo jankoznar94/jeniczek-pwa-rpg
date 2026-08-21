@@ -1388,6 +1388,14 @@ body.no-scroll { overflow: hidden; }
   font-size:14px; font-weight:600; color:#ddd;
   text-shadow:0 1px 6px rgba(0,0,0,0.9);
 }
+/* Staty hráče (HP, mana) — overlay dole na obrázku zastávky */
+.stop-result-stats {
+  position:absolute; left:0; right:0; bottom:10px;
+  display:flex; justify-content:center; gap:16px;
+  font-size:15px; font-weight:700;
+  text-shadow:0 1px 6px rgba(0,0,0,0.9);
+  pointer-events:none;
+}
 .result-screen.centered,
 #resultScreen.centered .result-screen {
   justify-content:center;
