@@ -8,7 +8,7 @@ import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplie
 import { applyGemStats, buildGemStatsHtml } from './core/gems';
 import { getMonsterFace, getMonsterName } from './core/monsters';
 import { getDungeonResistIcons } from './core/dungeons';
-import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES } from './data/monsters';
+import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES, ELITE_FILTER_COLORS } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
 import { AFFIXES } from './data/affixes';
@@ -2383,6 +2383,7 @@ export function initGame() {
 
     mapBattleState = {
       locId: actId, loc, isBoss, isElite, eliteAffix, progress, areaFight,
+      eliteColor: (isElite && !isBoss) ? ELITE_FILTER_COLORS[rand(0, ELITE_FILTER_COLORS.length - 1)] : null,
       bossHp: Math.round(baseHp * bossHpMult), maxBossHp: Math.round(baseHp * bossHpMult),
       bossDmgMult: bossDmgMult,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
@@ -3605,11 +3606,10 @@ export function initGame() {
     const fig = $('mbFigure');
     const themeFilter = DUNGEON_THEME_FILTERS[mb.monsterTheme] || '';
     const theme = DUNGEON_THEMES[mb.monsterTheme] || DUNGEON_THEMES[0];
-    // Oddělovací mezikruží — zlaté a tlustší pro elitu, jinak šedé.
-    const zoneDiv = $('mbZoneDivider');
-    if (zoneDiv) { zoneDiv.classList.toggle('elite', !!mb.isElite); }
+    // Elitní nepřítel — barevný filter přes celý obrázek (náhodná barva, stabilní v boji).
+    const eliteFilter = mb.isElite && mb.eliteColor ? mb.eliteColor + ' ' + themeFilter : themeFilter;
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
-    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+eliteFilter+'\"/></div>'; }
     else { fig.textContent = emoji; }
     // Ikona castovaného kouzla na nepříteli
     updateCastSpellIcon(mb);

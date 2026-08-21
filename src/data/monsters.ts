@@ -170,3 +170,13 @@ export const BOSS_AFFIXES = [
   { name:'Indestructible', icon:'🛡️', desc:'+50% HP' },
   { name:'Mana Burn', icon:'💜', desc:'burns mana' },
 ];
+
+// Náhodné barevné filtry pro elitní nepřátele (překryv obrázku jednobarevným tónem).
+export const ELITE_FILTER_COLORS = [
+  'hue-rotate(0deg) saturate(3)',
+  'hue-rotate(60deg) saturate(3)',
+  'hue-rotate(120deg) saturate(3)',
+  'hue-rotate(180deg) saturate(3)',
+  'hue-rotate(240deg) saturate(3)',
+  'hue-rotate(300deg) saturate(3)',
+];
