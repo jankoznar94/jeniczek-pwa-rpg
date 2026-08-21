@@ -1957,7 +1957,7 @@ export function initGame() {
             const areaNum = areaId + 1;
             const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
             const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
-            wpHtml += `<div class="waypoint-btn" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
+            wpHtml += `<div class="waypoint-btn" style="border-color:${theme.border}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
               <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
               <div>
                 <div class="waypoint-btn-label">${stopLabel}</div>
@@ -1975,7 +1975,7 @@ export function initGame() {
             const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
             const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
             const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
-            wpHtml += `<div class="${cls}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
+            wpHtml += `<div class="${cls}" style="border-color:${theme.border}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
               <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
               <div>
                 <div class="waypoint-btn-label">${stopLabel}</div>
