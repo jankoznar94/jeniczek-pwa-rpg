@@ -700,6 +700,17 @@ export function initGame() {
     return school === 'fire' ? '#e74c3c' : school === 'ice' ? '#3498db' : school === 'lightning' ? '#f1c40f' : '#27ae60';
   }
 
+  // Barevný filter elity podle elementu affixu (Fire=červená, Cold=modrá, Lightning=žlutá, Poison=zelená).
+  // Affixy bez elementu dostanou neutrální teplý tón.
+  function eliteAffixColor(affix) {
+    if (!affix) return null;
+    if (affix.element === 'fire') return 'hue-rotate(0deg) saturate(3) brightness(1.1)';
+    if (affix.element === 'ice') return 'hue-rotate(200deg) saturate(3) brightness(1.1)';
+    if (affix.element === 'lightning') return 'hue-rotate(45deg) saturate(3) brightness(1.15)';
+    if (affix.element === 'nature') return 'hue-rotate(90deg) saturate(3) brightness(1.05)';
+    return 'hue-rotate(' + rand(0, 360) + 'deg) saturate(2.5)';
+  }
+
   function rollQuality() {
     let mf = getMagicFind();
     // D2 Magic Find: každá kvalita má vlastní diminishing (viz maxroll gold-magic-find).
@@ -2491,7 +2502,7 @@ export function initGame() {
 
     mapBattleState = {
       locId: actId, loc, isBoss, isElite, eliteAffix, progress, areaFight,
-      eliteColor: (isElite && !isBoss) ? ELITE_FILTER_COLORS[rand(0, ELITE_FILTER_COLORS.length - 1)] : null,
+      eliteColor: (isElite && !isBoss) ? eliteAffixColor(eliteAffix) : null,
       bossHp: Math.round(baseHp * bossHpMult), maxBossHp: Math.round(baseHp * bossHpMult),
       bossDmgMult: bossDmgMult,
       playerHp: playerHp, maxPlayerHp: playerMaxHp,
@@ -2641,6 +2652,16 @@ export function initGame() {
       });
       // Fáze 4: foreground melee vrstva (PixiJS, z-index 17) — úderové animace zbraní
       initMeleeLayer(arenaEl);
+    }
+    // 🎨 Pozadí arény podle typu souboje:
+    // - elita (pack s leaderem) → jemná žlutá záře
+    // - champion pack → modrá záře
+    // - jinak → čisté (původní)
+    if (arenaEl) {
+      let bg = 'transparent';
+      if (isElite && isPack) bg = 'radial-gradient(circle at center, rgba(241,196,15,0.12) 0%, rgba(241,196,15,0.05) 45%, transparent 70%)';
+      else if (isChampionPack) bg = 'radial-gradient(circle at center, rgba(74,125,255,0.12) 0%, rgba(74,125,255,0.05) 45%, transparent 70%)';
+      arenaEl.style.background = bg;
     }
     // Animace příchodu
     const newFig = $('mbFigure');
@@ -8313,6 +8334,13 @@ export function initGame() {
 
     // ===== PACK: smrt jednoho člena → přepnout na dalšího živého, neukončovat =====
     if (won && !mb.isBoss && mb.packMembers) {
+      // Ověřit, že aktivní člen skutečně umřel — jinak to je stale timer (z vícekém
+      // setTimeout kill cest), který nesmí označit živého člena za mrtvého.
+      if (mb.bossHp > 0) {
+        // Ještě žije — ignorovat duplicitní kill timer
+        mb._pendingKill = false;
+        return;
+      }
       if (packTryAdvance(mb)) {
         // Znovu spustit combat loop pro nového člena (reset timery už obstaral resetEnemyCombatState)
         mb.ended = false;
