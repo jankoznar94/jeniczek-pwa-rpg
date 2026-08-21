@@ -387,17 +387,28 @@ body.no-scroll { overflow: hidden; }
   width:100%;height:100%;object-fit:contain;border-radius:50%;
 }
 #mbArena .monster-ring-frame.elite {
-  /* Elitní nepřítel — výrazné pulzující orámování, teplé tmavé desaturované tóny. */
-  border:4px solid rgba(224,178,96,0.8);
-  box-shadow:0 0 22px rgba(224,178,96,0.45), inset 0 0 24px rgba(224,178,96,0.28);
-  animation:elitePulse 1.6s ease-in-out infinite;
+  /* Elitní nepřítel — animovaná zář přes celý obrázek. */
+  border:none;
+  position:relative;
 }
 #mbArena .monster-ring-frame.elite img {
   border-radius:50%;
+  position:relative; z-index:1;
+  animation:eliteImgGlow 1.6s ease-in-out infinite;
 }
-@keyframes elitePulse {
-  0%,100% { border-color:rgba(224,178,96,0.55); box-shadow:0 0 10px rgba(224,178,96,0.25), inset 0 0 14px rgba(224,178,96,0.15); }
-  50%     { border-color:rgba(255,206,130,1.0); box-shadow:0 0 34px rgba(255,206,130,0.75), inset 0 0 34px rgba(255,206,130,0.45); }
+#mbArena .monster-ring-frame.elite .elite-glow {
+  position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,208,120,0.55) 0%, rgba(255,180,80,0.22) 45%, transparent 72%);
+  animation:eliteGlowPulse 1.6s ease-in-out infinite;
+  mix-blend-mode:screen;
+}
+@keyframes eliteGlowPulse {
+  0%,100% { opacity:0.35; transform:scale(0.92); }
+  50%     { opacity:0.95; transform:scale(1.08); }
+}
+@keyframes eliteImgGlow {
+  0%,100% { filter:drop-shadow(0 0 6px rgba(255,190,100,0.35)); }
+  50%     { filter:drop-shadow(0 0 22px rgba(255,200,110,0.85)); }
 }
 .boss-hint { text-align:center;font-size:11px;color:#888888;margin:2px 0;min-height:0; }
 .arena-surrender-btn {
