@@ -169,6 +169,7 @@ export const ELITE_AFFIXES = [
   { name:'Stone Skin', icon:'🪨', desc:'-50% fyz dmg + defense', drMult:0.5, defMult:2.0 },
   { name:'Mana Burn', icon:'💜', desc:'krade manu · +magic resist', manaBurn:true, resistAll:0.3 },
   { name:'Cursed', icon:'💀', desc:'75% šance amplify damage', curse:true },
+  { name:'Aura Enchanted', icon:'✨', desc:'aura · +30% dmg minionům', aura:true, auraDmgMult:1.3 },
 ];
 
 // D2 champion jména se generují kombinací [Prefix] [Suffix] the [Appellation]

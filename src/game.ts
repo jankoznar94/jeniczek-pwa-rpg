@@ -2311,6 +2311,9 @@ export function initGame() {
 
     // Elitní monstrum = poslední fight v patře (fight 10/10), kromě boss patra
     const isElite = !isBoss && areaFight >= 9;
+    // Champion pack = fight 5/10 (3 champs), Elite pack = fight 10/10 (elita + 2 minioni)
+    const isChampionPack = !isBoss && !isElite && areaFight === 4;
+    const isPack = !isBoss && (isElite || isChampionPack);
 
     // Fixní staty monstra
     let monsterHp, monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance;
@@ -2418,6 +2421,58 @@ export function initGame() {
 
     const baseHp = isBoss ? Math.round(monsterHp * 4.0) : Math.round(monsterHp);
 
+    // ===== ELITE/CHAMPION PACK — více nepřátel v jednom souboji =====
+    // Champion pack = 3 champs (fight 5/10), Elite pack = elita + 2 minioni (fight 10/10).
+    // Combat logika (dmg, kouzla, resisty) běží na AKTIVNÍM členovi (mb.bossHp...),
+    // pack jen řídí přechody mezi členy.
+    let packMembers = null;
+    let packActiveIdx = 0;
+    if (isPack && !isBoss && floorMonsters[0]) {
+      const m0 = floorMonsters[0];
+      // Base staty normálního monstra (pro miniony/champs)
+      const normalHp = Math.round((m0.hp || 80) * diffMultOverall * 2.0 * getZoneMult(progress, state.difficulty));
+      const normalRes = Object.assign({}, m0.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0});
+      const mkMember = (over) => Object.assign({
+        hp: normalHp, maxHp: normalHp,
+        name: m0.name, face: m0.face, type: m0.type, attackType: m0.attackType,
+        defense: m0.defense || 0, resists: normalRes,
+        dmgMin: m0.dmgMin || 5, dmgMax: m0.dmgMax || 10, attackSpeed: m0.attackSpeed || 2000,
+        blockChance: m0.blockChance || 0, resource: m0.resource || 'mana', maxResource: m0.maxResource || 50,
+        spells: (m0.spells || []).slice(),
+        passivePoisonWeapon: m0.passivePoisonWeapon || false,
+        eliteAffix: null, eliteResistBonus: null, eliteDRMult: null, eliteName: null, isLeader: false,
+        dead: false
+      }, over);
+      if (isChampionPack) {
+        // 3 champs — mírně silnější než normální (D2 champion boost)
+        const champ = () => mkMember({
+          name: `${m0.name} Champion`,
+          hp: Math.round(normalHp * 1.6), maxHp: Math.round(normalHp * 1.6),
+          dmgMin: Math.round((m0.dmgMin || 5) * 1.3), dmgMax: Math.round((m0.dmgMax || 10) * 1.3),
+        });
+        packMembers = [champ(), champ(), champ()];
+      } else {
+        // Elita (leader, aktuální upravené staty) + 2 minioni
+        const eliteMem = mkMember({
+          hp: monsterHp, maxHp: monsterHp,
+          name: eliteName || m0.name,
+          dmgMin: monsterDmgMin, dmgMax: monsterDmgMax, attackSpeed: monsterAttackSpeed,
+          blockChance: monsterBlockChance, resource: monsterResource, maxResource: monsterMaxResource,
+          spells: monsterSpells, defense: m0.defense * (eliteDefenseMult || 1),
+          resists: monsterResists, eliteAffix, eliteResistBonus: eliteResists, eliteDRMult: monsterDRMult,
+          isLeader: true
+        });
+        // Aura Enchanted — minioni dostanou dmg bonus od leaderovy aury
+        const auraBoost = (eliteAffix && eliteAffix.aura && eliteAffix.auraDmgMult) ? eliteAffix.auraDmgMult : 1;
+        const slave = () => mkMember({
+          name: `${m0.name} Slave`,
+          dmgMin: auraBoost > 1 ? Math.round((m0.dmgMin || 5) * auraBoost) : (m0.dmgMin || 5),
+          dmgMax: auraBoost > 1 ? Math.round((m0.dmgMax || 10) * auraBoost) : (m0.dmgMax || 10),
+        });
+        packMembers = [eliteMem, slave(), slave()];
+      }
+    }
+
     // Zaznamenat setkání s monstry do bestiáře
     if (!isBoss) {
       state.encounteredMonsters = state.encounteredMonsters || [];
@@ -2510,6 +2565,10 @@ export function initGame() {
       _enemyCastAfterSwing: null,
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
+      // Pack (elita+minioni / champion pack)
+      packMembers: packMembers,
+      packActiveIdx: 0,
+      isChampionPack: isChampionPack,
     };
 
     showScreen('mapBattle');
@@ -2524,6 +2583,10 @@ export function initGame() {
     if (ring) ring.style.opacity = '1';
     // Inicializace resource monstra (mana/rage/energy)
     const mb = mapBattleState;
+    // Pack — sync aktivního člena (elita/champ) a vyrenderovat roster
+    if (mb.packMembers) {
+      packSyncActive(mb);
+    }
     if (mb.monsterResource === 'mana') {
       mb.maxEnemyMana = mb.monsterMaxResource || 50;
       mb.enemyMana = mb.maxEnemyMana;
@@ -2585,6 +2648,100 @@ export function initGame() {
       newFig.classList.add('monster-appear');
     }
     setTimeout(() => startAutoCombat(), 500);
+  }
+
+  // ===== PACK (elita+minioni / champion pack) =====
+  // Načte staty aktivního člena packu do mb (combet logika běží na mb.*).
+  function packSyncActive(mb) {
+    if (!mb.packMembers) return;
+    const mem = mb.packMembers[mb.packActiveIdx];
+    if (!mem) return;
+    mb.bossHp = mem.hp;
+    mb.maxBossHp = mem.maxHp;
+    mb.currentMonsterName = mem.name;
+    mb.monsterFace = mem.face;
+    mb.monsterType = mem.type;
+    mb.monsterAttackType = mem.attackType;
+    mb.monsterDefense = mem.defense;
+    mb.monsterResists = mem.resists;
+    mb.monsterDmgMin = mem.dmgMin;
+    mb.monsterDmgMax = mem.dmgMax;
+    mb.monsterAttackSpeed = mem.attackSpeed;
+    mb.monsterBlockChance = mem.blockChance;
+    mb.monsterResource = mem.resource;
+    mb.monsterMaxResource = mem.maxResource;
+    mb.monsterSpells = mem.spells;
+    mb.passivePoisonWeapon = mem.passivePoisonWeapon;
+    mb.isElite = !!mem.isLeader;
+    mb.eliteAffix = mem.eliteAffix;
+    mb.eliteResistBonus = mem.eliteResistBonus;
+    mb.eliteDRMult = mem.eliteDRMult;
+    mb.eliteName = mem.eliteName;
+    // Reset resource monstra
+    if (mem.resource === 'mana') { mb.maxEnemyMana = mem.maxResource; mb.enemyMana = mb.maxEnemyMana; }
+    else if (mem.resource === 'rage') { mb.maxEnemyMana = mem.maxResource; mb.enemyMana = 0; }
+    else { mb.maxEnemyMana = mem.maxResource; mb.enemyMana = mb.maxEnemyMana; }
+    // Reset all swing timers a buffů/debuffů nepřítele (nový target)
+    resetEnemyCombatState(mb);
+    renderPackRoster(mb);
+  }
+
+  // Resetuje enemy swing timery a buffy/debuffy na nepříteli (při výměně targetu).
+  function resetEnemyCombatState(mb) {
+    mb._enemySwingStart = 0; mb._enemySwingReady = false; mb._enemySwingPct = 0; mb._enemyFirstSwingDone = false;
+    mb._enemyCastAfterSwing = null; mb._enemyCasting = false; mb._enemyCastSpell = null; mb._enemyCastProcessed = false;
+    mb.enemyDot = 0; mb.enemyDotTicksLeft = 0; mb.enemyPoisonBaseDmg = 0;
+    mb._enemySlowPct = 0; mb._enemySlowTimer = 0; mb._enemyStunTimer = 0; mb._enemyStunned = false;
+    mb._improverStacks = 0; mb._thornShieldActive = false; mb._faerieFireActive = false;
+    mb._amplifyDmgActive = false; mb._battleShoutActive = false; mb._defensiveShoutActive = false;
+    mb._preventHealActive = false; mb._enemyCastAfterSwing = null;
+    _enemyBuffs = {};
+    _sessionDebuffs = {};
+    // Vizuální reset debuff ikon
+    const debuffOv = $('mbDebuffs');
+    if (debuffOv) debuffOv.innerHTML = '';
+  }
+
+  // Pokus o přepnutí na dalšího živého člena packu. Vrací true pokud se přepnulo.
+  function packTryAdvance(mb) {
+    if (!mb.packMembers) return false;
+    // 💥 Elita (leader) umírá — element nova (Fire/Cold Enchanted D2 death efekt)
+    const dying = mb.packMembers[mb.packActiveIdx];
+    if (dying && dying.isLeader && dying.eliteAffix && dying.eliteAffix.death) {
+      const arena = $('mbArena');
+      if (arena) {
+        const color = dying.eliteAffix.death === 'nova-fire' ? 'rgba(231,76,60,0.5)' : 'rgba(52,152,219,0.5)';
+        arena.style.transition = 'background-color 0.15s';
+        arena.style.backgroundColor = color;
+        setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 150);
+      }
+      spawnFloatingText(dying.eliteAffix.death === 'nova-fire' ? '🔥 Nova!' : '❄️ Nova!', 'right', dying.eliteAffix.death === 'nova-fire' ? '#e74c3c' : '#3498db', 40);
+      playTone(dying.eliteAffix.death === 'nova-fire' ? 110 : 220, 0.25, 'sawtooth', 0.12);
+    }
+    // Znamenat dead aktuální
+    if (dying) dying.dead = true;
+    // Najít dalšího živého
+    for (let i = 0; i < mb.packMembers.length; i++) {
+      if (!mb.packMembers[i].dead) {
+        mb.packActiveIdx = i;
+        packSyncActive(mb);
+        return true;
+      }
+    }
+    return false; // všichni mrtví → vyhráno
+  }
+
+  // Vyrenderuje mini-portréty packu nad arénou.
+  function renderPackRoster(mb) {
+    const el = document.getElementById('mbPackRoster');
+    if (!el) return;
+    if (!mb.packMembers) { el.innerHTML = ''; return; }
+    el.innerHTML = mb.packMembers.map((mem, i) => {
+      const face = mem.face.startsWith('<') ? mem.face
+        : `<img src="${mem.face}" alt="">`;
+      const cls = i === mb.packActiveIdx ? 'active' : (mem.dead ? 'dead' : '');
+      return `<div class="pack-roster-member ${cls}">${face}</div>`;
+    }).join('');
   }
 
   function getSwingTime(weaponId) {
@@ -8152,6 +8309,29 @@ export function initGame() {
     const locId = mb.locId;
     const totalZones = mb.loc.zones || 10;
 
+    // ===== PACK: smrt jednoho člena → přepnout na dalšího živého, neukončovat =====
+    if (won && !mb.isBoss && mb.packMembers) {
+      if (packTryAdvance(mb)) {
+        // Znovu spustit combat loop pro nového člena (reset timery už obstaral resetEnemyCombatState)
+        mb.ended = false;
+        mb._pendingKill = false;
+        document.body.classList.add('battle-active');
+        // Restartovat stamina/energy regen interval (cleanupTimers ho zrušil)
+        if (mb._staminaInterval) clearInterval(mb._staminaInterval);
+        mb._staminaInterval = setInterval(() => {
+          if (mb.ended) { clearInterval(mb._staminaInterval); mb._staminaInterval = null; return; }
+          if (mb.stamina < mb.maxStamina) mb.stamina = Math.min(mb.maxStamina, mb.stamina + 0.15);
+          if (mb.monsterResource === 'mana' && mb.enemyMana < mb.maxEnemyMana) mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.05);
+          if (mb.monsterResource === 'energy' && mb.enemyMana < mb.maxEnemyMana) mb.enemyMana = Math.min(mb.maxEnemyMana, mb.enemyMana + 0.15);
+          updateMapBattleUI();
+        }, 100);
+        updateMapBattleUI();
+        startAutoCombat();
+        return;
+      }
+      // Všichni mrtví → pokračuje se na normální výhru
+    }
+
     // Monster killed - regular enemy
     if (won && !mb.isBoss) {
       mapBattleState.ended = true;
@@ -8159,8 +8339,9 @@ export function initGame() {
       // Inkrementovat fight v rámci oblasti
       let af = (state.areaFightProgress[locId] || 0) + 1;
       state.areaFightProgress[locId] = af;
-      // 💥 Elita umírá — element nova (Fire/Cold Enchanted D2 death efekt)
-      if (mb.isElite && mb.eliteAffix && mb.eliteAffix.death) {
+      // 💥 Elita umírá — element nova (Fire/Cold Enchanted D2 death efekt).
+      // U packu (elita+minioni) nova už proběhla při smrti leadera v packTryAdvance.
+      if (mb.isElite && mb.eliteAffix && mb.eliteAffix.death && !mb.packMembers) {
         const arena = $('mbArena');
         if (arena) {
           const color = mb.eliteAffix.death === 'nova-fire' ? 'rgba(231,76,60,0.5)' : 'rgba(52,152,219,0.5)';
@@ -8185,7 +8366,9 @@ export function initGame() {
       const monsterGold = (1 + rand(0, 2)) * 5;
       const xpMod = getXpModifier(mb);
       // Base XP roste s levelem monstra (D2: XP = f(mLVL)); penalizace za rozdíl levelů.
-      const xpGain = Math.round(getMonsterLevel(mb, state.difficulty || 0) * 30 * xpMod);
+      // Pack (elita+2 minioni / 3 champs) — bonus XP za extra nepřátele
+      const packSize = mb.packMembers ? mb.packMembers.length : 1;
+      const xpGain = Math.round(getMonsterLevel(mb, state.difficulty || 0) * 30 * xpMod * packSize);
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
