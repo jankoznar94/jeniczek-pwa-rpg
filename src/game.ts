@@ -1859,7 +1859,6 @@ export function initGame() {
             <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
             ${badgeHtml}
           </div>
-          <div class="stop-label">${stop+1}</div>
         </div>`;
       }
       return html;
