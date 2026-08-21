@@ -7850,7 +7850,7 @@ export function initGame() {
   // Šablony pro názvy itemů podle typu a tieru
 
 
-  function generateLootItem(locId, floor, bossDrop) {
+  function generateLootItem(locId, floor, bossDrop, monsterLevel) {
     // Tier podle dungeonu: D1=1, D2=1-2, D3=1-3, D4=1-4, D5=1-5
     // Vyšší tier = vyšší šance (váha = tier)
     const dungeonMaxTier = locId + 1;
@@ -7864,7 +7864,9 @@ export function initGame() {
       if (r <= 0) { tier = t + 1; break; }
     }
     if (bossDrop) tier = Math.min(7, tier + rand(1, 2));
-    const monsterLevel = 5 + floor * 2 + (bossDrop ? 5 : 0);
+    // ilvl lootu = skutečný monster level (do capu 60) — endgame affixy tak reálně rostou.
+    // Fallback (pokud se monsterLevel nepředá): starý vzorec 5 + floor*2.
+    const mLvl = (monsterLevel != null && monsterLevel > 0) ? monsterLevel : (5 + floor * 2 + (bossDrop ? 5 : 0));
 
     // 0. Roll quality (fixní šance, nezávislé na levelu)
     let quality = rollQuality();
@@ -7929,7 +7931,7 @@ export function initGame() {
     }
 
     // 4. Vygenerovat affix item (pro magic/rare/normal)
-    const item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
+    const item = generateLootItemWithAffixes(baseItem, quality, mLvl);
     item.tier = tier;
     item.subtype = subtype;
     // Rarity odvodit z finálního item.quality (mohlo být degradováno na normal,
@@ -7956,7 +7958,7 @@ export function initGame() {
     return item;
   }
 
-  function rollLoot(locId, floor, bossDrop) {
+  function rollLoot(locId, floor, bossDrop, monsterLevel) {
     const h = state.hero;
     // 8% chance for town portal scroll (non-boss)
     if (!bossDrop && Math.random() < 0.08) {
@@ -8001,7 +8003,7 @@ export function initGame() {
     }
     if (bossDrop) {
       // Boss: zaručený item s vyšším tierem + goldy
-      const item = generateLootItem(locId, floor, true);
+      const item = generateLootItem(locId, floor, true, monsterLevel);
       if (!item) return { type:'gold', gold: 10 + floor * 3 };
       const gf = getGoldFind();
       const gold = Math.round((5 + floor * 3 + rand(0, 5)) * (1 + gf / 100));
@@ -8015,7 +8017,7 @@ export function initGame() {
       return { type:'gold', gold };
     } else {
       // Item reward
-      const item = generateLootItem(locId, floor);
+      const item = generateLootItem(locId, floor, false, monsterLevel);
       if (!item) return { type:'gold', gold: 3 + floor * 2 };
       return { type:'item', item };
     }
@@ -8060,7 +8062,7 @@ export function initGame() {
       const numLoot = 2 + rand(0, 1);
       state._floorLootDrops = state._floorLootDrops || [];
       for (let li = 0; li < numLoot; li++) {
-        const loot = rollLoot(locId, mb.progress, false);
+        const loot = rollLoot(locId, mb.progress, false, getMonsterLevel(mb, state.difficulty || 0));
         if (!loot) continue;
         state._floorLootDrops.push(loot);
         if (loot.type === 'item' || loot.type === 'boss') {
@@ -8270,7 +8272,7 @@ export function initGame() {
       const r = mb.loc.reward;
       if (r.gold) state.hero.gold = (state.hero.gold || 0) + r.gold;
       // Boss loot
-      const bossLoot = rollLoot(locId, mb.progress, true);
+      const bossLoot = rollLoot(locId, mb.progress, true, getMonsterLevel(mb, state.difficulty || 0));
       if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
         addToInventory(state.hero.inventory, bossLoot.item.id);
         state.hero.gold = (state.hero.gold || 0) + bossLoot.gold;
