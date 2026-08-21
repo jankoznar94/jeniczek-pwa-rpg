@@ -395,7 +395,7 @@ body.no-scroll { overflow: hidden; }
   stroke:#e0b260;
   stroke-width:5;
   opacity:1;
-  stroke-dasharray:60 42;
+  stroke-dasharray:46 40;
   animation:eliteZoneRotate 8s linear infinite;
 }
 @keyframes eliteZoneRotate {
