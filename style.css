@@ -2069,7 +2069,7 @@ body.no-scroll { overflow: hidden; }
 .wp-act-header {
   display:flex;align-items:center;gap:10px;
   background:#0a0a0a;border:1px solid;border-radius:8px;
-  padding:10px 14px;margin:6px 0 0;cursor:pointer;
+  padding:10px 0;margin:6px 0 0;cursor:pointer;
   transition:background 0.15s;
 }
 .wp-act-header:hover { background:#111; }
@@ -2079,7 +2079,7 @@ body.no-scroll { overflow: hidden; }
 .wp-act-header-arrow { font-size:12px;color:#888;flex-shrink:0; }
 .wp-act-body {
   display:flex;flex-direction:column;gap:4px;
-  padding:4px 0 4px 0;margin:0 0 2px;
+  padding:4px 0 4px 0;margin:0 0 6px;
 }
 
 /* ===== TRANSITION SCREEN ===== */
