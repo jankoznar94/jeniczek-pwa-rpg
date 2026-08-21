@@ -25,6 +25,16 @@ import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spa
 const STOP_NAMES = {
   0: ['Louka', 'Les', 'Zřícenina', 'Bažina', 'Lesní pahorky', 'Údolí', 'Vesnice lidojedů', 'Tajemná studna', 'Cesta k pevnosti', 'Pevnost lesního pána'],
 };
+const STOP_NAMES_EN = {
+  0: ['Meadow', 'Forest', 'Ruins', 'Swamp', 'Wooded Hills', 'Valley', 'Cannibal Village', 'Mystic Well', 'Road to the Fortress', 'Forest Lord\'s Fortress'],
+};
+
+// Pomocná funkce: název zastávky (česky nebo anglicky)
+function getStopName(actId, zoneId, en) {
+  const list = (en ? STOP_NAMES_EN : STOP_NAMES)[actId];
+  const idx = Math.min(Math.max(zoneId || 0, 0), 9);
+  return (list && list[idx]) || `Zastávka ${idx+1}`;
+}
 
 // Pomocná funkce: jakou zastávku právě hráč prochází v aktu (0 = louka, 9 = boss pevnost)
 function getStopImage(actId, zoneId) {
@@ -1944,10 +1954,11 @@ export function initGame() {
           for (let areaId = 1; areaId < 10; areaId++) {
             const areaNum = areaId + 1;
             const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
+            const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
             wpHtml += `<div class="waypoint-btn" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
               <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
               <div>
-                <div class="waypoint-btn-label">Area ${areaNum}</div>
+                <div class="waypoint-btn-label">${stopLabel}</div>
                 <div class="waypoint-btn-sub">${act.name} · ✔ Completed</div>
               </div>
             </div>`;
@@ -1959,10 +1970,11 @@ export function initGame() {
             const isCurrent = nextArea === areaId;
             const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
             const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
+            const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
             wpHtml += `<div class="${cls}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
               <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
               <div>
-                <div class="waypoint-btn-label">Area ${areaNum}</div>
+                <div class="waypoint-btn-label">${stopLabel}</div>
                 <div class="waypoint-btn-sub">${act.name}${isCurrent ? ' · Next' : ''}</div>
               </div>
             </div>`;
