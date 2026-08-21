@@ -8456,16 +8456,27 @@ export function initGame() {
       // Act 0 — ukázat obrázek aktuální zastávky (louka..pevnost)
       const curStopIdx = Math.min(Math.max(state.locationProgress[locId] || 0, 0), 9);
       const curStopName = (STOP_NAMES[locId] && STOP_NAMES[locId][curStopIdx]) || null;
-      $('resultIcon').innerHTML = (locId === 0 && !isWaypoint)
-        ? `<img class="result-icon-img stop-result" src="${getStopImage(0, curStopIdx)}" alt="Zastávka">`
-        : isWaypoint
-          ? '<img class="result-icon-img" src="assets/menu-icons/waypoint.png" alt="Waypoint">'
-          : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
-      $('resultTitle').textContent = isWaypoint ? 'Waypoint Reached!' : 'Victory!';
       const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
       const areaNum = (state.locationProgress[locId] || 0) + 1;
       const fightNum = (state.areaFightProgress[locId] || 0);
-      $('resultMsg').innerHTML = `<div style="text-align:center;color:#aaa;font-size:13px;margin-bottom:4px">${locName} · ${curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum} · Fight ${fightNum}/10</div>`;
+      const winTitle = isWaypoint ? 'Waypoint Reached!' : 'Victory!';
+      const winSub = isWaypoint ? locName : `${locName} · ${curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum} · Fight ${fightNum}/10`;
+      if (locId === 0 && !isWaypoint) {
+        // Obrázek zastávky s overlay textem (Victory!, název actu, zastávka, progress)
+        $('resultIcon').innerHTML = `<div class="stop-result-wrap">
+          <img class="result-icon-img stop-result" src="${getStopImage(0, curStopIdx)}" alt="Zastávka">
+          <div class="stop-result-overlay">
+            <div class="stop-result-title">${winTitle}</div>
+            <div class="stop-result-sub">${winSub}</div>
+          </div>
+        </div>`;
+      } else if (isWaypoint) {
+        $('resultIcon').innerHTML = '<div class="stop-result-wrap"><img class="result-icon-img stop-result-img" src="assets/menu-icons/waypoint.png" alt="Waypoint"><div class="stop-result-overlay"><div class="stop-result-title">' + winTitle + '</div><div class="stop-result-sub">' + winSub + '</div></div></div>';
+      } else {
+        $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
+      }
+      $('resultTitle').textContent = '';
+      $('resultMsg').innerHTML = '';
       let lootListHtml = '';
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
