@@ -21,6 +21,17 @@ import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
 import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, spawnMeleeStrike, preloadDungeonAssets } from './render/battle/battleScene';
 
+// Názvy zastávek Act 0 (Enchanted Forest) — vizuální cesta
+const STOP_NAMES = {
+  0: ['Louka', 'Les', 'Zřícenina', 'Bažina', 'Lesní pahorky', 'Údolí', 'Vesnice lidojedů', 'Tajemná studna', 'Cesta k pevnosti', 'Pevnost lesního pána'],
+};
+
+// Pomocná funkce: jakou zastávku právě hráč prochází v aktu (0 = louka, 9 = boss pevnost)
+function getStopImage(actId, zoneId) {
+  const idx = Math.min(Math.max(zoneId || 0, 0), 9);
+  return `assets/stops/stop_act${actId}_${idx}.png`;
+}
+
 export function initGame() {
   'use strict';
   const $ = id => document.getElementById(id);
@@ -1825,6 +1836,34 @@ export function initGame() {
 
   function buildDotPath(actId, curArea, curFight, totalZones, theme) {
     let html = '';
+    // Act 0 (Enchanted Forest) — vizuální zastávky s obrázky místo 100 puntíků
+    if (actId === 0) {
+      const bossDefeated = state.bossesDefeated && state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
+      for (let stop = 0; stop < totalZones; stop++) {
+        const done = bossDefeated || stop < curArea;
+        const current = !bossDefeated && stop === curArea;
+        const locked = !bossDefeated && stop > curArea;
+        const unlocked = !locked && !done;
+        const fightProgress = current ? Math.min(curFight, 10) : 10;
+        const badgeHtml = done
+          ? '<div class="stop-badge stop-badge-done">✓</div>'
+          : current
+            ? `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`
+            : locked
+              ? '<div class="stop-badge stop-badge-locked">🔒</div>'
+              : `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`;
+        const cls = done ? 'stop-done' : current ? 'stop-current' : locked ? 'stop-locked' : 'stop-unlocked';
+        const label = STOP_NAMES[actId] ? STOP_NAMES[actId][stop] : `Zastávka ${stop+1}`;
+        html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
+          <div class="stop-card">
+            <img src="assets/stops/stop_act${actId}_${stop}.png" class="stop-img" alt="${label}">
+            ${badgeHtml}
+          </div>
+          <div class="stop-label">${stop+1}</div>
+        </div>`;
+      }
+      return html;
+    }
     for (let area = 0; area < totalZones; area++) {
       const areaDone = area < curArea;
       const areaCurrent = area === curArea;
@@ -1891,8 +1930,9 @@ export function initGame() {
       const isExpanded = state._expandedWaypointAct === actId;
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
       // Hlavička actu — kliknutím toggle rozbalení
+      const actHeaderImg = actId === 0 ? 'assets/stops/stop_act0_0.png' : `assets/waypoints/waypoint_act${actId}.png`;
       wpHtml += `<div class="wp-act-header" style="border-color:${theme.border}" onclick="game.toggleWaypointAct(${actId})">
-        <img src="assets/waypoints/waypoint_act${actId}.png" class="wp-act-header-icon">
+        <img src="${actHeaderImg}" class="wp-act-header-icon">
         <span class="wp-act-header-label">${act.name}</span>
         <span class="wp-act-header-arrow">${isExpanded ? '▼' : '▶'}</span>
       </div>`;
@@ -1901,8 +1941,9 @@ export function initGame() {
         if (completed) {
           for (let areaId = 1; areaId < 10; areaId++) {
             const areaNum = areaId + 1;
+            const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
             wpHtml += `<div class="waypoint-btn" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
-              <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+              <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
               <div>
                 <div class="waypoint-btn-label">Area ${areaNum}</div>
                 <div class="waypoint-btn-sub">${act.name} · ✔ Completed</div>
@@ -1915,8 +1956,9 @@ export function initGame() {
             const nextArea = (state.locationProgress[actId] || 0) + 1;
             const isCurrent = nextArea === areaId;
             const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
+            const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
             wpHtml += `<div class="${cls}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
-              <div class="waypoint-btn-icon"><img src="assets/waypoints/waypoint_act${actId}.png"></div>
+              <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
               <div>
                 <div class="waypoint-btn-label">Area ${areaNum}</div>
                 <div class="waypoint-btn-sub">${act.name}${isCurrent ? ' · Next' : ''}</div>
@@ -1965,12 +2007,12 @@ export function initGame() {
     renderTown();
   }
 
-  function showTransition(type, actId, callback) {
+  function showTransition(type, actId, callback, zoneId) {
     const screen = $('transitionScreen');
     const img = $('transitionImage');
     const label = $('transitionLabel');
     if (type === 'waypoint') {
-      img.src = `assets/waypoints/waypoint_act${actId}.png`;
+      img.src = actId === 0 ? `assets/stops/stop_act0_${Math.min(zoneId || 0, 9)}.png` : `assets/waypoints/waypoint_act${actId}.png`;
       label.textContent = 'Waypoint';
       // Glow barva podle actu
       const theme = DUNGEON_THEMES[ACTS[actId]?.theme] || DUNGEON_THEMES[0];
@@ -2084,7 +2126,7 @@ export function initGame() {
       state.areaFightProgress[actId] = 0;
       state._waypointFloor = false;
       startLocation(actId);
-    });
+    }, areaId);
   }
 
   // ===== Waypoint / Town portal conflict modal =====
@@ -3579,13 +3621,20 @@ export function initGame() {
     }
   }
 
+  // Výchozí počet potion slotů bez pásku (nejnižší pásek má 8)
+  const DEFAULT_POTION_SLOTS = 4;
+  function getTotalPotionSlots() {
+    const belt = ITEM_MAP[state.hero.equip.belt];
+    return belt ? ((belt.beltRows || 0) * 4) : DEFAULT_POTION_SLOTS;
+  }
+
   function renderPotionButtons() {
     const container = $('mbPotionButtons');
     if (!container) return;
     const h = state.hero;
-    const belt = ITEM_MAP[h.equip.belt];
-    if (!belt) { container.innerHTML = ''; return; }
     const bpSlots = h.equip.beltPotionSlots || [];
+    while (bpSlots.length < getTotalPotionSlots()) bpSlots.push(null);
+    h.equip.beltPotionSlots = bpSlots;
     // Spočítat kusy pro každý konkrétní potion id přítomný v opasku
     const potCounts = {};
     bpSlots.forEach(potId => {
@@ -3613,23 +3662,22 @@ export function initGame() {
 
   function addPotionToBelt(potionId) {
     const h = state.hero;
-    const belt = ITEM_MAP[h.equip.belt];
-    if (!belt) return false;
     const pot = ITEM_MAP[potionId];
     if (!pot || pot.type !== 'consumable') return false;
-    const beltRows = belt.beltRows || 0;
-    if (beltRows <= 0) return false;
+    const totalSlots = getTotalPotionSlots();
+    if (totalSlots <= 0) return false;
     const bpSlots = h.equip.beltPotionSlots || [];
-    const totalSlots = beltRows * 4;
     while (bpSlots.length < totalSlots) bpSlots.push(null);
     const subtype = pot.subtype;
     // Column-major: projít sloupce 0-3, pro každý řádky 0-beltRows-1
+    const beltRows = Math.ceil(totalSlots / 4);
     for (let col = 0; col < 4; col++) {
       // Zkontrolovat kompatibilitu sloupce
       let columnType = null;
       let hasEmpty = false;
       for (let row = 0; row < beltRows; row++) {
         const idx = col * beltRows + row;
+        if (idx >= totalSlots) continue;
         const pid = bpSlots[idx];
         if (!pid) { hasEmpty = true; continue; }
         const p = ITEM_MAP[pid];
@@ -8044,14 +8092,19 @@ export function initGame() {
       state._floorLootDrops = [];
       const isWaypoint = state._waypointFloor === true;
       $('resultScreen').classList.remove('centered');
-      $('resultIcon').innerHTML = isWaypoint
-        ? '<img class="result-icon-img" src="assets/menu-icons/waypoint.png" alt="Waypoint">'
-        : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
+      // Act 0 — ukázat obrázek aktuální zastávky (louka..pevnost)
+      const curStopIdx = Math.min(Math.max(state.locationProgress[locId] || 0, 0), 9);
+      const curStopName = (STOP_NAMES[locId] && STOP_NAMES[locId][curStopIdx]) || null;
+      $('resultIcon').innerHTML = (locId === 0 && !isWaypoint)
+        ? `<img class="result-icon-img stop-result" src="${getStopImage(0, curStopIdx)}" alt="Zastávka">`
+        : isWaypoint
+          ? '<img class="result-icon-img" src="assets/menu-icons/waypoint.png" alt="Waypoint">'
+          : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
       $('resultTitle').textContent = isWaypoint ? 'Waypoint Reached!' : 'Victory!';
       const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
       const areaNum = (state.locationProgress[locId] || 0) + 1;
       const fightNum = (state.areaFightProgress[locId] || 0);
-      $('resultMsg').innerHTML = `<div style="text-align:center;color:#aaa;font-size:13px;margin-bottom:4px">${locName} · Area ${areaNum} · Fight ${fightNum}/10</div>`;
+      $('resultMsg').innerHTML = `<div style="text-align:center;color:#aaa;font-size:13px;margin-bottom:4px">${locName} · ${curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum} · Fight ${fightNum}/10</div>`;
       let lootListHtml = '';
       if (lootItems.length > 0) {
         lootItems.forEach(item => {
@@ -8212,9 +8265,13 @@ export function initGame() {
       }
       sfxBossDefeat();
       $('resultScreen').classList.remove('centered');
-      $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítěz">';
+      $('resultIcon').innerHTML = locId === 0
+        ? `<img class="result-icon-img stop-result" src="assets/stops/stop_act0_9.png" alt="Pevnost lesního pána">`
+        : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítěz">';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
-      $('resultMsg').innerHTML = '';
+      $('resultMsg').innerHTML = locId === 0
+        ? '<div style="text-align:center;color:#aaa;font-size:13px;margin-bottom:4px">Pevnost lesního pána · Boss</div>'
+        : '';
       let lootListHtml = '';
       if (bossLoot && bossLoot.type === 'boss' && bossLoot.item) {
         const rr = RARITY[bossLoot.item.rarity] || RARITY.common;
@@ -9954,11 +10011,10 @@ export function initGame() {
         }
       }
     }
-    // Potion sloty podle beltRows (každý řádek = 4 sloty)
+    // Potion sloty podle beltRows (každý řádek = 4 sloty); bez pásku výchozích 4
     const potionSlots = $('invPotionSlots');
     if (potionSlots) {
-      const beltRows = belt ? (belt.beltRows || 0) : 0;
-      const totalSlots = beltRows * 4;
+      const totalSlots = getTotalPotionSlots();
       const bpSlots = h.equip.beltPotionSlots || [];
       // Zajistit, že bpSlots má správnou délku
       while (bpSlots.length < totalSlots) bpSlots.push(null);
