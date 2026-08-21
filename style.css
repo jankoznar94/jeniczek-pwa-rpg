@@ -386,6 +386,19 @@ body.no-scroll { overflow: hidden; }
 #mbArena .monster-ring-frame img {
   width:100%;height:100%;object-fit:contain;border-radius:50%;
 }
+#mbArena .monster-ring-frame.elite {
+  /* Elitní nepřítel — jemné pulzující orámování, teplé tmavé desaturované tóny. */
+  border:2px solid rgba(212,170,94,0.55);
+  box-shadow:inset 0 0 18px rgba(212,170,94,0.18);
+  animation:elitePulse 2.4s ease-in-out infinite;
+}
+#mbArena .monster-ring-frame.elite img {
+  border-radius:50%;
+}
+@keyframes elitePulse {
+  0%,100% { border-color:rgba(212,170,94,0.35); box-shadow:inset 0 0 14px rgba(212,170,94,0.12); }
+  50%     { border-color:rgba(212,170,94,0.75); box-shadow:inset 0 0 26px rgba(212,170,94,0.30); }
+}
 .boss-hint { text-align:center;font-size:11px;color:#888888;margin:2px 0;min-height:0; }
 .arena-surrender-btn {
   position:absolute; top:4px; right:4px; z-index:50;
