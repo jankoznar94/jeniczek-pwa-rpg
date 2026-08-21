@@ -697,7 +697,10 @@ export function initGame() {
 
 
   function generateLootItemWithAffixes(baseItem, quality, monsterLevel) {
-    const ilvl = monsterLevel;
+    // Affixy se filtrují podle HRAČOVA levelu (ne monsterLevel), aby se hráč nikdy
+    // nedostal k itemu, na který nemá level. lvlReq pak nikdy nepřesáhne hráčův level.
+    const heroLevel = (state.hero && state.hero.level) || monsterLevel;
+    const ilvl = Math.min(monsterLevel, heroLevel);
 
     // Filtrovat affixy: minIlvl <= ilvl, kompatibilní typ
     const candidates = AFFIXES.filter(a =>
@@ -10197,8 +10200,6 @@ export function initGame() {
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    // Equip požadavek — hrdina musí mít dostatečný level
-    if ((item.lvlReq || 0) > (h.level || 1)) return;
     // Zjistit správný slot podle typu itemu
     const typeToSlot = { weapon:'weapon', armor:'armor', helmet:'helmet', shield:'shield', ring:'ring1', belt:'belt', amulet:'amulet', gloves:'gloves', boots:'boots' };
     let correctSlot = typeToSlot[item.type];
@@ -10254,11 +10255,6 @@ export function initGame() {
     if (!itemId) return;
     const item = ITEM_MAP[itemId];
     if (!item) return;
-    // Equip požadavek — hrdina musí mít dostatečný level
-    // Pozor: item je STÁLE v batohu (removeFromInventory probíhá níže) — jen se vrátit, nic nepřidávat
-    if ((item.lvlReq || 0) > (h.level || 1)) {
-      return;
-    }
     // Už nasazený ve svém slotu — neduplikovat
     if (item.type === 'weapon' && h.equip.weapon === itemId) return;
     if (item.type === 'ring' && (h.equip.ring1 === itemId || h.equip.ring2 === itemId)) return;
