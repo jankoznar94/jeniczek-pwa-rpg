@@ -58,7 +58,7 @@ export function buildGemStatsHtml(gemType: string, gemQuality: string): string {
     lines.push('<div style="color:#888;font-size:10px;margin-top:2px">Armor/Helm:</div>');
     Object.keys(qData.armor).forEach(stat => {
       const val = qData.armor[stat];
-      const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Hit Rating' : stat === 'magicFind' ? 'MF' : stat === 'dex' ? 'Dexterity' : stat;
+      const label = stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'attackRating' ? 'Attack Rating' : stat === 'magicFind' ? 'MF' : stat === 'dex' ? 'Dexterity' : stat;
       lines.push(`<div style="color:#aaa;font-size:10px">  ${label}: ${val}</div>`);
     });
   }

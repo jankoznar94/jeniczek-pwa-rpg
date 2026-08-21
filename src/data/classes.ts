@@ -80,11 +80,11 @@
         combat: { name:'Combat', icon:'⚔️',
           tiers: [
             { choices: [
-              { k:'oneHandSpec', name:'One-Hand Specialization', icon:'🗡️', iconImg:'oneHandSpec.png', maxLv:5, desc:lv=>`+${10*lv}% 1H dmg, +${10*lv}% hit rating, +${lv}% crit; off-hand dmg ${50+10*lv}%` },
-              { k:'twoHandSpec', name:'Two-Hand Specialization', icon:'🪓', iconImg:'twoHandSpec.png', maxLv:5, desc:lv=>`+${10*lv}% 2H dmg, +${10*lv}% hit rating, +${lv}% crit` },
+              { k:'oneHandSpec', name:'One-Hand Specialization', icon:'🗡️', iconImg:'oneHandSpec.png', maxLv:5, desc:lv=>`+${10*lv}% 1H dmg, +${10*lv}% attack rating, +${lv}% crit; off-hand dmg ${50+10*lv}%` },
+              { k:'twoHandSpec', name:'Two-Hand Specialization', icon:'🪓', iconImg:'twoHandSpec.png', maxLv:5, desc:lv=>`+${10*lv}% 2H dmg, +${10*lv}% attack rating, +${lv}% crit` },
             ]},
             { choices: [
-              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% hit rating` },
+              { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% attack rating` },
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, requires:'barbarian_twoHandSpec', requiresLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
             ]}
           ]

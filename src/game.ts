@@ -1067,7 +1067,6 @@ export function initGame() {
       addRow('Damage', `<span style="color:${dmgColor}">${dmgMin}-${dmgMax}</span> (${handLabel}) [${dps} DPS]`);
       addRow('Speed', `${swingSec.toFixed(2)}s per attack (${(1/swingSec).toFixed(2)}/s)`);
       if (item.critChance) addRow('Crit', `${item.critChance}% (×2.0)`);
-      if (item.attackRating) addModRow('Hit Rating', `${item.attackRating}${affixRange('attackRating')}`);
     }
     // Armor/helmet
     else if (item.type === 'armor' || item.type === 'helmet') {
@@ -1117,7 +1116,7 @@ export function initGame() {
         });
         rows.push('<div class="stat-row" style="color:#888;font-size:11px;font-weight:bold">Armor/Helm</div>');
         Object.entries(qData.armor || {}).forEach(([k,v]) => {
-          const label = k === 'bonusHp' ? '+HP' : k === 'bonusMana' ? '+Mana' : k === 'attackRating' ? 'Hit Rating' : k === 'magicFind' ? 'MF' : k;
+          const label = k === 'bonusHp' ? '+HP' : k === 'bonusMana' ? '+Mana' : k === 'attackRating' ? 'Attack Rating' : k === 'magicFind' ? 'MF' : k;
           rows.push(`<div class="stat-row"><span class="stat-label">${label}</span><span class="stat-value">${v}</span></div>`);
         });
         if (qData.shield) {
@@ -1137,7 +1136,7 @@ export function initGame() {
     if (item.lightningDmg) addModRow('Lightning Dmg', `+${fmtDmg(item.lightningDmg)}${affixRange('lightningDmg')}`);
     if (item.lifesteal) addModRow('Life Steal', `+${item.lifesteal}%${affixRange('lifesteal')}`);
     if (item.manaSteal) addModRow('Mana Steal', `+${item.manaSteal}%${affixRange('manaSteal')}`);
-    if (item.attackRating) addModRow('Hit Rating', `+${item.attackRating}${affixRange('attackRating')}`);
+    if (item.attackRating) addModRow('Attack Rating', `+${item.attackRating}${affixRange('attackRating')}`);
     if (item.skillDmg) addModRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
     if (item.manaRegen) addModRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
     if (item.bonusMana) addModRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
@@ -7947,12 +7946,10 @@ export function initGame() {
     item.icon = type === 'weapon' ? LOOT_ICONS['weapon_' + subtype] : LOOT_ICONS[type];
     item.cost = 10 + tier * 20 + (item.affixes || []).length * 15;
 
-    // 5. HitRating a ExpertiseRating podle rarity
-    // ⚠️ Attack rating už přichází z affixu "Hit Rating" — přidat znovu jen pokud
-    //    ho item nemá, aby nedocházelo ke zdvojení hodnoty.
+    // 5. ExpertiseRating podle rarity
+    // ⚠️ Attack Rating (AR) pochází JEN z affixů (D2: Keen/Sharp/Fine...), viz affixes.ts.
+    //    Žádná pseudo-náhodná generace AR na item — v D2 AR dává pouze affix.
     if (item.rarity !== 'common') {
-      const hitChance = item.rarity === 'magic' ? 0.3 : 0.6;
-      if (Math.random() < hitChance && !item.attackRating) item.attackRating = 1 + rand(0, Math.ceil(tier * 0.5));
       const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
       if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil(tier * 0.4));
     }
@@ -8453,7 +8450,7 @@ export function initGame() {
     const statLabels = {
       enhancedDmg:'Enhanced Damage', enhancedDefense:'Enhanced Defense', ias:'Increased Attack Speed',
       fireDmg:'Fire Dmg', coldDmg:'Cold Dmg', lightningDmg:'Lightning Dmg', poisonDmg:'Poison Dmg', poisonDur:'Poison Duration',
-      lifesteal:'Life Steal', manaSteal:'Mana Steal', attackRating:'Hit Rating', critChance:'Crit Chance',
+      lifesteal:'Life Steal', manaSteal:'Mana Steal', attackRating:'Attack Rating', critChance:'Crit Chance',
       skillDmg:'Skill Dmg', manaRegen:'Mana Regen', bonusHp:'+HP', bonusMana:'+Mana',
       str:'Strength', vit:'Vitality', int:'Intellect', dex:'Dexterity',
       magicFind:'Magic Find', goldFind:'Gold Find', allSkills:'All Skills', classSkills:'Class Skills',
@@ -9616,12 +9613,8 @@ export function initGame() {
       item.rarity = item.quality === 'normal' ? 'common' : item.quality === 'magic' ? 'magic' : 'rare';
       item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
       item.cost = price;
-      // HitRating a ExpertiseRating
-      // ⚠️ Attack rating už přichází z affixu "Hit Rating" — přidat znovu jen pokud
-      //    ho item nemá, aby nedocházelo ke zdvojení hodnoty.
+      // Attack Rating (AR) pochází JEN z affixů — žádná pseudo-náhodná generace (D2).
       if (item.rarity !== 'common') {
-        const hitChance = item.rarity === 'magic' ? 0.3 : 0.6;
-        if (Math.random() < hitChance && !item.attackRating) item.attackRating = 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.5));
         const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
         if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.4));
       }
