@@ -1361,6 +1361,9 @@ body.no-scroll { overflow: hidden; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
 .result-icon-img { width:auto;height:auto;max-width:60vw;max-height:12vh;object-fit:contain;display:block; }
 .result-icon-img.large { max-width:90vw;max-height:50vh; }
+/* Obrázek zastávky na vítězné stránce — větší, 20px od horní a bočních hran */
+.result-icon-img.stop-result { max-width:calc(100vw - 40px); max-height:calc(100vh - 160px); }
+.result-top:has(.stop-result) { justify-content:flex-start; padding-top:20px; }
 .result-screen.centered,
 #resultScreen.centered .result-screen {
   justify-content:center;
