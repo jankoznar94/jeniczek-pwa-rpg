@@ -147,9 +147,11 @@ export const MONSTER_DB = [
 ];
 
 export const DIFFICULTIES = [
-  { id:'normal', name:'Normal', monsterLvMin:1, monsterLvMax:10, itemTierMin:1, itemTierMax:3, mult:1.0, resistMult:1.0 },
-  { id:'nightmare', name:'Nightmare', monsterLvMin:10, monsterLvMax:20, itemTierMin:3, itemTierMax:5, mult:1.8, resistMult:1.5 },
-  { id:'hell', name:'Hell', monsterLvMin:20, monsterLvMax:30, itemTierMin:5, itemTierMax:7, mult:3.0, resistMult:2.0 },
+  // monsterLvMin/Max = celkový rozsah levelů monster pro danou obtížnost (plynulý přes 5 actů).
+  // actLevels = rozsah [min,max] pro každý z 5 actů (postupně rostoucí, navazují přes obtížnosti).
+  { id:'normal', name:'Normal', monsterLvMin:1, monsterLvMax:15, actLevels:[[1,3],[4,6],[7,9],[10,12],[13,15]], itemTierMin:1, itemTierMax:3, mult:1.0, resistMult:1.0 },
+  { id:'nightmare', name:'Nightmare', monsterLvMin:16, monsterLvMax:30, actLevels:[[16,18],[19,21],[22,24],[25,27],[28,30]], itemTierMin:3, itemTierMax:5, mult:1.8, resistMult:1.5 },
+  { id:'hell', name:'Hell', monsterLvMin:31, monsterLvMax:60, actLevels:[[31,36],[37,42],[43,48],[49,54],[55,60]], itemTierMin:5, itemTierMax:7, mult:3.0, resistMult:2.0 },
 ];
 
 export const ELITE_AFFIXES = [

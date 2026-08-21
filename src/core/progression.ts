@@ -1,6 +1,7 @@
 // src/core/progression.ts — čisté výpočty progrese a obtížnosti.
 // Extrahováno z src/game.ts (Fáze 2). Žádné DOM, žádný stav — jen parametry.
 import { DIRECTIONS } from '../data/dungeons';
+import { DIFFICULTIES } from '../data/monsters';
 import { rand } from './utils';
 
 /** Násobitel obtížnosti podle zóny a obtížnosti (Normal/Nightmare/Hell). */
@@ -14,14 +15,28 @@ export function getZoneMult(progress: number, difficulty: number): number {
   return cfg.base + (progress || 0) * cfg.step;
 }
 
-/** Level monstra — lineárně od minLevel do maxLevel podle progresu v zóně. */
-export function getMonsterLevel(mb: any): number {
+/**
+ * Level monstra — plynule roste s progresem v zóně a NAPŘÍČ obtížnostmi.
+ * Rozsahy per-act definuje DIFFICULTIES[difficulty].actLevels (navazují přes
+ * Normal → Nightmare → Hell až k capu hráče 60). Pokud obtížnost nemá actLevels,
+ * spadne zpět na loc.minLevel/maxLevel (zpětná kompatibilita).
+ */
+export function getMonsterLevel(mb: any, difficulty = 0): number {
   const loc = mb.loc;
-  if (!loc || loc.minLevel === undefined) return 1;
+  if (!loc) return 1;
+  const diffCfg = DIFFICULTIES[difficulty];
+  const actLevels = diffCfg && diffCfg.actLevels;
+  let minLevel = loc.minLevel;
+  let maxLevel = loc.maxLevel;
+  if (actLevels) {
+    const actIdx = typeof loc.id === 'number' ? loc.id : 0;
+    const range = actLevels[actIdx];
+    if (range) { minLevel = range[0]; maxLevel = range[1]; }
+  }
   const totalZones = loc.zones || 10;
   const zonePct = totalZones > 0 ? (mb.progress || 0) / totalZones : 0;
-  const range = loc.maxLevel - loc.minLevel;
-  return loc.minLevel + Math.round(range * zonePct);
+  const range = maxLevel - minLevel;
+  return minLevel + Math.round(range * zonePct);
 }
 
 /** Čas útoku nepřítele (fixní attackSpeed + zpomalení z ledových kouzel). */
@@ -90,7 +105,24 @@ export function getRarity(bossDrop: boolean): string {
   }
 }
 
-/** Vygeneruje útok podle šancí dungeonu (typ, směr, okno). */
+/**
+ * D2 XP penalizace za rozdíl levelů hráče (cLvl) vs monstra (mLvl).
+ * Tier 1 (cLvl < 25): monstra ±5 levelů dávají 100 %, mimo ně prudký pokles.
+ * Tier 2 (cLvl 25-69): monstrum NAD hráčem = XP × cLvl/mLvl; pod hráčem −5 prudký pokles.
+ * Tier 3 (>69): globální diminishing (u capu 60 se neuplatní; ponecháno pro úplnost).
+ */
+export function getXpMultiplier(cLvl: number, mLvl: number): number {
+  const diff = mLvl - cLvl; // kladné = monstrum vyšší level
+  const belowX = { 5:256, 6:207, 7:159, 8:110, 9:61, 10:13 };   // monstrum pod hráčem
+  const aboveX = { 5:256, 6:174, 7:92, 8:38, 9:5 };              // monstrum nad hráčem (tier1)
+  const below = (d: number) => { d = Math.abs(d); if (d <= 5) return 1; return (belowX[d] ?? 13) / 256; };
+  const above = (d: number) => { if (d <= 5) return 1; return (aboveX[d] ?? 5) / 256; };
+  if (cLvl < 25) return diff >= 0 ? above(diff) : below(diff);
+  if (cLvl <= 69) return diff > 0 ? Math.max(0.05, cLvl / mLvl) : below(diff);
+  // Tier 3 — cLvl 70+: x klesá od 1024 (100 %) k 5/1024 u 99
+  const x = Math.max(5, 1024 - (cLvl - 69) * 48);
+  return x / 1024;
+}
 export function generateAttack(chances: any, prevType: string, locId: number, floor: number): any {
   const randTotal = chances.grey + chances.yellow + chances.blue + chances.green + chances.inverted + (chances.rapid||0) + (chances.truth||0) + (chances.lie||0) + (chances.freeze||0);
   const randNum = Math.random() * randTotal;

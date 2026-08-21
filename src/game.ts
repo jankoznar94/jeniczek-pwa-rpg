@@ -4,7 +4,7 @@
 import { rand, shuffle, clamp, hexToRgb } from './core/utils';
 import { getWeaponElementColor, getWeaponTotalDmgMin, getWeaponTotalDmgMax, getWeaponDmg } from './core/weapon';
 import { removeFromInventory, getStackCount, getQualityColor, pickWeighted, rollStat, rollSockets, getItemSocketName } from './core/loot';
-import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity, generateAttack } from './core/progression';
+import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplier, getDungeonAttackChances, getAttackHint, getRarity, generateAttack, getXpMultiplier } from './core/progression';
 import { applyGemStats, buildGemStatsHtml } from './core/gems';
 import { getMonsterFace, getMonsterName } from './core/monsters';
 import { getDungeonResistIcons } from './core/dungeons';
@@ -1247,13 +1247,13 @@ export function initGame() {
   // ===== LEVEL / HIT / DODGE / XP HELPERS =====
 
   function getLevelDiff(mb) {
-    const monsterLv = getMonsterLevel(mb);
+    const monsterLv = getMonsterLevel(mb, state.difficulty || 0);
     return (state.hero.level || 1) - monsterLv;
   }
 
   function getPlayerAttackTable(mb, arMult = 1) {
     // D2 formule: Chance to Hit = 200% × AR / (AR + DR) × Alvl / (Alvl + Dlvl)
-    const monsterLv = getMonsterLevel(mb);
+    const monsterLv = getMonsterLevel(mb, state.difficulty || 0);
     const heroLv = state.hero.level || 1;
 
     // Attack Rating hráče — podle primárního atributu classy
@@ -1323,16 +1323,10 @@ export function initGame() {
   }
 
   function getXpModifier(mb) {
-    const diff = getLevelDiff(mb);
-    // diff > 0 = hráč je vyšší level
-    // diff >= 5: 0 XP (moc slabé)
-    if (diff >= 5) return 0;
-    // diff 1-4: -20% za každý level
-    if (diff > 0) return Math.max(0, 1 - diff * 0.2);
-    // diff < 0 = hráč je nižší level (silnější monstra)
-    // +10% za každý level, max +50%
-    if (diff < 0) return Math.min(1.5, 1 + Math.abs(diff) * 0.1);
-    return 1.0;
+    // D2 XP penalizace za rozdíl levelů hráče vs monstra (getXpMultiplier).
+    // Používá se jako násobitel pro bossy a consolation XP.
+    const monsterLv = getMonsterLevel(mb, state.difficulty || 0);
+    return getXpMultiplier(state.hero.level || 1, monsterLv);
   }
 
   // ===== STATE =====
@@ -8053,7 +8047,8 @@ export function initGame() {
       const p = state.locationProgress[locId] || 0;
       const monsterGold = (1 + rand(0, 2)) * 5;
       const xpMod = getXpModifier(mb);
-      const xpGain = Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * xpMod);
+      // Base XP roste s levelem monstra (D2: XP = f(mLVL)); penalizace za rozdíl levelů.
+      const xpGain = Math.round(getMonsterLevel(mb, state.difficulty || 0) * 5 * xpMod);
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
@@ -8235,7 +8230,8 @@ export function initGame() {
     if (!won) {
       // Death — return to town, lose act progress (keep waypoints)
       state.deaths = (state.deaths || 0) + 1;
-      const consXp = Math.max(3, Math.round((mb.loc.xpReward + mb.progress * 2) * 3 * 0.2));
+      // Konsolační XP za prohru — odvozené od levelu monstra (20 %).
+      const consXp = Math.max(3, Math.round(getMonsterLevel(mb, state.difficulty || 0) * 5 * 0.2));
       const consGold = 1 + rand(0, 2);
       state.hero.xp = (state.hero.xp || 0) + consXp;
       state.hero.gold = (state.hero.gold || 0) + consGold;
@@ -8266,7 +8262,8 @@ export function initGame() {
       state._playerDotTicksLeft = mb.playerDotTicksLeft || 0;
       state.bossesDefeated[state.difficulty] = state.bossesDefeated[state.difficulty] || [false,false,false,false,false];
       state.bossesDefeated[state.difficulty][locId] = true;
-      state.hero.xp = (state.hero.xp || 0) + Math.round((mb.loc.bossXp + mb.progress * 6) * getXpModifier(mb));
+      // Boss XP roste s levelem monstra (D2: bossové dávají vyšší násobek XP).
+      state.hero.xp = (state.hero.xp || 0) + Math.round(getMonsterLevel(mb, state.difficulty || 0) * 25 * getXpModifier(mb));
       state.locationProgress[locId] = 0;
       state.areaFightProgress[locId] = 0;
       applyLevelUp();
@@ -8817,6 +8814,7 @@ export function initGame() {
     let safety = 0;
     while (true) {
       if (safety++ > 100) break;
+      if (h.level >= 60) { h.xp = 0; break; } // cap hráče na lvl 60
       // Level 1->2: 40 XP, 2->3: 80 XP, pak standard 80/level
       const xpNeeded = h.level <= 2 ? h.level * 40 : h.level * 80;
       if (h.xp < xpNeeded) break;
