@@ -2583,7 +2583,9 @@ export function initGame() {
     if (ring) ring.style.opacity = '1';
     // Inicializace resource monstra (mana/rage/energy)
     const mb = mapBattleState;
-    // Pack — sync aktivního člena (elita/champ) a vyrenderovat roster
+    // Pack — sync aktivního člena (elita/champ) a vyrenderovat roster;
+    // jinak roster vyčistit (nový boj bez packu)
+    renderPackRoster(mb);
     if (mb.packMembers) {
       packSyncActive(mb);
     }
@@ -4276,40 +4278,35 @@ export function initGame() {
   function renderBuffs() {
     const container = document.getElementById('mbBuffs');
     if (!container) return;
+    // Jedna sloupec: prvně buffy, pak debuffy (řazeno shora)
+    let html = '';
     const buffKeys = Object.keys(_sessionBuffs);
-    if (buffKeys.length === 0) { container.innerHTML = ''; } else {
-      let html = '';
-      buffKeys.forEach(spellId => {
-        const b = _sessionBuffs[spellId];
-        if (!b) return;
-        const remaining = Math.ceil(b.ticks / 60);
-        const hasImg = b.iconImg;
-        html += `<div class="buff-icon" title="${b.name || spellId}">
-          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${b.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
-          <span class="buff-icon-timer">${remaining}s</span>
-        </div>`;
-      });
-      container.innerHTML = html;
-    }
-    // Player debuffs (vpravo, pod buffy)
+    buffKeys.forEach(spellId => {
+      const b = _sessionBuffs[spellId];
+      if (!b) return;
+      const remaining = Math.ceil(b.ticks / 60);
+      const hasImg = b.iconImg;
+      html += `<div class="buff-icon" title="${b.name || spellId}">
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${b.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
+        <span class="buff-icon-timer">${remaining}s</span>
+      </div>`;
+    });
+    // Player debuffs (do stejného sloupce, pod buffy)
+    const pdKeys = Object.keys(_playerDebuffs);
+    pdKeys.forEach(spellId => {
+      const d = _playerDebuffs[spellId];
+      if (!d) return;
+      const remaining = Math.ceil(d.ticks / 60);
+      const hasImg = d.iconImg;
+      html += `<div class="buff-icon player-debuff" title="${d.name || spellId}">
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${d.iconImg}" alt="${d.name}">` : `<span class="buff-icon-emoji">${d.icon || '☠️'}</span>`}
+        <span class="buff-icon-timer">${remaining}s</span>
+      </div>`;
+    });
+    container.innerHTML = html;
+    // Starý samostatný player-debuff sloup je prázdný (sloučeno do mbBuffs)
     const playerDebuffContainer = document.getElementById('mbPlayerDebuffs');
-    if (playerDebuffContainer) {
-      const pdKeys = Object.keys(_playerDebuffs);
-      if (pdKeys.length === 0) { playerDebuffContainer.innerHTML = ''; } else {
-        let html = '';
-        pdKeys.forEach(spellId => {
-          const d = _playerDebuffs[spellId];
-          if (!d) return;
-          const remaining = Math.ceil(d.ticks / 60);
-          const hasImg = d.iconImg;
-          html += `<div class="buff-icon" title="${d.name || spellId}">
-            ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${d.iconImg}" alt="${d.name}">` : `<span class="buff-icon-emoji">${d.icon || '☠️'}</span>`}
-            <span class="buff-icon-timer">${remaining}s</span>
-          </div>`;
-        });
-        playerDebuffContainer.innerHTML = html;
-      }
-    }
+    if (playerDebuffContainer) playerDebuffContainer.innerHTML = '';
   }
 
   function castClassSpell(spellId) {
@@ -6952,6 +6949,17 @@ export function initGame() {
     if (ring) ring.style.opacity = '0.15';
   }
 
+  // Vrátí swing timer kruhy zpět do plné viditelnosti (inverze dimTimers).
+  // Volá se při pack-přechodu na dalšího živého člena.
+  function restoreTimers() {
+    ['mbPlayerTimerCircle','mbOffhandTimerCircle','mbEnemyTimerCircle','mbEnemyTimerBg'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.style.opacity = '1'; el.style.animation = ''; el.style.strokeDashoffset = ''; }
+    });
+    const ring = document.getElementById('mbTimerRing');
+    if (ring) ring.style.opacity = '1';
+  }
+
   function spawnImpactParticles(arena, x, y, rgbStr, isCrit) {
     // Mlha při nárazu — rozmazané kroužky rozlétající se všemi směry
     const color = `rgba(${rgbStr},0.35)`;
@@ -8316,6 +8324,7 @@ export function initGame() {
         mb.ended = false;
         mb._pendingKill = false;
         document.body.classList.add('battle-active');
+        restoreTimers();
         // Restartovat stamina/energy regen interval (cleanupTimers ho zrušil)
         if (mb._staminaInterval) clearInterval(mb._staminaInterval);
         mb._staminaInterval = setInterval(() => {

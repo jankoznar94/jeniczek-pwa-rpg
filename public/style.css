@@ -996,6 +996,9 @@ body.no-scroll { overflow: hidden; }
 }
 .buff-icon-emoji { font-size:22px;line-height:1.2; }
 .buff-icon-timer { font-size:13px;color:#2ecc71;font-weight:bold;line-height:1; }
+/* Player debuffy — ve stejném sloupci jako buffy (pod nimi), červený border */
+.buff-icon.player-debuff { border-color:#e94560; }
+.buff-icon.player-debuff .buff-icon-timer { color:#e94560; }
 
 /* Rapid Tap — dve plosky s puntikem a tenkym borderem */
 .rapid-tap-area {
