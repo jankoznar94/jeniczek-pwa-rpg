@@ -2556,6 +2556,14 @@ export function initGame() {
     return ms;
   }
 
+  // Efektivní swing čas s přihlédnutím k Slow na hráči (D2: swingMs / (1 - slow%/100)).
+  function getEffSwingMs(mb, baseMs) {
+    if (mb && mb._playerSlowPct && mb._playerSlowTimer > 0) {
+      return Math.round(baseMs / (1 - mb._playerSlowPct / 100));
+    }
+    return baseMs;
+  }
+
 
   function pickEnemySpell(mb) {
     // Vybere kouzlo podle seznamu kouzel monstra
@@ -2700,9 +2708,11 @@ export function initGame() {
         mb._playerAttackProcessed = false;
       }
     } else if (!mb._playerSwingReady) {
+      // Slow na hráči — zpomalí útok v reálném čase (D2: swingMs / (1 - slow%/100)).
+      const effMs = getEffSwingMs(mb, mb.playerSwingMs);
       const playerElapsed = now - mb._playerSwingStart;
-      mb._playerSwingPct = Math.min(playerElapsed / mb.playerSwingMs, 1);
-      if (playerElapsed >= mb.playerSwingMs) {
+      mb._playerSwingPct = Math.min(playerElapsed / effMs, 1);
+      if (playerElapsed >= effMs) {
         mb._playerSwingReady = true;
         mb._playerAttackProcessed = false;
       }
@@ -3709,6 +3719,8 @@ export function initGame() {
         if (!bpSlots[idx]) {
           bpSlots[idx] = potionId;
           h.equip.beltPotionSlots = bpSlots;
+          // Vloženo do opasku — aktualizovat status na vítězné obrazovce, pokud je otevřená
+          refreshResultStatus();
           return true;
         }
       }
@@ -3759,6 +3771,37 @@ export function initGame() {
     updateMapBattleUI();
   }
 
+  // Přepočítat status na vítězné (result) obrazovce — zobrazuje HP, many, buffy a potiony.
+  // Volá se po použití potionu i po vložení potionu do opasku (aby byl počet aktuální).
+  function refreshResultStatus() {
+    const h = state.hero;
+    const mb = mapBattleState;
+    if (!h || !mb || mb.locId === undefined || _currentScreen !== 'result') return;
+    const bpSlots = h.equip.beltPotionSlots || [];
+    const hpPct = Math.round(h.hp / h.maxHp * 100);
+    let resourceHtml = '';
+    resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
+    let buffsHtml = '';
+    Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = b.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
+    Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = d.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
+    const potCounts = {};
+    bpSlots.forEach(pid => { if (pid) { const p = ITEM_MAP[pid]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[pid] = (potCounts[pid] || 0) + 1; } });
+    const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
+      'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
+    const potionsHtml = `<div class="result-status-potions">` + potOrder
+      .filter(id => potCounts[id])
+      .map(id => {
+        const p = ITEM_MAP[id];
+        return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
+        ${renderItemIcon(p, 0)}
+        <span class="result-status-potion-count">${potCounts[id]}</span>
+      </div>`;
+      }).join('') + `</div>`;
+    $('resultStatus').innerHTML = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
+      ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
+      ${potionsHtml}`;
+  }
+
   function usePotionFromResult(potionId) {
     const h = state.hero;
     const bpSlots = h.equip.beltPotionSlots || [];
@@ -3784,35 +3827,7 @@ export function initGame() {
     h.equip.beltPotionSlots = bpSlots;
     saveGame();
     // Překreslit status na Victory page
-    const mb = mapBattleState;
-    if (mb && mb.locId !== undefined) {
-      const locId = mb.locId;
-      const isWaypoint = state._waypointFloor === true;
-      const nextArea = (state.locationProgress[locId] || 0) + 1;
-      // Znovu vykreslit status
-      const hpPct = Math.round(h.hp / h.maxHp * 100);
-      let resourceHtml = '';
-      resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
-      let buffsHtml = '';
-      Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = b.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
-      Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = d.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
-      const potCounts = {};
-      bpSlots.forEach(pid => { if (pid) { const p = ITEM_MAP[pid]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[pid] = (potCounts[pid] || 0) + 1; } });
-      const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
-        'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
-      const potionsHtml = `<div class="result-status-potions">` + potOrder
-        .filter(id => potCounts[id])
-        .map(id => {
-          const p = ITEM_MAP[id];
-          return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
-          ${renderItemIcon(p, 0)}
-          <span class="result-status-potion-count">${potCounts[id]}</span>
-        </div>`;
-        }).join('') + `</div>`;
-      $('resultStatus').innerHTML = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
-        ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
-        ${potionsHtml}`;
-    }
+    refreshResultStatus();
   }
 
   function updateSpellButtons() {
@@ -3946,7 +3961,7 @@ export function initGame() {
         return;
       }
       // Double swing se opakuje na rychlosti pomalejší zbraně (cooldown)
-      const interval = Math.max(mb.playerSwingMs, mb.offhandSwingMs) || 1000;
+      const interval = getEffSwingMs(mb, Math.max(mb.playerSwingMs, mb.offhandSwingMs)) || 1000;
       _holdRepeatTimer = setTimeout(tick, interval);
     };
     _holdRepeatTimer = setTimeout(tick, 50);
@@ -4215,7 +4230,7 @@ export function initGame() {
         spawnFloatingText('MISS!', 'right', '#fff', 32);
         playSFX(dodgeSfx);
         resetDoubleSwingTimers(mb);
-        mb._doubleSwingCd = Math.max(mb.playerSwingMs, mb.offhandSwingMs);
+        mb._doubleSwingCd = getEffSwingMs(mb, Math.max(mb.playerSwingMs, mb.offhandSwingMs));
         mb._lastDsTick = performance.now();
         return;
       }
@@ -4230,7 +4245,7 @@ export function initGame() {
       // Reset obou swing timerů
       resetDoubleSwingTimers(mb);
       // Cooldown = rychlost pomalejší zbraně (respektuje rychlosti zbraní)
-      mb._doubleSwingCd = Math.max(mb.playerSwingMs, mb.offhandSwingMs);
+      mb._doubleSwingCd = getEffSwingMs(mb, Math.max(mb.playerSwingMs, mb.offhandSwingMs));
       mb._lastDsTick = performance.now();
       // Animace — obě zbraně zároveň, bez projectile
       spawnDoubleSwingAnim(mb);
