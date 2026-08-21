@@ -2661,8 +2661,9 @@ export function initGame() {
       const tintEl = document.getElementById('mbArenaTint');
       if (tintEl) {
         let bg = 'transparent';
-        if (isElite && isPack) bg = 'radial-gradient(circle at center, rgba(241,196,15,0.15) 0%, rgba(241,196,15,0.05) 45%, transparent 72%)';
-        else if (isChampionPack) bg = 'radial-gradient(circle at center, rgba(74,125,255,0.15) 0%, rgba(74,125,255,0.05) 45%, transparent 72%)';
+        // Výrazná barevná záře celé arény — jasně viditelná na černém pozadí
+        if (isElite && isPack) bg = 'radial-gradient(circle at 50% 50%, rgba(241,196,15,0.45) 0%, rgba(241,196,15,0.25) 45%, rgba(241,196,15,0.08) 75%, transparent 100%)';
+        else if (isChampionPack) bg = 'radial-gradient(circle at 50% 50%, rgba(74,125,255,0.45) 0%, rgba(74,125,255,0.25) 45%, rgba(74,125,255,0.08) 75%, transparent 100%)';
         tintEl.style.background = bg;
       }
     }
