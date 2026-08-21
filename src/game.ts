@@ -1951,7 +1951,9 @@ export function initGame() {
       if (isExpanded) {
         wpHtml += `<div class="wp-act-body">`;
         if (completed) {
-          for (let areaId = 1; areaId < 10; areaId++) {
+          // Act 0: od area 0 (Meadow) je vždy dostupný
+          const startArea = actId === 0 ? 0 : 1;
+          for (let areaId = startArea; areaId < 10; areaId++) {
             const areaNum = areaId + 1;
             const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
             const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
@@ -1964,7 +1966,9 @@ export function initGame() {
             </div>`;
           }
         } else {
-          wps.sort((a,b) => a-b).forEach(areaId => {
+          // Act 0: Meadow (area 0) je odemčený hned od začátku
+          const list = actId === 0 ? [0].concat((wps || []).filter(a => a !== 0)) : wps;
+          list.sort((a,b) => a-b).forEach(areaId => {
             const areaNum = areaId + 1;
             const nextArea = (state.locationProgress[actId] || 0) + 1;
             const isCurrent = nextArea === areaId;
