@@ -4237,61 +4237,44 @@ export function initGame() {
   function renderDebuffs() {
     const container = document.getElementById('mbDebuffs');
     if (!container) return;
+    // Jeden sloupec: prvně enemy buffy, pak enemy debuffy (řazeno shora)
+    let html = '';
+    const ebKeys = Object.keys(_enemyBuffs);
+    ebKeys.forEach(spellId => {
+      const b = _enemyBuffs[spellId];
+      if (!b) return;
+      const remaining = Math.ceil(b.ticks / 60);
+      const spellDef = ENEMY_SPELLS[spellId];
+      const hasImg = spellDef && spellDef.iconImg;
+      html += `<div class="debuff-icon enemy-buff" title="${b.name || spellId}">
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${b.name}">` : `<span class="debuff-icon-emoji">${b.icon || '📈'}</span>`}
+        <span class="debuff-icon-timer">${remaining}s</span>
+      </div>`;
+    });
     const debuffKeys = Object.keys(_sessionDebuffs);
-    if (debuffKeys.length === 0) { container.innerHTML = ''; } else {
-      let html = '';
-      debuffKeys.forEach(spellId => {
-        const d = _sessionDebuffs[spellId];
-        if (!d) return;
-        const remaining = Math.ceil(d.ticks / 60);
-        const spellDef = ENEMY_SPELLS[spellId];
-        const hasImg = spellDef && spellDef.iconImg;
-        html += `<div class="debuff-icon" title="${d.name || spellId}">
-          ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
-          <span class="debuff-icon-timer">${remaining}s</span>
-        </div>`;
-      });
-      container.innerHTML = html;
-    }
-    // Enemy buffs (vlevo, pod debuffy)
+    debuffKeys.forEach(spellId => {
+      const d = _sessionDebuffs[spellId];
+      if (!d) return;
+      const remaining = Math.ceil(d.ticks / 60);
+      const spellDef = ENEMY_SPELLS[spellId];
+      const hasImg = spellDef && spellDef.iconImg;
+      html += `<div class="debuff-icon" title="${d.name || spellId}">
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
+        <span class="debuff-icon-timer">${remaining}s</span>
+      </div>`;
+    });
+    container.innerHTML = html;
+    // Starý samostatný enemy-buff sloup je prázdný (sloučeno do mbDebuffs)
     const enemyBuffContainer = document.getElementById('mbEnemyBuffs');
-    if (enemyBuffContainer) {
-      const ebKeys = Object.keys(_enemyBuffs);
-      if (ebKeys.length === 0) { enemyBuffContainer.innerHTML = ''; } else {
-        let html = '';
-        ebKeys.forEach(spellId => {
-          const b = _enemyBuffs[spellId];
-          if (!b) return;
-          const remaining = Math.ceil(b.ticks / 60);
-          const spellDef = ENEMY_SPELLS[spellId];
-          const hasImg = spellDef && spellDef.iconImg;
-          html += `<div class="buff-icon" title="${b.name || spellId}">
-            ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon || '📈'}</span>`}
-            <span class="buff-icon-timer">${remaining}s</span>
-          </div>`;
-        });
-        enemyBuffContainer.innerHTML = html;
-      }
-    }
+    if (enemyBuffContainer) enemyBuffContainer.innerHTML = '';
   }
 
   function renderBuffs() {
     const container = document.getElementById('mbBuffs');
     if (!container) return;
-    // Jedna sloupec: prvně buffy, pak debuffy (řazeno shora)
+    // Jeden sloupec, sloupce roste od spodní hrany (column-reverse → poslední DOM = nahoře).
+    // Aby buffy byly NAHOŘE a debuffy POD nimi, renderujeme debuffy první (dolní), buffy poslední (horní).
     let html = '';
-    const buffKeys = Object.keys(_sessionBuffs);
-    buffKeys.forEach(spellId => {
-      const b = _sessionBuffs[spellId];
-      if (!b) return;
-      const remaining = Math.ceil(b.ticks / 60);
-      const hasImg = b.iconImg;
-      html += `<div class="buff-icon" title="${b.name || spellId}">
-        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${b.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
-        <span class="buff-icon-timer">${remaining}s</span>
-      </div>`;
-    });
-    // Player debuffs (do stejného sloupce, pod buffy)
     const pdKeys = Object.keys(_playerDebuffs);
     pdKeys.forEach(spellId => {
       const d = _playerDebuffs[spellId];
@@ -4300,6 +4283,17 @@ export function initGame() {
       const hasImg = d.iconImg;
       html += `<div class="buff-icon player-debuff" title="${d.name || spellId}">
         ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${d.iconImg}" alt="${d.name}">` : `<span class="buff-icon-emoji">${d.icon || '☠️'}</span>`}
+        <span class="buff-icon-timer">${remaining}s</span>
+      </div>`;
+    });
+    const buffKeys = Object.keys(_sessionBuffs);
+    buffKeys.forEach(spellId => {
+      const b = _sessionBuffs[spellId];
+      if (!b) return;
+      const remaining = Math.ceil(b.ticks / 60);
+      const hasImg = b.iconImg;
+      html += `<div class="buff-icon" title="${b.name || spellId}">
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${b.iconImg}" alt="${b.name}">` : `<span class="buff-icon-emoji">${b.icon}</span>`}
         <span class="buff-icon-timer">${remaining}s</span>
       </div>`;
     });
