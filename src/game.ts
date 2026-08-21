@@ -8054,7 +8054,7 @@ export function initGame() {
       const monsterGold = (1 + rand(0, 2)) * 5;
       const xpMod = getXpModifier(mb);
       // Base XP roste s levelem monstra (D2: XP = f(mLVL)); penalizace za rozdíl levelů.
-      const xpGain = Math.round(getMonsterLevel(mb, state.difficulty || 0) * 5 * xpMod);
+      const xpGain = Math.round(getMonsterLevel(mb, state.difficulty || 0) * 30 * xpMod);
       state.hero.gold = (state.hero.gold || 0) + monsterGold;
       state.hero.xp = (state.hero.xp || 0) + xpGain;
       state.hero.hp = mb.playerHp;
@@ -8237,7 +8237,7 @@ export function initGame() {
       // Death — return to town, lose act progress (keep waypoints)
       state.deaths = (state.deaths || 0) + 1;
       // Konsolační XP za prohru — odvozené od levelu monstra (20 %).
-      const consXp = Math.max(3, Math.round(getMonsterLevel(mb, state.difficulty || 0) * 5 * 0.2));
+      const consXp = Math.max(3, Math.round(getMonsterLevel(mb, state.difficulty || 0) * 30 * 0.2));
       const consGold = 1 + rand(0, 2);
       state.hero.xp = (state.hero.xp || 0) + consXp;
       state.hero.gold = (state.hero.gold || 0) + consGold;
@@ -8269,7 +8269,7 @@ export function initGame() {
       state.bossesDefeated[state.difficulty] = state.bossesDefeated[state.difficulty] || [false,false,false,false,false];
       state.bossesDefeated[state.difficulty][locId] = true;
       // Boss XP roste s levelem monstra (D2: bossové dávají vyšší násobek XP).
-      state.hero.xp = (state.hero.xp || 0) + Math.round(getMonsterLevel(mb, state.difficulty || 0) * 25 * getXpModifier(mb));
+      state.hero.xp = (state.hero.xp || 0) + Math.round(getMonsterLevel(mb, state.difficulty || 0) * 150 * getXpModifier(mb));
       state.locationProgress[locId] = 0;
       state.areaFightProgress[locId] = 0;
       applyLevelUp();
