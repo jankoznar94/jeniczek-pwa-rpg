@@ -53,7 +53,8 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
     const { Application, Container } = await import('pixi.js');
     app = new Application();
     await app.init({
-      background: '#000000',
+      background: 'transparent',
+      backgroundAlpha: 0,
       resizeTo: containerEl,
       antialias: true,
       autoDensity: true,

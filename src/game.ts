@@ -2653,14 +2653,14 @@ export function initGame() {
       // Fáze 4: foreground melee vrstva (PixiJS, z-index 17) — úderové animace zbraní
       initMeleeLayer(arenaEl);
     }
-    // 🎨 Pozadí arény podle typu souboje:
-    // - elita (pack s leaderem) → jemná žlutá záře
-    // - champion pack → modrá záře
-    // - jinak → čisté (původní)
+    // 🎨 Pozadí arény podle typu souboje (canvas je teď transparentní, takže DOM pozadí prosvítá):
+    // - elita (pack s leaderem) → jemná žlutá záře na černém
+    // - champion pack → modrá záře na černém
+    // - jinak → černé (původní #121212)
     if (arenaEl) {
-      let bg = 'transparent';
-      if (isElite && isPack) bg = 'radial-gradient(circle at center, rgba(241,196,15,0.12) 0%, rgba(241,196,15,0.05) 45%, transparent 70%)';
-      else if (isChampionPack) bg = 'radial-gradient(circle at center, rgba(74,125,255,0.12) 0%, rgba(74,125,255,0.05) 45%, transparent 70%)';
+      let bg = '#121212';
+      if (isElite && isPack) bg = 'radial-gradient(circle at center, rgba(241,196,15,0.14) 0%, rgba(241,196,15,0.05) 45%, #121212 70%)';
+      else if (isChampionPack) bg = 'radial-gradient(circle at center, rgba(74,125,255,0.14) 0%, rgba(74,125,255,0.05) 45%, #121212 70%)';
       arenaEl.style.background = bg;
     }
     // Animace příchodu
