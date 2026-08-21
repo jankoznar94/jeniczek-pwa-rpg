@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v153';
-const ASSET_CACHE = 'boss-slayer-assets-v36';
+const CODE_CACHE = 'boss-slayer-code-v154';
+const ASSET_CACHE = 'boss-slayer-assets-v37';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=132', '/manifest.json', '/item-reference.html'];
 
@@ -121,6 +121,11 @@ const ASSET_FILES = [
   '/assets/waypoints/waypoint_act0.png', '/assets/waypoints/waypoint_act1.png',
   '/assets/waypoints/waypoint_act2.png', '/assets/waypoints/waypoint_act3.png',
   '/assets/waypoints/waypoint_act4.png',
+  // Act 0 stops (Enchanted Forest zastávky)
+  '/assets/stops/stop_act0_0.png', '/assets/stops/stop_act0_1.png', '/assets/stops/stop_act0_2.png',
+  '/assets/stops/stop_act0_3.png', '/assets/stops/stop_act0_4.png', '/assets/stops/stop_act0_5.png',
+  '/assets/stops/stop_act0_6.png', '/assets/stops/stop_act0_7.png', '/assets/stops/stop_act0_8.png',
+  '/assets/stops/stop_act0_9.png',
   // Gems
   '/assets/gems/ruby_chipped.png', '/assets/gems/ruby_flawed.png', '/assets/gems/ruby.png',
   '/assets/gems/ruby_flawless.png', '/assets/gems/ruby_perfect.png',

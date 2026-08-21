@@ -1952,6 +1952,57 @@ body.no-scroll { overflow: hidden; }
 .dot-wp-inner { border-style:double;border-width:3px; }
 .dot-waypoint.dot-current .dot-circle { box-shadow:0 0 14px var(--dot-color,rgba(255,215,0,0.5)); }
 
+/* ===== Act 0 stops (vizualni zastávky) ===== */
+.stop-wrap {
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;flex-shrink:0;
+  transition:0.15s;
+}
+.stop-wrap:hover { filter:brightness(1.2); transform:translateY(-2px); }
+.stop-wrap.stop-locked { opacity:0.45;cursor:default; }
+.stop-wrap.stop-locked:hover { filter:none;transform:none; }
+.stop-card {
+  position:relative;
+  width:132px;height:132px;
+  border-radius:10px;overflow:hidden;
+  border:2.5px solid #444;
+  background:#0a0a0a;
+}
+.stop-img {
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+/* Done/current = barevný okraj, locked = šedý */
+.stop-done .stop-card { border-color:var(--dot-color,#2ecc71); box-shadow:0 0 12px var(--dot-color,rgba(46,204,113,0.35)); }
+.stop-current .stop-card { border-color:#f1c40f; box-shadow:0 0 14px rgba(241,196,15,0.5); animation:dotPulse 1.4s ease-in-out infinite; }
+.stop-unlocked .stop-card { border-color:var(--dot-color,#888); }
+.stop-locked .stop-card { border-color:#333; filter:grayscale(1); }
+.stop-badge {
+  position:absolute;top:6px;right:6px;
+  min-width:26px;height:22px;padding:0 5px;
+  border-radius:11px;display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:bold;line-height:1;
+  background:rgba(0,0,0,0.75);border:1px solid rgba(255,255,255,0.25);
+}
+.stop-badge-done { color:#2ecc71;border-color:#2ecc71; }
+.stop-badge-progress { color:#f1c40f;border-color:#f1c40f; }
+.stop-badge-locked { color:#666;border-color:#555; }
+.stop-label {
+  font-size:11px;font-weight:bold;color:#ccc;
+  width:132px;text-align:center;
+  text-shadow:0 1px 2px rgba(0,0,0,0.8);
+}
+.stop-wrap.stop-done .stop-label { color:var(--dot-color,#2ecc71); }
+.stop-wrap.stop-current .stop-label { color:#f1c40f; }
+.stop-wrap.stop-locked .stop-label { color:#555; }
+
+/* Výsledná obrazovka — obrázek zastávky dominantní, ale ne přeplněný */
+.stop-result {
+  width:auto !important;height:auto !important;
+  max-width:240px;max-height:150px;
+  object-fit:cover;border-radius:8px;
+  border:2px solid rgba(255,255,255,0.15);
+}
+
 /* Wave positions */
 .dot-wave-l { margin-top:8px; }
 .dot-wave-c { margin-top:0; }
