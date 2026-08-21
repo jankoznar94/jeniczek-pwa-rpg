@@ -688,11 +688,15 @@ export function initGame() {
 
   function rollQuality() {
     let mf = getMagicFind();
-    // Diminishing returns (D2 style)
-    const effectiveMF = Math.floor((mf * 250) / (mf + 250));
-    const uniqueChance = 1 + Math.floor(effectiveMF * 0.01);
-    const rareChance = 5 + Math.floor(effectiveMF * 0.05);
-    const magicChance = 24 + Math.floor(effectiveMF * 0.1);
+    // D2 Magic Find: každá kvalita má vlastní diminishing (viz maxroll gold-magic-find).
+    // Magic — ŽÁDNÉ diminishing (MF platí naplno).
+    // Rare  — diminishing MF×600/(MF+600).
+    // Unique— diminishing MF×250/(MF+250).
+    const uniqueMF = Math.floor((mf * 250) / (mf + 250));
+    const rareMF = Math.floor((mf * 600) / (mf + 600));
+    const uniqueChance = 1 + Math.floor(uniqueMF * 0.01);
+    const rareChance = 5 + Math.floor(rareMF * 0.05);
+    const magicChance = 24 + Math.floor(mf * 0.1); // magic bez diminishing
     const roll = Math.random() * 100;
     if (roll < uniqueChance) return 'unique';
     if (roll < rareChance) return 'rare';
