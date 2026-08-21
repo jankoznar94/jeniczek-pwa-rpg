@@ -3606,7 +3606,7 @@ export function initGame() {
     const themeFilter = DUNGEON_THEME_FILTERS[mb.monsterTheme] || '';
     const theme = DUNGEON_THEMES[mb.monsterTheme] || DUNGEON_THEMES[0];
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
-    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame' + (mb.isElite ? ' elite' : '') + '\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
     else { fig.textContent = emoji; }
     // Ikona castovaného kouzla na nepříteli
     updateCastSpellIcon(mb);
