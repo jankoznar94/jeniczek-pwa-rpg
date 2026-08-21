@@ -154,12 +154,58 @@ export const DIFFICULTIES = [
   { id:'hell', name:'Hell', monsterLvMin:31, monsterLvMax:60, actLevels:[[31,36],[37,42],[43,48],[49,54],[55,60]], itemTierMin:5, itemTierMax:7, mult:3.0, resistMult:2.0 },
 ];
 
+// D2-style elitní mody (elita stojí solo v souboji, proto samostatné self-bonesty místo okolních aury).
+// Každý affix má vlastní modifikátory statů, element odpor (vs hráčova kouzla), element dmg (projde hráčovými resisty),
+// a volitelný efekt při smrti / útoku.
 export const ELITE_AFFIXES = [
-  { name:'Fiery', icon:'🔥', desc:'+50% fire dmg', stat:'fireDmg', mult:1.5 },
-  { name:'Icy', icon:'❄️', desc:'+50% ice dmg', stat:'coldDmg', mult:1.5 },
-  { name:'Swift', icon:'💨', desc:'+30% attack speed', stat:'swingMs', mult:0.7 },
-  { name:'Venomous', icon:'☠️', desc:'+poison dmg', stat:'poisonDmg', mult:1.5 },
-  { name:'Bloody', icon:'🩸', desc:'+lifesteal', stat:'lifesteal', mult:1.5 },
+  { name:'Fire Enchanted', icon:'🔥', desc:'+fire dmg · +fire resist · exploduje', element:'fire', resistSelf:'fire', dmgMult:1.2, elementDmgMult:0.5, death:'nova-fire' },
+  { name:'Cold Enchanted', icon:'❄️', desc:'+cold dmg · +cold resist · nova', element:'ice', resistSelf:'ice', dmgMult:1.1, elementDmgMult:0.45, death:'nova-cold' },
+  { name:'Lightning Enchanted', icon:'⚡', desc:'+light dmg · +light resist · burst', element:'lightning', resistSelf:'lightning', dmgMult:1.1, elementDmgMult:0.45, onHit:'lightning' },
+  { name:'Poison Enchanted', icon:'☠️', desc:'+poison dmg · +poison resist · jed', element:'nature', resistSelf:'nature', dmgMult:1.1, elementDmgMult:0.35, onHit:'poison' },
+  { name:'Extra Strong', icon:'💪', desc:'+80% dmg', dmgMult:1.8 },
+  { name:'Extra Fast', icon:'💨', desc:'+50% attack speed', attackSpeedMult:0.67 },
+  { name:'Extra Healthy', icon:'❤️', desc:'+150% HP', hpMult:2.5 },
+  { name:'Magic Resistant', icon:'🛡️', desc:'+40% resist ke všem elementům', resistAll:0.4 },
+  { name:'Stone Skin', icon:'🪨', desc:'-50% fyz dmg + defense', drMult:0.5, defMult:2.0 },
+  { name:'Mana Burn', icon:'💜', desc:'krade manu · +magic resist', manaBurn:true, resistAll:0.3 },
+  { name:'Cursed', icon:'💀', desc:'75% šance amplify damage', curse:true },
+];
+
+// D2 champion jména se generují kombinací [Prefix] [Suffix] the [Appellation]
+// z nezávislých tabulek (stejně jako D2 engine). Čistě kosmetické — nezávislé na afixu.
+export const ELITE_PREFIXES = [
+  'Ash','Black','Blight','Blood','Bone','Bramble','Break','Chaos','Cold','Corpse',
+  'Dark','Dead','Death','Deep','Dire','Dragon','Dread','Drop','Earth','Eye',
+  'Fear','Fire','Flesh','Foul','Frost','Glum','Grim','Gross','Gut','Hail',
+  'Hate','Head','Heart','Hell','Iron','Left','Mad','Mage','Mind','Moon',
+  'Night','Ooze','Pain','Plague','Poison','Puke','Pulse','Pyre','Rage','Red',
+  'Rime','Rip','Rot','Rust','Scum','Searing','Shadow','Shard','Sin','Skin',
+  'Skull','Slime','Soul','Spit','Star','Steel','Stone','Storm','Sun','Thistle',
+  'Thorn','Unholy','Vile','Void','Warp','Web','White','Wild','Wind','Woe','Wrath',
+];
+export const ELITE_SUFFIXES = [
+  'Bang','Bane','Bard','Bite','Blade','Bleed','Blood','Boil','Boulder','Bow',
+  'Brain','Breach','Breaker','Breath','Burn','Burst','Call','Chew','Claw','Crack',
+  'Crawler','Crown','Crush','Crusher','Cry','Cutter','Dagger','Dash','Death','Dig',
+  'Drinker','Eater','Edge','Eye','Fang','Feast','Fist','Flay','Flayer','Flesh',
+  'Foam','Foot','Fright','Gnasher','Gnaw','Gore','Grip','Growl','Gulp','Gut',
+  'Hand','Harmer','Hawk','Head','Hide','Horn','Howl','Hunter','Jaw','Killer',
+  'Knife','Leech','Leg','Lick','Limb','Maw','Mind','Muck','Neck','Nose',
+  'Pain','Puke','Punch','Pus','Rage','Reaver','Ripper','Run','Scalp','Scar',
+  'Scratcher','Scream','Sever','Shank','Shard','Shield','Shredder','Shrike','Slime','Smasher',
+  'Snot','Snout','Spawn','Spear','Spike','Spit','Spitter','Spore','Stalker','Steal',
+  'Stinger','Stitch','Storm','Strike','Sunderer','Swallow','Tail','Talon','Teeth','Thirst',
+  'Thorn','Throat','Thrust','Tongue','Tooth','Touch','Tracker','Web','Whip','Wing',
+  'Wolf','Wound','Wrath','Young',
+];
+export const ELITE_APPELATIONS = [
+  'the Bad','the Bitter','the Black','the Cold','the Dark','the Dead',
+  'the Destroyer','the Drooler','the Dull','the Evil','the Fast',
+  'the Feared','the Fierce','the Flayer','the Foul','the Grim',
+  'the Hawk','the Hungry','the Impaler','the Killer','the Mad',
+  'the Quick','the Raving','the Sad','the Scourge','the Sharp',
+  'the Slasher','the Strong','the Unclean','the Vile','the Weeper',
+  'the White','the Wild','the Witch',
 ];
 
 export const BOSS_AFFIXES = [

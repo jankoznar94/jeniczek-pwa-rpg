@@ -8,7 +8,7 @@ import { getZoneMult, getMonsterLevel, getEnemySwingTime, getFloorTimerMultiplie
 import { applyGemStats, buildGemStatsHtml } from './core/gems';
 import { getMonsterFace, getMonsterName } from './core/monsters';
 import { getDungeonResistIcons } from './core/dungeons';
-import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES, ELITE_FILTER_COLORS } from './data/monsters';
+import { MONSTER_TYPES, ATTACK_TYPES, ENEMY_SPELLS, MONSTER_DB, DIFFICULTIES, ELITE_AFFIXES, BOSS_AFFIXES, ELITE_FILTER_COLORS, ELITE_PREFIXES, ELITE_SUFFIXES, ELITE_APPELATIONS } from './data/monsters';
 import { ACTS } from './data/acts';
 import { ITEMS, UNIQUE_ITEMS, RARE_FIRST_WORDS, RARE_SECOND_WORDS } from './data/items';
 import { AFFIXES } from './data/affixes';
@@ -508,6 +508,12 @@ export function initGame() {
     else if (schoolId === 'ice') base = r.ice || 1.0;
     else if (schoolId === 'nature') base = r.nature || 1.0;
     else if (schoolId === 'lightning') base = r.lightning || 1.0;
+    // Magic Resistant / Mana Burn — plošný element odpor elity
+    const erb = mb.eliteResistBonus;
+    if (erb && (schoolId === 'fire' || schoolId === 'ice' || schoolId === 'nature' || schoolId === 'lightning')) {
+      const bonus = schoolId === 'fire' ? (erb.fire || 0) : schoolId === 'ice' ? (erb.ice || 0) : schoolId === 'nature' ? (erb.nature || 0) : (erb.lightning || 0);
+      if (bonus > 0) base = 1 + bonus;
+    }
     // Aplikovat lokální affixy (per-dungeon per-difficulty)
     const locFireResist = getLocAffix('fireResist');
     const locFrostResist = getLocAffix('frostResist');
@@ -684,6 +690,14 @@ export function initGame() {
     });
     // Cap na 75% (D2 styl)
     return Math.min(75, res);
+  }
+
+  // Pomocníci pro element dmg affixů elit
+  function elementIcon(school) {
+    return school === 'fire' ? '🔥' : school === 'ice' ? '❄️' : school === 'lightning' ? '⚡' : '☠️';
+  }
+  function elementColor(school) {
+    return school === 'fire' ? '#e74c3c' : school === 'ice' ? '#3498db' : school === 'lightning' ? '#f1c40f' : '#27ae60';
   }
 
   function rollQuality() {
@@ -2302,6 +2316,11 @@ export function initGame() {
     let monsterHp, monsterDmgMin, monsterDmgMax, monsterAttackSpeed, monsterBlockChance;
     let monsterResource, monsterMaxResource, monsterSpells;
     let eliteAffix = null;
+    let eliteName = null;
+    // D2 elitní mody — dodatečné proměnné pro resisty, defense a dmg-reduction elity
+    let eliteResists = null;
+    let eliteDefenseMult = null;
+    let monsterDRMult = null;
     if (isBoss) {
       const b = loc.boss;
       monsterHp = (b.hp || 500) * diffMultOverall;
@@ -2322,7 +2341,7 @@ export function initGame() {
       monsterResource = m.resource || 'mana';
       monsterMaxResource = m.maxResource || 50;
       monsterSpells = m.spells || [];
-      // Elitní monstrum — vylepšené staty + náhodné kouzlo + affix
+      // Elitní monstrum — vylepšené staty + náhodné kouzlo + D2 mod + vlastní jméno
       if (isElite) {
         monsterHp = Math.round(monsterHp * 2.5);
         monsterDmgMin = Math.round(monsterDmgMin * 1.5);
@@ -2331,6 +2350,8 @@ export function initGame() {
         const extraSpell = rollEliteSpell(loc.theme, monsterResource, monsterSpells);
         if (extraSpell) monsterSpells = monsterSpells.concat([extraSpell]);
         eliteAffix = rollEliteAffix();
+        // Náhodné D2 elitní jméno: [Prefix] [Suffix] the [Appellation]
+        eliteName = `${ELITE_PREFIXES[rand(0, ELITE_PREFIXES.length - 1)]} ${ELITE_SUFFIXES[rand(0, ELITE_SUFFIXES.length - 1)]} ${ELITE_APPELATIONS[rand(0, ELITE_APPELATIONS.length - 1)]}`;
       }
     }
 
@@ -2353,13 +2374,45 @@ export function initGame() {
       });
     }
 
-    // Aplikovat elitní affix na staty
+    // Rezistence elity — nový objekt, do kterého affix mody zapíšou své bonusy
+    let monsterResists = isBoss ? Object.assign({}, loc.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0})
+                                : Object.assign({}, floorMonsters[0].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0});
+    // elitní resistAll (Magic Resistant / Mana Burn) — nastaveno affixem
+    if (isElite) eliteResists = { fire:0, ice:0, lightning:0, nature:0 };
+
+    // Aplikovat D2 elitní affix na staty a resisty
     if (isElite && eliteAffix) {
-      if (eliteAffix.name === 'Swift') {
-        monsterAttackSpeed = Math.round(monsterAttackSpeed * 0.7);
-      } else {
-        monsterDmgMin = Math.round(monsterDmgMin * 1.3);
-        monsterDmgMax = Math.round(monsterDmgMax * 1.3);
+      // HP bonus
+      if (eliteAffix.hpMult) monsterHp = Math.round(monsterHp * eliteAffix.hpMult);
+      // Damage bonus
+      if (eliteAffix.dmgMult) {
+        monsterDmgMin = Math.round(monsterDmgMin * eliteAffix.dmgMult);
+        monsterDmgMax = Math.round(monsterDmgMax * eliteAffix.dmgMult);
+      }
+      // Attack speed
+      if (eliteAffix.attackSpeedMult) monsterAttackSpeed = Math.round(monsterAttackSpeed * eliteAffix.attackSpeedMult);
+      // Stone Skin — fyzická redukce + defense (útočné staty výš, ale příjem dmg hráče řeší def/dr)
+      if (eliteAffix.defMult) {
+        const baseDef = isBoss ? (loc.monsterDefense || 0) : (floorMonsters[0].defense || 0);
+        eliteDefenseMult = eliteAffix.defMult;
+      }
+      // Element/resist mody mění resisty elity (vs hráčova element kouzla)
+      if (eliteAffix.resistSelf) {
+        const r = monsterResists;
+        if (eliteAffix.resistSelf === 'fire') r.fire = 1.5;   // fire kouzla hráče → -33% dmg
+        else if (eliteAffix.resistSelf === 'ice') r.ice = 1.5;
+        else if (eliteAffix.resistSelf === 'lightning') r.lightning = 1.5;
+        else if (eliteAffix.resistSelf === 'nature') r.nature = 1.5;
+      }
+      if (eliteAffix.resistAll) {
+        eliteResists.fire = 1 + eliteAffix.resistAll;
+        eliteResists.ice = 1 + eliteAffix.resistAll;
+        eliteResists.lightning = 1 + eliteAffix.resistAll;
+        eliteResists.nature = 1 + eliteAffix.resistAll;
+      }
+      // Stone Skin — monster obdrží míň fyz dmg (řešeno přes monsterDefense/dr při hráčově útoku)
+      if (eliteAffix.drMult) {
+        monsterDRMult = eliteAffix.drMult;
       }
     }
 
@@ -2402,8 +2455,11 @@ export function initGame() {
       currentMonsterName: isBoss ? loc.boss.name : floorMonsters[0].name,
       monsterType: isBoss ? null : (floorMonsters[0].type || null),
       monsterAttackType: isBoss ? (loc.boss.attackType || ATTACK_TYPES.MELEE) : (floorMonsters[0].attackType || ATTACK_TYPES.MELEE),
-      monsterDefense: (isBoss ? (loc.monsterDefense || 0) : (floorMonsters[0].defense || 0)) * (1 + getLocAffix('armorMult')),
-      monsterResists: isBoss ? (loc.resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}) : (floorMonsters[0].resists || {fire:1.0, ice:1.0, nature:1.0, lightning:1.0}),
+      monsterDefense: ((isBoss ? (loc.monsterDefense || 0) : (floorMonsters[0].defense || 0)) * (1 + getLocAffix('armorMult'))) * (eliteDefenseMult || 1),
+      monsterResists: monsterResists,
+      eliteResistBonus: eliteResists,
+      eliteDRMult: monsterDRMult,
+      eliteName: isElite ? eliteName : null,
       bossTypes: isBoss ? (loc.boss.types || []) : [],
       monsterIcons: isBoss ? [] : floorMonsters.map(function(m){return m.face;}),
       monsterNames: isBoss ? [] : floorMonsters.map(function(m){return m.name;}),
@@ -3375,6 +3431,38 @@ export function initGame() {
         mb.playerDotTicksLeft = 3;
       }
     });
+    // D2 elitní mody — element dmg (Fire/Cold/Lightning/Poison Enchanted), Mana Burn, Cursed
+    if (mb.isElite && mb.eliteAffix) {
+      const ea = mb.eliteAffix;
+      // Element dmg — přičte k fyzickému, projde hráčovými resisty
+      if (ea.element && ea.elementDmgMult) {
+        const playerRes = getPlayerResist(ea.element === 'nature' ? 'nature' : ea.element);
+        const elemDmg = Math.max(1, Math.round(bossDmg * ea.elementDmgMult * (1 - Math.min(75, playerRes) / 100)));
+        bossDmg += elemDmg;
+        spawnFloatingText(elementIcon(ea.element) + ' -' + elemDmg, 'left', elementColor(ea.element), 28);
+      }
+      // Mana Burn — krade manu, +magic resist
+      if (ea.manaBurn) {
+        const burnAmt = Math.min(state.hero.mana || 0, Math.round(bossDmg * 0.25));
+        if (burnAmt > 0) {
+          state.hero.mana = Math.max(0, (state.hero.mana || 0) - burnAmt);
+          mb.bossHp = Math.min(mb.maxBossHp, mb.bossHp + Math.round(burnAmt * 0.5));
+          spawnFloatingText(`💜 -${burnAmt} mana`, 'left', '#9b59b6', 28);
+        }
+      }
+      // Cursed — 75% šance na amplify damage (hráč bere o 25% víc)
+      if (ea.curse && Math.random() < 0.75 && !mb._amplifyDmgActive) {
+        mb._amplifyDmgActive = true;
+        _playerDebuffs['elite_amplify'] = { icon: '💀', name: 'Amplify Damage', iconImg:null, ticks: 600, maxTicks: 600 };
+        spawnFloatingText('💀 Amplify Damage', 'left', '#c0392b', 32);
+      }
+      // Lightning Enchanted — na hit bleskový burst
+      if (ea.onHit === 'lightning') {
+        const boltDmg = Math.max(1, Math.round(bossDmg * 0.3 * (1 - Math.min(75, getPlayerResist('lightning')) / 100)));
+        mb.playerHp = Math.max(0, mb.playerHp - boltDmg);
+        spawnFloatingText('⚡ -' + boltDmg, 'left', '#f1c40f', 28);
+      }
+    }
     // Battle shout buff — +50% damage
     if (mb._battleShoutActive) {
       bossDmg = Math.round(bossDmg * 1.5);
@@ -3413,6 +3501,11 @@ export function initGame() {
     }
     // Monster block chance (Troll) — přesunuto do dealPlayerDamage, kde patří
     // (nepřítel blokuje hráčův útok, ne svůj vlastní)
+
+    // 💀 Cursed (D2 amplify damage) — hráč bere o 50% víc fyz dmg
+    if (mb._amplifyDmgActive) {
+      amount = Math.round(amount * 1.5);
+    }
 
     if (!blocked) {
       mb.playerHp -= amount;
@@ -3523,8 +3616,16 @@ export function initGame() {
         mb.monsterType === MONSTER_TYPES.POISON ? '☠️' : '';
       const atkIcon = mb.monsterAttackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
       const eliteTag = mb.isElite && mb.eliteAffix ? `${mb.eliteAffix.icon} ` : '';
-      $('mbEnemyName').textContent = `${eliteTag}${mb.currentMonsterName} ${typeIcon}${atkIcon}`;
-      $('mbLocation').textContent = `${mb.loc.name} — ${floorStr}${mb.isElite ? ' · ELITE' : ''}`;
+      // Elita má plné D2 jméno "[Prefix] [Suffix] the [Appellation]" — zobrazit jen to
+      const displayName = (mb.isElite && mb.eliteName) ? mb.eliteName : mb.currentMonsterName;
+      $('mbEnemyName').textContent = `${eliteTag}${displayName} ${typeIcon}${atkIcon}`;
+      // Ukázat affix popis pod jménem elity (tooltip/desc)
+      const affixDesc = mb.isElite && mb.eliteAffix ? mb.eliteAffix.desc : null;
+      if (affixDesc) {
+        $('mbLocation').textContent = `${mb.loc.name} — ${floorStr} · ${affixDesc}`;
+      } else {
+        $('mbLocation').textContent = `${mb.loc.name} — ${floorStr}${mb.isElite ? ' · ELITE' : ''}`;
+      }
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
     const eHpPct = mb.isBoss ? Math.round((mb.bossHp / mb.maxBossHp) * 100) : Math.round((mb.bossHp / mb.maxBossHp) * 100);
@@ -8058,6 +8159,18 @@ export function initGame() {
       // Inkrementovat fight v rámci oblasti
       let af = (state.areaFightProgress[locId] || 0) + 1;
       state.areaFightProgress[locId] = af;
+      // 💥 Elita umírá — element nova (Fire/Cold Enchanted D2 death efekt)
+      if (mb.isElite && mb.eliteAffix && mb.eliteAffix.death) {
+        const arena = $('mbArena');
+        if (arena) {
+          const color = mb.eliteAffix.death === 'nova-fire' ? 'rgba(231,76,60,0.5)' : 'rgba(52,152,219,0.5)';
+          arena.style.transition = 'background-color 0.15s';
+          arena.style.backgroundColor = color;
+          setTimeout(() => { arena.style.backgroundColor = ''; setTimeout(() => { arena.style.transition = ''; }, 200); }, 150);
+        }
+        spawnFloatingText(mb.eliteAffix.death === 'nova-fire' ? '🔥 Nova!' : '❄️ Nova!', 'right', mb.eliteAffix.death === 'nova-fire' ? '#e74c3c' : '#3498db', 40);
+        playTone(mb.eliteAffix.death === 'nova-fire' ? 110 : 220, 0.25, 'sawtooth', 0.12);
+      }
       // Po 10 soubojích — waypoint patro
       if (af >= 10) {
         state._waypointFloor = true;
