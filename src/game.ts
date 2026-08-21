@@ -2463,7 +2463,7 @@ export function initGame() {
         });
         packMembers = [champ(), champ(), champ()];
       } else {
-        // Elita (leader, aktuální upravené staty) + 2 minioni
+        // Elita (leader, aktuální upravené staty) + 3 minioni — elita jde vždy POSLEDNÍ
         const eliteMem = mkMember({
           hp: monsterHp, maxHp: monsterHp,
           name: eliteName || m0.name,
@@ -2480,7 +2480,8 @@ export function initGame() {
           dmgMin: auraBoost > 1 ? Math.round((m0.dmgMin || 5) * auraBoost) : (m0.dmgMin || 5),
           dmgMax: auraBoost > 1 ? Math.round((m0.dmgMax || 10) * auraBoost) : (m0.dmgMax || 10),
         });
-        packMembers = [eliteMem, slave(), slave()];
+        // Minioni (3) první, elita (leader) poslední
+        packMembers = [slave(), slave(), slave(), eliteMem];
       }
     }
 
@@ -2662,8 +2663,8 @@ export function initGame() {
       if (tintEl) {
         let bg = 'transparent';
         // Výrazná barevná záře celé arény — jasně viditelná na černém pozadí
-        if (isElite && isPack) bg = 'radial-gradient(circle at 50% 50%, rgba(241,196,15,0.45) 0%, rgba(241,196,15,0.25) 45%, rgba(241,196,15,0.08) 75%, transparent 100%)';
-        else if (isChampionPack) bg = 'radial-gradient(circle at 50% 50%, rgba(74,125,255,0.45) 0%, rgba(74,125,255,0.25) 45%, rgba(74,125,255,0.08) 75%, transparent 100%)';
+        if (isElite && isPack) bg = 'radial-gradient(circle at 50% 50%, rgba(241,196,15,0.65) 0%, rgba(241,196,15,0.38) 45%, rgba(241,196,15,0.12) 78%, transparent 100%)';
+        else if (isChampionPack) bg = 'radial-gradient(circle at 50% 50%, rgba(74,125,255,0.65) 0%, rgba(74,125,255,0.38) 45%, rgba(74,125,255,0.12) 78%, transparent 100%)';
         tintEl.style.background = bg;
       }
     }
@@ -2766,7 +2767,7 @@ export function initGame() {
     el.innerHTML = mb.packMembers.map((mem, i) => {
       const face = mem.face.startsWith('<') ? mem.face
         : `<img src="${mem.face}" alt="">`;
-      const cls = i === mb.packActiveIdx ? 'active' : (mem.dead ? 'dead' : '');
+      const cls = (i === mb.packActiveIdx ? 'active ' : '') + (mem.dead ? 'dead ' : '') + (mem.isLeader ? 'leader' : '');
       return `<div class="pack-roster-member ${cls}">${face}</div>`;
     }).join('');
   }
@@ -8412,26 +8413,29 @@ export function initGame() {
       state._playerDotTicksLeft = mb.playerDotTicksLeft || 0;
       state.wins = (state.wins || 0) + 1;
       const leveled = applyLevelUp();
-      // Loot roll — 2-3 itemy na kill
-      const numLoot = 2 + rand(0, 1);
+      // Loot roll — 2-3 itemy na kill; u packu za KAŽDÉHO člena (minioni/champi/elita)
+      const packCount = mb.packMembers ? mb.packMembers.length : 1;
       state._floorLootDrops = state._floorLootDrops || [];
-      for (let li = 0; li < numLoot; li++) {
-        const loot = rollLoot(locId, mb.progress, false, getMonsterLevel(mb, state.difficulty || 0));
-        if (!loot) continue;
-        state._floorLootDrops.push(loot);
-        if (loot.type === 'item' || loot.type === 'boss') {
-          if (loot.item) {
-            if (loot.item.id === 'townPortalScroll') {
-              state.townPortalCount = (state.townPortalCount || 0) + 1;
-            } else if (loot.item.type === 'consumable' && (loot.item.subtype === 'heal' || loot.item.subtype === 'mana') && addPotionToBelt(loot.item.id)) {
-              // Potion se vložil do opasku
-            } else {
-              addToInventory(state.hero.inventory, loot.item.id);
+      for (let mem = 0; mem < packCount; mem++) {
+        const numLoot = 2 + rand(0, 1);
+        for (let li = 0; li < numLoot; li++) {
+          const loot = rollLoot(locId, mb.progress, false, getMonsterLevel(mb, state.difficulty || 0));
+          if (!loot) continue;
+          state._floorLootDrops.push(loot);
+          if (loot.type === 'item' || loot.type === 'boss') {
+            if (loot.item) {
+              if (loot.item.id === 'townPortalScroll') {
+                state.townPortalCount = (state.townPortalCount || 0) + 1;
+              } else if (loot.item.type === 'consumable' && (loot.item.subtype === 'heal' || loot.item.subtype === 'mana') && addPotionToBelt(loot.item.id)) {
+                // Potion se vložil do opasku
+              } else {
+                addToInventory(state.hero.inventory, loot.item.id);
+              }
             }
           }
-        }
-        if (loot.type === 'gold' || loot.type === 'boss') {
-          state.hero.gold = (state.hero.gold || 0) + (loot.gold || 0);
+          if (loot.type === 'gold' || loot.type === 'boss') {
+            state.hero.gold = (state.hero.gold || 0) + (loot.gold || 0);
+          }
         }
       }
       saveGame();
