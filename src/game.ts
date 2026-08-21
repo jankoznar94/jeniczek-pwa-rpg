@@ -1941,8 +1941,8 @@ export function initGame() {
       hasAny = true;
       const isExpanded = state._expandedWaypointAct === actId;
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
-      // Hlavička actu — kliknutím toggle rozbalení
-      const actHeaderImg = actId === 0 ? 'assets/stops/stop_act0_0.webp' : `assets/waypoints/waypoint_act${actId}.png`;
+      // Hlavička actu — kliknutím toggle rozbalení (vždy univerzální waypoint/portál obrázek)
+      const actHeaderImg = `assets/waypoints/waypoint_act${actId}.png`;
       wpHtml += `<div class="wp-act-header" style="border-color:${theme.border}" onclick="game.toggleWaypointAct(${actId})">
         <img src="${actHeaderImg}" class="wp-act-header-icon">
         <span class="wp-act-header-label">${act.name}</span>
