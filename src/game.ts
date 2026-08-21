@@ -3605,8 +3605,11 @@ export function initGame() {
     const fig = $('mbFigure');
     const themeFilter = DUNGEON_THEME_FILTERS[mb.monsterTheme] || '';
     const theme = DUNGEON_THEMES[mb.monsterTheme] || DUNGEON_THEMES[0];
+    // Oddělovací mezikruží — zlaté a tlustší pro elitu, jinak šedé.
+    const zoneDiv = $('mbZoneDivider');
+    if (zoneDiv) { zoneDiv.classList.toggle('elite', !!mb.isElite); }
     if (emoji.startsWith('<svg')) { fig.innerHTML = emoji; }
-    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame' + (mb.isElite ? ' elite' : '') + '\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/>' + (mb.isElite ? '<span class=\"elite-glow\"></span>' : '') + '</div>'; }
+    else if (emoji.startsWith('assets/')) { fig.innerHTML = '<div class=\"monster-ring-frame\"><img src=\"'+emoji+'\" alt=\"\" style=\"filter:'+themeFilter+'\"/></div>'; }
     else { fig.textContent = emoji; }
     // Ikona castovaného kouzla na nepříteli
     updateCastSpellIcon(mb);
