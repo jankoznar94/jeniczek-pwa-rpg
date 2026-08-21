@@ -53,7 +53,7 @@ export async function initBattleScene(containerEl: HTMLElement): Promise<void> {
     const { Application, Container } = await import('pixi.js');
     app = new Application();
     await app.init({
-      background: '#121212',
+      background: '#000000',
       resizeTo: containerEl,
       antialias: true,
       autoDensity: true,
@@ -179,25 +179,10 @@ export async function initMeleeLayer(containerEl: HTMLElement): Promise<void> {
   }
 }
 
-/** Nastaví dungeon pozadí podle tématu (theme index). */
+/** Nastaví dungeon pozadí podle tématu (theme index). — POZADÍ ZRUŠENO, jen černé. */
 export async function setDungeonBackground(theme: number): Promise<void> {
-  if (!app || !bgContainer) return;
-  if (theme === currentTheme) return;
-  currentTheme = theme;
-  const url = THEME_BG[theme] || THEME_BG[0];
-  try {
-    const { Assets, Sprite } = await import('pixi.js');
-    const tex = await Assets.load(url);
-    if (bgSprite) bgSprite.destroy();
-    bgSprite = new Sprite(tex);
-    bgSprite.anchor.set(0.5);
-    bgSprite.alpha = 0.55; // jemné, desaturované (Janovy preference)
-    bgContainer.removeChildren();
-    bgContainer.addChild(bgSprite);
-    positionBg();
-  } catch (e) {
-    console.warn('Dungeon pozadí se nenačetlo:', url, e);
-  }
+  // Pozadí souboje zrušeno (Jan 8/2026) — canvas zůstává černý.
+  return;
 }
 
 /** Zapne/vypne pulzující boss auru (jemné glow za monstrem). */

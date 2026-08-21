@@ -29,7 +29,7 @@ const STOP_NAMES = {
 // Pomocná funkce: jakou zastávku právě hráč prochází v aktu (0 = louka, 9 = boss pevnost)
 function getStopImage(actId, zoneId) {
   const idx = Math.min(Math.max(zoneId || 0, 0), 9);
-  return `assets/stops/stop_act${actId}_${idx}.png`;
+  return `assets/stops/stop_act${actId}_${idx}.webp`;
 }
 
 export function initGame() {
@@ -1856,7 +1856,7 @@ export function initGame() {
         const label = STOP_NAMES[actId] ? STOP_NAMES[actId][stop] : `Zastávka ${stop+1}`;
         html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
           <div class="stop-card">
-            <img src="assets/stops/stop_act${actId}_${stop}.png" class="stop-img" alt="${label}">
+            <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
             ${badgeHtml}
           </div>
           <div class="stop-label">${stop+1}</div>
@@ -1930,7 +1930,7 @@ export function initGame() {
       const isExpanded = state._expandedWaypointAct === actId;
       const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
       // Hlavička actu — kliknutím toggle rozbalení
-      const actHeaderImg = actId === 0 ? 'assets/stops/stop_act0_0.png' : `assets/waypoints/waypoint_act${actId}.png`;
+      const actHeaderImg = actId === 0 ? 'assets/stops/stop_act0_0.webp' : `assets/waypoints/waypoint_act${actId}.png`;
       wpHtml += `<div class="wp-act-header" style="border-color:${theme.border}" onclick="game.toggleWaypointAct(${actId})">
         <img src="${actHeaderImg}" class="wp-act-header-icon">
         <span class="wp-act-header-label">${act.name}</span>
@@ -2012,7 +2012,7 @@ export function initGame() {
     const img = $('transitionImage');
     const label = $('transitionLabel');
     if (type === 'waypoint') {
-      img.src = actId === 0 ? `assets/stops/stop_act0_${Math.min(zoneId || 0, 9)}.png` : `assets/waypoints/waypoint_act${actId}.png`;
+      img.src = actId === 0 ? `assets/stops/stop_act0_${Math.min(zoneId || 0, 9)}.webp` : `assets/waypoints/waypoint_act${actId}.png`;
       label.textContent = 'Waypoint';
       // Glow barva podle actu
       const theme = DUNGEON_THEMES[ACTS[actId]?.theme] || DUNGEON_THEMES[0];
@@ -8266,7 +8266,7 @@ export function initGame() {
       sfxBossDefeat();
       $('resultScreen').classList.remove('centered');
       $('resultIcon').innerHTML = locId === 0
-        ? `<img class="result-icon-img stop-result" src="assets/stops/stop_act0_9.png" alt="Pevnost lesního pána">`
+        ? `<img class="result-icon-img stop-result" src="assets/stops/stop_act0_9.webp" alt="Pevnost lesního pána">`
         : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítěz">';
       $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
       $('resultMsg').innerHTML = locId === 0
