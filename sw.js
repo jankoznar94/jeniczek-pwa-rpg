@@ -1,7 +1,7 @@
-const CODE_CACHE = 'boss-slayer-code-v154';
-const ASSET_CACHE = 'boss-slayer-assets-v38';
+const CODE_CACHE = 'boss-slayer-code-v155';
+const ASSET_CACHE = 'boss-slayer-assets-v39';
 
-const CODE_FILES = ['/', '/index.html', '/style.css?v=132', '/manifest.json', '/item-reference.html'];
+const CODE_FILES = ['/', '/index.html', '/style.css?v=133', '/manifest.json', '/item-reference.html'];
 
 const ASSET_FILES = [
   '/icon-192.png', '/icon-512.png',
@@ -118,14 +118,14 @@ const ASSET_FILES = [
   '/assets/items/boots_boots.png', '/assets/items/boots_heavy.png',
   '/assets/items/boots_chain.png', '/assets/items/boots_lightPlated.png',
   '/assets/items/boots_greaves.png',
-  '/assets/waypoints/waypoint_act0.png', '/assets/waypoints/waypoint_act1.png',
-  '/assets/waypoints/waypoint_act2.png', '/assets/waypoints/waypoint_act3.png',
-  '/assets/waypoints/waypoint_act4.png',
   // Act 0 stops (Enchanted Forest zastávky) — WebP komprese
   '/assets/stops/stop_act0_0.webp', '/assets/stops/stop_act0_1.webp', '/assets/stops/stop_act0_2.webp',
   '/assets/stops/stop_act0_3.webp', '/assets/stops/stop_act0_4.webp', '/assets/stops/stop_act0_5.webp',
   '/assets/stops/stop_act0_6.webp', '/assets/stops/stop_act0_7.webp', '/assets/stops/stop_act0_8.webp',
   '/assets/stops/stop_act0_9.webp',
+  // Act 1-4 stop placeholders (generuje se až reálné obrázky zastávek)
+  '/assets/stops/placeholder_act1.png', '/assets/stops/placeholder_act2.png',
+  '/assets/stops/placeholder_act3.png', '/assets/stops/placeholder_act4.png',
   // Gems
   '/assets/gems/ruby_chipped.png', '/assets/gems/ruby_flawed.png', '/assets/gems/ruby.png',
   '/assets/gems/ruby_flawless.png', '/assets/gems/ruby_perfect.png',
