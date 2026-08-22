@@ -1327,7 +1327,7 @@ body.no-scroll { overflow: hidden; }
 .result-screen {
   text-align:center;
   display:flex;flex-direction:column;align-items:center;
-  height:100vh;max-height:100vh;padding:0;cursor:pointer;
+  height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;padding:0;cursor:pointer;
   background:#000;
   overflow:hidden;
   max-width:none;margin:0;
@@ -1413,8 +1413,11 @@ body.no-scroll { overflow: hidden; }
   justify-content:center;
 }
 .result-title { font-size:22px; font-weight:bold; margin:8px 0; }
+.result-title:empty { display:none; }
 .result-sub { font-size:16px; color:#888888; }
+.result-sub:empty { display:none; }
 .result-status { display:flex;flex-direction:column;gap:4px;align-items:center;margin:6px 0;width:100%; }
+.result-status:empty { display:none; }
 .result-status-row { display:flex;align-items:center;gap:8px;font-size:13px;color:#aaa; }
 .result-status-hp { color:#e74c3c;font-weight:bold; }
 .result-status-resource { color:#5dade2;font-weight:bold; }
@@ -2059,7 +2062,7 @@ body.no-scroll { overflow: hidden; }
 .stop-result {
   width:auto !important;height:auto !important;
   object-fit:cover;border-radius:0;
-  border:none;
+  border:none;border-bottom:2px solid rgba(255,255,255,0.15);
 }
 
 /* Wave positions */
