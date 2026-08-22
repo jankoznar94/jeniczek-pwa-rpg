@@ -3926,7 +3926,7 @@ export function initGame() {
     const h = state.hero;
     const mb = mapBattleState;
     if (!h || !mb || mb.locId === undefined || _currentScreen !== 'result') return;
-    // HP/mana/buffy se zobrazují jako overlay na obrázku zastávky — aktualizovat je zde.
+    // HP/mana/buffy/potiony se zobrazují jako overlay na obrázku zastávky.
     const oh = h;
     const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
     const ohpColor = ohpPct > 50 ? '#e74c3c' : ohpPct > 20 ? '#e67e22' : '#ff4444';
@@ -3936,21 +3936,29 @@ export function initGame() {
       ovOverlay.innerHTML = `<span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
         <span style="color:#4a7dff">${oManaHtml}</span>`;
     }
+    // Potiony v opasku
     const bpSlots = h.equip.beltPotionSlots || [];
     const potCounts = {};
     bpSlots.forEach(pid => { if (pid) { const p = ITEM_MAP[pid]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[pid] = (potCounts[pid] || 0) + 1; } });
-    const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
-      'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
-    const potionsHtml = `<div class="result-status-potions">` + potOrder
-      .filter(id => potCounts[id])
-      .map(id => {
-        const p = ITEM_MAP[id];
-        return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
+    const potTile = (id) => {
+      const p = ITEM_MAP[id];
+      return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
         ${renderItemIcon(p, 0)}
         <span class="result-status-potion-count">${potCounts[id]}</span>
       </div>`;
-      }).join('') + `</div>`;
-    $('resultStatus').innerHTML = potionsHtml;
+    };
+    const healOrder = ['healingPotion5','healingPotion4','healingPotion3','healingPotion2','healingPotion'];
+    const manaOrder = ['manaPotion5','manaPotion4','manaPotion3','manaPotion2','manaPotion'];
+    const ovHeal = document.querySelector('.stop-result-potions-heal');
+    if (ovHeal) {
+      ovHeal.innerHTML = healOrder.filter(id => potCounts[id]).map(id => potTile(id)).join('');
+      if (!ovHeal.innerHTML) ovHeal.remove();
+    }
+    const ovMana = document.querySelector('.stop-result-potions-mana');
+    if (ovMana) {
+      ovMana.innerHTML = manaOrder.filter(id => potCounts[id]).map(id => potTile(id)).join('');
+      if (!ovMana.innerHTML) ovMana.remove();
+    }
   }
 
   function usePotionFromResult(potionId) {
@@ -8327,11 +8335,37 @@ export function initGame() {
       const stopNameEn = getStopName(locId, curStopIdx, true);
       const winTitle = 'Victory!';
       const winSub = `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum)}${isStopComplete ? ' · Zastávka dokončena' : ` · Fight ${fightNum}/10`}`;
-      // Stav hráče — overlay dole na obrázku zastávky (HP, mana, buffy)
+      // Stav hráče — overlay dole na obrázku zastávky (HP, mana, buffy, potiony)
       const oh = state.hero;
       const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
       const ohpColor = ohpPct > 50 ? '#e74c3c' : ohpPct > 20 ? '#e67e22' : '#ff4444';
       const oManaHtml = `💧 ${Math.round(state.mana)}/${Math.round(state.maxMana)}`;
+      // Potiony v opasku
+      const ovBpSlots = oh.equip.beltPotionSlots || [];
+      const ovPotCounts = {};
+      ovBpSlots.forEach(pid => { if (pid) { const p = ITEM_MAP[pid]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) ovPotCounts[pid] = (ovPotCounts[pid] || 0) + 1; } });
+      // Heal potiony — od nejsilnějšího po nejslabší (tier 5→1), sloupec vlevo dole
+      const healOrder = ['healingPotion5','healingPotion4','healingPotion3','healingPotion2','healingPotion'];
+      const healPotsHtml = healOrder
+        .filter(id => ovPotCounts[id])
+        .map(id => {
+          const p = ITEM_MAP[id];
+          return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${ovPotCounts[id]})">
+          ${renderItemIcon(p, 0)}
+          <span class="result-status-potion-count">${ovPotCounts[id]}</span>
+        </div>`;
+        }).join('');
+      // Mana potiony — od nejsilnějšího po nejslabší, sloupce vpravo dole
+      const manaOrder = ['manaPotion5','manaPotion4','manaPotion3','manaPotion2','manaPotion'];
+      const manaPotsHtml = manaOrder
+        .filter(id => ovPotCounts[id])
+        .map(id => {
+          const p = ITEM_MAP[id];
+          return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${ovPotCounts[id]})">
+          ${renderItemIcon(p, 0)}
+          <span class="result-status-potion-count">${ovPotCounts[id]}</span>
+        </div>`;
+        }).join('');
       // Buffy a debuffy hráče — overlay na obrázku zastávky (hned nad životy)
       let ovBuffsHtml = '';
       Object.keys(_sessionBuffs).forEach(k => {
@@ -8354,6 +8388,8 @@ export function initGame() {
           <span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
           <span style="color:#4a7dff">${oManaHtml}</span>
         </div>
+        ${healPotsHtml ? `<div class="stop-result-potions stop-result-potions-heal">${healPotsHtml}</div>` : ''}
+        ${manaPotsHtml ? `<div class="stop-result-potions stop-result-potions-mana">${manaPotsHtml}</div>` : ''}
       </div>`;
       // Všem akty zobrazit obrázek zastávky
       $('resultIcon').innerHTML = `<div class="stop-result-wrap">
@@ -8381,25 +8417,8 @@ export function initGame() {
       }
       $('resultLootList').innerHTML = lootListHtml;
 
-      // === Stav hráče na Victory page ===
-      const h = state.hero;
-      // Potiony v opasku
-      const bpSlots = h.equip.beltPotionSlots || [];
-      const potCounts = {};
-      bpSlots.forEach(potId => { if (potId) { const p = ITEM_MAP[potId]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[potId] = (potCounts[potId] || 0) + 1; } });
-      const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
-        'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
-      const potionsHtml = `<div class="result-status-potions">` + potOrder
-        .filter(id => potCounts[id])
-        .map(id => {
-          const p = ITEM_MAP[id];
-          return `<div class="result-status-potion" onclick="game.usePotionFromResult('${id}')" title="${p.name} (${potCounts[id]})">
-          ${renderItemIcon(p, 0)}
-          <span class="result-status-potion-count">${potCounts[id]}</span>
-        </div>`;
-        }).join('') + `</div>`;
-      // HP/mana/buffy jsou overlay na obrázku zastávky; zde zůstávají jen potiony.
-      $('resultStatus').innerHTML = potionsHtml;
+      // Potiony jsou součástí overlay na obrázku zastávky (levý/ pravý spodní roh).
+      $('resultStatus').innerHTML = '';
 
       // Victory action buttons — bez waypointů. Next Fight pokračuje do další zastávky, pokud je dokončena.
       const hasScroll = (state.townPortalCount || 0) > 0;
