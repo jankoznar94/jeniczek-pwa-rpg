@@ -1327,17 +1327,16 @@ body.no-scroll { overflow: hidden; }
 .result-screen {
   text-align:center;
   display:flex;flex-direction:column;align-items:center;
-  height:100vh;max-height:100vh;padding:12px 20px;cursor:pointer;
+  min-height:100vh;padding:12px 20px;cursor:pointer;
   background:#000;
-  overflow:hidden;
+  overflow-y:auto;
 }
 .result-top {
-  flex:1 1 auto;
+  flex:1;
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;
   width:100%;
   min-height:0;
-  overflow-y:auto;
 }
 .result-bottom {
   flex:0 0 auto;
@@ -1347,6 +1346,9 @@ body.no-scroll { overflow: hidden; }
   min-height:0;
   gap:6px;
   padding:4px 0;
+  position:sticky; bottom:0;
+  background:#000;
+  z-index:5;
 }
 .result-bottom:empty { display:none; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
