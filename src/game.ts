@@ -9752,12 +9752,14 @@ export function initGame() {
     playSFX(shopSfx);
     saveGame();
     showMessage(`💰 Prodáno ${item.icon} ${getItemSocketName(item)} za ${sellPrice}💰`);
-    renderShop();
+    if (_currentScreen === 'shop') renderShop();
+    else if (_currentScreen === 'gamble') renderGamble();
   }
 
   // ===== GAMBLE (D2 styl) =====
   let _gambleCategory = 'Weapons';
   let _gambleItemsCache = null;
+  let _gambleTab = 'buy';
 
   function _generateGambleItems() {
     const h = state.hero;
@@ -9838,6 +9840,40 @@ export function initGame() {
     const h = state.hero;
     $('gambleGold').textContent = `💰 ${h.gold} gold`;
 
+    // Sell záložka — stejná logika jako u shopu.
+    if (_gambleTab === 'sell') {
+      $('gambleCatTabs').style.display = 'none';
+      const equipSet = new Set(Object.values(h.equip).filter(Boolean));
+      const sellable = h.inventory.filter(entry => {
+        const id = typeof entry === 'object' ? entry.id : entry;
+        return !equipSet.has(id);
+      });
+      if (sellable.length === 0) {
+        $('gambleList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to sell</div>';
+        return;
+      }
+      $('gambleList').innerHTML = sellable.map(entry => {
+        const itemId = typeof entry === 'object' ? entry.id : entry;
+        const item = ITEM_MAP[itemId];
+        if (!item) return '';
+        const sellPrice = Math.round(item.cost * 0.5);
+        return `<div class="shop-item">
+          <div class="shop-item-header">
+            <div class="shop-item-icon">${renderItemIcon(item,64)}</div>
+            <div class="shop-item-name" style="color:${getQualityColor(item)}">${getItemSocketName(item)}</div>
+          </div>
+          <div class="shop-item-stats">${buildItemStatsHtml(item)}</div>
+          <div class="shop-item-actions">
+            <button class="btn btn-shop-buy" onclick="game.sellItem('${itemId}')">
+              <span class="btn-buy-icon">💰</span>
+              <span class="btn-buy-price" style="color:#f1c40f">${sellPrice}</span>
+            </button>
+          </div>
+        </div>`;
+      }).join('');
+      return;
+    }
+
     if (!_gambleItemsCache) {
       _gambleItemsCache = _generateGambleItems();
     }
@@ -9846,6 +9882,7 @@ export function initGame() {
 
     // Kategorie záložky
     const catTabsEl = $('gambleCatTabs');
+    catTabsEl.style.display = 'flex';
     catTabsEl.innerHTML = sections.map(s => {
       if (s.items.length === 0) return '';
       const active = s.category === _gambleCategory ? 'active' : '';
@@ -9885,6 +9922,15 @@ export function initGame() {
 
   function switchGambleCategory(cat) {
     _gambleCategory = cat;
+    renderGamble();
+  }
+
+  function switchGambleTab(tab) {
+    _gambleTab = tab;
+    document.querySelectorAll('[data-gamble-tab]').forEach(t => t.classList.toggle('active', t.dataset.gambleTab === tab));
+    if (tab === 'buy') {
+      $('gambleCatTabs').style.display = 'flex';
+    }
     renderGamble();
   }
 
@@ -11147,7 +11193,7 @@ export function initGame() {
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
     continueToNextStop,
     renderChest,
-    renderGamble, switchGambleCategory, buyGambleItem
+    renderGamble, switchGambleCategory, switchGambleTab, buyGambleItem
   };
   init();
 }
