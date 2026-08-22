@@ -3926,13 +3926,17 @@ export function initGame() {
     const h = state.hero;
     const mb = mapBattleState;
     if (!h || !mb || mb.locId === undefined || _currentScreen !== 'result') return;
+    // HP/mana/buffy se zobrazují jako overlay na obrázku zastávky — aktualizovat je zde.
+    const oh = h;
+    const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
+    const ohpColor = ohpPct > 50 ? '#e74c3c' : ohpPct > 20 ? '#e67e22' : '#ff4444';
+    const oManaHtml = `💧 ${Math.round(state.mana)}/${Math.round(state.maxMana)}`;
+    const ovOverlay = document.querySelector('.stop-result-hpbar');
+    if (ovOverlay) {
+      ovOverlay.innerHTML = `<span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
+        <span style="color:#4a7dff">${oManaHtml}</span>`;
+    }
     const bpSlots = h.equip.beltPotionSlots || [];
-    const hpPct = Math.round(h.hp / h.maxHp * 100);
-    let resourceHtml = '';
-    resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
-    let buffsHtml = '';
-    Object.keys(_sessionBuffs).forEach(k => { const b = _sessionBuffs[k]; if (b && b.ticks > 0) { const hasImg = b.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`; } });
-    Object.keys(_playerDebuffs).forEach(k => { const d = _playerDebuffs[k]; if (d && d.ticks > 0) { const hasImg = d.iconImg; buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`; } });
     const potCounts = {};
     bpSlots.forEach(pid => { if (pid) { const p = ITEM_MAP[pid]; if (p && (p.subtype === 'heal' || p.subtype === 'mana')) potCounts[pid] = (potCounts[pid] || 0) + 1; } });
     const potOrder = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
@@ -3946,9 +3950,7 @@ export function initGame() {
         <span class="result-status-potion-count">${potCounts[id]}</span>
       </div>`;
       }).join('') + `</div>`;
-    $('resultStatus').innerHTML = `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>
-      ${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
-      ${potionsHtml}`;
+    $('resultStatus').innerHTML = potionsHtml;
   }
 
   function usePotionFromResult(potionId) {
@@ -8325,14 +8327,33 @@ export function initGame() {
       const stopNameEn = getStopName(locId, curStopIdx, true);
       const winTitle = 'Victory!';
       const winSub = `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum)}${isStopComplete ? ' · Zastávka dokončena' : ` · Fight ${fightNum}/10`}`;
-      // Stav hráče — overlay dole na obrázku zastávky (HP, mana)
+      // Stav hráče — overlay dole na obrázku zastávky (HP, mana, buffy)
       const oh = state.hero;
       const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
       const ohpColor = ohpPct > 50 ? '#e74c3c' : ohpPct > 20 ? '#e67e22' : '#ff4444';
       const oManaHtml = `💧 ${Math.round(state.mana)}/${Math.round(state.maxMana)}`;
+      // Buffy a debuffy hráče — overlay na obrázku zastávky (hned nad životy)
+      let ovBuffsHtml = '';
+      Object.keys(_sessionBuffs).forEach(k => {
+        const b = _sessionBuffs[k];
+        if (b && b.ticks > 0) {
+          const hasImg = k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout';
+          ovBuffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`;
+        }
+      });
+      Object.keys(_playerDebuffs).forEach(k => {
+        const d = _playerDebuffs[k];
+        if (d && d.ticks > 0) {
+          const hasImg = k === 'thunderClap' || k === 'thunderBolt';
+          ovBuffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`;
+        }
+      });
       const statsOverlay = `<div class="stop-result-stats">
-        <span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
-        <span style="color:#4a7dff">${oManaHtml}</span>
+        ${ovBuffsHtml ? `<div class="stop-result-buffs">${ovBuffsHtml}</div>` : ''}
+        <div class="stop-result-hpbar">
+          <span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
+          <span style="color:#4a7dff">${oManaHtml}</span>
+        </div>
       </div>`;
       // Všem akty zobrazit obrázek zastávky
       $('resultIcon').innerHTML = `<div class="stop-result-wrap">
@@ -8362,27 +8383,6 @@ export function initGame() {
 
       // === Stav hráče na Victory page ===
       const h = state.hero;
-      const hpPct = Math.round(h.hp / h.maxHp * 100);
-      const hpColor = hpPct > 50 ? '#e74c3c' : hpPct > 20 ? '#e67e22' : '#ff4444';
-      let resourceHtml = '';
-      resourceHtml = `Mana: <span class="result-status-resource">${Math.round(state.mana)}/${Math.round(state.maxMana)}</span>`;
-      // Buffy
-      let buffsHtml = '';
-      Object.keys(_sessionBuffs).forEach(k => {
-        const b = _sessionBuffs[k];
-        if (b && b.ticks > 0) {
-          const hasImg = k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout';
-          buffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`;
-        }
-      });
-      // Debuffy na hráči
-      Object.keys(_playerDebuffs).forEach(k => {
-        const d = _playerDebuffs[k];
-        if (d && d.ticks > 0) {
-          const hasImg = k === 'thunderClap' || k === 'thunderBolt';
-          buffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`;
-        }
-      });
       // Potiony v opasku
       const bpSlots = h.equip.beltPotionSlots || [];
       const potCounts = {};
@@ -8398,12 +8398,8 @@ export function initGame() {
           <span class="result-status-potion-count">${potCounts[id]}</span>
         </div>`;
         }).join('') + `</div>`;
-      // Staty (HP, mana) jsou overlay na obrázku zastávky; zachováváme status řádek jen pokud nemáme obrázek.
-      const hasStatsOverlay = true;
-      const statusHtml = (hasStatsOverlay ? '' : `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>\n`) +
-        `${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
-        ${potionsHtml}`;
-      $('resultStatus').innerHTML = statusHtml;
+      // HP/mana/buffy jsou overlay na obrázku zastávky; zde zůstávají jen potiony.
+      $('resultStatus').innerHTML = potionsHtml;
 
       // Victory action buttons — bez waypointů. Next Fight pokračuje do další zastávky, pokud je dokončena.
       const hasScroll = (state.townPortalCount || 0) > 0;
