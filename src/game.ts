@@ -324,7 +324,7 @@ export function initGame() {
     state._floorLootDrops = [];
     state.hero.hp = state.hero.maxHp;
     saveGame();
-    switchBGM('defeat');
+    // Divočina má jednu hudbu skrze vše — victory/lose hudbu nemění.
     $('resultIcon').innerHTML = '<img class="result-icon-img large" src="assets/result_defeat.png" alt="Vzdal ses">';
     $('resultTitle').textContent = 'Forfeit';
     $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
@@ -1579,8 +1579,13 @@ export function initGame() {
         navBar.classList.remove('hidden');
       }
     }
-    // Přepnout na overworld BGM mimo boj
-    if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') switchBGM('overworld');
+    // Přepnout BGM: divočina (mapa) = bojová hudba, město a ostatní = městská (overworld).
+    // Victory/Lose/boj hudbu nemění — divočina má jednu hudbu skrze vše.
+    if (name === 'map') {
+      switchBGM('battle');
+    } else if (name !== 'mapBattle' && name !== 'battle' && name !== 'result') {
+      switchBGM('overworld');
+    }
     if (name === 'map') renderMap();
     else if (name === 'town') renderTown();
     else if (name === 'mapBattle') { window.scrollTo(0,0); document.documentElement.scrollTop = 0; }
@@ -2533,7 +2538,7 @@ export function initGame() {
     const actionInfoReset = $('mbActionInfo');
     if (actionInfoReset) { actionInfoReset.classList.add('hidden'); actionInfoReset.textContent = ''; }
     if (progress === 0 && !isBoss) _forceNewBattleBgm = true;
-    switchBGM(isBoss ? 'boss' : 'battle');
+    switchBGM('battle');
     document.body.classList.add('battle-active');
     updateMapBattleUI();
     setupMapBattleInput();
@@ -8016,7 +8021,7 @@ export function initGame() {
         }
       }, 300);
       try {
-        switchBGM('win');
+        // Divočina má jednu hudbu skrze vše — victory/lose hudbu nemění.
         updateMapBattleUI();
         cleanupTimers();
         dimTimers();
@@ -8488,7 +8493,7 @@ export function initGame() {
       // Remove old onclick
       $('resultScreen').onclick = null;
       showScreen('result');
-      switchBGM('win');
+      // Divočina má jednu hudbu skrze vše — victory/lose hudbu nemění.
       return;
     }
 
@@ -8518,7 +8523,7 @@ export function initGame() {
       state._floorLootDrops = [];
       state.hero.hp = state.hero.maxHp;
       saveGame();
-      switchBGM('defeat');
+      // Divočina má jednu hudbu skrze vše — victory/lose hudbu nemění.
       $('resultIcon').innerHTML = '<img class="result-icon-img large" src="assets/result_defeat.png" alt="Prohra">';
       $('resultTitle').textContent = 'Defeat';
       $('resultMsg').innerHTML = '<div style="text-align:center;color:#888;font-size:13px">Returning to town...</div>';
@@ -8578,7 +8583,7 @@ export function initGame() {
       saveGame();
     }
     showScreen('result');
-    if (won) switchBGM('win');
+    // Divočina má jednu hudbu skrze vše — victory/lose hudbu nemění.
   }
 
   function showMapWithUnlock(doneLocId) {
