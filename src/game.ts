@@ -88,7 +88,33 @@ export function initGame() {
   const sfxSuccess=()=>{playTone(523,0.1,'sine',0.12);setTimeout(()=>playTone(659,0.1,'sine',0.12),80);setTimeout(()=>playTone(784,0.15,'sine',0.14),160);};
   const sfxEnemyDefeat=()=>{playTone(440,0.08,'square',0.1);setTimeout(()=>playTone(330,0.08,'square',0.1),80);setTimeout(()=>playTone(220,0.15,'square',0.08),160);};
   const sfxBossDefeat=()=>{playTone(523,0.15,'sine',0.14);setTimeout(()=>playTone(659,0.15,'sine',0.14),100);setTimeout(()=>playTone(784,0.15,'sine',0.16),200);setTimeout(()=>playTone(1047,0.3,'sine',0.18),300);};
-  const sfxLevelUp=()=>{playTone(392,0.1,'sine',0.12);setTimeout(()=>playTone(523,0.1,'sine',0.12),100);setTimeout(()=>playTone(659,0.12,'sine',0.14),200);setTimeout(()=>playTone(784,0.15,'sine',0.16),300);};
+  const sfxLevelUp=()=>{
+    // Na chvíli ztlumit aktivní BGM, aby level up fanfára vynikla — hudba pak plynule pokračuje.
+    duckBgm(0.3, 750);
+    playTone(392,0.1,'sine',0.12);setTimeout(()=>playTone(523,0.1,'sine',0.12),100);setTimeout(()=>playTone(659,0.12,'sine',0.14),200);setTimeout(()=>playTone(784,0.15,'sine',0.16),300);
+  };
+  // Ztlumí právě hrající BGM na danou hlasitost a po 'duration' ms ji vrátí na původní.
+  // Hudba NErestartuje — jen se dočasně ztlumí a plynule pokračuje.
+  let _bgmDuckTimer = null;
+  function duckBgm(level, duration) {
+    // Najít aktivní stopu podle currentBGM
+    let track = null;
+    if (currentBGM === 'battle') track = battleBgmTracks[_currentBattleBgmIdx];
+    else if (currentBGM === 'boss') track = bossBgm;
+    else if (currentBGM === 'overworld') track = overworldAudio;
+    else if (currentBGM === 'defeat') track = defeatAudio;
+    else if (currentBGM === 'win') track = winAudio;
+    else if (currentBGM === 'minigame') track = minigameBgm;
+    if (!track) return;
+    const orig = track.volume;
+    track.volume = level;
+    if (_bgmDuckTimer) clearTimeout(_bgmDuckTimer);
+    _bgmDuckTimer = setTimeout(() => {
+      // Vrátit jen pokud se mezitím hlasitost nemění (hud neuživatelem neztlumena)
+      if (track.volume === level) track.volume = orig;
+      _bgmDuckTimer = null;
+    }, duration);
+  }
   // MP3 SFX
   const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 0.70; return a; })();
   const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 0.70; return a; })();
