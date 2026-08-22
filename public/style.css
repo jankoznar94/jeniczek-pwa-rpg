@@ -1327,17 +1327,18 @@ body.no-scroll { overflow: hidden; }
 .result-screen {
   text-align:center;
   display:flex;flex-direction:column;align-items:center;
-  min-height:100vh;padding:0;cursor:pointer;
+  height:100vh;max-height:100vh;padding:0;cursor:pointer;
   background:#000;
-  overflow-y:auto;
+  overflow:hidden;
   max-width:none;margin:0;
 }
 .result-top {
-  flex:1;
+  flex:1 1 auto;
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;
   width:100%;
   min-height:0;
+  overflow-y:auto;
 }
 .result-bottom {
   flex:0 0 auto;
@@ -1347,7 +1348,6 @@ body.no-scroll { overflow: hidden; }
   min-height:0;
   gap:6px;
   padding:10px 12px;
-  position:sticky; bottom:0;
   background:#000;
   z-index:5;
 }
@@ -1355,10 +1355,10 @@ body.no-scroll { overflow: hidden; }
 .result-icon { font-size:56px; display:flex;align-items:center;justify-content:center;min-height:40px; }
 .result-icon-img { width:auto;height:auto;max-width:60vw;max-height:12vh;object-fit:contain;display:block; }
 .result-icon-img.large { max-width:90vw;max-height:50vh; }
-/* Obrázek zastávky na vítězné stránce — roztažený až do krajů (horní + boční okraje) */
+/* Obrázek zastávky na vítězné stránce — roztažený do krajů, 1px od horní hrany */
 .result-icon-img.stop-result { max-width:100vw; max-height:calc(100vh - 160px); }
-.result-top:has(.stop-result) { justify-content:flex-start; padding-top:0; }
-.result-top:has(.stop-result-wrap) { justify-content:flex-start; padding-top:0; }
+.result-top:has(.stop-result) { justify-content:flex-start; padding-top:1px; }
+.result-top:has(.stop-result-wrap) { justify-content:flex-start; padding-top:1px; }
 /* Overlay text na obrázku zastávky (Victory!, název actu, zastávka, progress) */
 .stop-result-wrap { position:relative; width:100%; max-width:none; margin:0; }
 .stop-result-wrap .result-icon-img.stop-result { max-width:100%; max-height:calc(100vh - 160px); width:auto; height:auto; }
@@ -1436,7 +1436,7 @@ body.no-scroll { overflow: hidden; }
 .result-loot .result-stat { border:1px solid #888; }
 .result-grade { font-size:28px;margin:8px 0;letter-spacing:4px; }
 .result-tap { font-size:11px;color:#555;margin-top:4px;animation:resultTapPulse 2s ease-in-out infinite; }
-.result-loot-scroll { max-height:140px;overflow-y:auto;margin:6px auto;padding:4px 0;width:100%; }
+.result-loot-scroll { max-height:140px;overflow-y:auto;margin:6px auto;padding:4px 10px;width:100%; }
 .result-loot-scroll::-webkit-scrollbar { width:4px; }
 .result-loot-scroll::-webkit-scrollbar-track { background:#1a1a1a; }
 .result-loot-scroll::-webkit-scrollbar-thumb { background:#4a4a4a;border-radius:2px; }
@@ -2058,9 +2058,8 @@ body.no-scroll { overflow: hidden; }
 /* Výsledná obrazovka — obrázek zastávky dominantní, ale ne přeplněný */
 .stop-result {
   width:auto !important;height:auto !important;
-  max-width:240px;max-height:150px;
-  object-fit:cover;border-radius:8px;
-  border:2px solid rgba(255,255,255,0.15);
+  object-fit:cover;border-radius:0;
+  border:none;
 }
 
 /* Wave positions */
