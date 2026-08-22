@@ -21,12 +21,20 @@ import { SIMON_SYMBOLS, SIMON_COLORS, SIMON_FREQS } from './data/minigames';
 import { SCREEN_IDS, FULL_SCREENS } from './core/screens';
 import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spawnImpactBurst, spawnDeathSmoke, spawnShockwave, spawnParticleSlash, spawnMeleeStrike, preloadDungeonAssets } from './render/battle/battleScene';
 
-// Názvy zastávek Act 0 (Enchanted Forest) — vizuální cesta
+// Názvy zastávek — vizuální cesta. Act 0 = Enchanted Forest, Act 1-4 ostatní říše.
 const STOP_NAMES = {
   0: ['Louka', 'Les', 'Zřícenina', 'Bažina', 'Lesní pahorky', 'Údolí', 'Vesnice lidojedů', 'Tajemná studna', 'Cesta k pevnosti', 'Pevnost lesního pána'],
+  1: ['Pouštní výspa', 'Písečné duny', 'Oáza', 'Starověké ruiny', 'Písečná bouře', 'Tábor', 'Slané pláně', 'Hrobka faraónů', 'Zatopená svatyně', 'Faraónova pevnost'],
+  2: ['Sněžná pole', 'Sněhové pláně', 'Zámrzlé jezero', 'Ledová jeskyně', 'Ledovec', 'Sněžná vesnice', 'Lavinový průsmyk', 'Mrazivá svatyně', 'Mrazivý vrchol', 'Citadela ledového obra'],
+  3: ['Hřbitov', 'Prokleté bažiny', 'Hrobka', 'Shnilá hrobka', 'Uličky kostí', 'Prokleté ruiny', 'Morová věž', 'Nekropole', 'Studna duší', 'Lichova svatyně'],
+  4: ['Spálené pláně', 'Lávová pole', 'Lávová jáma', 'Lávový hřeben', 'Démonova rokla', 'Hořící hrad', 'Trhlina pekla', 'Inferno svatyně', 'Pekelná brána', 'Doupě lávového draka'],
 };
 const STOP_NAMES_EN = {
-  0: ['Meadow', 'Forest', 'Ruins', 'Swamp', 'Wooded Hills', 'Valley', 'Cannibal Village', 'Mystic Well', 'Road to the Fortress', 'Forest Lord\'s Fortress'],
+  0: ['Meadow', 'Forest', 'Ruins', 'Swamp', 'Wooded Hills', 'Valley', 'Cannibal Village', 'Mystic Well', 'Road to the Fortress', "Forest Lord's Fortress"],
+  1: ['Desert Outpost', 'Sand Dunes', 'Oasis', 'Ancient Ruins', 'Sandstorm', 'Campsite', 'Salt Flats', 'Tomb of Pharaohs', 'Sunken Shrine', "Pharaoh's Throne"],
+  2: ['Snowfield', 'Snowy Field', 'Frozen Lake', 'Ice Cave', 'Glacier', 'Snowy Village', 'Avalanche Pass', 'Frost Shrine', 'Frozen Peak', "Frost Giant's Citadel"],
+  3: ['Graveyard', 'Cursed Bog', 'Tomb', 'Rotting Crypt', 'Bone Valley', 'Cursed Ruins', 'Plague Tower', 'Necropolis', 'Soul Well', "Lich's Sanctum"],
+  4: ['Ashen Plains', 'Lava Fields', 'Cinder Pits', 'Lava Ridge', 'Demon Gully', 'Burning Keep', 'Skin Rift', 'Inferno Shrine', 'Abyssal Gate', "Lava Dragon's Lair"],
 };
 
 // Pomocná funkce: název zastávky (česky nebo anglicky)
@@ -36,10 +44,12 @@ function getStopName(actId, zoneId, en) {
   return (list && list[idx]) || `Zastávka ${idx+1}`;
 }
 
-// Pomocná funkce: jakou zastávku právě hráč prochází v aktu (0 = louka, 9 = boss pevnost)
+// Pomocná funkce: jakou zastávku právě hráč prochází v aktu (0 = začátek, 9 = boss zóna)
 function getStopImage(actId, zoneId) {
   const idx = Math.min(Math.max(zoneId || 0, 0), 9);
-  return `assets/stops/stop_act${actId}_${idx}.webp`;
+  // Act 0 má vygenerované zastávky; Act 1-4 zatím placeholder (obrázky se generují později)
+  if (actId === 0) return `assets/stops/stop_act0_${idx}.webp`;
+  return `assets/stops/placeholder_act${actId}.png`;
 }
 
 export function initGame() {
@@ -257,12 +267,6 @@ export function initGame() {
       // locationProgress=999 → všechny area a fighty jsou odemčené a přístupné.
       state.locationProgress = ACTS.map(() => 999);
       state.areaFightProgress = ACTS.map(() => 0);
-      // Odemknout waypointy pro všechny acty (area 1-9)
-      state.waypoints = ACTS.map((_, actId) => {
-        const wps = [];
-        for (let a = 1; a < 10; a++) wps.push(a);
-        return wps;
-      });
       // Odemknout celý bestiář
       state.encounteredMonsters = [];
       MONSTER_DB.forEach(themeMonsters => {
@@ -314,7 +318,7 @@ export function initGame() {
     const locId = mb.locId;
     state.deaths = (state.deaths || 0) + 1;
     // Žádné XP ani gold — forfeit je prohra bez odměny
-    // Reset jen aktuální oblasti (areaFightProgress), locationProgress zůstává (waypoint)
+    // Reset jen aktuální oblasti (areaFightProgress), locationProgress zůstává
     state.areaFightProgress[locId] = 0;
     state._floorLootDrops = [];
     state.hero.hp = state.hero.maxHp;
@@ -1409,10 +1413,8 @@ export function initGame() {
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[],gloves:null,boots:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
       locationProgress:[0,0,0,0,0], areaFightProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
-      waypoints:[[],[],[],[],[]], // waypoints[actId] = [zoneId, ...] — odemčené waypointy
       townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
       townPortalCount: 0, // počet town portal scrollů (stack)
-      _waypointPending: null, // {actId, areaId} — čekající waypoint pro conflict modal
       comboPoints:0, // Assassin combo points (0-5)
       _dodgeBuffTimer:0, // Evasion buff (ticky)
       _speedBoostTimer:0, // Speed boost (ticky)
@@ -1871,58 +1873,29 @@ export function initGame() {
 
   function buildDotPath(actId, curArea, curFight, totalZones, theme) {
     let html = '';
-    // Act 0 (Enchanted Forest) — vizuální zastávky s obrázky místo 100 puntíků
-    if (actId === 0) {
-      const bossDefeated = state.bossesDefeated && state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
-      for (let stop = 0; stop < totalZones; stop++) {
-        const done = bossDefeated || stop < curArea;
-        const current = !bossDefeated && stop === curArea;
-        const locked = !bossDefeated && stop > curArea;
-        const unlocked = !locked && !done;
-        const fightProgress = current ? Math.min(curFight, 10) : 10;
-        const badgeHtml = done
-          ? '<div class="stop-badge stop-badge-done">✓</div>'
-          : current
-            ? `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`
-            : locked
-              ? '<div class="stop-badge stop-badge-locked">🔒</div>'
-              : `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`;
-        const cls = done ? 'stop-done' : current ? 'stop-current' : locked ? 'stop-locked' : 'stop-unlocked';
-        const label = STOP_NAMES[actId] ? STOP_NAMES[actId][stop] : `Zastávka ${stop+1}`;
-        html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
-          <div class="stop-card">
-            <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
-            ${badgeHtml}
-          </div>
-        </div>`;
-      }
-      return html;
-    }
-    for (let area = 0; area < totalZones; area++) {
-      const areaDone = area < curArea;
-      const areaCurrent = area === curArea;
-      const areaLocked = area > curArea;
-
-      // Waypoint dot — jen pro oblasti 1+ (první oblast začíná fightem 1)
-      if (area > 0) {
-        const wpUnlocked = areaDone || areaCurrent;
-        html += `<div class="dot-wrap dot-waypoint ${wpUnlocked?'dot-unlocked':'dot-locked'} ${areaCurrent && curFight === 0 ? 'dot-current' : ''}" style="${wpUnlocked?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${!wpUnlocked?'':`game.continueFromWaypoint(${actId}, ${area})`}" title="Area ${area+1} — Waypoint">
-          <div class="dot-circle dot-wp-inner">★</div>
-        </div>`;
-      }
-
-      // 10 fight dots
-      for (let f = 0; f < 10; f++) {
-        const fightDone = areaDone || (areaCurrent && f < curFight);
-        const fightCurrent = areaCurrent && f === curFight;
-        const fightLocked = areaLocked || (areaCurrent && f > curFight);
-        const fightNum = area * 10 + f + 1;
-        const waveOffset = (area * 10 + f) % 4;
-        const waveClass = ['dot-wave-l','dot-wave-c','dot-wave-r','dot-wave-c'][waveOffset];
-        html += `<div class="dot-wrap ${waveClass} ${fightDone?'dot-done':fightCurrent?'dot-current':fightLocked?'dot-locked':'dot-unlocked'} ${fightCurrent?'dot-pulse':''}" style="${fightDone||fightCurrent?`--dot-color:${theme.border}`:''}" onclick="event.stopPropagation();${fightLocked?'':`game.startLocation(${actId}, ${area}, ${f})`}" title="Fight ${fightNum}">
-          <div class="dot-circle">${fightNum}</div>
-        </div>`;
-      }
+    // Všechny akty — vizuální zastávky s obrázky místo 100 puntíků (waypointy zrušeny)
+    const bossDefeated = state.bossesDefeated && state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
+    for (let stop = 0; stop < totalZones; stop++) {
+      const done = bossDefeated || stop < curArea;
+      const current = !bossDefeated && stop === curArea;
+      const locked = !bossDefeated && stop > curArea;
+      const unlocked = !locked && !done;
+      const fightProgress = current ? Math.min(curFight, 10) : 10;
+      const badgeHtml = done
+        ? '<div class="stop-badge stop-badge-done">✓</div>'
+        : current
+          ? `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`
+          : locked
+            ? '<div class="stop-badge stop-badge-locked">🔒</div>'
+            : `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`;
+      const cls = done ? 'stop-done' : current ? 'stop-current' : locked ? 'stop-locked' : 'stop-unlocked';
+      const label = STOP_NAMES[actId] ? STOP_NAMES[actId][stop] : `Zastávka ${stop+1}`;
+      html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
+        <div class="stop-card">
+          <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
+          ${badgeHtml}
+        </div>
+      </div>`;
     }
     return html;
   }
@@ -1950,70 +1923,7 @@ export function initGame() {
     const canEnter = firstUncompleted >= 0;
     wildernessBtn.style.display = canEnter ? '' : 'none';
 
-    state.waypoints = state.waypoints || [[],[],[],[],[]];
-    const wpContainer = $('townWaypoints');
-    let wpHtml = '';
-    let hasAny = false;
-    // Inicializovat expanded state
-    if (state._expandedWaypointAct === undefined) state._expandedWaypointAct = -1;
-    ACTS.forEach((act, actId) => {
-      const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
-      const wps = state.waypoints[actId] || [];
-      if (wps.length === 0 && !completed) return;
-      hasAny = true;
-      const isExpanded = state._expandedWaypointAct === actId;
-      const theme = DUNGEON_THEMES[act.theme] || DUNGEON_THEMES[0];
-      // Hlavička actu — kliknutím toggle rozbalení (vždy univerzální waypoint/portál obrázek)
-      const actHeaderImg = `assets/waypoints/waypoint_act${actId}.png`;
-      wpHtml += `<div class="wp-act-header" style="border-color:${theme.border}" onclick="game.toggleWaypointAct(${actId})">
-        <img src="${actHeaderImg}" class="wp-act-header-icon">
-        <span class="wp-act-header-label">${act.name}</span>
-        <span class="wp-act-header-arrow">${isExpanded ? '▼' : '▶'}</span>
-      </div>`;
-      if (isExpanded) {
-        wpHtml += `<div class="wp-act-body">`;
-        if (completed) {
-          // Act 0: od area 0 (Meadow) je vždy dostupný
-          const startArea = actId === 0 ? 0 : 1;
-          for (let areaId = startArea; areaId < 10; areaId++) {
-            const areaNum = areaId + 1;
-            const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
-            const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
-            wpHtml += `<div class="waypoint-btn" style="border-color:${theme.border}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
-              <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
-              <div>
-                <div class="waypoint-btn-label">${stopLabel}</div>
-                <div class="waypoint-btn-sub">${act.name} · ✔ Completed</div>
-              </div>
-            </div>`;
-          }
-        } else {
-          // Act 0: Meadow (area 0) je odemčený hned od začátku
-          const list = actId === 0 ? [0].concat((wps || []).filter(a => a !== 0)) : wps;
-          list.sort((a,b) => a-b).forEach(areaId => {
-            const areaNum = areaId + 1;
-            const nextArea = (state.locationProgress[actId] || 0) + 1;
-            const isCurrent = nextArea === areaId;
-            const cls = isCurrent ? 'waypoint-btn waypoint-btn-current' : 'waypoint-btn';
-            const areaImg = actId === 0 ? getStopImage(0, areaId) : `assets/waypoints/waypoint_act${actId}.png`;
-            const stopLabel = actId === 0 ? getStopName(0, areaId, true) : `Area ${areaNum}`;
-            wpHtml += `<div class="${cls}" style="border-color:${theme.border}" onclick="game.continueFromWaypoint(${actId}, ${areaId})">
-              <div class="waypoint-btn-icon"><img src="${areaImg}"></div>
-              <div>
-                <div class="waypoint-btn-label">${stopLabel}</div>
-                <div class="waypoint-btn-sub">${act.name}${isCurrent ? ' · Next' : ''}</div>
-              </div>
-            </div>`;
-          });
-        }
-        wpHtml += `</div>`;
-      }
-    });
-    if (!hasAny) {
-      wpHtml = '<div style="color:#666;font-size:13px;text-align:center;padding:8px">No waypoints yet. Venture into the wilderness to find them!</div>';
-    }
-    wpContainer.innerHTML = wpHtml;
-
+    // Waypoint panel zrušen — cestování mezi zastávkami řeší mapa (zastávky se odemykají postupem).
     // Town portal scroll
     const portalCard = $('townPortalCard');
     const portalInfo = $('townPortalInfo');
@@ -2033,37 +1943,30 @@ export function initGame() {
     renderMap();
   }
 
-  function toggleTownWaypoints() {
-    const wrap = $('townWaypointsWrap');
-    if (wrap) wrap.classList.toggle('hidden');
-  }
-
-  function toggleWaypointAct(actId) {
-    if (state._expandedWaypointAct === actId) {
-      state._expandedWaypointAct = -1;
-    } else {
-      state._expandedWaypointAct = actId;
-    }
-    renderTown();
-  }
-
   function showTransition(type, actId, callback, zoneId) {
     const screen = $('transitionScreen');
     const img = $('transitionImage');
     const label = $('transitionLabel');
-    if (type === 'waypoint') {
-      img.src = actId === 0 ? `assets/stops/stop_act0_${Math.min(zoneId || 0, 9)}.webp` : `assets/waypoints/waypoint_act${actId}.png`;
-      label.textContent = 'Waypoint';
+    // 'portal' = Town portal, 'stop' = cesta do zastávky, 'town' = cesta do města
+    if (type === 'portal') {
+      img.src = 'assets/items/town_portal_scroll.png';
+      label.textContent = 'Town Portal';
+      img.style.setProperty('--glow-low', 'rgba(100,180,255,0.3)');
+      img.style.setProperty('--glow-high', 'rgba(100,180,255,0.6)');
+    } else if (type === 'town') {
+      img.src = 'assets/menu-icons/mesto.png';
+      label.textContent = 'Town';
+      img.style.setProperty('--glow-low', 'rgba(240,196,60,0.3)');
+      img.style.setProperty('--glow-high', 'rgba(240,196,60,0.6)');
+    } else {
+      // 'stop' — cesta do zastávky (obrázek dané zastávky)
+      img.src = getStopImage(actId, zoneId || 0);
+      label.textContent = STOP_NAMES[actId] ? STOP_NAMES[actId][Math.min(zoneId || 0, 9)] : `Zastávka`;
       // Glow barva podle actu
       const theme = DUNGEON_THEMES[ACTS[actId]?.theme] || DUNGEON_THEMES[0];
       const c = hexToRgb(theme.border);
       img.style.setProperty('--glow-low', `rgba(${c.r},${c.g},${c.b},0.3)`);
       img.style.setProperty('--glow-high', `rgba(${c.r},${c.g},${c.b},0.6)`);
-    } else {
-      img.src = 'assets/items/town_portal_scroll.png';
-      label.textContent = 'Town Portal';
-      img.style.setProperty('--glow-low', 'rgba(100,180,255,0.3)');
-      img.style.setProperty('--glow-high', 'rgba(100,180,255,0.6)');
     }
     screen.classList.remove('hidden');
     setTimeout(() => {
@@ -2138,8 +2041,10 @@ export function initGame() {
     if (actId === undefined || actId === null) return;
     state.areaFightProgress[actId] = 0;
     saveGame();
-    showScreen('town');
-    renderTown();
+    showTransition('town', actId, () => {
+      showScreen('town');
+      renderTown();
+    });
   }
 
   function walkToTownFromResult() {
@@ -2147,73 +2052,27 @@ export function initGame() {
     if (!mb) return;
     state.areaFightProgress[mb.locId] = 0;
     saveGame();
-    showScreen('town');
-    renderTown();
+    showTransition('town', mb.locId, () => {
+      showScreen('town');
+      renderTown();
+    });
   }
 
-  function continueFromWaypoint(actId, areaId) {
-    // Pokud má hráč otevřený town portal, zeptat se, co chce skutečně udělat
-    if (state.townPortalReturn) {
-      openWaypointPortalModal(actId, areaId);
-      return;
-    }
-    doContinueFromWaypoint(actId, areaId);
-  }
-
-  function doContinueFromWaypoint(actId, areaId) {
-    showTransition('waypoint', actId, () => {
-      state.locationProgress[actId] = areaId;
+  // Pokračování z vítězné obrazovky. Pokud je aktuální zastávka dokončená (10/10),
+  // posune progress na další zastávku a tam začne fight 1. Jinak pokračuje na další fight.
+  function continueToNextStop(actId) {
+    const progress = state.locationProgress[actId] || 0;
+    const fight = state.areaFightProgress[actId] || 0;
+    const totalZones = (ACTS[actId] && ACTS[actId].zones) || 10;
+    // Zastávka dokončená → posun na další (pokud není boss zóna, která se řeší zvlášť)
+    if (fight >= 10 && progress < totalZones - 1) {
+      state.locationProgress[actId] = progress + 1;
       state.areaFightProgress[actId] = 0;
-      state._waypointFloor = false;
+      saveGame();
       startLocation(actId);
-    }, areaId);
-  }
-
-  // ===== Waypoint / Town portal conflict modal =====
-  function openWaypointPortalModal(actId, areaId) {
-    state._waypointPending = { actId, areaId };
-    const modal = $('waypointPortalModal');
-    if (modal) modal.classList.remove('hidden');
-  }
-
-  function waypointPortalModalCancel() {
-    state._waypointPending = null;
-    const modal = $('waypointPortalModal');
-    if (modal) modal.classList.add('hidden');
-  }
-
-  function waypointPortalModalUsePortal() {
-    const modal = $('waypointPortalModal');
-    if (modal) modal.classList.add('hidden');
-    state._waypointPending = null;
-    useTownPortal();
-  }
-
-  function waypointPortalModalProceed() {
-    const modal = $('waypointPortalModal');
-    if (modal) modal.classList.add('hidden');
-    const pending = state._waypointPending;
-    state._waypointPending = null;
-    if (!pending) return;
-    // Použití waypointu zavře otevřený town portal
-    state.townPortalReturn = null;
-    saveGame();
-    doContinueFromWaypoint(pending.actId, pending.areaId);
-  }
-
-  function continueFromWaypointResult(actId, areaId) {
-    state.locationProgress[actId] = areaId;
-    state.areaFightProgress[actId] = 0;
-    state._waypointFloor = false;
-    startLocation(actId);
-  }
-
-  function returnToTownFromWaypoint(locId) {
-    state.areaFightProgress[locId] = 0;
-    state._waypointFloor = false;
-    saveGame();
-    showScreen('town');
-    renderTown();
+    } else {
+      startLocation(actId);
+    }
   }
 
   function useTownPortalScrollFromResult() {
@@ -2249,7 +2108,7 @@ export function initGame() {
 
     // Start from current progress or zone 0
     const progress = state.locationProgress[actId] || 0;
-    // Vstup do actu vždy začíná od začátku oblasti (waypoint)
+    // Vstup do actu vždy začíná od začátku oblasti
     state.areaFightProgress[actId] = 0;
     if (progress === 0) {
       state.hero.maxHp = getHeroMaxHp();
@@ -8389,15 +8248,10 @@ export function initGame() {
         spawnFloatingText(mb.eliteAffix.death === 'nova-fire' ? '🔥 Nova!' : '❄️ Nova!', 'right', mb.eliteAffix.death === 'nova-fire' ? '#e74c3c' : '#3498db', 40);
         playTone(mb.eliteAffix.death === 'nova-fire' ? 110 : 220, 0.25, 'sawtooth', 0.12);
       }
-      // Po 10 soubojích — waypoint patro
+      // Po 10 soubojích je zastávka dokončená — vítězná obrazovka s obrázkem zastávky.
+      // Progress do další zastávky se posune až po stisknutí Next Fight (continueToNextStop).
       if (af >= 10) {
-        state._waypointFloor = true;
-        // Odemknout waypoint pro další oblast — až když hráč reálně projde 10 soubojů
-        state.waypoints = state.waypoints || [[],[],[],[],[]];
-        const nextArea = (state.locationProgress[locId] || 0) + 1;
-        if (!state.waypoints[locId].includes(nextArea)) {
-          state.waypoints[locId].push(nextArea);
-        }
+        state.areaFightProgress[locId] = 10;
       }
       const p = state.locationProgress[locId] || 0;
       const monsterGold = (1 + rand(0, 2)) * 5;
@@ -8460,17 +8314,17 @@ export function initGame() {
         else if (d.type === 'boss') { lootItems.push(d.item); totalLootGold += d.gold; }
       });
       state._floorLootDrops = [];
-      const isWaypoint = state._waypointFloor === true;
+      const isStopComplete = (state.areaFightProgress[locId] || 0) >= 10;
       $('resultScreen').classList.remove('centered');
-      // Act 0 — ukázat obrázek aktuální zastávky (louka..pevnost)
+      // Ukázat obrázek aktuální zastávky (všechny akty)
       const curStopIdx = Math.min(Math.max(state.locationProgress[locId] || 0, 0), 9);
       const curStopName = (STOP_NAMES[locId] && STOP_NAMES[locId][curStopIdx]) || null;
       const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
       const areaNum = (state.locationProgress[locId] || 0) + 1;
       const fightNum = (state.areaFightProgress[locId] || 0);
-      const stopNameEn = locId === 0 ? getStopName(0, curStopIdx, true) : null;
-      const winTitle = isWaypoint ? 'Waypoint Reached!' : 'Victory!';
-      const winSub = isWaypoint ? locName : `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum)} · Fight ${fightNum}/10`;
+      const stopNameEn = getStopName(locId, curStopIdx, true);
+      const winTitle = 'Victory!';
+      const winSub = `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum)}${isStopComplete ? ' · Zastávka dokončena' : ` · Fight ${fightNum}/10`}`;
       // Stav hráče — overlay dole na obrázku zastávky (HP, mana)
       const oh = state.hero;
       const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
@@ -8480,21 +8334,15 @@ export function initGame() {
         <span style="color:${ohpColor}">❤️ ${oh.hp}/${oh.maxHp} (${ohpPct}%)</span>
         <span style="color:#4a7dff">${oManaHtml}</span>
       </div>`;
-      if (locId === 0 && !isWaypoint) {
-        // Obrázek zastávky s overlay textem (Victory!, název actu, zastávka, progress) + staty dole
-        $('resultIcon').innerHTML = `<div class="stop-result-wrap">
-          <img class="result-icon-img stop-result" src="${getStopImage(0, curStopIdx)}" alt="Zastávka">
-          <div class="stop-result-overlay">
-            <div class="stop-result-title">${winTitle}</div>
-            <div class="stop-result-sub">${winSub}</div>
-          </div>
-          ${statsOverlay}
-        </div>`;
-      } else if (isWaypoint) {
-        $('resultIcon').innerHTML = `<div class="stop-result-wrap"><img class="result-icon-img stop-result-img" src="assets/menu-icons/waypoint.png" alt="Waypoint"><div class="stop-result-overlay"><div class="stop-result-title">${winTitle}</div><div class="stop-result-sub">${winSub}</div></div>${statsOverlay}</div>`;
-      } else {
-        $('resultIcon').innerHTML = '<img class="result-icon-img" src="assets/result_win.png" alt="Vítězství">';
-      }
+      // Všem akty zobrazit obrázek zastávky
+      $('resultIcon').innerHTML = `<div class="stop-result-wrap">
+        <img class="result-icon-img stop-result" src="${getStopImage(locId, curStopIdx)}" alt="Zastávka">
+        <div class="stop-result-overlay">
+          <div class="stop-result-title">${winTitle}</div>
+          <div class="stop-result-sub">${winSub}</div>
+        </div>
+        ${statsOverlay}
+      </div>`;
       $('resultTitle').textContent = '';
       $('resultMsg').innerHTML = '';
       let lootListHtml = '';
@@ -8550,37 +8398,25 @@ export function initGame() {
           <span class="result-status-potion-count">${potCounts[id]}</span>
         </div>`;
         }).join('') + `</div>`;
-      // Staty (HP, mana) jsou overlay na obrázku zastávky (Act 0 / waypoint);
-      // pro ostatní victory bez obrázku zachováme status řádek.
-      const hasStatsOverlay = (locId === 0 && !isWaypoint) || isWaypoint;
+      // Staty (HP, mana) jsou overlay na obrázku zastávky; zachováváme status řádek jen pokud nemáme obrázek.
+      const hasStatsOverlay = true;
       const statusHtml = (hasStatsOverlay ? '' : `<div class="result-status-row">❤️ <span class="result-status-hp">${h.hp}</span><span style="color:#555">/</span><span>${h.maxHp}</span> (${hpPct}%) &nbsp;|&nbsp; ${resourceHtml}</div>\n`) +
         `${buffsHtml ? `<div class="result-status-buffs">${buffsHtml}</div>` : ''}
         ${potionsHtml}`;
       $('resultStatus').innerHTML = statusHtml;
 
-      // Victory action buttons
+      // Victory action buttons — bez waypointů. Next Fight pokračuje do další zastávky, pokud je dokončena.
       const hasScroll = (state.townPortalCount || 0) > 0;
       let actionsHtml;
-      if (isWaypoint) {
-        const nextArea = (state.locationProgress[locId] || 0) + 1;
-        actionsHtml = `<div class="result-tile" onclick="game.continueFromWaypointResult(${locId}, ${nextArea})" title="Continue">
-          <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
-          <span class="result-tile-label">Continue</span>
-        </div>`;
-        actionsHtml += `<div class="result-tile" onclick="game.returnToTownFromWaypoint(${locId})" title="Waypoint to Town">
-          <img src="assets/menu-icons/waypoint.png" class="result-tile-img">
-          <span class="result-tile-label">Waypoint to Town</span>
-        </div>`;
-      } else {
-        actionsHtml = `<div class="result-tile" onclick="game.startLocation(${locId})" title="Next Fight">
-          <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
-          <span class="result-tile-label">Next Fight</span>
-        </div>`;
-        actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
-          <img src="assets/menu-icons/mesto.png" class="result-tile-img">
-          <span class="result-tile-label">Walk to Town</span>
-        </div>`;
-      }
+      // Po dokončení zastávky (10/10) posune Next progress na další zastávku
+      actionsHtml = `<div class="result-tile" onclick="game.continueToNextStop(${locId})" title="${isStopComplete ? 'Next Stop' : 'Next Fight'}">
+        <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
+        <span class="result-tile-label">${isStopComplete ? 'Next Stop' : 'Next Fight'}</span>
+      </div>`;
+      actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
+        <img src="assets/menu-icons/mesto.png" class="result-tile-img">
+        <span class="result-tile-label">Walk to Town</span>
+      </div>`;
       if (hasScroll) {
         actionsHtml += `<div class="result-tile" onclick="game.useTownPortalScrollFromResult()" title="Town Portal">
           <img src="assets/items/town_portal_scroll.png" class="result-tile-img">
@@ -8613,7 +8449,7 @@ export function initGame() {
     }
 
     if (!won) {
-      // Death — return to town, lose act progress (keep waypoints)
+      // Death — return to town, lose act progress
       state.deaths = (state.deaths || 0) + 1;
       // Konsolační XP za prohru — odvozené od levelu monstra (20 %).
       const consXp = Math.max(3, Math.round(getMonsterLevel(mb, state.difficulty || 0) * 30 * 0.2));
@@ -8621,7 +8457,7 @@ export function initGame() {
       state.hero.xp = (state.hero.xp || 0) + consXp;
       state.hero.gold = (state.hero.gold || 0) + consGold;
       const leveled = applyLevelUp();
-      // Smrt resetuje jen souboje v aktuální oblasti, locationProgress zůstává (waypoint)
+      // Smrt resetuje jen souboje v aktuální oblasti, locationProgress zůstává
       state.areaFightProgress[locId] = 0;
       state._floorLootDrops = [];
       state.hero.hp = state.hero.maxHp;
@@ -8662,10 +8498,14 @@ export function initGame() {
       }
       sfxBossDefeat();
       $('resultScreen').classList.remove('centered');
-      $('resultIcon').innerHTML = locId === 0
-        ? `<img class="result-icon-img stop-result" src="assets/stops/stop_act0_9.webp" alt="Pevnost lesního pána">`
-        : '<img class="result-icon-img" src="assets/result_win.png" alt="Vítěz">';
-      $('resultTitle').textContent = `${mb.loc.boss.name} poražen!`;
+      // Obrázek poslední zastávky (boss) pro všechny akty — Act 1-4 zatím placeholder
+      $('resultIcon').innerHTML = `<div class="stop-result-wrap">
+        <img class="result-icon-img stop-result" src="${getStopImage(locId, 9)}" alt="${STOP_NAMES[locId] ? STOP_NAMES[locId][9] : 'Boss'}">
+        <div class="stop-result-overlay">
+          <div class="stop-result-title">${mb.loc.boss.name} poražen!</div>
+        </div>
+      </div>`;
+      $('resultTitle').textContent = '';
       $('resultMsg').innerHTML = locId === 0
         ? '<div style="text-align:center;color:#aaa;font-size:13px;margin-bottom:4px">Pevnost lesního pána · Boss</div>'
         : '';
@@ -11193,10 +11033,9 @@ export function initGame() {
     selectClass,
     castClassSpell,
     usePotion, usePotionFromResult,
-    townHeal, useTownPortal, renderTown, toggleTownWaypoints, toggleWaypointAct, enterCurrentAct, closeModal,
+    townHeal, useTownPortal, renderTown, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
-    continueFromWaypoint, continueFromWaypointResult, returnToTownFromWaypoint,
-    waypointPortalModalCancel, waypointPortalModalUsePortal, waypointPortalModalProceed,
+    continueToNextStop,
     renderChest,
     renderGamble, switchGambleCategory, buyGambleItem
   };

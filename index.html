@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
   <title>Dungeon Recall</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="style.css?v=132">
+  <link rel="stylesheet" href="style.css?v=133">
   <style>
     .town-action-card {
       display:flex;align-items:center;gap:16px;
@@ -30,11 +30,6 @@
     .page-header-icon { width:80px;height:80px;object-fit:contain;flex-shrink:0; }
     .page-header-title { font-size:22px;font-weight:bold;color:#f0f0f0;margin:0; }
     .page-header-subtitle { font-size:13px;color:#999;margin:4px 0 0; }
-    .town-waypoints-wrap {
-      background:#000;border-radius:8px;
-      padding:8px 0;margin:0 0 8px 0;
-      transition:all 0.2s;
-    }
     .chest-grid {
       display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
       background:#000;border:1px solid #333;border-radius:10px;
@@ -125,17 +120,7 @@
     <div class="town-action-label">Shop</div>
   </div>
 
-  <!-- Waypoints -->
-  <div class="town-action-card" onclick="game.toggleTownWaypoints()">
-    <div class="town-action-icon"><img src="assets/menu-icons/waypoint.png"></div>
-    <div class="town-action-label">Waypoints</div>
-  </div>
-  <div id="townWaypointsWrap" class="town-waypoints-wrap hidden">
-    <div id="townWaypoints" style="display:flex;flex-direction:column;gap:4px;margin-top:4px">
-      <!-- Dynamically generated -->
-    </div>
-  </div>
-
+  <!-- Waypoints (zrušeno — cestování řeší mapa se zastávkami) -->
   <!-- Town Portal (pouze pokud je aktivní) -->
   <div class="town-action-card" id="townPortalCard" style="display:none" onclick="game.useTownPortal()">
     <div class="town-action-icon"><img src="assets/items/town_portal_scroll.png"></div>
@@ -541,7 +526,7 @@
 <div id="surrenderModal" class="surrender-modal hidden">
   <div class="surrender-modal-content">
     <div class="surrender-modal-title">🏳️ Forfeit?</div>
-    <div class="surrender-modal-text">Are you sure you want to forfeit and leave the battle? Progress in the current area will be lost, waypoints remain.</div>
+    <div class="surrender-modal-text">Are you sure you want to forfeit and leave the battle? Progress in the current area will be lost.</div>
     <div class="surrender-modal-buttons">
       <button class="btn btn-secondary" onclick="game.cancelSurrender()">No, go back</button>
       <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Forfeit</button>
@@ -549,20 +534,7 @@
   </div>
 </div>
 
-<!-- ===== WAYPOINT / TOWN PORTAL CONFLICT MODAL ===== -->
-<div id="waypointPortalModal" class="waypoint-portal-modal hidden">
-  <div class="waypoint-portal-modal-content">
-    <div class="waypoint-portal-modal-title">⚠️ Waypoint or Town Portal?</div>
-    <div class="waypoint-portal-modal-text">You have an open Town Portal back to the wilderness. Using a Waypoint will close it and you will lose that portal.</div>
-    <div class="waypoint-portal-modal-buttons">
-      <button class="btn btn-secondary" onclick="game.waypointPortalModalUsePortal()">Use Town Portal</button>
-      <button class="btn" onclick="game.waypointPortalModalProceed()">Use Waypoint</button>
-    </div>
-    <div class="waypoint-portal-modal-cancel" onclick="game.waypointPortalModalCancel()">Cancel</div>
-  </div>
-</div>
-
-<!-- ===== TRANSITION SCREEN (waypoint / portal scroll) ===== -->
+<!-- ===== TRANSITION SCREEN (portal scroll) ===== -->
 <div id="transitionScreen" class="transition-screen hidden">
   <div class="transition-content">
     <img id="transitionImage" src="" alt="" class="transition-image">
