@@ -1954,7 +1954,17 @@ export function initGame() {
 
   function enterCurrentAct() {
     // Místo přímého vstupu do aktu ukázat map screen — hráč si vybere ručně
-    const actId = state._currentActOnMap;
+    let actId = state._currentActOnMap;
+    // První vstup po zapnutí hry — _currentActOnMap ještě není nastavený (renderMap neproběhl).
+    // Spočítat první nedokončený act (stejná logika jako v renderMap), aby transition vždy proběhla.
+    if (actId === undefined || actId === null) {
+      const diffIdx = state.difficulty || 0;
+      actId = ACTS.findIndex((loc, i) => {
+        const completed = state.bossesDefeated[diffIdx] && state.bossesDefeated[diffIdx][i];
+        return !completed;
+      });
+      state._currentActOnMap = actId;
+    }
     if (actId === undefined || actId === null) { showScreen('map'); renderMap(); return; }
     showTransition('wilderness', actId, () => {
       showScreen('map');
