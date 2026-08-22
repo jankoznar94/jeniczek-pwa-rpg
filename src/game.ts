@@ -1949,8 +1949,12 @@ export function initGame() {
 
   function enterCurrentAct() {
     // Místo přímého vstupu do aktu ukázat map screen — hráč si vybere ručně
-    showScreen('map');
-    renderMap();
+    const actId = state._currentActOnMap;
+    if (actId === undefined || actId === null) { showScreen('map'); renderMap(); return; }
+    showTransition('wilderness', actId, () => {
+      showScreen('map');
+      renderMap();
+    });
   }
 
   function showTransition(type, actId, callback, zoneId) {
@@ -1968,6 +1972,11 @@ export function initGame() {
       label.textContent = 'Town';
       img.style.setProperty('--glow-low', 'rgba(240,196,60,0.3)');
       img.style.setProperty('--glow-high', 'rgba(240,196,60,0.6)');
+    } else if (type === 'wilderness') {
+      img.src = 'assets/menu-icons/mapa.png';
+      label.textContent = 'Wilderness';
+      img.style.setProperty('--glow-low', 'rgba(46,204,113,0.3)');
+      img.style.setProperty('--glow-high', 'rgba(46,204,113,0.6)');
     } else {
       // 'stop' — cesta do zastávky (obrázek dané zastávky)
       img.src = getStopImage(actId, zoneId || 0);
@@ -10913,7 +10922,13 @@ export function initGame() {
       a.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        if (a.dataset.screen === 'town') { showScreen('town'); renderTown(); }
+        if (a.dataset.screen === 'town') {
+          // Transition do města (pokud tam hráč ještě není). Walk to town / town portal
+          // mají vlastní transition — tady řešíme nav menu.
+          if (_currentScreen !== 'town') {
+            showTransition('town', state._currentActOnMap, () => { showScreen('town'); renderTown(); });
+          }
+        }
         else if (a.dataset.screen === 'map') showScreen('map');
         else if (a.dataset.screen === 'talents') showScreen('talents');
         else if (a.dataset.screen === 'hero') showScreen('hero');
