@@ -1920,7 +1920,7 @@ export function initGame() {
       const completed = state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][i];
       return !completed;
     });
-    const canEnter = firstUncompleted >= 0;
+    const canEnter = firstUncompleted >= 0 || testMode;
     wildernessBtn.style.display = canEnter ? '' : 'none';
 
     // Waypoint panel zrušen — cestování mezi zastávkami řeší mapa (zastávky se odemykají postupem).
