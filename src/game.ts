@@ -2036,9 +2036,15 @@ export function initGame() {
   }
 
   function walkToTown() {
-    // Pěšky do města — ztráta progressu v aktuální oblasti
+    // Pěšky do města — ztráta progressu v aktuální zastávce, ALE pokud byla
+    // zastávka dokončena (10/10), posune se progress do další zastávky.
     const actId = state._currentActOnMap;
     if (actId === undefined || actId === null) return;
+    const totalZones = (ACTS[actId] && ACTS[actId].zones) || 10;
+    const progress = state.locationProgress[actId] || 0;
+    if ((state.areaFightProgress[actId] || 0) >= 10 && progress < totalZones - 1) {
+      state.locationProgress[actId] = progress + 1;
+    }
     state.areaFightProgress[actId] = 0;
     saveGame();
     showTransition('town', actId, () => {
@@ -2050,9 +2056,17 @@ export function initGame() {
   function walkToTownFromResult() {
     const mb = mapBattleState;
     if (!mb) return;
-    state.areaFightProgress[mb.locId] = 0;
+    const actId = mb.locId;
+    const totalZones = (ACTS[actId] && ACTS[actId].zones) || 10;
+    const progress = state.locationProgress[actId] || 0;
+    // Dokončená zastávka (10/10) → posun na další zastávku (kromě boss zóny).
+    // Nedokončená zastávka → reset progressu (ztráta soubojů v aktuální zastávce).
+    if ((state.areaFightProgress[actId] || 0) >= 10 && progress < totalZones - 1) {
+      state.locationProgress[actId] = progress + 1;
+    }
+    state.areaFightProgress[actId] = 0;
     saveGame();
-    showTransition('town', mb.locId, () => {
+    showTransition('town', actId, () => {
       showScreen('town');
       renderTown();
     });
