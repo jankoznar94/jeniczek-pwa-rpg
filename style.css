@@ -1964,18 +1964,11 @@ body.no-scroll { overflow: hidden; }
 /* ===== DOT PATH INSIDE CARD ===== */
 .map-loc-dot-scroll {
   display:flex;
-  gap:8px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  padding:10px 0;
-  scroll-behavior:smooth;
-  -webkit-overflow-scrolling:touch;
-  /* Hide scrollbar but keep scrollable */
-  scrollbar-width:thin;
-  scrollbar-color:#555 transparent;
+  flex-direction:column;
+  gap:10px;
+  overflow:visible;
+  padding:10px 12px;
 }
-.map-loc-dot-scroll::-webkit-scrollbar { height:6px; }
-.map-loc-dot-scroll::-webkit-scrollbar-thumb { background:#555;border-radius:3px; }
 .dot-wrap {
   display:flex;flex-direction:column;align-items:center;
   cursor:pointer;
@@ -2025,16 +2018,16 @@ body.no-scroll { overflow: hidden; }
 
 /* ===== Stop zastávky (vizualni zastávky) ===== */
 .stop-wrap {
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-  cursor:pointer;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:stretch;gap:6px;
+  cursor:pointer;width:100%;
   transition:0.15s;
 }
-.stop-wrap:hover { filter:brightness(1.2); transform:translateY(-2px); }
+.stop-wrap:hover { filter:brightness(1.2); }
 .stop-wrap.stop-locked { opacity:0.45;cursor:default; }
-.stop-wrap.stop-locked:hover { filter:none;transform:none; }
+.stop-wrap.stop-locked:hover { filter:none; }
 .stop-card {
   position:relative;
-  width:132px;height:132px;
+  width:100%;height:170px;
   border-radius:10px;overflow:hidden;
   border:2.5px solid #444;
   background:#0a0a0a;
@@ -2082,7 +2075,6 @@ body.no-scroll { overflow: hidden; }
   background:rgba(0,0,0,0.3);
   border-top:1px solid rgba(255,255,255,0.05);
   padding:6px 12px;
-  overflow:hidden;
 }
 .map-loc-dot-scroll-wrap.hidden { display:none; }
 
