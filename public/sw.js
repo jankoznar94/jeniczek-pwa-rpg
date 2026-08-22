@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v163';
-const ASSET_CACHE = 'boss-slayer-assets-v39';
+const CODE_CACHE = 'boss-slayer-code-v164';
+const ASSET_CACHE = 'boss-slayer-assets-v40';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=133', '/manifest.json', '/item-reference.html'];
 
@@ -98,7 +98,7 @@ const ASSET_FILES = [
   '/assets/spells/regrowth.png', '/assets/spells/naturesBoon.png', '/assets/spells/revitalize.png',
   '/assets/spells/oneHandSpec.png', '/assets/spells/twoHandSpec.png',
   '/assets/spells/speedBoost.png', '/assets/spells/skillShout.png',
-  '/assets/spells/poison_bolt.png', '/assets/spells/drain_life.png', '/assets/spells/mana_drain.png',
+  '/assets/spells/poison_bolt.png', '/assets/spells/poison.png', '/assets/spells/drain_life.png', '/assets/spells/mana_drain.png',
   '/assets/spells/empower.png', '/assets/spells/shadow_bolt.png', '/assets/spells/heal.png',
   '/assets/spells/thorn_shield.png', '/assets/spells/faerie_fire.png', '/assets/spells/slow.png',
   '/assets/projectiles/fireball.png', '/assets/projectiles/frostbolt.png',

@@ -3323,7 +3323,7 @@ export function initGame() {
         mb.playerDot = amount;
         mb.playerDotTicksLeft = 3;
         _lastPlayerDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', iconImg:'poison_bolt.png', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
         spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
@@ -3598,7 +3598,7 @@ export function initGame() {
         const poisonDmg = Math.max(1, Math.round(amount * 0.15));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
-        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison_bolt.png', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
         spawnFloatingText(`☠️ -${poisonDmg}/tick`, 'left', '#27ae60', 28);
       }
     }
@@ -8403,19 +8403,21 @@ export function initGame() {
         </div>`;
         }).join('');
       // Buffy a debuffy hráče — overlay na obrázku zastávky (hned nad životy)
+      // Konzistentní s renderBuffs v souboji: pokud má buff/debuff iconImg, zobrazí
+      // se obrázek, jinak emoji fallback. Žádný hardcoded whitelist.
       let ovBuffsHtml = '';
       Object.keys(_sessionBuffs).forEach(k => {
         const b = _sessionBuffs[k];
         if (b && b.ticks > 0) {
-          const hasImg = k === 'defensiveShout' || k === 'skillShout' || k === 'shieldBash' || k === 'battleShout';
-          ovBuffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`;
+          const hasImg = b.iconImg;
+          ovBuffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:24px;height:24px;object-fit:contain">` : b.icon}</span>`;
         }
       });
       Object.keys(_playerDebuffs).forEach(k => {
         const d = _playerDebuffs[k];
         if (d && d.ticks > 0) {
-          const hasImg = k === 'thunderClap' || k === 'thunderBolt';
-          ovBuffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${k}.png" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`;
+          const hasImg = d.iconImg;
+          ovBuffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:24px;height:24px;object-fit:contain">` : (d.icon || '☠️')}</span>`;
         }
       });
       const statsOverlay = `<div class="stop-result-stats">
