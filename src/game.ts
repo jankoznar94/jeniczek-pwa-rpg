@@ -229,7 +229,17 @@ export function initGame() {
     new Audio('bgm_2.mp3'),
     new Audio('bgm_3.mp3')
   ];
-  battleBgmTracks.forEach(t => { t.loop = true; t.volume = 0.90; });
+  battleBgmTracks.forEach(t => { t.loop = false; t.volume = 0.90; });
+  // Bojové stopy se NEopakují samy — když jedna dohraje, naváže náhodně další.
+  // Hudba se tak nepřerušuje a neustále se nestřídá při každé obrazovce.
+  battleBgmTracks.forEach(t => {
+    t.addEventListener('ended', () => {
+      if (currentBGM !== 'battle') return;
+      const idx = Math.floor(Math.random() * battleBgmTracks.length);
+      _currentBattleBgmIdx = idx;
+      battleBgmTracks[idx].play().catch(() => {});
+    });
+  });
   let currentBattleIndex = 0; // vybraná stopa pro aktuální patro
 
   let currentBGM = null; // 'battle' | 'overworld' | 'defeat' | 'win' | 'minigame' | 'boss' | null
@@ -339,11 +349,8 @@ export function initGame() {
   }
   let _forceNewBattleBgm = false;
   function switchBGM(mode) {
-    // Vynucený nový výběr battle stopy při novém patře
-    if (mode === 'battle' && _forceNewBattleBgm) {
-      _forceNewBattleBgm = false;
-      // Projdeme guardem — vybereme nový index
-    } else if (mode === currentBGM) {
+    // Hudba se nepřerušuje — pokud už hraje stejný mód, necháme ji dohrát.
+    if (mode === currentBGM) {
       return;
     }
     initAudio();
@@ -2547,7 +2554,7 @@ export function initGame() {
     if (arrowReset) arrowReset.setAttribute('class', 'boss-attack-arrow hidden');
     const actionInfoReset = $('mbActionInfo');
     if (actionInfoReset) { actionInfoReset.classList.add('hidden'); actionInfoReset.textContent = ''; }
-    if (progress === 0 && !isBoss) _forceNewBattleBgm = true;
+    if (progress === 0 && !isBoss) { /* hudba se nepřerušuje — bojová stopa hraje dál */ }
     switchBGM('battle');
     document.body.classList.add('battle-active');
     updateMapBattleUI();
