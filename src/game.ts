@@ -3691,7 +3691,7 @@ export function initGame() {
       }).join('');
       const atkIcon = (b.attackType || ATTACK_TYPES.MELEE) === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
       $('mbEnemyName').textContent = `${b.name} ${bossTypesHtml}${atkIcon}`;
-      $('mbLocation').textContent = `Act ${actId+1} - ${mb.loc.name}`;
+      $('mbLocation').textContent = `Act ${mb.locId+1} - ${mb.loc.name}`;
     } else {
       const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :
         mb.monsterType === MONSTER_TYPES.MANASTEALER ? '💧' :
@@ -3705,9 +3705,9 @@ export function initGame() {
       $('mbEnemyName').textContent = `${eliteTag}${displayName} ${typeIcon}${atkIcon}`;
       // Nadpis vpravo nahoře: Act X - Název zastávky - Číslo souboje/10
       // (areaFight je 0-indexed → souboj 6 = areaFight 5 → 6/10)
-      const stopName = getStopName(actId, mb.progress, true);
+      const stopName = getStopName(mb.locId, mb.progress, true);
       const fightNum = (mb.areaFight || 0) + 1;
-      const locStr = `Act ${actId+1} - ${stopName} - ${fightNum}/10`;
+      const locStr = `Act ${mb.locId+1} - ${stopName} - ${fightNum}/10`;
       // Ukázat affix popis pod jménem elity (tooltip/desc)
       const affixDesc = mb.isElite && mb.eliteAffix ? mb.eliteAffix.desc : null;
       if (affixDesc) {
