@@ -1327,19 +1327,20 @@ body.no-scroll { overflow: hidden; }
 .result-screen {
   text-align:center;
   display:flex;flex-direction:column;align-items:center;
-  min-height:100vh;padding:12px 20px;cursor:pointer;
+  height:100vh;max-height:100vh;padding:12px 20px;cursor:pointer;
   background:#000;
-  overflow-y:auto;
+  overflow:hidden;
 }
 .result-top {
-  flex:1;
+  flex:1 1 auto;
   display:flex;flex-direction:column;align-items:center;
   justify-content:center;
   width:100%;
   min-height:0;
+  overflow-y:auto;
 }
 .result-bottom {
-  flex:1;
+  flex:0 0 auto;
   display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;
   justify-content:center;
   width:100%;
