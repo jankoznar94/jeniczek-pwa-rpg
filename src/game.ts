@@ -3686,10 +3686,8 @@ export function initGame() {
       }).join('');
       const atkIcon = (b.attackType || ATTACK_TYPES.MELEE) === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
       $('mbEnemyName').textContent = `${b.name} ${bossTypesHtml}${atkIcon}`;
-      $('mbLocation').textContent = `👑 Boss — ${mb.loc.name}`;
+      $('mbLocation').textContent = `Act ${actId+1} - ${mb.loc.name}`;
     } else {
-      // Act 0 (Enchanted Forest) — reálný název zastávky v hlavičce, ne M{n}
-      const floorStr = mb.locId === 0 ? getStopName(0, mb.progress, true) : `M${mb.progress+1}`;
       const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :
         mb.monsterType === MONSTER_TYPES.MANASTEALER ? '💧' :
         mb.monsterType === MONSTER_TYPES.IMPROVER ? '📈' :
@@ -3700,12 +3698,17 @@ export function initGame() {
       // Elita má plné D2 jméno "[Prefix] [Suffix] the [Appellation]" — zobrazit jen to
       const displayName = (mb.isElite && mb.eliteName) ? mb.eliteName : mb.currentMonsterName;
       $('mbEnemyName').textContent = `${eliteTag}${displayName} ${typeIcon}${atkIcon}`;
+      // Nadpis vpravo nahoře: Act X - Název zastávky - Číslo souboje/10
+      // (areaFight je 0-indexed → souboj 6 = areaFight 5 → 6/10)
+      const stopName = getStopName(actId, mb.progress, true);
+      const fightNum = (mb.areaFight || 0) + 1;
+      const locStr = `Act ${actId+1} - ${stopName} - ${fightNum}/10`;
       // Ukázat affix popis pod jménem elity (tooltip/desc)
       const affixDesc = mb.isElite && mb.eliteAffix ? mb.eliteAffix.desc : null;
       if (affixDesc) {
-        $('mbLocation').textContent = `${floorStr} · ${affixDesc}`;
+        $('mbLocation').textContent = `${locStr} · ${affixDesc}`;
       } else {
-        $('mbLocation').textContent = `${floorStr}${mb.isElite ? ' · ELITE' : ''}`;
+        $('mbLocation').textContent = `${locStr}${mb.isElite ? ' · ELITE' : ''}`;
       }
     }
     const pHpPct = Math.round((mb.playerHp / mb.maxPlayerHp) * 100);
