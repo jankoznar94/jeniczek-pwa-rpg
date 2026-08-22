@@ -266,6 +266,7 @@ export function initGame() {
       state.floorProgress = ACTS.map(() => 5);
       // locationProgress=999 → všechny area a fighty jsou odemčené a přístupné.
       state.locationProgress = ACTS.map(() => 999);
+      state._maxLocationProgress = ACTS.map(() => 999);
       state.areaFightProgress = ACTS.map(() => 0);
       // Odemknout celý bestiář
       state.encounteredMonsters = [];
@@ -1411,7 +1412,7 @@ export function initGame() {
       });
     });
     const s = { talentLevels, activeSchool:null, talentPoints:0, hero:{name:'Dobrodruh',face:'hero',level:1,xp:0,gold:0,hp:100,maxHp:100,mana:50,maxMana:50,baseDmg:12,inventory:[],equip:{weapon:'fists',armor:null,helmet:null,shield:null,ring1:null,ring2:null,amulet:null,belt:null,beltPotionSlots:[],gloves:null,boots:null},attrStr:0,attrVit:0,attrDex:0,attrInt:0,attrPoints:0}, deaths:0, wins:0,
-      locationProgress:[0,0,0,0,0], areaFightProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
+      locationProgress:[0,0,0,0,0], _maxLocationProgress:[0,0,0,0,0], areaFightProgress:[0,0,0,0,0], bossesDefeated:[[false,false,false,false,false],[false,false,false,false,false],[false,false,false,false,false]], floorProgress:[0,0,0,0,0], spellUsedThisFloor:{}, lootItems:{}, encounteredMonsters:[], heroClass:null,
       difficulty:0, // index do DIFFICULTIES (0=normal, 1=nightmare, 2=hell)
       townPortalReturn: null, // {actId, zoneId} nebo null — pozice pro town portal scroll
       townPortalCount: 0, // počet town portal scrollů (stack)
@@ -1457,6 +1458,12 @@ export function initGame() {
     }
     // Migrace: truhla
     if (!s.chest) s.chest = new Array(25).fill(null);
+    // Migrace: _maxLocationProgress — nejvyšší dosažená zastávka per act.
+    // Nikdy se nesnižuje; odemykání počítá z něj, ne z locationProgress (které
+    // se snižuje při farmění starších zastávek).
+    if (!s._maxLocationProgress) {
+      s._maxLocationProgress = s.locationProgress.map(v => Math.max(v, 0));
+    }
     // Rekalibrovat maxHp/maxMana podle aktuálního vybavení (staty z itemů)
     if (s.hero) {
       s.hero.maxHp = getHeroMaxHp();
@@ -1875,10 +1882,13 @@ export function initGame() {
     let html = '';
     // Všechny akty — vizuální zastávky s obrázky místo 100 puntíků (waypointy zrušeny)
     const bossDefeated = state.bossesDefeated && state.bossesDefeated[state.difficulty] && state.bossesDefeated[state.difficulty][actId];
+    // Odemykání se počítá z _maxLocationProgress (nejvyšší dosažená zastávka),
+    // NE z locationProgress, aby farmení starší zastávky opět nezamklo ty pozdější.
+    const unlockedArea = (state._maxLocationProgress && state._maxLocationProgress[actId]) || curArea;
     for (let stop = 0; stop < totalZones; stop++) {
-      const done = bossDefeated || stop < curArea;
+      const done = bossDefeated || stop < unlockedArea;
       const current = !bossDefeated && stop === curArea;
-      const locked = !bossDefeated && stop > curArea;
+      const locked = !bossDefeated && stop > unlockedArea;
       const unlocked = !locked && !done;
       const fightProgress = current ? Math.min(curFight, 10) : 10;
       const badgeHtml = done
@@ -2044,6 +2054,7 @@ export function initGame() {
     const progress = state.locationProgress[actId] || 0;
     if ((state.areaFightProgress[actId] || 0) >= 10 && progress < totalZones - 1) {
       state.locationProgress[actId] = progress + 1;
+      state._maxLocationProgress[actId] = Math.max(state._maxLocationProgress[actId] || 0, progress + 1);
     }
     state.areaFightProgress[actId] = 0;
     saveGame();
@@ -2063,6 +2074,7 @@ export function initGame() {
     // Nedokončená zastávka → reset progressu (ztráta soubojů v aktuální zastávce).
     if ((state.areaFightProgress[actId] || 0) >= 10 && progress < totalZones - 1) {
       state.locationProgress[actId] = progress + 1;
+      state._maxLocationProgress[actId] = Math.max(state._maxLocationProgress[actId] || 0, progress + 1);
     }
     state.areaFightProgress[actId] = 0;
     saveGame();
@@ -2081,6 +2093,7 @@ export function initGame() {
     // Zastávka dokončená → posun na další (pokud není boss zóna, která se řeší zvlášť)
     if (fight >= 10 && progress < totalZones - 1) {
       state.locationProgress[actId] = progress + 1;
+      state._maxLocationProgress[actId] = Math.max(state._maxLocationProgress[actId] || 0, progress + 1);
       state.areaFightProgress[actId] = 0;
       saveGame();
       startLocation(actId);
