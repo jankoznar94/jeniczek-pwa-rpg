@@ -292,7 +292,7 @@ body.no-scroll { overflow: hidden; }
 .boss-attack-blue { color:#5a8aaa; fill:#5a8aaa; }
 .boss-attack-purple { color:#8a6d9b; fill:#8a6d9b; }
 /* Opportunity Dodge — zvýrazněná telegrafní šipka pro normální souboje (reakce na uhýbatelný útok) */
-.opportunity-arrow { width:110px;height:110px; color:#f1c40f; fill:#f1c40f; filter:drop-shadow(0 0 8px rgba(241,196,15,0.5)); animation:opportunityPulse 0.6s ease-in-out infinite; }
+.opportunity-arrow { width:110px;height:110px; color:#e74c3c; fill:#e74c3c; filter:drop-shadow(0 0 8px rgba(231,76,60,0.5)); animation:opportunityPulse 0.6s ease-in-out infinite; }
 @keyframes opportunityPulse { 0%,100%{opacity:0.6;transform:translate(-50%,-50%) scale(1)} 50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)} }
 .counter-attack-icon {
   position:absolute;top:50%;left:50%;font-size:64px;transform:translate(-50%,-50%);z-index:15;
