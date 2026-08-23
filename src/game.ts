@@ -1968,6 +1968,13 @@ export function initGame() {
             : `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`;
       const cls = done ? 'stop-done' : current ? 'stop-current' : locked ? 'stop-locked' : 'stop-unlocked';
       const label = STOP_NAMES[actId] ? STOP_NAMES[actId][stop] : `Zastávka ${stop+1}`;
+      // Šipka před zastávkou naznačuje návaznost z předchozí. Následující zastávka
+      // je otevřená, když není zamčená (done/current/unlocked). Šipka se vybarví barvou aktu,
+      // jakmile je další zastávka dosažitelná, jinak je černobílá (tmavá).
+      if (stop > 0) {
+        const prevUnlocked = !bossDefeated && (stop - 1) <= unlockedArea;
+        html += `<div class="stop-arrow ${prevUnlocked ? 'stop-arrow-active' : ''}" style="--dot-color:${theme.border}" aria-hidden="true"></div>`;
+      }
       html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
         <div class="stop-card">
           <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
