@@ -3411,7 +3411,7 @@ export function initGame() {
     hideDodgeTelegraph(mb);
     if (success) {
       playSFX(dodgeSfx);
-      spawnFloatingText('DODGE!', 'left', '#f39c12', 32);
+      spawnFloatingText('DODGE!', 'right', '#f39c12', 32);
       // Útok se odrazil — reset nepřítelova swingu, bez damage a bez dalšího melee
       mb._enemySwingStart = performance.now();
       mb._enemySwingReady = false;
@@ -3424,7 +3424,7 @@ export function initGame() {
     }
   }
 
-  // Telegraf — směrová šipka přes nepřátelské figurkou (znovupoužití mbArrow)
+  // Telegraf — směrová šipka přes nepřátelské figurkou (znovupoužití mbArrow) + výrazný timer na kruhu.
   function showDodgeTelegraph(mb) {
     const arrow = $('mbArrow');
     if (arrow) {
@@ -3434,11 +3434,25 @@ export function initGame() {
       arrow.style.color = '#f1c40f';
       arrow.style.fill = '#f1c40f';
     }
+    // Výrazný timer na kruhu (mbZoneDivider) — ubíhající čas na reakci.
+    const zone = document.getElementById('mbZoneDivider');
+    if (zone) {
+      zone.classList.remove('dodge-active');
+      void zone.getBoundingClientRect(); // reflow pro restart animace
+      zone.classList.add('dodge-active');
+    }
   }
 
   function hideDodgeTelegraph(mb) {
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+    const zone = document.getElementById('mbZoneDivider');
+    if (zone) {
+      zone.classList.remove('dodge-active');
+      zone.style.strokeDashoffset = '';
+      zone.style.strokeDasharray = '';
+      zone.style.animation = '';
+    }
   }
 
   function onAutoEnemyAttack() {

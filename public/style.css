@@ -322,6 +322,19 @@ body.no-scroll { overflow: hidden; }
   stroke-dasharray:4 5;
   pointer-events:none;
 }
+/* Opportunity Dodge — výrazný timer na kruhu (r=104, délka ≈ 653.4) při příležitosti k reakci */
+.zone-divider.dodge-active {
+  stroke:#f1c40f;
+  stroke-width:8;
+  stroke-dasharray:653.4 653.4;
+  stroke-dashoffset:653.4;
+  opacity:1;
+  animation:dodge-ring-shrink 1.2s linear forwards;
+}
+@keyframes dodge-ring-shrink {
+  0%   { stroke-dashoffset: 653.4; }
+  100% { stroke-dashoffset: 0; }
+}
 @keyframes timer-ring-shrink {
   0%   { stroke-dashoffset: 691; }
   100% { stroke-dashoffset: 0; }
