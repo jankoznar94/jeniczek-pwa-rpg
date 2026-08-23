@@ -313,7 +313,7 @@ body.no-scroll { overflow: hidden; }
 }
 .enemy-timer-circle {
   stroke:#e67e22;
-  stroke-width:5;
+  stroke-width:8;
 }
 .zone-divider {
   stroke:#9a9a9a;

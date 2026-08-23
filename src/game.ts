@@ -3250,7 +3250,7 @@ export function initGame() {
       } else {
         const offset = Math.round(553 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#999';
+        enemyCircle.style.stroke = '#e74c3c';
       }
     }
     // Nepřítelův HP bar — segmenty
