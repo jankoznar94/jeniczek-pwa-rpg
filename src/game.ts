@@ -1972,7 +1972,9 @@ export function initGame() {
       // je otevřená, když není zamčená (done/current/unlocked). Šipka se vybarví barvou aktu,
       // jakmile je další zastávka dosažitelná, jinak je černobílá (tmavá).
       if (stop > 0) {
-        const prevUnlocked = !bossDefeated && (stop - 1) <= unlockedArea;
+        // Šipka mezi zastávkou (stop-1) a stop se vybarví, až je zastávka "stop" dosažitelná
+        // (tedy až je zastávka stop-1 dokončená). Jinak zůstává černobílá.
+        const prevUnlocked = !bossDefeated && stop <= unlockedArea;
         html += `<div class="stop-arrow ${prevUnlocked ? 'stop-arrow-active' : ''}" style="--dot-color:${theme.border}" aria-hidden="true"></div>`;
       }
       html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
