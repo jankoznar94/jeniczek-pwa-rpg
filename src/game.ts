@@ -1368,6 +1368,32 @@ export function initGame() {
     return Math.min(baseDodge + dexDodge, 50);
   }
 
+  // ===== Opportunity Dodge =====
+  // Šance, že útok nepřítele JE uhýbatelný (vznikne příležitost k dodge).
+  // Vychází z báze (každý má vždy aspoň nějakou šanci) + bonus z armory (celková defense).
+  // To je univerzální pro každou classu — nezávisí na DEX investicích.
+  function getOpportunityDodgeChance(mb) {
+    const h = state.hero;
+    const eqAttrs = getEquipAttrs();
+    // Celková armor defense ze všech slotů
+    const totalDefense = getTotalPlayerDefense();
+    // Báze — každý má vždy aspoň nějakou šanci (nezávisle na atributecích)
+    let base = 12;
+    // Bonus z armory — s rostoucí defense roste i šance na uhýbatelný útok
+    const armorBonus = Math.floor(totalDefense / 20);
+    // Cap na 40% — nesmí být příliš časté
+    return clamp(base + armorBonus, 0, 40);
+  }
+
+  function getTotalPlayerDefense() {
+    const armorDef = (ITEM_MAP[state.hero.equip.armor] || {defense:0}).defense || 0;
+    const helmetDef = ITEM_MAP[state.hero.equip.helmet]?.defense || 0;
+    const shieldDef = ITEM_MAP[state.hero.equip.shield]?.defense || 0;
+    const glovesDef = ITEM_MAP[state.hero.equip.gloves]?.defense || 0;
+    const bootsDef = ITEM_MAP[state.hero.equip.boots]?.defense || 0;
+    return armorDef + helmetDef + shieldDef + glovesDef + bootsDef;
+  }
+
   function getPlayerBlockChance() {
     // Block šance hráče: base 25% ze štítu + bonus z Obratnosti (DEX) + Shield Specialization.
     // Každých 10 DEX = +1% block (stejný vzorec jako dodge).
@@ -1427,6 +1453,7 @@ export function initGame() {
       if (mapBattleState._freezeTimer) { clearInterval(mapBattleState._freezeTimer); mapBattleState._freezeTimer = null; }
       if (mapBattleState._bonusRaf) { cancelAnimationFrame(mapBattleState._bonusRaf); mapBattleState._bonusRaf = null; }
       if (mapBattleState._staminaInterval) { clearInterval(mapBattleState._staminaInterval); mapBattleState._staminaInterval = null; }
+      if (mapBattleState._dodgeFailTimer) { clearTimeout(mapBattleState._dodgeFailTimer); mapBattleState._dodgeFailTimer = null; }
     }
   }
 
@@ -2520,6 +2547,8 @@ export function initGame() {
       _enemyCastAfterSwing: null,
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
+      // Opportunity Dodge — útok nepřítele může být uhýbatelný (globální freeze + krátké okno)
+      _dodgePending: false, _dodgeDir: null, _dodgeFailTimer: null, _dodgeCooldownUntil: 0,
       // Pack (elita+minioni / champion pack)
       packMembers: packMembers,
       packActiveIdx: 0,
@@ -2866,6 +2895,13 @@ export function initGame() {
     const mb = mapBattleState;
     const now = performance.now();
 
+    // GLOBÁLNÍ FREEZE — během příležitosti k dodge se celý souboj zastaví,
+    // aby hráčovi nic neutíkalo (auto-útok, monstrův útok, swing timery).
+    if (mb._dodgePending) {
+      mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+      return;
+    }
+
     // Tick buffů a GCD každou smyčku
     tickBuffs();
     // Aktualizovat buff/debuff UI každou smyčku (nezávisle na swing timeru)
@@ -2987,7 +3023,23 @@ export function initGame() {
     }
     if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
       mb._enemyAttackProcessed = true;
-      onAutoEnemyAttack();
+      // Opportunity Dodge: útok monstra může být uhýbatelný (jen melee, ne caster).
+      // Pokud se příležitost spustí, onAutoEnemyAttack se NIKDY nevolá — místo toho
+      // se v resolveOpportunityDodge řeší buď dodge (0 dmg) nebo zmeškaný fail (rána projde).
+      const isCasterAttack = !!mb._enemyCastSpell;
+      if (!mb.isBoss && !isCasterAttack) {
+        const started = tryStartOpportunity(mb);
+        if (started) {
+          // Reset swingu — příležitost drží globální freeze, takže tento swing
+          // necháme 'spotřebovaný' a nepokračujeme v útoku.
+          mb._enemySwingReady = false;
+          mb._enemyAttackProcessed = false;
+        } else {
+          onAutoEnemyAttack();
+        }
+      } else {
+        onAutoEnemyAttack();
+      }
     }
 
     // Update timer ring vizuál (až po zpracování útoků, aby nedošlo k zelenému probliku)
@@ -3331,6 +3383,64 @@ export function initGame() {
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
   }
 
+  // ===== Opportunity Dodge — spuštění, telegraf, vyřešení =====
+  const DODGE_WINDOW_MS = 1200;   // délka okna pro reakci
+  const DODGE_COOLDOWN_MS = 3000; // minimální rozestup mezi příležitostmi (cap frekvence)
+
+  function tryStartOpportunity(mb) {
+    if (mb._dodgePending) return true; // už běží — držet pending
+    const now = performance.now();
+    if (now < mb._dodgeCooldownUntil) return false; // cooldown — nevyvolávat
+    if (Math.random() * 100 >= getOpportunityDodgeChance(mb)) return false; // tento útok není uhýbatelný
+    // Spustit příležitost
+    mb._dodgePending = true;
+    const dirs = ['⬆️','⬇️','⬅️','➡️'];
+    mb._dodgeDir = dirs[Math.floor(Math.random() * 4)];
+    showDodgeTelegraph(mb);
+    if (mb._dodgeFailTimer) clearTimeout(mb._dodgeFailTimer);
+    mb._dodgeFailTimer = setTimeout(() => resolveOpportunityDodge(false), DODGE_WINDOW_MS);
+    return true;
+  }
+
+  function resolveOpportunityDodge(success) {
+    const mb = mapBattleState;
+    if (!mb || !mb._dodgePending) return;
+    if (mb._dodgeFailTimer) { clearTimeout(mb._dodgeFailTimer); mb._dodgeFailTimer = null; }
+    mb._dodgePending = false;
+    mb._dodgeCooldownUntil = performance.now() + DODGE_COOLDOWN_MS;
+    hideDodgeTelegraph(mb);
+    if (success) {
+      playSFX(dodgeSfx);
+      spawnFloatingText('DODGE!', 'left', '#f39c12', 32);
+      // Útok se odrazil — reset nepřítelova swingu, bez damage a bez dalšího melee
+      mb._enemySwingStart = performance.now();
+      mb._enemySwingReady = false;
+      mb._enemySwingPct = 0;
+      updateMapBattleUI();
+    } else {
+      // Zmeškal — rána projde (normální melee aplikace damage)
+      applyEnemyMeleeHit(mb);
+      if (mb.playerHp <= 0) { endMapBattle(false); return; }
+    }
+  }
+
+  // Telegraf — směrová šipka přes nepřátelské figurkou (znovupoužití mbArrow)
+  function showDodgeTelegraph(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._dodgeDir] || 0;
+      arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
+      arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+      arrow.style.color = '#f1c40f';
+      arrow.style.fill = '#f1c40f';
+    }
+  }
+
+  function hideDodgeTelegraph(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+  }
+
   function onAutoEnemyAttack() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
@@ -3530,6 +3640,13 @@ export function initGame() {
       return;
     }
 
+    applyEnemyMeleeHit(mb);
+    if (mb.playerHp <= 0) { endMapBattle(false); return; }
+  }
+
+  // Aplikuje plný melee útok nepřítele na hráče (damage, block, debuffy, life/mana steal…).
+  // Vyčleněno z onAutoEnemyAttack, aby se dalo volat i při neúspěšném dodge (missed opportunity).
+  function applyEnemyMeleeHit(mb) {
     // Výpočet damage — fixní staty monstra
     mb._enemyFirstSwingDone = true;
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
@@ -3698,8 +3815,6 @@ export function initGame() {
     mb._enemySwingStart = performance.now();
     mb._enemySwingReady = false;
     mb._enemySwingPct = 0;
-
-    if (mb.playerHp <= 0) { endMapBattle(false); return; }
   }
 
   // Spustí cast kouzla, které mělo monstrum provést po melee útoku (uloženo v _enemyCastAfterSwing)
@@ -7419,8 +7534,18 @@ export function initGame() {
   }
 
   function onMapDodge(dir) {
-    if (mapBattleState.ended || !mapBattleState.sequence) return;
     const mb = mapBattleState;
+    if (mb.ended) return;
+
+    // Opportunity Dodge — zpracovat swipe reakci na příležitost (normální souboj)
+    if (mb._dodgePending) {
+      if (dir === mb._dodgeDir) {
+        resolveOpportunityDodge(true);
+      }
+      return;
+    }
+
+    if (!mb.sequence) return;
     // Rapid — zpracovává onMapRapidTap
     if (mb.isRapidAttack) return;
     const attack = mb.sequence[mb.sequenceIndex];
