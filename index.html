@@ -22,6 +22,15 @@
     .town-action-icon { width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
     .town-action-icon img { width:64px;height:64px;object-fit:contain;display:block; }
     .town-action-label { font-size:18px;font-weight:bold;color:#ddd; }
+    .town-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:0 0 12px 0; }
+    .town-tile {
+      aspect-ratio:1/1; border-radius:0; border:1px solid #333; background:#000;
+      display:flex; align-items:center; justify-content:center; overflow:hidden;
+      cursor:pointer; transition:all 0.15s; user-select:none; -webkit-tap-highlight-color:transparent;
+    }
+    .town-tile img { width:80%; height:80%; object-fit:contain; }
+    .town-tile:active { background:#111; border-color:#555; transform:scale(0.95); }
+
     .town-banner { position:relative; width:100vw; margin-left:calc(50% - 50vw);
       margin-top:-16px; margin-bottom:16px; border-radius:0; overflow:hidden;
       border:none; background:#0a0a0a; }
@@ -121,22 +130,23 @@
     </div>
   </div>
 
-  <!-- Chest -->
-  <div class="town-action-card" onclick="game.showScreen('chest')">
-    <div class="town-action-icon"><img src="assets/menu-icons/chest.png"></div>
-    <div class="town-action-label">Chest</div>
-  </div>
-
-  <!-- Gamble -->
-  <div class="town-action-card" onclick="game.showScreen('gamble')">
-    <div class="town-action-icon"><img src="assets/menu-icons/gamble.png"></div>
-    <div class="town-action-label">Gamble</div>
-  </div>
-
-  <!-- Shop -->
-  <div class="town-action-card" onclick="game.showScreen('shop')">
-    <div class="town-action-icon"><img src="assets/menu-icons/shop.png"></div>
-    <div class="town-action-label">Shop</div>
+  <div class="town-grid">
+    <!-- Chest -->
+    <div class="town-tile" onclick="game.showScreen('chest')">
+      <img src="assets/menu-icons/chest.png" alt="Chest">
+    </div>
+    <!-- Gamble -->
+    <div class="town-tile" onclick="game.showScreen('gamble')">
+      <img src="assets/menu-icons/gamble.png" alt="Gamble">
+    </div>
+    <!-- Shop -->
+    <div class="town-tile" onclick="game.showScreen('shop')">
+      <img src="assets/menu-icons/shop.png" alt="Shop">
+    </div>
+    <!-- Wilderness -->
+    <div class="town-tile" id="townWildernessBtn" onclick="game.enterCurrentAct()">
+      <img src="assets/menu-icons/mapa.png" alt="Wilderness">
+    </div>
   </div>
 
   <!-- Waypoints (zrušeno — cestování řeší mapa se zastávkami) -->
@@ -147,12 +157,6 @@
       <div class="town-action-label" id="townPortalInfo" style="font-size:14px">📜 Return</div>
       <div style="font-size:12px;color:#888">Return to your previous location</div>
     </div>
-  </div>
-
-  <!-- Wilderness — continue from checkpoint -->
-  <div class="town-action-card" id="townWildernessBtn" onclick="game.enterCurrentAct()">
-    <div class="town-action-icon"><img src="assets/menu-icons/mapa.png"></div>
-    <div class="town-action-label">Wilderness</div>
   </div>
 </div>
 
