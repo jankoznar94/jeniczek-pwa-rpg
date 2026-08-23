@@ -4869,6 +4869,7 @@ export function initGame() {
     let startX, startY;
     const handlers = [];
 
+    // Touch swipe (mobil)
     const ts = (e) => { if (mapBattleState.ended) return; const t=e.touches[0]; startX=t.clientX; startY=t.clientY; };
     const te = (e) => {
       if (mapBattleState.ended || !startX) return;
@@ -4886,6 +4887,28 @@ export function initGame() {
     };
     arena.addEventListener('touchstart', ts); arena.addEventListener('touchend', te);
     handlers.push(['touchstart',ts], ['touchend',te]);
+
+    // Pointer/mouse swipe (desktop i dotyk) — myšový drag přes arénu = swipe.
+    // Umožní dodge i interrupt akce myší, nejen přes klávesnici.
+    let ptrDown = false, ptrStartX = 0, ptrStartY = 0;
+    const pDown = (e) => {
+      if (mapBattleState.ended) return;
+      if (e.type === 'mousedown' && e.button !== 0) return; // jen levé tlačítko
+      ptrDown = true; ptrStartX = e.clientX; ptrStartY = e.clientY;
+    };
+    const pUp = (e) => {
+      if (mapBattleState.ended || !ptrDown) { ptrDown = false; return; }
+      const dx = e.clientX - ptrStartX, dy = e.clientY - ptrStartY;
+      ptrDown = false;
+      if (Math.abs(dx)<20 && Math.abs(dy)<20) return; // krátký klik = nic
+      let dir;
+      if (Math.abs(dy) > Math.abs(dx)) dir = dy < 0 ? '⬆️' : '⬇️';
+      else dir = dx < 0 ? '⬅️' : '➡️';
+      onMapDodge(dir);
+    };
+    arena.addEventListener('mousedown', pDown);
+    window.addEventListener('mouseup', pUp);
+    handlers.push(['mousedown', pDown], ['mouseup', pUp]);
 
     const kh = (e) => {
       if (mapBattleState.ended) return;
