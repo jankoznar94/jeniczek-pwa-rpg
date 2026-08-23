@@ -2049,27 +2049,22 @@ export function initGame() {
   function showTransition(type, actId, callback, zoneId) {
     const screen = $('transitionScreen');
     const img = $('transitionImage');
-    const label = $('transitionLabel');
     // 'portal' = Town portal, 'stop' = cesta do zastávky, 'town' = cesta do města
     if (type === 'portal') {
       img.src = 'assets/items/town_portal_scroll.png';
-      label.textContent = 'Town Portal';
       img.style.setProperty('--glow-low', 'rgba(100,180,255,0.3)');
       img.style.setProperty('--glow-high', 'rgba(100,180,255,0.6)');
     } else if (type === 'town') {
       img.src = 'assets/town.webp';
-      label.textContent = 'Town';
       img.style.setProperty('--glow-low', 'rgba(240,196,60,0.3)');
       img.style.setProperty('--glow-high', 'rgba(240,196,60,0.6)');
     } else if (type === 'wilderness') {
-      img.src = 'assets/menu-icons/mapa.png';
-      label.textContent = 'Wilderness';
+      img.src = 'assets/map.webp';
       img.style.setProperty('--glow-low', 'rgba(46,204,113,0.3)');
       img.style.setProperty('--glow-high', 'rgba(46,204,113,0.6)');
     } else {
       // 'stop' — cesta do zastávky (obrázek dané zastávky)
       img.src = getStopImage(actId, zoneId || 0);
-      label.textContent = STOP_NAMES[actId] ? STOP_NAMES[actId][Math.min(zoneId || 0, 9)] : `Zastávka`;
       // Glow barva podle actu
       const theme = DUNGEON_THEMES[ACTS[actId]?.theme] || DUNGEON_THEMES[0];
       const c = hexToRgb(theme.border);
