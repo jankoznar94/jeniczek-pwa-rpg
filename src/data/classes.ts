@@ -83,15 +83,13 @@
         combat: { name:'Combat', icon:'⚔️',
           tiers: [
             { choices: [
+              { k:'pummel', name:'Pummel', icon:'👊', iconImg:'pummel.png', maxLv:5, desc:lv=>`Interrupts enemy cast + blocks recast for ${2+lv}s` },
               { k:'oneHandSpec', name:'One-Hand Specialization', icon:'🗡️', iconImg:'oneHandSpec.png', maxLv:5, desc:lv=>`+${10*lv}% 1H dmg, +${10*lv}% attack rating, +${lv}% crit; off-hand dmg ${50+10*lv}%` },
               { k:'twoHandSpec', name:'Two-Hand Specialization', icon:'🪓', iconImg:'twoHandSpec.png', maxLv:5, desc:lv=>`+${10*lv}% 2H dmg, +${10*lv}% attack rating, +${lv}% crit` },
             ]},
             { choices: [
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% attack rating` },
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, requires:'barbarian_twoHandSpec', requiresLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
-            ]},
-            { choices: [
-              { k:'pummel', name:'Pummel', icon:'👊', iconImg:'pummel.png', maxLv:5, desc:lv=>`Interrupts enemy cast + blocks recast for ${2+lv}s` },
             ]}
           ]
         },
@@ -112,9 +110,7 @@
             ]},
             { choices: [
               { k:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + slow ${15+lv*5}% for ${2+Math.floor(lv/2)}s` },
-            ]},
-            { choices: [
-              { k:'spellReflect', name:'Spell Reflect', icon:'🪞', iconImg:'spellReflect.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:5, desc:lv=>`Reflects ${10*lv}% of offensive spell dmg back at enemy` },
+              { k:'spellReflect', name:'Spell Reflect', icon:'🪞', iconImg:'spellReflect.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:1, desc:lv=>`Reflects ${10*lv}% of offensive spell dmg back at enemy` },
             ]}
           ]
         }
