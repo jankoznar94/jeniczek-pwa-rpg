@@ -1155,6 +1155,7 @@ export function initGame() {
     // Shield
     else if (item.type === 'shield') {
       if (item.blockChance) addRow('Block', `${item.blockChance}%`);
+      if (item.baseDmgMin !== undefined || item.baseDmgMax !== undefined) addRow('Shield Slam', `${item.baseDmgMin}-${item.baseDmgMax} dmg`);
       if (item.defense) addRow('Defense', item.defense);
       if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
