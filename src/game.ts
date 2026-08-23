@@ -2547,7 +2547,7 @@ export function initGame() {
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
       // Opportunity Dodge — útok nepřítele může být uhýbatelný (globální freeze + krátké okno)
-      _dodgePending: false, _dodgeDir: null, _dodgeResolved: false, _dodgeCooldownUntil: 0,
+      _dodgePending: false, _dodgeDir: null, _dodgeResolved: false, _dodgeFailed: false, _dodgeCooldownUntil: 0,
       // Pack (elita+minioni / champion pack)
       packMembers: packMembers,
       packActiveIdx: 0,
@@ -3392,6 +3392,13 @@ export function initGame() {
   // Rozhodne o výsledku na konci swingu. Vrací true, pokud byl útok úspěšně vyhnut
   // (ráně se vyhnul — nic se neaplikuje). Vrací false, pokud zmeškal (rána projde).
   function resolveOpportunityDodge(mb) {
+    // Špatný směr už dodge uzavřel (_dodgePending=false, _dodgeFailed=true).
+    // Na konci swingu jen skryjeme křížek a rána projde (return false).
+    if (mb._dodgeFailed) {
+      mb._dodgeFailed = false;
+      hideDodgeArrow(mb);
+      return false;
+    }
     if (!mb._dodgePending) return false;
     mb._dodgePending = false;
     mb._dodgeCooldownUntil = performance.now() + DODGE_COOLDOWN_MS;
@@ -3444,6 +3451,20 @@ export function initGame() {
   function hideDodgeArrow(mb) {
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+  }
+
+  // Špatný směr — šipka se nahradí červeným křížkem a dodge se uzavře.
+  // Hráč nemůže donekonečna opravovat chybu — rána projde na konci swingu.
+  function showDodgeFail(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      arrow.setAttribute('class', 'boss-attack-arrow dodge-fail');
+      arrow.style.transform = 'translate(-50%, -50%)';
+      arrow.style.rotate = '0deg';
+      arrow.style.color = '#e74c3c';
+      arrow.style.fill = '#e74c3c';
+      arrow.innerHTML = '<path d="M4 4L12 12M12 4L4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>';
+    }
   }
 
   function onAutoEnemyAttack() {
@@ -7574,6 +7595,12 @@ export function initGame() {
       if (dir === mb._dodgeDir) {
         mb._dodgeResolved = true;
         showDodgeSuccess(mb); // okamžitá zpětná vazba — šipka → fajfka
+      } else {
+        // Špatný směr — křížek a dodge se uzavře. Hráč nemůže opravovat:
+        // rána projde na konci swingu (resolveOpportunityDodge vrátí false).
+        mb._dodgeFailed = true;
+        mb._dodgePending = false;
+        showDodgeFail(mb);
       }
       return;
     }
