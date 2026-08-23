@@ -4073,7 +4073,7 @@ export function initGame() {
     // Tlačítka ve fixním pořadí: heal potiony (Light→Godly), pak mana potiony (Light→Godly)
     const order = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
       'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
-    const html = order
+    const filled = order
       .filter(id => potCounts[id])
       .map(id => {
         const pot = ITEM_MAP[id];
@@ -4082,7 +4082,14 @@ export function initGame() {
           ${renderItemIcon(pot, 0)}
           <span class="potion-stack-count">${count}</span>
         </div>`;
-      }).join('');
+      });
+    // Vždy renderovat plný počet slotů — chybějící vyplníme prázdnými placeholdery,
+    // aby se aréna neposunula, když potiony dojdou (výška řádku zůstává konstantní).
+    const slots = getTotalPotionSlots();
+    let html = filled.join('');
+    for (let i = filled.length; i < slots; i++) {
+      html += `<div class="mb-potion-btn empty"></div>`;
+    }
     container.innerHTML = html;
   }
 
