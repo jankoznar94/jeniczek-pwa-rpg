@@ -3418,8 +3418,8 @@ export function initGame() {
       const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._dodgeDir] || 0;
       arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
       arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-      arrow.style.color = '#f39c12';
-      arrow.style.fill = '#f39c12';
+      arrow.style.color = '#e74c3c';
+      arrow.style.fill = '#e74c3c';
     }
   }
 
