@@ -2274,6 +2274,18 @@ export function initGame() {
     state._playerDotTicksLeft = 0;
   }
 
+  // Synchronizovat soubojovou manu (state.maxMana) s hero.maxMana.
+  // Mana bar v aréně čte state.maxMana, který se při startu souboje nastaví jen jednou;
+  // když hráč vybaví item s Intellectem / investuje intelekt uprostřed souboje,
+  // musí se state.maxMana přepočítat, jinak by se zdálo, že Intellect nepřidává manu.
+  function syncBattleMana() {
+    if (mapBattleState && !mapBattleState.ended) {
+      state.maxMana = getHeroMaxMana();
+      state.mana = Math.min(state.mana || 0, state.maxMana);
+      updateMapBattleUI();
+    }
+  }
+
   function startLocation(actId, areaOverride, fightOverride) {
     // Reset GCD a combo points per fight (session state zůstává)
     state._gcdTimer = 0;
@@ -9704,6 +9716,7 @@ export function initGame() {
       h.attrInt = (h.attrInt||0) + 1;
       h.maxMana = getHeroMaxMana();
       h.mana = h.maxMana;
+      syncBattleMana();
       showMessage('🧠 Intelekt +1! Max many +10!');
     } else {
       h.attrVit = (h.attrVit||0) + 1;
@@ -11053,6 +11066,7 @@ export function initGame() {
     h.hp = Math.min(h.hp, h.maxHp);
     h.maxMana = getHeroMaxMana();
     h.mana = Math.min(h.mana, h.maxMana);
+    syncBattleMana();
     playSFX(equipSfx);
     saveGame();
     showMessage(`🎽 Oblékl jsi ${item.icon} ${getItemSocketName(item)}!`);
@@ -11105,10 +11119,12 @@ export function initGame() {
     h.hp = Math.min(h.hp, h.maxHp);
     h.maxMana = getHeroMaxMana();
     h.mana = Math.min(h.mana, h.maxMana);
+    syncBattleMana();
     playSFX(equipSfx);
     saveGame();
     showMessage(`📦 Sundal jsi ${item.icon} ${getItemSocketName(item)} do inventáře!`);
     renderInventory();
+    renderHero();
   }
 
   // ===== TRAINING (minigames) =====
