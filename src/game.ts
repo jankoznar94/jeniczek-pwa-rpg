@@ -3250,7 +3250,7 @@ export function initGame() {
       } else {
         const offset = Math.round(553 * (1 - mb._enemySwingPct));
         enemyCircle.style.strokeDashoffset = offset;
-        enemyCircle.style.stroke = '#e74c3c';
+        enemyCircle.style.stroke = '#e67e22';
       }
     }
     // Nepřítelův HP bar — segmenty
@@ -3418,8 +3418,21 @@ export function initGame() {
       const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._dodgeDir] || 0;
       arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
       arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-      arrow.style.color = '#e74c3c';
-      arrow.style.fill = '#e74c3c';
+      arrow.style.color = '#e67e22';
+      arrow.style.fill = '#e67e22';
+    }
+  }
+
+  // Okamžitá zpětná vazba po úspěšném swipu — šipka se nahradí fajfkou,
+  // aby hráč hned věděl, že to prošlo (nečeká na konec swingu).
+  function showDodgeSuccess(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      arrow.setAttribute('class', 'boss-attack-arrow dodge-success');
+      arrow.style.transform = 'translate(-50%, -50%)';
+      arrow.style.color = '#2ecc71';
+      arrow.style.fill = '#2ecc71';
+      arrow.innerHTML = '<path d="M2 8.5L6 12.5L14 3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
     }
   }
 
@@ -7555,6 +7568,7 @@ export function initGame() {
     if (mb._dodgePending) {
       if (dir === mb._dodgeDir) {
         mb._dodgeResolved = true;
+        showDodgeSuccess(mb); // okamžitá zpětná vazba — šipka → fajfka
       }
       return;
     }
