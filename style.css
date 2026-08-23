@@ -2106,7 +2106,6 @@ body.no-scroll { overflow: hidden; }
 
 /* Expandable dot path */
 .map-loc-dot-scroll-wrap {
-  background:rgba(0,0,0,0.3);
   border-top:1px solid rgba(255,255,255,0.05);
   padding:6px 12px;
 }
