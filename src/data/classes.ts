@@ -21,7 +21,10 @@
         { id:'thunderBolt', name:'Thunder Bolt', icon:'⚡', cost:6, cooldown:30, gcd:0.5, desc:'120% dmg + stun 5s' },
         { id:'battleShout', name:'Battle Shout', icon:'📯', cost:3, cooldown:10, gcd:0.5, desc:'+15% dmg for 30s' },
         { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:3, cooldown:10, gcd:0.5, desc:'+50% armor for 30s' },
-        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:2, cooldown:0, gcd:0, desc:'150% dmg with both weapons + reset swing timers' }
+        { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:2, cooldown:0, gcd:0, desc:'150% dmg with both weapons + reset swing timers' },
+        { id:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', cost:4, cooldown:8, gcd:0.5, needsShield:true, desc:'Shield dmg + slow enemy 25% for 3s' },
+        { id:'pummel', name:'Pummel', icon:'👊', cost:2, cooldown:6, gcd:0.5, desc:'Interrupts enemy cast + blocks recast for 3s' },
+        { id:'spellReflect', name:'Spell Reflect', icon:'🪞', cost:5, cooldown:15, gcd:0.5, needsShield:true, desc:'Reflects offensive enemy spell back at them' }
       ]
     },
     assassin: {
@@ -86,6 +89,9 @@
             { choices: [
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% attack rating` },
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, requires:'barbarian_twoHandSpec', requiresLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
+            ]},
+            { choices: [
+              { k:'pummel', name:'Pummel', icon:'👊', iconImg:'pummel.png', maxLv:5, desc:lv=>`Interrupts enemy cast + blocks recast for ${2+lv}s` },
             ]}
           ]
         },
@@ -105,7 +111,10 @@
               { k:'thunderBolt', name:'Thunder Bolt', icon:'⚡', iconImg:'thunderBolt.png', maxLv:5, desc:lv=>`${80+lv*20}% dmg + stun ${3+(lv-1)*0.5}s` },
             ]},
             { choices: [
-              { k:'shieldBash', name:'Shield Bash', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:5, desc:lv=>`${60+lv*20}% dmg + interrupt casting` },
+              { k:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + slow ${15+lv*5}% for ${2+Math.floor(lv/2)}s` },
+            ]},
+            { choices: [
+              { k:'spellReflect', name:'Spell Reflect', icon:'🪞', iconImg:'spellReflect.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:5, desc:lv=>`Reflects ${10*lv}% of offensive spell dmg back at enemy` },
             ]}
           ]
         }

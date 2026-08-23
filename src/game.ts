@@ -466,7 +466,9 @@ export function initGame() {
       if (spellId === 'defensiveShout') return getSkillLv('barbarian_defensiveShout');
       if (spellId === 'skillShout') return getSkillLv('barbarian_skillShout');
       if (spellId === 'thunderBolt') return getSkillLv('barbarian_thunderBolt');
-      if (spellId === 'shieldBash') return getSkillLv('barbarian_shieldBash');
+      if (spellId === 'shieldSlam') return getSkillLv('barbarian_shieldSlam');
+      if (spellId === 'pummel') return getSkillLv('barbarian_pummel');
+      if (spellId === 'spellReflect') return getSkillLv('barbarian_spellReflect');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -2544,6 +2546,7 @@ export function initGame() {
       _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
       _enemyCastProcessed: false,
       _enemyCastAfterSwing: null,
+      _enemyCastBlockedUntil: 0, // Pummel — do kdy nepřítel nemůže recastit
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
       // Opportunity Dodge — útok nepřítele může být uhýbatelný (globální freeze + krátké okno)
@@ -2973,7 +2976,9 @@ export function initGame() {
           // Rozhodovací moment — monstrum s kouzly může začít castovat
           // První swing je vždy melee, teprve pak se rozhoduje o castování
           const spells = mb.monsterSpells;
-          if (spells && spells.length > 0 && mb._enemyFirstSwingDone) {
+          // Pummel blokuje recast — nepřítel mezitím jen melee útočí
+          const castBlocked = mb._enemyCastBlockedUntil && now < mb._enemyCastBlockedUntil;
+          if (spells && spells.length > 0 && mb._enemyFirstSwingDone && !castBlocked) {
             const spell = pickEnemySpell(mb);
             if (spell) {
               const cost = mb.monsterResource === 'rage' ? (spell.rageCost || 0) : (spell.manaCost || 0);
@@ -3372,6 +3377,9 @@ export function initGame() {
 
   // ===== Opportunity Dodge — roll na začátku swingu, reakce přes existující swing timer =====
   const DODGE_COOLDOWN_MS = 3000; // minimální rozestup mezi příležitostmi (cap frekvence)
+
+  // Enemy kouzla, která NEJSOU ofensivní (buff/debuff/utility) — spell reflect je neodráží jako dmg
+  const OFFENSIVE_EXEMPT = ['empower', 'defensive_shout', 'battle_shout', 'thorn_shield', 'faerie_fire', 'evasion', 'heal'];
 
   // Rozhodne, jestli PRÁVĚ ZAČÍNAJÍCÍ melee swing nepřítele je uhýbatelný.
   // Volá se vždy, když se startuje nový nepřátelský melee swing (ne boss, ne caster).
@@ -4286,7 +4294,10 @@ export function initGame() {
       const mb2 = mapBattleState;
       const hasPoison = mb2 && mb2.enemyDot > 0 && mb2.enemyDotTicksLeft > 0;
       const needsPoison = spell.needsPoison === true;
-      const canUseFinal = canUse && (!needsCombo || hasCombo) && (!needsPoison || hasPoison);
+      // Kouzla vyžadující štít — bez něj nerozsvítit
+      const needsShield = spell.needsShield === true;
+      const hasShield = needsShield && (() => { const sh = ITEM_MAP[state.hero.equip.shield]; return sh && sh.type === 'shield'; })();
+      const canUseFinal = canUse && (!needsCombo || hasCombo) && (!needsPoison || hasPoison) && (!needsShield || hasShield);
       const isQueued = spell.id === 'heroicStrike' && mapBattleState && mapBattleState._heroicStrikeQueued;
       const gcdActive = onGcd && !onCooldown && !isQueued;
       const gcdPct = onGcd ? Math.min(1, state._gcdTimer / 30) : 0;
@@ -4297,7 +4308,7 @@ export function initGame() {
       // Double Swing podporuje hold-to-repeat (držení = opakování, dokud je mana)
       const holdAttr = spell.id === 'doubleSwing' ? ` data-hold="${spell.id}"` : '';
       html += `<button class="${btnClass}"${holdAttr} onclick="game.castClassSpell('${spell.id}')" title="${spell.desc}">
-        <img class="spell-icon-img" src="assets/spells/${spell.id}.png" alt="${spell.name}">
+        <img class="spell-icon-img" src="assets/spells/${spell.iconImg || spell.id + '.png'}" alt="${spell.name}">
         <span class="spell-cost">${spellCost > 0 ? spellCost : ''}</span>
         ${onCooldown ? `<span class="spell-cd-num">${cdRemaining}</span>` : ''}
         ${gcdActive ? `<div class="spell-gcd-overlay" style="background:conic-gradient(rgba(0,0,0,0.6) 0deg, rgba(0,0,0,0.6) ${gcdDeg}deg, transparent ${gcdDeg}deg, transparent 360deg)"></div>` : ''}
@@ -4449,6 +4460,17 @@ export function initGame() {
     // Per-spell cooldown check
     if (_sessionSpellCooldowns[spellId] > 0) return false;
 
+    // Kouzla vyžadující štít
+    if (spell.needsShield) {
+      const shield = ITEM_MAP[state.hero.equip.shield];
+      if (!shield || shield.type !== 'shield') { showMessage('🛡️ Potřebuješ štít!'); return false; }
+    }
+    // Spell Reflect — jen když nepřítel aktivně castí
+    if (spellId === 'spellReflect' && !(mb._enemyCasting && mb._enemyCastSpell)) {
+      showMessage('🪞 Nepřítel nekouzlí!');
+      return false;
+    }
+
     // Odečíst resource
     state[resourceKey] = Math.max(0, (state[resourceKey] || 0) - spellCost);
     // Nastavit GCD (0.5s = ~30 ticků při 60fps)
@@ -4531,32 +4553,86 @@ export function initGame() {
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.CASTER);
       spawnFloatingText(`⚡ -${dmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/thunderBolt.png');
-    } else if (spellId === 'shieldBash') {
-      // Shield Bash — pouze se štítem
+    } else if (spellId === 'shieldSlam') {
+      // Shield Slam — pouze se štítem; poškození + dočasný slow nepřítele
       const shield = ITEM_MAP[state.hero.equip.shield];
       if (!shield || shield.type !== 'shield') {
         showMessage('🛡️ Potřebuješ štít!');
         return;
       }
-      const lv = getSpellLv('shieldBash');
-      const pct = 60 + lv * 20; // 80% @ lv1, 100% @ lv2, ... 160% @ lv5
+      const lv = getSpellLv('shieldSlam');
+      const pct = 60 + lv * 20; // 80% @ lv1 ... 160% @ lv5
       const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
       const eqAttrs = getEquipAttrs();
       const baseDmg = 10 + Math.floor(state.hero.level * 3) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
       const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
       mb.bossHp -= dmg;
-      // Interrupt — přeruší castování nepřítele
-      if (mb._enemyCasting) {
-        mb._enemyCasting = false;
-        mb._enemyCastSpell = null;
-        mb._enemySwingStart = performance.now();
-        _sessionDebuffs['shieldBash'] = { icon: '🛡️', name: 'Interrupt', ticks: 30, maxTicks: 30 };
-      }
+      // Slow nepřítele: 20%+5%*lv na 2s+floor(lv/2)s
+      const slowPct = 15 + lv * 5;
+      const slowTicks = Math.round((2 + Math.floor(lv / 2)) * 60);
+      mb._enemySlowPct = slowPct;
+      mb._enemySlowTimer = slowTicks;
+      mb._enemySlowMax = slowTicks;
+      _sessionDebuffs['shieldSlam'] = { icon: '🛡️', name: `Shield Slam (slow ${slowPct}%)`, ticks: slowTicks, maxTicks: slowTicks };
       // Animace
       spawnShieldBashAnim(mb);
       // Projektil
       spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
       spawnFloatingText(`🛡️ -${dmg}`, 'right', '#f1c40f', 32, 2000, 'assets/spells/shield_bash.png');
+    } else if (spellId === 'pummel') {
+      // Pummel — interrupt + blok recast; bez požadavku na štít
+      const lv = getSpellLv('pummel');
+      const blockTicks = (2 + lv) * 60; // 2+lv sekund bez recastu
+      // Interrupt — přeruší castování nepřítele
+      if (mb._enemyCasting) {
+        mb._enemyCasting = false;
+        mb._enemyCastSpell = null;
+        mb._enemySwingStart = performance.now();
+        mb._enemySwingReady = false;
+        mb._enemySwingPct = 0;
+        playSFX(dodgeSfx);
+        spawnFloatingText('👊 Interrupt!', 'right', '#e67e22', 32);
+      }
+      // Blok recastu — nepřítel nemůže znovu začít castit
+      mb._enemyCastBlockedUntil = performance.now() + blockTicks * (1000/60);
+      mb._enemyCastBlockedTicks = blockTicks;
+      _sessionDebuffs['pummel'] = { icon: '👊', name: `Pummel (recast block ${2+lv}s)`, ticks: blockTicks, maxTicks: blockTicks };
+      // Animace
+      spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
+      spawnFloatingText('👊', 'right', '#e67e22', 40, 800, 'assets/spells/pummel.png');
+    } else if (spellId === 'spellReflect') {
+      // Spell Reflect — pouze se štítem; odrazí ofensivní kouzlo zpět na nepřítele
+      const shield = ITEM_MAP[state.hero.equip.shield];
+      if (!shield || shield.type !== 'shield') {
+        showMessage('🛡️ Potřebuješ štít!');
+        return;
+      }
+      const lv = getSpellLv('spellReflect');
+      const reflectPct = 10 * lv; // 10% @ lv1 ... 50% @ lv5
+      if (mb._enemyCasting && mb._enemyCastSpell) {
+        // Aktivní cast — zrušit a odrazit zpět
+        const spellId2 = mb._enemyCastSpell;
+        const spellDef = ENEMY_SPELLS[spellId2];
+        const offensive = spellDef && !OFFENSIVE_EXEMPT.includes(spellId2);
+        mb._enemyCasting = false;
+        mb._enemyCastSpell = null;
+        mb._enemySwingStart = performance.now();
+        mb._enemySwingReady = false;
+        mb._enemySwingPct = 0;
+        if (offensive) {
+          const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
+          const reflectDmg = Math.max(1, Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * 0.8 * (mb.isBoss ? 1.0 : getZoneMult(mb.progress, state.difficulty)) * 0.7 * (reflectPct/100)));
+          mb.bossHp -= reflectDmg;
+          spawnFloatingText(`🪞 -${reflectDmg}`, 'right', '#e74c3c', 32, 2000, 'assets/spells/spellReflect.png');
+        } else {
+          spawnFloatingText('🪞 Reflected!', 'right', '#e67e22', 32, false, 'assets/spells/spellReflect.png');
+        }
+        playSFX(shoutSfx);
+        spawnShoutRings(mb, '#a64dff', 'rgba(166,77,255,0.5)');
+      } else {
+        showMessage('🪞 Nepřítel nekouzlí!');
+        return;
+      }
     } else if (spellId === 'battleShout') {
       // +5+lv*5% dmg na 60s (dle talentu)
       const lv = getSpellLv('battleShout');
