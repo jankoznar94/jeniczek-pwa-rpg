@@ -23,8 +23,8 @@
         { id:'defensiveShout', name:'Defensive Shout', icon:'🛡️', cost:3, cooldown:10, gcd:0.5, desc:'+50% armor for 30s' },
         { id:'doubleSwing', name:'Double Swing', icon:'⚔️', cost:2, cooldown:0, gcd:0, desc:'150% dmg with both weapons + reset swing timers' },
         { id:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', cost:4, cooldown:8, gcd:0.5, needsShield:true, desc:'Shield dmg + slow enemy 25% for 3s' },
-        { id:'pummel', name:'Pummel', icon:'👊', cost:2, cooldown:6, gcd:0.5, desc:'Interrupts enemy cast + blocks recast for 3s' },
-        { id:'spellReflect', name:'Spell Reflect', icon:'🪞', cost:5, cooldown:15, gcd:0.5, needsShield:true, desc:'Reflects offensive enemy spell back at them' }
+        { id:'pummel', name:'Pummel', icon:'👊', cost:2, cooldown:8, gcd:0.5, desc:'Interrupts enemy cast + blocks recast' },
+        { id:'spellReflect', name:'Spell Reflect', icon:'🪞', cost:5, cooldown:8, gcd:0.5, needsShield:true, desc:'Reflects offensive enemy spell back at them' }
       ]
     },
     assassin: {

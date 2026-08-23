@@ -4477,7 +4477,13 @@ export function initGame() {
     state._gcdTimer = Math.round(spell.gcd * 60);
     // Nastavit per-spell cooldown (session persistent)
     if (spell.cooldown > 0) {
-      _sessionSpellCooldowns[spellId] = Math.round(spell.cooldown * 60);
+      // Pummel a Spell Reflect — CD klesá s levelem talentu: lvl1=8s, každý level -1s (lvl5=4s)
+      let cd = spell.cooldown;
+      if (spellId === 'pummel' || spellId === 'spellReflect') {
+        const lv = getSpellLv(spellId);
+        cd = Math.max(4, 8 - (lv - 1));
+      }
+      _sessionSpellCooldowns[spellId] = Math.round(cd * 60);
     }
 
     // Pokud má kouzlo castTime, začít castovat (jako WoW TBC)
