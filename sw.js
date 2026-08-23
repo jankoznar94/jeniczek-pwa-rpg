@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v185';
-const ASSET_CACHE = 'boss-slayer-assets-v42';
+const ASSET_CACHE = 'boss-slayer-assets-v43';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=147', '/manifest.json', '/item-reference.html'];
 
@@ -124,8 +124,13 @@ const ASSET_FILES = [
   '/assets/stops/stop_act0_3.webp', '/assets/stops/stop_act0_4.webp', '/assets/stops/stop_act0_5.webp',
   '/assets/stops/stop_act0_6.webp', '/assets/stops/stop_act0_7.webp', '/assets/stops/stop_act0_8.webp',
   '/assets/stops/stop_act0_9.webp',
-  // Act 1-4 stop placeholders (generuje se až reálné obrázky zastávek)
-  '/assets/stops/placeholder_act1.png', '/assets/stops/placeholder_act2.png',
+  // Act 1 stops (Desert Realm zastávky) — WebP komprese
+  '/assets/stops/stop_act1_0.webp', '/assets/stops/stop_act1_1.webp', '/assets/stops/stop_act1_2.webp',
+  '/assets/stops/stop_act1_3.webp', '/assets/stops/stop_act1_4.webp', '/assets/stops/stop_act1_5.webp',
+  '/assets/stops/stop_act1_6.webp', '/assets/stops/stop_act1_7.webp', '/assets/stops/stop_act1_8.webp',
+  '/assets/stops/stop_act1_9.webp',
+  // Act 2-4 stop placeholders (generuje se až reálné obrázky zastávek)
+  '/assets/stops/placeholder_act2.png',
   '/assets/stops/placeholder_act3.png', '/assets/stops/placeholder_act4.png',
   // Gems
   '/assets/gems/ruby_chipped.png', '/assets/gems/ruby_flawed.png', '/assets/gems/ruby.png',
