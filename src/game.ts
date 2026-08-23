@@ -4597,8 +4597,13 @@ export function initGame() {
       mb._enemyCastBlockedUntil = performance.now() + blockTicks * (1000/60);
       mb._enemyCastBlockedTicks = blockTicks;
       _sessionDebuffs['pummel'] = { icon: '👊', name: `Pummel (recast block ${2+lv}s)`, ticks: blockTicks, maxTicks: blockTicks };
-      // Animace
-      spawnProjectileEffect(null, false, false, ATTACK_TYPES.MELEE);
+      // Animace — zatřást nepřítelem (fyzický úder), místo projektilu
+      const fig = $('mbFigure');
+      if (fig) {
+        fig.classList.remove('figure-shake');
+        void fig.offsetWidth; // restart animace
+        fig.classList.add('figure-shake');
+      }
       spawnFloatingText('👊', 'right', '#e67e22', 40, 800, 'assets/spells/pummel.png');
     } else if (spellId === 'spellReflect') {
       // Spell Reflect — pouze se štítem; odrazí ofensivní kouzlo zpět na nepřítele

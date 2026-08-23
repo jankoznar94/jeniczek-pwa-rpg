@@ -150,6 +150,9 @@ body.no-scroll { overflow: hidden; }
 .monster-appear { animation: monsterAppear 0.5s ease-out; }
 @keyframes figureHitFlash { 0%,100%{filter:brightness(1)} 50%{filter:brightness(2.5) saturate(1.8)} }
 .figure-hit { animation: figureHitFlash 0.15s ease-out; }
+/* Interrupt — nepřítel se zatřese, jako by ho někdo fyzicky udeřil */
+@keyframes figureShake { 0%{transform:translate(-50%,-50%) translateX(0)} 15%{transform:translate(-50%,-50%) translateX(-8px)} 30%{transform:translate(-50%,-50%) translateX(7px)} 45%{transform:translate(-50%,-50%) translateX(-6px)} 60%{transform:translate(-50%,-50%) translateX(4px)} 75%{transform:translate(-50%,-50%) translateX(-3px)} 100%{transform:translate(-50%,-50%) translateX(0)} }
+.figure-shake { animation: figureShake 0.4s ease-out; }
 
 /* Simon */
 .simon-grid { display: grid; gap: 6px; max-width: 240px; margin: 16px auto; }
