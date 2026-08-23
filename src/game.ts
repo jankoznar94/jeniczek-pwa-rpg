@@ -24,14 +24,14 @@ import { initBattleScene, initMeleeLayer, setDungeonBackground, setBossAura, spa
 // Názvy zastávek — vizuální cesta. Act 0 = Enchanted Forest, Act 1-4 ostatní říše.
 const STOP_NAMES = {
   0: ['Louka', 'Les', 'Zřícenina', 'Bažina', 'Lesní pahorky', 'Údolí', 'Vesnice lidojedů', 'Tajemná studna', 'Cesta k pevnosti', 'Pevnost lesního pána'],
-  1: ['Pouštní výspa', 'Písečné duny', 'Oáza', 'Starověké ruiny', 'Písečná bouře', 'Tábor', 'Slané pláně', 'Hrobka faraónů', 'Zatopená svatyně', 'Faraónova pevnost'],
+  1: ['Písečné duny', 'Písečné skály', 'Oáza', 'Tajemná hrobka', 'Tábor nomádů', 'Pouštní průsmyk', 'Červí díra', 'Vyprahlá pustina', 'Magické kameny', 'Faraonova hrobka'],
   2: ['Sněžná pole', 'Sněhové pláně', 'Zámrzlé jezero', 'Ledová jeskyně', 'Ledovec', 'Sněžná vesnice', 'Lavinový průsmyk', 'Mrazivá svatyně', 'Mrazivý vrchol', 'Citadela ledového obra'],
   3: ['Hřbitov', 'Prokleté bažiny', 'Hrobka', 'Shnilá hrobka', 'Uličky kostí', 'Prokleté ruiny', 'Morová věž', 'Nekropole', 'Studna duší', 'Lichova svatyně'],
   4: ['Spálené pláně', 'Lávová pole', 'Lávová jáma', 'Lávový hřeben', 'Démonova rokla', 'Hořící hrad', 'Trhlina pekla', 'Inferno svatyně', 'Pekelná brána', 'Doupě lávového draka'],
 };
 const STOP_NAMES_EN = {
   0: ['Meadow', 'Forest', 'Ruins', 'Swamp', 'Wooded Hills', 'Valley', 'Cannibal Village', 'Mystic Well', 'Road to the Fortress', "Forest Lord's Fortress"],
-  1: ['Desert Outpost', 'Sand Dunes', 'Oasis', 'Ancient Ruins', 'Sandstorm', 'Campsite', 'Salt Flats', 'Tomb of Pharaohs', 'Sunken Shrine', "Pharaoh's Throne"],
+  1: ['Sand Dunes', 'Sandstone Rocks', 'Oasis', 'Mysterious Tomb', 'Nomad Camp', 'Desert Pass', 'Worm Hole', 'Parched Wasteland', 'Magic Stones', 'Pharaoh Tomb'],
   2: ['Snowfield', 'Snowy Field', 'Frozen Lake', 'Ice Cave', 'Glacier', 'Snowy Village', 'Avalanche Pass', 'Frost Shrine', 'Frozen Peak', "Frost Giant's Citadel"],
   3: ['Graveyard', 'Cursed Bog', 'Tomb', 'Rotting Crypt', 'Bone Valley', 'Cursed Ruins', 'Plague Tower', 'Necropolis', 'Soul Well', "Lich's Sanctum"],
   4: ['Ashen Plains', 'Lava Fields', 'Cinder Pits', 'Lava Ridge', 'Demon Gully', 'Burning Keep', 'Skin Rift', 'Inferno Shrine', 'Abyssal Gate', "Lava Dragon's Lair"],
@@ -49,6 +49,7 @@ function getStopImage(actId, zoneId) {
   const idx = Math.min(Math.max(zoneId || 0, 0), 9);
   // Act 0 má vygenerované zastávky; Act 1-4 zatím placeholder (obrázky se generují později)
   if (actId === 0) return `assets/stops/stop_act0_${idx}.webp`;
+  if (actId === 1) return `assets/stops/stop_act1_${idx}.webp`;
   return `assets/stops/placeholder_act${actId}.png`;
 }
 
