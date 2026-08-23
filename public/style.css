@@ -1415,10 +1415,10 @@ body.no-scroll { overflow: hidden; }
 .stop-result-potions-heal { left:10px; }
 .stop-result-potions-mana { right:10px; }
 .stop-result-potions .result-status-potion {
-  width:34px;height:34px;
+  width:46px;height:46px;
 }
 .stop-result-potions .result-status-potion-count {
-  font-size:9px; line-height:11px;
+  font-size:12px; line-height:14px;
 }
 .result-screen.centered,
 #resultScreen.centered .result-screen {
