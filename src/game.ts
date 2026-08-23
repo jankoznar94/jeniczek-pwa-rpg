@@ -3424,10 +3424,10 @@ export function initGame() {
     if (arrow) {
       const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._dodgeDir] || 0;
       arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
-      // Rotace přes CSS vlastnost `rotate` — je nezávislá na `transform`, takže ji
-      // animace opportunityPulse (transform: translate+scale) nepřebije.
-      arrow.style.transform = 'translate(-50%, -50%)';
-      arrow.style.rotate = `${rotation}deg`;
+      // Rotace v transformu (jako boss šipka) — translate centruje, rotate otáčí.
+      // Animace opportunityPulse animuje jen `scale`, takže transform nepřebije.
+      arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+      arrow.style.rotate = '';
       arrow.style.color = '#e67e22';
       arrow.style.fill = '#e67e22';
       // Reset innerHTML zpět na šipku (showDodgeSuccess ho mění na fajfku)
