@@ -4568,10 +4568,12 @@ export function initGame() {
       }
       const lv = getSpellLv('shieldSlam');
       const pct = 60 + lv * 20; // 80% @ lv1 ... 160% @ lv5
-      const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
-      const eqAttrs = getEquipAttrs();
-      const baseDmg = 10 + Math.floor(state.hero.level * 3) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + eqAttrs.str) * 2;
-      const dmg = Math.max(1, Math.round(baseDmg * pct / 100));
+      // Shield Slam — poškození založené NA ŠTÍTU (jako D2 smite u paladinů), ne na zbrani/síle.
+      // Štíty mají vlastní baseDmgMin/baseDmgMax specifické pro toto kouzlo.
+      const sMin = shield.baseDmgMin || 1;
+      const sMax = shield.baseDmgMax || 2;
+      const shieldDmg = sMin + Math.random() * (sMax - sMin);
+      const dmg = Math.max(1, Math.round(shieldDmg * pct / 100));
       mb.bossHp -= dmg;
       // Slow nepřítele: 20%+5%*lv na 2s+floor(lv/2)s
       const slowPct = 15 + lv * 5;
@@ -8975,6 +8977,9 @@ export function initGame() {
         if (i.baseDmgMin !== undefined && i.baseDmgMax !== undefined) parts.push(`⚔️ ${i.baseDmgMin}-${i.baseDmgMax}`);
         else if (i.baseDmg !== undefined) parts.push(`⚔️ ${i.baseDmg}`);
         if (i.swingMs) parts.push(`⏱️ ${i.swingMs}ms`);
+      }
+      if (i.type === 'shield' && (i.baseDmgMin !== undefined || i.baseDmgMax !== undefined)) {
+        parts.push(`🛡️ Slam ${i.baseDmgMin}-${i.baseDmgMax}`);
       }
       if (i.bonusHp) parts.push(`❤️ +${i.bonusHp} HP`);
       if (i.bonusMana) parts.push(`💧 +${i.bonusMana} mana`);
