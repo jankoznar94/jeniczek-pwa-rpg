@@ -2216,6 +2216,15 @@ export function initGame() {
     });
   }
 
+  // Z poslední Victory page (10/10) — přesměrování na mapu divočiny,
+  // aby hráč musel na další zastávku přes mapu.
+  function openMapFromResult() {
+    const mb = mapBattleState;
+    if (!mb) return;
+    showScreen('map');
+    renderMap();
+  }
+
   // ===== ACT ENTRY =====
   function enterAct(actId) {
     const act = ACTS[actId];
@@ -8806,20 +8815,32 @@ export function initGame() {
       // Victory action buttons — bez waypointů. Next Fight pokračuje do další zastávky, pokud je dokončena.
       const hasScroll = (state.townPortalCount || 0) > 0;
       let actionsHtml;
-      // Po dokončení zastávky (10/10) posune Next progress na další zastávku
-      actionsHtml = `<div class="result-tile" onclick="game.continueToNextStop(${locId})" title="${isStopComplete ? 'Next Stop' : 'Next Fight'}">
-        <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
-        <span class="result-tile-label">${isStopComplete ? 'Next Stop' : 'Next Fight'}</span>
-      </div>`;
-      actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
-        <img src="assets/menu-icons/mesto.png" class="result-tile-img">
-        <span class="result-tile-label">Walk to Town</span>
-      </div>`;
-      if (hasScroll) {
-        actionsHtml += `<div class="result-tile" onclick="game.useTownPortalScrollFromResult()" title="Town Portal">
-          <img src="assets/items/town_portal_scroll.png" class="result-tile-img">
-          <span class="result-tile-label">Town Portal</span>
+      // Poslední souboj zastávky (10/10) — místo Next Stop a Town Portal dáme Map (pergamen s meči),
+      // aby hráč musel jít na další zastávku přes mapu.
+      if (isStopComplete) {
+        actionsHtml = `<div class="result-tile" onclick="game.openMapFromResult()" title="Map">
+          <img src="assets/map.webp" class="result-tile-img">
+          <span class="result-tile-label">Map</span>
         </div>`;
+        actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
+          <img src="assets/menu-icons/mesto.png" class="result-tile-img">
+          <span class="result-tile-label">Walk to Town</span>
+        </div>`;
+      } else {
+        actionsHtml = `<div class="result-tile" onclick="game.continueToNextStop(${locId})" title="Next Fight">
+          <img src="assets/items/weapon_broad_sword.png" class="result-tile-img">
+          <span class="result-tile-label">Next Fight</span>
+        </div>`;
+        actionsHtml += `<div class="result-tile" onclick="game.walkToTownFromResult()" title="Walk to Town">
+          <img src="assets/menu-icons/mesto.png" class="result-tile-img">
+          <span class="result-tile-label">Walk to Town</span>
+        </div>`;
+        if (hasScroll) {
+          actionsHtml += `<div class="result-tile" onclick="game.useTownPortalScrollFromResult()" title="Town Portal">
+            <img src="assets/items/town_portal_scroll.png" class="result-tile-img">
+            <span class="result-tile-label">Town Portal</span>
+          </div>`;
+        }
       }
       const heroFace = state.hero.face || 'hero';
       actionsHtml += `<div class="result-tile" onclick="game.openModal('hero')" title="Hero">
@@ -11488,7 +11509,7 @@ export function initGame() {
     usePotion, usePotionFromResult,
     townHeal, useTownPortal, renderTown, enterCurrentAct, closeModal,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
-    continueToNextStop,
+    continueToNextStop, openMapFromResult,
     renderChest,
     renderGamble, switchGambleCategory, switchGambleTab, buyGambleItem
   };
