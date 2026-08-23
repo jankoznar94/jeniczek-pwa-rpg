@@ -2057,7 +2057,7 @@ export function initGame() {
       img.style.setProperty('--glow-low', 'rgba(100,180,255,0.3)');
       img.style.setProperty('--glow-high', 'rgba(100,180,255,0.6)');
     } else if (type === 'town') {
-      img.src = 'assets/menu-icons/mesto.png';
+      img.src = 'assets/town.webp';
       label.textContent = 'Town';
       img.style.setProperty('--glow-low', 'rgba(240,196,60,0.3)');
       img.style.setProperty('--glow-high', 'rgba(240,196,60,0.6)');

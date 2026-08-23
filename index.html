@@ -22,6 +22,23 @@
     .town-action-icon { width:64px;height:64px;display:flex;align-items:center;justify-content:center;flex-shrink:0; }
     .town-action-icon img { width:64px;height:64px;object-fit:contain;display:block; }
     .town-action-label { font-size:18px;font-weight:bold;color:#ddd; }
+    .town-banner { position:relative; width:100%; border-radius:12px; overflow:hidden;
+      border:2px solid #444; margin:0 0 16px 0; background:#0a0a0a; }
+    .town-banner-img { width:100%; height:auto; display:block; aspect-ratio:1/1; object-fit:cover; }
+    .town-banner-overlay {
+      position:absolute; left:0; right:0; top:0; bottom:0;
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+      gap:2px; text-align:center; pointer-events:none;
+    }
+    .town-banner-title {
+      font-size:30px; font-weight:800; color:#fff; letter-spacing:2px;
+      text-shadow:0 2px 10px rgba(0,0,0,0.95);
+    }
+    .town-banner-sub {
+      font-size:14px; font-weight:600; color:#ddd;
+      text-shadow:0 1px 8px rgba(0,0,0,0.95);
+    }
+
     .page-header {
       display:flex;align-items:center;gap:18px;
       background:#000;border:1px solid #444;border-radius:10px;
@@ -94,11 +111,11 @@
 
 <!-- ===== TOWN ===== -->
 <div id="townScreen" class="container hidden">
-  <div class="page-header">
-    <img src="assets/menu-icons/mesto.png" class="page-header-icon">
-    <div>
-      <div class="page-header-title">Town</div>
-      <div class="page-header-subtitle">Rest, shop, and plan your next expedition.</div>
+  <div class="town-banner">
+    <img class="town-banner-img" src="assets/town.webp" alt="Town">
+    <div class="town-banner-overlay">
+      <div class="town-banner-title">Town</div>
+      <div class="town-banner-sub">Rest, shop, and plan your next expedition.</div>
     </div>
   </div>
 
