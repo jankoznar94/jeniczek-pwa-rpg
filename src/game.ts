@@ -3424,15 +3424,17 @@ export function initGame() {
     }
   }
 
-  // Telegraf — směrová šipka přes nepřátelské figurkou (znovupoužití mbArrow) + výrazný timer na kruhu.
+  // Telegraf — směrová šipka přes nepřátelské figurkou (znovupoužití mbArrow) + výrazný timer na kruhu
+  // + zatmavený overlay s dodge ikonou (aby mechanika jasně vynikla a dala se odlišit od budoucích).
   function showDodgeTelegraph(mb) {
     const arrow = $('mbArrow');
     if (arrow) {
       const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._dodgeDir] || 0;
       arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
       arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-      arrow.style.color = '#f1c40f';
-      arrow.style.fill = '#f1c40f';
+      // Oranžová #f39c12 — barva DODGE textu
+      arrow.style.color = '#f39c12';
+      arrow.style.fill = '#f39c12';
     }
     // Výrazný timer na kruhu (mbZoneDivider) — ubíhající čas na reakci.
     const zone = document.getElementById('mbZoneDivider');
@@ -3441,6 +3443,9 @@ export function initGame() {
       void zone.getBoundingClientRect(); // reflow pro restart animace
       zone.classList.add('dodge-active');
     }
+    // Overlay — zatmaví arénu + ukáže dodge ikonu.
+    const overlay = document.getElementById('mbDodgeOverlay');
+    if (overlay) overlay.classList.remove('hidden');
   }
 
   function hideDodgeTelegraph(mb) {
@@ -3453,6 +3458,8 @@ export function initGame() {
       zone.style.strokeDasharray = '';
       zone.style.animation = '';
     }
+    const overlay = document.getElementById('mbDodgeOverlay');
+    if (overlay) overlay.classList.add('hidden');
   }
 
   function onAutoEnemyAttack() {

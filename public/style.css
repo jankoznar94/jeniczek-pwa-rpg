@@ -322,9 +322,10 @@ body.no-scroll { overflow: hidden; }
   stroke-dasharray:4 5;
   pointer-events:none;
 }
-/* Opportunity Dodge — výrazný timer na kruhu (r=104, délka ≈ 653.4) při příležitosti k reakci */
+/* Opportunity Dodge — výrazný timer na kruhu (r=104, délka ≈ 653.4) při příležitosti k reakci.
+   Oranžová #f39c12 = barva DODGE textu ve scrolling battle logu. */
 .zone-divider.dodge-active {
-  stroke:#f1c40f;
+  stroke:#f39c12;
   stroke-width:8;
   stroke-dasharray:653.4 653.4;
   stroke-dashoffset:653.4;
@@ -392,6 +393,20 @@ body.no-scroll { overflow: hidden; }
 #mbArena .monster-in-ring img {
   width:180px;height:180px;object-fit:contain;border-radius:50%;
 }
+/* Opportunity Dodge — výrazný overlay, který zatmaví celou arénu a ukáže ikonu.
+   Leží pod timerem (z-index 5) a šipkou (10), takže ty zůstanou viditelné navrchu. */
+#mbArena .dodge-overlay {
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  background:rgba(0,0,0,0.72);
+  animation:dodge-overlay-fade 0.25s ease-out;
+}
+#mbArena .dodge-overlay img { width:96px;height:96px;object-fit:contain;opacity:0.95; }
+#mbArena .dodge-overlay .dodge-overlay-label {
+  font-family:Arial,sans-serif;font-weight:bold;font-size:34px;letter-spacing:4px;
+  color:#f39c12;text-shadow:0 0 18px rgba(243,156,18,0.7);
+}
+@keyframes dodge-overlay-fade { 0%{opacity:0} 100%{opacity:1} }
 #mbArena .monster-ring-overlay {
   position:absolute;top:50%;left:50%;z-index:4;pointer-events:none;
   width:180px;height:180px;
