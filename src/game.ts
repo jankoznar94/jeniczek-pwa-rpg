@@ -1981,6 +1981,7 @@ export function initGame() {
       html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
         <div class="stop-card">
           <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
+          <div class="stop-label">${label}</div>
           ${badgeHtml}
         </div>
       </div>`;
