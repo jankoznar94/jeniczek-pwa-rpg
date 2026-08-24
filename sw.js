@@ -1,7 +1,7 @@
-const CODE_CACHE = 'boss-slayer-code-v202';
-const ASSET_CACHE = 'boss-slayer-assets-v45';
+const CODE_CACHE = 'boss-slayer-code-v203';
+const ASSET_CACHE = 'boss-slayer-assets-v46';
 
-const CODE_FILES = ['/', '/index.html', '/style.css?v=160', '/manifest.json', '/item-reference.html'];
+const CODE_FILES = ['/', '/index.html', '/style.css?v=161', '/manifest.json', '/item-reference.html'];
 
 const ASSET_FILES = [
   '/icon-192.png', '/icon-512.png',
@@ -145,6 +145,10 @@ const ASSET_FILES = [
   '/assets/gems/topaz_flawless.png', '/assets/gems/topaz_perfect.png',
   // Menu icons
   '/assets/menu-icons/chest.png',
+  // PS-style interakční tlačítka
+  '/assets/ps/ps_cross.png', '/assets/ps/ps_circle.png',
+  '/assets/ps/ps_square.png', '/assets/ps/ps_tri.png',
+  '/assets/ps/ps_dodge.png', '/assets/ps/ps_block.png',
 ];
 
 self.addEventListener('install', e => {
