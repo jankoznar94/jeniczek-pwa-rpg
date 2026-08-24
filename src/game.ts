@@ -9646,6 +9646,10 @@ export function initGame() {
     $('heroDetailHit').textContent = `${hitChance}%`;
     $('heroDetailHp').textContent = `${h.hp || h.maxHp}/${h.maxHp}`;
     $('heroDetailMana').textContent = `${h.mana || h.maxMana}/${h.maxMana}`;
+    $('heroDetailFireRes').textContent = `${getPlayerResist('fire')}%`;
+    $('heroDetailColdRes').textContent = `${getPlayerResist('ice')}%`;
+    $('heroDetailLightningRes').textContent = `${getPlayerResist('lightning')}%`;
+    $('heroDetailPoisonRes').textContent = `${getPlayerResist('nature')}%`;
     // Atributy
     const pts = h.attrPoints || 0;
     $('heroAttrStr').textContent = (h.attrStr||0) + (getEquipAttrs().str > 0 ? ` (+${getEquipAttrs().str})` : '');
