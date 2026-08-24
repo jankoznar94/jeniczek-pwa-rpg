@@ -1437,34 +1437,38 @@ export function initGame() {
   }
 
   // Šipka/štít běží po celou dobu swingu (hráč vidí, na co má reagovat — swing timer už běží).
-  function showOpportunityArrow(mb) {
+  // Zobrazí výzvu pro Opportunity (dodge/block): ikona typu uprostřed + zvýrazní správné tlačítko.
+  function showOpportunityPrompt(mb) {
+    // Skrýt starou šipku
     const arrow = $('mbArrow');
-    if (arrow) {
-      const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._oppDir] || 0;
-      if (mb._oppType === 'block') {
-        // Block — modrý štít (stejné 4 směry jako dodge, jiná barva a tvar).
-        arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow opportunity-block');
-        arrow.setAttribute('viewBox', '-3 -3 22 22');
-        arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-        arrow.style.rotate = '';
-        arrow.style.color = '#3498db';
-        arrow.style.fill = '#3498db';
-        arrow.innerHTML = '<path d="M8 2L14 4.5V9C14 12.5 11.5 15 8 16C4.5 15 2 12.5 2 9V4.5L8 2Z" fill="none" stroke="#1a5a8a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 2L14 4.5V9C14 12.5 11.5 15 8 16C4.5 15 2 12.5 2 9V4.5L8 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-      } else {
-        // Dodge — oranžová šipka (originál).
-        arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
-        arrow.setAttribute('viewBox', '-3 -3 22 22');
-        arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-        arrow.style.rotate = '';
-        arrow.style.color = '#e67e22';
-        arrow.style.fill = '#e67e22';
-        arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-      }
+    if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+    // Zobrazit def tlačítka (overlay)
+    const def = $('mbPsDefBtns'); if (def) def.classList.remove('hidden');
+    // Zvýraznit správné def tlačítko
+    clearDefHighlights();
+    if (mb._oppType === 'block') {
+      const b = $('mbPsBlockBtn'); if (b) b.classList.add('highlight');
+    } else {
+      const d = $('mbPsDodgeBtn'); if (d) d.classList.add('highlight');
+    }
+    // Ikona typu uprostřed (💨 dodge / 🛡️ block)
+    const info = $('mbActionInfo');
+    if (info) {
+      info.classList.remove('hidden');
+      info.innerHTML = mb._oppType === 'block' ? '🛡️' : '💨';
     }
   }
 
-  // Okamžitá zpětná vazba po úspěšném swipu — šipka/štít se nahradí fajfkou,
-  // aby hráč hned věděl, že to prošlo (nečeká na konec swingu).
+  function clearDefHighlights() {
+    const d = $('mbPsDodgeBtn'); if (d) d.classList.remove('highlight');
+    const b = $('mbPsBlockBtn'); if (b) b.classList.remove('highlight');
+  }
+
+  function hideDefBtns() {
+    const def = $('mbPsDefBtns'); if (def) def.classList.add('hidden');
+  }
+
+  // Okamžitá zpětná vazba po úspěšné reakci — zelená fajfka.
   function showOpportunitySuccess(mb) {
     const arrow = $('mbArrow');
     if (arrow) {
@@ -1475,14 +1479,20 @@ export function initGame() {
       arrow.style.fill = '#2ecc71';
       arrow.innerHTML = '<path d="M2 8.5L6 12.5L14 3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
     }
+    clearDefHighlights();
+    hideDefBtns();
+    const info = $('mbActionInfo'); if (info) info.classList.add('hidden');
   }
 
   function hideOpportunityArrow(mb) {
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+    clearDefHighlights();
+    hideDefBtns();
+    const info = $('mbActionInfo'); if (info) info.classList.add('hidden');
   }
 
-  // Špatný směr — šipka/štít se nahradí červeným křížkem a interakce se uzavře.
+  // Špatné tlačítko — červený křížek a interakce se uzavře.
   // Hráč nemůže donekonečna opravovat chybu — rána projde na konci swingu.
   function showOpportunityFail(mb) {
     const arrow = $('mbArrow');
@@ -1494,6 +1504,36 @@ export function initGame() {
       arrow.style.color = '#e74c3c';
       arrow.style.fill = '#e74c3c';
       arrow.innerHTML = '<path d="M4 4L12 12M12 4L4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>';
+    }
+    clearDefHighlights();
+    hideDefBtns();
+    const info = $('mbActionInfo'); if (info) info.classList.add('hidden');
+  }
+
+  // Handler pro def tlačítka (dodge/block).
+  function onPsDefButton(type) {
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+    // Combo aktivní — def tlačítka jsou skrytá, nereagovat
+    if (mb._comboActive) return;
+    if (!mb._oppType) return;
+    if (type === mb._oppType) {
+      mb._oppResolved = true;
+      showOpportunitySuccess(mb); // okamžitá zpětná vazba — fajfka
+    } else {
+      // Špatné tlačítko — křížek a interakce se uzavře
+      mb._oppFailed = true;
+      mb._oppType = null;
+      showOpportunityFail(mb);
+    }
+  }
+
+  // Handler pro combo tlačítka (✕◯□△).
+  function onPsButton(key) {
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+    if (mb._comboActive) {
+      handleComboButton(mb, key);
     }
   }
 
@@ -3543,9 +3583,7 @@ export function initGame() {
     mb._oppType = getOpportunityType(mb);
     mb._oppResolved = false;
     mb._oppFailed = false;
-    const dirs = ['⬆️','⬇️','⬅️','➡️'];
-    mb._oppDir = dirs[Math.floor(Math.random() * 4)];
-    showOpportunityArrow(mb);
+    showOpportunityPrompt(mb);
   }
 
   function onAutoEnemyAttack() {
@@ -4896,17 +4934,17 @@ export function initGame() {
   }
 
   // ===== COMBO ATTACK (barbar) =====
-  // Hra se pozastaví, hráč swipuje sekvenci směrů (každý úder = 1 hit).
-  // Po úspěšném úderu combo pokračuje dalším směrem; chyba combo přeruší a hra jede dál.
+  // Hra se pozastaví, hráč mačká PS tlačítka (✕◯□△) v zobrazeném pořadí (každý úder = 1 hit).
+  // Po úspěšném úderu combo pokračuje dalším; chyba combo přeruší a hra jede dál.
   // Po skončení comba (úspěšně i neúspěšně) se hráčovy swing timery resetují od znovu.
   function startComboAttack(mb) {
     if (mb.ended) return;
     const lv = getSpellLv('comboAttack');
     const strikeCount = 3 + Math.min(Math.max(lv, 1), 5); // 3+lv úderů (3..8)
-    // Sekvence náhodných směrů
-    const dirs = ['⬆️','⬇️','⬅️','➡️'];
+    // Sekvence náhodných PS tlačítek
+    const psKeys = ['tri','circle','cross','square'];
     mb._comboDirs = [];
-    for (let i = 0; i < strikeCount; i++) mb._comboDirs.push(dirs[Math.floor(Math.random() * 4)]);
+    for (let i = 0; i < strikeCount; i++) mb._comboDirs.push(psKeys[Math.floor(Math.random() * 4)]);
     mb._comboIdx = 0;
     mb._comboActive = true;
     // Zrušit probíhající opportunity (block/dodge) — combo ji přebíjí
@@ -4916,24 +4954,20 @@ export function initGame() {
     hideOpportunityArrow(mb);
     // Zrušit probíhající cast hráče
     if (mb._playerCasting) { mb._playerCasting = false; mb._playerCastSpell = null; }
+    // Zobrazit combo tlačítka
+    const comboBtns = $('mbPsComboBtns');
+    if (comboBtns) comboBtns.classList.remove('hidden');
     showComboPrompt(mb);
   }
 
-  // Zobrazí aktuální směr combo úderu uprostřed arény.
+  // Zvýrazní aktuální PS tlačítko combo úderu a ukáže číslo úderu.
   function showComboPrompt(mb) {
-    const arrow = $('mbArrow');
-    if (!arrow) return;
+    clearComboHighlights();
     if (!mb._comboActive || mb._comboIdx >= mb._comboDirs.length) return;
-    const dir = mb._comboDirs[mb._comboIdx];
-    const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[dir] || 0;
-    arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow combo-arrow');
-    arrow.setAttribute('viewBox', '-3 -3 22 22');
-    arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-    arrow.style.rotate = '';
-    arrow.style.color = '#f1c40f';
-    arrow.style.fill = '#f1c40f';
-    arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-    // Indikátor počtu úderů
+    const key = mb._comboDirs[mb._comboIdx];
+    const btn = document.querySelector(`.ps-btn[data-ps="${key}"]`);
+    if (btn) btn.classList.add('highlight');
+    // Indikátor počtu úderů uprostřed
     const info = $('mbActionInfo');
     if (info) {
       info.classList.remove('hidden');
@@ -4941,10 +4975,14 @@ export function initGame() {
     }
   }
 
-  // Zpracuje swipe během combo sekvence. Správný směr = úder, špatný = combo přeruší.
-  function handleComboSwipe(mb, dir) {
+  function clearComboHighlights() {
+    document.querySelectorAll('.ps-btn').forEach(b => b.classList.remove('highlight'));
+  }
+
+  // Zpracuje stisk PS tlačítka během combo sekvence. Správné = úder, špatné = combo přeruší.
+  function handleComboButton(mb, key) {
     if (!mb._comboActive) return false;
-    if (dir !== mb._comboDirs[mb._comboIdx]) {
+    if (key !== mb._comboDirs[mb._comboIdx]) {
       // Chyba — combo přerušeno, hra pokračuje normálně
       showComboFail(mb);
       endCombo(mb, false);
@@ -4953,7 +4991,6 @@ export function initGame() {
     // Správný úder — damage
     mb._comboIdx++;
     dealComboStrike(mb);
-    showComboSuccess(mb);
     if (mb._comboIdx >= mb._comboDirs.length || mb.bossHp <= 0 || mb.ended) {
       // Combo dokončeno (nebo nepřítel mrtev) — ukončit, resetovat swing timery
       endCombo(mb, true);
@@ -5015,12 +5052,15 @@ export function initGame() {
     if (info) info.classList.add('hidden');
   }
 
-  // Ukončí combo — skryje prompt, zruší pause a resetuje hráčovy swing timery.
+  // Ukončí combo — skryje prompt i tlačítka, zruší pause a resetuje hráčovy swing timery.
   function endCombo(mb, completed) {
     mb._comboActive = false;
     hideOpportunityArrow(mb);
     const info = $('mbActionInfo');
     if (info) info.classList.add('hidden');
+    // Skrýt combo tlačítka
+    clearComboHighlights();
+    const comboBtns = $('mbPsComboBtns'); if (comboBtns) comboBtns.classList.add('hidden');
     // Reset hráčových swing timerů — combo mělo váhu, útoky začínají od znovu
     const now = performance.now();
     mb._playerSwingStart = now;
@@ -7897,27 +7937,8 @@ export function initGame() {
     const mb = mapBattleState;
     if (mb.ended) return;
 
-    // Combo Attack — swipe řídí sekvenci úderů (přeskočí opportunity).
-    if (mb._comboActive) {
-      handleComboSwipe(mb, dir);
-      return;
-    }
-
-    // Opportunity (Dodge/Block) — správný swipe směr označí tento swing jako vyřešený.
-    // Samotný výsledek se vyřeší na konci swingu (resolveOpportunity v autoCombatLoop).
-    if (mb._oppType) {
-      if (dir === mb._oppDir) {
-        mb._oppResolved = true;
-        showOpportunitySuccess(mb); // okamžitá zpětná vazba — šipka/štít → fajfka
-      } else {
-        // Špatný směr — křížek a interakce se uzavře. Hráč nemůže opravovat:
-        // rána projde na konci swingu (resolveOpportunity vrátí false).
-        mb._oppFailed = true;
-        mb._oppType = null;
-        showOpportunityFail(mb);
-      }
-      return;
-    }
+    // Combo/opportunity se řeší přes PS tlačítka (onPsButton / onPsDefButton) — ne swipe.
+    // Zbytek je boss swipe sekvence.
 
     if (!mb.sequence) return;
     // Rapid — zpracovává onMapRapidTap
@@ -11702,6 +11723,7 @@ export function initGame() {
     showItemInfo, closeItemOverlay,
     openGemSelectModal, closeGemSelectModal,
     onMapRapidTap,
+    onPsButton, onPsDefButton,
     investTalent, resetTalents, selectTalent, selectTree, setDifficulty,
     showSurrenderModal, cancelSurrender, confirmSurrender,
     renderBestiary,
