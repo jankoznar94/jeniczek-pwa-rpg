@@ -297,6 +297,10 @@ body.no-scroll { overflow: hidden; }
 /* Opportunity Dodge — zvýrazněná telegrafní šipka pro normální souboje (reakce na uhýbatelný útok) */
 .opportunity-arrow { width:110px;height:110px; color:#e67e22; fill:#e67e22; filter:drop-shadow(0 0 8px rgba(230,126,34,0.5)); animation:opportunityPulse 0.6s ease-in-out infinite; }
 @keyframes opportunityPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+/* Opportunity Block — modrý štít (stejné 4 směry jako dodge, jiná barva) */
+.opportunity-block { color:#3498db; fill:#3498db; filter:drop-shadow(0 0 8px rgba(52,152,219,0.5)); }
+/* Combo Attack — žlutá šipka sekvence úderů */
+.combo-arrow { color:#f1c40f; fill:#f1c40f; filter:drop-shadow(0 0 8px rgba(241,196,15,0.5)); }
 /* Dodge úspěch — fajfka nahrazuje šipku po správném swipu (okamžitá zpětná vazba) */
 .dodge-success { width:110px;height:110px; color:#2ecc71; fill:#2ecc71; filter:drop-shadow(0 0 8px rgba(46,204,113,0.5)); animation:dodgeSuccessPop 0.3s ease-out; }
 @keyframes dodgeSuccessPop { 0%{transform:translate(-50%,-50%) scale(0.5);opacity:0} 100%{transform:translate(-50%,-50%) scale(1);opacity:1} }

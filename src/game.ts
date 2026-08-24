@@ -470,6 +470,7 @@ export function initGame() {
       if (spellId === 'shieldSlam') return getSkillLv('barbarian_shieldSlam');
       if (spellId === 'pummel') return getSkillLv('barbarian_pummel');
       if (spellId === 'spellReflect') return getSkillLv('barbarian_spellReflect');
+      if (spellId === 'comboAttack') return getSkillLv('barbarian_comboAttack');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -1374,10 +1375,10 @@ export function initGame() {
   }
 
   // ===== Opportunity Dodge =====
-  // Šance, že útok nepřítele JE uhýbatelný (vznikne příležitost k dodge).
+  // Šance, že útok nepřítele JE interaktivní (dodge NEBO block — vznikne příležitost).
   // Vychází z báze (každý má vždy aspoň nějakou šanci) + bonus z armory (celková defense).
   // To je univerzální pro každou classu — nezávisí na DEX investicích.
-  function getOpportunityDodgeChance(mb) {
+  function getOpportunityChance(mb) {
     const h = state.hero;
     const eqAttrs = getEquipAttrs();
     // Celková armor defense ze všech slotů
@@ -1388,6 +1389,112 @@ export function initGame() {
     const armorBonus = Math.floor(totalDefense / 20);
     // Cap na 40% — nesmí být příliš časté
     return clamp(base + armorBonus, 0, 40);
+  }
+
+  // Rozhodne, JAKÝ typ interakce se nabídne (dodge vs block).
+  // Vzájemně se vylučují — rollne se podle poměru šancí:
+  //  - block jde jen když má hráč štít
+  //  - block šance = getPlayerBlockChance(), dodge šance = zbytek do 100
+  function getOpportunityType(mb) {
+    const hasShield = ITEM_MAP[state.hero.equip.shield]?.type === 'shield';
+    if (!hasShield) return 'dodge';
+    const blockChance = getPlayerBlockChance();
+    const dodgeChance = getPlayerDodgeChance(mb);
+    const total = blockChance + dodgeChance;
+    // Poměr block : (block+dodge). Když block je vyšší než dodge, častěji vyjde block.
+    const blockRoll = total > 0 ? (blockChance / total) : 0;
+    return Math.random() < blockRoll ? 'block' : 'dodge';
+  }
+
+  // Rozhodne o výsledku na konci swingu. Vrací true, pokud byl útok úspěšně
+  // vyhnut/vyblokován (nic se neaplikuje). Vrací false, pokud zmeškal (rána projde).
+  function resolveOpportunity(mb) {
+    // Špatný směr už interakci uzavřel (_oppType=null, _oppFailed=true).
+    // Na konci swingu jen skryjeme křížek a rána projde (return false).
+    if (mb._oppFailed) {
+      mb._oppFailed = false;
+      hideOpportunityArrow(mb);
+      return false;
+    }
+    if (!mb._oppType) return false;
+    const type = mb._oppType;
+    mb._oppType = null;
+    mb._oppCooldownUntil = performance.now() + OPPORTUNITY_COOLDOWN_MS;
+    hideOpportunityArrow(mb);
+    if (mb._oppResolved) {
+      playSFX(type === 'block' ? blockSfx : dodgeSfx);
+      spawnFloatingText(type === 'block' ? 'BLOCK!' : 'DODGE!', 'right', type === 'block' ? '#3498db' : '#f39c12', 32);
+      // Úspěšně zareagoval — resetovat nepřítelův swing a armovat příležitost pro PŘÍŠTÍ melee.
+      // (Bez tohoho by _enemySwingReady zůstalo true a útok by se hned opakoval.)
+      mb._enemySwingStart = performance.now();
+      mb._enemySwingReady = false;
+      mb._enemySwingPct = 0;
+      if (mb._enemyCasting) mb._oppType = null;
+      else armOpportunity(mb);
+      return true; // vyhnuto/vyblokováno — útok neprošel
+    }
+    return false; // zmeškal — rána projde
+  }
+
+  // Šipka/štít běží po celou dobu swingu (hráč vidí, na co má reagovat — swing timer už běží).
+  function showOpportunityArrow(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._oppDir] || 0;
+      if (mb._oppType === 'block') {
+        // Block — modrý štít (stejné 4 směry jako dodge, jiná barva a tvar).
+        arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow opportunity-block');
+        arrow.setAttribute('viewBox', '-3 -3 22 22');
+        arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+        arrow.style.rotate = '';
+        arrow.style.color = '#3498db';
+        arrow.style.fill = '#3498db';
+        arrow.innerHTML = '<path d="M8 2L14 4.5V9C14 12.5 11.5 15 8 16C4.5 15 2 12.5 2 9V4.5L8 2Z" fill="none" stroke="#1a5a8a" stroke-width="4" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 2L14 4.5V9C14 12.5 11.5 15 8 16C4.5 15 2 12.5 2 9V4.5L8 2Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      } else {
+        // Dodge — oranžová šipka (originál).
+        arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
+        arrow.setAttribute('viewBox', '-3 -3 22 22');
+        arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+        arrow.style.rotate = '';
+        arrow.style.color = '#e67e22';
+        arrow.style.fill = '#e67e22';
+        arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      }
+    }
+  }
+
+  // Okamžitá zpětná vazba po úspěšném swipu — šipka/štít se nahradí fajfkou,
+  // aby hráč hned věděl, že to prošlo (nečeká na konec swingu).
+  function showOpportunitySuccess(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      arrow.setAttribute('class', 'boss-attack-arrow dodge-success');
+      arrow.setAttribute('viewBox', '-3 -3 22 22');
+      arrow.style.transform = 'translate(-50%, -50%)';
+      arrow.style.color = '#2ecc71';
+      arrow.style.fill = '#2ecc71';
+      arrow.innerHTML = '<path d="M2 8.5L6 12.5L14 3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    }
+  }
+
+  function hideOpportunityArrow(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
+  }
+
+  // Špatný směr — šipka/štít se nahradí červeným křížkem a interakce se uzavře.
+  // Hráč nemůže donekonečna opravovat chybu — rána projde na konci swingu.
+  function showOpportunityFail(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      arrow.setAttribute('class', 'boss-attack-arrow dodge-fail');
+      arrow.setAttribute('viewBox', '-3 -3 22 22');
+      arrow.style.transform = 'translate(-50%, -50%)';
+      arrow.style.rotate = '0deg';
+      arrow.style.color = '#e74c3c';
+      arrow.style.fill = '#e74c3c';
+      arrow.innerHTML = '<path d="M4 4L12 12M12 4L4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>';
+    }
   }
 
   function getTotalPlayerDefense() {
@@ -2579,8 +2686,12 @@ export function initGame() {
       _enemyCastBlockedUntil: 0, // Pummel — do kdy nepřítel nemůže recastit
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
-      // Opportunity Dodge — útok nepřítele může být uhýbatelný (globální freeze + krátké okno)
-      _dodgePending: false, _dodgeDir: null, _dodgeResolved: false, _dodgeFailed: false, _dodgeCooldownUntil: 0,
+      // Opportunity (Dodge/Block) — útok nepřítele může být interaktivní reakcí.
+      // _oppType: null | 'dodge' | 'block' (vzájemně se vylučují na jednom swingu)
+      _oppType: null, _oppDir: null, _oppResolved: false, _oppFailed: false, _oppCooldownUntil: 0,
+      // Combo Attack — hra se pozastaví, hráč swipuje sekvenci směrů; každý úder je 1 hit.
+      // _comboActive: true = autoCombatLoop je pozastaven, probíhá combo sekvence.
+      _comboActive: false, _comboDirs: [], _comboIdx: 0, _comboPct: 0,
       // Pack (elita+minioni / champion pack)
       packMembers: packMembers,
       packActiveIdx: 0,
@@ -2921,7 +3032,7 @@ export function initGame() {
     }
     // Rozhodnout o příležitosti pro první melee swing (jen melee monstra)
     if (!mb.isBoss && mb.monsterAttackType !== ATTACK_TYPES.CASTER) {
-      armOpportunityDodge(mb);
+      armOpportunity(mb);
     }
     autoCombatLoop();
   }
@@ -2930,6 +3041,15 @@ export function initGame() {
     if (mapBattleState.ended || mapBattleState._pendingKill) return;
     const mb = mapBattleState;
     const now = performance.now();
+
+    // Combo Attack — hra je pozastavená, hráč swipuje sekvenci úderů.
+    // Loop zůstává živý (kvůli případnému ukončení), ale nic se nezpracovává.
+    if (mb._comboActive) {
+      if (!mb.ended && !mb._pendingKill) {
+        mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+      }
+      return;
+    }
 
     // Tick buffů a GCD každou smyčku
     tickBuffs();
@@ -3054,11 +3174,11 @@ export function initGame() {
     }
     if (mb._enemySwingReady && !mb._enemyAttackProcessed) {
       mb._enemyAttackProcessed = true;
-      // Opportunity Dodge — na konci swingu se rozhodne o výsledku.
-      // Pokud byl tento swing označen jako uhýbatelný a hráč stihl zareagovat
-      // (resolveOpportunityDodge vrací true), ráně se vyhnul → nic se neaplikuje.
-      // Jinak projde normální melee útok (nebo zmeškaný dodge).
-      const dodged = resolveOpportunityDodge(mb);
+      // Opportunity (Dodge/Block) — na konci swingu se rozhodne o výsledku.
+      // Pokud byl tento swing označen jako interaktivní a hráč stihl zareagovat
+      // (resolveOpportunity vrací true), útoku se vyhnul → nic se neaplikuje.
+      // Jinak projde normální melee útok (nebo zmeškaná interakce).
+      const dodged = resolveOpportunity(mb);
       if (!dodged) {
         onAutoEnemyAttack();
       }
@@ -3406,103 +3526,26 @@ export function initGame() {
   }
 
   // ===== Opportunity Dodge — roll na začátku swingu, reakce přes existující swing timer =====
-  const DODGE_COOLDOWN_MS = 3000; // minimální rozestup mezi příležitostmi (cap frekvence)
+  const OPPORTUNITY_COOLDOWN_MS = 3000; // minimální rozestup mezi příležitostmi (cap frekvence)
 
   // Enemy kouzla, která NEJSOU ofensivní (buff/debuff/utility) — spell reflect je neodráží jako dmg
   const OFFENSIVE_EXEMPT = ['empower', 'defensive_shout', 'battle_shout', 'thorn_shield', 'faerie_fire', 'evasion', 'heal'];
 
-  // Rozhodne, jestli PRÁVĚ ZAČÍNAJÍCÍ melee swing nepřítele je uhýbatelný.
+  // Rozhodne, jestli PRÁVĚ ZAČÍNAJÍCÍ melee swing nepřítele je interaktivní (dodge/block).
   // Volá se vždy, když se startuje nový nepřátelský melee swing (ne boss, ne caster).
-  // Šipka pak běží po celou dobu swingu — hráč má čas klasického swing timeru na reakci.
-  function armOpportunityDodge(mb) {
-    if (mb.isBoss || mb._enemyCasting) return; // boss/caster ne — dodge jen pro běžné melee
-    if (mb._dodgePending) return; // už běží
+  // Šipka/štít pak běží po celou dobu swingu — hráč má čas klasického swing timeru na reakci.
+  function armOpportunity(mb) {
+    if (mb.isBoss || mb._enemyCasting) return; // boss/caster ne — jen běžné melee
+    if (mb._oppType) return; // už běží
     const now = performance.now();
-    if (now < mb._dodgeCooldownUntil) { mb._dodgePending = false; return; }
-    if (Math.random() * 100 >= getOpportunityDodgeChance(mb)) { mb._dodgePending = false; return; }
-    mb._dodgePending = true;
-    mb._dodgeResolved = false;
+    if (now < mb._oppCooldownUntil) { mb._oppType = null; return; }
+    if (Math.random() * 100 >= getOpportunityChance(mb)) { mb._oppType = null; return; }
+    mb._oppType = getOpportunityType(mb);
+    mb._oppResolved = false;
+    mb._oppFailed = false;
     const dirs = ['⬆️','⬇️','⬅️','➡️'];
-    mb._dodgeDir = dirs[Math.floor(Math.random() * 4)];
-    showDodgeArrow(mb);
-  }
-
-  // Rozhodne o výsledku na konci swingu. Vrací true, pokud byl útok úspěšně vyhnut
-  // (ráně se vyhnul — nic se neaplikuje). Vrací false, pokud zmeškal (rána projde).
-  function resolveOpportunityDodge(mb) {
-    // Špatný směr už dodge uzavřel (_dodgePending=false, _dodgeFailed=true).
-    // Na konci swingu jen skryjeme křížek a rána projde (return false).
-    if (mb._dodgeFailed) {
-      mb._dodgeFailed = false;
-      hideDodgeArrow(mb);
-      return false;
-    }
-    if (!mb._dodgePending) return false;
-    mb._dodgePending = false;
-    mb._dodgeCooldownUntil = performance.now() + DODGE_COOLDOWN_MS;
-    hideDodgeArrow(mb);
-    if (mb._dodgeResolved) {
-      playSFX(dodgeSfx);
-      spawnFloatingText('DODGE!', 'right', '#f39c12', 32);
-      // Ráně se vyhnul — resetovat nepřítelův swing a armovat příležitost pro PŘÍŠTÍ melee.
-      // (Bez tohoho by _enemySwingReady zůstalo true a útok by se hned opakoval.)
-      mb._enemySwingStart = performance.now();
-      mb._enemySwingReady = false;
-      mb._enemySwingPct = 0;
-      if (mb._enemyCasting) mb._dodgePending = false;
-      else armOpportunityDodge(mb);
-      return true; // vyhnuto — ráně se vyhnul
-    }
-    return false; // zmeškal — rána projde
-  }
-
-  // Šipka směru běží po celou dobu swingu (hráč vidí, na co má reagovat — swing timer už běží).
-  function showDodgeArrow(mb) {
-    const arrow = $('mbArrow');
-    if (arrow) {
-      const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[mb._dodgeDir] || 0;
-      arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow');
-      // Rotace v transformu (jako boss šipka) — translate centruje, rotate otáčí.
-      // Animace opportunityPulse animuje jen `scale`, takže transform nepřebije.
-      arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
-      arrow.style.rotate = '';
-      arrow.style.color = '#e67e22';
-      arrow.style.fill = '#e67e22';
-      // Reset innerHTML zpět na šipku (showDodgeSuccess ho mění na fajfku)
-      arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
-    }
-  }
-
-  // Okamžitá zpětná vazba po úspěšném swipu — šipka se nahradí fajfkou,
-  // aby hráč hned věděl, že to prošlo (nečeká na konec swingu).
-  function showDodgeSuccess(mb) {
-    const arrow = $('mbArrow');
-    if (arrow) {
-      arrow.setAttribute('class', 'boss-attack-arrow dodge-success');
-      arrow.style.transform = 'translate(-50%, -50%)';
-      arrow.style.color = '#2ecc71';
-      arrow.style.fill = '#2ecc71';
-      arrow.innerHTML = '<path d="M2 8.5L6 12.5L14 3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
-    }
-  }
-
-  function hideDodgeArrow(mb) {
-    const arrow = $('mbArrow');
-    if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
-  }
-
-  // Špatný směr — šipka se nahradí červeným křížkem a dodge se uzavře.
-  // Hráč nemůže donekonečna opravovat chybu — rána projde na konci swingu.
-  function showDodgeFail(mb) {
-    const arrow = $('mbArrow');
-    if (arrow) {
-      arrow.setAttribute('class', 'boss-attack-arrow dodge-fail');
-      arrow.style.transform = 'translate(-50%, -50%)';
-      arrow.style.rotate = '0deg';
-      arrow.style.color = '#e74c3c';
-      arrow.style.fill = '#e74c3c';
-      arrow.innerHTML = '<path d="M4 4L12 12M12 4L4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>';
-    }
+    mb._oppDir = dirs[Math.floor(Math.random() * 4)];
+    showOpportunityArrow(mb);
   }
 
   function onAutoEnemyAttack() {
@@ -3679,8 +3722,9 @@ export function initGame() {
         }
       }
 
-      // Damage text
-      spawnFloatingText(spellText, 'left', '#9b59b6', 32);
+      // Damage text — s ikonou kouzla (zdroj poškození)
+      const enemySpellImg = (spell && spell.iconImg) ? `assets/spells/${spell.iconImg}` : null;
+      spawnFloatingText(spellText, 'left', '#9b59b6', 32, 2000, enemySpellImg);
       // Červený záblesk
       const arena = $('mbArena');
       if (arena && amount > 0) {
@@ -3797,19 +3841,9 @@ export function initGame() {
       bossDmg = Math.max(0, bossDmg - dr);
     }
     let amount = bossDmg;
-
-    // Pasivní blok ze štítu — pouze pokud je v shield slotu skutečně štít
+    // Interaktivní block běží v resolveOpportunity (na začátku swingu) — když se sem
+    // dostaneme, útok NEbyl vyblokován (resolveOpportunity vrátil false). Rána projde.
     let blocked = false;
-    const shieldItem = ITEM_MAP[state.hero.equip.shield];
-    if (shieldItem && shieldItem.type === 'shield' && getPlayerBlockChance() > 0) {
-      if (Math.random() * 100 < getPlayerBlockChance()) {
-        blocked = true;
-        amount = 0;
-        playSFX(blockSfx);
-      }
-    }
-    // Monster block chance (Troll) — přesunuto do dealPlayerDamage, kde patří
-    // (nepřítel blokuje hráčův útok, ne svůj vlastní)
 
     // 💀 Cursed (D2 amplify damage) — hráč bere o 50% víc fyz dmg
     if (mb._amplifyDmgActive) {
@@ -3867,8 +3901,9 @@ export function initGame() {
       setTimeout(() => { hitOverlay.style.backgroundColor = 'transparent'; }, 100);
     }
 
-    // Damage text
-    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'left', blocked ? '#3498db' : '#fff', 32);
+    // Damage text — s ikonou monstra (zdroj poškození)
+    const enemyIconPath = (mb.isBoss ? (mb.loc && mb.loc.boss && mb.loc.boss.face) : mb.monsterFace);
+    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'left', blocked ? '#3498db' : '#fff', 32, 2000, (enemyIconPath && enemyIconPath.startsWith('assets/')) ? enemyIconPath : null);
 
     updateMapBattleUI();
 
@@ -3880,8 +3915,8 @@ export function initGame() {
     mb._enemySwingReady = false;
     mb._enemySwingPct = 0;
     // Rozhodnout o příležitosti pro PŘÍŠTÍ melee swing (roll na začátku swingu)
-    if (mb._enemyCasting) mb._dodgePending = false;
-    else armOpportunityDodge(mb);
+    if (mb._enemyCasting) mb._oppType = null;
+    else armOpportunity(mb);
   }
 
   // Spustí cast kouzla, které mělo monstrum provést po melee útoku (uloženo v _enemyCastAfterSwing)
@@ -4851,11 +4886,157 @@ export function initGame() {
       spawnMeleeImpact(mb2, false, getWeaponType(), 0, getWeaponElementColor(weapon));
       spawnFloatingText(`💥 -${dmg}`, 'right', '#2ecc71', 36);
       playSFX(lightningSpellSfx2);
+    } else if (spellId === 'comboAttack') {
+      startComboAttack(mb);
     }
 
     updateMapBattleUI();
     saveGame();
     return true;
+  }
+
+  // ===== COMBO ATTACK (barbar) =====
+  // Hra se pozastaví, hráč swipuje sekvenci směrů (každý úder = 1 hit).
+  // Po úspěšném úderu combo pokračuje dalším směrem; chyba combo přeruší a hra jede dál.
+  // Po skončení comba (úspěšně i neúspěšně) se hráčovy swing timery resetují od znovu.
+  function startComboAttack(mb) {
+    if (mb.ended) return;
+    const lv = getSpellLv('comboAttack');
+    const strikeCount = 3 + Math.min(Math.max(lv, 1), 5); // 3+lv úderů (3..8)
+    // Sekvence náhodných směrů
+    const dirs = ['⬆️','⬇️','⬅️','➡️'];
+    mb._comboDirs = [];
+    for (let i = 0; i < strikeCount; i++) mb._comboDirs.push(dirs[Math.floor(Math.random() * 4)]);
+    mb._comboIdx = 0;
+    mb._comboActive = true;
+    // Zrušit probíhající opportunity (block/dodge) — combo ji přebíjí
+    mb._oppType = null;
+    mb._oppResolved = false;
+    mb._oppFailed = false;
+    hideOpportunityArrow(mb);
+    // Zrušit probíhající cast hráče
+    if (mb._playerCasting) { mb._playerCasting = false; mb._playerCastSpell = null; }
+    showComboPrompt(mb);
+  }
+
+  // Zobrazí aktuální směr combo úderu uprostřed arény.
+  function showComboPrompt(mb) {
+    const arrow = $('mbArrow');
+    if (!arrow) return;
+    if (!mb._comboActive || mb._comboIdx >= mb._comboDirs.length) return;
+    const dir = mb._comboDirs[mb._comboIdx];
+    const rotation = { '⬆️': 0, '⬇️': 180, '⬅️': -90, '➡️': 90 }[dir] || 0;
+    arrow.setAttribute('class', 'boss-attack-arrow opportunity-arrow combo-arrow');
+    arrow.setAttribute('viewBox', '-3 -3 22 22');
+    arrow.style.transform = `translate(-50%, -50%) rotate(${rotation}deg)`;
+    arrow.style.rotate = '';
+    arrow.style.color = '#f1c40f';
+    arrow.style.fill = '#f1c40f';
+    arrow.innerHTML = '<path d="M8 1L13 8L10.5 8L10.5 15L5.5 15L5.5 8L3 8L8 1Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    // Indikátor počtu úderů
+    const info = $('mbActionInfo');
+    if (info) {
+      info.classList.remove('hidden');
+      info.textContent = `Combo ${mb._comboIdx + 1}/${mb._comboDirs.length}`;
+    }
+  }
+
+  // Zpracuje swipe během combo sekvence. Správný směr = úder, špatný = combo přeruší.
+  function handleComboSwipe(mb, dir) {
+    if (!mb._comboActive) return false;
+    if (dir !== mb._comboDirs[mb._comboIdx]) {
+      // Chyba — combo přerušeno, hra pokračuje normálně
+      showComboFail(mb);
+      endCombo(mb, false);
+      return true;
+    }
+    // Správný úder — damage
+    mb._comboIdx++;
+    dealComboStrike(mb);
+    showComboSuccess(mb);
+    if (mb._comboIdx >= mb._comboDirs.length || mb.bossHp <= 0 || mb.ended) {
+      // Combo dokončeno (nebo nepřítel mrtev) — ukončit, resetovat swing timery
+      endCombo(mb, true);
+    } else {
+      showComboPrompt(mb);
+    }
+    return true;
+  }
+
+  // Jeden úder comba — damage jako normální melee útok.
+  function dealComboStrike(mb) {
+    if (mb.bossHp <= 0) return;
+    const weapon = ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists'];
+    const spec = getWeaponSpecBonus(weapon);
+    // Attack table — MISS/evasion/block pro combo údery
+    const at = getPlayerAttackTable(mb, spec.arMult);
+    const roll = Math.random() * 100;
+    if (roll >= at.hitChance) { spawnFloatingText('MISS!', 'right', '#fff', 32); return; }
+    if (mb._evasionActive && Math.random() < 0.3) { spawnFloatingText('💨 Evasion!', 'right', '#f1c40f', 32); return; }
+    if (mb.monsterBlockChance > 0 && Math.random() * 100 < mb.monsterBlockChance) { spawnFloatingText('🛡️ Block!', 'right', '#3498db', 28); return; }
+    const eqAttrs = getEquipAttrs();
+    let baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + eqAttrs.str)*0.3);
+    let dmg = Math.round(baseDmg * spec.dmgMult * getShieldSpecDmgMult());
+    dmg = Math.max(1, Math.round(dmg * (0.75 + Math.random() * 0.5))); // rozptyl ±25%
+    mb.bossHp -= dmg;
+    spawnFloatingText(`-${dmg}`, 'right', '#fff', 32, 2000, (weapon.iconImg ? weapon.iconImg : null));
+    // Melee impact animace
+    spawnMeleeImpact(mb, false, getWeaponType(), 0, getWeaponElementColor(weapon));
+    playSFX(getHitSfx());
+    if (mb.bossHp <= 0) { endMapBattle(true); return; }
+  }
+
+  // Okamžitá zpětná vazba pro správný úder — fajfka.
+  function showComboSuccess(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      arrow.setAttribute('class', 'boss-attack-arrow dodge-success');
+      arrow.setAttribute('viewBox', '-3 -3 22 22');
+      arrow.style.transform = 'translate(-50%, -50%)';
+      arrow.style.color = '#2ecc71';
+      arrow.style.fill = '#2ecc71';
+      arrow.innerHTML = '<path d="M2 8.5L6 12.5L14 3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    }
+  }
+
+  // Chyba — křížek a combo přerušeno.
+  function showComboFail(mb) {
+    const arrow = $('mbArrow');
+    if (arrow) {
+      arrow.setAttribute('class', 'boss-attack-arrow dodge-fail');
+      arrow.setAttribute('viewBox', '-3 -3 22 22');
+      arrow.style.transform = 'translate(-50%, -50%)';
+      arrow.style.rotate = '0deg';
+      arrow.style.color = '#e74c3c';
+      arrow.style.fill = '#e74c3c';
+      arrow.innerHTML = '<path d="M4 4L12 12M12 4L4 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>';
+    }
+    const info = $('mbActionInfo');
+    if (info) info.classList.add('hidden');
+  }
+
+  // Ukončí combo — skryje prompt, zruší pause a resetuje hráčovy swing timery.
+  function endCombo(mb, completed) {
+    mb._comboActive = false;
+    hideOpportunityArrow(mb);
+    const info = $('mbActionInfo');
+    if (info) info.classList.add('hidden');
+    // Reset hráčových swing timerů — combo mělo váhu, útoky začínají od znovu
+    const now = performance.now();
+    mb._playerSwingStart = now;
+    mb._playerSwingReady = false;
+    mb._playerSwingPct = 0;
+    mb._playerAttackProcessed = false;
+    if (mb.offhandSwingMs > 0) {
+      mb._offhandSwingStart = now;
+      mb._offhandSwingReady = false;
+      mb._offhandSwingPct = 0;
+      mb._offhandAttackProcessed = false;
+    }
+    if (completed) {
+      spawnFloatingText('COMBO!', 'right', '#f1c40f', 36);
+      playSFX(strongStrikeSfx);
+    }
   }
 
   function executePlayerSpell(spellId) {
@@ -5546,7 +5727,7 @@ export function initGame() {
     mb.bossHp -= mb.dot;
     mb.dotTicksLeft--;
     // (hint necháme pro bonus info)
-    spawnFloatingText(`☠️ -${mb.dot}`, 'right', '#2ecc71', 32);
+    spawnFloatingText(`☠️ -${mb.dot}`, 'right', '#2ecc71', 32, 2000, 'assets/spells/poison.png');
     const bossFig = $('mbFigure');
     if (bossFig) {
       bossFig.style.transition = 'filter 0.2s';
@@ -5567,7 +5748,7 @@ export function initGame() {
     _lastEnemyDotTick = now;
     mb.bossHp -= mb.enemyDot;
     mb.enemyDotTicksLeft--;
-    spawnFloatingText(`☠️ -${mb.enemyDot}`, 'right', '#2ecc71', 32);
+    spawnFloatingText(`☠️ -${mb.enemyDot}`, 'right', '#2ecc71', 32, 2000, 'assets/spells/poison.png');
     const bossFig = $('mbFigure');
     if (bossFig) {
       bossFig.style.transition = 'filter 0.2s';
@@ -5595,7 +5776,7 @@ export function initGame() {
       playerFig.style.filter = 'brightness(2.5) hue-rotate(270deg) saturate(2)';
       setTimeout(() => { playerFig.style.filter = 'brightness(1)'; setTimeout(() => { playerFig.style.transition = ''; }, 200); }, 300);
     }
-    spawnFloatingText(`☠️ -${mb.playerDot}`, 'left', '#2ecc71', 32);
+    spawnFloatingText(`☠️ -${mb.playerDot}`, 'left', '#2ecc71', 32, 2000, 'assets/spells/poison.png');
     updateMapBattleUI();
     if (mb.playerHp <= 0) { endMapBattle(false); return true; }
     return false;
@@ -7716,18 +7897,24 @@ export function initGame() {
     const mb = mapBattleState;
     if (mb.ended) return;
 
-    // Opportunity Dodge — správný swipe směr označí tento swing jako vyhnutý.
-    // Samotný výsledek se vyřeší na konci swingu (resolveOpportunityDodge v autoCombatLoop).
-    if (mb._dodgePending) {
-      if (dir === mb._dodgeDir) {
-        mb._dodgeResolved = true;
-        showDodgeSuccess(mb); // okamžitá zpětná vazba — šipka → fajfka
+    // Combo Attack — swipe řídí sekvenci úderů (přeskočí opportunity).
+    if (mb._comboActive) {
+      handleComboSwipe(mb, dir);
+      return;
+    }
+
+    // Opportunity (Dodge/Block) — správný swipe směr označí tento swing jako vyřešený.
+    // Samotný výsledek se vyřeší na konci swingu (resolveOpportunity v autoCombatLoop).
+    if (mb._oppType) {
+      if (dir === mb._oppDir) {
+        mb._oppResolved = true;
+        showOpportunitySuccess(mb); // okamžitá zpětná vazba — šipka/štít → fajfka
       } else {
-        // Špatný směr — křížek a dodge se uzavře. Hráč nemůže opravovat:
-        // rána projde na konci swingu (resolveOpportunityDodge vrátí false).
-        mb._dodgeFailed = true;
-        mb._dodgePending = false;
-        showDodgeFail(mb);
+        // Špatný směr — křížek a interakce se uzavře. Hráč nemůže opravovat:
+        // rána projde na konci swingu (resolveOpportunity vrátí false).
+        mb._oppFailed = true;
+        mb._oppType = null;
+        showOpportunityFail(mb);
       }
       return;
     }
@@ -8038,7 +8225,8 @@ export function initGame() {
       setTimeout(() => { hitOverlay.style.backgroundColor = 'transparent'; }, 100);
     }
 
-    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'left', blocked ? '#3498db' : '#fff', 32);
+    const enemyIconPath2 = (mb.isBoss ? (mb.loc && mb.loc.boss && mb.loc.boss.face) : mb.monsterFace);
+    spawnFloatingText(blocked ? '🛡️ BLOCK!' : `-${amount}`, 'left', blocked ? '#3498db' : '#fff', 32, 2000, (enemyIconPath2 && enemyIconPath2.startsWith('assets/')) ? enemyIconPath2 : null);
 
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
@@ -8412,7 +8600,7 @@ export function initGame() {
       state.hero.mana = Math.min(state.hero.maxMana, (state.hero.mana || 0) + manaAmt);
     }
     
-    spawnFloatingText(isCrit ? `💥 -${dmg}` : `-${dmg}`, 'right', isCrit ? '#e74c3c' : '#fff', isCrit ? 36 : 32);
+    spawnFloatingText(isCrit ? `💥 -${dmg}` : `-${dmg}`, 'right', isCrit ? '#e74c3c' : '#fff', isCrit ? 36 : 32, 2000, (weapon.iconImg ? weapon.iconImg : null));
     const bossFig = $('mbFigure');
     if (bossFig) {
       bossFig.style.transition = 'filter 0.15s';
