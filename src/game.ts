@@ -4432,9 +4432,10 @@ export function initGame() {
       if (!d) return;
       const remaining = Math.ceil(d.ticks / 60);
       const spellDef = ENEMY_SPELLS[spellId];
-      const hasImg = spellDef && spellDef.iconImg;
+      const hasImg = (spellDef && spellDef.iconImg) || d.iconImg;
+      const imgSrc = (spellDef && spellDef.iconImg) || d.iconImg;
       html += `<div class="debuff-icon" title="${d.name || spellId}">
-        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${spellDef.iconImg}" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
+        ${hasImg ? `<img class="buff-icon-img" src="assets/spells/${imgSrc}" alt="${d.name}">` : `<span class="debuff-icon-emoji">${d.icon}</span>`}
         <span class="debuff-icon-timer">${remaining}s</span>
       </div>`;
     });
@@ -4939,7 +4940,7 @@ export function initGame() {
         const progress = Math.min(elapsed / oldMs, 1);
         mb.enemySwingMs = getEnemySwingTime(mb);
         mb._enemySwingStart = now - progress * mb.enemySwingMs;
-        _sessionDebuffs['slow_' + spellId] = { icon: '❄️', name: `Zpomalení ${slowPct}%`, ticks: slowTicks, maxTicks: slowTicks };
+        _sessionDebuffs['slow_' + spellId] = { icon: '❄️', name: `Zpomalení ${slowPct}%`, iconImg:'chill.png', ticks: slowTicks, maxTicks: slowTicks };
       }
       // Elektrická kouzla — vlastní SFX
       if (schoolId === 'lightning') {
@@ -8230,7 +8231,7 @@ export function initGame() {
       const progress = Math.min(elapsed / oldMs, 1);
       mb.enemySwingMs = getEnemySwingTime(mb);
       mb._enemySwingStart = now - progress * mb.enemySwingMs;
-      _sessionDebuffs['slow_weapon_ice'] = { icon: '❄️', name: 'Chill 15%', ticks: 180, maxTicks: 180 };
+      _sessionDebuffs['slow_weapon_ice'] = { icon: '❄️', name: 'Chill 15%', iconImg:'chill.png', ticks: 180, maxTicks: 180 };
       // Modrý záblesk
       const arena = $('mbArena');
       if (arena) {
