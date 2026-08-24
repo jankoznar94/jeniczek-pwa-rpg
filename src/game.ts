@@ -10266,6 +10266,7 @@ export function initGame() {
     } else if (item.type === 'consumable' && (item.subtype === 'heal' || item.subtype === 'mana') && addPotionToBelt(itemId)) {
       // Potion se vložil do opasku
     } else {
+      if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); h.gold += item.cost; return; }
       addToInventory(h.inventory, itemId);
     }
     playSFX(shopSfx);
@@ -10480,6 +10481,8 @@ export function initGame() {
     const baseItem = ITEMS.find(i => i.id === baseItemId);
     if (!baseItem) return;
     const h = state.hero;
+    // Inventář je plný — nedovolit nákup (game itemy nejdou do opasku)
+    if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
     // Najít cenu z cache (fixní, nemění se)
     let price = 0;
     if (_gambleItemsCache) {
