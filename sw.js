@@ -101,6 +101,7 @@ const ASSET_FILES = [
   '/assets/spells/oneHandSpec.png', '/assets/spells/twoHandSpec.png',
   '/assets/spells/speedBoost.png', '/assets/spells/skillShout.png',
   '/assets/spells/poison_bolt.png', '/assets/spells/poison.png', '/assets/spells/drain_life.png', '/assets/spells/mana_drain.png',
+  '/assets/spells/chill.png',
   '/assets/spells/empower.png', '/assets/spells/shadow_bolt.png', '/assets/spells/heal.png',
   '/assets/spells/thorn_shield.png', '/assets/spells/faerie_fire.png', '/assets/spells/slow.png',
   '/assets/projectiles/fireball.png', '/assets/projectiles/frostbolt.png',
