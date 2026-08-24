@@ -1211,6 +1211,7 @@ export function initGame() {
     if (item.skillDmg) addModRow('Skill Dmg', `+${item.skillDmg}%${affixRange('skillDmg')}`);
     if (item.manaRegen) addModRow('Mana Regen', `+${item.manaRegen}/tick${affixRange('manaRegen')}`);
     if (item.bonusMana) addModRow('+Mana', `+${item.bonusMana}${affixRange('bonusMana')}`);
+    if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}${affixRange('bonusHp')}`);
     if (item.ias) addModRow('Increased Attack Speed', `+${item.ias}%${affixRange('ias')}`);
     if (item.enhancedDefense) addModRow('Enhanced Defense', `+${item.enhancedDefense}%${affixRange('enhancedDefense')}`);
     if (item.enhancedDmg) addModRow('Enhanced Damage', `+${item.enhancedDmg}%${affixRange('enhancedDmg')}`);
