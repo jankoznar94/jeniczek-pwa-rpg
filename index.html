@@ -83,7 +83,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <script type="module" crossorigin src="./build/index-DWXxcVpT.js"></script>
+  <script type="module" crossorigin src="./build/index-DBa-5rJH.js"></script>
 </head>
 <body>
 
@@ -248,6 +248,17 @@
       <div class="rapid-tap-area rapid-tap-right hidden" id="mbTapRight"><span class="rapid-tap-dot"></span></div>
       <div class="rapid-target hidden" id="mbRapidTarget"></div>
       <div class="mb-combo-indicator hidden" id="mbComboIndicator"></div>
+      <!-- PS-style interakční tlačítka -->
+      <div class="ps-btns-combo hidden" id="mbPsComboBtns">
+        <button class="ps-btn ps-tri" data-ps="tri" onclick="game.onPsButton('tri')"><svg viewBox="0 0 24 24"><path d="M12 4l6 16H6z"/></svg></button>
+        <button class="ps-btn ps-square" data-ps="square" onclick="game.onPsButton('square')"><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12"/></svg></button>
+        <button class="ps-btn ps-circle" data-ps="circle" onclick="game.onPsButton('circle')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+        <button class="ps-btn ps-cross" data-ps="cross" onclick="game.onPsButton('cross')"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div class="ps-btns-def hidden" id="mbPsDefBtns">
+        <button class="ps-def-btn ps-def-dodge" id="mbPsDodgeBtn" onclick="game.onPsDefButton('dodge')"><svg viewBox="0 0 24 24"><path d="M12 4a2 2 0 012 2v12a2 2 0 01-4 0V6a2 2 0 012-2z"/></svg><span>Dodge</span></button>
+        <button class="ps-def-btn ps-def-block" id="mbPsBlockBtn" onclick="game.onPsDefButton('block')"><svg viewBox="0 0 24 24"><path d="M12 3l8 2.5V12c0 4.5-3.5 7.5-8 9-4.5-1.5-8-4.5-8-9V5.5z"/></svg><span>Block</span></button>
+      </div>
     </div>
     <div class="debuff-overlay" id="mbDebuffs"></div>
     <div class="enemy-buff-overlay" id="mbEnemyBuffs"></div>

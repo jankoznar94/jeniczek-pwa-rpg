@@ -1081,6 +1081,39 @@ body.no-scroll { overflow: hidden; }
   width:64px; height:52px; border-radius:14px;
 }
 
+/* ===== PS-style interakční tlačítka ===== */
+/* Defenzivní (Dodge/Block) + combo (✕◯□△) — sdílený akční řádek dole uprostřed.
+   Zobrazují se JEN při příležitosti (overlay), ať nezabírají místo v aréně. */
+.ps-btns-def, .ps-btns-combo {
+  position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+  display:flex; align-items:center; gap:12px;
+  z-index:30; pointer-events:none;
+}
+.ps-def-btn, .ps-btn {
+  pointer-events:auto;
+  width:64px; height:64px; border-radius:50%;
+  border:2px solid; background:rgba(20,20,30,0.85);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; font-size:11px; font-weight:bold; color:#ddd;
+  cursor:pointer; touch-action:manipulation;
+  box-shadow:0 2px 8px rgba(0,0,0,0.5);
+  transition:transform 0.08s, box-shadow 0.08s;
+}
+.ps-def-btn svg, .ps-btn svg { width:26px; height:26px; fill:currentColor; stroke:currentColor; stroke-width:2; }
+.ps-def-btn:active, .ps-btn:active { transform:scale(0.9); }
+.ps-def-dodge { border-color:#e67e22; color:#e67e22; }
+.ps-def-block { border-color:#3498db; color:#3498db; }
+.ps-btn.highlight, .ps-def-btn.highlight { box-shadow:0 0 18px currentColor; transform:scale(1.1); border-color:#fff; }
+.ps-tri svg { fill:currentColor; }
+.ps-circle svg { fill:none; stroke-width:2.5; }
+.ps-square svg { fill:none; stroke-width:2.5; }
+.ps-cross svg { fill:none; stroke-width:2.5; }
+/* Barevné rozlišení PS tlačítek */
+.ps-tri { color:#2ecc71; border-color:#2ecc71; }
+.ps-circle { color:#e74c3c; border-color:#e74c3c; }
+.ps-cross { color:#f1c40f; border-color:#f1c40f; }
+.ps-square { color:#e67e22; border-color:#e67e22; }
+
 /* Talent Tree — WoW style */
 .talent-schools { display:flex; flex-direction:column; gap:8px; width:100%; }
 .talent-school {
