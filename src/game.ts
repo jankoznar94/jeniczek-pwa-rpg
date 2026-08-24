@@ -1968,7 +1968,7 @@ export function initGame() {
             ? '<div class="stop-badge stop-badge-locked">🔒</div>'
             : `<div class="stop-badge stop-badge-progress">${fightProgress}/10</div>`;
       const cls = done ? 'stop-done' : current ? 'stop-current' : locked ? 'stop-locked' : 'stop-unlocked';
-      const label = STOP_NAMES[actId] ? STOP_NAMES[actId][stop] : `Zastávka ${stop+1}`;
+      const label = STOP_NAMES_EN[actId] ? STOP_NAMES_EN[actId][stop] : `Area ${stop+1}`;
       // Šipka před zastávkou naznačuje návaznost z předchozí. Následující zastávka
       // je otevřená, když není zamčená (done/current/unlocked). Šipka se vybarví barvou aktu,
       // jakmile je další zastávka dosažitelná, jinak je černobílá (tmavá).
@@ -8726,7 +8726,7 @@ export function initGame() {
       $('resultScreen').classList.remove('centered');
       // Ukázat obrázek aktuální zastávky (všechny akty)
       const curStopIdx = Math.min(Math.max(state.locationProgress[locId] || 0, 0), 9);
-      const curStopName = (STOP_NAMES[locId] && STOP_NAMES[locId][curStopIdx]) || null;
+      const curStopName = (STOP_NAMES_EN[locId] && STOP_NAMES_EN[locId][curStopIdx]) || null;
       const locName = mb.loc ? mb.loc.name : `Act ${locId+1}`;
       const areaNum = (state.locationProgress[locId] || 0) + 1;
       const fightNum = (state.areaFightProgress[locId] || 0);
@@ -8927,7 +8927,7 @@ export function initGame() {
       $('resultScreen').classList.remove('centered');
       // Obrázek poslední zastávky (boss) pro všechny akty — Act 1-4 zatím placeholder
       $('resultIcon').innerHTML = `<div class="stop-result-wrap">
-        <img class="result-icon-img stop-result" src="${getStopImage(locId, 9)}" alt="${STOP_NAMES[locId] ? STOP_NAMES[locId][9] : 'Boss'}">
+        <img class="result-icon-img stop-result" src="${getStopImage(locId, 9)}" alt="${STOP_NAMES_EN[locId] ? STOP_NAMES_EN[locId][9] : 'Boss'}">
         <div class="stop-result-overlay">
           <div class="stop-result-title">${mb.loc.boss.name} poražen!</div>
         </div>
