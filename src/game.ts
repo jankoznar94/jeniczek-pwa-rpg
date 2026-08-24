@@ -8732,7 +8732,7 @@ export function initGame() {
       const fightNum = (state.areaFightProgress[locId] || 0);
       const stopNameEn = getStopName(locId, curStopIdx, true);
       const winTitle = 'Victory!';
-      const winSub = `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Zastávka ' + curStopName : 'Area ' + areaNum)}${isStopComplete ? ' · Zastávka dokončena' : ` · Fight ${fightNum}/10`}`;
+      const winSub = `${locName} · ${stopNameEn ? stopNameEn : (curStopName ? 'Area ' + curStopName : 'Area ' + areaNum)}${isStopComplete ? ' · Area Complete' : ` · Fight ${fightNum}/10`}`;
       // Stav hráče — overlay dole na obrázku zastávky (HP, mana, buffy, potiony)
       const oh = state.hero;
       const ohpPct = Math.round(oh.hp / oh.maxHp * 100);
