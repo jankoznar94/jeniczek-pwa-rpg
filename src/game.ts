@@ -3662,8 +3662,12 @@ export function initGame() {
       if (spellId === 'poison_bolt') {
         amount = Math.round(baseDmg * 0.3);
         mb.playerDot = amount;
+        // Reset časovače jen při PRVNÍ aplikaci jedu (když hráč jed ještě nemá).
+        // Při re-aplikaci (caster castne poison znovu) se interval NEsoučasně
+        // resetuje — jinak by ticky přicházely rychleji než 1×/s.
+        const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
-        _lastPlayerDotTick = performance.now(); // první tick až za 1s, poslední v 0s = konec debuffu
+        if (!refreshing) _lastPlayerDotTick = performance.now();
         _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
         spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
@@ -3857,8 +3861,9 @@ export function initGame() {
       } else if (t === MONSTER_TYPES.POISON) {
         const poisonDmg = Math.max(1, Math.round(bossDmg * 0.2));
         mb.playerDot = poisonDmg;
+        const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
-        _lastPlayerDotTick = performance.now();
+        if (!refreshing) _lastPlayerDotTick = performance.now();
       }
     });
     // D2 elitní mody — element dmg (Fire/Cold/Lightning/Poison Enchanted), Mana Burn, Cursed
@@ -3937,8 +3942,9 @@ export function initGame() {
       if (mb.passivePoisonWeapon) {
         const poisonDmg = Math.max(1, Math.round(amount * 0.15));
         mb.playerDot = poisonDmg;
+        const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
-        _lastPlayerDotTick = performance.now();
+        if (!refreshing) _lastPlayerDotTick = performance.now();
         _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
         spawnFloatingText(`☠️ -${poisonDmg}/tick`, 'left', '#27ae60', 28);
       }
@@ -8234,8 +8240,9 @@ export function initGame() {
       } else if (t === MONSTER_TYPES.POISON) {
         const poisonDmg = Math.max(1, Math.round(bossDmg * 0.2));
         mb.playerDot = poisonDmg;
+        const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
-        _lastPlayerDotTick = performance.now();
+        if (!refreshing) _lastPlayerDotTick = performance.now();
       }
     });
     // 🛡️ Defense — WoW styl: damage *= 100 / (100 + totalDefense)
