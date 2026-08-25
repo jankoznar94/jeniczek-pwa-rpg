@@ -91,7 +91,7 @@
             { choices: [
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% attack rating` },
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, requires:'barbarian_twoHandSpec', requiresLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
-              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:4, requires:'barbarian_oneHandSpec', requiresLv:1, desc:lv=>`Pause game & unleash ${3+lv} spinning strikes (max 5) — press the shown button each strike, land as many as you get right` },
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:4, requires:'barbarian_oneHandSpec', requiresLv:1, desc:lv=>`Pause game & unleash ${3+lv} spinning strikes (3 to 7) — press the shown button each strike, land as many as you get right` },
             ]}
           ]
         },

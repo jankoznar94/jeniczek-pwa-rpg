@@ -316,6 +316,15 @@ body.no-scroll { overflow: hidden; }
   position:absolute;top:50%;left:50%;font-size:36px;transform:translate(-50%,-50%);z-index:20;
   color:#ddd;text-shadow:0 0 8px rgba(255,255,255,0.3);pointer-events:none;
 }
+/* Whirlwind countdown — ztenčující se ring kolem PS tlačítka uprostřed (čas na reakci).
+   --ww-remaining (0..1) nastavuje loop; conic-gradient odčítá zbytek času. */
+.action-info-icon[style*="--ww-remaining"] {
+  border-radius:50%;
+  padding:8px;
+  background:
+    radial-gradient(closest-side, rgba(0,0,0,0.85), rgba(0,0,0,0.85)) 50% 50% / calc(100% - 10px) calc(100% - 10px) no-repeat,
+    conic-gradient(#f1c40f calc(var(--ww-remaining) * 360deg), rgba(241,196,15,0.15) 0);
+}
 .attack-timer-ring {
   position:absolute;top:50%;left:50%;width:260px;height:260px;
   transform:translate(-50%,-50%);z-index:5;pointer-events:none;

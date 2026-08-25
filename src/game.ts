@@ -2733,7 +2733,7 @@ export function initGame() {
       _oppType: null, _oppDir: null, _oppResolved: false, _oppFailed: false, _oppCooldownUntil: 0,
       // Combo Attack — hra se pozastaví, hráč swipuje sekvenci směrů; každý úder je 1 hit.
       // _comboActive: true = autoCombatLoop je pozastaven, probíhá combo sekvence.
-      _comboActive: false, _comboDirs: [], _comboIdx: 0, _comboPct: 0,
+      _comboActive: false, _comboDirs: [], _comboIdx: 0, _comboPct: 0, _comboDeadline: 0,
       // Pack (elita+minioni / champion pack)
       packMembers: packMembers,
       packActiveIdx: 0,
@@ -3087,10 +3087,25 @@ export function initGame() {
     // Combo Attack — hra je pozastavená, hráč swipuje sekvenci úderů.
     // Loop zůstává živý (kvůli případnému ukončení), ale nic se nezpracovává.
     if (mb._comboActive) {
-      if (!mb.ended && !mb._pendingKill) {
-        mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+      // Vizuální countdown — ubíhající ring kolem PS tlačítka (čas na reakci).
+      if (mb._comboDeadline) {
+        const info = $('mbActionInfo');
+        if (info) {
+          const remain = Math.max(0, mb._comboDeadline - now) / WHIRLWIND_REACTION_MS;
+          info.style.setProperty('--ww-remaining', remain.toFixed(3));
+        }
       }
-      return;
+      // Časový limit na reakci — nestihl-li hráč úder včas, whirlwind se přeruší.
+      if (mb._comboDeadline && now > mb._comboDeadline && mb._comboIdx < mb._comboDirs.length) {
+        showComboFail(mb);
+        endCombo(mb, false);
+        // Po ukončení pokračovat v normálním loopu (aplikovat dál).
+      } else {
+        if (!mb.ended && !mb._pendingKill) {
+          mb._combatLoop = requestAnimationFrame(autoCombatLoop);
+        }
+        return;
+      }
     }
 
     // Tick buffů a GCD každou smyčku
@@ -3569,6 +3584,7 @@ export function initGame() {
 
   // ===== Opportunity Dodge — roll na začátku swingu, reakce přes existující swing timer =====
   const OPPORTUNITY_COOLDOWN_MS = 3000; // minimální rozestup mezi příležitostmi (cap frekvence)
+  const WHIRLWIND_REACTION_MS = 1500; // časový limit na každý whirlwind úder — nestihne-li hráč, kouzlo se přeruší
 
   // Enemy kouzla, která NEJSOU ofensivní (buff/debuff/utility) — spell reflect je neodráží jako dmg
   const OFFENSIVE_EXEMPT = ['empower', 'defensive_shout', 'battle_shout', 'thorn_shield', 'faerie_fire', 'evasion', 'heal'];
@@ -4942,8 +4958,8 @@ export function initGame() {
   function startWhirlwind(mb) {
     if (mb.ended) return;
     const lv = getSpellLv('whirlwind');
-    // 3 + lv úderů (max 5) — Jan: "5 je maximální počet"
-    const strikeCount = Math.min(3 + Math.max(lv, 1), 5);
+    // 3 + lv úderů — maxLv 4 ⇒ 3..7 úderů (Jan: start na 3, maximum 7)
+    const strikeCount = 3 + Math.max(lv, 1);
     // Sekvence náhodných PS tlačítek
     const psKeys = ['tri','circle','cross','square'];
     mb._comboDirs = [];
@@ -4960,6 +4976,10 @@ export function initGame() {
     // Zobrazit combo tlačítka
     const comboBtns = $('mbPsComboBtns');
     if (comboBtns) comboBtns.classList.remove('hidden');
+    // Skrýt ikonu nepřátelského castu — whirlwind pause hru, ikona by se překrývala
+    // s PS tlačítkem uprostřed (a loop je pozastaven, takže se sama neskryje).
+    const castIcon = $('mbCastSpellIcon');
+    if (castIcon) castIcon.classList.add('hidden');
     showComboPrompt(mb);
   }
 
@@ -4968,6 +4988,8 @@ export function initGame() {
   function showComboPrompt(mb) {
     clearComboHighlights();
     if (!mb._comboActive || mb._comboIdx >= mb._comboDirs.length) return;
+    // Resetovat časový limit pro tento úder — hráč má WHIRLWIND_REACTION_MS na reakci.
+    mb._comboDeadline = performance.now() + WHIRLWIND_REACTION_MS;
     const key = mb._comboDirs[mb._comboIdx];
     // Barevný obrázek PS tlačítka uprostřed — co má hráč stisknout
     const psIconFile = { tri:'ps_tri', circle:'ps_circle', cross:'ps_cross', square:'ps_square' }[key] || 'ps_cross';
