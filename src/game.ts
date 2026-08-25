@@ -2128,7 +2128,7 @@ export function initGame() {
         const prevUnlocked = bossDefeated || (!bossDefeated && stop <= unlockedArea);
         html += `<div class="stop-arrow ${prevUnlocked ? 'stop-arrow-active' : ''}" style="--dot-color:${theme.border}" aria-hidden="true"></div>`;
       }
-      html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.startLocation(${actId}, ${stop}, 0)`}" title="${label}">
+      html += `<div class="stop-wrap ${cls}" style="--dot-color:${theme.border}" onclick="event.stopPropagation();${locked?'':`game.enterStop(${actId}, ${stop})`}" title="${label}">
         <div class="stop-card">
           <img src="${getStopImage(actId, stop)}" class="stop-img" alt="${label}">
           <div class="stop-label">${label}</div>
@@ -2226,6 +2226,14 @@ export function initGame() {
       screen.classList.add('hidden');
       callback();
     }, 3200);
+  }
+
+  // Vstup do konkrétní zastávky (např. Meadow) — ukázat transition s obrázkem
+  // dané zastávky, pak teprve spustit fight.
+  function enterStop(actId, stop) {
+    showTransition('stop', actId, () => {
+      startLocation(actId, stop, 0);
+    }, stop);
   }
 
   function townHeal() {
@@ -11754,7 +11762,7 @@ export function initGame() {
   }
 
   window.game = {
-    showScreen, enterAct, startLocation, setDifficulty, toggleActExpand,
+    showScreen, enterAct, startLocation, enterStop, setDifficulty, toggleActExpand,
     upgradeAttr, buyItem, sellItem, sellSlotItem, equipItem, equipItemToSlot, unequipItem, unequipSlot,
     switchShopTab, switchShopCategory,
     showItemInfo, closeItemOverlay,
