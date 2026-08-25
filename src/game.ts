@@ -3858,6 +3858,7 @@ export function initGame() {
         const poisonDmg = Math.max(1, Math.round(bossDmg * 0.2));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
+        _lastPlayerDotTick = performance.now();
       }
     });
     // D2 elitní mody — element dmg (Fire/Cold/Lightning/Poison Enchanted), Mana Burn, Cursed
@@ -3937,6 +3938,7 @@ export function initGame() {
         const poisonDmg = Math.max(1, Math.round(amount * 0.15));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
+        _lastPlayerDotTick = performance.now();
         _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
         spawnFloatingText(`☠️ -${poisonDmg}/tick`, 'left', '#27ae60', 28);
       }
@@ -8233,6 +8235,7 @@ export function initGame() {
         const poisonDmg = Math.max(1, Math.round(bossDmg * 0.2));
         mb.playerDot = poisonDmg;
         mb.playerDotTicksLeft = 3;
+        _lastPlayerDotTick = performance.now();
       }
     });
     // 🛡️ Defense — WoW styl: damage *= 100 / (100 + totalDefense)
