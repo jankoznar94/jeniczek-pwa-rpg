@@ -5036,7 +5036,7 @@ export function initGame() {
       // Countdown ring (--ww-remaining) je na wrapperu jen kolem obrázku, text je mimo.
       info.innerHTML = `
         <div class="combo-ring">
-          <img src="assets/ps/${psIconFile}.png" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid #fff;background:#111">
+          <img src="assets/ps/${psIconFile}.png" alt="">
         </div>
         <div style="font-size:13px;font-weight:bold;color:#f1c40f;text-shadow:0 1px 2px #000">Whirlwind ${mb._comboIdx + 1}/${mb._comboDirs.length}</div>`;
     }
