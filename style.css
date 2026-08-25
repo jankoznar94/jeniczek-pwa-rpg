@@ -324,9 +324,19 @@ body.no-scroll { overflow: hidden; }
    kruhové, s borderem). */
 .combo-ring {
   border-radius:50%;
-  padding:6px;
+  padding:10px;
   background:
     conic-gradient(#f1c40f calc(var(--ww-remaining, 0) * 360deg), rgba(241,196,15,0.15) 0);
+}
+/* PS značka uvnitř ringu — kruhová, s bílým borderem (design Dodge/Block).
+   PNG má plné černé pozadí (RGB, bez alpha) → overflow:hidden je nutné, aby
+   border-radius:50% ořízl černý čtverec na kruh. Obrázek menší než ring,
+   ať se symbol (trojúhelník/čtverec) nedotýká kruhu. */
+.combo-ring img {
+  width:52px;height:52px;
+  border-radius:50%;border:2px solid #fff;
+  object-fit:cover;overflow:hidden;
+  background:#111;display:block;
 }
 .attack-timer-ring {
   position:absolute;top:50%;left:50%;width:260px;height:260px;
