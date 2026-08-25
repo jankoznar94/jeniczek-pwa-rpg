@@ -2246,6 +2246,10 @@ body.no-scroll { overflow: hidden; }
   width:260px;height:260px;object-fit:contain;
   position:relative;z-index:2;
   border-radius:12px;
+  /* Okraje obrázku plynule splývají s černým pozadím (fade out) —
+     žádné ostré hrany. Radial maska od středu (plná) k okrajům (transparent). */
+  mask-image:radial-gradient(ellipse 72% 72% at 50% 50%, #000 50%, transparent 100%);
+  -webkit-mask-image:radial-gradient(ellipse 72% 72% at 50% 50%, #000 50%, transparent 100%);
   --glow-low:rgba(100,180,255,0.3);
   --glow-high:rgba(100,180,255,0.6);
 }
