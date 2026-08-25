@@ -3325,7 +3325,12 @@ export function initGame() {
       const d = _playerDebuffs[spellId];
       if (d && d.ticks > 0) {
         d.ticks--;
-        if (d.ticks <= 0) delete _playerDebuffs[spellId];
+        if (d.ticks <= 0) {
+          delete _playerDebuffs[spellId];
+          // Musí se volat onExpire, jinak zůstává efekt (např. Slow) aktivní
+          // navždy — debuff zmizí z UI, ale hráč zůstane pomalý.
+          if (d.onExpire) d.onExpire();
+        }
       }
     });
     // Battle shout
