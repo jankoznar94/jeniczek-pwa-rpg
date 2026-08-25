@@ -2223,16 +2223,16 @@ export function initGame() {
     }
     screen.classList.remove('hidden');
     screen.classList.remove('fade-out');
-    // Fade-in (2.4s) + krátké podržení → před fade-outem NAČÍST cílovou stránku
+    // Fade-in (1.4s) + krátké podržení → před fade-outem NAČÍST cílovou stránku
     // (transition screen je overlay na z-index 9999, takže ji kryje),
-    // pak fade-out (0.6s) odkryje už připravenou stránku — žádné probliknutí.
+    // pak fade-out (0.4s) odkryje už připravenou stránku — žádné probliknutí.
     setTimeout(() => {
       callback();
       screen.classList.add('fade-out');
       setTimeout(() => {
         screen.classList.add('hidden');
-      }, 600);
-    }, 2700);
+      }, 400);
+    }, 1800);
   }
 
   // Vstup do konkrétní zastávky (např. Meadow) — ukázat transition s obrázkem

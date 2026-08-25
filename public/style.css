@@ -2235,7 +2235,7 @@ body.no-scroll { overflow: hidden; }
   background:#000;
 }
 .transition-screen.fade-out {
-  animation:transitionScreenFadeOut 0.6s ease-in forwards;
+  animation:transitionScreenFadeOut 0.4s ease-in forwards;
 }
 @keyframes transitionScreenFadeOut { 0%{opacity:1} 100%{opacity:0} }
 .transition-content {
@@ -2250,7 +2250,7 @@ body.no-scroll { overflow: hidden; }
   background:#000;
   border-radius:12px;
   z-index:3;
-  animation:transitionReveal 2.4s ease-out forwards;
+  animation:transitionReveal 1.4s ease-out forwards;
 }
 @keyframes transitionReveal {
   0% { opacity:1; }
