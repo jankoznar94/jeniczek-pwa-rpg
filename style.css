@@ -332,7 +332,7 @@ body.no-scroll { overflow: hidden; }
    PNG má plné černé pozadí (RGB, bez alpha) → overflow:hidden je nutné, aby
    border-radius:50% ořízl černý čtverec na kruh. Velký symbol, tenký ring (3px). */
 .combo-ring img {
-  width:90px;height:90px;
+  width:120px;height:120px;
   border-radius:50%;border:2px solid #fff;
   object-fit:cover;overflow:hidden;
   background:#111;display:block;
