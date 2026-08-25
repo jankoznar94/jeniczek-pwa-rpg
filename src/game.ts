@@ -5027,8 +5027,10 @@ export function initGame() {
     // Resetovat časový limit pro tento úder — hráč má WHIRLWIND_REACTION_MS na reakci.
     mb._comboDeadline = performance.now() + WHIRLWIND_REACTION_MS;
     const key = mb._comboDirs[mb._comboIdx];
-    // Barevný obrázek PS tlačítka uprostřed — co má hráč stisknout
-    const psIconFile = { tri:'ps_tri', circle:'ps_circle', cross:'ps_cross', square:'ps_square' }[key] || 'ps_cross';
+    // Barevný obrázek PS tlačítka uprostřed — co má hráč stisknout.
+    // Používá samostatné *_center.png (symbol s prostorem kolem), NEnárazové sdílené
+    // ps_*.png (ty ovládají velikost dolních tlačítek).
+    const psIconFile = { tri:'ps_tri_center', circle:'ps_circle_center', cross:'ps_cross_center', square:'ps_square_center' }[key] || 'ps_cross_center';
     const info = $('mbActionInfo');
     if (info) {
       info.classList.remove('hidden');
