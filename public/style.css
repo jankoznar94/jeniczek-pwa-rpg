@@ -315,15 +315,18 @@ body.no-scroll { overflow: hidden; }
 .action-info-icon {
   position:absolute;top:50%;left:50%;font-size:36px;transform:translate(-50%,-50%);z-index:20;
   color:#ddd;text-shadow:0 0 8px rgba(255,255,255,0.3);pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  width:max-content;
 }
-/* Whirlwind countdown — ztenčující se ring kolem PS tlačítka uprostřed (čas na reakci).
-   --ww-remaining (0..1) nastavuje loop; conic-gradient odčítá zbytek času. */
-.action-info-icon[style*="--ww-remaining"] {
+/* Whirlwind countdown — ztenčující se kulatý ring kolem PS tlačítka (čas na reakci).
+   --ww-remaining (0..1) nastavuje loop na .combo-ring; conic-gradient odčítá zbytek času.
+   Jen kulatý ring — žádné tmavé čtvercové pozadí (Jan: stejný design jako Dodge/Block —
+   kruhové, s borderem). */
+.combo-ring {
   border-radius:50%;
-  padding:8px;
+  padding:6px;
   background:
-    radial-gradient(closest-side, rgba(0,0,0,0.85), rgba(0,0,0,0.85)) 50% 50% / calc(100% - 10px) calc(100% - 10px) no-repeat,
-    conic-gradient(#f1c40f calc(var(--ww-remaining) * 360deg), rgba(241,196,15,0.15) 0);
+    conic-gradient(#f1c40f calc(var(--ww-remaining, 0) * 360deg), rgba(241,196,15,0.15) 0);
 }
 .attack-timer-ring {
   position:absolute;top:50%;left:50%;width:260px;height:260px;

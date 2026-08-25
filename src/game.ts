@@ -3104,10 +3104,10 @@ export function initGame() {
     if (mb._comboActive) {
       // Vizuální countdown — ubíhající ring kolem PS tlačítka (čas na reakci).
       if (mb._comboDeadline) {
-        const info = $('mbActionInfo');
-        if (info) {
+        const ring = $('mbActionInfo')?.querySelector('.combo-ring');
+        if (ring) {
           const remain = Math.max(0, mb._comboDeadline - now) / WHIRLWIND_REACTION_MS;
-          info.style.setProperty('--ww-remaining', remain.toFixed(3));
+          ring.style.setProperty('--ww-remaining', remain.toFixed(3));
         }
       }
       // Časový limit na reakci — nestihl-li hráč úder včas, whirlwind se přeruší.
@@ -5032,9 +5032,13 @@ export function initGame() {
     const info = $('mbActionInfo');
     if (info) {
       info.classList.remove('hidden');
+      // PS tlačítko = kruhové, s bílým borderem (stejný design jako Dodge/Block ikony).
+      // Countdown ring (--ww-remaining) je na wrapperu jen kolem obrázku, text je mimo.
       info.innerHTML = `
-        <img src="assets/ps/${psIconFile}.png" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid #fff;background:#111">
-        <div style="font-size:13px;font-weight:bold;color:#f1c40f;text-shadow:0 1px 2px #000;margin-top:2px">Whirlwind ${mb._comboIdx + 1}/${mb._comboDirs.length}</div>`;
+        <div class="combo-ring">
+          <img src="assets/ps/${psIconFile}.png" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid #fff;background:#111">
+        </div>
+        <div style="font-size:13px;font-weight:bold;color:#f1c40f;text-shadow:0 1px 2px #000">Whirlwind ${mb._comboIdx + 1}/${mb._comboDirs.length}</div>`;
     }
   }
 
