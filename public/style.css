@@ -2223,6 +2223,10 @@ body.no-scroll { overflow: hidden; }
   display:flex;align-items:center;justify-content:center;
   background:#000;
 }
+.transition-screen.fade-out {
+  animation:transitionScreenFadeOut 0.6s ease-in forwards;
+}
+@keyframes transitionScreenFadeOut { 0%{opacity:1} 100%{opacity:0} }
 .transition-content {
   display:flex;flex-direction:column;align-items:center;gap:20px;
   position:relative;

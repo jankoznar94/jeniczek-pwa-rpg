@@ -2222,10 +2222,16 @@ export function initGame() {
       img.style.setProperty('--glow-high', `rgba(${c.r},${c.g},${c.b},0.6)`);
     }
     screen.classList.remove('hidden');
+    screen.classList.remove('fade-out');
+    // Fade-in (2.4s) + krátké podržení → fade-out celé obrazovky (0.6s),
+    // pak schovat a zavolat callback. Žádný instantní mizák.
     setTimeout(() => {
-      screen.classList.add('hidden');
-      callback();
-    }, 3200);
+      screen.classList.add('fade-out');
+      setTimeout(() => {
+        screen.classList.add('hidden');
+        callback();
+      }, 600);
+    }, 2700);
   }
 
   // Vstup do konkrétní zastávky (např. Meadow) — ukázat transition s obrázkem
