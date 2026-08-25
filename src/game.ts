@@ -1433,6 +1433,11 @@ export function initGame() {
       else armOpportunity(mb);
       return true; // vyhnuto/vyblokováno — útok neprošel
     }
+    // Hráč nestihl vůbec zareagovat — zobrazit křížek (jakoby udělal chybu), ať má
+    // okamžitou zpětnou vazbu, že to neprošlo. Rána projde (return false).
+    showOpportunityFail(mb);
+    // Křížek po chvíli skrýt, aby nesetrvával na obrazovce.
+    setTimeout(() => hideOpportunityArrow(mb), 500);
     return false; // zmeškal — rána projde
   }
 
