@@ -1010,7 +1010,7 @@ body.no-scroll { overflow: hidden; }
 /* Odpočítávání času — overlay uprostřed přes obrázek */
 .debuff-icon-timer {
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-size:13px;color:#e94560;font-weight:bold;line-height:1;
+  font-size:18px;color:#e94560;font-weight:bold;line-height:1;
   text-shadow:0 1px 2px #000, 0 0 4px #000;z-index:2;
 }
 /* Enemy buffy — ve stejném sloupci jako debuffy (nad nimi), zelený border */
@@ -1053,7 +1053,7 @@ body.no-scroll { overflow: hidden; }
 /* Odpočítávání času — overlay uprostřed přes obrázek */
 .buff-icon-timer {
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-  font-size:13px;color:#2ecc71;font-weight:bold;line-height:1;
+  font-size:18px;color:#2ecc71;font-weight:bold;line-height:1;
   text-shadow:0 1px 2px #000, 0 0 4px #000;z-index:2;
 }
 /* Player debuffy — ve stejném sloupci jako buffy (pod nimi), červený border */
