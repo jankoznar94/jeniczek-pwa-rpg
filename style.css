@@ -762,7 +762,7 @@ body.no-scroll { overflow: hidden; }
 .chest-cell .cell-actions .btn-equip { background:#666; color:#fff; }
 .chest-cell .cell-actions .btn-sell { background:#994444; color:#fff; }
 .chest-cell.empty { opacity:0.25; cursor:default; }
-.chest-cell.empty:hover { border-color:#333; background:#111; }
+.chest-cell.empty:hover { border-color:#555; }
 .chest-cell.selected { border-color: #f1c40f !important; box-shadow: 0 0 8px rgba(241,196,15,0.5); }
 .inv-equip-slot.selected { border-color: #2ecc71 !important; box-shadow: 0 0 8px rgba(46,204,113,0.5); }
 
@@ -2009,11 +2009,12 @@ body.no-scroll { overflow: hidden; }
   box-shadow:0 0 30px rgba(0,0,0,0.5);
   position:relative;
   display:flex;flex-direction:column;
+  overflow:hidden;
 }
 .modal-content .card { background:transparent;border:none;padding:0;margin:0; }
 .modal-content .card-title { font-size:18px; }
 .modal-body {
-  flex:1;overflow-y:auto;padding:0 4px;
+  flex:1;overflow-y:auto;padding:0 4px;min-height:0;
 }
 .modal-close {
   width:36px;height:36px;border-radius:50%;
