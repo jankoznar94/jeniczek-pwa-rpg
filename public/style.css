@@ -2252,8 +2252,8 @@ body.no-scroll { overflow: hidden; }
   /* Okraje obrázku plynule splývají s černým pozadím (fade out) —
      žádné ostré hrany. Radial maska od středu (plná) k okrajům (transparent).
      Zesílený fade: plné jen jádro (~30 %), přechod do tmy se táhne až na 90 %. */
-  mask-image:radial-gradient(ellipse 66% 66% at 50% 50%, #000 30%, transparent 90%);
-  -webkit-mask-image:radial-gradient(ellipse 66% 66% at 50% 50%, #000 30%, transparent 90%);
+  mask-image:radial-gradient(ellipse 66% 66% at 50% 50%, #000 40%, transparent 85%);
+  -webkit-mask-image:radial-gradient(ellipse 66% 66% at 50% 50%, #000 40%, transparent 85%);
   --glow-low:rgba(100,180,255,0.3);
   --glow-high:rgba(100,180,255,0.6);
 }
