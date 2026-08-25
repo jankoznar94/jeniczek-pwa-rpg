@@ -2223,13 +2223,14 @@ export function initGame() {
     }
     screen.classList.remove('hidden');
     screen.classList.remove('fade-out');
-    // Fade-in (2.4s) + krátké podržení → fade-out celé obrazovky (0.6s),
-    // pak schovat a zavolat callback. Žádný instantní mizák.
+    // Fade-in (2.4s) + krátké podržení → před fade-outem NAČÍST cílovou stránku
+    // (transition screen je overlay na z-index 9999, takže ji kryje),
+    // pak fade-out (0.6s) odkryje už připravenou stránku — žádné probliknutí.
     setTimeout(() => {
+      callback();
       screen.classList.add('fade-out');
       setTimeout(() => {
         screen.classList.add('hidden');
-        callback();
       }, 600);
     }, 2700);
   }
