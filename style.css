@@ -2062,6 +2062,11 @@ body.no-scroll { overflow: hidden; }
 .combined-screen.active #inventoryScreen {
   max-width:none; margin:0; padding:0 4px; flex:1; min-height:0;
 }
+/* Hero taky — obsah je dlouhý (attributes + detaily), scrolluje uvnitř, ať
+   tlačítko Zavřít nepřetéká dole mimo obrazovku. */
+.combined-screen.active #heroScreen {
+  max-width:none; margin:0; padding:0 4px 16px; flex:1; min-height:0; overflow-y:auto;
+}
 
 /* ===== DOT PATH INSIDE CARD ===== */
 .map-loc-dot-scroll {
