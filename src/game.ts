@@ -3326,6 +3326,10 @@ export function initGame() {
       if (d && d.ticks > 0) {
         d.ticks--;
         if (d.ticks <= 0) {
+          // Poslední tick jedu (0s) — udělit poškození PŘED smazáním debuffu.
+          // UI debuff (ticks) vyprší dřív než real-time damage ticky (1s/2s/3s),
+          // takže bez toho by poslední tick nikdy nedorazil.
+          if (d.onFinalTick) d.onFinalTick();
           delete _playerDebuffs[spellId];
           // Musí se volat onExpire, jinak zůstává efekt (např. Slow) aktivní
           // navždy — debuff zmizí z UI, ale hráč zůstane pomalý.
@@ -3668,7 +3672,8 @@ export function initGame() {
         const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
         if (!refreshing) _lastPlayerDotTick = performance.now();
-        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['poison_bolt'] = { icon: '☠️', name: 'Jed', iconImg:'poison.png', ticks: 180, maxTicks: 180,
+          onFinalTick: () => { if (mapBattleState) applyPlayerPoisonTick(mapBattleState); } };
         spellText = `☠️ -${amount}/tick`;
       } else if (spellId === 'drain_life') {
         amount = Math.round(baseDmg * 0.7);
@@ -3864,6 +3869,8 @@ export function initGame() {
         const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
         if (!refreshing) _lastPlayerDotTick = performance.now();
+        _playerDebuffs['melee_poison'] = { icon: '☠️', name: 'Jed', iconImg:'poison.png', ticks: 180, maxTicks: 180,
+          onFinalTick: () => { if (mapBattleState) applyPlayerPoisonTick(mapBattleState); } };
       }
     });
     // D2 elitní mody — element dmg (Fire/Cold/Lightning/Poison Enchanted), Mana Burn, Cursed
@@ -3945,7 +3952,8 @@ export function initGame() {
         const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
         if (!refreshing) _lastPlayerDotTick = performance.now();
-        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison.png', ticks: 180, maxTicks: 180 };
+        _playerDebuffs['passive_poison_weapon'] = { icon: '☠️', name: 'Jed (zbraň)', iconImg:'poison.png', ticks: 180, maxTicks: 180,
+          onFinalTick: () => { if (mapBattleState) applyPlayerPoisonTick(mapBattleState); } };
         spawnFloatingText(`☠️ -${poisonDmg}/tick`, 'left', '#27ae60', 28);
       }
     }
@@ -5857,14 +5865,11 @@ export function initGame() {
 
   // Player DoT tick — jed z monster, tickuje 1×/s
   let _lastPlayerDotTick = 0;
-  function doPlayerDotTick(mb) {
-    if (mb.playerDot <= 0 || mb.playerDotTicksLeft <= 0) return false;
-    const now = performance.now();
-    if (now - _lastPlayerDotTick < 1000) return false;
-    _lastPlayerDotTick = now;
+  // Aplikuje jeden tick jedu na hráče (poškození + vizuální feedback).
+  function applyPlayerPoisonTick(mb) {
+    if (mb.playerDot <= 0) return;
     mb.playerHp -= mb.playerDot;
-    mb.playerDotTicksLeft--;
-    // Vizuální debuff necháme vypršet přirozeně přes tickBuffs
+    mb.playerDotTicksLeft = Math.max(0, mb.playerDotTicksLeft - 1);
     const playerFig = $('mbPlayerFigure');
     if (playerFig) {
       playerFig.style.transition = 'filter 0.2s';
@@ -5873,8 +5878,15 @@ export function initGame() {
     }
     spawnFloatingText(`☠️ -${mb.playerDot}`, 'left', '#2ecc71', 32, 2000, 'assets/spells/poison.png');
     updateMapBattleUI();
-    if (mb.playerHp <= 0) { endMapBattle(false); return true; }
-    return false;
+    if (mb.playerHp <= 0) { endMapBattle(false); }
+  }
+  function doPlayerDotTick(mb) {
+    if (mb.playerDot <= 0 || mb.playerDotTicksLeft <= 0) return false;
+    const now = performance.now();
+    if (now - _lastPlayerDotTick < 1000) return false;
+    _lastPlayerDotTick = now;
+    applyPlayerPoisonTick(mb);
+    return mb.playerHp <= 0;
   }
 
   function advanceSequence() {
@@ -8243,6 +8255,8 @@ export function initGame() {
         const refreshing = mb.playerDotTicksLeft > 0;
         mb.playerDotTicksLeft = 3;
         if (!refreshing) _lastPlayerDotTick = performance.now();
+        _playerDebuffs['melee_poison'] = { icon: '☠️', name: 'Jed', iconImg:'poison.png', ticks: 180, maxTicks: 180,
+          onFinalTick: () => { if (mapBattleState) applyPlayerPoisonTick(mapBattleState); } };
       }
     });
     // 🛡️ Defense — WoW styl: damage *= 100 / (100 + totalDefense)
