@@ -9031,14 +9031,14 @@ export function initGame() {
         const b = _sessionBuffs[k];
         if (b && b.ticks > 0) {
           const hasImg = b.iconImg;
-          ovBuffsHtml += `<span class="result-status-buff" data-name="${b.name}">${hasImg ? `<img src="assets/spells/${b.iconImg}" style="width:40px;height:40px;object-fit:contain">` : b.icon}</span>`;
+          ovBuffsHtml += `<span class="result-status-buff buff-box" data-name="${b.name}">${hasImg ? `<img class="buff-img" src="assets/spells/${b.iconImg}" alt="">` : b.icon}</span>`;
         }
       });
       Object.keys(_playerDebuffs).forEach(k => {
         const d = _playerDebuffs[k];
         if (d && d.ticks > 0) {
           const hasImg = d.iconImg;
-          ovBuffsHtml += `<span class="result-status-buff" data-name="${d.name}">${hasImg ? `<img src="assets/spells/${d.iconImg}" style="width:40px;height:40px;object-fit:contain">` : (d.icon || '☠️')}</span>`;
+          ovBuffsHtml += `<span class="result-status-buff debuff-box" data-name="${d.name}">${hasImg ? `<img class="buff-img" src="assets/spells/${d.iconImg}" alt="">` : (d.icon || '☠️')}</span>`;
         }
       });
       const statsOverlay = `<div class="stop-result-stats">
