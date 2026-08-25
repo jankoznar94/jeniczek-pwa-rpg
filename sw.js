@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v204';
-const ASSET_CACHE = 'boss-slayer-assets-v50';
+const ASSET_CACHE = 'boss-slayer-assets-v51';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=161', '/manifest.json', '/item-reference.html'];
 
@@ -149,6 +149,9 @@ const ASSET_FILES = [
   '/assets/ps/ps_cross.png', '/assets/ps/ps_circle.png',
   '/assets/ps/ps_square.png', '/assets/ps/ps_tri.png',
   '/assets/ps/ps_dodge.png', '/assets/ps/ps_block.png',
+  // Horní combo značky (symbol s prostorem kolem — samostatné, nedotýká se dolních)
+  '/assets/ps/ps_tri_center.png', '/assets/ps/ps_circle_center.png',
+  '/assets/ps/ps_cross_center.png', '/assets/ps/ps_square_center.png',
 ];
 
 self.addEventListener('install', e => {
