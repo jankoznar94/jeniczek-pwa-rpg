@@ -324,7 +324,7 @@ body.no-scroll { overflow: hidden; }
    kruhové, s borderem). */
 .combo-ring {
   border-radius:50%;
-  padding:3px;
+  padding:8px;
   background:
     conic-gradient(#f1c40f calc(var(--ww-remaining, 0) * 360deg), rgba(241,196,15,0.15) 0);
 }
