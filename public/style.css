@@ -1004,7 +1004,7 @@ body.no-scroll { overflow: hidden; }
   position:relative;
   display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,0.7);border:2px solid #e94560;border-radius:8px;
-  padding:2px;width:48px;height:48px;
+  padding:2px;width:56px;height:56px;
 }
 .debuff-icon-emoji { font-size:22px;line-height:1.2; }
 /* Odpočítávání času — overlay uprostřed přes obrázek */
@@ -1047,7 +1047,7 @@ body.no-scroll { overflow: hidden; }
   position:relative;
   display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,0.7);border:2px solid #2ecc71;border-radius:8px;
-  padding:2px;width:48px;height:48px;
+  padding:2px;width:56px;height:56px;
 }
 .buff-icon-emoji { font-size:22px;line-height:1.2; }
 /* Odpočítávání času — overlay uprostřed přes obrázek */
