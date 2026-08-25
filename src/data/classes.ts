@@ -25,7 +25,7 @@
         { id:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', cost:4, cooldown:8, gcd:0.5, needsShield:true, desc:'Shield dmg + slow enemy 25% for 3s' },
         { id:'pummel', name:'Pummel', icon:'👊', cost:2, cooldown:8, gcd:0.5, desc:'Interrupts enemy cast + blocks recast' },
         { id:'spellReflect', name:'Spell Reflect', icon:'🪞', cost:5, cooldown:8, gcd:0.5, needsShield:true, desc:'Reflects offensive enemy spell back at them' },
-        { id:'comboAttack', name:'Combo Attack', icon:'⚔️', iconImg:'doubleSwing.png', cost:5, cooldown:20, gcd:0.5, desc:'Pause & unleash a sequence of strikes — swipe each direction, hit as many as you land' }
+        { id:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', cost:5, cooldown:20, gcd:0.5, desc:'Pause & unleash a spinning flurry — press the shown button per strike, land up to 5' }
       ]
     },
     assassin: {
@@ -91,7 +91,7 @@
             { choices: [
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% attack rating` },
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, requires:'barbarian_twoHandSpec', requiresLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
-              { k:'comboAttack', name:'Combo Attack', icon:'⚔️', iconImg:'comboAttack.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:1, desc:lv=>`Pause game & unleash ${3+lv} strikes — swipe each direction, reset swing timers after` },
+              { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:4, requires:'barbarian_oneHandSpec', requiresLv:1, desc:lv=>`Pause game & unleash ${3+lv} spinning strikes (max 5) — press the shown button each strike, land as many as you get right` },
             ]}
           ]
         },

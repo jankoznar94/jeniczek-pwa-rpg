@@ -1,5 +1,5 @@
 const CODE_CACHE = 'boss-slayer-code-v204';
-const ASSET_CACHE = 'boss-slayer-assets-v46';
+const ASSET_CACHE = 'boss-slayer-assets-v47';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=161', '/manifest.json', '/item-reference.html'];
 
@@ -88,7 +88,7 @@ const ASSET_FILES = [
   '/assets/sfx/blunt_hit.mp3', '/assets/sfx/blunt_crit.mp3',
   '/assets/sfx/thunder_clap.mp3', '/assets/sfx/thunder_bolt.mp3',
   '/assets/sfx/fire_spell.mp3', '/assets/sfx/ice_spell.mp3', '/assets/sfx/lightning_spell.mp3',
-  '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png',
+  '/assets/spells/heroicStrike.png', '/assets/spells/doubleSwing.png', '/assets/spells/whirlwind.png',
   '/assets/spells/thunderClap.png', '/assets/spells/thunderBolt.png',
   '/assets/spells/bloodrage.png', '/assets/spells/battleShout.png', '/assets/spells/defensiveShout.png', '/assets/spells/skill_shout.png', '/assets/spells/shield_bash.png',
   '/assets/spells/pummel.png', '/assets/spells/spellReflect.png',

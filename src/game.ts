@@ -470,7 +470,7 @@ export function initGame() {
       if (spellId === 'shieldSlam') return getSkillLv('barbarian_shieldSlam');
       if (spellId === 'pummel') return getSkillLv('barbarian_pummel');
       if (spellId === 'spellReflect') return getSkillLv('barbarian_spellReflect');
-      if (spellId === 'comboAttack') return getSkillLv('barbarian_comboAttack');
+      if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -1437,25 +1437,22 @@ export function initGame() {
   }
 
   // Šipka/štít běží po celou dobu swingu (hráč vidí, na co má reagovat — swing timer už běží).
-  // Zobrazí výzvu pro Opportunity (dodge/block): ikona typu uprostřed + zvýrazní správné tlačítko.
+  // Zobrazí výzvu pro Opportunity (dodge/block): ikona typu uprostřed (obrázek toho, co má
+  // hráč zmáčknout). Správné tlačítko se NEZvýrazňuje — hráč si ho musí najít sám.
   function showOpportunityPrompt(mb) {
     // Skrýt starou šipku
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
-    // Zobrazit def tlačítka (overlay)
+    // Zobrazit def tlačítka (overlay) — bez zvýraznění správného
     const def = $('mbPsDefBtns'); if (def) def.classList.remove('hidden');
-    // Zvýraznit správné def tlačítko
     clearDefHighlights();
-    if (mb._oppType === 'block') {
-      const b = $('mbPsBlockBtn'); if (b) b.classList.add('highlight');
-    } else {
-      const d = $('mbPsDodgeBtn'); if (d) d.classList.add('highlight');
-    }
-    // Ikona typu uprostřed (💨 dodge / 🛡️ block)
+    // Ikona typu uprostřed = obrázek tlačítka, které má hráč zmáčknout (dodge/block)
     const info = $('mbActionInfo');
     if (info) {
       info.classList.remove('hidden');
-      info.innerHTML = mb._oppType === 'block' ? '🛡️' : '💨';
+      info.innerHTML = mb._oppType === 'block'
+        ? '<img src="assets/ps/ps_block.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #3498db">'
+        : '<img src="assets/ps/ps_dodge.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #e67e22">';
     }
   }
 
@@ -4924,8 +4921,8 @@ export function initGame() {
       spawnMeleeImpact(mb2, false, getWeaponType(), 0, getWeaponElementColor(weapon));
       spawnFloatingText(`💥 -${dmg}`, 'right', '#2ecc71', 36);
       playSFX(lightningSpellSfx2);
-    } else if (spellId === 'comboAttack') {
-      startComboAttack(mb);
+    } else if (spellId === 'whirlwind') {
+      startWhirlwind(mb);
     }
 
     updateMapBattleUI();
@@ -4933,21 +4930,22 @@ export function initGame() {
     return true;
   }
 
-  // ===== COMBO ATTACK (barbar) =====
-  // Hra se pozastaví, hráč mačká PS tlačítka (✕◯□△) v zobrazeném pořadí (každý úder = 1 hit).
-  // Po úspěšném úderu combo pokračuje dalším; chyba combo přeruší a hra jede dál.
-  // Po skončení comba (úspěšně i neúspěšně) se hráčovy swing timery resetují od znovu.
-  function startComboAttack(mb) {
+  // ===== WHIRLWIND (barbar) =====
+  // Hra se pozastaví, hráč mačká PS tlačítka (✕◯□△) podle obrázku uprostřed (každý úder = 1 hit).
+  // Po úspěšném úderu combo pokračuje dalším; chyba kouzlo přeruší a hra jede dál.
+  // Po skončení (úspěšně i neúspěšně) se hráčovy swing timery resetují od znovu.
+  function startWhirlwind(mb) {
     if (mb.ended) return;
-    const lv = getSpellLv('comboAttack');
-    const strikeCount = 3 + Math.min(Math.max(lv, 1), 5); // 3+lv úderů (3..8)
+    const lv = getSpellLv('whirlwind');
+    // 3 + lv úderů (max 5) — Jan: "5 je maximální počet"
+    const strikeCount = Math.min(3 + Math.max(lv, 1), 5);
     // Sekvence náhodných PS tlačítek
     const psKeys = ['tri','circle','cross','square'];
     mb._comboDirs = [];
     for (let i = 0; i < strikeCount; i++) mb._comboDirs.push(psKeys[Math.floor(Math.random() * 4)]);
     mb._comboIdx = 0;
     mb._comboActive = true;
-    // Zrušit probíhající opportunity (block/dodge) — combo ji přebíjí
+    // Zrušit probíhající opportunity (block/dodge) — whirlwind ji přebíjí
     mb._oppType = null;
     mb._oppResolved = false;
     mb._oppFailed = false;
@@ -4960,18 +4958,20 @@ export function initGame() {
     showComboPrompt(mb);
   }
 
-  // Zvýrazní aktuální PS tlačítko combo úderu a ukáže číslo úderu.
+  // Zobrazí prompt pro Whirlwind úder — obrázek konkrétního PS tlačítka uprostřed
+  // (které má hráč zmáčknout). Správné tlačítko dole se NEzvýrazňuje — hráč si ho najde sám.
   function showComboPrompt(mb) {
     clearComboHighlights();
     if (!mb._comboActive || mb._comboIdx >= mb._comboDirs.length) return;
     const key = mb._comboDirs[mb._comboIdx];
-    const btn = document.querySelector(`.ps-btn[data-ps="${key}"]`);
-    if (btn) btn.classList.add('highlight');
-    // Indikátor počtu úderů uprostřed
+    // Barevný obrázek PS tlačítka uprostřed — co má hráč stisknout
+    const psIconFile = { tri:'ps_tri', circle:'ps_circle', cross:'ps_cross', square:'ps_square' }[key] || 'ps_cross';
     const info = $('mbActionInfo');
     if (info) {
       info.classList.remove('hidden');
-      info.textContent = `Combo ${mb._comboIdx + 1}/${mb._comboDirs.length}`;
+      info.innerHTML = `
+        <img src="assets/ps/${psIconFile}.png" style="width:72px;height:72px;object-fit:cover;border-radius:50%;border:2px solid #fff;background:#111">
+        <div style="font-size:13px;font-weight:bold;color:#f1c40f;text-shadow:0 1px 2px #000;margin-top:2px">Whirlwind ${mb._comboIdx + 1}/${mb._comboDirs.length}</div>`;
     }
   }
 
@@ -5074,7 +5074,7 @@ export function initGame() {
       mb._offhandAttackProcessed = false;
     }
     if (completed) {
-      spawnFloatingText('COMBO!', 'right', '#f1c40f', 36);
+      spawnFloatingText('WHIRLWIND!', 'right', '#f1c40f', 36);
       playSFX(strongStrikeSfx);
     }
   }
@@ -8814,6 +8814,13 @@ export function initGame() {
     const mb = mapBattleState;
     const locId = mb.locId;
     const totalZones = mb.loc.zones || 10;
+    // Vyčistit interakční overlay (dodge/block + combo) — nepřítel zemřel i s
+    // aktivní příležitostí, tlačítka nesmí zůstat viset na obrazovce.
+    mb._comboActive = false;
+    mb._oppType = null;
+    mb._oppResolved = false;
+    mb._oppFailed = false;
+    hideOpportunityArrow(mb);
 
     // ===== PACK: smrt jednoho člena → přepnout na dalšího živého, neukončovat =====
     if (won && !mb.isBoss && mb.packMembers) {
