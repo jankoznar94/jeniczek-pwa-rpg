@@ -328,12 +328,12 @@ body.no-scroll { overflow: hidden; }
   background:
     conic-gradient(#f1c40f calc(var(--ww-remaining, 0) * 360deg), rgba(241,196,15,0.15) 0);
 }
-/* PS značka uvnitř ringu — kruhová, s bílým borderem (design Dodge/Block).
-   PNG má plné černé pozadí (RGB, bez alpha) → overflow:hidden je nutné, aby
-   border-radius:50% ořízl černý čtverec na kruh. Velký symbol, tenký ring (3px). */
+/* PS značka uvnitř ringu — kruhová, BEZ vlastního borderu (bílý border by splýval se
+   zlatým countdown ringem kolem; Jan chce jen ten gold timer). PNG má plné černé pozadí
+   (RGB, bez alpha) → overflow:hidden je nutné, aby border-radius:50% ořízl černý čtverec. */
 .combo-ring img {
   width:96px;height:96px;
-  border-radius:50%;border:2px solid #fff;
+  border-radius:50%;
   object-fit:cover;overflow:hidden;
   background:#111;display:block;
 }
