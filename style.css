@@ -1001,16 +1001,23 @@ body.no-scroll { overflow: hidden; }
   width:auto;
 }
 .debuff-icon {
-  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,0.7);border:2px solid #e94560;border-radius:8px;
-  padding:3px 6px;min-width:44px;
+  padding:2px;width:48px;height:48px;
 }
 .debuff-icon-emoji { font-size:22px;line-height:1.2; }
-.debuff-icon-timer { font-size:13px;color:#e94560;font-weight:bold;line-height:1; }
+/* Odpočítávání času — overlay uprostřed přes obrázek */
+.debuff-icon-timer {
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:13px;color:#e94560;font-weight:bold;line-height:1;
+  text-shadow:0 1px 2px #000, 0 0 4px #000;z-index:2;
+}
 /* Enemy buffy — ve stejném sloupci jako debuffy (nad nimi), zelený border */
 .debuff-icon.enemy-buff { border-color:#2ecc71; }
 .debuff-icon.enemy-buff .debuff-icon-timer { color:#2ecc71; }
-.buff-icon-img { width:28px;height:28px;object-fit:cover;border-radius:4px;display:block; }
+/* Obrázek roztáhnutý na celou šířku ikony (s malým paddingem), zaoblený ne kulatý */
+.buff-icon-img { width:100%;height:100%;object-fit:cover;border-radius:6px;display:block; }
 
 /* Enemy buff overlay — vlevo v aréně, pod debuffy, zelený border */
 .enemy-buff-overlay {
@@ -1037,12 +1044,18 @@ body.no-scroll { overflow: hidden; }
   width:auto;
 }
 .buff-icon {
-  display:flex;flex-direction:column;align-items:center;
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
   background:rgba(0,0,0,0.7);border:2px solid #2ecc71;border-radius:8px;
-  padding:3px 6px;min-width:44px;
+  padding:2px;width:48px;height:48px;
 }
 .buff-icon-emoji { font-size:22px;line-height:1.2; }
-.buff-icon-timer { font-size:13px;color:#2ecc71;font-weight:bold;line-height:1; }
+/* Odpočítávání času — overlay uprostřed přes obrázek */
+.buff-icon-timer {
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-size:13px;color:#2ecc71;font-weight:bold;line-height:1;
+  text-shadow:0 1px 2px #000, 0 0 4px #000;z-index:2;
+}
 /* Player debuffy — ve stejném sloupci jako buffy (pod nimi), červený border */
 .buff-icon.player-debuff { border-color:#e94560; }
 .buff-icon.player-debuff .buff-icon-timer { color:#e94560; }
