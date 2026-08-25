@@ -2225,7 +2225,7 @@ export function initGame() {
     setTimeout(() => {
       screen.classList.add('hidden');
       callback();
-    }, 1500);
+    }, 2500);
   }
 
   function townHeal() {
