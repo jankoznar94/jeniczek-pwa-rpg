@@ -417,6 +417,14 @@ body.no-scroll { overflow: hidden; }
   filter:drop-shadow(0 0 12px rgba(255,255,255,0.6));
   animation:castPulse 0.5s ease-in-out infinite alternate;
 }
+/* Kulatý tvar + border — skryje hranaté černé pozadí ikon, působí jako záměr */
+#mbArena .cast-spell-icon img {
+  border-radius:50%;
+  border:2px solid #fff;
+  overflow:hidden;
+  object-fit:cover;
+  background:#111;
+}
 @keyframes castPulse {
   from { transform:translate(-50%,-50%) scale(0.8); opacity:0.7; }
   to   { transform:translate(-50%,-50%) scale(1.1); opacity:1.0; }
