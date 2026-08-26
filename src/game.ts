@@ -1849,9 +1849,8 @@ export function initGame() {
       screensHtml += `<div class="combined-screen ${t.id === activeTab ? 'active' : ''}" id="combinedScreen_${t.id}"></div>`;
     });
 
-    content.innerHTML = `<div class="combined-tabs">${tabsHtml}</div>
-      <div class="modal-body">${screensHtml}</div>
-      <button class="modal-close" onclick="game.closeModal()">✕</button>`;
+    content.innerHTML = `<div class="combined-tabs">${tabsHtml}<button class="modal-close" onclick="game.closeModal()">✕</button></div>
+      <div class="modal-body">${screensHtml}</div>`;
 
     // Move screens into their wrappers
     tabs.forEach(t => {
