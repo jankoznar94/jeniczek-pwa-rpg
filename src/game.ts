@@ -10801,7 +10801,7 @@ export function initGame() {
         ? `<img src="${_craftSlots.gem.item.iconImg}">` : _craftSlots.gem.item.icon;
     } else {
       gemSlot.classList.remove('filled');
-      gemIcon.textContent = '💎';
+      gemIcon.innerHTML = '<img src="assets/gems/ruby_perfect.png" class="craft-slot-placeholder">';
     }
     // Item slot
     const itemSlot = $('craftSlotItem');
@@ -10812,7 +10812,7 @@ export function initGame() {
         ? `<img src="${_craftSlots.item.item.iconImg}">` : _craftSlots.item.item.icon;
     } else {
       itemSlot.classList.remove('filled');
-      itemIcon.textContent = '🛡️';
+      itemIcon.innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
     }
     // Rune slot
     const runeSlot = $('craftSlotRune');
@@ -10823,12 +10823,12 @@ export function initGame() {
         ? `<img src="${_craftSlots.rune.item.iconImg}">` : _craftSlots.rune.item.icon;
     } else {
       runeSlot.classList.remove('filled');
-      runeIcon.textContent = '🪨';
+      runeIcon.innerHTML = '<img src="assets/items/magic_rune.png" class="craft-slot-placeholder">';
     }
     // Result slot — vyčistit při změně vstupů
     const resultSlot = $('craftSlotResult');
     resultSlot.classList.remove('filled');
-    $('craftSlotResultIcon').textContent = '❓';
+    $('craftSlotResultIcon').innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
     // Craft tlačítko — jen když jsou všechny 3 sloty plné
     const btn = $('craftDoBtn');
     if (_craftSlots.gem && _craftSlots.item && _craftSlots.rune) {
@@ -10941,6 +10941,12 @@ export function initGame() {
     // Vyčistit vstupy, nechat výsledek
     _craftSlots = { gem:null, item:null, rune:null };
     renderCraftSlots();
+  }
+
+  // Najde base item podle itemu (baseId nebo id z ITEMS)
+  function getBaseItemFor(item) {
+    if (item.baseId) return ITEM_MAP[item.baseId] || ITEMS.find(i => i.id === item.baseId) || null;
+    return ITEMS.find(i => i.id === item.id) || null;
   }
 
   // Vygeneruje craftovaný item s garantovanými módy + random affixy.
