@@ -1162,6 +1162,7 @@ body.no-scroll { overflow: hidden; }
 .ps-def-btn:active, .ps-btn:active { transform:scale(0.9); }
 .ps-def-dodge { border-color:#e67e22; }
 .ps-def-block { border-color:#3498db; }
+.ps-def-counter { border-color:#9b59b6; }
 .ps-btn.highlight, .ps-def-btn.highlight { box-shadow:0 0 18px #fff; transform:scale(1.1); border-color:#fff; }
 /* Barevné rozlišení PS tlačítek (obrázky mají barvu v sobě, border ladí) */
 .ps-tri { border-color:#2ecc71; }
