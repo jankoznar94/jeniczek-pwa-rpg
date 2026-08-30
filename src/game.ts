@@ -1142,30 +1142,25 @@ export function initGame() {
     // Armor/helmet
     else if (item.type === 'armor' || item.type === 'helmet') {
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Gloves
     else if (item.type === 'gloves') {
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Boots
     else if (item.type === 'boots') {
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Shield
     else if (item.type === 'shield') {
       if (item.blockChance) addRow('Block', `${item.blockChance}%`);
       if (item.baseDmgMin !== undefined || item.baseDmgMax !== undefined) addRow('Shield Slam', `${item.baseDmgMin}-${item.baseDmgMax} dmg`);
       if (item.defense) addRow('Defense', item.defense);
-      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Belt
     else if (item.type === 'belt') {
       const rows = item.beltRows || 0;
       addRow('Potion Slots', rows > 0 ? `${rows} rows (${rows * 4} slots)` : '0');
-      if (item.bonusHp) addModRow('+HP', `+${item.bonusHp}`);
     }
     // Consumable
     else if (item.type === 'consumable') {
@@ -4168,6 +4163,12 @@ export function initGame() {
   function updateCastSpellIcon(mb) {
     const el = $('mbCastSpellIcon');
     if (!el) return;
+    // Combo útok má vždy vizuální prioritu — během whirlwind sekvence se cast ikona
+    // nikdy nezobrazí, ať se updateCastSpellIcon zavolá odkudkoli (renderBattle apod.).
+    if (mb._comboActive) {
+      el.classList.add('hidden');
+      return;
+    }
     // Zjistit, jestli něco castí — hráč nebo nepřítel
     let spellId = null;
     let spellIconImg = null;

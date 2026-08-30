@@ -164,7 +164,7 @@ export const ELITE_AFFIXES = [
   { name:'Poison Enchanted', icon:'☠️', desc:'+poison dmg · +poison resist · jed', element:'nature', resistSelf:'nature', dmgMult:1.1, elementDmgMult:0.35, onHit:'poison' },
   { name:'Extra Strong', icon:'💪', desc:'+80% dmg', dmgMult:1.8 },
   { name:'Extra Fast', icon:'💨', desc:'+50% attack speed', attackSpeedMult:0.67 },
-  { name:'Extra Healthy', icon:'❤️', desc:'+150% HP', hpMult:2.5 },
+  { name:'Extra Healthy', icon:'❤️', desc:'+50% HP', hpMult:1.5 },
   { name:'Magic Resistant', icon:'🛡️', desc:'+40% resist ke všem elementům', resistAll:0.4 },
   { name:'Stone Skin', icon:'🪨', desc:'-50% fyz dmg + defense', drMult:0.5, defMult:2.0 },
   { name:'Mana Burn', icon:'💜', desc:'krade manu · +magic resist', manaBurn:true, resistAll:0.3 },
