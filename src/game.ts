@@ -10977,9 +10977,19 @@ export function initGame() {
     // Guard: vložený item musí být Magic (modrý) — ani common, ani rare, ani unique.
     const itemQ = _craftSlots.item.item.quality || _craftSlots.item.item.rarity;
     if (itemQ !== 'magic') { showMessage('❌ Item must be Magic quality'); return; }
-    const h = state.hero;
+    // Guard: minimální kvalita gemu podle verze itemu (tier).
+    // Tier 1 (normal) → Flawed, Tier 2 (NM) → Flawless, Tier 3 (Hell) → Perfect.
     const gem = _craftSlots.gem.item;
     const baseItem = _craftSlots.item.item;
+    const ver = getItemVersion(baseItem);
+    const reqIdx = ver === 3 ? 4 : ver === 2 ? 3 : 1; // perfect / flawless / flawed
+    const gemIdx = GEM_QUALITIES.indexOf(gem.gemQuality);
+    if (gemIdx < reqIdx) {
+      const reqName = GEM_QUALITIES[reqIdx];
+      showMessage(`❌ ${ver === 3 ? 'Hell' : ver === 2 ? 'Nightmare' : 'Normal'} item requires ${reqName} gem`);
+      return;
+    }
+    const h = state.hero;
     const rune = _craftSlots.rune.item;
     // Odebrat vstupy z inventáře
     removeFromInventory(h.inventory, _craftSlots.gem.id);
@@ -11023,6 +11033,14 @@ export function initGame() {
     return base.name;
   }
 
+  // Verze itemu podle id: 1=normal, 2=nightmare(_nm), 3=hell(_hell).
+  function getItemVersion(item) {
+    if (!item || !item.id) return 1;
+    if (item.id.endsWith('_hell')) return 3;
+    if (item.id.endsWith('_nm')) return 2;
+    return 1;
+  }
+
   // Vygeneruje craftovaný item s garantovanými módy + random affixy.
   // Garantované módy se vybírají z affixů dostupných v loot poolu pro daný ilvl
   // (min(monsterLevel, heroLevel)) — stejně jako by mohly vypadnout z lootu.
@@ -11038,10 +11056,8 @@ export function initGame() {
     // Crafted item = rare quality (D2 crafty jsou vždy rare). Generuje se ZNOVU
     // čistě z base itemu — nezůstane v něm nic z původního vloženého itemu.
     const newItem = generateLootItemWithAffixes(base, 'rare', heroLevel);
-    // Kvalita gemu = bonus k rollu (vyšší kvalita = vyšší hodnota v rámci rozsahu)
-    const gemQuality = gem.gemQuality || 'normal';
-    const qIdx = GEM_QUALITIES.indexOf(gemQuality);
-    const qBonus = qIdx * 0.2; // chipped=0, flawed=0.2, normal=0.4, flawless=0.6, perfect=0.8
+    // Kvalita gemu NEovlivňuje roll — jen určuje, jestli je gem dostatečný pro verzi
+    // itemu (guard v craftDo). Roll je čistě náhodný v rozsahu affixu.
     // Pro každý garantovaný mód vybrat NEJVYŠŠÍ dostupný affix pro daný ilvl a typ
     // (např. Grandmaster's ED [151-200]) a rollnout hodnotu v jeho rozsahu — náhodný
     // roll, ne fixní. Náhodné affixy se stejným statem (např. suffix ED) zůstávají
@@ -11063,10 +11079,9 @@ export function initGame() {
         pStats[stat] = [minR, maxR];
         newItem.affixes.push({ id: 'craft_' + stat, name: affix.name, type: 'prefix', stats: pStats });
       }
-      // Roll v rozsahu affixu + gem kvalita (posun k horní hranici, ale ne na max —
-      // aby to nebyl vždy nejvyšší roll). Přičte se k případnému náhodnému affixu
+      // Čistě náhodný roll v rozsahu affixu. Přičte se k případnému náhodnému affixu
       // se stejným statem (suffix ED).
-      const rolled = Math.round(minR + (maxR - minR) * Math.min(1, Math.random() + qBonus * 0.5));
+      const rolled = Math.round(minR + (maxR - minR) * Math.random());
       newItem[stat] = (newItem[stat] || 0) + Math.max(1, rolled);
     });
     // Aplikovat enhancedDmg na base dmg
