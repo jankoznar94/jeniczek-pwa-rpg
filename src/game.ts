@@ -11033,11 +11033,14 @@ export function initGame() {
     return base.name;
   }
 
-  // Verze itemu podle id: 1=normal, 2=nightmare(_nm), 3=hell(_hell).
+  // Verze itemu podle base id: 1=normal, 2=nightmare(_nm), 3=hell(_hell).
+  // Loot item má id 'loot_...' a baseId = base item id (např. blade_crystalSword_hell),
+  // proto se verze určuje z baseId (fallback na id).
   function getItemVersion(item) {
-    if (!item || !item.id) return 1;
-    if (item.id.endsWith('_hell')) return 3;
-    if (item.id.endsWith('_nm')) return 2;
+    if (!item) return 1;
+    const ref = item.baseId || item.id || '';
+    if (ref.endsWith('_hell')) return 3;
+    if (ref.endsWith('_nm')) return 2;
     return 1;
   }
 
