@@ -10830,13 +10830,19 @@ export function initGame() {
     }
     // Result slot — zobrazí craftovaný výsledek, pokud existuje, jinak placeholder
     const resultSlot = $('craftSlotResult');
+    const resultStats = $('craftResultStats');
     if (_craftResult) {
       resultSlot.classList.add('filled');
       $('craftSlotResultIcon').innerHTML = _craftResult.iconImg
         ? `<img src="${_craftResult.iconImg}">` : _craftResult.icon;
+      // Info okno se staty výsledku
+      resultStats.classList.remove('hidden');
+      resultStats.innerHTML = `<div class="craft-result-name" style="color:${getQualityColor(_craftResult)};font-weight:bold;margin-bottom:4px">${_craftResult.name}</div>${buildItemStatsHtml(_craftResult)}`;
     } else {
       resultSlot.classList.remove('filled');
       $('craftSlotResultIcon').innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
+      resultStats.classList.add('hidden');
+      resultStats.innerHTML = '';
     }
     // Craft tlačítko — jen když jsou všechny 3 sloty plné
     const btn = $('craftDoBtn');
@@ -10971,15 +10977,21 @@ export function initGame() {
     const gemQuality = gem.gemQuality || 'normal';
     const qIdx = GEM_QUALITIES.indexOf(gemQuality);
     const qBonus = qIdx * 0.2; // chipped=0, flawed=0.2, normal=0.4, flawless=0.6, perfect=0.8
-    // Pro každý garantovaný mód najít affix dostupný pro tento ilvl a typ itemu,
-    // vybrat ten s nejvyšším minIlvl (nejsilnější, co může v lootu padnout).
+    // Pro každý garantovaný mód vybrat affix dostupný pro tento ilvl a typ itemu,
+    // přidat ho do affixů a rollnout hodnotu v jeho rozsahu (zaručený affix, ale
+    // ne zaručená hodnota — IAS může být 10/20/30/40, ED v rámci svého rozsahu).
     recipe.guaranteed.forEach(stat => {
       const candidates = AFFIXES.filter(a =>
         a.minIlvl <= ilvl && a.types.includes(base.type) && a.stats && a.stats[stat] != null);
       if (candidates.length === 0) return;
-      // Nejsilnější dostupný affix (nejvyšší minIlvl)
-      const best = candidates.reduce((a, b) => (a.minIlvl >= b.minIlvl ? a : b));
-      const range = best.stats[stat];
+      // Náhodný affix z dostupných (ne vždy nejsilnější)
+      const affix = candidates[Math.floor(Math.random() * candidates.length)];
+      // Přidat do affixů itemu (pokud tam ještě není) — aby tooltip rozsah odpovídal
+      if (!newItem.affixes) newItem.affixes = [];
+      if (!newItem.affixes.find(a => a.id === affix.id)) {
+        newItem.affixes.push(affix);
+      }
+      const range = affix.stats[stat];
       const min = range[0], max = range[1];
       // Roll v rozsahu + gem bonus (posun k horní hranici)
       const rolled = min + Math.floor((max - min) * Math.min(1, Math.random() + qBonus));
