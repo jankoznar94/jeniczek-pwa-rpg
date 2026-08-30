@@ -626,10 +626,10 @@ export function initGame() {
     return ITEM_MAP[id] || _lootItemMap[id] || null;
   }
 
-  // Stackovatelné itemy (gemy, potiony)
+  // Stackovatelné itemy (gemy, runy, potiony)
   function isStackable(itemId) {
     const item = ITEM_MAP[itemId];
-    return item && (item.type === 'gem' || item.type === 'consumable');
+    return item && (item.type === 'gem' || item.type === 'crafting' || item.type === 'consumable');
   }
   function addToInventory(inventory, itemId, count) {
     if (!isStackable(itemId)) { inventory.push(itemId); return; }
