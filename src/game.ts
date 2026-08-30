@@ -10760,6 +10760,8 @@ export function initGame() {
   let _activeRecipe = null;
   // Slot stav: { gem: {idx,id,item}, item: {idx,id,item}, rune: {idx,id,item} }
   let _craftSlots = { gem:null, item:null, rune:null };
+  // Výsledek craftu — zobrazí se ve 4. slotu a zůstane, dokud se nezmění vstupy
+  let _craftResult = null;
 
   function renderCraft() {
     const h = state.hero;
@@ -10777,6 +10779,7 @@ export function initGame() {
     if (!recipe) return;
     _activeRecipe = recipe;
     _craftSlots = { gem:null, item:null, rune:null };
+    _craftResult = null;
     $('craftWorkbenchTitle').textContent = `${recipe.icon} ${recipe.name}`;
     $('craftWorkbench').classList.remove('hidden');
     $('craftDoBtn').classList.add('hidden');
@@ -10825,10 +10828,16 @@ export function initGame() {
       runeSlot.classList.remove('filled');
       runeIcon.innerHTML = '<img src="assets/items/magic_rune.png" class="craft-slot-placeholder">';
     }
-    // Result slot — vyčistit při změně vstupů
+    // Result slot — zobrazí craftovaný výsledek, pokud existuje, jinak placeholder
     const resultSlot = $('craftSlotResult');
-    resultSlot.classList.remove('filled');
-    $('craftSlotResultIcon').innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
+    if (_craftResult) {
+      resultSlot.classList.add('filled');
+      $('craftSlotResultIcon').innerHTML = _craftResult.iconImg
+        ? `<img src="${_craftResult.iconImg}">` : _craftResult.icon;
+    } else {
+      resultSlot.classList.remove('filled');
+      $('craftSlotResultIcon').innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
+    }
     // Craft tlačítko — jen když jsou všechny 3 sloty plné
     const btn = $('craftDoBtn');
     if (_craftSlots.gem && _craftSlots.item && _craftSlots.rune) {
@@ -10897,6 +10906,7 @@ export function initGame() {
           const item = ITEM_MAP[id];
           if (!item) { closeGemSelectModal(); return; }
           _craftSlots[s] = { idx: invIdx, id, item };
+          _craftResult = null; // změna vstupu zruší předchozí výsledek
           closeGemSelectModal();
           renderCraftSlots();
         };
@@ -10931,10 +10941,7 @@ export function initGame() {
     state.lootItems = state.lootItems || {};
     state.lootItems[result.id] = result;
     // Zobrazit výsledek ve slotu
-    const resultSlot = $('craftSlotResult');
-    resultSlot.classList.add('filled');
-    $('craftSlotResultIcon').innerHTML = result.iconImg
-      ? `<img src="${result.iconImg}">` : result.icon;
+    _craftResult = result;
     playSFX(shopSfx);
     saveGame();
     showMessage(`✅ Crafted ${result.name}!`);
@@ -10988,10 +10995,11 @@ export function initGame() {
     if (newItem.enhancedDefense > 0 && newItem.defense > 0) {
       newItem.defense = Math.round(newItem.defense * (1 + newItem.enhancedDefense / 100));
     }
-    // Název craftovaného itemu
-    newItem.name = `${recipe.name} ${base.name}`;
+    // Název craftovaného itemu — generuje se jako u rare itemů (D2-style náhodný název)
+    newItem.name = generateRareItemName(base.type);
     newItem.rarity = 'rare';
     newItem.quality = 'rare';
+    newItem.crafted = true; // oranžová barva názvu a borderu (getQualityColor)
     newItem.tier = base.tier || 1;
     newItem.icon = baseItem.icon;
     newItem.cost = base.cost || 50;

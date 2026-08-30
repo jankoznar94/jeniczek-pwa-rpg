@@ -6,7 +6,8 @@
     normal: '#888',
     magic: '#4a7dff',
     rare: '#ffd700',
-    unique: '#b8860b'
+    unique: '#b8860b',
+    crafted: '#ff8c00'
   };
 
   // Socket chance pro normal quality itemy

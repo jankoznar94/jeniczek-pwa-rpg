@@ -32,6 +32,7 @@ export function getStackCount(inventory: any[], itemId: string): number {
 /** Barva podle quality/rarity itemu. */
 export function getQualityColor(item: any): string {
   if (item.unique) return QUALITY_COLORS.unique;
+  if (item.crafted) return QUALITY_COLORS.crafted;
   const q = item.quality || item.rarity;
   if (q === 'rare') return QUALITY_COLORS.rare;
   if (q === 'magic') return QUALITY_COLORS.magic;
