@@ -10993,6 +10993,15 @@ export function initGame() {
     const gemQuality = gem.gemQuality || 'normal';
     const qIdx = GEM_QUALITIES.indexOf(gemQuality);
     const qBonus = qIdx * 0.2; // chipped=0, flawed=0.2, normal=0.4, flawless=0.6, perfect=0.8
+    // Před craftem odstranit z itemu všechny NÁHODNÉ affixy, které nesou stejný stat
+    // (generateLootItemWithAffixes je mohl přiřadit a přičíst do item.<stat>), aby se
+    // zaručený mód nestřetl s random a tooltip rozsah přesně odpovídal hodnotě.
+    recipe.guaranteed.forEach(stat => {
+      if (newItem.affixes) {
+        newItem.affixes = newItem.affixes.filter(a => !a.stats || a.stats[stat] == null || a.id === 'craft_' + stat);
+      }
+      newItem[stat] = 0;
+    });
     // Pro každý garantovaný mód sečíst VŠECHNY affixy dostupné pro tento ilvl a typ itemu
     // a použít jejich PLNÝ rozsah — tooltip tak ukazuje konzistentní [min - max]
     // (např. IAS vždy [10 - 40]), ne rozsah jednoho náhodně vybraného affixu.
@@ -11474,7 +11483,7 @@ export function initGame() {
         if (window._invSelectedIdx === null) return;
         const inv = state.hero.inventory || [];
         if (inv.length <= 1) return;
-        const dir = dx > 0 ? 1 : -1;
+        const dir = dx < 0 ? 1 : -1;
         const newIdx = (window._invSelectedIdx + dir + inv.length) % inv.length;
         const entry = inv[newIdx];
         const itemId = typeof entry === 'object' ? entry.id : entry;
