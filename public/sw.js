@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v211';
-const ASSET_CACHE = 'boss-slayer-assets-v52';
+const CODE_CACHE = 'boss-slayer-code-v212';
+const ASSET_CACHE = 'boss-slayer-assets-v53';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=167', '/manifest.json', '/item-reference.html'];
 
@@ -71,7 +71,7 @@ const ASSET_FILES = [
   '/assets/menu-icons/navod.png', '/assets/menu-icons/bestiar.png',
   '/assets/menu-icons/music.png', '/assets/menu-icons/testmode.png',
   '/assets/menu-icons/waypoint.png', '/assets/menu-icons/shop.png',
-  '/assets/menu-icons/chest.png', '/assets/menu-icons/gamble.png',
+  '/assets/menu-icons/chest.png', '/assets/menu-icons/gamble.png', '/assets/menu-icons/craft.png',
   '/assets/town.webp', '/assets/map.webp',
   '/assets/sfx/hurt1.mp3', '/assets/sfx/hurt2.mp3', '/assets/sfx/hurt3.mp3', '/assets/sfx/hurt4.mp3',
   '/assets/sfx/shout.mp3',
