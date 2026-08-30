@@ -10424,8 +10424,8 @@ export function initGame() {
     saveGame();
     showMessage(`✅ Bought ${item.icon} ${getItemSocketName(item)}!`);
     // Označit jako koupené v této iteraci shopu (zmizí z nabídky)
-    // Výjimka: Misc itemy (potiony, scrolly) zůstávají — lze kupovat neomezeně
-    if (window._shopBoughtItems && item.type !== 'consumable') {
+    // Výjimka: Misc itemy (potiony, scrolly, runy, gemy) zůstávají — lze kupovat neomezeně
+    if (window._shopBoughtItems && item.type !== 'consumable' && item.type !== 'crafting' && item.type !== 'gem') {
       window._shopBoughtItems.add(itemId);
     }
     renderShop();
