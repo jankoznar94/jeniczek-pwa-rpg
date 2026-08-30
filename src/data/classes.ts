@@ -113,6 +113,7 @@
             { choices: [
               { k:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:1, desc:lv=>`${60+lv*20}% dmg + slow ${15+lv*5}% for ${2+Math.floor(lv/2)}s` },
               { k:'spellReflect', name:'Spell Reflect', icon:'🪞', iconImg:'spellReflect.png', maxLv:5, requires:'barbarian_shieldSpec', requiresLv:1, desc:lv=>`Reflects ${10*lv}% of offensive spell dmg back at enemy` },
+              { k:'counterAttack', name:'Counter Attack', icon:'⚔️', iconImg:'counterAttack.png', maxLv:5, desc:lv=>`After taking damage, ${10+lv*6}% chance to counter — next main-hand swing deals +${50+lv*30}% dmg` },
             ]}
           ]
         }

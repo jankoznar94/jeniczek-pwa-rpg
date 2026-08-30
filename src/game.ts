@@ -119,6 +119,7 @@ export function initGame() {
   // MP3 SFX
   const dodgeSfx = (() => { const a = new Audio('dodge.mp3'); a.volume = 0.70; return a; })();
   const blockSfx = (() => { const a = new Audio('block.mp3'); a.volume = 0.70; return a; })();
+  const counterSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 0.80; return a; })();
   const hitSfx = (() => { const a = new Audio('hit.mp3'); a.volume = 0.70; return a; })();
   const critSfx = (() => { const a = new Audio('crit.mp3'); a.volume = 0.70; return a; })();
   const meleeHitSfx = (() => { const a = new Audio('melee_hit.mp3'); a.volume = 0.70; return a; })();
@@ -471,6 +472,7 @@ export function initGame() {
       if (spellId === 'pummel') return getSkillLv('barbarian_pummel');
       if (spellId === 'spellReflect') return getSkillLv('barbarian_spellReflect');
       if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
+      if (spellId === 'counterAttack') return getSkillLv('barbarian_counterAttack');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -1387,19 +1389,31 @@ export function initGame() {
     return clamp(base + armorBonus, 0, 40);
   }
 
-  // Rozhodne, JAKÝ typ interakce se nabídne (dodge vs block).
+  // Rozhodne, JAKÝ typ interakce se nabídne (dodge vs block vs counter).
   // Vzájemně se vylučují — rollne se podle poměru šancí:
   //  - block jde jen když má hráč štít
+  //  - counter jde jen když má hráč investovaný skill Counter Attack
   //  - block šance = getPlayerBlockChance(), dodge šance = zbytek do 100
   function getOpportunityType(mb) {
     const hasShield = ITEM_MAP[state.hero.equip.shield]?.type === 'shield';
-    if (!hasShield) return 'dodge';
-    const blockChance = getPlayerBlockChance();
+    const hasCounter = getSpellLv('counterAttack') > 0;
+    if (!hasShield && !hasCounter) return 'dodge';
+    const blockChance = hasShield ? getPlayerBlockChance() : 0;
+    const counterChance = hasCounter ? getCounterChance() : 0;
     const dodgeChance = getPlayerDodgeChance(mb);
-    const total = blockChance + dodgeChance;
-    // Poměr block : (block+dodge). Když block je vyšší než dodge, častěji vyjde block.
-    const blockRoll = total > 0 ? (blockChance / total) : 0;
-    return Math.random() < blockRoll ? 'block' : 'dodge';
+    const total = blockChance + counterChance + dodgeChance;
+    if (total <= 0) return 'dodge';
+    const roll = Math.random() * total;
+    if (roll < blockChance) return 'block';
+    if (roll < blockChance + counterChance) return 'counter';
+    return 'dodge';
+  }
+
+  // Šance na Counter Attack příležitost — roste s každým skill pointem.
+  function getCounterChance() {
+    const lv = getSpellLv('counterAttack');
+    if (lv <= 0) return 0;
+    return 10 + lv * 6; // lv1=16%, lv2=22%, ... lv5=40%
   }
 
   // Rozhodne o výsledku na konci swingu. Vrací true, pokud byl útok úspěšně
@@ -1418,8 +1432,14 @@ export function initGame() {
     mb._oppCooldownUntil = performance.now() + OPPORTUNITY_COOLDOWN_MS;
     hideOpportunityArrow(mb);
     if (mb._oppResolved) {
-      playSFX(type === 'block' ? blockSfx : dodgeSfx);
-      spawnFloatingText(type === 'block' ? 'BLOCK!' : 'DODGE!', 'right', type === 'block' ? '#3498db' : '#f39c12', 32);
+      playSFX(type === 'block' ? blockSfx : type === 'counter' ? counterSfx : dodgeSfx);
+      spawnFloatingText(type === 'block' ? 'BLOCK!' : type === 'counter' ? 'COUNTER!' : 'DODGE!', 'right', type === 'block' ? '#3498db' : type === 'counter' ? '#9b59b6' : '#f39c12', 32);
+      // Counter Attack — úspěšná reakce dá bonus dmg příštímu main-hand swingu
+      if (type === 'counter') {
+        const lv = getSpellLv('counterAttack');
+        mb._counterPending = true;
+        mb._counterBonusPct = 50 + (lv || 1) * 30; // lv1=80%, lv2=110%, ...
+      }
       // Úspěšně zareagoval — resetovat nepřítelův swing a armovat příležitost pro PŘÍŠTÍ melee.
       // (Bez tohoho by _enemySwingReady zůstalo true a útok by se hned opakoval.)
       mb._enemySwingStart = performance.now();
@@ -1444,22 +1464,37 @@ export function initGame() {
     // Skrýt starou šipku
     const arrow = $('mbArrow');
     if (arrow) arrow.setAttribute('class', 'boss-attack-arrow hidden');
-    // Zobrazit def tlačítka (overlay) — bez zvýraznění správného
+    // Zobrazit def tlačítka (overlay) — jen ta, která hráč může použít (dodge vždy,
+    // block jen se štítem, counter jen po investování skillu). Bez zvýraznění správného.
     const def = $('mbPsDefBtns'); if (def) def.classList.remove('hidden');
+    updateDefBtnsVisibility();
     clearDefHighlights();
-    // Ikona typu uprostřed = obrázek tlačítka, které má hráč zmáčknout (dodge/block)
+    // Ikona typu uprostřed = obrázek tlačítka, které má hráč zmáčknout (dodge/block/counter)
     const info = $('mbActionInfo');
     if (info) {
       info.classList.remove('hidden');
       info.innerHTML = mb._oppType === 'block'
         ? '<img src="assets/ps/ps_block.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #3498db">'
-        : '<img src="assets/ps/ps_dodge.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #e67e22">';
+        : mb._oppType === 'counter'
+          ? '<img src="assets/ps/ps_counter.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #9b59b6">'
+          : '<img src="assets/ps/ps_dodge.png" style="width:64px;height:64px;object-fit:cover;border-radius:50%;border:2px solid #e67e22">';
     }
   }
 
   function clearDefHighlights() {
     const d = $('mbPsDodgeBtn'); if (d) d.classList.remove('highlight');
     const b = $('mbPsBlockBtn'); if (b) b.classList.remove('highlight');
+    const c = $('mbPsCounterBtn'); if (c) c.classList.remove('highlight');
+  }
+
+  // Zobrazí jen ta def tlačítka, která hráč MŮŽE použít:
+  // Dodge vždy, Block jen se štítem, Counter jen po investování skillu.
+  function updateDefBtnsVisibility() {
+    const d = $('mbPsDodgeBtn'); if (d) d.classList.remove('hidden');
+    const hasShield = ITEM_MAP[state.hero.equip.shield]?.type === 'shield';
+    const b = $('mbPsBlockBtn'); if (b) b.classList.toggle('hidden', !hasShield);
+    const hasCounter = getSpellLv('counterAttack') > 0;
+    const c = $('mbPsCounterBtn'); if (c) c.classList.toggle('hidden', !hasCounter);
   }
 
   function hideDefBtns() {
@@ -2740,8 +2775,10 @@ export function initGame() {
       _enemyFirstSwingDone: false,
       _playerCasting: false, _playerCastStart: 0, _playerCastTime: 0, _playerCastSpell: null,
       // Opportunity (Dodge/Block) — útok nepřítele může být interaktivní reakcí.
-      // _oppType: null | 'dodge' | 'block' (vzájemně se vylučují na jednom swingu)
+      // _oppType: null | 'dodge' | 'block' | 'counter' (vzájemně se vylučují na jednom swingu)
       _oppType: null, _oppDir: null, _oppResolved: false, _oppFailed: false, _oppCooldownUntil: 0,
+      // Counter Attack — po obdržení dmg se rollne šance; úspěšná reakce dá bonus dmg příštímu main-hand swingu.
+      _counterPending: false, _counterBonusPct: 0,
       // Combo Attack — hra se pozastaví, hráč swipuje sekvenci směrů; každý úder je 1 hit.
       // _comboActive: true = autoCombatLoop je pozastaven, probíhá combo sekvence.
       _comboActive: false, _comboDirs: [], _comboIdx: 0, _comboPct: 0, _comboDeadline: 0,
@@ -8479,6 +8516,13 @@ export function initGame() {
       baseDmg = mb.baseDmg || (2 + Math.floor(state.hero.level * 0.8) + getWeaponDmg(weapon) + ((state.hero.attrStr||0) + getEquipAttrs().str)*0.3);
     }
     let dmg = Math.round(baseDmg * mult * spec.dmgMult * (isOffhand ? spec.offHandMult : getShieldSpecDmgMult()));
+    // Counter Attack — bonus dmg na příští main-hand swing (jen main hand, ne offhand)
+    if (!isOffhand && mb._counterPending) {
+      dmg = Math.round(dmg * (1 + (mb._counterBonusPct || 0) / 100));
+      mb._counterPending = false;
+      mb._counterBonusPct = 0;
+      spawnFloatingText('⚔️ COUNTER!', 'right', '#9b59b6', 30);
+    }
     // Rozptyl ±1 — každá rána je jiná
     dmg += Math.floor(Math.random() * 3) - 1; // -1, 0, +1
     dmg = Math.max(1, dmg);
