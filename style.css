@@ -1127,7 +1127,7 @@ body.no-scroll { overflow: hidden; }
 /* Defenzivní (Dodge/Block) + combo (✕◯□△) — sdílený akční řádek dole uprostřed.
    Zobrazují se JEN při příležitosti (overlay), ať nezabírají místo v aréně. */
 .ps-btns-def, .ps-btns-combo {
-  position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+  position:absolute; bottom:64px; left:50%; transform:translateX(-50%);
   display:flex; align-items:center; gap:12px;
   z-index:30; pointer-events:none;
 }
