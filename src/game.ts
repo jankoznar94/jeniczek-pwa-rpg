@@ -10247,7 +10247,7 @@ export function initGame() {
     const _potionIds = ['healingPotion','healingPotion2','healingPotion3','healingPotion4','healingPotion5',
       'manaPotion','manaPotion2','manaPotion3','manaPotion4','manaPotion5'];
     const miscItems = [
-      ..._potionIds.filter(id => (ITEM_MAP[id]?.tier || 1) <= _potionTier), 'townPortalScroll',
+      ..._potionIds.filter(id => (ITEM_MAP[id]?.tier || 1) <= _potionTier), 'townPortalScroll', 'magicRune',
       'ruby_chipped', 'ruby_flawed', 'ruby', 'ruby_flawless', 'ruby_perfect',
       'sapphire_chipped', 'sapphire_flawed', 'sapphire', 'sapphire_flawless', 'sapphire_perfect',
       'emerald_chipped', 'emerald_flawed', 'emerald', 'emerald_flawless', 'emerald_perfect',
