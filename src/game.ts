@@ -10744,12 +10744,18 @@ export function initGame() {
   // Blood crafty (ruby): zaručené módy Enhanced Damage + Life Steal, zbytek random.
   // Safety crafty (sapphire): zaručené módy HP + Damage Reduction, zbytek random.
   const CRAFT_RECIPES = [
-    { id:'blood', name:'Blood Weapon', icon:'🩸', gemType:'ruby', itemType:'weapon',
-      desc:'Ruby + Weapon + Rune → Enhanced Damage, Life Steal, zbytek random',
+    { id:'bloodWeapon', name:'Blood Weapon', icon:'🩸', gemType:'ruby', itemType:'weapon',
+      desc:'Ruby + Weapon + Rune → Attack Speed, Enhanced Damage, zbytek random',
+      guaranteed:['ias','enhancedDmg'] },
+    { id:'bloodArmor', name:'Blood Armor', icon:'🩸', gemType:'ruby', itemType:'armor',
+      desc:'Ruby + Armor + Rune → Attack Rating, Crit, zbytek random',
+      guaranteed:['attackRating','critChance'] },
+    { id:'safetyWeapon', name:'Safety Weapon', icon:'🛡️', gemType:'sapphire', itemType:'weapon',
+      desc:'Sapphire + Weapon + Rune → Enhanced Damage, Life Steal, zbytek random',
       guaranteed:['enhancedDmg','lifesteal'] },
-    { id:'safety', name:'Safety Armor', icon:'🛡️', gemType:'sapphire', itemType:'armor',
-      desc:'Sapphire + Armor + Rune → HP, Damage Reduction, zbytek random',
-      guaranteed:['bonusHp','dmgReduction'] },
+    { id:'safetyArmor', name:'Safety Armor', icon:'🛡️', gemType:'sapphire', itemType:'armor',
+      desc:'Sapphire + Armor + Rune → Enhanced Defense, HP, zbytek random',
+      guaranteed:['enhancedDefense','bonusHp'] },
   ];
   let _activeRecipe = null;
   // Slot stav: { gem: {idx,id,item}, item: {idx,id,item}, rune: {idx,id,item} }
@@ -10933,33 +10939,44 @@ export function initGame() {
     renderCraftSlots();
   }
 
-  // Vygeneruje craftovaný item s garantovanými módy + random affixy
+  // Vygeneruje craftovaný item s garantovanými módy + random affixy.
+  // Garantované módy se vybírají z affixů dostupných v loot poolu pro daný ilvl
+  // (min(monsterLevel, heroLevel)) — stejně jako by mohly vypadnout z lootu.
   function craftItem(recipe, gem, baseItem) {
     const base = getBaseItemFor(baseItem);
     if (!base) return null;
     const monsterLevel = 5 + (state.hero.level || 1) * 2;
+    const heroLevel = (state.hero && state.hero.level) || monsterLevel;
+    const ilvl = Math.min(monsterLevel, heroLevel);
     // Crafted item = rare quality (D2 crafty jsou vždy rare)
     const newItem = generateLootItemWithAffixes(base, 'rare', monsterLevel);
-    // Garantované módy podle kvality gemu (vyšší kvalita = vyšší roll)
+    // Kvalita gemu = bonus k rollu (vyšší kvalita = vyšší hodnota v rámci rozsahu)
     const gemQuality = gem.gemQuality || 'normal';
     const qIdx = GEM_QUALITIES.indexOf(gemQuality);
-    const qMult = 1 + qIdx * 0.5; // chipped=1, flawed=1.5, normal=2, flawless=2.5, perfect=3
+    const qBonus = qIdx * 0.2; // chipped=0, flawed=0.2, normal=0.4, flawless=0.6, perfect=0.8
+    // Pro každý garantovaný mód najít affix dostupný pro tento ilvl a typ itemu,
+    // vybrat ten s nejvyšším minIlvl (nejsilnější, co může v lootu padnout).
     recipe.guaranteed.forEach(stat => {
-      if (stat === 'enhancedDmg') {
-        newItem.enhancedDmg = Math.round((10 + qIdx * 10) * qMult);
-      } else if (stat === 'lifesteal') {
-        newItem.lifesteal = Math.max(1, Math.round((1 + qIdx) * qMult));
-      } else if (stat === 'bonusHp') {
-        newItem.bonusHp = Math.round((10 + qIdx * 10) * qMult);
-      } else if (stat === 'dmgReduction') {
-        newItem.dmgReduction = Math.max(1, Math.round((1 + qIdx) * qMult));
-      }
+      const candidates = AFFIXES.filter(a =>
+        a.minIlvl <= ilvl && a.types.includes(base.type) && a.stats && a.stats[stat] != null);
+      if (candidates.length === 0) return;
+      // Nejsilnější dostupný affix (nejvyšší minIlvl)
+      const best = candidates.reduce((a, b) => (a.minIlvl >= b.minIlvl ? a : b));
+      const range = best.stats[stat];
+      const min = range[0], max = range[1];
+      // Roll v rozsahu + gem bonus (posun k horní hranici)
+      const rolled = min + Math.floor((max - min) * Math.min(1, Math.random() + qBonus));
+      newItem[stat] = Math.max(1, rolled);
     });
     // Aplikovat enhancedDmg na base dmg
     if (newItem.enhancedDmg > 0) {
       if (newItem.baseDmgMin > 0) newItem.baseDmgMin = Math.round(newItem.baseDmgMin * (1 + newItem.enhancedDmg / 100));
       if (newItem.baseDmgMax > 0) newItem.baseDmgMax = Math.round(newItem.baseDmgMax * (1 + newItem.enhancedDmg / 100));
       if (newItem.baseDmg > 0) newItem.baseDmg = Math.round(newItem.baseDmg * (1 + newItem.enhancedDmg / 100));
+    }
+    // Aplikovat enhancedDefense na base defense
+    if (newItem.enhancedDefense > 0 && newItem.defense > 0) {
+      newItem.defense = Math.round(newItem.defense * (1 + newItem.enhancedDefense / 100));
     }
     // Název craftovaného itemu
     newItem.name = `${recipe.name} ${base.name}`;
