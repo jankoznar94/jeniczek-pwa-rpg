@@ -10993,24 +10993,33 @@ export function initGame() {
     const gemQuality = gem.gemQuality || 'normal';
     const qIdx = GEM_QUALITIES.indexOf(gemQuality);
     const qBonus = qIdx * 0.2; // chipped=0, flawed=0.2, normal=0.4, flawless=0.6, perfect=0.8
-    // Pro každý garantovaný mód vybrat affix dostupný pro tento ilvl a typ itemu,
-    // přidat ho do affixů a rollnout hodnotu v jeho rozsahu (zaručený affix, ale
-    // ne zaručená hodnota — IAS může být 10/20/30/40, ED v rámci svého rozsahu).
+    // Pro každý garantovaný mód sečíst VŠECHNY affixy dostupné pro tento ilvl a typ itemu
+    // a použít jejich PLNÝ rozsah — tooltip tak ukazuje konzistentní [min - max]
+    // (např. IAS vždy [10 - 40]), ne rozsah jednoho náhodně vybraného affixu.
+    // Hodnota se rolnuje v rámci celého dostupného rozsahu (zaručený affix, ale ne
+    // zaručená hodnota — IAS může být 10/20/30/40, ED v rámci svého rozsahu).
     recipe.guaranteed.forEach(stat => {
       const candidates = AFFIXES.filter(a =>
         a.minIlvl <= ilvl && a.types.includes(base.type) && a.stats && a.stats[stat] != null);
       if (candidates.length === 0) return;
-      // Náhodný affix z dostupných (ne vždy nejsilnější)
+      // Plný rozsah přes všechny dostupné kandidáty pro daný ilvl
+      let minR = Infinity, maxR = -Infinity;
+      candidates.forEach(a => {
+        const r = a.stats[stat];
+        if (r[0] < minR) minR = r[0];
+        if (r[1] > maxR) maxR = r[1];
+      });
+      // Náhodný affix jen pro pojmenování craft módu
       const affix = candidates[Math.floor(Math.random() * candidates.length)];
-      // Přidat do affixů itemu (pokud tam ještě není) — aby tooltip rozsah odpovídal
+      // Přidat craft affix (s plným rozsahem) do affixes — aby tooltip rozsah odpovídal
       if (!newItem.affixes) newItem.affixes = [];
-      if (!newItem.affixes.find(a => a.id === affix.id)) {
-        newItem.affixes.push(affix);
+      if (!newItem.affixes.find(a => a.id === 'craft_' + stat)) {
+        const pStats = {};
+        pStats[stat] = [minR, maxR];
+        newItem.affixes.push({ id: 'craft_' + stat, name: affix.name, type: 'prefix', stats: pStats });
       }
-      const range = affix.stats[stat];
-      const min = range[0], max = range[1];
-      // Roll v rozsahu + gem bonus (posun k horní hranici)
-      const rolled = min + Math.floor((max - min) * Math.min(1, Math.random() + qBonus));
+      // Rollovaná hodnota v celém dostupném rozsahu + gem kvalita (posun k horní hranici)
+      const rolled = Math.round(minR + (maxR - minR) * Math.min(1, Math.random() + qBonus));
       newItem[stat] = Math.max(1, rolled);
     });
     // Aplikovat enhancedDmg na base dmg
@@ -11444,6 +11453,40 @@ export function initGame() {
     if (ovContent && !ovContent._handlerSet) {
       ovContent._handlerSet = true;
       ovContent.onclick = function(e) { e.stopPropagation(); };
+    }
+    // Swipe v compare overlayi — skákání mezi itemy v batohu.
+    // Doprava → další item (na konci řádky navazuje na první sloupec další, na konci batohu wrap na začátek).
+    // Doleva → předchozí item (z prvního řádku wrap na poslední item v batohu).
+    if (ovContent && !ovContent._swipeSet) {
+      ovContent._swipeSet = true;
+      let sw = { x: null, y: null };
+      ovContent.addEventListener('touchstart', function(e) {
+        sw.x = e.touches[0].clientX;
+        sw.y = e.touches[0].clientY;
+      }, { passive: true });
+      ovContent.addEventListener('touchend', function(e) {
+        if (sw.x === null) return;
+        const dx = e.changedTouches[0].clientX - sw.x;
+        const dy = e.changedTouches[0].clientY - sw.y;
+        sw.x = null; sw.y = null;
+        // Jen horizontální, dostatečně dlouhý swipe
+        if (Math.abs(dx) < 40 || Math.abs(dx) <= Math.abs(dy)) return;
+        if (window._invSelectedIdx === null) return;
+        const inv = state.hero.inventory || [];
+        if (inv.length <= 1) return;
+        const dir = dx > 0 ? 1 : -1;
+        const newIdx = (window._invSelectedIdx + dir + inv.length) % inv.length;
+        const entry = inv[newIdx];
+        const itemId = typeof entry === 'object' ? entry.id : entry;
+        const item = itemId ? ITEM_MAP[itemId] : null;
+        if (!item) return;
+        document.querySelectorAll('.chest-cell.selected').forEach(el => el.classList.remove('selected'));
+        const cell = document.querySelector('.chest-cell[data-idx="' + newIdx + '"]');
+        if (cell) cell.classList.add('selected');
+        window._invSelectedIdx = newIdx;
+        showItemInfo(item);
+        e.preventDefault();
+      }, { passive: false });
     }
     // Tap-to-equip: globální stav, přetrvává mezi renderInventory() voláními
     const slotMap = { invSlotWeapon:'weapon', invSlotArmor:'armor', invSlotHelmet:'helmet', invSlotShield:'shield', invSlotRing1:'ring1', invSlotRing2:'ring2', invSlotAmulet:'amulet', invSlotBelt:'belt', invSlotGloves:'gloves', invSlotBoots:'boots' };
