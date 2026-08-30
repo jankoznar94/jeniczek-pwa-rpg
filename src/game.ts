@@ -10473,14 +10473,17 @@ export function initGame() {
   function _generateGambleItems() {
     const h = state.hero;
     const playerLevel = h.level || 1;
-    const monsterLevel = 5 + playerLevel * 2;
-    // Gamble nabízí itemy podle aktuálního postupu (treasure class), ne podle levelu hráče.
-    const townFloor = getTownFloor();
+    // Gamble se řídí JEN levelem hrdiny. V gamblu se vždy zobrazí jen NORMAL verze
+    // itemů (id bez _nm/_hell). Čím vyšší level, tím vyšší/dražší normal base je
+    // dostupné. Po koupi se hází kostkou na verzi (normal/NM/Hell).
+    const gambleFloor = Math.round(48 * Math.min(1, playerLevel / 50));
 
     function _gambleFindBases(type, weaponType, count) {
+      // Jen normal varianty (vynechat _nm / _hell)
       const candidates = ITEMS.filter(i => {
-        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.dropFloor ?? 0) <= townFloor;
-        return i.type === type && (i.dropFloor ?? 0) <= townFloor;
+        if (i.id.endsWith('_nm') || i.id.endsWith('_hell')) return false;
+        if (type === 'weapon') return i.type === 'weapon' && i.weaponType === weaponType && (i.dropFloor ?? 0) <= gambleFloor;
+        return i.type === type && (i.dropFloor ?? 0) <= gambleFloor;
       });
       if (candidates.length === 0) return [];
       const result = [];
@@ -10670,7 +10673,24 @@ export function initGame() {
     else quality = 'magic';
 
     const playerLevel = h.level || 1;
-    const monsterLevel = 5 + playerLevel * 2;
+    const monsterLevel = playerLevel; // gamble se řídí JEN levelem hrdiny — affixy i verze
+    
+    // Hod kostkou na verzi itemu: čím vyšší hero level, tím vyšší šance na lepší tier.
+    // V gamblu se zobrazí jen normal verze; po koupi se rozhodne, jestli to bude
+    // normal, NM, nebo Hell verze (base staty: armor/damage).
+    let baseDef = baseItem;
+    let nmChance = 0, hellChance = 0;
+    if (playerLevel >= 10) nmChance = Math.min(0.5, (playerLevel - 10) / 80);
+    if (playerLevel >= 25) hellChance = Math.min(0.4, (playerLevel - 25) / 62);
+    const vRoll = Math.random();
+    let version = 'normal';
+    if (vRoll < hellChance) version = 'hell';
+    else if (vRoll < hellChance + nmChance) version = 'nm';
+    if (version !== 'normal') {
+      const vid = baseItem.id + '_' + version;
+      const v = ITEMS.find(i => i.id === vid);
+      if (v) baseDef = v;
+    }
 
     let item;
     if (quality === 'unique') {
@@ -10692,21 +10712,21 @@ export function initGame() {
     }
 
     if (!item) {
-      item = generateLootItemWithAffixes(baseItem, quality, monsterLevel);
-      item.tier = baseItem.tier || 1;
+      item = generateLootItemWithAffixes(baseDef, quality, monsterLevel);
+      item.tier = baseDef.tier || 1;
       item.rarity = item.quality === 'normal' ? 'common' : item.quality === 'magic' ? 'magic' : 'rare';
       item.icon = baseItem.type === 'weapon' ? LOOT_ICONS['weapon_' + (baseItem.weaponType || 'blade')] : LOOT_ICONS[baseItem.type];
       item.cost = price;
       // Attack Rating (AR) pochází JEN z affixů — žádná pseudo-náhodná generace (D2).
       if (item.rarity !== 'common') {
         const expChance = item.rarity === 'magic' ? 0.2 : 0.5;
-        if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil((baseItem.tier || 1) * 0.4));
+        if (Math.random() < expChance) item.expertiseRating = 1 + rand(0, Math.ceil((baseDef.tier || 1) * 0.4));
       }
       if (baseItem.type === 'weapon' && baseItem.weaponType === 'blade') {
-        item.critChance = (item.critChance || 0) + Math.min(25, 5 + (baseItem.tier || 1) * 3 + rand(0, 5));
+        item.critChance = (item.critChance || 0) + Math.min(25, 5 + (baseDef.tier || 1) * 3 + rand(0, 5));
       }
       if (baseItem.type === 'shield') {
-        item.blockChance = Math.min(45, 15 + (baseItem.tier || 1) * 4 + rand(0, 5));
+        item.blockChance = Math.min(45, 15 + (baseDef.tier || 1) * 4 + rand(0, 5));
       }
       ITEM_MAP[item.id] = item;
       state.lootItems = state.lootItems || {};
@@ -10717,7 +10737,7 @@ export function initGame() {
     addToInventory(h.inventory, item.id);
     playSFX(shopSfx);
     saveGame();
-    showMessage(`🎲 ${item.icon} ${getItemSocketName(item)}! (${item.rarity})`);
+    showMessage(`🎲 ${item.icon} ${getItemSocketName(item)}! (${item.rarity}${version !== 'normal' ? ' · ' + version : ''})`);
     renderGamble();
   }
 
@@ -10984,11 +11004,15 @@ export function initGame() {
   function craftItem(recipe, gem, baseItem) {
     const base = getBaseItemFor(baseItem);
     if (!base) return null;
-    const monsterLevel = 5 + (state.hero.level || 1) * 2;
-    const heroLevel = (state.hero && state.hero.level) || monsterLevel;
-    const ilvl = Math.min(monsterLevel, heroLevel);
-    // Crafted item = rare quality (D2 crafty jsou vždy rare)
-    const newItem = generateLootItemWithAffixes(base, 'rare', monsterLevel);
+    // Craft se řídí JEN levelem hrdiny — affixy se odvíjí od hero levelu,
+    // ne od obtížnosti/monster levelu. Verze itemů (normal/NM/Hell) určuje jen
+    // base staty (armor/damage), jinak nemá na affixy vliv.
+    // Na max levelu (50) jsou dostupné všechny affixy v maximální verzi.
+    const heroLevel = (state.hero && state.hero.level) || 50;
+    const ilvl = heroLevel;
+    // Crafted item = rare quality (D2 crafty jsou vždy rare). Generuje se ZNOVU
+    // čistě z base itemu — nezůstane v něm nic z původního vloženého itemu.
+    const newItem = generateLootItemWithAffixes(base, 'rare', heroLevel);
     // Kvalita gemu = bonus k rollu (vyšší kvalita = vyšší hodnota v rámci rozsahu)
     const gemQuality = gem.gemQuality || 'normal';
     const qIdx = GEM_QUALITIES.indexOf(gemQuality);
