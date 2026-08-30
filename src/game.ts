@@ -11042,43 +11042,32 @@ export function initGame() {
     const gemQuality = gem.gemQuality || 'normal';
     const qIdx = GEM_QUALITIES.indexOf(gemQuality);
     const qBonus = qIdx * 0.2; // chipped=0, flawed=0.2, normal=0.4, flawless=0.6, perfect=0.8
-    // Před craftem odstranit z itemu všechny NÁHODNÉ affixy, které nesou stejný stat
-    // (generateLootItemWithAffixes je mohl přiřadit a přičíst do item.<stat>), aby se
-    // zaručený mód nestřetl s random a tooltip rozsah přesně odpovídal hodnotě.
-    recipe.guaranteed.forEach(stat => {
-      if (newItem.affixes) {
-        newItem.affixes = newItem.affixes.filter(a => !a.stats || a.stats[stat] == null || a.id === 'craft_' + stat);
-      }
-      newItem[stat] = 0;
-    });
-    // Pro každý garantovaný mód sečíst VŠECHNY affixy dostupné pro tento ilvl a typ itemu
-    // a použít jejich PLNÝ rozsah — tooltip tak ukazuje konzistentní [min - max]
-    // (např. IAS vždy [10 - 40]), ne rozsah jednoho náhodně vybraného affixu.
-    // Hodnota se rolnuje v rámci celého dostupného rozsahu (zaručený affix, ale ne
-    // zaručená hodnota — IAS může být 10/20/30/40, ED v rámci svého rozsahu).
+    // Pro každý garantovaný mód vybrat NEJVYŠŠÍ dostupný affix pro daný ilvl a typ
+    // (např. Grandmaster's ED [151-200]) a rollnout hodnotu v jeho rozsahu — náhodný
+    // roll, ne fixní. Náhodné affixy se stejným statem (např. suffix ED) zůstávají
+    // a přičítají se k hodnotě.
     recipe.guaranteed.forEach(stat => {
       const candidates = AFFIXES.filter(a =>
         a.minIlvl <= ilvl && a.types.includes(base.type) && a.stats && a.stats[stat] != null);
       if (candidates.length === 0) return;
-      // Plný rozsah přes všechny dostupné kandidáty pro daný ilvl
-      let minR = Infinity, maxR = -Infinity;
-      candidates.forEach(a => {
-        const r = a.stats[stat];
-        if (r[0] < minR) minR = r[0];
-        if (r[1] > maxR) maxR = r[1];
-      });
-      // Náhodný affix jen pro pojmenování craft módu
-      const affix = candidates[Math.floor(Math.random() * candidates.length)];
-      // Přidat craft affix (s plným rozsahem) do affixes — aby tooltip rozsah odpovídal
+      // Nejvyšší dostupný affix (max minIlvl) — pro ED na max levelu Grandmaster's
+      const maxIlvl = Math.max(...candidates.map(a => a.minIlvl));
+      const top = candidates.filter(a => a.minIlvl === maxIlvl);
+      const affix = top[Math.floor(Math.random() * top.length)];
+      const range = affix.stats[stat];
+      const minR = range[0], maxR = range[1];
+      // Přidat garantovaný affix (s jeho rozsahem) do affixes — aby tooltip rozsah odpovídal
       if (!newItem.affixes) newItem.affixes = [];
       if (!newItem.affixes.find(a => a.id === 'craft_' + stat)) {
         const pStats = {};
         pStats[stat] = [minR, maxR];
         newItem.affixes.push({ id: 'craft_' + stat, name: affix.name, type: 'prefix', stats: pStats });
       }
-      // Rollovaná hodnota v celém dostupném rozsahu + gem kvalita (posun k horní hranici)
-      const rolled = Math.round(minR + (maxR - minR) * Math.min(1, Math.random() + qBonus));
-      newItem[stat] = Math.max(1, rolled);
+      // Roll v rozsahu affixu + gem kvalita (posun k horní hranici, ale ne na max —
+      // aby to nebyl vždy nejvyšší roll). Přičte se k případnému náhodnému affixu
+      // se stejným statem (suffix ED).
+      const rolled = Math.round(minR + (maxR - minR) * Math.min(1, Math.random() + qBonus * 0.5));
+      newItem[stat] = (newItem[stat] || 0) + Math.max(1, rolled);
     });
     // Aplikovat enhancedDmg na base dmg
     if (newItem.enhancedDmg > 0) {
