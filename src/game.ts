@@ -10313,7 +10313,21 @@ export function initGame() {
       const activeSection = sections.find(s => s.category === _shopCategory) || sections[0];
       const visible = activeSection.items.filter(item => !window._shopBoughtItems.has(item.id));
 
-      $('shopList').innerHTML = visible.length === 0
+      // Info o volných potion slotech — jen v Misc kategorii (kde se potiony kupují)
+      let potionSlotInfo = '';
+      if (activeSection.category === 'Misc') {
+        const totalSlots = getTotalPotionSlots();
+        const bpSlots = h.equip.beltPotionSlots || [];
+        const used = bpSlots.filter(Boolean).length;
+        const free = Math.max(0, totalSlots - used);
+        potionSlotInfo = `<div class="shop-potion-slots" style="display:flex;align-items:center;gap:8px;padding:8px 12px;margin-bottom:8px;background:#111;border:1px solid #333;border-radius:8px;font-size:13px;color:#ddd">
+          <span>🧪 Potion slots:</span>
+          <span style="color:${free > 0 ? '#2ecc71' : '#e74c3c'};font-weight:bold">${free} free</span>
+          <span style="color:#888">(${used}/${totalSlots} used)</span>
+        </div>`;
+      }
+
+      $('shopList').innerHTML = potionSlotInfo + (visible.length === 0
         ? '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to buy</div>'
         : `<div class="shop-category">
           ${visible.map(item => {
@@ -10333,7 +10347,7 @@ export function initGame() {
               </div>
             </div>`;
           }).join('')}
-        </div>`;
+        </div>`);
     }
   }
 
@@ -11240,6 +11254,21 @@ export function initGame() {
     }
     // Pokud target slot neodpovídá, nedělat nic
     if (targetSlot !== correctSlot) return;
+    // Ring — nasadit do konkrétního slotu (ring1/ring2), ne do prvního volného.
+    // equipItem() by ring vždy dal do ring1, proto tady řešíme ring zvlášť.
+    if (item.type === 'ring' && (targetSlot === 'ring1' || targetSlot === 'ring2')) {
+      removeFromInventory(h.inventory, itemId);
+      // Vyměnit item v cílovém slotu (starý jde zpět do batohu)
+      if (h.equip[targetSlot]) addToInventory(h.inventory, h.equip[targetSlot]);
+      h.equip[targetSlot] = itemId;
+      h.maxHp = getHeroMaxHp();
+      h.hp = Math.min(h.hp, h.maxHp);
+      playSFX(equipSfx);
+      saveGame();
+      renderInventory();
+      renderHero();
+      return;
+    }
     // Pokud je to weapon a target je shield, dát do shield slotu
     if (item.type === 'weapon' && targetSlot === 'shield') {
       removeFromInventory(h.inventory, itemId);
