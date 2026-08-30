@@ -3011,6 +3011,22 @@ export function initGame() {
     return baseMs;
   }
 
+  // Přepočítá hráčův swing timer podle aktuálně nasazených zbraní (main + offhand).
+  // Volá se po equipu/unequipu zbraně, aby IAS z nové zbraně ovlivnil swing v reálném čase.
+  function recomputeSwingTimer() {
+    const mb = mapBattleState;
+    if (!mb || mb.ended) return;
+    const cls = CLASSES[state.heroClass];
+    const isDualWield = cls && cls.dualWield;
+    const mainMs = getSwingTime(state.hero.equip.weapon);
+    const hasOffhand = isDualWield && state.hero.equip.shield && ITEM_MAP[state.hero.equip.shield]?.weaponType;
+    const offMs = hasOffhand ? getSwingTime(state.hero.equip.shield) : 0;
+    mb._isDualWield = offMs > 0;
+    const avgMs = offMs > 0 ? Math.round((mainMs + offMs) / 2 * 0.85) : mainMs;
+    mb.playerSwingMs = avgMs;
+    mb.offhandSwingMs = 0;
+  }
+
 
   function pickEnemySpell(mb) {
     // Vybere kouzlo podle seznamu kouzel monstra
@@ -11729,6 +11745,7 @@ export function initGame() {
     h.maxMana = getHeroMaxMana();
     h.mana = Math.min(h.mana, h.maxMana);
     syncBattleMana();
+    recomputeSwingTimer(); // IAS z nové zbraně ovlivní swing v reálném čase
     playSFX(equipSfx);
     saveGame();
     showMessage(`🎽 Oblékl jsi ${item.icon} ${getItemSocketName(item)}!`);
@@ -11782,6 +11799,7 @@ export function initGame() {
     h.maxMana = getHeroMaxMana();
     h.mana = Math.min(h.mana, h.maxMana);
     syncBattleMana();
+    recomputeSwingTimer(); // IAS z nové zbraně ovlivní swing v reálném čase
     playSFX(equipSfx);
     saveGame();
     showMessage(`📦 Sundal jsi ${item.icon} ${getItemSocketName(item)} do inventáře!`);
