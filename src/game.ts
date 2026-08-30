@@ -804,7 +804,16 @@ export function initGame() {
     function pickAffix(pool) {
       const available = pool.filter(a => !usedGroups.has(a.group));
       if (available.length === 0) return null;
-      return pickWeighted(available, 'weight');
+      // Váha roste s minIlvl affixu — na vyšší úrovni dostávají vyšší tery preferenci
+      // místo nativní váhy, která upřednostňuje low affixy (fireDmg 1-2 váží 8 vs 19-30 váží 4).
+      const weightedPool = available.map(a => ({ a, w: (a.weight || 1) * Math.max(1, a.minIlvl || 1) }));
+      const totalW = weightedPool.reduce((s, x) => s + x.w, 0);
+      let r = Math.random() * totalW;
+      for (const x of weightedPool) {
+        r -= x.w;
+        if (r <= 0) return x.a;
+      }
+      return weightedPool[weightedPool.length - 1].a;
     }
 
     if (quality === 'magic') {
