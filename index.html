@@ -7,7 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="style.css?v=165">
+  <link rel="stylesheet" href="style.css?v=166">
   <style>
     .town-action-card {
       display:flex;align-items:center;gap:12px;
@@ -83,7 +83,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
-  <script type="module" crossorigin src="./build/index-BEMXvWnu.js"></script>
+  <script type="module" crossorigin src="./build/index-BJDzIWs3.js"></script>
 </head>
 <body>
 
@@ -145,6 +145,10 @@
     <!-- Shop -->
     <div class="town-tile" onclick="game.showScreen('shop')">
       <img src="assets/menu-icons/shop.png" alt="Shop">
+    </div>
+    <!-- Craft -->
+    <div class="town-tile" onclick="game.showScreen('craft')">
+      <img src="assets/menu-icons/gamble.png" alt="Craft">
     </div>
     <!-- Wilderness -->
     <div class="town-tile" id="townWildernessBtn" onclick="game.enterCurrentAct()">
@@ -452,6 +456,28 @@
   </div>
   <div class="shop-cat-tabs" id="gambleCatTabs"></div>
   <div id="gambleList"></div>
+</div>
+
+<!-- ===== CRAFT ===== -->
+<div id="craftScreen" class="container hidden">
+  <div class="shop-back-map">
+    <button class="btn btn-secondary" onclick="game.showScreen('town'); game.renderTown();">Back to Town</button>
+  </div>
+  <div class="page-header">
+    <img src="assets/menu-icons/gamble.png" class="page-header-icon">
+    <div>
+      <div class="page-header-title">Craft</div>
+      <div class="page-header-subtitle">Combine items and gems to forge better gear</div>
+    </div>
+    <span id="craftGold" style="margin-left:auto;font-size:14px;color:#f1c40f;white-space:nowrap">💰 0 gold</span>
+  </div>
+  <div class="craft-tabs">
+    <button class="craft-tab active" data-craft-tab="upgrade" onclick="game.switchCraftTab('upgrade')">Upgrade</button>
+    <button class="craft-tab" data-craft-tab="socket" onclick="game.switchCraftTab('socket')">Socket</button>
+    <button class="craft-tab" data-craft-tab="gems" onclick="game.switchCraftTab('gems')">Gems</button>
+    <button class="craft-tab" data-craft-tab="reroll" onclick="game.switchCraftTab('reroll')">Reroll</button>
+  </div>
+  <div id="craftList"></div>
 </div>
 
 <!-- ===== INVENTORY ===== -->
