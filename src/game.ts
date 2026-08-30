@@ -8895,6 +8895,13 @@ export function initGame() {
         return { type:'item', item: gem };
       }
     }
+    // 4% chance for crafting rune (non-boss) — magická runa pro craft recepty
+    if (!bossDrop && Math.random() < 0.04) {
+      const rune = ITEM_MAP['magicRune'];
+      if (rune) {
+        return { type:'item', item: rune };
+      }
+    }
     // 10% chance for potion (non-boss)
     if (!bossDrop && Math.random() < 0.10) {
       // Potion tier podle aktu: Act N (locId) dává hlavně potion tier locId+1,
@@ -10732,229 +10739,236 @@ export function initGame() {
       el.style.borderColor = '#3a3a3a';
     }
   }
-  // ===== CRAFT =====
-  let _craftTab = 'upgrade';
-  // Equipment itemy v inventáři (ne gem, ne consumable) — pro upgrade/socket/reroll
-  function getCraftableItems() {
-    const h = state.hero;
-    const result = [];
-    h.inventory.forEach((entry, idx) => {
-      const id = typeof entry === 'object' ? entry.id : entry;
-      const item = ITEM_MAP[id];
-      if (!item) return;
-      if (item.type === 'gem' || item.type === 'consumable') return;
-      result.push({ idx, id, item });
-    });
-    return result;
-  }
-  // Počet gemů daného id v inventáři
-  function getGemCount(gemId) {
-    return getStackCount(state.hero.inventory, gemId);
-  }
-  // Počet všech gemů v inventáři
-  function getTotalGemCount() {
-    const h = state.hero;
-    let total = 0;
-    h.inventory.forEach(entry => {
-      const id = typeof entry === 'object' ? entry.id : entry;
-      const item = ITEM_MAP[id];
-      if (item && item.type === 'gem') total += (typeof entry === 'object' ? (entry.count || 1) : 1);
-    });
-    return total;
-  }
-  // Odebere N libovolných gemů z inventáře (pro recepty, které berou "3 gemy")
-  function removeAnyGems(count) {
-    const h = state.hero;
-    let removed = 0;
-    for (let i = h.inventory.length - 1; i >= 0 && removed < count; i--) {
-      const entry = h.inventory[i];
-      const id = typeof entry === 'object' ? entry.id : entry;
-      const item = ITEM_MAP[id];
-      if (!item || item.type !== 'gem') continue;
-      const have = typeof entry === 'object' ? (entry.count || 1) : 1;
-      const take = Math.min(have, count - removed);
-      removeFromInventory(h.inventory, id, take);
-      removed += take;
-    }
-    return removed;
-  }
-  // Najde base item podle itemu (baseId nebo id z ITEMS)
-  function getBaseItemFor(item) {
-    if (item.baseId) return ITEM_MAP[item.baseId] || ITEMS.find(i => i.id === item.baseId) || null;
-    return ITEMS.find(i => i.id === item.id) || null;
-  }
-  // Přegeneruje item se zadanou kvalitou (zachová sockets + socketedGems)
-  function regenItem(item, quality) {
-    const base = getBaseItemFor(item);
-    if (!base) return null;
-    const monsterLevel = 5 + (state.hero.level || 1) * 2;
-    const newItem = generateLootItemWithAffixes(base, quality, monsterLevel);
-    // Zachovat sockets a vložené gemy
-    newItem.sockets = item.sockets || 0;
-    newItem.socketedGems = item.socketedGems || [];
-    // Zachovat tier/rarity/icon
-    newItem.tier = item.tier || base.tier || 1;
-    newItem.rarity = quality === 'normal' ? 'common' : quality === 'magic' ? 'magic' : 'rare';
-    newItem.icon = item.icon;
-    newItem.cost = item.cost;
-    return newItem;
-  }
+  // ===== CRAFT (recepty) =====
+  // Recepty: kombinace gem + item + runa → craftovaný item.
+  // Blood crafty (ruby): zaručené módy Enhanced Damage + Life Steal, zbytek random.
+  // Safety crafty (sapphire): zaručené módy HP + Damage Reduction, zbytek random.
+  const CRAFT_RECIPES = [
+    { id:'blood', name:'Blood Weapon', icon:'🩸', gemType:'ruby', itemType:'weapon',
+      desc:'Ruby + Weapon + Rune → Enhanced Damage, Life Steal, zbytek random',
+      guaranteed:['enhancedDmg','lifesteal'] },
+    { id:'safety', name:'Safety Armor', icon:'🛡️', gemType:'sapphire', itemType:'armor',
+      desc:'Sapphire + Armor + Rune → HP, Damage Reduction, zbytek random',
+      guaranteed:['bonusHp','dmgReduction'] },
+  ];
+  let _activeRecipe = null;
+  // Slot stav: { gem: {idx,id,item}, item: {idx,id,item}, rune: {idx,id,item} }
+  let _craftSlots = { gem:null, item:null, rune:null };
+
   function renderCraft() {
     const h = state.hero;
     $('craftGold').textContent = `💰 ${h.gold} gold`;
-    document.querySelectorAll('[data-craft-tab]').forEach(t => t.classList.toggle('active', t.dataset.craftTab === _craftTab));
-    const list = $('craftList');
-    const craftables = getCraftableItems();
-    const totalGems = getTotalGemCount();
-    const itemOptions = craftables.length === 0
-      ? '<option value="">No craftable items</option>'
-      : craftables.map(c => `<option value="${c.idx}">${c.item.icon} ${getItemSocketName(c.item)} (${c.item.quality || 'normal'})</option>`).join('');
-    const gemOptions = GEM_QUALITIES.map(q => {
-      const id = 'ruby' + (q === 'normal' ? '' : '_' + q);
-      const count = getGemCount(id);
-      return `<option value="${q}" ${count < 3 ? 'disabled' : ''}>${q} (${count})</option>`;
-    }).join('');
+    const recipesEl = $('craftRecipes');
+    recipesEl.innerHTML = CRAFT_RECIPES.map(r => `
+      <div class="craft-recipe" onclick="game.craftOpenRecipe('${r.id}')">
+        <div class="craft-recipe-title">${r.icon} ${r.name}</div>
+        <div class="craft-recipe-desc">${r.desc}</div>
+      </div>`).join('');
+  }
 
-    let html = '';
-    if (_craftTab === 'upgrade') {
-      html = `
-        <div class="craft-recipe">
-          <div class="craft-recipe-title">⬆️ Upgrade Quality</div>
-          <div class="craft-recipe-desc">Upgrade an item to the next quality tier. Costs 3 gems.</div>
-          <div class="craft-recipe-cost">Cost: 3 gems (any) · Normal → Magic → Rare</div>
-          <select id="craftUpgradeItem" class="craft-select">${itemOptions}</select>
-          <button class="craft-recipe-btn" onclick="game.craftUpgrade()" ${craftables.length === 0 || totalGems < 3 ? 'disabled' : ''}>Upgrade (3 gems)</button>
-        </div>`;
-    } else if (_craftTab === 'socket') {
-      html = `
-        <div class="craft-recipe">
-          <div class="craft-recipe-title">🔩 Add Socket</div>
-          <div class="craft-recipe-desc">Add a socket to an item (up to its max). Costs 1 gem.</div>
-          <div class="craft-recipe-cost">Cost: 1 gem (any)</div>
-          <select id="craftSocketItem" class="craft-select">${itemOptions}</select>
-          <button class="craft-recipe-btn" onclick="game.craftAddSocket()" ${craftables.length === 0 || totalGems < 1 ? 'disabled' : ''}>Add Socket (1 gem)</button>
-        </div>`;
-    } else if (_craftTab === 'gems') {
-      html = `
-        <div class="craft-recipe">
-          <div class="craft-recipe-title">💎 Upgrade Gem</div>
-          <div class="craft-recipe-desc">Combine 3 gems of one quality into 1 of the next quality.</div>
-          <div class="craft-recipe-cost">Cost: 3× same gem → 1× next tier</div>
-          <select id="craftGemQuality" class="craft-select">${gemOptions}</select>
-          <button class="craft-recipe-btn" onclick="game.craftUpgradeGem()" disabled>Upgrade Gem</button>
-        </div>`;
-    } else if (_craftTab === 'reroll') {
-      html = `
-        <div class="craft-recipe">
-          <div class="craft-recipe-title">🎲 Reroll Affixes</div>
-          <div class="craft-recipe-desc">Reroll an item's affixes (keeps quality, sockets, gems). Costs 3 gems.</div>
-          <div class="craft-recipe-cost">Cost: 3 gems (any)</div>
-          <select id="craftRerollItem" class="craft-select">${itemOptions}</select>
-          <button class="craft-recipe-btn" onclick="game.craftReroll()" ${craftables.length === 0 || totalGems < 3 ? 'disabled' : ''}>Reroll (3 gems)</button>
-        </div>`;
+  function craftOpenRecipe(recipeId) {
+    const recipe = CRAFT_RECIPES.find(r => r.id === recipeId);
+    if (!recipe) return;
+    _activeRecipe = recipe;
+    _craftSlots = { gem:null, item:null, rune:null };
+    $('craftWorkbenchTitle').textContent = `${recipe.icon} ${recipe.name}`;
+    $('craftWorkbench').classList.remove('hidden');
+    $('craftDoBtn').classList.add('hidden');
+    renderCraftSlots();
+  }
+
+  function craftCloseWorkbench() {
+    _activeRecipe = null;
+    _craftSlots = { gem:null, item:null, rune:null };
+    $('craftWorkbench').classList.add('hidden');
+  }
+
+  function renderCraftSlots() {
+    const recipe = _activeRecipe;
+    if (!recipe) return;
+    // Gem slot
+    const gemSlot = $('craftSlotGem');
+    const gemIcon = $('craftSlotGemIcon');
+    if (_craftSlots.gem) {
+      gemSlot.classList.add('filled');
+      gemIcon.innerHTML = _craftSlots.gem.item.iconImg
+        ? `<img src="${_craftSlots.gem.item.iconImg}">` : _craftSlots.gem.item.icon;
+    } else {
+      gemSlot.classList.remove('filled');
+      gemIcon.textContent = '💎';
     }
-    list.innerHTML = html;
-    // Aktivovat/deaktivovat gem upgrade tlačítko podle výběru
-    if (_craftTab === 'gems') {
-      const sel = $('craftGemQuality');
-      const btn = list.querySelector('.craft-recipe-btn');
-      if (sel && btn) {
-        const update = () => {
-          const q = sel.value;
-          const id = 'ruby' + (q === 'normal' ? '' : '_' + q);
-          btn.disabled = getGemCount(id) < 3;
-        };
-        sel.onchange = update;
-        update();
+    // Item slot
+    const itemSlot = $('craftSlotItem');
+    const itemIcon = $('craftSlotItemIcon');
+    if (_craftSlots.item) {
+      itemSlot.classList.add('filled');
+      itemIcon.innerHTML = _craftSlots.item.item.iconImg
+        ? `<img src="${_craftSlots.item.item.iconImg}">` : _craftSlots.item.item.icon;
+    } else {
+      itemSlot.classList.remove('filled');
+      itemIcon.textContent = '🛡️';
+    }
+    // Rune slot
+    const runeSlot = $('craftSlotRune');
+    const runeIcon = $('craftSlotRuneIcon');
+    if (_craftSlots.rune) {
+      runeSlot.classList.add('filled');
+      runeIcon.innerHTML = _craftSlots.rune.item.iconImg
+        ? `<img src="${_craftSlots.rune.item.iconImg}">` : _craftSlots.rune.item.icon;
+    } else {
+      runeSlot.classList.remove('filled');
+      runeIcon.textContent = '🪨';
+    }
+    // Result slot — vyčistit při změně vstupů
+    const resultSlot = $('craftSlotResult');
+    resultSlot.classList.remove('filled');
+    $('craftSlotResultIcon').textContent = '❓';
+    // Craft tlačítko — jen když jsou všechny 3 sloty plné
+    const btn = $('craftDoBtn');
+    if (_craftSlots.gem && _craftSlots.item && _craftSlots.rune) {
+      btn.classList.remove('hidden');
+    } else {
+      btn.classList.add('hidden');
+    }
+  }
+
+  // Klik na slot — otevře výběr z inventáře (gem/item/runa)
+  function craftSlotClick(slot) {
+    const recipe = _activeRecipe;
+    if (!recipe) return;
+    if (slot === 'gem') {
+      openCraftPicker('gem', recipe.gemType);
+    } else if (slot === 'item') {
+      openCraftPicker('item', recipe.itemType);
+    } else if (slot === 'rune') {
+      openCraftPicker('rune', 'rune');
+    }
+  }
+
+  // Otevře modal s výběrem itemů z inventáře pro daný slot
+  function openCraftPicker(slot, filterType) {
+    const h = state.hero;
+    const inv = h.inventory || [];
+    const items = [];
+    for (let i = 0; i < inv.length; i++) {
+      const entry = inv[i];
+      const itemId = typeof entry === 'object' ? entry.id : entry;
+      const count = typeof entry === 'object' ? (entry.count || 1) : 1;
+      const item = itemId ? ITEM_MAP[itemId] : null;
+      if (!item) continue;
+      if (slot === 'gem' && item.type === 'gem' && item.gemType === filterType) {
+        items.push({ idx: i, item, count });
+      } else if (slot === 'item' && item.type === filterType) {
+        items.push({ idx: i, item, count });
+      } else if (slot === 'rune' && item.type === 'crafting') {
+        items.push({ idx: i, item, count });
       }
     }
+    const grid = $('gemSelectGrid');
+    const emptyMsg = $('gemSelectEmpty');
+    if (!grid || !emptyMsg) return;
+    if (items.length === 0) {
+      grid.innerHTML = '';
+      emptyMsg.classList.remove('hidden');
+    } else {
+      emptyMsg.classList.add('hidden');
+      grid.innerHTML = items.map(it => {
+        const iconImg = it.item.iconImg || '';
+        const countLabel = it.count > 1 ? ` <span style="color:#888;font-size:10px">×${it.count}</span>` : '';
+        return `<div class="gem-select-item" data-inv-idx="${it.idx}" data-slot="${slot}">
+          <div class="gem-select-item-icon">${iconImg ? `<img src="${iconImg}" style="width:32px;height:32px;image-rendering:pixelated">` : it.item.icon}</div>
+          <div class="gem-select-item-name">${it.item.name}${countLabel}</div>
+        </div>`;
+      }).join('');
+      grid.querySelectorAll('.gem-select-item').forEach(el => {
+        el.onclick = function(e) {
+          e.stopPropagation();
+          const invIdx = parseInt(this.dataset.invIdx);
+          const s = this.dataset.slot;
+          const entry = inv[invIdx];
+          const id = typeof entry === 'object' ? entry.id : entry;
+          const item = ITEM_MAP[id];
+          if (!item) { closeGemSelectModal(); return; }
+          _craftSlots[s] = { idx: invIdx, id, item };
+          closeGemSelectModal();
+          renderCraftSlots();
+        };
+      });
+    }
+    $('gemSelectModal').classList.remove('hidden');
   }
-  function switchCraftTab(tab) {
-    _craftTab = tab;
-    renderCraft();
-  }
-  function craftUpgrade() {
-    const sel = $('craftUpgradeItem');
-    if (!sel || sel.value === '') { showMessage('❌ Select an item'); return; }
-    const idx = parseInt(sel.value);
-    const entry = state.hero.inventory[idx];
-    const id = typeof entry === 'object' ? entry.id : entry;
-    const item = ITEM_MAP[id];
-    if (!item) return;
-    if (getTotalGemCount() < 3) { showMessage('❌ Need 3 gems'); return; }
-    const curQ = item.quality || 'normal';
-    const nextQ = curQ === 'normal' ? 'magic' : curQ === 'magic' ? 'rare' : null;
-    if (!nextQ) { showMessage('❌ Already max quality (rare)'); return; }
-    removeAnyGems(3);
-    const newItem = regenItem(item, nextQ);
-    if (!newItem) { showMessage('❌ Cannot upgrade this item'); return; }
-    // Nahradit v inventáři
-    state.hero.inventory[idx] = newItem.id;
-    ITEM_MAP[newItem.id] = newItem;
+
+  // Provede craft — zkonzumuje vstupy, vygeneruje výsledek, uloží do batohu
+  function craftDo() {
+    const recipe = _activeRecipe;
+    if (!recipe) return;
+    if (!_craftSlots.gem || !_craftSlots.item || !_craftSlots.rune) return;
+    const h = state.hero;
+    const gem = _craftSlots.gem.item;
+    const baseItem = _craftSlots.item.item;
+    const rune = _craftSlots.rune.item;
+    // Odebrat vstupy z inventáře
+    removeFromInventory(h.inventory, _craftSlots.gem.id);
+    removeFromInventory(h.inventory, _craftSlots.item.id);
+    removeFromInventory(h.inventory, _craftSlots.rune.id);
+    // Vygenerovat craftovaný item
+    const result = craftItem(recipe, gem, baseItem);
+    if (!result) { showMessage('❌ Craft failed'); return; }
+    // Uložit do batohu
+    if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+    addToInventory(h.inventory, result.id);
+    ITEM_MAP[result.id] = result;
     state.lootItems = state.lootItems || {};
-    state.lootItems[newItem.id] = newItem;
+    state.lootItems[result.id] = result;
+    // Zobrazit výsledek ve slotu
+    const resultSlot = $('craftSlotResult');
+    resultSlot.classList.add('filled');
+    $('craftSlotResultIcon').innerHTML = result.iconImg
+      ? `<img src="${result.iconImg}">` : result.icon;
     playSFX(shopSfx);
     saveGame();
-    showMessage(`✅ Upgraded to ${newItem.quality}!`);
-    renderCraft();
+    showMessage(`✅ Crafted ${result.name}!`);
+    // Vyčistit vstupy, nechat výsledek
+    _craftSlots = { gem:null, item:null, rune:null };
+    renderCraftSlots();
   }
-  function craftAddSocket() {
-    const sel = $('craftSocketItem');
-    if (!sel || sel.value === '') { showMessage('❌ Select an item'); return; }
-    const idx = parseInt(sel.value);
-    const entry = state.hero.inventory[idx];
-    const id = typeof entry === 'object' ? entry.id : entry;
-    const item = ITEM_MAP[id];
-    if (!item) return;
-    if (getTotalGemCount() < 1) { showMessage('❌ Need 1 gem'); return; }
-    const base = getBaseItemFor(item);
-    const maxSockets = base ? (base.maxSockets || 0) : (item.maxSockets || 0);
-    const curSockets = item.sockets || 0;
-    if (curSockets >= maxSockets) { showMessage('❌ Item already has max sockets'); return; }
-    removeAnyGems(1);
-    item.sockets = curSockets + 1;
-    playSFX(shopSfx);
-    saveGame();
-    showMessage(`✅ Socket added! (${item.sockets}/${maxSockets})`);
-    renderCraft();
-  }
-  function craftUpgradeGem() {
-    const sel = $('craftGemQuality');
-    if (!sel) return;
-    const q = sel.value;
-    const id = 'ruby' + (q === 'normal' ? '' : '_' + q);
-    if (getGemCount(id) < 3) { showMessage('❌ Need 3 gems of this quality'); return; }
-    const nextQ = GEM_QUALITIES[GEM_QUALITIES.indexOf(q) + 1];
-    if (!nextQ) { showMessage('❌ Already max quality (perfect)'); return; }
-    const nextId = 'ruby' + (nextQ === 'normal' ? '' : '_' + nextQ);
-    removeFromInventory(state.hero.inventory, id, 3);
-    addToInventory(state.hero.inventory, nextId);
-    playSFX(shopSfx);
-    saveGame();
-    showMessage(`✅ Upgraded to ${nextQ} Ruby!`);
-    renderCraft();
-  }
-  function craftReroll() {
-    const sel = $('craftRerollItem');
-    if (!sel || sel.value === '') { showMessage('❌ Select an item'); return; }
-    const idx = parseInt(sel.value);
-    const entry = state.hero.inventory[idx];
-    const id = typeof entry === 'object' ? entry.id : entry;
-    const item = ITEM_MAP[id];
-    if (!item) return;
-    if (getTotalGemCount() < 3) { showMessage('❌ Need 3 gems'); return; }
-    const quality = item.quality || 'normal';
-    removeAnyGems(3);
-    const newItem = regenItem(item, quality);
-    if (!newItem) { showMessage('❌ Cannot reroll this item'); return; }
-    state.hero.inventory[idx] = newItem.id;
-    ITEM_MAP[newItem.id] = newItem;
-    state.lootItems = state.lootItems || {};
-    state.lootItems[newItem.id] = newItem;
-    playSFX(shopSfx);
-    saveGame();
-    showMessage('✅ Affixes rerolled!');
-    renderCraft();
+
+  // Vygeneruje craftovaný item s garantovanými módy + random affixy
+  function craftItem(recipe, gem, baseItem) {
+    const base = getBaseItemFor(baseItem);
+    if (!base) return null;
+    const monsterLevel = 5 + (state.hero.level || 1) * 2;
+    // Crafted item = rare quality (D2 crafty jsou vždy rare)
+    const newItem = generateLootItemWithAffixes(base, 'rare', monsterLevel);
+    // Garantované módy podle kvality gemu (vyšší kvalita = vyšší roll)
+    const gemQuality = gem.gemQuality || 'normal';
+    const qIdx = GEM_QUALITIES.indexOf(gemQuality);
+    const qMult = 1 + qIdx * 0.5; // chipped=1, flawed=1.5, normal=2, flawless=2.5, perfect=3
+    recipe.guaranteed.forEach(stat => {
+      if (stat === 'enhancedDmg') {
+        newItem.enhancedDmg = Math.round((10 + qIdx * 10) * qMult);
+      } else if (stat === 'lifesteal') {
+        newItem.lifesteal = Math.max(1, Math.round((1 + qIdx) * qMult));
+      } else if (stat === 'bonusHp') {
+        newItem.bonusHp = Math.round((10 + qIdx * 10) * qMult);
+      } else if (stat === 'dmgReduction') {
+        newItem.dmgReduction = Math.max(1, Math.round((1 + qIdx) * qMult));
+      }
+    });
+    // Aplikovat enhancedDmg na base dmg
+    if (newItem.enhancedDmg > 0) {
+      if (newItem.baseDmgMin > 0) newItem.baseDmgMin = Math.round(newItem.baseDmgMin * (1 + newItem.enhancedDmg / 100));
+      if (newItem.baseDmgMax > 0) newItem.baseDmgMax = Math.round(newItem.baseDmgMax * (1 + newItem.enhancedDmg / 100));
+      if (newItem.baseDmg > 0) newItem.baseDmg = Math.round(newItem.baseDmg * (1 + newItem.enhancedDmg / 100));
+    }
+    // Název craftovaného itemu
+    newItem.name = `${recipe.name} ${base.name}`;
+    newItem.rarity = 'rare';
+    newItem.quality = 'rare';
+    newItem.tier = base.tier || 1;
+    newItem.icon = baseItem.icon;
+    newItem.cost = base.cost || 50;
+    return newItem;
   }
   // ===== INVENTORY =====
     function closeItemOverlay() {
@@ -12125,7 +12139,7 @@ export function initGame() {
     continueToNextStop, openMapFromResult,
     renderChest,
     renderGamble, switchGambleCategory, switchGambleTab, buyGambleItem,
-    renderCraft, switchCraftTab, craftUpgrade, craftAddSocket, craftUpgradeGem, craftReroll
+    renderCraft, craftOpenRecipe, craftCloseWorkbench, craftSlotClick, craftDo
   };
   init();
 }

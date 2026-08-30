@@ -227,6 +227,7 @@
     { id:'manaPotion4',    name:'Super Mana Potion',      type:'consumable', subtype:'mana', effectValue:300,  cost:100, icon:'🧪', iconImg:'assets/items/potion_mana_super.png',        tier:4, dropFloor:0, lvlReq:0 },
     { id:'manaPotion5',    name:'Godly Mana Potion',      type:'consumable', subtype:'mana', effectValue:600,  cost:200, icon:'🧪', iconImg:'assets/items/potion_mana_godly.png',        tier:5, dropFloor:0, lvlReq:0 },
     { id:'townPortalScroll', name:'Town Portal Scroll', type:'consumable', subtype:'townPortal', effectValue:0, cost:25, icon:'📜', iconImg:'assets/items/town_portal_scroll.png', tier:1, dropFloor:0, lvlReq:0 },
+    { id:'magicRune', name:'Magic Rune', type:'crafting', subtype:'rune', effectValue:0, cost:40, icon:'🪨', iconImg:'assets/items/magic_rune.png', tier:1, dropFloor:0, lvlReq:0 },
   ];
 
   export const UNIQUE_ITEMS = [

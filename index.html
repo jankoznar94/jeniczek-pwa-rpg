@@ -7,7 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="style.css?v=167">
+  <link rel="stylesheet" href="style.css?v=168">
   <style>
     .town-action-card {
       display:flex;align-items:center;gap:12px;
@@ -467,17 +467,34 @@
     <img src="assets/menu-icons/craft.png" class="page-header-icon">
     <div>
       <div class="page-header-title">Craft</div>
-      <div class="page-header-subtitle">Combine items and gems to forge better gear</div>
+      <div class="page-header-subtitle">Combine gems, items and runes to forge gear</div>
     </div>
     <span id="craftGold" style="margin-left:auto;font-size:14px;color:#f1c40f;white-space:nowrap">💰 0 gold</span>
   </div>
-  <div class="craft-tabs">
-    <button class="craft-tab active" data-craft-tab="upgrade" onclick="game.switchCraftTab('upgrade')">Upgrade</button>
-    <button class="craft-tab" data-craft-tab="socket" onclick="game.switchCraftTab('socket')">Socket</button>
-    <button class="craft-tab" data-craft-tab="gems" onclick="game.switchCraftTab('gems')">Gems</button>
-    <button class="craft-tab" data-craft-tab="reroll" onclick="game.switchCraftTab('reroll')">Reroll</button>
+  <div id="craftRecipes"></div>
+  <div id="craftWorkbench" class="craft-workbench hidden">
+    <div class="craft-workbench-title" id="craftWorkbenchTitle"></div>
+    <div class="craft-slots">
+      <div class="craft-slot" id="craftSlotGem" onclick="game.craftSlotClick('gem')">
+        <div class="craft-slot-label">Gem</div>
+        <div class="craft-slot-icon" id="craftSlotGemIcon">💎</div>
+      </div>
+      <div class="craft-slot" id="craftSlotItem" onclick="game.craftSlotClick('item')">
+        <div class="craft-slot-label">Item</div>
+        <div class="craft-slot-icon" id="craftSlotItemIcon">🛡️</div>
+      </div>
+      <div class="craft-slot" id="craftSlotRune" onclick="game.craftSlotClick('rune')">
+        <div class="craft-slot-label">Rune</div>
+        <div class="craft-slot-icon" id="craftSlotRuneIcon">🪨</div>
+      </div>
+      <div class="craft-slot craft-slot-result" id="craftSlotResult">
+        <div class="craft-slot-label">Result</div>
+        <div class="craft-slot-icon" id="craftSlotResultIcon">❓</div>
+      </div>
+    </div>
+    <button class="craft-recipe-btn hidden" id="craftDoBtn" onclick="game.craftDo()">Craft</button>
+    <button class="btn btn-secondary" onclick="game.craftCloseWorkbench()">Close</button>
   </div>
-  <div id="craftList"></div>
 </div>
 
 <!-- ===== INVENTORY ===== -->
