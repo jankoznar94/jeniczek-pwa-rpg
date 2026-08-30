@@ -656,6 +656,7 @@ body.no-scroll { overflow: hidden; }
 .craft-slot-icon img { width:44px; height:44px; object-fit:contain; }
 .craft-slot-placeholder { filter:grayscale(1) brightness(0.6); opacity:0.7; }
 .craft-result-stats { background:#141414; border:1px solid #3a3a3a; border-radius:8px; padding:10px; margin:8px 0; font-size:12px; color:#ccc; line-height:1.7; text-align:left; width:100%; box-sizing:border-box; }
+.craft-result-base { font-size:11px; color:#888; margin-bottom:4px; }
 .craft-result-stats .stat-row { display:flex; justify-content:space-between; gap:12px; padding:2px 0; border-bottom:1px solid #1a1a1a; }
 .craft-result-stats .stat-row:last-child { border-bottom:none; }
 .craft-result-stats .stat-label { color:#888; }
