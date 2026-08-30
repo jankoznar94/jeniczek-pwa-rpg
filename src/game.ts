@@ -10873,7 +10873,10 @@ export function initGame() {
         ? `<img src="${_craftResult.iconImg}">` : _craftResult.icon;
       // Info okno se staty výsledku
       resultStats.classList.remove('hidden');
-      resultStats.innerHTML = `<div class="craft-result-name" style="color:${getQualityColor(_craftResult)};font-weight:bold;margin-bottom:4px">${_craftResult.name}</div>${buildItemStatsHtml(_craftResult)}`;
+      let crHtml = `<div class="craft-result-name" style="color:${getQualityColor(_craftResult)};font-weight:bold;margin-bottom:4px">${_craftResult.name}</div>`;
+      const crBase = getItemBaseLabel(_craftResult);
+      if (crBase && _craftResult.name !== crBase) crHtml += `<div class="craft-result-base">${crBase}</div>`;
+      resultStats.innerHTML = crHtml + buildItemStatsHtml(_craftResult);
     } else {
       resultSlot.classList.remove('filled');
       $('craftSlotResultIcon').innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
