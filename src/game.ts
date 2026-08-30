@@ -10864,7 +10864,8 @@ export function initGame() {
       if (!item) continue;
       if (slot === 'gem' && item.type === 'gem' && item.gemType === filterType) {
         items.push({ idx: i, item, count });
-      } else if (slot === 'item' && item.type === filterType) {
+      } else if (slot === 'item' && item.type === filterType && (item.quality === 'magic' || item.rarity === 'magic')) {
+        // Craft recepty přijímají jen Magic (modré) itemy — ani common, ani rare, ani unique.
         items.push({ idx: i, item, count });
       } else if (slot === 'rune' && item.type === 'crafting') {
         items.push({ idx: i, item, count });
@@ -10909,6 +10910,9 @@ export function initGame() {
     const recipe = _activeRecipe;
     if (!recipe) return;
     if (!_craftSlots.gem || !_craftSlots.item || !_craftSlots.rune) return;
+    // Guard: vložený item musí být Magic (modrý) — ani common, ani rare, ani unique.
+    const itemQ = _craftSlots.item.item.quality || _craftSlots.item.item.rarity;
+    if (itemQ !== 'magic') { showMessage('❌ Item must be Magic quality'); return; }
     const h = state.hero;
     const gem = _craftSlots.gem.item;
     const baseItem = _craftSlots.item.item;
