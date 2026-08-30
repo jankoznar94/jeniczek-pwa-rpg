@@ -1,0 +1,1 @@
+import{extensions as i,AccessibilitySystem as t,Container as e,accessibilityTarget as n,DOMPipe as a,EventSystem as d,FederatedContainer as m}from"./index-1RhTJH8J.js";import"./webworkerAll-Dgo6qjAx.js";import"./index-h0yRTWm_.js";i.add(t);i.mixin(e,n);i.add(a);i.add(d);i.mixin(e,m);
