@@ -10998,6 +10998,19 @@ export function initGame() {
     return ITEMS.find(i => i.id === item.id) || null;
   }
 
+  // Base název itemu (Crystal Sword apod.) — pro rare/unique/crafted, kde se
+  // náhodné jméno liší od base. Vrací null, pokud jméno odpovídá base.
+  function getItemBaseLabel(item) {
+    if (!item) return null;
+    const isRareish = item.rare || item.unique || item.crafted ||
+      item.quality === 'rare' || item.rarity === 'rare' || item.rarity === 'unique';
+    if (!isRareish) return null;
+    const base = getBaseItemFor(item);
+    if (!base || !base.name) return null;
+    // Nezobrazovat, pokud je jméno totožné s base (nemá vlastní base jméno)
+    return base.name;
+  }
+
   // Vygeneruje craftovaný item s garantovanými módy + random affixy.
   // Garantované módy se vybírají z affixů dostupných v loot poolu pro daný ilvl
   // (min(monsterLevel, heroLevel)) — stejně jako by mohly vypadnout z lootu.
@@ -11171,6 +11184,17 @@ export function initGame() {
       // Name — barva podle kvality, s počtem socketů
       $('invItemOverlayName').textContent = getItemSocketName(item);
       $('invItemOverlayName').style.color = qColor;
+      // Base název (Crystal Sword apod.) — menším šedým písmem pod názvem
+      const baseLabel = getItemBaseLabel(item);
+      const baseEl = $('invItemOverlayBase');
+      if (baseEl) {
+        if (baseLabel && item.name !== baseLabel) {
+          baseEl.textContent = baseLabel;
+          baseEl.classList.remove('hidden');
+        } else {
+          baseEl.classList.add('hidden');
+        }
+      }
       // Border overlay content podle kvality
       $('invItemOverlayContent').style.borderColor = qColor;
       $('invItemOverlayStats').innerHTML = buildItemStatsHtml(item);
@@ -11235,6 +11259,8 @@ export function initGame() {
             const eqColor = getQualityColor(r);
             bothHtml += `<div style="color:#888;font-size:11px;margin-bottom:2px">${label}</div>`;
             bothHtml += `<div style="color:${eqColor};font-weight:bold;font-size:13px;margin-bottom:4px">${r.name}</div>`;
+            const rBase = getItemBaseLabel(r);
+            if (rBase && r.name !== rBase) bothHtml += `<div class="inv-compare-item-base">${rBase}</div>`;
             bothHtml += buildItemStatsHtml(r);
             bothHtml += '<div style="height:4px"></div>';
           });
@@ -11261,6 +11287,8 @@ export function initGame() {
             bothHtml += `<div class="inv-compare-weapon-block">`;
             bothHtml += `<div class="inv-compare-weapon-header">${label}</div>`;
             bothHtml += `<div class="inv-compare-weapon-name" style="color:${eqColor}">${w.name}</div>`;
+            const wBase = getItemBaseLabel(w);
+            if (wBase && w.name !== wBase) bothHtml += `<div class="inv-compare-item-base">${wBase}</div>`;
             bothHtml += buildItemStatsHtml(w);
             bothHtml += `</div>`;
           });
