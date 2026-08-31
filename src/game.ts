@@ -11270,10 +11270,11 @@ export function initGame() {
         pStats[stat] = [minR, maxR];
         newItem.affixes.push({ id: 'craft_' + stat, name: affix.name, type: 'prefix', stats: pStats });
       }
-      // Čistě náhodný roll v rozsahu affixu. Přičte se k případnému náhodnému affixu
-      // se stejným statem (suffix ED).
+      // Čistě náhodný roll v rozsahu affixu. NEPŘIČÍTÁ se k náhodnému affixu se
+      // stejným statem (např. IAS) — bere se max, aby se zabránilo double-countingu
+      // (garantovaný Quickness 40 + náhodný Swiftness 30 by dalo nereálných 70 IAS).
       const rolled = Math.round(minR + (maxR - minR) * Math.random());
-      newItem[stat] = (newItem[stat] || 0) + Math.max(1, rolled);
+      newItem[stat] = Math.max(newItem[stat] || 0, Math.max(1, rolled));
     });
     // Aplikovat enhancedDmg na base dmg
     if (newItem.enhancedDmg > 0) {
