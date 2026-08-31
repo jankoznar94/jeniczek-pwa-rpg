@@ -8941,19 +8941,22 @@ export function initGame() {
     let quality = rollQuality();
 
     // 1. Vybrat typ a base item z ITEMS podle floor/tieru
+    // Vyvážená distribuce typů — zahrnuje pás i amulet, aby na nízkých levelech
+    // padalo víc druhů itemů (dřív belt/amulet nepadl vůbec).
     const typeRoll = Math.random();
     let type, subtype;
-    if (typeRoll < 0.28) {
+    if (typeRoll < 0.22) {
       type = 'weapon';
       const weaponTypes = ['blade','blade','axe','axe','blunt','blunt','claws','claws','blunt'];
       subtype = weaponTypes[rand(0, weaponTypes.length - 1)];
     }
-    else if (typeRoll < 0.53) { type = 'armor'; subtype = null; }
-    else if (typeRoll < 0.73) { type = 'helmet'; subtype = null; }
-    else if (typeRoll < 0.90) { type = 'shield'; subtype = null; }
-    else if (typeRoll < 0.95) { type = 'ring'; subtype = null; }
-    else if (typeRoll < 0.975) { type = 'gloves'; subtype = null; }
-    else if (typeRoll < 1.0) { type = 'boots'; subtype = null; }
+    else if (typeRoll < 0.42) { type = 'armor'; subtype = null; }
+    else if (typeRoll < 0.57) { type = 'helmet'; subtype = null; }
+    else if (typeRoll < 0.69) { type = 'shield'; subtype = null; }
+    else if (typeRoll < 0.77) { type = 'belt'; subtype = null; }
+    else if (typeRoll < 0.84) { type = 'gloves'; subtype = null; }
+    else if (typeRoll < 0.91) { type = 'boots'; subtype = null; }
+    else if (typeRoll < 0.96) { type = 'ring'; subtype = null; }
     else { type = 'amulet'; subtype = null; }
 
     // Common itemy jen pro zbroj a zbraně (jako Diablo 2)
@@ -10962,8 +10965,8 @@ export function initGame() {
       guaranteed:['enhancedDefense','bonusHp'] },
   ];
   let _activeRecipe = null;
-  // Slot stav: { gem: {idx,id,item}, item: {idx,id,item}, rune: {idx,id,item} }
-  let _craftSlots = { gem:null, item:null, rune:null };
+  // Slot stav: { gem: {idx,id,item}, item: {idx,id,item}, rune: {idx,id,item}, jewel: {idx,id,item} }
+  let _craftSlots = { gem:null, item:null, rune:null, jewel:null };
   // Výsledek craftu — zobrazí se ve 4. slotu a zůstane, dokud se nezmění vstupy
   let _craftResult = null;
 
@@ -10982,7 +10985,7 @@ export function initGame() {
     const recipe = CRAFT_RECIPES.find(r => r.id === recipeId);
     if (!recipe) return;
     _activeRecipe = recipe;
-    _craftSlots = { gem:null, item:null, rune:null };
+    _craftSlots = { gem:null, item:null, rune:null, jewel:null };
     _craftResult = null;
     $('craftWorkbenchTitle').textContent = `${recipe.icon} ${recipe.name}`;
     $('craftWorkbench').classList.remove('hidden');
@@ -10992,7 +10995,7 @@ export function initGame() {
 
   function craftCloseWorkbench() {
     _activeRecipe = null;
-    _craftSlots = { gem:null, item:null, rune:null };
+    _craftSlots = { gem:null, item:null, rune:null, jewel:null };
     $('craftWorkbench').classList.add('hidden');
   }
 
@@ -11032,6 +11035,17 @@ export function initGame() {
       runeSlot.classList.remove('filled');
       runeIcon.innerHTML = '<img src="assets/items/magic_rune.png" class="craft-slot-placeholder">';
     }
+    // Jewel slot
+    const jewelSlot = $('craftSlotJewel');
+    const jewelIcon = $('craftSlotJewelIcon');
+    if (_craftSlots.jewel) {
+      jewelSlot.classList.add('filled');
+      jewelIcon.innerHTML = _craftSlots.jewel.item.iconImg
+        ? `<img src="${_craftSlots.jewel.item.iconImg}">` : _craftSlots.jewel.item.icon;
+    } else {
+      jewelSlot.classList.remove('filled');
+      jewelIcon.innerHTML = '<img src="assets/items/jewel_ruby.png" class="craft-slot-placeholder">';
+    }
     // Result slot — zobrazí craftovaný výsledek, pokud existuje, jinak placeholder
     const resultSlot = $('craftSlotResult');
     const resultStats = $('craftResultStats');
@@ -11051,9 +11065,9 @@ export function initGame() {
       resultStats.classList.add('hidden');
       resultStats.innerHTML = '';
     }
-    // Craft tlačítko — jen když jsou všechny 3 sloty plné
+    // Craft tlačítko — jen když jsou všechny 4 sloty plné (gem, item, runa, jewel)
     const btn = $('craftDoBtn');
-    if (_craftSlots.gem && _craftSlots.item && _craftSlots.rune) {
+    if (_craftSlots.gem && _craftSlots.item && _craftSlots.rune && _craftSlots.jewel) {
       btn.classList.remove('hidden');
     } else {
       btn.classList.add('hidden');
@@ -11070,6 +11084,8 @@ export function initGame() {
       openCraftPicker('item', recipe.itemType);
     } else if (slot === 'rune') {
       openCraftPicker('rune', 'rune');
+    } else if (slot === 'jewel') {
+      openCraftPicker('jewel', 'jewel');
     }
   }
 
@@ -11090,6 +11106,8 @@ export function initGame() {
         // Craft recepty přijímají jen Magic (modré) itemy — ani common, ani rare, ani unique.
         items.push({ idx: i, item, count });
       } else if (slot === 'rune' && item.type === 'crafting') {
+        items.push({ idx: i, item, count });
+      } else if (slot === 'jewel' && item.type === 'jewel') {
         items.push({ idx: i, item, count });
       }
     }
@@ -11132,7 +11150,7 @@ export function initGame() {
   function craftDo() {
     const recipe = _activeRecipe;
     if (!recipe) return;
-    if (!_craftSlots.gem || !_craftSlots.item || !_craftSlots.rune) return;
+    if (!_craftSlots.gem || !_craftSlots.item || !_craftSlots.rune || !_craftSlots.jewel) return;
     // Guard: vložený item musí být Magic (modrý) — ani common, ani rare, ani unique.
     const itemQ = _craftSlots.item.item.quality || _craftSlots.item.item.rarity;
     if (itemQ !== 'magic') { showMessage('❌ Item must be Magic quality'); return; }
@@ -11150,12 +11168,14 @@ export function initGame() {
     }
     const h = state.hero;
     const rune = _craftSlots.rune.item;
+    const jewel = _craftSlots.jewel.item;
     // Odebrat vstupy z inventáře
     removeFromInventory(h.inventory, _craftSlots.gem.id);
     removeFromInventory(h.inventory, _craftSlots.item.id);
     removeFromInventory(h.inventory, _craftSlots.rune.id);
+    removeFromInventory(h.inventory, _craftSlots.jewel.id);
     // Vygenerovat craftovaný item
-    const result = craftItem(recipe, gem, baseItem);
+    const result = craftItem(recipe, gem, baseItem, jewel);
     if (!result) { showMessage('❌ Craft failed'); return; }
     // Uložit do batohu
     if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
@@ -11169,7 +11189,7 @@ export function initGame() {
     saveGame();
     showMessage(`✅ Crafted ${result.name}!`);
     // Vyčistit vstupy, nechat výsledek
-    _craftSlots = { gem:null, item:null, rune:null };
+    _craftSlots = { gem:null, item:null, rune:null, jewel:null };
     renderCraftSlots();
   }
 
@@ -11206,7 +11226,7 @@ export function initGame() {
   // Vygeneruje craftovaný item s garantovanými módy + random affixy.
   // Garantované módy se vybírají z affixů dostupných v loot poolu pro daný ilvl
   // (min(monsterLevel, heroLevel)) — stejně jako by mohly vypadnout z lootu.
-  function craftItem(recipe, gem, baseItem) {
+  function craftItem(recipe, gem, baseItem, jewel) {
     const base = getBaseItemFor(baseItem);
     if (!base) return null;
     // Craft se řídí JEN levelem hrdiny — affixy se odvíjí od hero levelu,
