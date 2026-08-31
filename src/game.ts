@@ -973,6 +973,131 @@ export function initGame() {
     return lootItem;
   }
 
+  // Vygeneruje jewel — item s 1-4 náhodnými affixy (jako magic/rare), který se
+  // vkládá do socketů itemů a aplikuje všechny své affixy na item.
+  function generateJewel(monsterLevel) {
+    const heroLevel = (state.hero && state.hero.level) || monsterLevel;
+    const ilvl = Math.min(monsterLevel, heroLevel);
+    // Affixy kompatibilní s jewel (všechny typy — jewel může nést cokoliv)
+    const candidates = AFFIXES.filter(a => a.minIlvl <= ilvl && !a.sockets);
+    if (candidates.length === 0) return null;
+    const prefixes = candidates.filter(a => a.type === 'prefix');
+    const suffixes = candidates.filter(a => a.type === 'suffix');
+    // 1-4 affixy (D2 jewel: 1-4, jako magic/rare)
+    const count = 1 + Math.floor(Math.random() * 4);
+    const chosen = [];
+    const usedGroups = new Set();
+    function pick(pool) {
+      const avail = pool.filter(a => !usedGroups.has(a.group));
+      if (avail.length === 0) return null;
+      const weighted = avail.map(a => ({ a, w: (a.weight || 1) * Math.max(1, a.minIlvl || 1) }));
+      const total = weighted.reduce((s, x) => s + x.w, 0);
+      let r = Math.random() * total;
+      for (const x of weighted) { r -= x.w; if (r <= 0) return x.a; }
+      return weighted[weighted.length - 1].a;
+    }
+    for (let i = 0; i < count; i++) {
+      const pool = (chosen.filter(a => a.type === 'prefix').length <= chosen.filter(a => a.type === 'suffix').length) ? prefixes : suffixes;
+      let a = pick(pool);
+      if (!a) { a = pick(pool === prefixes ? suffixes : prefixes); }
+      if (a) { chosen.push(a); usedGroups.add(a.group); }
+    }
+    if (chosen.length === 0) return null;
+    // Aplikovat affix staty na jewel
+    const jewel = {
+      id: 'jewel_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
+      name: 'Jewel',
+      type: 'jewel',
+      affixes: chosen,
+      quality: chosen.length >= 3 ? 'rare' : 'magic',
+      rarity: chosen.length >= 3 ? 'rare' : 'magic',
+      ilvl: ilvl,
+      icon: '💠',
+      iconImg: 'assets/items/jewel.png',
+      cost: 30 + chosen.length * 20,
+      tier: 1
+    };
+    chosen.forEach(a => {
+      Object.keys(a.stats).forEach(stat => {
+        const val = a.stats[stat];
+        if (stat === 'allRes') {
+          const v = rollStat(val);
+          jewel.fireRes = (jewel.fireRes || 0) + v;
+          jewel.coldRes = (jewel.coldRes || 0) + v;
+          jewel.lightningRes = (jewel.lightningRes || 0) + v;
+          jewel.poisonRes = (jewel.poisonRes || 0) + v;
+        } else if (stat === 'allSkills') {
+          jewel.allSkills = (jewel.allSkills || 0) + rollStat(val);
+        } else if (stat === 'classSkills') {
+          const v = rollStat([val[1], val[2]]);
+          jewel.classSkills = (jewel.classSkills || 0) + v;
+          jewel._classSkillsClass = val[0];
+        } else if (stat === 'swingMs') {
+          jewel[stat] = (jewel[stat] || 0) + rollStat(val);
+        } else {
+          jewel[stat] = (jewel[stat] || 0) + rollStat(val);
+        }
+      });
+    });
+    return jewel;
+  }
+
+  // Aplikuje jewel affixy na item (při vložení do socketu).
+  function applyJewelStats(item, jewel) {
+    if (!item || !jewel) return;
+    const stats = jewel.affixes || [];
+    stats.forEach(a => {
+      if (!a.stats) return;
+      Object.keys(a.stats).forEach(stat => {
+        const val = a.stats[stat];
+        if (stat === 'allRes') {
+          const v = rollStat(val);
+          item.fireRes = (item.fireRes || 0) + v;
+          item.coldRes = (item.coldRes || 0) + v;
+          item.lightningRes = (item.lightningRes || 0) + v;
+          item.poisonRes = (item.poisonRes || 0) + v;
+        } else if (stat === 'allSkills') {
+          item.allSkills = (item.allSkills || 0) + rollStat(val);
+        } else if (stat === 'classSkills') {
+          const v = rollStat([val[1], val[2]]);
+          item.classSkills = (item.classSkills || 0) + v;
+          item._classSkillsClass = val[0];
+        } else if (stat === 'swingMs') {
+          item[stat] = (item[stat] || 0) + rollStat(val);
+        } else if (stat === 'enhancedDmg' || stat === 'enhancedDefense') {
+          // Procentuální bonusy — aplikovat na base staty
+          const v = rollStat(val);
+          item[stat] = (item[stat] || 0) + v;
+          if (stat === 'enhancedDmg' && item.baseDmgMin > 0) {
+            item.baseDmgMin = Math.round(item.baseDmgMin * (1 + v / 100));
+            item.baseDmgMax = Math.round(item.baseDmgMax * (1 + v / 100));
+          }
+          if (stat === 'enhancedDefense' && item.defense > 0) {
+            item.defense = Math.round(item.defense * (1 + v / 100));
+          }
+        } else {
+          item[stat] = (item[stat] || 0) + rollStat(val);
+        }
+      });
+    });
+  }
+
+  // HTML popis jewel affixů.
+  function buildJewelStatsHtml(jewel) {
+    if (!jewel || !jewel.affixes) return '';
+    const lines = [];
+    jewel.affixes.forEach(a => {
+      if (!a.stats) return;
+      Object.keys(a.stats).forEach(stat => {
+        const val = a.stats[stat];
+        const label = stat === 'fireDmg' ? 'Fire Dmg' : stat === 'coldDmg' ? 'Cold Dmg' : stat === 'lightningDmg' ? 'Lightning Dmg' : stat === 'poisonDmg' ? 'Poison Dmg' : stat === 'enhancedDmg' ? 'Enhanced Dmg' : stat === 'enhancedDefense' ? 'Enhanced Defense' : stat === 'attackRating' ? 'Attack Rating' : stat === 'critChance' ? 'Crit' : stat === 'lifesteal' ? 'Life Steal' : stat === 'bonusHp' ? '+HP' : stat === 'bonusMana' ? '+Mana' : stat === 'ias' ? 'IAS' : stat === 'allRes' ? 'All Res' : stat === 'str' ? 'Strength' : stat === 'vit' ? 'Vitality' : stat === 'dex' ? 'Dexterity' : stat === 'int' ? 'Intellect' : stat === 'skillDmg' ? 'Skill Dmg' : stat === 'manaRegen' ? 'Mana Regen' : stat === 'dmgReduction' ? 'Dmg Reduction' : stat;
+        const v = Array.isArray(val) ? `${val[0]}-${val[1]}` : val;
+        lines.push(`<div style="color:#aaa;font-size:10px">${label}: ${v}</div>`);
+      });
+    });
+    return lines.join('');
+  }
+
   // === D2-style Rare Item Name Generation ===
   function generateRareItemName(itemType) {
     const first = RARE_FIRST_WORDS[Math.floor(Math.random() * RARE_FIRST_WORDS.length)];
@@ -1087,7 +1212,7 @@ export function initGame() {
         const gem = item.socketedGems && item.socketedGems[i];
         let dotColor = '#555';
         if (gem) {
-          const gemColors = { ruby:'#e94560', sapphire:'#4a7dff', emerald:'#2ecc71', topaz:'#f1c40f' };
+          const gemColors = { ruby:'#e94560', sapphire:'#4a7dff', emerald:'#2ecc71', topaz:'#f1c40f', jewel:'#9b59b6' };
           dotColor = gemColors[gem.type] || '#555';
         }
         dots += `<span style="display:inline-block;width:${dotSize}px;height:${dotSize}px;border-radius:50%;border:1px solid #333;background:${dotColor};${i < item.sockets - 1 ? `margin-right:${dotGap}px` : ''}"></span>`;
@@ -4833,7 +4958,7 @@ export function initGame() {
       // Blok recastu — nepřítel nemůže znovu začít castit
       mb._enemyCastBlockedUntil = performance.now() + blockTicks * (1000/60);
       mb._enemyCastBlockedTicks = blockTicks;
-      _sessionDebuffs['pummel'] = { icon: '👊', name: `Pummel (recast block ${2+lv}s)`, ticks: blockTicks, maxTicks: blockTicks };
+      _sessionDebuffs['pummel'] = { icon: '👊', name: `Pummel (recast block ${2+lv}s)`, iconImg:'pummel.png', ticks: blockTicks, maxTicks: blockTicks };
       // Animace — zatřást nepřítelem (fyzický úder), místo projektilu
       const fig = $('mbFigure');
       if (fig) {
@@ -8927,6 +9052,16 @@ export function initGame() {
         return { type:'item', item: rune };
       }
     }
+    // 3% chance for jewel (non-boss) — jewel s náhodnými affixy, vkládá se do socketů
+    if (!bossDrop && Math.random() < 0.03) {
+      const jewel = generateJewel(monsterLevel);
+      if (jewel) {
+        ITEM_MAP[jewel.id] = jewel;
+        state.lootItems = state.lootItems || {};
+        state.lootItems[jewel.id] = jewel;
+        return { type:'item', item: jewel };
+      }
+    }
     // 10% chance for potion (non-boss)
     if (!bossDrop && Math.random() < 0.10) {
       // Potion tier podle aktu: Act N (locId) dává hlavně potion tier locId+1,
@@ -11133,7 +11268,7 @@ export function initGame() {
         const itemId = typeof entry === 'object' ? entry.id : entry;
         const count = typeof entry === 'object' ? (entry.count || 1) : 1;
         const item = itemId ? ITEM_MAP[itemId] : null;
-        if (item && item.type === 'gem') {
+        if (item && (item.type === 'gem' || item.type === 'jewel')) {
           gems.push({ idx: i, item: item, count: count });
         }
       }
@@ -11144,12 +11279,19 @@ export function initGame() {
         emptyMsg.classList.add('hidden');
         let ghtml = '';
         gems.forEach(g => {
-          const gemData = GEMS[g.item.gemType];
+          const isJewel = g.item.type === 'jewel';
           const iconImg = g.item.iconImg || '';
-          const qName = g.item.gemQuality ? g.item.gemQuality.charAt(0).toUpperCase() + g.item.gemQuality.slice(1) : '';
-          const displayName = qName ? `${qName} ${gemData ? gemData.name : 'Gem'}` : g.item.name || 'Gem';
+          let displayName, statsHtml;
+          if (isJewel) {
+            displayName = g.item.name || 'Jewel';
+            statsHtml = buildJewelStatsHtml(g.item);
+          } else {
+            const gemData = GEMS[g.item.gemType];
+            const qName = g.item.gemQuality ? g.item.gemQuality.charAt(0).toUpperCase() + g.item.gemQuality.slice(1) : '';
+            displayName = qName ? `${qName} ${gemData ? gemData.name : 'Gem'}` : g.item.name || 'Gem';
+            statsHtml = gemData ? buildGemStatsHtml(g.item.gemType, g.item.gemQuality) : '';
+          }
           const countLabel = g.count > 1 ? ` <span style="color:#888;font-size:10px">×${g.count}</span>` : '';
-          const statsHtml = gemData ? buildGemStatsHtml(g.item.gemType, g.item.gemQuality) : '';
           ghtml += `<div class="gem-select-item" data-inv-idx="${g.idx}" data-target-id="${targetItemId}" data-socket-idx="${socketIdx}">
             <div class="gem-select-item-icon">${iconImg ? `<img src="${iconImg}" style="width:32px;height:32px;image-rendering:pixelated">` : '💎'}</div>
             <div class="gem-select-item-name">${displayName}${countLabel}</div>
@@ -11157,7 +11299,7 @@ export function initGame() {
           </div>`;
         });
         grid.innerHTML = ghtml;
-        // Klik na gem — vložit do socketu
+        // Klik na gem/jewel — vložit do socketu
         grid.querySelectorAll('.gem-select-item').forEach(el => {
           el.onclick = function(e) {
             e.stopPropagation();
@@ -11172,14 +11314,20 @@ export function initGame() {
             if (!gemItem) { closeGemSelectModal(); return; }
             if (!targetItem.socketedGems) targetItem.socketedGems = [];
             if (targetItem.socketedGems[sIdx]) { closeGemSelectModal(); showMessage('❌ Socket already filled'); return; }
-            // Odebrat gem z inventáře
+            // Odebrat gem/jewel z inventáře
             removeFromInventory(inv, gemItemId);
-            targetItem.socketedGems[sIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
-            applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
+            if (gemItem.type === 'jewel') {
+              // Jewel — uložit a aplikovat jeho affixy na item
+              targetItem.socketedGems[sIdx] = { type: 'jewel', jewelId: gemItem.id, name: gemItem.name };
+              applyJewelStats(targetItem, gemItem);
+            } else {
+              targetItem.socketedGems[sIdx] = { type: gemItem.gemType, quality: gemItem.gemQuality, name: gemItem.name };
+              applyGemStats(targetItem, gemItem.gemType, gemItem.gemQuality);
+            }
             saveGame();
             closeGemSelectModal();
             renderInventory();
-            showMessage('✅ Gem inserted!');
+            showMessage(gemItem.type === 'jewel' ? '✅ Jewel inserted!' : '✅ Gem inserted!');
             // Znovu otevřít info overlay pro stejný item
             showItemInfo(targetItem);
           };
@@ -11226,10 +11374,14 @@ export function initGame() {
           for (let i = 0; i < item.sockets; i++) {
             const gem = item.socketedGems && item.socketedGems[i];
             if (gem) {
-              const gemData = GEMS[gem.type];
-              const gemId = gem.type + (gem.quality === 'normal' ? '' : '_' + gem.quality);
-              const gemImg = 'assets/gems/' + gemId + '.png';
-              shtml += `<div class="socket-slot filled" title="${gem.name}"><img src="${gemImg}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:pixelated"></div>`;
+              if (gem.type === 'jewel') {
+                shtml += `<div class="socket-slot filled" title="${gem.name}"><img src="assets/items/jewel.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:pixelated"></div>`;
+              } else {
+                const gemData = GEMS[gem.type];
+                const gemId = gem.type + (gem.quality === 'normal' ? '' : '_' + gem.quality);
+                const gemImg = 'assets/gems/' + gemId + '.png';
+                shtml += `<div class="socket-slot filled" title="${gem.name}"><img src="${gemImg}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:pixelated"></div>`;
+              }
             } else {
               shtml += `<div class="socket-slot empty" data-socket-idx="${i}"></div>`;
             }
