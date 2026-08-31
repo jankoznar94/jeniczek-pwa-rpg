@@ -1,5 +1,5 @@
-const CODE_CACHE = 'boss-slayer-code-v235';
-const ASSET_CACHE = 'boss-slayer-assets-v54';
+const CODE_CACHE = 'boss-slayer-code-v236';
+const ASSET_CACHE = 'boss-slayer-assets-v55';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=173', '/manifest.json', '/item-reference.html'];
 
@@ -115,6 +115,7 @@ const ASSET_FILES = [
   '/assets/items/potion_mana_light.png', '/assets/items/potion_mana_mana.png',
   '/assets/items/potion_mana_greater.png', '/assets/items/potion_mana_super.png', '/assets/items/potion_mana_godly.png',
   '/assets/items/town_portal_scroll.png', '/assets/items/magic_rune.png',
+  '/assets/items/jewel_ruby.png', '/assets/items/jewel_sapphire.png', '/assets/items/jewel_emerald.png', '/assets/items/jewel_topaz.png',
   '/assets/items/gloves_leather.png', '/assets/items/gloves_heavy.png',
   '/assets/items/gloves_chain.png', '/assets/items/gloves_lightGauntlets.png',
   '/assets/items/gloves_gauntlets.png',

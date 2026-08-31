@@ -1003,6 +1003,8 @@ export function initGame() {
       if (a) { chosen.push(a); usedGroups.add(a.group); }
     }
     if (chosen.length === 0) return null;
+    // Náhodná barva jewelu — jedna ze 4 (ruby/sapphire/emerald/topaz)
+    const jewelColor = ['ruby','sapphire','emerald','topaz'][Math.floor(Math.random()*4)];
     // Aplikovat affix staty na jewel
     const jewel = {
       id: 'jewel_' + Date.now() + '_' + Math.random().toString(36).slice(2,6),
@@ -1013,7 +1015,8 @@ export function initGame() {
       rarity: chosen.length >= 3 ? 'rare' : 'magic',
       ilvl: ilvl,
       icon: '💠',
-      iconImg: 'assets/items/jewel.png',
+      jewelColor: jewelColor,
+      iconImg: 'assets/items/jewel_' + jewelColor + '.png',
       cost: 30 + chosen.length * 20,
       tier: 1
     };
@@ -11396,7 +11399,9 @@ export function initGame() {
             const gem = item.socketedGems && item.socketedGems[i];
             if (gem) {
               if (gem.type === 'jewel') {
-                shtml += `<div class="socket-slot filled" title="${gem.name}"><img src="assets/items/jewel.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:pixelated"></div>`;
+                const jItem = gem.jewelId ? ITEM_MAP[gem.jewelId] : null;
+                const jColor = (jItem && jItem.jewelColor) ? jItem.jewelColor : 'ruby';
+                shtml += `<div class="socket-slot filled" title="${gem.name}"><img src="assets/items/jewel_${jColor}.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;image-rendering:pixelated"></div>`;
               } else {
                 const gemData = GEMS[gem.type];
                 const gemId = gem.type + (gem.quality === 'normal' ? '' : '_' + gem.quality);
