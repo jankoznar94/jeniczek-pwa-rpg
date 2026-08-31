@@ -11148,6 +11148,15 @@ export function initGame() {
 
   // Provede craft — zkonzumuje vstupy, vygeneruje výsledek, uloží do batohu
   function craftDo() {
+    try {
+      craftDoInner();
+    } catch (e) {
+      console.error('[craft] exception', e);
+      showMessage(`❌ Craft error: ${(e && e.message) || e}`);
+      playSFX(shopSfx);
+    }
+  }
+  function craftDoInner() {
     const recipe = _activeRecipe;
     if (!recipe) return;
     if (!_craftSlots.gem || !_craftSlots.item || !_craftSlots.rune || !_craftSlots.jewel) return;
