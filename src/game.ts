@@ -10332,14 +10332,28 @@ export function initGame() {
         if (!entry) return;
         const itemId = typeof entry === 'object' ? entry.id : entry;
         const count = typeof entry === 'object' ? (entry.count || 1) : 1;
-        // Najít první volný slot v chest
+        // Najít existující stack stejného itemu v chest (stackovatelné itemy)
         const chest = state.chest;
-        let freeIdx = chest.findIndex(s => !s);
-        if (freeIdx === -1) { showMessage('❌ Chest is full!'); return; }
-        // Odebrat z inventáře
-        removeFromInventory(inv, itemId, count);
-        // Uložit do chest
-        chest[freeIdx] = { id: itemId, count: count };
+        const isStack = isStackable(itemId);
+        let stackIdx = -1;
+        if (isStack) {
+          stackIdx = chest.findIndex(s => s && (typeof s === 'object' ? s.id : s) === itemId);
+        }
+        if (stackIdx !== -1) {
+          // Stackovat s existujícím stackem v chest
+          const existing = chest[stackIdx];
+          if (typeof existing === 'object') existing.count = (existing.count || 1) + count;
+          else chest[stackIdx] = { id: itemId, count: count + 1 };
+          removeFromInventory(inv, itemId, count);
+        } else {
+          // Najít první volný slot v chest
+          let freeIdx = chest.findIndex(s => !s);
+          if (freeIdx === -1) { showMessage('❌ Chest is full!'); return; }
+          // Odebrat z inventáře
+          removeFromInventory(inv, itemId, count);
+          // Uložit do chest
+          chest[freeIdx] = { id: itemId, count: count };
+        }
         saveGame();
         renderChest();
       };
