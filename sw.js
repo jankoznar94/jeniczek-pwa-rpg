@@ -1,4 +1,4 @@
-const CODE_CACHE = 'boss-slayer-code-v239';
+const CODE_CACHE = 'boss-slayer-code-v240';
 const ASSET_CACHE = 'boss-slayer-assets-v55';
 
 const CODE_FILES = ['/', '/index.html', '/style.css?v=175', '/manifest.json', '/item-reference.html'];
@@ -104,7 +104,6 @@ const ASSET_FILES = [
   '/assets/spells/chill.png',
   '/assets/spells/empower.png', '/assets/spells/shadow_bolt.png', '/assets/spells/heal.png',
   '/assets/spells/thorn_shield.png', '/assets/spells/faerie_fire.png', '/assets/spells/slow.png',
-  '/assets/projectiles/fireball.png', '/assets/projectiles/frostbolt.png',
   '/assets/projectiles/shadow.png', '/assets/projectiles/arcane.png',
   '/assets/result_win.png', '/assets/result_defeat.png',
   '/assets/items/belt_cloth.png', '/assets/items/belt_leather.png',
