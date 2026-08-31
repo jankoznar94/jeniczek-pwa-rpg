@@ -3381,8 +3381,9 @@ export function initGame() {
           // Rozhodovací moment — monstrum s kouzly může začít castovat
           // První swing je vždy melee, teprve pak se rozhoduje o castování
           const spells = mb.monsterSpells;
-          // Pummel blokuje recast — nepřítel mezitím jen melee útočí
-          const castBlocked = mb._enemyCastBlockedUntil && now < mb._enemyCastBlockedUntil;
+          // Pummel blokuje recast — nepřítel mezitím jen melee útočí.
+          // Řídí se ticky (stejně jako debuff), aby blok vypršel přesně s debuffem.
+          const castBlocked = mb._enemyCastBlockedTicks > 0;
           if (spells && spells.length > 0 && mb._enemyFirstSwingDone && !castBlocked) {
             const spell = pickEnemySpell(mb);
             if (spell) {
@@ -3475,6 +3476,12 @@ export function initGame() {
         if (d.ticks <= 0) delete _sessionDebuffs[spellId];
       }
     });
+    // Pummel recast block tick — snižuje se ticky (stejně jako debuff), aby blok
+    // vypršel přesně ve stejnou chvíli jako debuff (ne dřív kvůli reálnému času).
+    if (mb._enemyCastBlockedTicks > 0) {
+      mb._enemyCastBlockedTicks--;
+      if (mb._enemyCastBlockedTicks <= 0) mb._enemyCastBlockedUntil = 0;
+    }
     // Player DoT tick (jed z monster)
     doPlayerDotTick(mb);
     // Enemy DoT tick (jed ze zbraně hráče)
