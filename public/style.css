@@ -1455,6 +1455,23 @@ body.no-scroll { overflow: hidden; }
 .gem-select-item-name { font-size:11px; color:#aaa; text-align:center; word-break:break-word; }
 .gem-select-modal-empty { text-align:center; color:#666; padding:20px; font-size:14px; }
 
+/* Town portal prompt modal (map — click on area with open portal) */
+.town-portal-modal {
+  position:fixed; top:0; left:0; width:100%; height:100%;
+  background:rgba(0,0,0,0.7); display:flex;
+  align-items:center; justify-content:center;
+  z-index:300;
+}
+.town-portal-modal-content {
+  background:#000; border:1px solid #333; border-radius:12px;
+  padding:24px; max-width:320px; width:90%;
+  text-align:center;
+}
+.town-portal-modal-title { font-size:20px; font-weight:bold; margin-bottom:12px; }
+.town-portal-modal-text { font-size:14px; color:#888; margin-bottom:20px; line-height:1.4; }
+.town-portal-modal-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+.town-portal-modal-buttons .btn { flex:1; white-space:nowrap; }
+
 /* Result */
 .result-screen {
   text-align:center;

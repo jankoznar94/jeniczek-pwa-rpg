@@ -7,7 +7,7 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="stylesheet" href="style.css?v=175">
+  <link rel="stylesheet" href="style.css?v=176">
   <style>
     .town-action-card {
       display:flex;align-items:center;gap:12px;
@@ -626,6 +626,18 @@
     <div class="surrender-modal-buttons">
       <button class="btn btn-secondary" onclick="game.cancelSurrender()">No, go back</button>
       <button class="btn btn-danger" onclick="game.confirmSurrender()">🏳️ Forfeit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOWN PORTAL PROMPT (mapa — klik na oblast s otevřeným portálem) ===== -->
+<div id="townPortalPrompt" class="town-portal-modal hidden">
+  <div class="town-portal-modal-content">
+    <div class="town-portal-modal-title">🌀 Town Portal</div>
+    <div class="town-portal-modal-text" id="townPortalPromptText">A Town Portal to this area is open. Do you want to return to your progress through the portal, or start the area over?</div>
+    <div class="town-portal-modal-buttons">
+      <button class="btn btn-secondary" onclick="game.confirmTownPortalReset()">🔄 Start over</button>
+      <button class="btn btn-primary" onclick="game.confirmTownPortalUse()">🌀 Use Town Portal</button>
     </div>
   </div>
 </div>

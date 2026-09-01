@@ -2406,9 +2406,44 @@ export function initGame() {
   // Vstup do konkrétní zastávky (např. Meadow) — ukázat transition s obrázkem
   // dané zastávky, pak teprve spustit fight.
   function enterStop(actId, stop) {
+    // Pokud je pro TUTO oblast otevřený town portal → zeptat se modálem,
+    // jestli chce hráč pokračovat portálem do uloženého progressu, nebo
+    // oblast začít znovu (reset na 1/10).
+    if (state.townPortalReturn &&
+        state.townPortalReturn.actId === actId &&
+        state.townPortalReturn.zoneId === stop) {
+      window._townPortalPending = { actId, stop };
+      const p = $('townPortalPrompt');
+      if (p) p.classList.remove('hidden');
+      return;
+    }
     showTransition('stop', actId, () => {
       startLocation(actId, stop, 0);
     }, stop);
+  }
+
+  // Uživatel v modalu zvolil "Start over" → vyčistit portál, resetovat progress.
+  function confirmTownPortalReset() {
+    const pending = window._townPortalPending;
+    window._townPortalPending = null;
+    const p = $('townPortalPrompt');
+    if (p) p.classList.add('hidden');
+    if (!pending) return;
+    state.townPortalReturn = null;
+    saveGame();
+    showTransition('stop', pending.actId, () => {
+      startLocation(pending.actId, pending.stop, 0);
+    }, pending.stop);
+  }
+
+  // Uživatel v modalu zvolil "Use Town Portal" → použít portál do uloženého progressu.
+  function confirmTownPortalUse() {
+    const pending = window._townPortalPending;
+    window._townPortalPending = null;
+    const p = $('townPortalPrompt');
+    if (p) p.classList.add('hidden');
+    if (!pending) return;
+    useTownPortal();
   }
 
   function townHeal() {
@@ -10368,6 +10403,19 @@ export function initGame() {
 
   // ===== SHOP =====
   let _shopTab = 'buy';
+
+  // Je item ve stavu aktuálně nasazený? Projde VŠECHNY klíče h.equip (kromě
+  // beltPotionSlots) a porovná id. Robustní oproti prostému equipSet.has(id) —
+  // funguje i kdyby se item omylem nacházel v inventáři i v equipu zároveň.
+  function isItemEquipped(itemId) {
+    const eq = state.hero.equip;
+    if (!eq) return false;
+    for (const k in eq) {
+      if (k === 'beltPotionSlots') continue;
+      if (eq[k] === itemId) return true;
+    }
+    return false;
+  }
   let _shopCategory = 'Misc';
   let _shopItemsCache = null; // cache pro aktuální shop nabídku, resetuje se při opuštění města
 
@@ -10501,10 +10549,9 @@ export function initGame() {
     $('shopGold').textContent = `💰 ${h.gold} gold`;
     if (_shopTab === 'sell') {
       $('shopCatTabs').style.display = 'none';
-      const equipSet = new Set(Object.values(h.equip).filter(Boolean));
       const sellable = h.inventory.filter(entry => {
         const id = typeof entry === 'object' ? entry.id : entry;
-        return !equipSet.has(id);
+        return !isItemEquipped(id);
       });
       if (sellable.length === 0) {
         $('shopList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to sell</div>';
@@ -10624,6 +10671,8 @@ export function initGame() {
     const item = ITEM_MAP[itemId];
     if (!item || item.cost === 0) return;
     const h = state.hero;
+    // Pojistka: nasazený item nikdy nejde prodat (i kdyby v sell listu byl)
+    if (isItemEquipped(itemId)) { showMessage('❌ Tento předmět je nasazený!'); return; }
     const count = getStackCount(h.inventory, itemId);
     if (count === 0) { showMessage('❌ Tento předmět nemáš v inventáři!'); return; }
     const sellPrice = Math.round(item.cost * 0.5);
@@ -10726,10 +10775,9 @@ export function initGame() {
     // Sell záložka — stejná logika jako u shopu.
     if (_gambleTab === 'sell') {
       $('gambleCatTabs').style.display = 'none';
-      const equipSet = new Set(Object.values(h.equip).filter(Boolean));
       const sellable = h.inventory.filter(entry => {
         const id = typeof entry === 'object' ? entry.id : entry;
-        return !equipSet.has(id);
+        return !isItemEquipped(id);
       });
       if (sellable.length === 0) {
         $('gambleList').innerHTML = '<div style="text-align:center;padding:30px;color:#666">📦 Nothing to sell</div>';
@@ -12531,6 +12579,7 @@ export function initGame() {
     castClassSpell,
     usePotion, usePotionFromResult,
     townHeal, useTownPortal, renderTown, enterCurrentAct, closeModal,
+    confirmTownPortalReset, confirmTownPortalUse,
     walkToTown, useTownPortalScrollFromMap, walkToTownFromResult, useTownPortalScrollFromResult, openModal, switchCombinedTab,
     continueToNextStop, openMapFromResult,
     renderChest,
