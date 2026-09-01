@@ -1442,7 +1442,6 @@ export function initGame() {
     return candidates[Math.floor(Math.random() * candidates.length)];
   }
 
-  // Náhodný elitní affix (HP/dmg bonus)
   function rollEliteAffix() {
     return ELITE_AFFIXES[rand(0, ELITE_AFFIXES.length - 1)];
   }
@@ -2884,7 +2883,6 @@ export function initGame() {
       spellCooldowns: {},
       _spellCooldownTicks: 0,
       _blizzardFreeAttacks: 0,
-      _improverStacks: 0,
       floorMonsters,
       monsterFace: isBoss ? loc.boss.face : floorMonsters[0].face,
       currentMonsterName: isBoss ? loc.boss.name : floorMonsters[0].name,
@@ -3097,7 +3095,7 @@ export function initGame() {
     mb._enemyCastAfterSwing = null; mb._enemyCasting = false; mb._enemyCastSpell = null; mb._enemyCastProcessed = false;
     mb.enemyDot = 0; mb.enemyDotTicksLeft = 0; mb.enemyPoisonBaseDmg = 0;
     mb._enemySlowPct = 0; mb._enemySlowTimer = 0; mb._enemyStunTimer = 0; mb._enemyStunned = false;
-    mb._improverStacks = 0; mb._thornShieldActive = false; mb._faerieFireActive = false;
+    mb._thornShieldActive = false; mb._faerieFireActive = false;
     mb._amplifyDmgActive = false; mb._battleShoutActive = false; mb._defensiveShoutActive = false;
     mb._preventHealActive = false; mb._enemyCastAfterSwing = null;
     _enemyBuffs = {};
@@ -3205,10 +3203,6 @@ export function initGame() {
     const spells = mb.monsterSpells;
     if (!spells || spells.length === 0) return null;
     let candidates = spells.filter(id => ENEMY_SPELLS[id]);
-    // Nevybírat empower, pokud už monstrum má aktivní buff
-    if (mb._improverStacks > 0) {
-      candidates = candidates.filter(id => id !== 'empower');
-    }
     // Nevybírat poison_bolt, pokud už hráč má aktivní jed
     if (_playerDebuffs['poison_bolt']) {
       candidates = candidates.filter(id => id !== 'poison_bolt');
@@ -3839,7 +3833,7 @@ export function initGame() {
   const WHIRLWIND_REACTION_MS = 1500; // časový limit na každý whirlwind úder — nestihne-li hráč, kouzlo se přeruší
 
   // Enemy kouzla, která NEJSOU ofensivní (buff/debuff/utility) — spell reflect je neodráží jako dmg
-  const OFFENSIVE_EXEMPT = ['empower', 'defensive_shout', 'battle_shout', 'thorn_shield', 'faerie_fire', 'evasion', 'heal'];
+  const OFFENSIVE_EXEMPT = ['defensive_shout', 'battle_shout', 'thorn_shield', 'faerie_fire', 'evasion', 'heal'];
 
   // Rozhodne, jestli PRÁVĚ ZAČÍNAJÍCÍ melee swing nepřítele je interaktivní (dodge/block).
   // Volá se vždy, když se startuje nový nepřátelský melee swing (ne boss, ne caster).
@@ -3917,11 +3911,6 @@ export function initGame() {
         const manaDrain = Math.round(amount * 0.8);
         state.hero.mana = Math.max(0, (state.hero.mana || 0) - manaDrain);
         spellText = `💧 -${amount}`;
-      } else if (spellId === 'empower') {
-        amount = 0; // žádné přímé poškození
-        mb._improverStacks = (mb._improverStacks || 0) + 3; // +50% na 3 útoky
-        _enemyBuffs['empower'] = { icon: '📈', name: 'Posílení', ticks: 600, maxTicks: 600 };
-        spellText = '📈 Posílení';
       } else if (spellId === 'shadow_bolt') {
         amount = Math.round(baseDmg * 1.2);
         if (Math.random() < 0.5) {
@@ -4084,9 +4073,6 @@ export function initGame() {
           bossDmg = Math.round(bossDmg * 2.0);
           isCrit = true;
         }
-      } else if (t === MONSTER_TYPES.IMPROVER) {
-        mb._improverStacks = (mb._improverStacks || 0) + 1;
-        bossDmg = Math.round(bossDmg * (1 + mb._improverStacks * 0.25));
       } else if (t === MONSTER_TYPES.LIFESTEALER) {
         lifeStealAmt += Math.round(bossDmg * 0.5);
       } else if (t === MONSTER_TYPES.MANASTEALER) {
@@ -4264,7 +4250,6 @@ export function initGame() {
       const bossTypesHtml = (b.types || []).map(t => {
         const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
           t === MONSTER_TYPES.MANASTEALER ? '💧' :
-          t === MONSTER_TYPES.IMPROVER ? '📈' :
           t === MONSTER_TYPES.CRITMASTER ? '🎯' :
           t === MONSTER_TYPES.POISON ? '☠️' : '🎯';
         return ti;
@@ -4275,7 +4260,6 @@ export function initGame() {
     } else {
       const typeIcon = mb.monsterType === MONSTER_TYPES.LIFESTEALER ? '🩸' :
         mb.monsterType === MONSTER_TYPES.MANASTEALER ? '💧' :
-        mb.monsterType === MONSTER_TYPES.IMPROVER ? '📈' :
         mb.monsterType === MONSTER_TYPES.CRITMASTER ? '🎯' :
         mb.monsterType === MONSTER_TYPES.POISON ? '☠️' : '';
       const atkIcon = mb.monsterAttackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
@@ -8482,9 +8466,6 @@ export function initGame() {
           bossDmg = Math.round(bossDmg * 2.0);
           isCrit = true;
         }
-      } else if (t === MONSTER_TYPES.IMPROVER) {
-        mb._improverStacks = (mb._improverStacks || 0) + 1;
-        bossDmg = Math.round(bossDmg * (1 + mb._improverStacks * 0.25));
       } else if (t === MONSTER_TYPES.LIFESTEALER) {
         lifeStealAmt += Math.round(bossDmg * 0.5);
       } else if (t === MONSTER_TYPES.MANASTEALER) {
@@ -9723,12 +9704,10 @@ export function initGame() {
         const seen = encountered.includes(m.face);
         const typeIcon = m.type === MONSTER_TYPES.LIFESTEALER ? '🩸' :
           m.type === MONSTER_TYPES.MANASTEALER ? '💧' :
-          m.type === MONSTER_TYPES.IMPROVER ? '📈' :
           m.type === MONSTER_TYPES.CRITMASTER ? '🎯' :
           m.type === MONSTER_TYPES.POISON ? '☠️' : '🎯';
         const typeName = m.type === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
           m.type === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
-          m.type === MONSTER_TYPES.IMPROVER ? 'Improver' :
           m.type === MONSTER_TYPES.CRITMASTER ? 'Critmaster' :
           m.type === MONSTER_TYPES.POISON ? 'Poison' : 'Critmaster';
         const atkIcon = m.attackType === ATTACK_TYPES.CASTER ? '🔮' : '⚔️';
@@ -9758,12 +9737,10 @@ export function initGame() {
         const bossTypesHtml = b.types.map(t => {
           const ti = t === MONSTER_TYPES.LIFESTEALER ? '🩸' :
             t === MONSTER_TYPES.MANASTEALER ? '💧' :
-            t === MONSTER_TYPES.IMPROVER ? '📈' :
             t === MONSTER_TYPES.CRITMASTER ? '🎯' :
             t === MONSTER_TYPES.POISON ? '☠️' : '🎯';
           const tn = t === MONSTER_TYPES.LIFESTEALER ? 'Lifestealer' :
             t === MONSTER_TYPES.MANASTEALER ? 'Manastealer' :
-            t === MONSTER_TYPES.IMPROVER ? 'Improver' :
             t === MONSTER_TYPES.CRITMASTER ? 'Critmaster' :
             t === MONSTER_TYPES.POISON ? 'Poison' : 'Critmaster';
           return `<span>${ti} ${tn}</span>`;

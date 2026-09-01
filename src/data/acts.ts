@@ -4,7 +4,7 @@ import { MONSTER_TYPES, ATTACK_TYPES } from './monsters';
 
 export const ACTS = [
   { id:0, name:'Enchanted Forest', icon:'🌲', theme:0, zones:10, xpReward:10, bossXp:30, minLevel:1, maxLevel:3,
-    boss:{name:'Forest Lord',face:'assets/monsters/forest_lord.png',hp:500,dmgMin:12,dmgMax:18,attackSpeed:1800,blockChance:0,resource:'mana',maxResource:200,spells:['thorn_shield','faerie_fire','poison_bolt'],types:[MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.CASTER},
+    boss:{name:'Forest Lord',face:'assets/monsters/forest_lord.png',hp:500,dmgMin:12,dmgMax:18,attackSpeed:1800,blockChance:0,resource:'mana',maxResource:200,spells:['thorn_shield','faerie_fire','poison_bolt'],types:[MONSTER_TYPES.MANASTEALER,MONSTER_TYPES.LIFESTEALER],attackType:ATTACK_TYPES.CASTER},
     reward:{gold:5}, resists:{fire:1.0, ice:1.0, nature:1.0}, monsterDefense:10,
     locAffixes:[
       { poisonResist:0.5 },   // Normal
@@ -20,7 +20,7 @@ export const ACTS = [
       { armorMult:2.0 },   // Hell
     ] },
   { id:2, name:'Frost Peaks', icon:'❄️', theme:4, zones:10, xpReward:24, bossXp:70, minLevel:7, maxLevel:9,
-    boss:{name:'Frost Giant',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.IMPROVER],attackType:ATTACK_TYPES.MELEE},
+    boss:{name:'Frost Giant',face:'assets/monsters/frost_giant.png',hp:16,types:[MONSTER_TYPES.CRITMASTER],attackType:ATTACK_TYPES.MELEE},
     reward:{gold:15}, resists:{fire:1.5, ice:0.5, nature:1.0}, monsterDefense:35,
     locAffixes:[
       { chillResist:0.5, frostResist:0.25 },   // Normal
