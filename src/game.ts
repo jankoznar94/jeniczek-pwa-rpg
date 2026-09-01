@@ -1750,7 +1750,7 @@ export function initGame() {
   let _sessionSpellCooldowns = {};
   let _sessionDebuffs = {};
   let _sessionBuffs = {};
-  let _enemyBuffs = {}; // buffy na nepříteli (empower apod.)
+  let _enemyBuffs = {}; // buffy na nepříteli (thorn shield, evasion apod.)
   let _playerDebuffs = {}; // debuffy na hráči (jed apod.)
   let trainingState = {};
   let minigameState = {};
