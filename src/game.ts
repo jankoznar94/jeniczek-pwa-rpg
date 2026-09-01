@@ -10976,16 +10976,16 @@ export function initGame() {
   // Blood crafty (ruby): zaručené módy Enhanced Damage + Life Steal, zbytek random.
   // Safety crafty (sapphire): zaručené módy HP + Damage Reduction, zbytek random.
   const CRAFT_RECIPES = [
-    { id:'bloodWeapon', name:'Blood Weapon', icon:'🩸', gemType:'ruby', itemType:'weapon',
+    { id:'bloodWeapon', name:'Blood Weapon', icon:'🩸', gemType:'ruby', itemTypes:['weapon'],
       desc:'Ruby + Weapon + Rune → Attack Speed, Enhanced Damage, zbytek random',
       guaranteed:['ias','enhancedDmg'] },
-    { id:'bloodArmor', name:'Blood Armor', icon:'🩸', gemType:'ruby', itemType:'armor',
+    { id:'bloodArmor', name:'Blood Armor', icon:'🩸', gemType:'ruby', itemTypes:['armor','helmet','belt','gloves','boots','shield'],
       desc:'Ruby + Armor + Rune → Attack Rating, Crit, zbytek random',
       guaranteed:['attackRating','critChance'] },
-    { id:'safetyWeapon', name:'Safety Weapon', icon:'🛡️', gemType:'sapphire', itemType:'weapon',
+    { id:'safetyWeapon', name:'Safety Weapon', icon:'🛡️', gemType:'sapphire', itemTypes:['weapon'],
       desc:'Sapphire + Weapon + Rune → Enhanced Damage, Life Steal, zbytek random',
       guaranteed:['enhancedDmg','lifesteal'] },
-    { id:'safetyArmor', name:'Safety Armor', icon:'🛡️', gemType:'sapphire', itemType:'armor',
+    { id:'safetyArmor', name:'Safety Armor', icon:'🛡️', gemType:'sapphire', itemTypes:['armor','helmet','belt','gloves','boots','shield'],
       desc:'Sapphire + Armor + Rune → Enhanced Defense, HP, zbytek random',
       guaranteed:['enhancedDefense','bonusHp'] },
   ];
@@ -11027,6 +11027,17 @@ export function initGame() {
   function renderCraftSlots() {
     const recipe = _activeRecipe;
     if (!recipe) return;
+    // Placeholder obrázek pro item slot podle receptu:
+    // weapon recept → meč, armor recept → náhodná obranná věc (brnění, přilba, pás, rukavice, boty, štít).
+    let itemPlaceholder = 'assets/items/weapon_broad_sword.png';
+    if (recipe.itemTypes && recipe.itemTypes.length > 1) {
+      const armorIcons = [
+        'assets/items/armor_plate.png', 'assets/items/helmet_iron_helm.png',
+        'assets/items/belt_iron.png', 'assets/items/gloves_gauntlets.png',
+        'assets/items/boots_boots.png', 'assets/items/shield_iron.png'
+      ];
+      itemPlaceholder = armorIcons[Math.floor(Math.random() * armorIcons.length)];
+    }
     // Gem slot
     const gemSlot = $('craftSlotGem');
     const gemIcon = $('craftSlotGemIcon');
@@ -11047,7 +11058,7 @@ export function initGame() {
         ? `<img src="${_craftSlots.item.item.iconImg}">` : _craftSlots.item.item.icon;
     } else {
       itemSlot.classList.remove('filled');
-      itemIcon.innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
+      itemIcon.innerHTML = `<img src="${itemPlaceholder}" class="craft-slot-placeholder">`;
     }
     // Rune slot
     const runeSlot = $('craftSlotRune');
@@ -11086,7 +11097,7 @@ export function initGame() {
       resultStats.innerHTML = crHtml + buildItemStatsHtml(_craftResult);
     } else {
       resultSlot.classList.remove('filled');
-      $('craftSlotResultIcon').innerHTML = '<img src="assets/items/weapon_broad_sword.png" class="craft-slot-placeholder">';
+      $('craftSlotResultIcon').innerHTML = `<img src="${itemPlaceholder}" class="craft-slot-placeholder">`;
       resultStats.classList.add('hidden');
       resultStats.innerHTML = '';
     }
@@ -11106,7 +11117,7 @@ export function initGame() {
     if (slot === 'gem') {
       openCraftPicker('gem', recipe.gemType);
     } else if (slot === 'item') {
-      openCraftPicker('item', recipe.itemType);
+      openCraftPicker('item', recipe.itemTypes);
     } else if (slot === 'rune') {
       openCraftPicker('rune', 'rune');
     } else if (slot === 'jewel') {
@@ -11127,8 +11138,9 @@ export function initGame() {
       if (!item) continue;
       if (slot === 'gem' && item.type === 'gem' && item.gemType === filterType) {
         items.push({ idx: i, item, count });
-      } else if (slot === 'item' && item.type === filterType && (item.quality === 'magic' || item.rarity === 'magic')) {
+      } else if (slot === 'item' && (Array.isArray(filterType) ? filterType.includes(item.type) : item.type === filterType) && (item.quality === 'magic' || item.rarity === 'magic')) {
         // Craft recepty přijímají jen Magic (modré) itemy — ani common, ani rare, ani unique.
+        // Armor recepty přijímají helmu, body armor, pásek, rukavice, boty i štít.
         items.push({ idx: i, item, count });
       } else if (slot === 'rune' && item.type === 'crafting') {
         items.push({ idx: i, item, count });
