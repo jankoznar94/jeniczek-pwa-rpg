@@ -473,6 +473,7 @@ export function initGame() {
       if (spellId === 'spellReflect') return getSkillLv('barbarian_spellReflect');
       if (spellId === 'whirlwind') return getSkillLv('barbarian_whirlwind');
       if (spellId === 'counterAttack') return getSkillLv('barbarian_counterAttack');
+      if (spellId === 'frenzy') return getSkillLv('barbarian_frenzy');
     }
     if (cls === 'assassin') {
       if (spellId === 'shadowStrike') return getSkillLv('assassin_shadowStrike');
@@ -1800,6 +1801,9 @@ export function initGame() {
       _dodgeBuffTimer:0, // Evasion buff (ticky)
       _speedBoostTimer:0, // Speed boost (ticky)
       _speedBoostPct:0, // Speed boost procento
+      frenzyStacks:0, // Frenzy stacky (0-5) — session persistent, přenáší se mezi souboji
+      frenzyTimer:0, // Frenzy zbývající čas (ticky) — 10s = 600
+      frenzySpeedPct:0, // Aktuální % bonus rychlosti z frenzy stacků
       battleShoutTimer:0, // Battle shout zbývající čas (ticky)
       battleShoutDmgPct:0, // % bonus dmg z battle shout
       defensiveShoutTimer:0, // Defensive shout zbývající čas (ticky)
@@ -2628,6 +2632,9 @@ export function initGame() {
     state._dodgeBuffTimer = 0;
     state._speedBoostTimer = 0;
     state._speedBoostPct = 0;
+    state.frenzyStacks = 0;
+    state.frenzyTimer = 0;
+    state.frenzySpeedPct = 0;
     state._gcdTimer = 0;
     state.battleShoutTimer = 0;
     state.battleShoutDmgPct = 0;
@@ -2936,6 +2943,7 @@ export function initGame() {
       _enemySlowTimer: 0,
       _enemySlowMax: 0,
       _heroicStrikeQueued: false,
+      _frenzyQueued: false, // Frenzy — příští melee úder nese dmg+AR bonus a přidá stack
       debuffs: {},
       enemyMana: 0, maxEnemyMana: 0,
       _enemyCasting: false, _enemyCastStart: 0, _enemyCastTime: 0, _enemyCastSpell: null, _enemyCastManaCost: 0,
@@ -3170,6 +3178,12 @@ export function initGame() {
     if (state._speedBoostPct > 0) {
       ms = Math.max(450, Math.round(ms * (1 - state._speedBoostPct / 100)));
     }
+    // Frenzy (barbarian) — +rychlost za stack (lv+1)% per stack, max 5 stacků.
+    // Stacky se přenášejí mezi souboji (session persistent), takže swing se
+    // přepočítává v reálném čase podle aktuálního frenzySpeedPct.
+    if (state.frenzySpeedPct > 0) {
+      ms = Math.max(450, Math.round(ms * (1 - state.frenzySpeedPct / 100)));
+    }
     return ms;
   }
 
@@ -3179,6 +3193,32 @@ export function initGame() {
       return Math.round(baseMs / (1 - mb._playerSlowPct / 100));
     }
     return baseMs;
+  }
+
+  // Aplikuje Frenzy stack po úspěšném zásahu queued Frenzy úderu.
+  // - Stacky 0-5, session persistent (přenášejí se mezi souboji).
+  // - Při 5 stackech a dalším Frenzy se jen resetuje timer na 10s, bonus se nezvedá.
+  // - Rychlostní bonus = (lv+1)% per stack (lv1=2%, lv2=3%, ...).
+  function applyFrenzyStack() {
+    const fLv = getSpellLv('frenzy');
+    const stacks = Math.min(5, (state.frenzyStacks || 0) + 1);
+    state.frenzyStacks = stacks;
+    state.frenzyTimer = 600; // 10s * 60fps
+    state.frenzySpeedPct = stacks * (fLv + 1); // lv1: 2/4/6/8/10%, lv2: 3/6/9/12/15%, ...
+    // Buff ikona — refresh trvání
+    _sessionBuffs['frenzy'] = {
+      icon: '⚔️', name: `Frenzy (${stacks}/5)`, iconImg: 'frenzy.png',
+      ticks: 600, maxTicks: 600,
+      onExpire: function() {
+        state.frenzyStacks = 0;
+        state.frenzyTimer = 0;
+        state.frenzySpeedPct = 0;
+        recomputeSwingTimer();
+      }
+    };
+    // Přepočítat swing timer — frenzy zrychluje útok v reálném čase
+    recomputeSwingTimer();
+    spawnFloatingText(`⚔️ Frenzy ${stacks}/5`, 'left', '#f1c40f', 30);
   }
 
   // Přepočítá hráčův swing timer podle aktuálně nasazených zbraní (main + offhand).
@@ -3758,13 +3798,32 @@ export function initGame() {
       spawnHeroicStrikeAnim(mb);
     }
 
+    // Frenzy — queued úder: dmg bonus (20*lv%) + AR bonus (100+20*lv%).
+    // Po úspěšném zásahu přidá stack a resetuje timer na 10s.
+    let frenzyArMult = 1;
+    let frenzyHit = false;
+    if (mb._frenzyQueued) {
+      const fLv = getSpellLv('frenzy');
+      const fDmgPct = 20 * (fLv || 1); // lv1=20%, lv2=40%, ...
+      const fArPct = 100 + 20 * (fLv || 1); // lv1=100%, lv2=120%, ...
+      dmgMult *= (1 + fDmgPct / 100);
+      frenzyArMult = 1 + fArPct / 100;
+      mb._frenzyQueued = false;
+      frenzyHit = true;
+    }
+
     // Battle shout bonus
     if (state.battleShoutDmgPct > 0) {
       dmgMult *= (1 + state.battleShoutDmgPct / 100);
     }
 
-    // Použít původní dealPlayerDamage
-    dealPlayerDamage(mb, dmgMult);
+    // Použít původní dealPlayerDamage — vrací true při zásahu, false při miss/block/evasion
+    const hit = dealPlayerDamage(mb, dmgMult, false, frenzyArMult);
+
+    // Frenzy stack — jen když úder zasáhl (miss/block nepřidá stack)
+    if (frenzyHit && hit) {
+      applyFrenzyStack();
+    }
 
     updateMapBattleUI();
 
@@ -4886,6 +4945,11 @@ export function initGame() {
     // Efekty kouzel
     if (spellId === 'heroicStrike') {
       mb._heroicStrikeQueued = true;
+    } else if (spellId === 'frenzy') {
+      // Frenzy — queued úder: počká na dokončení aktuálního swing timeru, pak
+      // přidá dmg+AR bonus a stack. Neinstantní.
+      mb._frenzyQueued = true;
+      spawnFloatingText('⚔️ Frenzy ready', 'left', '#f1c40f', 28);
     } else if (spellId === 'thunderClap') {
       // Damage podle levelu talentu
       const lv = getSpellLv(spellId);
@@ -8648,7 +8712,7 @@ export function initGame() {
     }
   }
 
-  function dealPlayerDamage(mb, mult, isOffhand = false) {
+  function dealPlayerDamage(mb, mult, isOffhand = false, arMultOverride = 1) {
     const weapon = isOffhand
       ? (ITEM_MAP[state.hero.equip.shield] || ITEM_MAP['fists'])
       : (ITEM_MAP[state.hero.equip.weapon] || ITEM_MAP['fists']);
@@ -8657,14 +8721,14 @@ export function initGame() {
     const spec = getWeaponSpecBonus(weapon, isOffhand);
     // 🎲 ATTACK TABLE — D2 formule (pouze pro fyzické útoky, ne pro kouzla)
     if (!isStaff) {
-      const at = getPlayerAttackTable(mb, spec.arMult);
+      const at = getPlayerAttackTable(mb, spec.arMult * arMultOverride);
       const roll = Math.random() * 100;
       if (roll >= at.hitChance) {
         // MISS!
         spawnFloatingText('MISS!', 'right', '#fff', 32);
         playSFX(dodgeSfx);
         if (!mb._combatLoop) advanceSequence();
-        return;
+        return false;
       }
     }
     // 💨 Evasion — Vlk uhýbá hráčovým útokům (30% šance)
@@ -8672,14 +8736,14 @@ export function initGame() {
       spawnFloatingText('💨 Evasion!', 'right', '#f1c40f', 32);
       playSFX(dodgeSfx);
       if (!mb._combatLoop) advanceSequence();
-      return;
+      return false;
     }
     // 🛡️ Monster block — Troll blokuje hráčův útok štítem
     if (mb.monsterBlockChance > 0 && Math.random() * 100 < mb.monsterBlockChance) {
       spawnFloatingText('🛡️ Block!', 'right', '#3498db', 28);
       playSFX(blockSfx);
       if (!mb._combatLoop) advanceSequence();
-      return;
+      return false;
     }
     // HIT — normální damage
     let baseDmg;
@@ -8929,6 +8993,7 @@ export function initGame() {
     }
     // Canvas melee impact — seknutí nebo tupý úder
     updateMapBattleUI();
+    return true;
   }
 
   // ===== LOOT SYSTEM =====
@@ -9817,6 +9882,10 @@ export function initGame() {
     return total;
   }
   function isSkillUnlocked(t) {
+    if (t.requiresAny) {
+      // OR requirement — stačí jeden z požadovaných skillů na požadované úrovni
+      return t.requiresAny.some(req => getSkillLv(req) >= t.requiresLv);
+    }
     if (!t.requires) return true;
     return getSkillLv(t.requires) >= t.requiresLv;
   }
@@ -9865,7 +9934,14 @@ export function initGame() {
     }
     // Požadavky
     const reqs = [];
-    if (t.requires) {
+    if (t.requiresAny) {
+      const reqNames = t.requiresAny.map(req => {
+        const rs = SKILL_MAP[req];
+        const rl = getTalentLv(req);
+        return `${rs ? rs.name : req} (${rl}/${t.requiresLv})`;
+      });
+      reqs.push(`Vyžaduje: ${reqNames.join(' NEBO ')}`);
+    } else if (t.requires) {
       const reqSkill = SKILL_MAP[t.requires];
       if (reqSkill) {
         const reqLv = getTalentLv(t.requires);

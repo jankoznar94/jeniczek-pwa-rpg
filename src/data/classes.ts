@@ -25,7 +25,8 @@
         { id:'shieldSlam', name:'Shield Slam', icon:'🛡️', iconImg:'shield_bash.png', cost:4, cooldown:8, gcd:0.5, needsShield:true, desc:'Shield dmg + slow enemy 25% for 3s' },
         { id:'pummel', name:'Pummel', icon:'👊', cost:2, cooldown:8, gcd:0.5, desc:'Interrupts enemy cast + blocks recast' },
         { id:'spellReflect', name:'Spell Reflect', icon:'🪞', cost:5, cooldown:8, gcd:0.5, needsShield:true, desc:'Reflects offensive enemy spell back at them' },
-        { id:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', cost:5, cooldown:20, gcd:0.5, desc:'Pause & unleash a spinning flurry — press the shown button per strike, land up to 5' }
+        { id:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', cost:5, cooldown:20, gcd:0.5, desc:'Pause & unleash a spinning flurry — press the shown button per strike, land up to 5' },
+        { id:'frenzy', name:'Frenzy', icon:'⚔️', iconImg:'frenzy.png', cost:8, cooldown:0, gcd:0.5, desc:'20% dmg + AR on next swing; +attack speed per stack (max 5) for 10s' }
       ]
     },
     assassin: {
@@ -92,6 +93,7 @@
               { k:'doubleSwing', name:'Double Swing', icon:'⚔️', iconImg:'doubleSwing.png', maxLv:5, requires:'barbarian_oneHandSpec', requiresLv:5, desc:lv=>`Dual wield: +${25*lv}% dmg, +${10*lv}% attack rating` },
               { k:'heroicStrike', name:'Heroic Strike', icon:'💢', iconImg:'heroicStrike.png', maxLv:5, requires:'barbarian_twoHandSpec', requiresLv:5, desc:lv=>`${100+lv*100}% weapon dmg` },
               { k:'whirlwind', name:'Whirlwind', icon:'🌀', iconImg:'whirlwind.png', maxLv:4, requires:'barbarian_oneHandSpec', requiresLv:1, desc:lv=>`Pause game & unleash ${3+lv} spinning strikes (3 to 7) — press the shown button each strike, land as many as you get right` },
+              { k:'frenzy', name:'Frenzy', icon:'⚔️', iconImg:'frenzy.png', maxLv:5, requiresAny:['barbarian_oneHandSpec','barbarian_twoHandSpec'], requiresLv:1, desc:lv=>`${20*lv}% dmg + ${100+20*lv}% attack rating on next swing; +${lv+1}% attack speed per stack (max 5) for 10s` },
             ]}
           ]
         },
