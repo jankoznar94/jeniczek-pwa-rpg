@@ -474,7 +474,7 @@
   <div id="craftRecipes"></div>
   <div id="craftWorkbench" class="craft-workbench hidden">
     <div class="craft-workbench-title" id="craftWorkbenchTitle"></div>
-    <div class="craft-slots">
+    <div class="craft-slots" id="craftSlotsStandard">
       <div class="craft-slot" id="craftSlotGem" onclick="game.craftSlotClick('gem')">
         <div class="craft-slot-label">Gem</div>
         <div class="craft-slot-icon" id="craftSlotGemIcon">💎</div>
@@ -490,6 +490,20 @@
       <div class="craft-slot" id="craftSlotJewel" onclick="game.craftSlotClick('jewel')">
         <div class="craft-slot-label">Jewel</div>
         <div class="craft-slot-icon" id="craftSlotJewelIcon">💠</div>
+      </div>
+    </div>
+    <div class="craft-slots hidden" id="craftSlotsGemUpgrade">
+      <div class="craft-slot" id="craftSlotGem1" onclick="game.craftSlotClick('gem1')">
+        <div class="craft-slot-label">Gem</div>
+        <div class="craft-slot-icon" id="craftSlotGem1Icon">💎</div>
+      </div>
+      <div class="craft-slot" id="craftSlotGem2" onclick="game.craftSlotClick('gem2')">
+        <div class="craft-slot-label">Gem</div>
+        <div class="craft-slot-icon" id="craftSlotGem2Icon">💎</div>
+      </div>
+      <div class="craft-slot" id="craftSlotGem3" onclick="game.craftSlotClick('gem3')">
+        <div class="craft-slot-label">Gem</div>
+        <div class="craft-slot-icon" id="craftSlotGem3Icon">💎</div>
       </div>
     </div>
     <div class="craft-slots craft-slots-result">

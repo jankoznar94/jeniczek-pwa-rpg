@@ -11064,6 +11064,8 @@ export function initGame() {
     { id:'safetyArmor', name:'Safety Armor', icon:'🛡️', gemType:'sapphire', itemTypes:['armor','helmet','belt','gloves','boots','shield'],
       desc:'Sapphire + Armor + Rune → Enhanced Defense, HP, zbytek random',
       guaranteed:['enhancedDefense','bonusHp'] },
+    { id:'gemUpgrade', name:'Gem Upgrade', icon:'💎', isGemUpgrade:true,
+      desc:'Combine 3 gems of the same type & quality → 1 gem of the next quality (3 Chipped Ruby → 1 Flawed Ruby)' },
   ];
   let _activeRecipe = null;
   // Slot stav: { gem: {idx,id,item}, item: {idx,id,item}, rune: {idx,id,item}, jewel: {idx,id,item} }
@@ -11086,23 +11088,60 @@ export function initGame() {
     const recipe = CRAFT_RECIPES.find(r => r.id === recipeId);
     if (!recipe) return;
     _activeRecipe = recipe;
-    _craftSlots = { gem:null, item:null, rune:null, jewel:null };
+    _craftSlots = { gem:null, item:null, rune:null, jewel:null, gem1:null, gem2:null, gem3:null };
     _craftResult = null;
     $('craftWorkbenchTitle').textContent = `${recipe.icon} ${recipe.name}`;
     $('craftWorkbench').classList.remove('hidden');
+    // Gem upgrade používá 3 gem sloty, standardní recepty 4 sloty (gem/item/rune/jewel)
+    const isUp = !!recipe.isGemUpgrade;
+    $('craftSlotsStandard').classList.toggle('hidden', isUp);
+    $('craftSlotsGemUpgrade').classList.toggle('hidden', !isUp);
     $('craftDoBtn').classList.add('hidden');
     renderCraftSlots();
   }
 
   function craftCloseWorkbench() {
     _activeRecipe = null;
-    _craftSlots = { gem:null, item:null, rune:null, jewel:null };
+    _craftSlots = { gem:null, item:null, rune:null, jewel:null, gem1:null, gem2:null, gem3:null };
     $('craftWorkbench').classList.add('hidden');
   }
 
   function renderCraftSlots() {
     const recipe = _activeRecipe;
     if (!recipe) return;
+    // ===== GEM UPGRADE — 3 gem sloty → 1 gem vyšší kvality =====
+    if (recipe.isGemUpgrade) {
+      ['gem1','gem2','gem3'].forEach((slot, i) => {
+        const slotEl = $('craftSlot' + (i+1));
+        const iconEl = $('craftSlotGem' + (i+1) + 'Icon');
+        const s = _craftSlots[slot];
+        if (s) {
+          slotEl.classList.add('filled');
+          iconEl.innerHTML = s.item.iconImg ? `<img src="${s.item.iconImg}">` : s.item.icon;
+        } else {
+          slotEl.classList.remove('filled');
+          iconEl.innerHTML = '<img src="assets/gems/ruby_perfect.png" class="craft-slot-placeholder">';
+        }
+      });
+      // Result slot — náhled gemu vyšší kvality, pokud jsou 3 stejné gemy
+      const resultSlot = $('craftSlotResult');
+      const resultStats = $('craftResultStats');
+      const up = getGemUpgradeResult();
+      if (up) {
+        resultSlot.classList.add('filled');
+        $('craftSlotResultIcon').innerHTML = up.iconImg ? `<img src="${up.iconImg}">` : up.icon;
+        resultStats.classList.remove('hidden');
+        resultStats.innerHTML = `<div class="craft-result-name" style="color:${getQualityColor(up)};font-weight:bold;margin-bottom:4px">${up.name}</div>`;
+      } else {
+        resultSlot.classList.remove('filled');
+        $('craftSlotResultIcon').innerHTML = '<img src="assets/gems/ruby_perfect.png" class="craft-slot-placeholder">';
+        resultStats.classList.add('hidden');
+        resultStats.innerHTML = '';
+      }
+      const btn = $('craftDoBtn');
+      if (up) btn.classList.remove('hidden'); else btn.classList.add('hidden');
+      return;
+    }
     // Placeholder obrázek pro item slot podle receptu:
     // weapon recept → meč, armor recept → náhodná obranná věc (brnění, přilba, pás, rukavice, boty, štít).
     let itemPlaceholder = 'assets/items/weapon_broad_sword.png';
@@ -11198,7 +11237,26 @@ export function initGame() {
       openCraftPicker('rune', 'rune');
     } else if (slot === 'jewel') {
       openCraftPicker('jewel', 'jewel');
+    } else if (slot === 'gem1' || slot === 'gem2' || slot === 'gem3') {
+      // Gem upgrade — vybere libovolný gem (jakýkoli typ/kvalita)
+      openCraftPicker(slot, 'anyGem');
     }
+  }
+
+  // Vrátí gem vyšší kvality, pokud jsou 3 sloty vyplněné stejným gemem (typ+kvalita).
+  // Perfect gem nelze upgradovat (je nejvyšší) → null.
+  function getGemUpgradeResult() {
+    const g1 = _craftSlots.gem1, g2 = _craftSlots.gem2, g3 = _craftSlots.gem3;
+    if (!g1 || !g2 || !g3) return null;
+    const a = g1.item, b = g2.item, c = g3.item;
+    if (a.type !== 'gem' || b.type !== 'gem' || c.type !== 'gem') return null;
+    if (a.gemType !== b.gemType || a.gemType !== c.gemType) return null;
+    if (a.gemQuality !== b.gemQuality || a.gemQuality !== c.gemQuality) return null;
+    const qIdx = GEM_QUALITIES.indexOf(a.gemQuality);
+    if (qIdx < 0 || qIdx >= GEM_QUALITIES.length - 1) return null; // perfect = nelze
+    const nextQ = GEM_QUALITIES[qIdx + 1];
+    const nextId = a.gemType + (nextQ === 'normal' ? '' : '_' + nextQ);
+    return ITEM_MAP[nextId] || null;
   }
 
   // Otevře modal s výběrem itemů z inventáře pro daný slot
@@ -11213,6 +11271,8 @@ export function initGame() {
       const item = itemId ? ITEM_MAP[itemId] : null;
       if (!item) continue;
       if (slot === 'gem' && item.type === 'gem' && item.gemType === filterType) {
+        items.push({ idx: i, item, count });
+      } else if (slot === 'anyGem' && item.type === 'gem') {
         items.push({ idx: i, item, count });
       } else if (slot === 'item' && (Array.isArray(filterType) ? filterType.includes(item.type) : item.type === filterType) && (item.quality === 'magic' || item.rarity === 'magic')) {
         // Craft recepty přijímají jen Magic (modré) itemy — ani common, ani rare, ani unique.
@@ -11272,6 +11332,33 @@ export function initGame() {
   function craftDoInner() {
     const recipe = _activeRecipe;
     if (!recipe) return;
+    // ===== GEM UPGRADE — 3 stejné gemy → 1 gem vyšší kvality =====
+    if (recipe.isGemUpgrade) {
+      const up = getGemUpgradeResult();
+      if (!up) { showMessage('❌ Place 3 identical gems (same type & quality)'); return; }
+      const h = state.hero;
+      if (h.inventory.length >= 20) { showMessage('❌ Inventář je plný!'); return; }
+      // Spočítat, kolik kusů každého gemu je potřeba (sloty můžou ukazovat na stejný stack)
+      const need = {};
+      [_craftSlots.gem1, _craftSlots.gem2, _craftSlots.gem3].forEach(s => {
+        if (s) need[s.id] = (need[s.id] || 0) + 1;
+      });
+      for (const id in need) {
+        if (getStackCount(h.inventory, id) < need[id]) {
+          showMessage('❌ Not enough gems in inventory'); return;
+        }
+      }
+      // Odebrat gemy z inventáře (podporuje stacky)
+      for (const id in need) removeFromInventory(h.inventory, id, need[id]);
+      addToInventory(h.inventory, up.id);
+      _craftResult = up;
+      playSFX(shopSfx);
+      saveGame();
+      showMessage(`✅ Upgraded to ${up.name}!`);
+      _craftSlots = { gem:null, item:null, rune:null, jewel:null, gem1:null, gem2:null, gem3:null };
+      renderCraftSlots();
+      return;
+    }
     if (!_craftSlots.gem || !_craftSlots.item || !_craftSlots.rune || !_craftSlots.jewel) return;
     // Guard: vložený item musí být Magic (modrý) — ani common, ani rare, ani unique.
     const itemQ = _craftSlots.item.item.quality || _craftSlots.item.item.rarity;
