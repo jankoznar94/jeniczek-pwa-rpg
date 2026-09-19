@@ -344,17 +344,33 @@ export async function spawnMeleeStrike(
   x: number, y: number,
   colorHex: number,
   isCrit: boolean,
-  angleOffset: number
+  angleOffset: number,
+  fromX?: number,
+  fromY?: number
 ): Promise<void> {
   if (!meleeApp || !meleeContainer) return;
   const { Graphics } = await import('pixi.js');
   const s = isCrit ? 1.8 : 1.0;
   const g = new Graphics();
-  g.x = x;
-  g.y = y;
+
+  // DUEL ARENA — úder vychází od hrdiny. Grafika se ukotví na ose hráč→cíl
+  // (blíž k cíli, aby dopad zůstal na monstru), ale úhel seknutí se řídí touto osou,
+  // takže oblouk viditelně přichází ze strany hráče, ne z těla monstra.
+  let angle: number;
+  if (fromX !== undefined && fromY !== undefined) {
+    const dx = x - fromX, dy = y - fromY;
+    // Ukotvení: 62 % cesty od hráče k cíli (těsně před dopadem)
+    g.x = fromX + dx * 0.62;
+    g.y = fromY + dy * 0.62;
+    // Seknutí vede po ose letu + rozptyl, aby nebylo pokaždé stejné
+    angle = Math.atan2(dy, dx) + (Math.random() - 0.5) * Math.PI * 0.5;
+  } else {
+    g.x = x;
+    g.y = y;
+    angle = angleOffset + Math.random() * Math.PI * 0.6;
+  }
   meleeContainer.addChild(g);
 
-  const angle = angleOffset + Math.random() * Math.PI * 0.6;
   const cos = Math.cos(angle), sin = Math.sin(angle);
 
   // Každá zbraň má vlastní update funkci (charakter), kreslí se per-frame na Graphics.

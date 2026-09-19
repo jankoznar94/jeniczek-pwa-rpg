@@ -2964,6 +2964,9 @@ export function initGame() {
       packMembers: packMembers,
       packActiveIdx: 0,
       isChampionPack: isChampionPack,
+      // DUEL ARENA — vzdálenost hráč↔nepřítel (1 = maximální odstup, 0 = kontakt)
+      _gap: 1,
+      _lastGapTick: 0,
     };
 
     showScreen('mapBattle');
@@ -3092,8 +3095,13 @@ export function initGame() {
     if (mem.resource === 'mana') { mb.maxEnemyMana = mem.maxResource; mb.enemyMana = mb.maxEnemyMana; }
     else if (mem.resource === 'rage') { mb.maxEnemyMana = mem.maxResource; mb.enemyMana = 0; }
     else { mb.maxEnemyMana = mem.maxResource; mb.enemyMana = mb.maxEnemyMana; }
-    // Reset all swing timers a buffů/debuffů nepřítele (nový target)
+    // Reset all swing timery a buffů/debuffů nepřítele (nový target)
     resetEnemyCombatState(mb);
+    // DUEL ARENA — nový cíl = hrdina se k němu musí přesunout (viditelný přesun,
+    // ne teleport). Vzdálenost se otevře a zase zavře.
+    mb._gap = 1;
+    renderPlayerFigure(mb);
+    syncArenaDepth(mb);
     renderPackRoster(mb);
   }
 
@@ -3299,9 +3307,129 @@ export function initGame() {
     return { id, ...ENEMY_SPELLS[id] };
   }
 
+  // ===== DUEL ARENA — vzdálenost mezi hráčem a nepřítelem =====
+  // Auto-combat hra: hráč nic nemačká, ale vzdálenost je vidět a má mechanický význam.
+  //   _gap 1.0 = maximální odstup (start bitvy)
+  //   _gap 0.0 = kontakt (melee dosah)
+  //
+  // GEOMETRIE (změřeno v Chromiu, aréna 420×530 px): monstrum je 180 px ve středu
+  // (33–67 % výšky) a jeho věnec 260 px (25–75 %). Hrdina se tedy musí vejít POD
+  // něj. Proto se jeho velikost odvozuje od výšky arény (--hero-size) a vzdálenost
+  // se kreslí DVĚMA kanály: posunem dolů + perspektivním zmenšením (dál = menší).
+  // Perspektiva je hlavní cue — samotný posun by byl v krátké aréně neviditelný.
+  const HERO_Y_NEAR = 84;   // % výšky arény (kontakt — u monstra, ale POD jeho věncem)
+  const HERO_Y_FAR = 93;    // % výšky arény (maximální odstup — dole)
+  // Vodorovný nájezd: hrdina se nepřibližuje pod monstrum (tam by se slil s ním),
+  // ale zboku — v kontaktu stojí vedle něj jako druhá postava v souboji.
+  const HERO_X_START = 50;  // % šířky arény (střed, dole)
+  const HERO_X_NEAR = 20;   // % šířky arény (bokem vedle monstra)
+  const HERO_H_RATIO = 0.19;   // podíl výšky arény na velikost hrdiny
+  const HERO_H_MIN = 72, HERO_H_MAX = 118;
+  const HERO_SCALE_NEAR = 1.0;   // v kontaktu plná velikost
+  const HERO_SCALE_FAR = 0.75;   // v dálce zmenšený (perspektiva)
+  // Rychlost zavírání vzdálenosti (jednotek _gap za sekundu) podle váhy zbraně.
+  // Těžká zbraň = pomalý rozběh, lehká = rychlý. Dělá to rozdíl v citu pro classu.
+  const CLOSE_SPEED = { fists: 0.85, claws: 0.80, blade: 0.62, axe: 0.52, blunt: 0.48, staff: 0.70 };
+  // Dostřel zbraně = při jaké _gap ještě dosáhnu na nepřítele.
+  // fists/claws/dagger-like musí až k němu; long blade/axe/blunt mají delší rameno;
+  // staff (mage) je zbraň na dálku → útočí skoro z jakékoli vzdálenosti.
+  const WEAPON_REACH = { fists: 0.26, claws: 0.26, blade: 0.20, axe: 0.16, blunt: 0.16, staff: 0.92 };
+
+  function getWeaponReach() {
+    const wt = getWeaponType();
+    return WEAPON_REACH[wt] !== undefined ? WEAPON_REACH[wt] : 0.2;
+  }
+
+  function getCloseSpeed() {
+    const wt = getWeaponType();
+    return CLOSE_SPEED[wt] !== undefined ? CLOSE_SPEED[wt] : 0.6;
+  }
+
+  // Zavře vzdálenost o dt sekund. Vrací true, pokud se hodnota změnila.
+  function advanceGap(mb, dtMs) {
+    if (mb._gap === undefined) mb._gap = 1;
+    // Melee monstrum jde vstříc, hráč se přibližuje → schází se uprostřed rychleji.
+    // Caster monstrum naopak couvá (udržuje odstup), takže hráč musí dohánět sám.
+    let speed = getCloseSpeed();
+    const enemyMelee = !mb.isBoss && mb.monsterAttackType !== ATTACK_TYPES.CASTER;
+    if (enemyMelee) speed += 0.35;
+    const next = Math.max(0, mb._gap - speed * (dtMs / 1000));
+    if (next === mb._gap) return false;
+    mb._gap = next;
+    return true;
+  }
+
+  // Je hráč v dostřelu? (útok se smí spustit)
+  function playerInReach(mb) {
+    return (mb._gap === undefined ? 1 : mb._gap) <= getWeaponReach();
+  }
+  // Je monstrum v dostřelu na hráče? (melee monstrum musí být u hráče; caster castí odkudkoli)
+  function enemyInReach(mb) {
+    if (mb.isBoss) return true; // boss zůstává jako dřív (vlastní cesta/geometrie)
+    if (mb.monsterAttackType === ATTACK_TYPES.CASTER) return true;
+    return (mb._gap === undefined ? 1 : mb._gap) <= 0.24;
+  }
+
+  // Promítne _gap do pozice a velikosti hrdiny + naklonění monstra dopředu.
+  function syncArenaDepth(mb) {
+    const arena = $('mbArena');
+    const heroFig = $('mbPlayerFigure');
+    if (!arena || !heroFig) return;
+    const gap = mb._gap === undefined ? 1 : mb._gap;
+    const closed = 1 - gap; // 0 = daleko, 1 = kontakt
+    // Vodorovný nájezd: hrdina přistoupí ZBOKU vedle monstra, ne pod něj.
+    // Kdyby šel pod monstrum, jeho hlava by se slila s hlavou nepřítele a četlo
+    // by to jako "portrét přilepený pod monstrum", ne jako souboj dvou postav.
+    const heroX = HERO_X_START - (HERO_X_START - HERO_X_NEAR) * closed;
+    // Posun po ose hloubky
+    const heroY = HERO_Y_FAR - (HERO_Y_FAR - HERO_Y_NEAR) * closed;
+    // Perspektiva — v dálce menší (hlavní vizuální cue vzdálenosti)
+    const scale = HERO_SCALE_FAR + (HERO_SCALE_NEAR - HERO_SCALE_FAR) * closed;
+    // Velikost podle reálné výšky arény, aby se hrdina vešel vedle monstra
+    const arenaH = arena.clientHeight || 300;
+    const size = Math.max(HERO_H_MIN, Math.min(HERO_H_MAX, Math.round(arenaH * HERO_H_RATIO * scale)));
+    heroFig.style.setProperty('--hero-x', heroX.toFixed(2) + '%');
+    heroFig.style.setProperty('--hero-y', heroY.toFixed(2) + '%');
+    heroFig.style.setProperty('--hero-size', size.toFixed(0) + 'px');
+    // Monstrum se mírně naklání dopředu (dolů), když je kontakt — dvě postavy u sebe.
+    const monsterFig = $('mbFigure');
+    if (monsterFig && !mb.isBoss) {
+      const tilt = closed * 8; // 0..8 px
+      monsterFig.style.setProperty('--monster-dy', tilt.toFixed(1) + 'px');
+    }
+  }
+
+  // Naplní sprite hrdiny — CELÁ POSTAVA (hero_body_*.png), ne portrét hlavy.
+  // Portrét (hero_*.png) je busta a v aréně se čte jako "hlava přilepená pod monstrum".
+  function renderPlayerFigure(mb) {
+    const heroFig = $('mbPlayerFigure');
+    if (!heroFig) return;
+    // Plná postava podle classy; fallback na portrét, kdyby asset chyběl
+    const bodyFaces = { barbarian: 'hero_body_barbarian', assassin: 'hero_body_assassin', mage: 'hero_body_mage' };
+    const body = bodyFaces[state.heroClass];
+    const face = body || state.hero.face || 'hero';
+    heroFig.innerHTML = '<div class="hero-sprite"><img src="assets/monsters/' + face + '.png" alt=""></div>';
+  }
+
+  // Krátké animace těla — vykročení hrdiny, vrh monstra, flinch při zásahu.
+  function playFigureAnim(id, cls) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove(cls);
+    void el.offsetWidth; // restart animace
+    el.classList.add(cls);
+    setTimeout(() => { el.classList.remove(cls); }, 400);
+  }
+
   function startAutoCombat() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
+
+    // DUEL ARENA — start bitvy na maximálním odstupu, hrdina se rozeběhne.
+    mb._gap = 1;
+    mb._lastGapTick = performance.now();
+    renderPlayerFigure(mb);
+    syncArenaDepth(mb);
 
     // Inicializovat swing timer — JEDEN sdílený timer na průměrné rychlosti.
     // Normální dual wield: běží JEN jeden timer, který střídá ruce (main → offhand → main...).
@@ -3383,6 +3511,17 @@ export function initGame() {
     // Aktualizovat buff/debuff UI každou smyčku (nezávisle na swing timeru)
     renderBuffs();
     renderDebuffs();
+
+    // DUEL ARENA — hrdina se přibližuje k nepříteli. Dokud není v dostřelu,
+    // útočí jen "do vzduchu" (swing timer běží, ale úder se neaplikuje) — teprve
+    // když doběhne, první rána padne. Tím zmizí mlácení do prázdna.
+    {
+      const nowGap = performance.now();
+      const dtGap = Math.min(nowGap - (mb._lastGapTick || nowGap), 100);
+      mb._lastGapTick = nowGap;
+      advanceGap(mb, dtGap);
+      syncArenaDepth(mb);
+    }
     // Aktualizovat resource bary a combo indikátor každou smyčku
     updateResourceBars();
     // Ikona castovaného kouzla
@@ -3487,7 +3626,13 @@ export function initGame() {
     // Zpracovat útoky — hráč první, aby mohl zabít bosse dřív, než nepřítel stihne zabít jeho
     if (mb._playerSwingReady && !mb._playerAttackProcessed) {
       mb._playerAttackProcessed = true;
-      if (mb._isDualWield) {
+      // DUEL ARENA — útočit lze jen v dostřelu zbraně. Mimo dostřel hráč
+      // pokračuje v přibližování; první rána padne, až doběhne.
+      if (!playerInReach(mb)) {
+        mb._playerSwingReady = false;
+        mb._playerSwingStart = now;
+        mb._playerSwingPct = 0;
+      } else if (mb._isDualWield) {
         // Normální dual wield: JEDEN timer střídá ruce (main → offhand → main...)
         if (mb._dualWieldTurn === 0) {
           mb._dualWieldTurn = 1;
@@ -3508,7 +3653,15 @@ export function initGame() {
       // Jinak projde normální melee útok (nebo zmeškaná interakce).
       const dodged = resolveOpportunity(mb);
       if (!dodged) {
-        onAutoEnemyAttack();
+        // DUEL ARENA — melee monstrum dosáhne jen v kontaktu; caster castí odkudkoli.
+        // Mimo dostřel nepřítel jen pokračuje v přibližování (žádná rána na dálku).
+        if (enemyInReach(mb)) {
+          onAutoEnemyAttack();
+        } else {
+          mb._enemySwingReady = false;
+          mb._enemySwingStart = now;
+          mb._enemySwingPct = 0;
+        }
       }
     }
 
@@ -3774,6 +3927,9 @@ export function initGame() {
     if (mapBattleState.ended) return;
     const mb = mapBattleState;
     if (mb.bossHp <= 0) { endMapBattle(true); return; }
+
+    // DUEL ARENA — hrdina vykročí vpřed, úder má tělo.
+    playFigureAnim('mbPlayerFigure', 'hero-lunge');
 
     // Reset swingu PŘED útokem — i kdyby byl MISS/DODGE, swing se nezasekne
     mb._playerSwingStart = performance.now();
@@ -4118,6 +4274,9 @@ export function initGame() {
   function applyEnemyMeleeHit(mb) {
     // Výpočet damage — fixní staty monstra
     mb._enemyFirstSwingDone = true;
+    // DUEL ARENA — útok má tělo: monstrum se vrhne dolů, hrdina při zásahu ucukne.
+    playFigureAnim('mbFigure', 'monster-lunge');
+    playFigureAnim('mbPlayerFigure', 'hero-flinch');
     const diffMultOverall = DIFFICULTIES[state.difficulty] ? DIFFICULTIES[state.difficulty].mult : 1.0;
     let bossDmg = Math.round((mb.monsterDmgMin + Math.random() * (mb.monsterDmgMax - mb.monsterDmgMin)) * diffMultOverall * (mb.isBoss ? 1.0 : getZoneMult(mb.progress, state.difficulty)));
     const mType = mb.monsterType;
@@ -7143,6 +7302,14 @@ export function initGame() {
       bx = br.left + br.width/2 - aRect.left;
       by = br.top + br.height/2 - aRect.top;
     }
+    // DUEL ARENA — kde stojí hrdina (počátek úderu je u něj, ne ve středu monstra).
+    const heroFig = $('mbPlayerFigure');
+    let hx = cx, hy = rect.height * 0.8;
+    if (heroFig) {
+      const hr = heroFig.getBoundingClientRect();
+      hx = hr.left + hr.width/2 - aRect.left;
+      hy = hr.top + hr.height/2 - aRect.top;
+    }
     const isOffhand = angleOffset !== 0;
 
     if (weaponType === 'staff') {
@@ -7164,7 +7331,8 @@ export function initGame() {
 
     // Fáze 4: úderová animace na foreground PixiJS melee vrstvě (z-index 17, nad monstrem).
     // Zachovává charakter každé zbraně (meč/sekera/dýka/pěst/tupá zbraň/drápy), ale kreslí se WebGL.
-    spawnMeleeStrike(weaponType, bx, by, colorHex, isCrit, angleOffset);
+    // DUEL ARENA — úder vychází od hrdiny a dopadá na cíl (ne z těla monstra).
+    spawnMeleeStrike(weaponType, bx, by, colorHex, isCrit, angleOffset, hx, hy);
 
     // Fáze 4: canvas particle burst + shockwave ring + particle slash (aditivní, pod DOM)
     spawnImpactBurst(bx, by, colorHex, isCrit);

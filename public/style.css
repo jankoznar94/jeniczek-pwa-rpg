@@ -393,10 +393,60 @@ body.no-scroll { overflow: hidden; }
   display:block; font-size:16px;
 }
 #mbArena .monster-in-ring {
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;
+  position:absolute;top:50%;left:50%;transform:translate(-50%, calc(-50% + var(--monster-dy, 0px)));z-index:3;
   font-size:120px;line-height:1;pointer-events:none;
   text-shadow:0 0 20px rgba(0,0,0,0.5);
   width:180px;height:180px;
+  transition:transform 420ms cubic-bezier(.33,.02,.6,1);
+}
+/* ===== Hrdina v aréně (Duel Arena) =====
+   CELÁ POSTAVA (hero_body_*.png), ne portrét hlavy. JS řídí --hero-x / --hero-y
+   (osa hloubky i boční nájezd) a --hero-size (perspektiva: dál = menší).
+   Hrdina přistoupí ZBOKU vedle monstra — kdyby šel pod něj, hlava by se slila
+   s hlavou nepřítele a četlo by to jako portrét, ne souboj dvou postav.
+   POZOR: monstrum je 180 px ve středu, jeho věnec 260 px. */
+#mbArena .player-figure {
+  position:absolute;
+  left:var(--hero-x, 50%);
+  top:var(--hero-y, 90%);
+  width:var(--hero-size, 84px);
+  height:var(--hero-size, 84px);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  transition: left 420ms cubic-bezier(.33,.02,.6,1),
+              top 420ms cubic-bezier(.33,.02,.6,1),
+              width 420ms cubic-bezier(.33,.02,.6,1),
+              height 420ms cubic-bezier(.33,.02,.6,1);
+  z-index:7;
+}
+#mbArena .player-figure .hero-sprite {
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+}
+#mbArena .player-figure .hero-sprite img {
+  width:100%;height:100%;object-fit:contain;display:block;
+  filter:drop-shadow(0 4px 10px rgba(0,0,0,0.7));
+}
+/* Vykročení při útoku — jen translate (velikost drží --hero-size) */
+#mbArena .player-figure.hero-lunge { animation: heroLunge 200ms ease-out; }
+@keyframes heroLunge {
+  0%   { transform:translate(-50%,-50%) translateY(0); }
+  45%  { transform:translate(-50%,-50%) translateY(-14px); }
+  100% { transform:translate(-50%,-50%) translateY(0); }
+}
+/* Zásah — odskočení + záblesk */
+#mbArena .player-figure.hero-flinch { animation: heroFlinch 220ms ease-out; }
+@keyframes heroFlinch {
+  0%   { transform:translate(-50%,-50%) translateY(0); filter:brightness(2.4); }
+  40%  { transform:translate(-50%,-50%) translateY(10px); filter:brightness(2.4); }
+  100% { transform:translate(-50%,-50%) translateY(0); filter:brightness(1); }
+}
+/* Monstrum se vrhne dolů při svém útoku — dá útoku tělo */
+#mbArena .monster-in-ring.monster-lunge { animation: monsterLunge 200ms ease-out; }
+@keyframes monsterLunge {
+  0%   { transform:translate(-50%,-50%) translateY(0); }
+  45%  { transform:translate(-50%,-50%) translateY(20px); }
+  100% { transform:translate(-50%,-50%) translateY(0); }
 }
 #mbArena .hp-ring-svg {
   position:absolute;top:50%;left:50%;z-index:4;pointer-events:none;
